@@ -558,7 +558,7 @@ class Transaction_Master_Model extends Model  {
 				inner join tb_user usr on 
 					usr.userID = tm.createdBy 
 				inner join tb_transaction_master_info tmi on 
-					tmi.transactionMasterID = tmi.transactionMasterID 
+					tmi.transactionMasterID = tm.transactionMasterID 
 			where 
 				tm.companyID = ".$companyID." and 
 				tm.isActive = 1 and 
@@ -566,7 +566,7 @@ class Transaction_Master_Model extends Model  {
 				tmi.reference2 = '".$transactionNumberMobile."' ;
 		");
 	
-		//Ejecutar Consulta
+		//Ejecutar Consulta		
 		return $db->query($sql)->getRow();
     } 
 }

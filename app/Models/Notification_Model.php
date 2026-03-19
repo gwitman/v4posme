@@ -480,6 +480,7 @@ class Notification_Model extends Model  {
 			c.notificationID asc 
 		");
 		
+		
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();	
    }

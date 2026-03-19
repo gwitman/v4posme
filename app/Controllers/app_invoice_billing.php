@@ -15378,10 +15378,10 @@ class app_invoice_billing extends _BaseController {
 
 			// 1. Obtener solo la fecha
 			$soloFecha 	= $dt->format("Y-m-d");
-
+			
 			// 2. Obtener la hora
 			$hora 		= $dt->format("H:i:s");
-
+			
 			// Convertir hora a timestamp para comparar
 			$horaTimestamp = strtotime($hora);
 
@@ -15406,18 +15406,26 @@ class app_invoice_billing extends _BaseController {
 			$isPremiadoGeneral 		 = false;
 			$amountPremioTotal 		 = 0;
 			$amountPremioItem		 = 0;
+			$multiplo 				= 0;
 			$typePriceID 			= 154; /* PRECIO PUBLICO */
 			$objListPrice 			= $this->List_Price_Model->getListPriceToApply($companyID);
 			foreach($objTMD as $item)
 			{
 
 				//Obtener la referenica del detalle
-				$objTMDR 			= $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterDetailID($item->transactionMasterDetailID);
+				$objTMDR 			= $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterDetailID($item->transactionMasterDetailID);				
 				$isPremio 			= false;
 				$amountPremioItem 	= 0;
+				$multiplo 			= 0;
 				foreach($objNotifications as $notif)
 				{
-					if(str_contains((string)$notif->to,   (string)$item->componentItemID))
+					$notiPremio 	= strtoupper(str_replace(' ', '', $notif->phoneFrom));
+					$numeroJugado 	= strtoupper(str_replace(' ', '', $objTMDR[0]->reference2));
+
+					if(
+						str_contains((string)$notif->to,   (string)$item->componentItemID) && 
+						$notiPremio == $numeroJugado
+					)
 					{
 						$isPremio 				 = true;
 						$isPremiadoGeneral 		 = true;
@@ -15426,10 +15434,12 @@ class app_invoice_billing extends _BaseController {
 
 				
 				$objPrice  = $this->Price_Model->get_rowByPK($companyID,$objListPrice->listPriceID,$item->componentItemID,$typePriceID);
+
 				if($isPremio == true)
 				{
 					$amountPremioItem 	= $item->unitaryPrice * $item->quantity * $objPrice->price;
 					$amountPremioTotal  = $amountPremioTotal + $amountPremioItem;
+					$multiplo 			= $objPrice->price;
 				}
 
 				$row = array(
@@ -15440,7 +15450,8 @@ class app_invoice_billing extends _BaseController {
 					"itemNameAmount"   => sprintf("%01.2f", round($item->amount, 2)),
 					"isPremio"         => $isPremio,
 					"isPremioLabel"    => $isPremio ? "PREMIADO" : "",
-					"amountPremio"	   => $amountPremioItem
+					"amountPremio"	   => $amountPremioItem,
+					"multiplo"		   => $multiplo
 				);
 				$transactionMasterDetail[] = $row;
 			}
