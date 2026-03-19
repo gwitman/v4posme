@@ -188,7 +188,7 @@ class core_web_loto_nicaragua_http_client {
      * @param string $html HTML de la página
      * @return array|null ['winningNumber'=>'61','drawDate'=>'2026-03-17','drawTime'=>'12:00:00'] o NULL
      */
-    function parseResults($html) {
+    function parseResults($html,$hourResult) {
         if (empty($html)) {
             log_message('error', '[core_web_loto_nicaragua_parser] HTML vacío recibido');
             return null;
@@ -217,7 +217,7 @@ class core_web_loto_nicaragua_http_client {
 
             foreach ($tables as $table) 
             {
-                $result = $this->extractResultFromTable($table, $drawDate, $xpath);
+                $result = $this->extractResultFromTable($table, $drawDate, $xpath,$hourResult);
                 if ($result !== null) {
                     return $result;
                 }
@@ -277,7 +277,7 @@ class core_web_loto_nicaragua_http_client {
      * @param DOMXPath  $xpath
      * @return array|null
      */
-    private function extractResultFromTable($table, $drawDate, $xpath) {
+    private function extractResultFromTable($table, $drawDate, $xpath,$hourResult) {
         $rows = $xpath->query('.//tr', $table);
         if ($rows === false || $rows->length < 3) {
             return null;
@@ -289,6 +289,11 @@ class core_web_loto_nicaragua_http_client {
         if ($drawTime === null) {
             return null;
         }
+
+        $drawTime   = $this->limpiarTexto($drawTime);
+        $hourResult = $this->limpiarTexto($hourResult);        
+        if($drawTime != $hourResult)
+            return null;
 
         // Fila 1: encabezados (Loto Diaria | Fechas | Jugá3 | Premia2)
         // Fila 2: datos — primera celda es el número de Loto Diaria
@@ -315,6 +320,26 @@ class core_web_loto_nicaragua_http_client {
             'drawDate'      => $drawDate, /*fecha del sorteo*/
             'drawTime'      => $drawTime,/*hora del sorteo*/
         ];
+    }
+
+    private function limpiarTexto($texto)
+    {
+        // Quitar los dos puntos :
+        $texto = str_replace(":", "", $texto);
+
+        // Quitar espacios
+        $texto = str_replace(" ", "", $texto);
+
+        // Reemplazar vocales acentuadas
+        $buscar     = array('á','é','í','ó','ú','Á','É','Í','Ó','Ú');
+        $reemplazar = array('a','e','i','o','u','A','E','I','O','U');
+
+        $texto      = str_replace($buscar, $reemplazar, $texto);
+
+        // Convertir a MAYÚSCULA
+        $texto      = strtoupper($texto);
+
+        return $texto;
     }
 
     /**

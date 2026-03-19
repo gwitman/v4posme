@@ -2859,6 +2859,12 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 			$totalSuccess   = 0;
 			$totalErrors    = 0;
 			$errorDetails   = [];
+			$hourResult 	= helper_SegmentsValue($this->uri->getSegments(), "hourResult");
+			//12:00 m
+			//3:00 pm
+			//6:00 pm
+			//9:00 pm
+			//Terminación 2 – Martes 10 MARZO
 
 			$httpClient = new \App\Libraries\core_web_loto_nicaragua_http_client();
 			log_message('info', '[getResultLotoNicaragua] Inicio - companyID: ' . APP_COMPANY);
@@ -2918,7 +2924,7 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 					}
 
 					// Parsear resultados
-					$results = $httpClient->parseResults($html);
+					$results = $httpClient->parseResults($html,$hourResult);
 					if ($results === null) {
 						$errorDetails[] = ['itemID' => $item->itemID, 'error' => 'No se encontraron resultados en el HTML'];
 						$totalErrors++;
