@@ -194,6 +194,10 @@ class core_web_loto_nicaragua_http_client {
             return null;
         }
 
+        log_message("error","inicio de html");
+        log_message("error",print_r($html,true));
+        log_message("error","fin de html");
+
         try {
             $dom = new \DOMDocument();
             libxml_use_internal_errors(true);
@@ -216,7 +220,12 @@ class core_web_loto_nicaragua_http_client {
             }
 
             foreach ($tables as $table) 
-            {
+            {                
+
+                log_message("error","inicio de tabla");
+                log_message("error", $dom->saveHTML($table));
+                log_message("error","fin de tabla");
+
                 $result = $this->extractResultFromTable($table, $drawDate, $xpath,$hourResult);
                 if ($result !== null) {
                     return $result;
@@ -278,48 +287,74 @@ class core_web_loto_nicaragua_http_client {
      * @return array|null
      */
     private function extractResultFromTable($table, $drawDate, $xpath,$hourResult) {
+        log_message('error', '[extractResultFromTable] Iniciando extracción. drawDate=' . $drawDate . ' hourResult=' . $hourResult);
+
         $rows = $xpath->query('.//tr', $table);
         if ($rows === false || $rows->length < 3) {
+            log_message('error', '[extractResultFromTable] Filas insuficientes: ' . ($rows === false ? 'false' : $rows->length));
             return null;
         }
+        log_message('error', '[extractResultFromTable] Total filas encontradas: ' . $rows->length);
 
         // Fila 0: hora del sorteo (colspan=4, contiene h2 con la hora)
         $timeRow  = $rows->item(0);
+        log_message('error', '[extractResultFromTable] Texto fila 0 (hora): ' . $this->cleanText($timeRow->textContent));
+
         $drawTime = $this->extractDrawTimeFromRow($timeRow);
         if ($drawTime === null) {
+            log_message('error', '[extractResultFromTable] No se pudo extraer hora del sorteo desde fila 0');
             return null;
         }
+        log_message('error', '[extractResultFromTable] drawTime extraído: ' . $drawTime);
 
         $drawTime   = $this->limpiarTexto($drawTime);
-        $hourResult = $this->limpiarTexto($hourResult);        
-        if($drawTime != $hourResult)
+        $hourResult = $this->limpiarTexto($hourResult);
+        log_message('error', '[extractResultFromTable] drawTime limpio=' . $drawTime . ' | hourResult limpio=' . $hourResult);
+
+        if($drawTime != $hourResult) {
+            log_message('error', '[extractResultFromTable] Hora no coincide, saltando tabla');
             return null;
+        }
+        log_message('error', '[extractResultFromTable] Hora coincide, procesando datos');
 
         // Fila 1: encabezados (Loto Diaria | Fechas | Jugá3 | Premia2)
+        $headerRow = $rows->item(1);
+        log_message('error', '[extractResultFromTable] Texto fila 1 (headers): ' . $this->cleanText($headerRow->textContent));
+
         // Fila 2: datos — primera celda es el número de Loto Diaria
         $dataRow = $rows->item(2);
         if ($dataRow === null) {
+            log_message('error', '[extractResultFromTable] Fila 2 (datos) es null');
             return null;
         }
+        log_message('error', '[extractResultFromTable] Texto fila 2 (datos): ' . $this->cleanText($dataRow->textContent));
 
         $cells = $xpath->query('.//td', $dataRow);
         if ($cells === false || $cells->length === 0) {
+            log_message('error', '[extractResultFromTable] No se encontraron celdas en fila 2. cells=' . ($cells === false ? 'false' : $cells->length));
+            return null;
+        }
+        log_message('error', '[extractResultFromTable] Total celdas en fila 2: ' . $cells->length);
+
+        $rawNumber = $this->cleanText($cells->item(0)->textContent);
+        log_message('error', '[extractResultFromTable] rawNumber (celda 0): "' . $rawNumber . '"');
+
+        if (empty($rawNumber)) {
+            log_message('error', '[extractResultFromTable] rawNumber vacío, sorteo aún no realizado');
             return null;
         }
 
-        $rawNumber = $this->cleanText($cells->item(0)->textContent);
-        if (empty($rawNumber)) {
-            return null; // Sorteo aún no realizado
-        }
-
-        return [
+        $result = [
             'lotoDiaria'    => $cells->item(0)->textContent,
             'lotoFechas'    => $cells->item(1)->textContent,
             'lotoJuega3'    => $cells->item(2)->textContent,
             'lotoPremia2'   => $cells->item(3)->textContent,
-            'drawDate'      => $drawDate, /*fecha del sorteo*/
-            'drawTime'      => $drawTime,/*hora del sorteo*/
+            'drawDate'      => $drawDate,
+            'drawTime'      => $drawTime,
         ];
+        log_message('error', '[extractResultFromTable] Resultado extraído: ' . print_r($result, true));
+
+        return $result;
     }
 
     private function limpiarTexto($texto)
