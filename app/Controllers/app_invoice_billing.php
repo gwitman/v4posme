@@ -15322,10 +15322,11 @@ class app_invoice_billing extends _BaseController {
 		try{
 
 			// Leer parámetro desde segmentos URI (Requisito 1.1)
-			$invoiceNumber = /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"invoiceNumber");//--finuri
+			$invoiceNumberMobile = /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"inm");//--finuri
+			$userNameMobile 	 = /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"unm");//--finuri
 
 			// Validar que no esté vacío (Requisito 1.2)
-			if(empty($invoiceNumber)){
+			if(empty($invoiceNumberMobile)){
 				$data			 = array();
 				$data["session"] = array();
 				$data["exception"] = new \Exception("NÚMERO DE FACTURA REQUERIDO");
@@ -15339,7 +15340,7 @@ class app_invoice_billing extends _BaseController {
 		
 
 			// Task 3.2 — Consultar Transaction_Master y retornar error si no existe (Requisitos 2.1, 2.2)
-			$objTM = $this->Transaction_Master_Model->get_rowByTransactionNumber(APP_COMPANY, $invoiceNumber);
+			$objTM = $this->Transaction_Master_Model->get_rowByTransactionNumberMobile_AndUser(APP_COMPANY, $invoiceNumberMobile,$userNameMobile);
 			if(!$objTM){
 				$data			 = array();
 				$data["session"] = array();
@@ -15370,7 +15371,7 @@ class app_invoice_billing extends _BaseController {
 			// Task 4.1 — Consultar tb_notification y marcar isPremio en cada ítem (Requisitos 3.1, 3.2, 3.3, 3.4)
 			$transactionOn 			 = $objTM->transactionOn;
 			$createdOn 			 	 = $objTM->createdOn;
-			$fechaHora 				 = $createdOn;
+			$fechaHora 				 = $transactionOn;
 
 			// Crear objeto DateTime
 			$dt 		= new \DateTime($fechaHora);
@@ -15390,22 +15391,27 @@ class app_invoice_billing extends _BaseController {
 			$h06 = strtotime("18:00:00"); // 06:00 PM
 
 			if ($horaTimestamp <= $h12) {
-				$resultadoHora = "12:00:00";
+				$resultadoHora = "120000";
 			} elseif ($horaTimestamp > $h12 && $horaTimestamp <= $h03) {
-				$resultadoHora = "03:00:00";
+				$resultadoHora = "150000";
 			} elseif ($horaTimestamp > $h03 && $horaTimestamp <= $h06) {
-				$resultadoHora = "06:00:00";
+				$resultadoHora = "180000";
 			} else {
-				$resultadoHora = "09:00:00";
+				$resultadoHora = "210000";
 			}
 
 			
 			$objNotifications 		 = $this->Notification_Model->get_lotoNicaraguaNumberWiner($soloFecha,$resultadoHora);
 			$transactionMasterDetail = array();
 			$isPremiadoGeneral 		 = false;
+			$amountPremioTotal 		 = 0;
+			$amountPremioItem		 = 0;
 			foreach($objTMD as $item)
 			{
-				$isPremio = false;
+
+				log_message("error",print_r($item,true));
+				$isPremio 			= false;
+				$amountPremioItem 	= 0;
 				foreach($objNotifications as $notif)
 				{
 					if(str_contains((string)$notif->to,   (string)$item->itemID))
@@ -15415,6 +15421,12 @@ class app_invoice_billing extends _BaseController {
 					}
 				}
 
+				
+				if($isPremio == true)
+				{
+					$amountPremioItem 	= $item->unitaryPrice * $item->quantity;
+					$amountPremioTotal  = $amountPremioTotal + $amountPremioItem;
+				}
 
 				$row = array(
 					"itemNumber"       => $item->itemNumber,
@@ -15424,6 +15436,7 @@ class app_invoice_billing extends _BaseController {
 					"itemNameAmount"   => sprintf("%01.2f", round($item->amount, 2)),
 					"isPremio"         => $isPremio,
 					"isPremioLabel"    => $isPremio ? "PREMIADO" : "",
+					"amountPremio"	   => $amountPremioItem
 				);
 				$transactionMasterDetail[] = $row;
 			}
@@ -15452,12 +15465,16 @@ class app_invoice_billing extends _BaseController {
 				"imageBase64"             => $imageBase64,
 				// Factura
 				"transactionNumber"       => $objTM->transactionNumber,
+				"transactionNumberMobile" => $invoiceNumberMobile,
+				"transactionUserCreatedBy"=> $userNameMobile,
 				"transactionOn"           => (new \DateTime($objTM->transactionOn))->modify(APP_HOUR_DIFERENCE_PHP)->format('Y-m-d h:i A'),
 				"amount_sub_total"        => sprintf("%.2f", $objTM->subAmount),
 				"amount_iva"              => sprintf("%.2f", $objTM->tax1),
 				"amount_discount"         => sprintf("%.2f", $objTM->discount),
 				"amount_total"            => sprintf("%.2f", $objTM->amount),
-				"es_premiado_general" 	  => $isPremiadoGeneral,
+				"es_premiado_general" 	  		  => $isPremiadoGeneral,
+				"es_premiado_general_label" 	  => $isPremiadoGeneral == true ? "PREMIADO" : "SIGA PARTICIPANDO",
+				"amount_premiado_general" 		  => $amountPremioTotal,
 				
 				// Cliente
 				"customerName"            => $customerName,

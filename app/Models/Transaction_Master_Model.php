@@ -495,5 +495,79 @@ class Transaction_Master_Model extends Model  {
 		return $db->query($sql)->getResult();
 		
 	}
+
+	function get_rowByTransactionNumberMobile_AndUser($companyID,$transactionNumberMobile,$userName)
+    {
+	   	$db 		= db_connect();
+		$builder	= $db->table("tb_transaction_master");    
+	
+		$sql = "";
+		$sql = sprintf("
+			select 
+				tm.transactionMasterID
+				,tm.companyID
+				,tm.transactionNumber
+				,tm.transactionID
+				,tm.branchID
+				,tm.transactionCausalID
+				,tm.entityID
+				,tm.transactionOn
+				,tm.transactionOn2
+				,tm.statusIDChangeOn
+				,tm.componentID
+				,tm.note
+				,tm.sign
+				,tm.currencyID
+				,tm.currencyID2
+				,tm.exchangeRate
+				,tm.reference1
+				,tm.reference2
+				,tm.reference3
+				,tm.reference4
+				,tm.descriptionReference
+				,tm.statusID
+				,tm.amount
+				,tm.tax1
+				,tm.tax2
+				,tm.tax3
+				,tm.tax4
+				,tm.discount
+				,tm.subAmount
+				,tm.isApplied
+				,tm.journalEntryID
+				,tm.classID
+				,tm.areaID
+				,tm.priorityID
+				,tm.sourceWarehouseID
+				,tm.targetWarehouseID
+				,tm.createdBy
+				,tm.createdAt
+				,tm.createdOn
+				,tm.createdIn
+				,tm.isActive
+				,tm.isTemplate
+				,tm.periodPay
+				,tm.nextVisit
+				,tm.numberPhone
+				,tm.notificationID
+				,tm.printerQuantity
+				,tm.entityIDSecondary
+				,tm.dayExcluded
+			from 
+				tb_transaction_master tm 
+				inner join tb_user usr on 
+					usr.userID = tm.createdBy 
+				inner join tb_transaction_master_info tmi on 
+					tmi.transactionMasterID = tmi.transactionMasterID 
+			where 
+				tm.companyID = ".$companyID." and 
+				tm.isActive = 1 and 
+				usr.nickname = '".$userName."' and 
+				tmi.reference2 = '".$transactionNumberMobile."' ;
+		");
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getRow();
+    } 
 }
 ?>
