@@ -1955,8 +1955,8 @@ function helper_validarPremioLoto($notif, $objTMDR, $objItem, $item)
             str_contains((string)$notif->to, (string)$item->componentItemID) &&
             $notiPremio == $numeroJugado
         ) {
-            $isPremio = true;
-            $isPremiadoGeneral = true;
+            $isPremio           = true;
+            $isPremiadoGeneral  = true;
         }
     }
 
