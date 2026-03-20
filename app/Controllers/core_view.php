@@ -403,11 +403,11 @@ class core_view extends _BaseController {
 		$parameter["{iDisplayStart}"]				= $iDisplayStart;
 		$parameter["{iDisplayStartDB}"]				= $iDisplayStart == 1 ? 0 :   (( $iDisplayStart - 1 ) * $iDisplayLength)   ;
 		$parameter["{iDisplayLength}"]				= $iDisplayLength;
-		$parameter["{sSearchDB}"]					= urldecode($sSearch);
-		$parameter["{sSearch}"]						= $sSearch;
+		$parameter["{sSearchDB}"]					= $sSearch;
+		$parameter["{sSearch}"]						= str_replace("%"," ",$sSearch);
 		$parameter["{isWindowForm}"]				= "0";
 			
-			
+		
 		try
 		{  
 		  

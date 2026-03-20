@@ -204,6 +204,7 @@ class core_web_view {
 		
 		$queryFill					= str_replace("{filterPermission}", $filterPermission, $queryFill);
 		
+		
 		//
 		$dataRecordSet				= $Bd_Model->executeRender($queryFill,null);
 		$dataResult["view_config"]	= $companyDataView;
@@ -1236,7 +1237,7 @@ class core_web_view {
 						$('#".$idTable."').dataTable({
 							
 								
-							//'bPaginate'			: varParameterScrollDelModalDeSeleccionProducto == 'false' ? true : false,
+							//'bPaginate'		: varParameterScrollDelModalDeSeleccionProducto == 'false' ? true : false,
 							//'bFilter'			: false,
 							//'bSort'			: false,
 							//'bInfo'			: false,
@@ -1313,8 +1314,9 @@ class core_web_view {
 						$('.dataTables_length select').uniform();
 						$('.dataTables_paginate > ul').addClass('pagination');		
 						$('.dataTables_paginate > ul').addClass('hidden');	
-						$('.dataTables_info').remove();							
-						$('.dataTables_filter').find('input').val('".$parameterAjax["{sSearchDB}"]."');
+						$('.dataTables_info').remove();				
+						debugger;			
+						$('.dataTables_filter').find('input').val('".$parameterAjax["{sSearchDB}"]."'.replaceAll('%', ' ' ) );
 						 
 						";
 						
