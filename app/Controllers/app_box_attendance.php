@@ -1399,10 +1399,10 @@ class app_box_attendance extends _BaseController {
 			$objTM["currencyID"]					= $this->core_web_currency->getCurrencyDefault($companyID)->currencyID;
 			$objTM["currencyID2"]					= $this->core_web_currency->getCurrencyExternal($dataSession["user"]->companyID)->currencyID;
 			$objTM["exchangeRate"]					= $this->core_web_currency->getRatio($dataSession["user"]->companyID,date("Y-m-d"),1,$objTM["currencyID2"],$objTM["currencyID"]);			
-			$objTM["reference1"] 					= $txtDetailReference1;//Cliente con Mora: SI,NO
-			$objTM["reference2"] 					= $txtDetailReference2;//Dias para el proximo pago: number
-			$objTM["reference3"] 					= $txtDetailReference3;//Fecha de vencimiento
-			$objTM["reference4"] 					= $txtDetailReference4;//Dias para el proximo pago
+			$objTM["reference1"] 					= $txtDetailReference1;										//Cliente con Mora: SI,NO
+			$objTM["reference2"] 					= $txtDetailReference2;										//Dias para el proximo pago: number
+			$objTM["reference3"] 					= $txtDetailReference3;										//Fecha de vencimiento
+			$objTM["reference4"] 					= $txtDetailReference4 > 30 ? 30 : $txtDetailReference4; 	//Dias para el proximo pago
 			$objTM["statusID"] 						= $objWorkflowStage[0]->workflowStageID;
 			$objTM["priorityID"]					= $objPrioridad[0]->catalogItemID;
 			$objTM["amount"] 						= 0;
