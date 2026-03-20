@@ -15414,6 +15414,8 @@ class app_invoice_billing extends _BaseController {
 
 				//Obtener la referenica del detalle
 				$objTMDR 			= $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterDetailID($item->transactionMasterDetailID);				
+				$objItem 			= $this->Item_Model->get_rowByPK($companyID,$item->componentItemID);				
+				$objPrice  			= $this->Price_Model->get_rowByPK($companyID,$objListPrice->listPriceID,$item->componentItemID,$typePriceID);
 				$isPremio 			= false;
 				$amountPremioItem 	= 0;
 				$multiplo 			= 0;
@@ -15421,20 +15423,17 @@ class app_invoice_billing extends _BaseController {
 				{
 					$notiPremio 	= strtoupper(str_replace(' ', '', $notif->phoneFrom));
 					$numeroJugado 	= strtoupper(str_replace(' ', '', $objTMDR[0]->reference2));
-
-					if(
-						str_contains((string)$notif->to,   (string)$item->componentItemID) && 
-						$notiPremio == $numeroJugado
-					)
+					$resultado 		= helper_validarPremioLoto($notif, $objTMDR, $objItem, $item);
+					$isPremio 		= $resultado["isPremio"];
+					$multiplo		= $resultado["multiplicador"];
+					if($isPremio)
 					{
-						$isPremio 				 = true;
 						$isPremiadoGeneral 		 = true;
-					}
+					}	
+					
 				}
 
 				
-				$objPrice  = $this->Price_Model->get_rowByPK($companyID,$objListPrice->listPriceID,$item->componentItemID,$typePriceID);
-
 				if($isPremio == true)
 				{
 					$amountPremioItem 	= $item->unitaryPrice * $item->quantity * $objPrice->price;

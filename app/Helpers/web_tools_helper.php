@@ -1900,7 +1900,101 @@ function helper_RenderStringAsView($htmlString, $data = [])
     return $html;
 }
 
+function helper_validarPremioLoto($notif, $objTMDR, $objItem, $item)
+{
+    $isPremio           = false;
+    $isPremiadoGeneral  = false;
+    $multiplicador      = 1;
 
+    $notiPremio    = strtoupper(str_replace(' ', '', $notif->phoneFrom));
+    $numeroJugado  = strtoupper(str_replace(' ', '', $objTMDR[0]->reference2));
+
+    // =========================
+    // LOTO DIARIA
+    // =========================
+    if ($objItem->reference2 == "lotoDiaria") {
+
+        $respuesta = [
+            "gano"             => false,
+            "numero_ganador"   => null,
+            "multiplicador"    => 1
+        ];
+
+        // Número ganador
+        if (preg_match('/\d{2}/', $notiPremio, $match)) {
+            $respuesta["numero_ganador"] = $match[0];
+        }
+
+        // Verificar si ganó
+        if ($respuesta["numero_ganador"] != null) {
+            if ($numeroJugado == $respuesta["numero_ganador"]) {
+                $respuesta["gano"] = true;
+            }
+        }
+
+        // Multiplicador
+        if (preg_match('/=\s*(\d+)/', $notiPremio, $match)) {
+            $respuesta["multiplicador"] = (int)$match[1];
+        }
+
+        if (
+            str_contains((string)$notif->to, (string)$item->componentItemID) &&
+            $respuesta["gano"] == true
+        ) {
+            $isPremio = true;
+            $isPremiadoGeneral = true;
+            $multiplicador = $respuesta["multiplicador"];
+        }
+    }
+
+    // =========================
+    // LOTO FECHAS
+    // =========================
+    if ($objItem->reference2 == "lotoFechas") {
+        if (
+            str_contains((string)$notif->to, (string)$item->componentItemID) &&
+            $notiPremio == $numeroJugado
+        ) {
+            $isPremio = true;
+            $isPremiadoGeneral = true;
+        }
+    }
+
+    // =========================
+    // LOTO JUEGA 3
+    // =========================
+    if ($objItem->reference2 == "lotoJuega3") {
+        if (
+            str_contains((string)$notif->to, (string)$item->componentItemID) &&
+            $notiPremio == $numeroJugado
+        ) {
+            $isPremio = true;
+            $isPremiadoGeneral = true;
+        }
+    }
+
+    // =========================
+    // LOTO PREMIA 2
+    // =========================
+    if ($objItem->reference2 == "lotoPremia2") {
+
+        $partes = explode("-", $notiPremio);
+
+        if (
+            str_contains((string)$notif->to, (string)$item->componentItemID) &&
+            in_array($numeroJugado, $partes)
+        ) {
+            $isPremio = true;
+            $isPremiadoGeneral = true;
+        }
+    }
+
+    return [
+        "isPremio" => $isPremio,
+        "isPremiadoGeneral" => $isPremiadoGeneral,
+        "multiplicador" => $multiplicador
+    ];
+}
 
 
 ?>
