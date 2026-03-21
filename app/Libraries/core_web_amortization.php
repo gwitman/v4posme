@@ -283,9 +283,12 @@ class core_web_amortization {
 				if((int)$cuota->isActive !== 1 || (float)$cuota->remaining <= 0)
 					continue;
 
-				// Calcular nueva fecha sumando n días a la fecha base acumulada
+				// Calcular nueva fecha: si sequence=30 sumar 1 mes, sino sumar n días
 				$nuevaFecha = clone $fechaBase;
-				$nuevaFecha->modify("+{$diasEntreCuotas} days");
+				if($diasEntreCuotas === 30)
+					$nuevaFecha->modify("+1 month");
+				else
+					$nuevaFecha->modify("+{$diasEntreCuotas} days");
 				$fechaBase  = clone $nuevaFecha;
 
 				$nuevaFechaStr = $nuevaFecha->format("Y-m-d");
