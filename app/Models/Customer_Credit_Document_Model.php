@@ -41,6 +41,7 @@ class Customer_Credit_Document_Model extends Model  {
 			i.customerCreditDocumentID, i.companyID, i.entityID, i.customerCreditLineID,
 			i.documentNumber, i.dateOn, i.amount, i.interes, i.term,i.exchangeRate, 
 			i.reference1, i.reference2, i.reference3, i.statusID, i.isActive,i.balance,
+			i.periodPay,
 			i.balanceProvicioned,i.currencyID,cur.name as currencyName,cur.simbol as currencySimbol,	
 			(
 			select 	

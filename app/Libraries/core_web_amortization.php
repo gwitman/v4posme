@@ -234,6 +234,77 @@ class core_web_amortization {
 		}
 	   
    }
+   /**
+    * Reestructura las fechas de pago (dateApply) de las cuotas pendientes de un documento de crédito.
+    * Solo modifica cuotas con isActive=1 y remaining > 0.
+    * Los días a sumar se obtienen del campo sequence del catalog_item asociado al periodPay del documento.
+    *
+    * @param int    $customerCreditDocumentID  ID del documento de crédito
+    * @param string $dateApply                 Fecha base desde la cual se recalculan las cuotas (Y-m-d)
+    * @return array ["success" => bool, "message" => string]
+    */
+   function restructureAmortization($customerCreditDocumentID, $dateApply){
+		$Customer_Credit_Document_Model    	= new Customer_Credit_Document_Model();
+		$Customer_Credit_Amortization_Model = new Customer_Credit_Amortization_Model();
+		$Catalog_Item_Model                	= new Catalog_Item_Model();
+		$log                               	= new \CodeIgniter\Log\Logger(new \Config\Logger());
+
+		try {
+
+			// PASO 1: Obtener el documento de crédito
+			log_message('info', "[restructureAmortization] PASO 1 - Buscando documento customerCreditDocumentID={$customerCreditDocumentID}");
+			$objDocument = $Customer_Credit_Document_Model->get_rowByPK($customerCreditDocumentID);
+			if(!$objDocument)
+				throw new \Exception("Documento de crédito no encontrado. customerCreditDocumentID={$customerCreditDocumentID}");
+
+			// PASO 2: Obtener el catalog_item del periodPay para leer sequence (días entre cuotas)
+			log_message('info', "[restructureAmortization] PASO 2 - Obteniendo periodPay={$objDocument->periodPay} del catálogo");
+			$objPeriodPay = $Catalog_Item_Model->get_rowByCatalogItemID($objDocument->periodPay);
+			if(!$objPeriodPay)
+				throw new \Exception("No se encontró el catalog_item para periodPay={$objDocument->periodPay}");
+
+			$diasEntreCuotas = (int)$objPeriodPay->sequence;
+			log_message('info', "[restructureAmortization] PASO 2 - diasEntreCuotas={$diasEntreCuotas}");
+
+			// PASO 3: Obtener todas las cuotas activas con remanente pendiente
+			log_message('info', "[restructureAmortization] PASO 3 - Obteniendo cuotas activas con remaining > 0");
+			$objListAmortization = $Customer_Credit_Amortization_Model->get_rowByDocument($customerCreditDocumentID);
+			if(!$objListAmortization || count($objListAmortization) == 0)
+				throw new \Exception("No se encontraron cuotas para customerCreditDocumentID={$customerCreditDocumentID}");
+
+			// PASO 4: Filtrar solo las cuotas con isActive=1 y remaining > 0, y actualizar dateApply
+			log_message('info', "[restructureAmortization] PASO 4 - Procesando cuotas");
+			$fechaBase    = new \DateTime($dateApply);
+			$actualizadas = 0;
+
+			foreach($objListAmortization as $cuota){
+
+				// Solo procesar cuotas activas con remanente
+				if((int)$cuota->isActive !== 1 || (float)$cuota->remaining <= 0)
+					continue;
+
+				// Calcular nueva fecha sumando n días a la fecha base acumulada
+				$nuevaFecha = clone $fechaBase;
+				$nuevaFecha->modify("+{$diasEntreCuotas} days");
+				$fechaBase  = clone $nuevaFecha;
+
+				$nuevaFechaStr = $nuevaFecha->format("Y-m-d");
+				log_message('info', "[restructureAmortization] PASO 4 - Actualizando creditAmortizationID={$cuota->creditAmortizationID} dateApply={$nuevaFechaStr}");
+
+				$dataUpdate["dateApply"] = $nuevaFechaStr;
+				$Customer_Credit_Amortization_Model->update_app_posme($cuota->creditAmortizationID, $dataUpdate);
+				$actualizadas++;
+			}
+
+			log_message('info', "[restructureAmortization] COMPLETADO - {$actualizadas} cuotas actualizadas para customerCreditDocumentID={$customerCreditDocumentID}");
+			return ["success" => true, "message" => "Reestructuración completada. Cuotas actualizadas: {$actualizadas}"];
+
+		} catch(\Exception $ex){
+			log_message('error', "[restructureAmortization] ERROR - Línea {$ex->getLine()}: {$ex->getMessage()}");
+			return ["success" => false, "message" => $ex->getLine()." ".$ex->getMessage()];
+		}
+   }
+
    function applyCuote($companyID,$customerCreditDocumentID,$amount,$amoritizationID,$transactionMasterDetailID){
 	    $core_web_parameter 						= new core_web_parameter();
 		$Customer_Credit_Document_Model 			= new Customer_Credit_Document_Model();

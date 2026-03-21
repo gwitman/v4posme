@@ -6,6 +6,15 @@
 /******************************************************************/	
 
 
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_RESTRUCTURE_AMORTIZACION_GYM_IN_SHARE"; ##Restructurar la fecha al momento de aplicar el abono , util enlos gym
+	
+	
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "www.google.com" 
 WHERE 

@@ -722,7 +722,13 @@ class app_box_share extends _BaseController {
 				
 				//Crear Conceptos.
 				$this->core_web_concept->share($companyID,$transactionID,$transactionMasterID);
-				
+
+				//Restructurar tabla de amortizacion
+				if($this->core_web_parameter->getParameterValue("CXC_RESTRUCTURE_AMORTIZACION_GYM_IN_SHARE",$companyID) == "true"){
+					date_default_timezone_set(APP_TIMEZONE);
+					$fechaActual = date("Y-m-d");
+					$this->core_web_amortization->restructureAmortization($customerCreditDocumentID,$fechaActual);
+				}
 				
 			}
 			
