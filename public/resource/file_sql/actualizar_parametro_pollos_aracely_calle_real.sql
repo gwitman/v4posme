@@ -1,17 +1,8 @@
-/*BD: 	db9xzwcw7gewki:parametro_pollos_aracely*/
-/*SERVIDOR:		siteground #2  posme.nl*/
+/*BD: 	dbvtgl4atgh7sp:parametro_pollos_aracely*/
+/*SERVIDOR:		siteground   posme.net*/
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/	
-
-
-/*BD: 	u654393652_kqjzndxwtephrl:parametro_pollos_aracely*/
-/*SERVIDOR:		hostinger:	zhostinger_kqjzndxwtephrl*/
-/******************************************************************/
-/*****Personalizar pantalla**********/
-/******************************************************************/	
-
-
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
