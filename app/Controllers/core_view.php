@@ -391,7 +391,7 @@ class core_view extends _BaseController {
 		$iDisplayLength 					= helper_SegmentsByIndex($this->uri->getSegments(),10,$iDisplayLength);	
 		$sSearch 							= helper_SegmentsByIndex($this->uri->getSegments(),11,$sSearch);	
 		
-		
+		$sSearch 									= str_replace("%25","%",$sSearch);
 		$parameter["{componentid}"]					= $componentid;
 		$parameter["{fnCallback}"]					= $fnCallback;
 		$parameter["{viewname}"]					= $viewname;
@@ -406,7 +406,7 @@ class core_view extends _BaseController {
 		$parameter["{sSearchDB}"]					= $sSearch;
 		$parameter["{sSearch}"]						= str_replace("%"," ",$sSearch);
 		$parameter["{isWindowForm}"]				= "0";
-			
+
 		
 		try
 		{  

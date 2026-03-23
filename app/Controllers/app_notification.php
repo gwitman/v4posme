@@ -2918,6 +2918,7 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 					// Obtener HTML
 					$html = $httpClient->fetchLotteryResults($item->reference1);
 					if ($html === null) {
+						log_message('info', '[getResultLotoNicaragua] Error al obtener HTML desde la URL: ' . $html);
 						$errorDetails[] = ['itemID' => $item->itemID, 'error' => 'Error al obtener HTML desde la URL'];
 						$totalErrors++;
 						continue;
@@ -2926,6 +2927,7 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 					// Parsear resultados
 					$results = $httpClient->parseResults($html,$hourResult);
 					if ($results === null) {
+						log_message('info', '[getResultLotoNicaragua] No se encontraron resultados en el HTML: ' . $html);
 						$errorDetails[] = ['itemID' => $item->itemID, 'error' => 'No se encontraron resultados en el HTML'];
 						$totalErrors++;
 						continue;

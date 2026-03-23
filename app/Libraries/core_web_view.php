@@ -1547,6 +1547,7 @@ class core_web_view {
 						{
 							
 							var SearchValue 	= $('.dataTables_filter').find('input').val();
+							debugger;
 							SearchValue 		= SearchValue.replace(/ /g, '%');
 							var SeachPaginate 	= 1;
 							
