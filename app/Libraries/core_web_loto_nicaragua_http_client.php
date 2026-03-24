@@ -456,6 +456,150 @@ class core_web_loto_nicaragua_http_client {
         return null;
     }
 
+    private function getHtml()
+    {
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, "https://loto.com.ni/");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        // Simular navegador real
+        curl_setopt($ch, CURLOPT_USERAGENT,
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 
+            (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        );
+
+        $html = curl_exec($ch);
+        curl_close($ch);
+
+        return $html;
+    }
+
+    public function obtenerResultados()
+    {
+        $html = $this->getHtml();
+
+        if (!$html) return null;
+
+        $data = [];
+        log_message("error",print_r("obtener resultados con el segundo metodo",true));
+        log_message("error",print_r($html,true));
+        // ===== JUEGA 3 =====
+        $pos = strpos($html, 'juga3_logo_new-500px');
+        if ($pos === false) 
+        {
+            $data["juega3"]  = "";
+        }
+        else{
+            $fragmento = substr($html, $pos, 2000);
+            preg_match_all('/<span class="fuenteEsferas">(\d+)<\/span>/', $fragmento, $matches);
+
+            if (empty($matches[1])) 
+            $data["juega3"]  = "";
+            else
+            $data["juega3"]  = implode('', $matches[1]); // retorna "495"
+        }
+
+        // ===== Terminacion 2 =====
+        $pos = strpos($html, 'terminacion2_logo_new-500px');
+        if ($pos === false)
+        {
+            $data["terminacion2"]  = "";
+        }
+        else {
+            $fragmento = substr($html, $pos, 2000);
+            preg_match('/<span class="fuenteEsferas">(\d+)<\/span>/', $fragmento, $matches);
+
+            $data["terminacion2"]  = $matches[1] ?? '';
+        }
+
+        // ===== Premia Loto =====
+        $pos = strpos($html, 'premia2_logo_new-500px');
+        if ($pos !== false)
+        { 
+
+            $fragmento = substr($html, $pos, 2000);
+            preg_match_all('/<span class="fuenteEsferas">(\d+)<\/span>/', $fragmento, $matches);
+
+            $digitos = $matches[1] ?? [];
+            if (count($digitos) < 4)
+            {
+                $data["premiaLoto_001"] = "";
+                $data["premiaLoto_002"] = "";
+            }
+            else{
+
+                $data["premiaLoto_001"] = $digitos[0] . $digitos[1]; // "44"
+                $data["premiaLoto_002"] = $digitos[2] . $digitos[3]; // "04"
+            }
+        }
+        else {
+            $data["premiaLoto_001"] = "";
+            $data["premiaLoto_002"] = "";
+        }
+          
+        // ===== Fecha Loto =====
+        $pos = strpos($html, 'fechas_logo_new-500px');
+        if ($pos !== false) 
+        {
+            $fragmento = substr($html, $pos, 2000);
+            preg_match_all('/<span class="fuenteEsferas"[^>]*>([^<]+)<\/span>/', $fragmento, $matches);
+
+            $valores = array_map('trim', $matches[1] ?? []);
+            if (count($valores) < 2) 
+            {
+                $data["fechaLoto_001"] = "";
+                $data["fechaLoto_002"] = "";
+            
+            }
+            else
+            {
+                $data["fechaLoto_001"] = $valores[0]; // "3"
+                $data["fechaLoto_002"] = $valores[1]; // "SEPT"
+            }
+        }
+        else 
+        {
+            $data["fechaLoto_001"] = "";
+            $data["fechaLoto_002"] = "";
+        }
+
+        // ===== Loto Diaria =====
+        $pos = strpos($html, 'diaria_logo_new-500px');
+        if ($pos !== false){ 
+
+            $fragmento = substr($html, $pos, 3000);
+            // Extraer todos los valores de spans con estilos inline (dígitos y texto como JG)
+            preg_match_all('/<span\s+style="[^"]*font-size:\s*30px[^"]*"[^>]*>\s*<br\s*\/?>\s*([^\s<]+)\s*<br\s*\/?>/i', $fragmento, $matches);
+
+            $valores = array_values(array_filter(array_map('trim', $matches[1] ?? [])));
+            if (count($valores) >= 4) 
+            {
+                // Orden en el HTML: digito1, digito2, multix, mas1
+                $data["lotoDiaria_001"] = $valores[0] . $valores[1]; // "11"
+                $data["lotoDiaria_002"] = $valores[2];               // "JG"
+                $data["lotoDiaria_003"] = $valores[3];               // "9"
+            }
+            else
+            {
+                // Orden en el HTML: digito1, digito2, multix, mas1
+                $data["lotoDiaria_001"] = "";
+                $data["lotoDiaria_002"] = "";
+                $data["lotoDiaria_003"] = "";
+            }
+        }
+        else
+        {
+            // Orden en el HTML: digito1, digito2, multix, mas1
+            $data["lotoDiaria_001"] = "";
+            $data["lotoDiaria_002"] = "";
+            $data["lotoDiaria_003"] = "";
+        }
+
+        return $data;
+    }
     
 	
 	

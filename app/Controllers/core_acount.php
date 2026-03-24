@@ -474,6 +474,9 @@ class core_acount extends _BaseController {
 			else 			
 			$this->Log_Session_Model->upsert($objLogSessionModel);
 		
+
+			log_message("error","login de usuario bien echo");
+			log_message("error",print_r( $objUser["user"],true));
 		
 			return $this->response->setJSON(array(
 				'error'   	=> false,

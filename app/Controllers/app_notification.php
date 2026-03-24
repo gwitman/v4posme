@@ -2933,6 +2933,10 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 						continue;
 					}
 
+					log_message('info', '[getResultLotoNicaragua] Obtener el resultado de la loto diaria basado en el segundo metodo:');
+					$resultado = $httpClient->obtenerResultados();
+    				log_message("error",print_r($resultado,true));
+
 					// Preparar datos para inserción (Requisito 6)
 					$lotteryType 			= htmlspecialchars(strip_tags($item->reference2), ENT_QUOTES, 'UTF-8');
 					$winNumber   			= htmlspecialchars(strip_tags($results[$item->reference2]), ENT_QUOTES, 'UTF-8');
