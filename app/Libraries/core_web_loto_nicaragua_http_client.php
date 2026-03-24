@@ -194,9 +194,7 @@ class core_web_loto_nicaragua_http_client {
             return null;
         }
 
-        log_message("error","inicio de html");
-        log_message("error",print_r($html,true));
-        log_message("error","fin de html");
+        
 
         try {
             $dom = new \DOMDocument();
@@ -222,9 +220,9 @@ class core_web_loto_nicaragua_http_client {
             foreach ($tables as $table) 
             {                
 
-                log_message("error","inicio de tabla");
-                log_message("error", $dom->saveHTML($table));
-                log_message("error","fin de tabla");
+                //log_message("error","inicio de tabla");
+                //log_message("error", $dom->saveHTML($table));
+                //log_message("error","fin de tabla");
 
                 $result = $this->extractResultFromTable($table, $drawDate, $xpath,$hourResult);
                 if ($result !== null) {
@@ -484,118 +482,102 @@ class core_web_loto_nicaragua_http_client {
         if (!$html) return null;
 
         $data = [];
-        log_message("error",print_r("obtener resultados con el segundo metodo",true));
-        log_message("error",print_r($html,true));
-        // ===== JUEGA 3 =====
-        $pos = strpos($html, 'juga3_logo_new-500px');
-        if ($pos === false) 
-        {
-            $data["juega3"]  = "";
-        }
-        else{
-            $fragmento = substr($html, $pos, 2000);
-            preg_match_all('/<span class="fuenteEsferas">(\d+)<\/span>/', $fragmento, $matches);
 
-            if (empty($matches[1])) 
-            $data["juega3"]  = "";
-            else
-            $data["juega3"]  = implode('', $matches[1]); // retorna "495"
+        // Anclar búsqueda al bloque de resultados para evitar falsos positivos del header
+        $posResultados = strpos($html, 'ÚLTIMOS RESULTADOS');
+        if ($posResultados === false) {
+            $posResultados = strpos($html, 'ULTIMOS RESULTADOS');
+        }
+        $offset = ($posResultados !== false) ? $posResultados : 0;
+
+        // ===== JUEGA 3 =====
+        // Estructura: <span class="fuenteEsferas">6</span> x3 dígitos
+        $pos = strpos($html, 'juga3_logo_new-500px', $offset);
+        if ($pos === false) {
+            $data["juega3"] = "";
+        } else {
+            $fragmento = substr($html, $pos, 2000);
+            preg_match_all('/<span[^>]*class="fuenteEsferas"[^>]*>(\d+)<\/span>/', $fragmento, $matches);
+            $data["juega3"] = !empty($matches[1]) ? implode('', $matches[1]) : "";
         }
 
         // ===== Terminacion 2 =====
-        $pos = strpos($html, 'terminacion2_logo_new-500px');
-        if ($pos === false)
-        {
-            $data["terminacion2"]  = "";
-        }
-        else {
+        // Estructura: <span class="fuenteEsferas">28</span>
+        $pos = strpos($html, 'terminacion2_logo_new-500px', $offset);
+        if ($pos === false) {
+            $data["terminacion2"] = "";
+        } else {
             $fragmento = substr($html, $pos, 2000);
-            preg_match('/<span class="fuenteEsferas">(\d+)<\/span>/', $fragmento, $matches);
-
-            $data["terminacion2"]  = $matches[1] ?? '';
+            preg_match('/<span[^>]*class="fuenteEsferas"[^>]*>(\d+)<\/span>/', $fragmento, $matches);
+            $data["terminacion2"] = $matches[1] ?? "";
         }
 
         // ===== Premia Loto =====
-        $pos = strpos($html, 'premia2_logo_new-500px');
-        if ($pos !== false)
-        { 
-
+        // Estructura: 4 esferas con fuenteEsferas (ej: 1, 2, 6, 9)
+        $pos = strpos($html, 'premia2_logo_new-500px', $offset);
+        if ($pos === false) {
+            $data["premiaLoto_001"] = "";
+            $data["premiaLoto_002"] = "";
+        } else {
             $fragmento = substr($html, $pos, 2000);
-            preg_match_all('/<span class="fuenteEsferas">(\d+)<\/span>/', $fragmento, $matches);
-
+            preg_match_all('/<span[^>]*class="fuenteEsferas"[^>]*>(\d+)<\/span>/', $fragmento, $matches);
             $digitos = $matches[1] ?? [];
-            if (count($digitos) < 4)
-            {
+            if (count($digitos) >= 4) {
+                $data["premiaLoto_001"] = $digitos[0] . $digitos[1];
+                $data["premiaLoto_002"] = $digitos[2] . $digitos[3];
+            } else {
                 $data["premiaLoto_001"] = "";
                 $data["premiaLoto_002"] = "";
             }
-            else{
+        }
 
-                $data["premiaLoto_001"] = $digitos[0] . $digitos[1]; // "44"
-                $data["premiaLoto_002"] = $digitos[2] . $digitos[3]; // "04"
-            }
-        }
-        else {
-            $data["premiaLoto_001"] = "";
-            $data["premiaLoto_002"] = "";
-        }
-          
         // ===== Fecha Loto =====
-        $pos = strpos($html, 'fechas_logo_new-500px');
-        if ($pos !== false) 
-        {
-            $fragmento = substr($html, $pos, 2000);
-            preg_match_all('/<span class="fuenteEsferas"[^>]*>([^<]+)<\/span>/', $fragmento, $matches);
-
-            $valores = array_map('trim', $matches[1] ?? []);
-            if (count($valores) < 2) 
-            {
-                $data["fechaLoto_001"] = "";
-                $data["fechaLoto_002"] = "";
-            
-            }
-            else
-            {
-                $data["fechaLoto_001"] = $valores[0]; // "3"
-                $data["fechaLoto_002"] = $valores[1]; // "SEPT"
-            }
-        }
-        else 
-        {
+        // Estructura: <span class="fuenteEsferas">10</span> y <span class="fuenteEsferas" ...>ABRIL</span>
+        $pos = strpos($html, 'fechas_logo_new-500px', $offset);
+        if ($pos === false) {
             $data["fechaLoto_001"] = "";
             $data["fechaLoto_002"] = "";
+        } else {
+            $fragmento = substr($html, $pos, 2000);
+            preg_match_all('/<span[^>]*class="fuenteEsferas"[^>]*>([^<]+)<\/span>/', $fragmento, $matches);
+            $valores = array_map('trim', $matches[1] ?? []);
+            if (count($valores) >= 2) {
+                $data["fechaLoto_001"] = $valores[0];
+                $data["fechaLoto_002"] = $valores[1];
+            } else {
+                $data["fechaLoto_001"] = "";
+                $data["fechaLoto_002"] = "";
+            }
         }
 
         // ===== Loto Diaria =====
-        $pos = strpos($html, 'diaria_logo_new-500px');
-        if ($pos !== false){ 
-
-            $fragmento = substr($html, $pos, 3000);
-            // Extraer todos los valores de spans con estilos inline (dígitos y texto como JG)
-            preg_match_all('/<span\s+style="[^"]*font-size:\s*30px[^"]*"[^>]*>\s*<br\s*\/?>\s*([^\s<]+)\s*<br\s*\/?>/i', $fragmento, $matches);
-
+        // Estructura: spans con style="font-size: 30px;..." y el número entre <br/> tags
+        $posDiaria = strpos($html, 'diaria_logo_new-500px', $offset);
+        if ($posDiaria === false) {
+            $data["lotoDiaria_001"] = "";
+            $data["lotoDiaria_002"] = "";
+            $data["lotoDiaria_003"] = "";
+        } else {
+            $fragmento = substr($html, $posDiaria, 3000);
+            preg_match_all(
+                '/<span[^>]*font-size:\s*30px[^>]*>\s*<br\s*\/?>\s*([^\s<]+)\s*<br\s*\/?>/',
+                $fragmento,
+                $matches
+            );
             $valores = array_values(array_filter(array_map('trim', $matches[1] ?? [])));
-            if (count($valores) >= 4) 
-            {
-                // Orden en el HTML: digito1, digito2, multix, mas1
-                $data["lotoDiaria_001"] = $valores[0] . $valores[1]; // "11"
-                $data["lotoDiaria_002"] = $valores[2];               // "JG"
-                $data["lotoDiaria_003"] = $valores[3];               // "9"
-            }
-            else
-            {
-                // Orden en el HTML: digito1, digito2, multix, mas1
+            if (count($valores) >= 4) {
+                $data["lotoDiaria_001"] = $valores[0] . $valores[1]; // dos dígitos: "12"
+                $data["lotoDiaria_002"] = $valores[2];               // MULTI-X: "JG"
+                $data["lotoDiaria_003"] = $valores[3];               // MAS 1: "3"
+            } elseif (count($valores) >= 2) {
+                $data["lotoDiaria_001"] = $valores[0] . $valores[1];
+                $data["lotoDiaria_002"] = $valores[2] ?? "";
+                $data["lotoDiaria_003"] = $valores[3] ?? "";
+            } else {
                 $data["lotoDiaria_001"] = "";
                 $data["lotoDiaria_002"] = "";
                 $data["lotoDiaria_003"] = "";
             }
-        }
-        else
-        {
-            // Orden en el HTML: digito1, digito2, multix, mas1
-            $data["lotoDiaria_001"] = "";
-            $data["lotoDiaria_002"] = "";
-            $data["lotoDiaria_003"] = "";
         }
 
         return $data;
