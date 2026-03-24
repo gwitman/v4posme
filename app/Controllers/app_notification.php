@@ -2888,6 +2888,10 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 			// 5. LIMITAR a 100 items por ejecución (Requisito 13.5)
 			$items = array_slice((array) $items, 0, 100);
 
+			log_message('info', '[getResultLotoNicaragua] Obtener el resultado de la loto diaria basado en el segundo metodo:');
+			$resultado = $httpClient->obtenerResultados();
+			log_message("error",print_r($resultado,true));
+
 			// 6. PROCESAR cada item
 			foreach ($items as $item) 
 			{
@@ -2915,40 +2919,59 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 				// Validar dominio permitido (nuevaya.com.ni)
 				try 
 				{
-					// Obtener HTML
-					$html = $httpClient->fetchLotteryResults($item->reference1);
-					if ($html === null) {
-						log_message('info', '[getResultLotoNicaragua] Error al obtener HTML desde la URL: ' . $html);
-						$errorDetails[] = ['itemID' => $item->itemID, 'error' => 'Error al obtener HTML desde la URL'];
-						$totalErrors++;
-						continue;
-					}
+					//wg-// Obtener HTML
+					//wg-$html = $httpClient->fetchLotteryResults($item->reference1);
+					//wg-if ($html === null) {
+					//wg-	log_message('info', '[getResultLotoNicaragua] Error al obtener HTML desde la URL: ' . $html);
+					//wg-	$errorDetails[] = ['itemID' => $item->itemID, 'error' => 'Error al obtener HTML desde la URL'];
+					//wg-	$totalErrors++;
+					//wg-	continue;
+					//wg-}
 
-					// Parsear resultados
-					$results = $httpClient->parseResults($html,$hourResult);
-					if ($results === null) {
-						log_message('info', '[getResultLotoNicaragua] No se encontraron resultados en el HTML: ' . $html);
-						$errorDetails[] = ['itemID' => $item->itemID, 'error' => 'No se encontraron resultados en el HTML'];
-						$totalErrors++;
-						continue;
-					}
+					//wg-// Parsear resultados
+					//wg-$results = $httpClient->parseResults($html,$hourResult);
+					//wg-if ($results === null) {
+					//wg-	log_message('info', '[getResultLotoNicaragua] No se encontraron resultados en el HTML: ' . $html);
+					//wg-	$errorDetails[] = ['itemID' => $item->itemID, 'error' => 'No se encontraron resultados en el HTML'];
+					//wg-	$totalErrors++;
+					//wg-	continue;
+					//wg-}
 
-					log_message('info', '[getResultLotoNicaragua] Obtener el resultado de la loto diaria basado en el segundo metodo:');
-					$resultado = $httpClient->obtenerResultados();
-    				log_message("error",print_r($resultado,true));
 
 					// Preparar datos para inserción (Requisito 6)
 					$lotteryType 			= htmlspecialchars(strip_tags($item->reference2), ENT_QUOTES, 'UTF-8');
-					$winNumber   			= htmlspecialchars(strip_tags($results[$item->reference2]), ENT_QUOTES, 'UTF-8');
+					$winNumber				= "";
+
+					if($lotteryType == "lotoPremia2")
+					{
+						$winNumber				= $resultado["premiaLoto_001"]." y ".$resultado["premiaLoto_002"];
+					}
+					if($lotteryType == "lotoTermionacion2")
+					{
+						$winNumber				= $resultado["terminacion2"];
+					}
+					if($lotteryType == "lotoJuega3")
+					{
+						$winNumber				= $resultado["juega3"];
+					}
+					if($lotteryType == "lotoFechas")
+					{
+						$winNumber				= $resultado["fechaLoto_001"]." ".$resultado["fechaLoto_002"];
+					}
+					if($lotteryType == "lotoDiaria")
+					{
+						$winNumber				= $resultado["lotoDiaria_001"]." ".$resultado["lotoDiaria_002"]." ".$resultado["lotoDiaria_003"];
+					}
+
 
 					$data                   = null;
 					$data["from"]           = $lotteryType;
-					$data["programDate"]    = $results['drawDate'];
-					$data["programHour"]    = $results['drawTime'];
+					$data["programDate"]    = date_format(date_create(), "Y-m-d");
+					$data["programHour"]    = $hourResult;
 					$data["phoneFrom"]      = $winNumber;
 					$data["summary"]        = "LOTO_NICARAGUA";
 					$data["title"]          = "Resultado " . $lotteryType;
-					$data["message"]        = "Número ganador: " . $winNumber . " - Sorteo: " . $results['drawDate'] . " " . $results['drawTime'];
+					$data["message"]        = "---";
 					$data["createdOn"]      = date_format(date_create(), "Y-m-d H:i:s");
 					$data["isActive"]       = 1;
 					$data["sendOn"]         = null;
