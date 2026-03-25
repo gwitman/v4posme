@@ -7,6 +7,13 @@
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "PRINTER_REFERENCE_INVOICE_MOBILE"; ##Imprimer las referencias, en las facturas mobile android
+
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "https://posme.nl/v4posme/farmacia_mils_loto/public/app_invoice_billing/viewInvoicePublic" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
