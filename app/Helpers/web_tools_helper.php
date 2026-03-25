@@ -1920,10 +1920,14 @@ function helper_validarPremioLoto($notif, $objTMDR, $objItem, $item)
             "multiplicador"    => 1
         ];
 
+        $partes = explode("-", $notiPremio);
+        //$partes[0] numero
+        //$partes[1] multiplicador
+        //$partes[2] 1+
+
         // Número ganador
-        if (preg_match('/\d{2}/', $notiPremio, $match)) {
-            $respuesta["numero_ganador"] = $match[0];
-        }
+        $respuesta["numero_ganador"] = $partes[0];
+        
 
         // Verificar si ganó
         if ($respuesta["numero_ganador"] != null) {
@@ -1933,18 +1937,20 @@ function helper_validarPremioLoto($notif, $objTMDR, $objItem, $item)
         }
 
         // Multiplicador
-        if (preg_match('/=\s*(\d+)/', $notiPremio, $match)) {
-            $respuesta["multiplicador"] = (int)$match[1];
-        }
+        $respuesta["multiplicador"] = $partes[1];
+        
 
-        if (
+        if(
             str_contains((string)$notif->to, (string)$item->componentItemID) &&
             $respuesta["gano"] == true
-        ) {
-            $isPremio = true;
-            $isPremiadoGeneral = true;
-            $multiplicador = $respuesta["multiplicador"];
+        ) 
+        {
+            $isPremio           = true;
+            $isPremiadoGeneral  = true;
+            $multiplicador      = $respuesta["multiplicador"];
         }
+
+
     }
 
     // =========================

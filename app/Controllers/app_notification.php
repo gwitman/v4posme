@@ -2944,7 +2944,7 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 
 					if($lotteryType == "lotoPremia2")
 					{
-						$winNumber				= $resultado["premiaLoto_001"]." y ".$resultado["premiaLoto_002"];
+						$winNumber				= $resultado["premiaLoto_001"]."-".$resultado["premiaLoto_002"];
 					}
 					if($lotteryType == "lotoTermionacion2")
 					{
@@ -2960,7 +2960,7 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 					}
 					if($lotteryType == "lotoDiaria")
 					{
-						$winNumber				= $resultado["lotoDiaria_001"]." ".$resultado["lotoDiaria_002"]." ".$resultado["lotoDiaria_003"];
+						$winNumber				= $resultado["lotoDiaria_001"]."-".$resultado["lotoDiaria_002"]."-".$resultado["lotoDiaria_003"];
 					}
 
 
