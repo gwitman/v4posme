@@ -15423,7 +15423,7 @@ class app_invoice_billing extends _BaseController {
 				{
 					$notiPremio 	= strtoupper(str_replace(' ', '', $notif->phoneFrom));
 					$numeroJugado 	= strtoupper(str_replace(' ', '', $objTMDR[0]->reference2));
-					$resultado 		= helper_validarPremioLoto($notif, $objTMDR, $objItem, $item);
+					$resultado 		= helper_validarPremioLoto($notif, $objTMDR, $objItem, $item, $objCompany->type);
 					$isPremio 		= $resultado["isPremio"];
 					$multiplo		= $resultado["multiplicador"];
 					if($isPremio)
@@ -15436,9 +15436,8 @@ class app_invoice_billing extends _BaseController {
 				
 				if($isPremio == true)
 				{
-					$amountPremioItem 	= $item->unitaryPrice * $item->quantity * $objPrice->price;
+					$amountPremioItem 	= $item->unitaryPrice * $item->quantity * $multiplo;
 					$amountPremioTotal  = $amountPremioTotal + $amountPremioItem;
-					$multiplo 			= $objPrice->price;
 				}
 
 				$row = array(
@@ -15450,7 +15449,7 @@ class app_invoice_billing extends _BaseController {
 					"isPremio"         => $isPremio,
 					"isPremioLabel"    => $isPremio ? "PREMIADO" : "",
 					"amountPremio"	   => $amountPremioItem,
-					"multiplo"		   => $multiplo
+					"multiplo"		   => 0
 				);
 				$transactionMasterDetail[] = $row;
 			}
