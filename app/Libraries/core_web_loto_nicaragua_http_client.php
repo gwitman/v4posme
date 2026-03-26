@@ -564,15 +564,21 @@ class core_web_loto_nicaragua_http_client {
                 $fragmento,
                 $matches
             );
-            $valores = array_values(array_filter(array_map('trim', $matches[1] ?? [])));
-            if (count($valores) >= 4) {
-                $data["lotoDiaria_001"] = $valores[0] . $valores[1]; // dos dígitos: "12"
-                $data["lotoDiaria_002"] = $valores[2];               // MULTI-X: "JG"
-                $data["lotoDiaria_003"] = $valores[3];               // MAS 1: "3"
-            } elseif (count($valores) >= 2) {
+            
+            $valores = array_values(array_filter(array_map('trim', $matches[1] ?? []), fn($v) => $v !== ''));
+            var_dump($valores);
+            echo "\n\r";
+            // Estructura puede venir en dos formatos:
+            // Formato A (3 elementos): ["20","3x","9"]     → [0]=número, [1]=multix, [2]=mas1
+            // Formato B (4 elementos): ["2","0","3x","9"]  → [0][1]=número, [2]=multix, [3]=mas1
+            if (count($valores) === 3) {
+                $data["lotoDiaria_001"] = $valores[0];
+                $data["lotoDiaria_002"] = $valores[1];
+                $data["lotoDiaria_003"] = $valores[2];
+            } elseif (count($valores) === 4) {
                 $data["lotoDiaria_001"] = $valores[0] . $valores[1];
-                $data["lotoDiaria_002"] = $valores[2] ?? "";
-                $data["lotoDiaria_003"] = $valores[3] ?? "";
+                $data["lotoDiaria_002"] = $valores[2];
+                $data["lotoDiaria_003"] = $valores[3];
             } else {
                 $data["lotoDiaria_001"] = "";
                 $data["lotoDiaria_002"] = "";

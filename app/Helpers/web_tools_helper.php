@@ -1912,10 +1912,8 @@ function helper_validarPremioLoto($notif, $objTMDR, $objItem, $item,$typeCompany
     // =========================
     // LOTO DIARIA
     // =========================
-    if ($objItem->reference2 == "lotoDiaria") {
-
+    if ($objItem->reference2 == "lotoDiaria" && $objItem->reference2 == $notif->from ) {
        
-
         $partes                         = explode("-", $notiPremio);
         //$partes[0] numero
         //$partes[1] multiplicador
@@ -1975,7 +1973,7 @@ function helper_validarPremioLoto($notif, $objTMDR, $objItem, $item,$typeCompany
     // =========================
     // LOTO FECHAS
     // =========================
-    if ($objItem->reference2 == "lotoFechas") {
+    if ($objItem->reference2 == "lotoFechas" && $objItem->reference2 == $notif->from ) {
         if (
             str_contains((string)$notif->to, (string)$item->componentItemID) &&
             $notiPremio == $numeroJugado
@@ -1989,7 +1987,7 @@ function helper_validarPremioLoto($notif, $objTMDR, $objItem, $item,$typeCompany
     // =========================
     // LOTO JUEGA 3
     // =========================
-    if ($objItem->reference2 == "lotoJuega3") {
+    if ($objItem->reference2 == "lotoJuega3" && $objItem->reference2 == $notif->from ) {
         if (
             str_contains((string)$notif->to, (string)$item->componentItemID) &&
             $notiPremio == $numeroJugado
@@ -2004,7 +2002,7 @@ function helper_validarPremioLoto($notif, $objTMDR, $objItem, $item,$typeCompany
     // LOTO PREMIA 2
     // =========================
     // No esta en uso
-    if ($objItem->reference2 == "lotoPremia2") 
+    if ($objItem->reference2 == "lotoPremia2" && $objItem->reference2 == $notif->from ) 
     {
 
         $partes = explode("-", $notiPremio);
@@ -2024,7 +2022,7 @@ function helper_validarPremioLoto($notif, $objTMDR, $objItem, $item,$typeCompany
     // LOTO TERMINACION 2
     // =========================
     // No esta en uso
-    if ($objItem->reference2 == "lotoTerminacion2") 
+    if ($objItem->reference2 == "lotoTerminacion2" && $objItem->reference2 == $notif->from ) 
     {
         if (
             str_contains((string)$notif->to, (string)$item->componentItemID) &&
