@@ -468,6 +468,13 @@ class app_mobile_api extends _BaseController
             $objWarehouseID = array_map(fn($warehouseItem) => $warehouseItem->warehouseID, $objWarehouse);
             $objListItem 	= $this->Item_Model->get_rowByCompanyIDToMobile($objWarehouseID);
 
+			//Aplicar un ordenamiento a los productos
+			if($objCompany->type == "farmaciaMils")
+			{
+				usort($objListItem, fn($a, $b) => $a->itemID <=> $b->itemID);
+			}
+
+
             //Obtener lista de clients
 			$objListCustomer = $this->Customer_Model->get_rowByCompanyIDToMobile($companyID, $userID );
 			
