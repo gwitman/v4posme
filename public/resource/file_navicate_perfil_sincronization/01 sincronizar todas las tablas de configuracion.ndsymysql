@@ -20,8 +20,8 @@
     "TargetCloudInstanceName": "",
     "TargetProject": "",
     "TargetProjectOwnerNavicatID": "",
-    "TargetSchema": "dbvtgl4atgh7sp",
-    "TargetServer": "posme.net",
+    "TargetSchema": "dbyakujmlvkbhw",
+    "TargetServer": "posme.nl",
     "TargetServerServiceProvider": 0,
     "TargetServerType": "MYSQL",
     "UseTransaction": false

@@ -55,7 +55,8 @@ insert into tb_company_dataview (
 	formatColumns,
 	isActive,
 	flavorID,
-	formatColumnsHeader 
+	formatColumnsHeader ,
+	jsonConfiguration
 )
 select 
 	c.companyID,
@@ -71,7 +72,8 @@ select
 	c.formatColumns,
 	c.isActive,
 	@flavorTarget  as flavorID 	,
-	c.formatColumnsHeader
+	c.formatColumnsHeader,
+	c.jsonConfiguration 
 from 
 	tb_company_dataview c 
 where 
