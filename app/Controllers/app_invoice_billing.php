@@ -15439,7 +15439,7 @@ class app_invoice_billing extends _BaseController {
 				
 				if($isPremio == true)
 				{
-					$amountPremioItem 	= $item->unitaryPrice * $item->quantity * $multiplo;
+					$amountPremioItem 	= round(($item->unitaryPrice *  $multiplo) / $item->quantity,2);
 					$amountPremioTotal  = $amountPremioTotal + $amountPremioItem;
 				}
 

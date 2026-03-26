@@ -1,6 +1,8 @@
 <?php
 //posme:2023-02-27
 
+if (function_exists('GUIDv4')) return;
+
 /**
  * Returns a GUIDv4 string
  *
