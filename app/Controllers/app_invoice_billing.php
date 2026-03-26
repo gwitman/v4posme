@@ -15407,6 +15407,7 @@ class app_invoice_billing extends _BaseController {
 			$amountPremioTotal 		 = 0;
 			$amountPremioItem		 = 0;
 			$multiplo 				= 0;
+			$numeroGanador			= "";
 			$typePriceID 			= 154; /* PRECIO PUBLICO */
 			$objListPrice 			= $this->List_Price_Model->getListPriceToApply($companyID);
 			foreach($objTMD as $item)
@@ -15426,9 +15427,11 @@ class app_invoice_billing extends _BaseController {
 					$resultado 		= helper_validarPremioLoto($notif, $objTMDR, $objItem, $item, $objCompany->type);
 					$isPremio 		= $resultado["isPremio"];
 					$multiplo		= $resultado["multiplicador"];
+					$numeroGanador  = $resultado["numeroGanador"];
 					if($isPremio)
 					{
 						$isPremiadoGeneral 		 = true;
+						break;
 					}	
 					
 				}
@@ -15449,6 +15452,8 @@ class app_invoice_billing extends _BaseController {
 					"isPremio"         => $isPremio,
 					"isPremioLabel"    => $isPremio ? "PREMIADO" : "",
 					"amountPremio"	   => $amountPremioItem,
+					"numeroGanador"	   => $numeroGanador,
+					"numeroJugado"	   => $objTMDR[0]->reference2,
 					"multiplo"		   => 0
 				);
 				$transactionMasterDetail[] = $row;

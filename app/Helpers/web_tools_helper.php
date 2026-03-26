@@ -1905,67 +1905,76 @@ function helper_validarPremioLoto($notif, $objTMDR, $objItem, $item,$typeCompany
     $isPremio           = false;
     $isPremiadoGeneral  = false;
     $multiplicador      = 0;
+    $numeroGanador      = "";
 
-    $notiPremio    = strtoupper(str_replace(' ', '', $notif->phoneFrom));
-    $numeroJugado  = strtoupper(str_replace(' ', '', $objTMDR[0]->reference2));
+    $notiPremio       = strtoupper(str_replace(' ', '', $notif->phoneFrom));
+    $numeroJugadoRaw  = strtoupper(str_replace(' ', '', $objTMDR[0]->reference2));
+
+    // Una persona puede jugar varios números separados por "Y" (ej: "12Y34Y56")
+    $numerosJugados   = explode("Y", $numeroJugadoRaw);
+    
 
     // =========================
     // LOTO DIARIA
     // =========================
     if ($objItem->reference2 == "lotoDiaria" && $objItem->reference2 == $notif->from ) {
        
-        $partes                         = explode("-", $notiPremio);
+        $partes        = explode("-", $notiPremio);
         //$partes[0] numero
         //$partes[1] multiplicador
         //$partes[2] 1+
 
         // Número ganador
-        $numeroGanador     = $partes[0];
-        $multiplicador     = $partes[1];
+        $numeroGanador = $partes[0];
+        $multiplicador = $partes[1];
 
-        // Verificar si ganó
+        // Verificar si alguno de los números jugados ganó
         if ($numeroGanador != null) 
         {
-            // Validar número invertido (ej: "12" == invertido de "12")
-            if(
-                $numeroJugado == $numeroGanador && 
-                $numeroJugado[0] != $numeroJugado[1] && 
-                str_contains((string)$notif->to, (string)$item->componentItemID) 
-            ) 
+            foreach ($numerosJugados as $numeroJugado)
             {
-                $isPremio           = true;
-                $isPremiadoGeneral  = true;
-                $multiplicador      = 80;
+                $numeroJugado = trim($numeroJugado);
+                // Validar número directo (ej: "12" == "12")
+                if(
+                    $numeroJugado == $numeroGanador && 
+                    $numeroJugado[0] != $numeroJugado[1] 
+                ) 
+                {
+                    $isPremio           = true;
+                    $isPremiadoGeneral  = true;
+                    $multiplicador      = 80;
+                    $numeroGanador      = $numeroJugado;
+                }
+                // Validar número invertido (ej: "12" == invertido de "21")
+                else if (
+                    $numeroJugado == strrev($numeroGanador) && 
+                    $numeroJugado[0] != $numeroJugado[1] 
+                )
+                {
+                    $isPremio           = true;
+                    $isPremiadoGeneral  = true;
+                    $multiplicador      = 80;
+                    $numeroGanador      = $numeroJugado;
+                }
+                // Validar número doble (ej: "11" == "11")
+                else if (
+                    $numeroJugado == $numeroGanador && 
+                    $numeroJugado[0] == $numeroJugado[1] 
+                ) 
+                {
+                    $isPremio           = true;
+                    $isPremiadoGeneral  = true;
+                    $multiplicador      = 80;
+                    $numeroGanador      = $numeroJugado;
+                }
             }
-            // Validar número invertido (ej: "12" == invertido de "21")
-            if (
-                $numeroJugado == strrev($numeroGanador) && 
-                $numeroJugado[0] != $numeroJugado[1] && 
-                str_contains((string)$notif->to, (string)$item->componentItemID) 
-            )
-            {
-                $isPremio           = true;
-                $isPremiadoGeneral  = true;
-                $multiplicador      = 80;
-            }
-            // Validar número invertido (ej: "12" == invertido de "12")
-            if (
-                $numeroJugado == $numeroGanador && 
-                $numeroJugado[0] == $numeroJugado[1]  && 
-                str_contains((string)$notif->to, (string)$item->componentItemID) 
-            ) 
-            {
-                $isPremio           = true;
-                $isPremiadoGeneral  = true;
-                $multiplicador      = 80;
-            }           
-
         }
         else 
         {
             $isPremio           = false;
             $isPremiadoGeneral  = false;
             $multiplicador      = 0;
+            $numeroGanador      = "";
         }
 
     }
@@ -1974,13 +1983,17 @@ function helper_validarPremioLoto($notif, $objTMDR, $objItem, $item,$typeCompany
     // LOTO FECHAS
     // =========================
     if ($objItem->reference2 == "lotoFechas" && $objItem->reference2 == $notif->from ) {
-        if (
-            str_contains((string)$notif->to, (string)$item->componentItemID) &&
-            $notiPremio == $numeroJugado
-        ) {
-            $isPremio           = true;
-            $isPremiadoGeneral  = true;
-            $multiplicador      = 200;
+        foreach ($numerosJugados as $numeroJugado)
+        {
+            $numeroJugado = trim($numeroJugado);
+            if (
+                $notiPremio == $numeroJugado
+            ) {
+                $isPremio           = true;
+                $isPremiadoGeneral  = true;
+                $multiplicador      = 200;
+                $numeroGanador      = $numeroJugado;
+            }
         }
     }
 
@@ -1988,13 +2001,17 @@ function helper_validarPremioLoto($notif, $objTMDR, $objItem, $item,$typeCompany
     // LOTO JUEGA 3
     // =========================
     if ($objItem->reference2 == "lotoJuega3" && $objItem->reference2 == $notif->from ) {
-        if (
-            str_contains((string)$notif->to, (string)$item->componentItemID) &&
-            $notiPremio == $numeroJugado
-        ) {
-            $isPremio           = true;
-            $isPremiadoGeneral  = true;
-            $multiplicador      = 600;
+        foreach ($numerosJugados as $numeroJugado)
+        {
+            $numeroJugado = trim($numeroJugado);
+            if (
+                $notiPremio == $numeroJugado
+            ) {
+                $isPremio           = true;
+                $isPremiadoGeneral  = true;
+                $multiplicador      = 600;
+                $numeroGanador      = $numeroJugado;
+            }
         }
     }
 
@@ -2004,16 +2021,19 @@ function helper_validarPremioLoto($notif, $objTMDR, $objItem, $item,$typeCompany
     // No esta en uso
     if ($objItem->reference2 == "lotoPremia2" && $objItem->reference2 == $notif->from ) 
     {
-
         $partes = explode("-", $notiPremio);
 
-        if (
-            str_contains((string)$notif->to, (string)$item->componentItemID) &&
-            in_array($numeroJugado, $partes)
-        ) {
-            $isPremio           = false;
-            $isPremiadoGeneral  = false;
-            $multiplicador      = 0;
+        foreach ($numerosJugados as $numeroJugado)
+        {
+            $numeroJugado = trim($numeroJugado);
+            if (
+                in_array($numeroJugado, $partes)
+            ) {
+                $isPremio           = false;
+                $isPremiadoGeneral  = false;
+                $multiplicador      = 0;
+                $numeroGanador      = "";
+            }
         }
     }
 
@@ -2024,21 +2044,30 @@ function helper_validarPremioLoto($notif, $objTMDR, $objItem, $item,$typeCompany
     // No esta en uso
     if ($objItem->reference2 == "lotoTerminacion2" && $objItem->reference2 == $notif->from ) 
     {
-        if (
-            str_contains((string)$notif->to, (string)$item->componentItemID) &&
-            $numeroJugado == $notiPremio
-        ) {
-            $isPremio           = true;
-            $isPremiadoGeneral  = true;
-            $multiplicador      = 80;
+        foreach ($numerosJugados as $numeroJugado)
+        {
+            $numeroJugado = trim($numeroJugado);
+            if (
+                $numeroJugado == $notiPremio
+            ) {
+                $isPremio           = true;
+                $isPremiadoGeneral  = true;
+                $multiplicador      = 80;
+                $numeroGanador      = $numeroJugado;
+            }
         }
     }
 
-    return [
+    
+    $result = [
         "isPremio"          => $isPremio,
         "isPremiadoGeneral" => $isPremiadoGeneral,
-        "multiplicador"     => $multiplicador
+        "multiplicador"     => $multiplicador,
+        "numeroGanador"     => $numeroGanador
     ];
+
+    
+    return $result;
 }
 
 

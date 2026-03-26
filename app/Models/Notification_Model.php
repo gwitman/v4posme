@@ -446,30 +446,13 @@ class Notification_Model extends Model  {
 		    
 		$sql = "";
 		$sql = sprintf("
-		 select 
-			c.notificationID,
-			c.errorID,
+		 select distinct 
 			c.`from`,
-			c.`to`,
-			c.`subject`,
-			c.message,
 			c.summary,
 			c.title,
-			c.tagID,
 			c.phoneFrom,
-			c.phoneTo,
 			c.programDate,
-			c.programHour,
-			c.sendOn,
-			c.sendEmailOn,
-			c.sendWhatsappOn,
-			c.addedCalendarGoogle,
-			c.quantityOcupation,
-			c.quantityDisponible,
-			c.googleCalendarEventID,
-			c.isRead,
-			c.entityIDSource,
-			c.entityIDTarget 
+			c.programHour 
 		from 
 			tb_notification c 
 		where 
