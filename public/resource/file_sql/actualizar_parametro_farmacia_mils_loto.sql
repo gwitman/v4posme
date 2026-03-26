@@ -1947,7 +1947,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Farmacia Mils Loto' , address = 'Telica, oficina de claro 1c al oeste.' ,
+	NAME = 'LA FIJA GANADORA' , address = 'Telica, oficina de claro 1c al oeste.' ,
 	flavorID = 1123 /*usuarioID*/,type='farmaciaMils'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
