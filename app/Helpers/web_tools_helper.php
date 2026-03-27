@@ -1950,7 +1950,8 @@ function helper_validarPremioLoto($notif, $objTMDR, $objItem, $item,$typeCompany
                 // Validar número invertido (ej: "12" == invertido de "21")
                 else if (
                     $numeroJugado == strrev($numeroGanador) && 
-                    $numeroJugado[0] != $numeroJugado[1] 
+                    $numeroJugado[0] != $numeroJugado[1] &&
+                    $typeCompany != "farmaciaMils" /* esta negocio no acepta la inversion de digitos*/
                 )
                 {
                     $isPremio           = true;
