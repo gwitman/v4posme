@@ -2902,12 +2902,7 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 
 				$totalProcessed++;
 
-				// Validar reference1 (URL)
-				if (empty($item->reference1)) {
-					$errorDetails[] = ['itemID' => $item->itemID, 'error' => 'URL no configurada (reference1 vacío)'];
-					$totalErrors++;
-					continue;
-				}
+				
 
 				// Validar reference2 (tipo de lotería)
 				if (empty($item->reference2)) {

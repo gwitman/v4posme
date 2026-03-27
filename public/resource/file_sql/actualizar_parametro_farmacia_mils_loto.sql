@@ -1925,14 +1925,14 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8505-7109" 
+	tb_company_parameter.value = "5501-9229 y 5858-6064" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8505-7109" 
+	tb_company_parameter.value = "5501-9229 y 5858-6064" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1940,14 +1940,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Telica, oficina de claro 1c al oeste." 
+	tb_company_parameter.value = "Oficina de claro 1c al oeste, Telica" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'LA FIJA GANADORA' , address = 'Telica, oficina de claro 1c al oeste.' ,
+	NAME = 'LA FIJA GANADORA' , address = 'Oficina de claro 1c al oeste, Telica' ,
 	flavorID = 1123 /*usuarioID*/,type='farmaciaMils'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
