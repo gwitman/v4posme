@@ -4,6 +4,16 @@
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/	
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_ALLOW_REPEATED_PRODUCTS"; ##Agregar productos repetidos en la facturaion mobile
+
+
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "loto" 
 WHERE 
