@@ -15444,6 +15444,20 @@ class app_invoice_billing extends _BaseController {
 					$amountPremioTotal  = $amountPremioTotal + $amountPremioItem;
 				}
 
+				//Procear numeros en la referencia
+				$subTablaRow  = explode("y", $objTMDR[0]->reference2);
+				/* crear tabla */
+				$subTable 	  = '<table style="border-collapse:collapse; margin:0; padding:0;width:100%">';
+
+				foreach ($subTablaRow as $valor) {
+					$subTable  = $subTable. '<tr>';
+					$subTable  = $subTable. '<td style="border:none; padding:0; margin:0;width:50%">' . $valor . '</td>';
+					$subTable  = $subTable. '<td style="border:none; padding:0; margin:0;width:50%"> C$ ' . round($item->unitaryPrice,2) . '</td>';
+					$subTable  = $subTable. '</tr>';
+				}
+
+				$subTable = $subTable.'</table>';
+
 				$row = array(
 					"itemNumber"       => $item->itemNumber,
 					"itemName"         => $item->itemName,
@@ -15454,7 +15468,7 @@ class app_invoice_billing extends _BaseController {
 					"isPremioLabel"    => $isPremio ? "PREMIADO" : "",
 					"amountPremio"	   => $amountPremioItem,
 					"numeroGanador"	   => $numeroGanador,
-					"numeroJugado"	   => $objTMDR[0]->reference2,
+					"numeroJugado"	   => $subTable,
 					"multiplo"		   => 0
 				);
 				$transactionMasterDetail[] = $row;
@@ -15484,6 +15498,7 @@ class app_invoice_billing extends _BaseController {
 				"imageBase64"             => $imageBase64,
 				// Factura
 				"transactionNumber"       => $objTM->transactionNumber,
+				"note" 					  => $objTM->note,
 				"transactionNumberMobile" => $invoiceNumberMobile,
 				"transactionUserCreatedBy"=> $userNameMobile,
 				"transactionOn"           => (new \DateTime($objTM->transactionOn))->modify(APP_HOUR_DIFERENCE_PHP)->format('Y-m-d h:i A'),
