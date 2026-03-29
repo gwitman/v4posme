@@ -4,6 +4,18 @@
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "loto" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_PRINTER_INVOICE_FISICAL_FORMAT"; ##Formato de impresion fisia mobile
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_IN_INVOICE_MOSTRAR_DESCUENTO"; ##Ocultar el boton de descuento
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 

@@ -6,6 +6,26 @@
 /******************************************************************/	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "default" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_PRINTER_INVOICE_FISICAL_FORMAT"; ##Formato de impresion fisia mobile
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_IN_INVOICE_MOSTRAR_DESCUENTO"; ##Ocultar el boton de descuento
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_UPLOAD_AFTER_INVOICE"; ##Despues de cada factura mobile, subir los datos si esta en true
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
