@@ -1090,6 +1090,7 @@ class app_inventory_report extends _BaseController {
 			$companyID			= $dataSession["user"]->companyID;
 			$branchID			= $dataSession["user"]->branchID;
 			$userID				= $dataSession["user"]->userID;
+			$roleID				= $dataSession["role"]->roleID;
 			$tocken				= '';
 			
 			$viewReport				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"viewReport");//--finuri
@@ -1100,12 +1101,14 @@ class app_inventory_report extends _BaseController {
 			$typeDate				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"typeDate");//--finuri
 			$namePropietario		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"namePropietario");//--finuri
 			$numberEncuentra24		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"numberEncuentra24");//--finuri
+			$workflowStageID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"workflowStageID");//--finuri
 			$namePropietario		= $namePropietario == "numberEncuentra24" ? "" : $namePropietario;
 			$numberEncuentra24		= $numberEncuentra24 == "numberEncuentra24" ? "" : $numberEncuentra24;
 			
 			if(!($viewReport && $startOn && $endOn  )){
 				
 				//Renderizar Resultado 
+				$dataSession["objListWorkflowStage"] 	= $this->core_web_workflow->getWorkflowAllStage('tb_item',   'statusID',  $companyID,$branchID,$roleID);				
 				$dataSession["objListCategoryItem"]		= $this->Itemcategory_Model->getByCompany($companyID);
 				$dataSession["objListWarehouse"]		= $this->Userwarehouse_Model->getRowByUserID($companyID,$userID);
 				$dataSession["message"]					= $this->core_web_notification->get_message();
@@ -1206,6 +1209,15 @@ class app_inventory_report extends _BaseController {
 										NOT (
 											x.`Proposito` = 'VENTA' and 
 											x.`Disponible` = 'No'
+										) AND 
+										(
+											(
+												x.`Estado propoedad ID` = ".$workflowStageID." and 
+												".$workflowStageID." != 0
+											) or 
+											(
+												".$workflowStageID." = 0 
+											)
 										)
 										
 								";

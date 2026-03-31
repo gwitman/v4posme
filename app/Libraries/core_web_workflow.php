@@ -129,6 +129,10 @@ class core_web_workflow {
 		$Workflow_Stage_Relation_Model = new Workflow_Stage_Relation_Model();
 		$Role_Model = new Role_Model();
 		$Role_Autorization_Model = new Role_Autorization_Model();
+		$Company_Model = new Company_Model();
+		
+		//Obtener la compania
+		$objCompany 	= $Company_Model->get_rowByPK($companyID);
 		
 		//obtener elemento 
 		$objElement 	= $Element_Model->get_rowByName($table,ELEMENT_TYPE_TABLE);
@@ -159,7 +163,9 @@ class core_web_workflow {
 		throw new \Exception("NO EXISTE EL FLAVOR PARA EL COMPONENTE DE WORKFLOW ");
 		
 		
-		//obtener la lista de workflowStage
+		//obtener la lista de workflowStage		
+		$objWorkflowStage 		= $Workflow_Stage_Model->get_rowByWorkflowIDAndFlavorID($objWorkflow->workflowID,$objCompany->flavorID);
+		if(!$objWorkflowStage)
 		$objWorkflowStage 		= $Workflow_Stage_Model->get_rowByWorkflowIDAndFlavorID($objWorkflow->workflowID,$objCompanyComponentFlavor->flavorID);
 				
 		//obtener los workflowdel usuario
@@ -207,8 +213,11 @@ class core_web_workflow {
 		$Workflow_Stage_Relation_Model = new Workflow_Stage_Relation_Model();
 		$Role_Model = new Role_Model();
 		$Role_Autorization_Model = new Role_Autorization_Model();
+		$Company_Model = new Company_Model();
 		
-		
+		//Obtener la compania
+		$objCompany 	= $Company_Model->get_rowByPK($companyID);
+
 		//obtener elemento 
 		$objElement 	= $Element_Model->get_rowByName($table,ELEMENT_TYPE_TABLE);
 		if(!$objElement)
@@ -238,6 +247,8 @@ class core_web_workflow {
 		throw new \Exception("NO EXISTE EL FLAVOR PARA EL COMPONENTE DE WORKFLOW ");
 		
 		//obtener la lista de workflowStage
+		$objWorkflowStage 		= $Workflow_Stage_Model->get_rowByWorkflowIDAndFlavorID_Init($objWorkflow->workflowID,$objCompany->flavorID);
+		if(!$objWorkflowStage)
 		$objWorkflowStage 		= $Workflow_Stage_Model->get_rowByWorkflowIDAndFlavorID_Init($objWorkflow->workflowID,$objCompanyComponentFlavor->flavorID);
 		
 		//obtener los workflowdel usuario
@@ -374,7 +385,10 @@ class core_web_workflow {
 		$Workflow_Stage_Relation_Model = new Workflow_Stage_Relation_Model();
 		$Role_Model = new Role_Model();
 		$Role_Autorization_Model = new Role_Autorization_Model();
+		$Company_Model = new Company_Model();
 		
+		//Obtener la compania
+		$objCompany 	= $Company_Model->get_rowByPK($companyID);
 		
 		//obtener elemento 
 		$objElement 	= $Element_Model->get_rowByName($table,ELEMENT_TYPE_TABLE);
@@ -452,7 +466,10 @@ class core_web_workflow {
 		$Workflow_Stage_Relation_Model = new Workflow_Stage_Relation_Model();
 		$Role_Model = new Role_Model();
 		$Role_Autorization_Model = new Role_Autorization_Model();
+		$Company_Model = new Company_Model();
 		
+		//Obtener la compania
+		$objCompany 	= $Company_Model->get_rowByPK($companyID);
 		
 		//obtener elemento 
 		$objElement 	= $Element_Model->get_rowByName($table,ELEMENT_TYPE_TABLE);
@@ -531,7 +548,11 @@ class core_web_workflow {
 		$Workflow_Stage_Relation_Model = new Workflow_Stage_Relation_Model();
 		$Role_Model = new Role_Model();
 		$Role_Autorization_Model = new Role_Autorization_Model();
+		$Company_Model = new Company_Model();
 		
+		//Obtener la compania
+		$objCompany 	= $Company_Model->get_rowByPK($companyID);
+
 		//obtener elemento 
 		$objElement 	= $Element_Model->get_rowByName($table,ELEMENT_TYPE_TABLE);
 		if(!$objElement)
@@ -561,7 +582,9 @@ class core_web_workflow {
 		if(!$objCompanyComponentFlavor)
 		throw new \Exception("NO EXISTE EL FLAVOR PARA EL COMPONENTE DE WORKFLOW ");
 		
-		//obtener la lista de workflowStage
+		//obtener la lista de workflowStage		
+		$objWorkflowStage = $Workflow_Stage_Relation_Model->get_rowBySourceWorkflowStageID($objWorkflow->workflowID,$objCompany->flavorID,$startStageID);
+		if(!$objWorkflowStage)
 		$objWorkflowStage = $Workflow_Stage_Relation_Model->get_rowBySourceWorkflowStageID($objWorkflow->workflowID,$objCompanyComponentFlavor->flavorID,$startStageID);
 		
    		//obtener los workflowdel usuario
@@ -608,7 +631,11 @@ class core_web_workflow {
 		$Workflow_Stage_Relation_Model = new Workflow_Stage_Relation_Model();
 		$Role_Model = new Role_Model();
 		$Role_Autorization_Model = new Role_Autorization_Model();
+		$Company_Model = new Company_Model();
 		
+		//Obtener la compania
+		$objCompany 	= $Company_Model->get_rowByPK($companyID);
+
 		//obtener el workflow
 		$objWorkflowStage	= $this->getWorkflowStage($table,$field,$stageID,$companyID,$branchID,$roleID);
 		if(!$objWorkflowStage)

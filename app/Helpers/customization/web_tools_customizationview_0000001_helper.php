@@ -390,7 +390,7 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 		strtolower('luciaralstate_app_cxc_customer_divTxtTypeIdentification')									=> "hidden",
 		strtolower('luciaralstate_app_cxc_customer_divTxtIdentification')										=> "hidden",
 		strtolower('luciaralstate_app_cxc_customer_divTxtSubCategoria')											=> "hidden",
-		strtolower('luciaralstate_app_cxc_customer_divTxtEstadoCivil')											=> "hidden",
+		strtolower('luciaralstate_app_cxc_customer_divTxtEstadoCivil')											=> "",
 		strtolower('luciaralstate_app_cxc_customer_divTxtProfesionUFicio')										=> "hidden",
 		strtolower('luciaralstate_app_cxc_customer_divTxtTypeFirmID')											=> "hidden",
 		strtolower('luciaralstate_app_cxc_customer_divPestanaCXC') 	 											=> "hidden",
@@ -597,7 +597,7 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
 		});",
 		
         
-		strtolower('luciaralstate_app_inventory_item_divTxtEstado') 			 								=> "hidden",
+		strtolower('luciaralstate_app_inventory_item_divTxtEstado') 			 								=> "",
 		strtolower('luciaralstate_app_inventory_item_divTxtUM') 			 									=> "hidden",
 		strtolower('luciaralstate_app_inventory_item_divTxtPresentacionUM')  									=> "hidden",
 		strtolower('luciaralstate_app_inventory_item_divTxtBodega') 		 									=> "hidden",
