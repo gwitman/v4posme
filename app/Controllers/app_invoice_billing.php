@@ -12672,6 +12672,7 @@ class app_invoice_billing extends _BaseController {
 			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
 			$datView["Identifier"]					= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
 			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->branchID);
+			$datView["objBranchUser"]				= $this->Branch_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objUser"]->locationID);
 			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_billing","statusID",$datView["objTM"]->statusID,$companyID,$datView["objTM"]->branchID,APP_ROL_SUPERADMIN);
 			$datView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$datView["objTM"]->transactionID,$datView["objTM"]->transactionCausalID);
 			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
@@ -12742,7 +12743,7 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			//Generar Reporte
-			$html = helper_reporte80mmTransactionMaster(
+			$html = helper_reporte80mmTransactionMasterBranch(
 			    "FACTURA",
 			    $objCompany,
 			    $objParameter,
@@ -12759,6 +12760,7 @@ class app_invoice_billing extends _BaseController {
 				$datView["objTC"]->name /*causal*/,
 				$datView["objUser"]->nickname,
 			    $objParameterRuc /*ruc*/ ,
+				$datView["objBranchUser"]->name,
 				array() 
 			);
 			$this->dompdf->loadHTML($html);
