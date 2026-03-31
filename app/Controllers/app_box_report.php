@@ -144,8 +144,14 @@ class app_box_report extends _BaseController {
 			//Cargar Libreria
 			if(!($viewReport && $startOn && $endOn )){
 				
-				//Obtener lista de usuarios
-				$objListaUsuarios 				= $this->User_Model->get_All($dataSession["user"]->companyID);
+				//Obtener lista de usuarios filtrada por tipo de acceso
+				$objListaUsuarios 				= $this->core_web_permission->getUserToFilter(
+					$dataSession["user"]->userID,
+					$dataSession["role"]->roleID,
+					$resultPermission,
+					$dataSession["user"]->companyID,
+					$dataSession["user"]->locationID
+				);
 				$dataView["objListaUsuarios"] 	= $objListaUsuarios;
 				
 				//Obtener lista de conceptos.
@@ -1402,8 +1408,14 @@ class app_box_report extends _BaseController {
 			//Cargar Libreria
 			if(!($viewReport && $startOn && $endOn )){
 				
-				//Obtener lista de usuarios
-				$objListaUsuarios 				= $this->User_Model->get_All($dataSession["user"]->companyID);
+				//Obtener lista de usuarios filtrada por tipo de acceso
+				$objListaUsuarios 				= $this->core_web_permission->getUserToFilter(
+					$dataSession["user"]->userID,
+					$dataSession["role"]->roleID,
+					$resultPermission,
+					$dataSession["user"]->companyID,
+					$dataSession["user"]->locationID
+				);
 				$dataView["objListaUsuarios"] 	= $objListaUsuarios;
 				
 				

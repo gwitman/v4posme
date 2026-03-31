@@ -76,10 +76,14 @@
 													</div>
 													<div class="col-lg-6">
 														<select name="txtUserID" id="txtUserID" class="select2">
-																<option value="0">TODOS</option>
 																<?php
-																if($objListUser)
-																foreach($objListUser as $i){
+																if($objListaUsuarios["showTodos"] == true)
+																{
+																	echo '<option value="0">TODOS</option>';
+																}
+
+																if($objListaUsuarios["user"])
+																foreach($objListaUsuarios["user"] as $i){
 																	echo "<option value='".$i->userID."'>".$i->nickname."</option>";
 																}
 																?>

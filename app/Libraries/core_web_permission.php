@@ -459,6 +459,97 @@ class core_web_permission {
 		}		
 	
 	}
+   /**
+    * Retorna la lista de usuarios filtrada según el tipo de acceso.
+    *
+    * @param int    $userID       ID del usuario actual
+    * @param int    $roleID       ID del rol del usuario actual (no usado directamente, reservado)
+    * @param string $typeAccesoId PERMISSION_NONE | PERMISSION_ALL | PERMISSION_BRANCH | PERMISSION_ME
+    * @param int    $companyID    ID de la empresa
+    * @param int    $branchID     ID de la sucursal del usuario actual
+    * @return array|null
+    */
+   function getUserToFilter($userID, $roleID, $typeAccesoId, $companyID, $branchID)
+   {
+      $User_Model 			= new User_Model();
+	  $result["user"] 		= [];
+	  $result["showTodos"] 	= false;
+
+      if ($typeAccesoId == PERMISSION_NONE) {
+        $result["user"] 		= [];
+	  	$result["showTodos"] 	= false;
+		return $result;
+      }
+
+      if ($typeAccesoId == PERMISSION_ALL) {
+         
+		 $result["user"] 		= $User_Model->get_All($companyID);
+	  	 $result["showTodos"] 	= true;
+		 return $result;
+
+      }
+
+      if ($typeAccesoId == PERMISSION_BRANCH) {
+         // Obtener todos los usuarios de la empresa y filtrar por locationID (sucursal)
+         $allUsers = $User_Model->get_All($companyID);
+         return array_values(array_filter($allUsers, function($u) use ($branchID) {
+            return $u->locationID == $branchID;
+         }));
+      }
+
+      if ($typeAccesoId == PERMISSION_ME) {
+         $row 					= $User_Model->get_rowByPK($companyID, APP_BRANCH, $userID);
+		 $result["user"] 		= $row ? [$row] : [];
+	  	 $result["showTodos"] 	= false;
+		 return $result;
+
+      }
+
+      $result["user"] 		= [];
+	  $result["showTodos"] 	= false;
+	  return $result;
+   }
+
+   /**
+    * Retorna la lista de sucursales filtrada según el tipo de acceso.
+    *
+    * @param int    $userID       ID del usuario actual
+    * @param int    $roleID       ID del rol del usuario actual (reservado)
+    * @param string $typeAccesoId PERMISSION_NONE | PERMISSION_ALL | PERMISSION_BRANCH | PERMISSION_ME
+    * @param int    $companyID    ID de la empresa
+    * @param int    $branchID     ID de la sucursal del usuario actual
+    * @return array
+    */
+   function getBranchToFilter($userID, $roleID, $typeAccesoId, $companyID, $branchID)
+   {
+      $Branch_Model = new Branch_Model();
+	  $result["branch"] 	= [];
+	  $result["showTodos"] 	= false;
+
+      if ($typeAccesoId == PERMISSION_NONE) {
+        $result["branch"] 		= [];
+	  	$result["showTodos"] 	= false;
+	  	return $result;
+      }
+
+      if ($typeAccesoId == PERMISSION_ALL) 
+	  {  
+		$result["branch"] 		= $Branch_Model->getByCompany($companyID);
+	  	$result["showTodos"] 	= true;
+	  	return $result;
+      }
+
+      if ($typeAccesoId == PERMISSION_BRANCH || $typeAccesoId == PERMISSION_ME) {
+         $row = $Branch_Model->get_rowByPK($companyID, $branchID);
+		 $result["branch"] 		= $row ? [$row] : [];
+	  	 $result["showTodos"] 	= false;
+      }
+
+      $result["branch"] 	= [];
+	  $result["showTodos"] 	= false;
+	  return $result;
+   }
+
    function getLicenseMessage($companyID)
    {
 		

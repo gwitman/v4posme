@@ -98,7 +98,15 @@ class app_sales_report extends _BaseController {
 			if(!($viewReport && $startOn && $endOn  )){
 				
 				//Renderizar Resultado 
-				$dataSession["objListUser"]				= $this->User_Model->get_All($companyID);
+				$objListaUsuarios 					= $this->core_web_permission->getUserToFilter(
+					$dataSession["user"]->userID,
+					$dataSession["role"]->roleID,
+					$resultPermission,
+					$dataSession["user"]->companyID,
+					$dataSession["user"]->locationID
+				);
+				$dataSession["objListaUsuarios"] 	= $objListaUsuarios;
+
 				$dataSession["objListCategoryItem"]		= $this->Itemcategory_Model->getByCompany($companyID);
 				$dataSession["objListWarehouse"]		= $this->Userwarehouse_Model->getRowByUserID($companyID,$userID);
 				$dataSession["message"]					= $this->core_web_notification->get_message();
