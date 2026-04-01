@@ -711,7 +711,9 @@ class Transaction_Master_Detail_Model extends Model  {
 				AND 
 				c.isActive = 1 
 				AND 
-				c.transactionCausalID in (22 /*credito*/,24 /*credito*/) 
+				c.transactionCausalID in ( 21, 23  ) /*solo contado*/
+				/*c.transactionCausalID in ( 22 ,24 )*/ /*solo credito*/
+				/*c.transactionCausalID in ( 21, 23 , 22 ,24 )*/ /*contado + credito */
 				AND 
 				c.statusID in (67 /*aplicada*/) 
 				AND 
