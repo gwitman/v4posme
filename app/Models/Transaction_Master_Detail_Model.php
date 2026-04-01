@@ -804,7 +804,8 @@ class Transaction_Master_Detail_Model extends Model  {
 		$sql = "";
 		$sql = sprintf("
 			 select	
-				ifnull(nat.firstName,'ND') as firtsName,
+				/*ifnull(nat.firstName,'ND') as firtsName,*/  
+				MONTH(t.transactionOn)  as firtsName,
 				sum(
 					case 
 						when t.transactionID = 19 then 
@@ -842,7 +843,8 @@ class Transaction_Master_Detail_Model extends Model  {
 				i.inventoryCategoryID NOT IN (60 /*Categoria de Jersey Shop*/ ) 
 				and t.transactionCausalID in (22 /*Credito*/,24 /*Credito*/) 
 			group by  
-				nat.firstName
+				/*nat.firstName */
+				1 
 			
 		");
 	

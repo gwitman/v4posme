@@ -676,7 +676,7 @@ class core_dashboards extends _BaseController {
 		$lastDate										= helper_UltimoDiaDelMes();			
 		$objListVentas									= $this->Transaction_Master_Detail_Model->FarmaLey_get_rowBySalesByEmployeerMonthOnly_Sales($dataSession["user"]->companyID,$firstDate,$lastDate);
 		$dataSession["objListVentas"]					= $objListVentas;
-		$objListVentasCredito							= $this->Transaction_Master_Detail_Model->FarmaLey_get_rowBySalesByEmployeerMonthOnly_SalesCredit($dataSession["user"]->companyID,$firstDate,$lastDate);
+		$objListVentasCredito							= $this->Transaction_Master_Detail_Model->FarmaLey_get_rowBySalesByEmployeerMonthOnly_SalesCredit($dataSession["user"]->companyID, $objFirstYearDate->format("Y-m-d"),$objLastDate->format("Y-m-d")  /*$firstDate,$lastDate*/ );
 		$dataSession["objListVentasCredito"]			= $objListVentasCredito;
 		$objListVentasCredito_MasCotado					= $this->Transaction_Master_Detail_Model->FarmaLey_get_rowBySalesByEmployeerMonthOnly_SalesCredit_MoreCash($dataSession["user"]->companyID,$firstDate,$lastDate);
 		$dataSession["objListVentasCredito_MasContado"]	= $objListVentasCredito_MasCotado;
