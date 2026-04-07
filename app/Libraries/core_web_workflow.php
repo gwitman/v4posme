@@ -501,6 +501,8 @@ class core_web_workflow {
 		throw new \Exception("NO EXISTE EL FLAVOR PARA EL COMPONENTE DE WORKFLOW ");
 		
 		//obtener la lista de workflow
+		$objWorkflowStage = $Workflow_Stage_Model->get_rowByWorkflowStageID($objWorkflow->workflowID,$objCompany->flavorID,$stageID);
+		if(!$objWorkflowStage)
 		$objWorkflowStage = $Workflow_Stage_Model->get_rowByWorkflowStageID($objWorkflow->workflowID,$objCompanyComponentFlavor->flavorID,$stageID);
    		
 		//obtener los workflowdel usuario
