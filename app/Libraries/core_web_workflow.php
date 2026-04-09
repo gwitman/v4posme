@@ -501,10 +501,12 @@ class core_web_workflow {
 		throw new \Exception("NO EXISTE EL FLAVOR PARA EL COMPONENTE DE WORKFLOW ");
 		
 		//obtener la lista de workflow
-		$objWorkflowStage = $Workflow_Stage_Model->get_rowByWorkflowStageID($objWorkflow->workflowID,$objCompany->flavorID,$stageID);
+		$objWorkflowStage = $Workflow_Stage_Model->get_rowByWorkflowStageID($objWorkflow->workflowID,$objCompany->flavorID,$stageID);		
 		if(!$objWorkflowStage)
-		$objWorkflowStage = $Workflow_Stage_Model->get_rowByWorkflowStageID($objWorkflow->workflowID,$objCompanyComponentFlavor->flavorID,$stageID);
-   		
+		{			
+			$objWorkflowStage = $Workflow_Stage_Model->get_rowByWorkflowStageID($objWorkflow->workflowID,$objCompanyComponentFlavor->flavorID,$stageID);			
+		}
+
 		//obtener los workflowdel usuario
 		$objWorkflowStageRole 	= $Role_Autorization_Model->get_rowByRole($companyID,$branchID,$roleID);
 		
@@ -512,8 +514,8 @@ class core_web_workflow {
 		$objRole 				= $Role_Model->get_rowByPK($companyID,$branchID,$roleID);
 		
 		
-		if($objRole->isAdmin){
-			//el usuario puede ver todos los workflow
+		if($objRole->isAdmin){			
+			//el usuario puede ver todos los workflow			
 			return $objWorkflowStage;
 		} 
 		else if (!$objWorkflowStageRole){

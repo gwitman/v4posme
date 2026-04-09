@@ -7832,7 +7832,7 @@ class app_invoice_billing extends _BaseController {
 			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
 			$datView["Identifier"]					= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
 			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->branchID);
-			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_billing","statusID",$datView["objTM"]->statusID,$companyID,$datView["objTM"]->branchID,APP_ROL_SUPERADMIN);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_billing","statusID",$datView["objTM"]->statusID,$companyID,$datView["objTM"]->branchID,APP_ROL_SUPERADMIN);			
 			$datView["objTipo"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$datView["objTM"]->transactionID,$datView["objTM"]->transactionCausalID);
 			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
 			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
@@ -15032,6 +15032,29 @@ class app_invoice_billing extends _BaseController {
 			{
 				$dataView["comment"] 	= $transactionComment;
 				$html 					= helper_reporte80mmCocina(
+					"FACTURA",
+					$objCompany,
+					$objParameter,
+					$dataView["objTransactionMaster"],
+					$dataView["objNatural"],
+					$dataView["objCustumer"],
+					$dataView["tipoCambio"],
+					$dataView["objCurrency"],
+					$dataView["objTransactionMasterInfo"],
+					$confiDetalle,
+					$detalle,
+					$dataView, 
+					$objParameterTelefono,
+					"",
+					"",
+					"",
+					""				
+				);
+			}			
+			else if($dataView["objCompany"]->type == "benitex")
+			{
+				$dataView["comment"] 	= $transactionComment;
+				$html 					= helper_reporte58mmCocina(
 					"FACTURA",
 					$objCompany,
 					$objParameter,
