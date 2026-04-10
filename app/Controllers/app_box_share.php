@@ -2295,6 +2295,13 @@ class app_box_share extends _BaseController {
 			$datView["objCurrency"]                 = $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
 			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_share","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
 			
+			$dataView["objListCompanyPageSetting"]	= $this->Company_Page_Setting_Model->get_rowByKeyAndController(
+				$objCompany->type,
+				"app_invoice_billing"
+			);
+
+			$datView["viewRegisterFormatoPaginaNormal80mmOpcion1_LabelAfterDateTime"] 
+													= ""; 
 			
 			//Configurar Detalle			
 			$confiDetalle = array();
@@ -2365,7 +2372,7 @@ class app_box_share extends _BaseController {
 				"",
 				"",
 				"",
-				array()
+				$datView
 			);
 			
 			$this->dompdf->loadHTML($html);
