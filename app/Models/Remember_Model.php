@@ -391,11 +391,7 @@ class Remember_Model extends Model  {
 						tmi.reference1	
 							
 					) AS description,	
-					STR_TO_DATE(
-						CONCAT(DATE(tm.nextVisit), ' ', 
-							   TIME_FORMAT(STR_TO_DATE(hora.`name` , '%h:%i %p'), '%H:%i:%s')),
-						'%Y-%m-%d %H:%i:%s'
-					) AS createdOn,
+					tm.nextVisit  AS createdOn,
 					tm.createdOn as createdOn2,	
 					0  AS tagID,
 					'yellow' as color,
@@ -826,11 +822,7 @@ class Remember_Model extends Model  {
 					'<br>',
 					tmi.reference1
 			) AS description,	
-			STR_TO_DATE(
-					CONCAT(DATE(tm.nextVisit), ' ', 
-						   TIME_FORMAT(STR_TO_DATE(hora.`name` , '%h:%i %p'), '%H:%i:%s')),
-					'%Y-%m-%d %H:%i:%s'
-			) AS createdOn,
+			tm.nextVisit AS createdOn,
 			tm.createdOn as createdOn2,	
             0  AS tagID,
 			'yellow' as color,
@@ -1287,11 +1279,7 @@ class Remember_Model extends Model  {
 				tm.note 
 			) AS title,
             tm.note AS description,	
-            STR_TO_DATE(
-				CONCAT(DATE(tm.nextVisit), ' ', 
-					   TIME_FORMAT(STR_TO_DATE(hora.`name` , '%h:%i %p'), '%H:%i:%s')),
-				'%Y-%m-%d %H:%i:%s'
-			) AS createdOn,  
+            tm.nextVisit AS createdOn,  
 			tm.createdOn as createdOn2,
             0  AS tagID,
 			

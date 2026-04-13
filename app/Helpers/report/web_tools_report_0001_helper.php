@@ -10247,12 +10247,15 @@ function helper_reporte80mmTransactionMasterPasteleriaLizzette(
 						
 		  if($titulo != "ABONO")
 		  {
-		  $html	= $html."
+			$fechaNextVisit = $objTransactionMastser->nextVisit;
+			$fechaNextVisit = new DateTime($fechaNextVisit);
+			$horaNextVisit 	= $fechaNextVisit->format('h:i A');
+		    $html	= $html."
 						<tr>
 							<td colspan='1'>
 								Hora Entrega:
 							</td>
-							<td colspan='2'>". $objOrderDeliveryTime->name ."</td>
+							<td colspan='2'>". $horaNextVisit ."</td>
 						</tr>";
 		  }
 			
