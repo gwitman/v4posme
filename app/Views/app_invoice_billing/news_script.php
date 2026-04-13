@@ -40,6 +40,7 @@
 	var varParameterINVOICE_BILLING_SELECTITEM			= '<?php echo $objParameterINVOICE_BILLING_SELECTITEM; ?>';
     var varUrlPrinter									= '<?php echo $urlPrinterDocument; ?>';
 	var varUrlPrinterPrinterDirect						= '<?php echo $urlPrinterDocumentDirect; ?>';
+	var varParameterOcultarCalendarPickerNextVisit 		= '<?php  echo  getBehavio($company->type,"app_invoice_billing","controlNextVisitOcultarPicker",'false') ?>';
 
     var varParameterInvoiceBillingPrinterDirectBarUrl		= '<?php echo $objParameterINVOICE_BILLING_PRINTER_DIRECT_URL_BAR; ?>';
     var varTransactionCausalID								= 0;
@@ -2066,7 +2067,12 @@
         $('#txtDate').datepicker({format:"yyyy-mm-dd"});
 		$('#txtDate').val(moment().format("YYYY-MM-DD"));
 		$("#txtDate").datepicker("update");
-		$('#txtNextVisit').datepicker({format:"yyyy-mm-dd"});
+
+		if(varParameterOcultarCalendarPickerNextVisit == "false")
+		{
+			$('#txtNextVisit').datepicker({format:"yyyy-mm-dd"});
+		}
+		
 		$('#txtDateFirst').datepicker({format:"yyyy-mm-dd"});
 		$('#txtDateFirst').val(moment().add('days', 0).format("YYYY-MM-DD"));
 		$("#txtDateFirst").datepicker("update");
@@ -2184,8 +2190,13 @@
 		$('#invoice-num').empty().text(objTransactionMaster.transactionNumber);
 		$('#txtDate').val(objTransactionMaster.transactionOn);
         $("#txtDate").datepicker("update");
-        $('#txtNextVisit').val(objTransactionMaster.nextVisit);
-        $("#txtNextVisit").datepicker("update");
+        
+		$('#txtNextVisit').val(objTransactionMaster.nextVisit);
+		if(varParameterOcultarCalendarPickerNextVisit == "false")
+		{
+        	$("#txtNextVisit").datepicker("update");
+		}
+
         $('#txtDateFirst').val(objTransactionMaster.transactionOn2);
         $("#txtDateFirst").datepicker("update");
 		$('#txtCompanyID').val(objTransactionMaster.companyID);
@@ -4013,8 +4024,11 @@
 		$('#txtDate').datepicker({format:"yyyy-mm-dd"});
 		$('#txtDate').val(moment().format("YYYY-MM-DD"));
 		$("#txtDate").datepicker("update");
-		$('#txtNextVisit').datepicker({format:"yyyy-mm-dd"});
 
+		if(varParameterOcultarCalendarPickerNextVisit == "false")
+		{
+			$('#txtNextVisit').datepicker({format:"yyyy-mm-dd"});
+		}
 
 		$('#txtDateFirst').datepicker({format:"yyyy-mm-dd"});
 		$('#txtDateFirst').val(moment().add('days', 0).format("YYYY-MM-DD"));

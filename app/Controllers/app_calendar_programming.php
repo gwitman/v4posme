@@ -372,6 +372,7 @@ class app_calendar_programming extends _BaseController
 
             $fileNamePut = "eventos_".date("dmYhis").".pdf";
             $dompdf->stream($fileNamePut, ['Attachment' => $objParameterShowDownloadPreview ]);
+            exit;
 
         }catch (\Exception $exception){
             if (empty($dataSession)) {
@@ -453,6 +454,7 @@ class app_calendar_programming extends _BaseController
             $dompdf->render();
             $fileNamePut = "evento".$idevent."_".date("dmYhis").".pdf";
             $dompdf->stream($fileNamePut, ['Attachment' => $objParameterShowDownloadPreview ]);
+            exit;
 
         }catch (\Exception $exception){
             if (empty($dataSession)) {

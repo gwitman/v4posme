@@ -564,12 +564,24 @@ echo helper_getHtmlOfPageLanding();
 									<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divNextVisitHidden",""); ?> " id="divSiguienteVisita">
 										<label class="col-lg-4 control-label" for="txtNextVisit">Siguiente Visita</label>
 										<div class="col-lg-8">
-											<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
-												<input size="16"  class="form-control" type="text" name="txtNextVisit" id="txtNextVisit" >
-												<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
-											</div>
+
+										    <?php
+											echo  getBehavio(
+												$company->type,
+												"app_invoice_billing",
+												"controlNextVisit",
+												'
+												<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
+													<input size="16"  class="form-control" type="text" name="txtNextVisit" id="txtNextVisit" >
+													<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+												</div>
+												'
+											);
+											?>
 										</div>
 									</div>
+
+
 								</div>
 							</div>
 						</div>
