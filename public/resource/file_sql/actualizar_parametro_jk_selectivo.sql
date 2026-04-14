@@ -1982,7 +1982,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'JK Selectivo' , address = 'Costado arriba, Nueva policia de la proquinsa 75vrs. al Sur' ,
+	NAME = 'JK Selectivos' , address = 'Costado arriba, Nueva policia de la proquinsa 75vrs. al Sur' ,
 	flavorID = 1150 /*usuarioID*/,type='jkSelectivo'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
