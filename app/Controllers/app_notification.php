@@ -2422,7 +2422,7 @@ Le recordamos que tiene un saldo pendiente:
 		{
 $rowx 					= array();
 $rowx["firstName"] 		= $item->firstName;
-$rowx["phoneNumber"] 	= $item->phoneNumber;
+$rowx["phoneNumber"] 	= getNumberPhone(clearNumero($item->phoneNumber));
 
 
 $rowx["mensaje"] 		= "📌/*Mensaje automático de recordatorio de pago*/
