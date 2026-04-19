@@ -1064,33 +1064,46 @@ class app_inventory_report extends _BaseController {
 	function list_item_real_estate(){
 		try{ 
 		
-			//AUTENTICADO
-			if(!$this->core_web_authentication->isAuthenticated())
-			throw new \Exception(USER_NOT_AUTENTICATED);
-			$dataSession		= $this->session->get();
-		
-			//PERMISOS SOBRE LAS FUNCIONES
-			if(APP_NEED_AUTHENTICATION == true){				
-				
-				$permited = false;
-				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-				
-				if(!$permited)
-				throw new \Exception(NOT_ACCESS_CONTROL);
-				
-				$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-				if ($resultPermission 	== PERMISSION_NONE)
-				throw new \Exception(NOT_ACCESS_FUNCTION);			
-			}	
 			
+			//AUTENTICADO
+			$dataSession		= null;
+			if(!$this->core_web_authentication->isAuthenticated())
+			{
+				$companyID			= APP_COMPANY;
+				$branchID			= APP_BRANCH;
+				$userID				= APP_USERADMIN;
+				$roleID				= APP_ROL_SUPERADMIN;
+				
+
+			}
+			else
+			{
+				$dataSession		= $this->session->get();			
+				//PERMISOS SOBRE LAS FUNCIONES
+				if(APP_NEED_AUTHENTICATION == true){				
+					
+					$permited = false;
+					$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+					
+					if(!$permited)
+					throw new \Exception(NOT_ACCESS_CONTROL);
+					
+					$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+					if ($resultPermission 	== PERMISSION_NONE)
+					throw new \Exception(NOT_ACCESS_FUNCTION);			
+				}	
+				$companyID			= $dataSession["user"]->companyID;
+				$branchID			= $dataSession["user"]->branchID;
+				$userID				= $dataSession["user"]->userID;
+				$roleID				= $dataSession["role"]->roleID;
+
+			}
+			
+
 								
 			$viewReport			= false;
 			$startOn			= false;
-			$endOn				= false;
-			$companyID			= $dataSession["user"]->companyID;
-			$branchID			= $dataSession["user"]->branchID;
-			$userID				= $dataSession["user"]->userID;
-			$roleID				= $dataSession["role"]->roleID;
+			$endOn				= false;			
 			$tocken				= '';
 			
 			$viewReport				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"viewReport");//--finuri
@@ -1102,10 +1115,12 @@ class app_inventory_report extends _BaseController {
 			$namePropietario		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"namePropietario");//--finuri
 			$numberEncuentra24		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"numberEncuentra24");//--finuri
 			$workflowStageID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"workflowStageID");//--finuri
+			$csvGenerate			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"csvGenerate");//--finuri
+			$csvGenerate			= ($csvGenerate === "true") ? true : false;
 			$namePropietario		= $namePropietario == "numberEncuentra24" ? "" : $namePropietario;
 			$numberEncuentra24		= $numberEncuentra24 == "numberEncuentra24" ? "" : $numberEncuentra24;
 			
-			if(!($viewReport && $startOn && $endOn  )){
+			if(!$csvGenerate && !($viewReport && $startOn && $endOn  )){
 				
 				//Renderizar Resultado 
 				$dataSession["objListWorkflowStage"] 	= $this->core_web_workflow->getWorkflowAllStage('tb_item',   'statusID',  $companyID,$branchID,$roleID);				
@@ -1120,8 +1135,7 @@ class app_inventory_report extends _BaseController {
 			}
 			else{				
 				
-				//Obtener el tipo de Comprobante
-				$companyID 		= $dataSession["user"]->companyID;
+				
 				//Get Component
 				$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
 				//Get Logo
@@ -1131,9 +1145,9 @@ class app_inventory_report extends _BaseController {
 				//Get Datos
 				$query			= "
 									select 
-										x.`itemID`,
-										x.`createdOn`
-										,x.`Codigo`
+										x.`itemID`
+										,x.`createdOn` 
+										,x.`Codigo` 
 										,x.`Nombre`
 										,x.`Pagina Web`
 										,x.`Amueblado`
@@ -1264,8 +1278,80 @@ class app_inventory_report extends _BaseController {
 				$objDataResult["objStartOn"] 				= $startOn;
 				$objDataResult["objEndOn"] 					= $endOn;
 				$objDataResult["objLogo"] 					= $objParameter;
-				$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_sales_get_report_sales_detail" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
+				$objDataResult["objFirma"] 					= ""  ;
 				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
+				
+				if($csvGenerate)
+				{
+					$objParameterDeliminterCsv	= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
+					$objParameterDeliminterCsv	= $objParameterDeliminterCsv->value;					
+					$filename = 'real_estate_'.date('Ymd').'.csv';
+					// Limpiar cualquier salida previa y forzar UTF-8
+					while (ob_get_level()) { ob_end_clean(); }
+					header("Content-Description: File Transfer");
+					header("Content-Disposition: attachment; filename=$filename");
+					header("Content-Type: application/csv; charset=utf-8");
+					header("Content-Transfer-Encoding: binary");
+					
+					$file 	= fopen('php://output', 'w');
+					// BOM UTF-8 para compatibilidad con Excel y acentos
+					fputs($file, "\xEF\xBB\xBF");
+					$header = array(
+						"itemID",
+						"createdOn",
+						"Codigo",
+						"Nombre",
+						"Pagina Web",
+						"Amueblado",
+						"Aires",
+						"Niveles",
+						"Hora de visita",
+						"Baños",
+						"Habitaciones",
+						"Diseño de propiedad",
+						"Tipo de casa",
+						"Proposito",
+						"Moneda",
+						"Fecha de enlistamiento",
+						"Fecha de actualizacion",
+						"Precio Venta",
+						"Precio Renta",
+						"Disponible",
+						"Area de contruccion M2",
+						"Area de terreno V2",
+						"ID Encuentra 24",
+						"Baño de servicio",
+						"Baño de visita",
+						"Cuarto de servicio",
+						"Walk in closet",
+						"Piscina privada",
+						"Area club con piscina",
+						"Acepta mascota",
+						"Corretaje",
+						"Plan de referido",
+						"Link Youtube",
+						"Pagina Web Link",
+						"Foto",
+						"Google",
+						"Otros Link",
+						"Estilo de cocina",
+						"Agente",
+						"Zona",
+						"Condominio",
+						"Ubicacion",
+						"Exclusividad de agente",
+						"Telefono"
+					);
+					fputcsv($file, $header, $objParameterDeliminterCsv);					
+					if(isset($objData)){
+						foreach($objData as $line){
+							$line = (array)$line;
+							fputcsv($file, array_values($line), $objParameterDeliminterCsv);
+						}
+					}
+					fclose($file);
+					exit;
+				}
 				
 				return view("app_inventory_report/list_item_real_estate/view_a_disemp",$objDataResult);//--finview-r
 				
