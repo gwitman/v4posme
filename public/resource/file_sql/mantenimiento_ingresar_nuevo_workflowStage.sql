@@ -8,10 +8,10 @@
 --   @flavorIDTarget     INT      : ID del flavor para insertar el nuevo registro
 -- =============================================================================
 
-SET @workflowStageName = 'ACTIVO';   -- << CAMBIAR SEGUN NECESIDAD
-SET @workflowID        = 1;          -- << CAMBIAR SEGUN NECESIDAD
-SET @flavorID          = 1;          -- << CAMBIAR SEGUN NECESIDAD (usado para busquedas de estados existentes)
-SET @flavorIDTarget    = 1;          -- << CAMBIAR SEGUN NECESIDAD (usado para insertar el nuevo registro)
+SET @workflowStageName = 'PROSPECTO';   -- << CAMBIAR SEGUN NECESIDAD
+SET @workflowID        = 17;          -- << CAMBIAR SEGUN NECESIDAD
+SET @flavorID          = 0;          -- << CAMBIAR SEGUN NECESIDAD (usado para busquedas de estados existentes)
+SET @flavorIDTarget    = 439;          -- << CAMBIAR SEGUN NECESIDAD (usado para insertar el nuevo registro)
 
 -- -----------------------------------------------------------------------------
 -- BLOQUE 1: Insertar en tb_workflow_stage (si no existe con mismo nombre+flavor)
@@ -52,16 +52,15 @@ SELECT
     @workflowStageName,   -- display igual al nombre por defecto
     @flavorIDTarget,      -- usar flavorIDTarget para el nuevo registro
     0,                    -- editableParcial
-    0,                    -- editableTotal
-    0,                    -- eliminable
+    1,                    -- editableTotal
+    1,                    -- eliminable
     0,                    -- aplicable
     0,                    -- vinculable
     1,                    -- isActive
-    0                     -- isInit
+    1                     -- isInit
 FROM   tb_workflow_stage ws_ref
 WHERE  ws_ref.workflowID = @workflowID
   AND  ws_ref.flavorID   = @flavorID
-LIMIT  1
 -- Solo insertar si NO existe ya
 AND NOT EXISTS (
     SELECT 1
@@ -69,7 +68,8 @@ AND NOT EXISTS (
     WHERE  workflowID = @workflowID
       AND  name       = @workflowStageName
       AND  flavorID   = @flavorIDTarget
-);
+)
+LIMIT  1; 
 
 -- Obtener el workflowStageID (sea recien insertado o ya existente)
 SET @newWorkflowStageID = NULL;
@@ -118,7 +118,6 @@ SELECT
     0
 FROM   tb_workflow_stage ws_existing
 WHERE  ws_existing.workflowID        = @workflowID
-  AND  ws_existing.flavorID          = @flavorID          -- busqueda por flavorID original
   AND  ws_existing.workflowStageID  <> @newWorkflowStageID
   AND NOT EXISTS (
       SELECT 1
@@ -146,7 +145,6 @@ SELECT
     0
 FROM   tb_workflow_stage ws_existing
 WHERE  ws_existing.workflowID        = @workflowID
-  AND  ws_existing.flavorID          = @flavorID          -- busqueda por flavorID original
   AND  ws_existing.workflowStageID  <> @newWorkflowStageID
   AND NOT EXISTS (
       SELECT 1
@@ -171,7 +169,7 @@ SELECT
     @newWorkflowStageID,   -- origen: el nuevo estado
     @newWorkflowStageID,   -- destino: el mismo nuevo estado
     0,
-    NULL
+    0
 -- Solo si NO existe ya esa auto-relacion
 WHERE NOT EXISTS (
     SELECT 1
