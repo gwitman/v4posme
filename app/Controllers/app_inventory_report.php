@@ -1190,7 +1190,7 @@ class app_inventory_report extends _BaseController {
 										,x.`Exclusividad de agente`
 										,x.`Telefono`
 										
-										
+										[[FIELD_ESTADO_PROPIEDAD]]
 										
 										/*
 										,x.`Pais`
@@ -1258,6 +1258,27 @@ class app_inventory_report extends _BaseController {
 					);
 				}
 				
+
+				if($csvGenerate)
+				{
+					$query	= str_replace(
+						"[[FIELD_ESTADO_PROPIEDAD]]", 
+						"
+						,x.`Estado propiedad`
+						,1 as Contador
+						", 
+						$query
+					);
+				}
+				else 
+				{
+					
+					$query	= str_replace(
+						"[[FIELD_ESTADO_PROPIEDAD]]", 
+						"", 
+						$query
+					);
+				}
 								
 				
 				log_message("error",$query);
@@ -1296,52 +1317,58 @@ class app_inventory_report extends _BaseController {
 					$file 	= fopen('php://output', 'w');
 					// BOM UTF-8 para compatibilidad con Excel y acentos
 					fputs($file, "\xEF\xBB\xBF");
-					$header = array(
-						"itemID",
-						"createdOn",
-						"Codigo",
-						"Nombre",
-						"Pagina Web",
-						"Amueblado",
-						"Aires",
-						"Niveles",
-						"Hora de visita",
-						"Baños",
-						"Habitaciones",
-						"Diseño de propiedad",
-						"Tipo de casa",
-						"Proposito",
-						"Moneda",
-						"Fecha de enlistamiento",
-						"Fecha de actualizacion",
-						"Precio Venta",
-						"Precio Renta",
-						"Disponible",
-						"Area de contruccion M2",
-						"Area de terreno V2",
-						"ID Encuentra 24",
-						"Baño de servicio",
-						"Baño de visita",
-						"Cuarto de servicio",
-						"Walk in closet",
-						"Piscina privada",
-						"Area club con piscina",
-						"Acepta mascota",
-						"Corretaje",
-						"Plan de referido",
-						"Link Youtube",
-						"Pagina Web Link",
-						"Foto",
-						"Google",
-						"Otros Link",
-						"Estilo de cocina",
-						"Agente",
-						"Zona",
-						"Condominio",
-						"Ubicacion",
-						"Exclusividad de agente",
-						"Telefono"
-					);
+					$header   = array();
+					$header[] = "itemID";
+					$header[] = "createdOn";
+					$header[] = "Codigo";
+					$header[] = "Nombre";
+					$header[] = "Pagina Web";
+					$header[] = "Amueblado";
+					$header[] = "Aires";
+					$header[] = "Niveles";
+					$header[] = "Hora de visita";
+					$header[] = "Baños";
+					$header[] = "Habitaciones";
+					$header[] = "Diseño de propiedad";
+					$header[] = "Tipo de casa";
+					$header[] = "Proposito";
+					$header[] = "Moneda";
+					$header[] = "Fecha de enlistamiento";
+					$header[] = "Fecha de actualizacion";
+					$header[] = "Precio Venta";
+					$header[] = "Precio Renta";
+					$header[] = "Disponible";
+					$header[] = "Area de contruccion M2";
+					$header[] = "Area de terreno V2";
+					$header[] = "ID Encuentra 24";
+					$header[] = "Baño de servicio";
+					$header[] = "Baño de visita";
+					$header[] = "Cuarto de servicio";
+					$header[] = "Walk in closet";
+					$header[] = "Piscina privada";
+					$header[] = "Area club con piscina";
+					$header[] = "Acepta mascota";
+					$header[] = "Corretaje";
+					$header[] = "Plan de referido";
+					$header[] = "Link Youtube";
+					$header[] = "Pagina Web Link";
+					$header[] = "Foto";
+					$header[] = "Google";
+					$header[] = "Otros Link";
+					$header[] = "Estilo de cocina";
+					$header[] = "Agente";
+					$header[] = "Zona";
+					$header[] = "Condominio";
+					$header[] = "Ubicacion";
+					$header[] = "Exclusividad de agente";
+					$header[] = "Telefono";
+
+					if($csvGenerate)
+					{
+						$header[] = "Estado propiedad";
+						$header[] = "Contador";
+					}
+
 					fputcsv($file, $header, $objParameterDeliminterCsv);					
 					if(isset($objData)){
 						foreach($objData as $line){
