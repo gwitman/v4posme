@@ -123,6 +123,7 @@ class app_inventory_otheroutput extends _BaseController
 			} else {
 				//visualizar				
 				$this->dompdf->stream($fileNamePdf, ['Attachment' => $objParameterShowDownloadPreview]);
+				exit;
 			}
 
 			//descargar
