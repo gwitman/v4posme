@@ -1266,6 +1266,31 @@ class app_inventory_report extends _BaseController {
 						"
 						,x.`Estado propiedad`
 						,1 as Contador
+
+						,case
+							 when x.`Estado propiedad` = 'VENDIDO' then 
+							   1
+							 else 
+								0  
+						end as EstadoVendido 
+						,case
+							 when x.`Estado propiedad` = 'RENTADO' then 
+							   1
+							 else 
+								0  
+						end as EstadoRentado
+						,case
+							 when x.`Estado propiedad` = 'ACTIVO' then 
+							   1
+							 else 
+								0  
+						end as EstadoActivo
+						,case
+							 when x.`Estado propiedad` = 'INACTIVO' then 
+							   1
+							 else 
+								0  
+						end as EstadoInactivo
 						", 
 						$query
 					);
@@ -1367,6 +1392,10 @@ class app_inventory_report extends _BaseController {
 					{
 						$header[] = "Estado propiedad";
 						$header[] = "Contador";
+						$header[] = "EstadoVendido";
+						$header[] = "EstadoRentado";
+						$header[] = "EstadoActivo";
+						$header[] = "EstadoInactivo";
 					}
 
 					fputcsv($file, $header, $objParameterDeliminterCsv);					
