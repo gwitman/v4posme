@@ -1258,7 +1258,7 @@ class app_inventory_item extends _BaseController
                         $dataPrice["listPriceID"]         = $listPriceID;
                         $dataPrice["itemID"]              = $itemID;
                         $dataPrice["typePriceID"]         = $typePriceID;
-                        $dataPrice["price"]               = $priceValue;
+                        $dataPrice["price"]               = str_replace(',', '', $priceValue);
                         $dataPrice["percentage"]          = 0;
                         $dataPrice["percentageCommision"] = $comisionValue;
 
