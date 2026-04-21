@@ -1090,6 +1090,7 @@ class app_inventory_item extends _BaseController
                 $comando  = /*inicio get post*/$this->request->getPost("txtComando");
                 if (! $this->core_web_workflow->validateWorkflowStage("tb_item", "statusID", $objOldItem->statusID, COMMAND_EDITABLE, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID)) {
                     //Actualizar Cuenta
+                    $objOldItemAudit                     = $this->Item_Model->get_rowByPK($companyID,$itemID);
                     $objNewItem["inventoryCategoryID"]   = /*inicio get post*/$this->request->getPost("txtInventoryCategoryID");
                     $objNewItem["familyID"]              = /*inicio get post*/$this->request->getPost("txtFamilyID");
                     $objNewItem["barCode"]               = /*inicio get post*/$this->request->getPost("txtBarCode") == "" ? str_replace("ITT", "7777", $objOldItem->itemNumber) : /*inicio get post*/$this->request->getPost("txtBarCode");
@@ -1110,6 +1111,8 @@ class app_inventory_item extends _BaseController
                     $objNewItem["reference2"]            = /*inicio get post*/$this->request->getPost("txtReference2");
                     $objNewItem["reference3"]            = /*inicio get post*/$this->request->getPost("txtReference3");
                     $objNewItem["statusID"]              = /*inicio get post*/$this->request->getPost("txtStatusID");
+
+                    
                     $objNewItem["isPerishable"]          = /*inicio get post*/$this->request->getPost("txtIsPerishable");
                     $objNewItem["isServices"]            = /*inicio get post*/$this->request->getPost("txtIsServices");
                     $objNewItem["isInvoiceQuantityZero"] = is_null( /*inicio get post*/$this->request->getPost("txtIsInvoiceQuantityZero")) ? 0 : /*inicio get post*/$this->request->getPost("txtIsInvoiceQuantityZero");
@@ -1153,7 +1156,10 @@ class app_inventory_item extends _BaseController
                     $fecha                                      = new DateTime($fechaCompleta);
                     $objNewItem["dateLastUse"]                  = $fecha->format("Y-m-d");
                     //Actualizar Objeto
-                    $row_affected = $this->Item_Model->update_app_posme($companyID, $itemID, $objNewItem);
+                    $row_affected       = $this->Item_Model->update_app_posme($companyID, $itemID, $objNewItem);
+                    $objNewItemAudit    = $this->Item_Model->get_rowByPK($companyID,$itemID);
+                    $this->core_web_auditoria->setAudit("tb_item",$objOldItemAudit,$objNewItemAudit,$dataSession,$this->request);
+
 
                     //Guardar el detalle de Conceptos
                     $this->Company_Component_Concept_Model->deleteWhereComponentItemID($companyID, $objComponent->componentID, $itemID);
