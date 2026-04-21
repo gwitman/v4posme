@@ -1219,11 +1219,11 @@ class app_inventory_report extends _BaseController {
 											)											
 										) 
 										AND 
-										x.isActive = ".$showActivos."   and  
-										
+										x.isActive = ".$showActivos."   
+										AND 
 										(
 											(
-												x.`Estado propoedad ID` = ".$workflowStageID." and 
+												x.`Estado propiedad ID` = ".$workflowStageID." and 
 												".$workflowStageID." != 0
 											) or 
 											(
@@ -1288,6 +1288,9 @@ class app_inventory_report extends _BaseController {
 							 else 
 								0  
 						end as EstadoInactivo
+						,x.`Fecha de vendido o rentado`
+						,x.`Tasa de conversion vendido o rentado`
+
 						", 
 						$query
 					);
@@ -1393,6 +1396,9 @@ class app_inventory_report extends _BaseController {
 						$header[] = "EstadoRentado";
 						$header[] = "EstadoActivo";
 						$header[] = "EstadoInactivo";
+						$header[] = "Fecha de vendido o rentado";
+						$header[] = "Tasa de conversion vendido o rentado";
+
 					}
 
 					fputcsv($file, $header, $objParameterDeliminterCsv);					
