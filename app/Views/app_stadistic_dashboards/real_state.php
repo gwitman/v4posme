@@ -57,7 +57,9 @@
                     src="https://datastudio.google.com/embed/reporting/bc67583a-fdb3-478a-9272-b7d4eb6a3697/page/page_12345" 
                     frameborder="0" style="border:0" 
                     allowfullscreen 
-                    sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
+                    sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads">
+                  
+
                 </iframe>
 
             </div>
