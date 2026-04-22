@@ -33,11 +33,7 @@ class app_stadistic_dashboards extends _BaseController
             $dataSession["roleName"]												= $dataSession["role"]->name;
             $dataSession["firstDate"]												= $firstDate;
             $dataSession["lastDate"]												= $lastDate;
-            $dataSession["RealState_get_PropiedadesPorAgentes"]						= $this->Transaction_Master_Detail_Model->RealState_get_PropiedadesPorAgentes($dataSession["user"]->companyID,$firstDate,$lastDate);
-            $dataSession["RealState_get_PropiedadesPorAgentesMetas"]				= $this->Transaction_Master_Detail_Model->RealState_get_PropiedadesPorAgentesMetas($dataSession["user"]->companyID,$firstDate,$lastDate);
-            $dataSession["RealState_get_PropiedadesRendimientoAnualVentas"]			= $this->Transaction_Master_Detail_Model->RealState_get_PropiedadesRendimientoAnualVentas($dataSession["user"]->companyID,$firstDate,$lastDate);
-            $dataSession["RealState_get_PropiedadesRendimientoAnualEnlistamiento"]	= $this->Transaction_Master_Detail_Model->RealState_get_PropiedadesRendimientoAnualEnlistamiento($dataSession["user"]->companyID,$firstDate,$lastDate);
-
+          
             //Renderizar Resultado
             $dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
             $dataSession["message"]			= "";

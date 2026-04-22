@@ -31,309 +31,220 @@
     </h1>
 </div>
 
-<div class="row">
-    <div class="col-lg-6">
-        <div class="panel" style="margin-bottom:20px;">
-            <div class="panel-heading">
-                <div class="icon"><i class="icon20 i-health"></i></div>
-                <h4>Parametros</h4>
-                <a href="#" class="minimize"></a>
-            </div><!-- End .panel-heading -->
-
-            <div class="panel-body">
-                <div class="form-group">
-                    <label class="col-lg-4 control-label" for="datepicker">Inicio</label>
-                    <div class="col-lg-8">
-                        <div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
-                            <input size="16" class="form-control" type="text" name="txtDateStart" id="txtDateStart"
-                                   value="<?php echo $firstDate; ?>">
-                            <span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-lg-4 control-label" for="datepicker">Fin</label>
-                    <div class="col-lg-8">
-                        <div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
-                            <input size="16" class="form-control" type="text" name="txtDateFinish" id="txtDateFinish"
-                                   value="<?php echo $lastDate; ?>">
-                            <span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="col-lg-4 control-label" for="btnSalvarFiltro"></label>
-                    <div class="col-lg-8">
-                        <button type="button" id="btnSalvarFiltro" class="btn btn-success">Filtrar</button>
-                    </div>
-                </div>
-
-
-            </div><!-- End .panel-body -->
-        </div><!-- End .widget -->
-
-
-    </div>
-
+<!--
+<div class="panel" style="margin-bottom:20px; height: calc(100vh - 200px);">
+   <iframe width="100%" height="100%" 
+        src="https://datastudio.google.com/embed/reporting/bc67583a-fdb3-478a-9272-b7d4eb6a3697/page/page_12345" 
+        frameborder="0" style="border:0" 
+        allowfullscreen 
+        sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
+    </iframe>
 </div>
+-->
+                
 
 <div class="row"  >
-    <div class="col-lg-6">
-        <div class="panel" style="margin-bottom:20px;">
+    <div class="col-lg-12">
+        <div class="panel" style="margin-bottom:20px; height: calc(100vh - 200px);">
             <div class="panel-heading">
                 <div class="icon"><i class="icon20 i-health"></i></div>
-                <h4>Enlistamiento de propiedad metas</h4>
+                <h4>Dashboard con Google Analytics</h4>
                 <a href="#" class="minimize"></a>
-            </div><!-- End .panel-heading -->
+            </div>
 
-            <div class="panel-body">
-                <div id="grafico9" style="height:300px" ></div>
-            </div><!-- End .panel-body -->
-        </div><!-- End .widget -->
-    </div>
-    <div class="col-lg-6">
-        <div class="panel" style="margin-bottom:20px;">
-            <div class="panel-heading">
-                <div class="icon"><i class="icon20 i-health"></i></div>
-                <h4>Rendimiento anual de venta</h4>
-                <a href="#" class="minimize"></a>
-            </div><!-- End .panel-heading -->
+            <div class="panel-body" style="height: calc(100% - 50px); padding: 0;">
+                <iframe width="100%" height="100%" 
+                    src="https://datastudio.google.com/embed/reporting/bc67583a-fdb3-478a-9272-b7d4eb6a3697/page/page_12345" 
+                    frameborder="0" style="border:0" 
+                    allowfullscreen 
+                    sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
+                </iframe>
 
-            <div class="panel-body">
-                <div id="grafico10" style="height:300px" ></div>
-            </div><!-- End .panel-body -->
-        </div><!-- End .widget -->
+            </div>
+        </div>
     </div>
 </div>
 
-
-<div class="row"  >
-    <div class="col-lg-6">
-        <div class="panel" style="margin-bottom:20px;">
-            <div class="panel-heading">
-                <div class="icon"><i class="icon20 i-health"></i></div>
-                <h4>Rendimiento anual de enlistamiento</h4>
-                <a href="#" class="minimize"></a>
-            </div><!-- End .panel-heading -->
-
-            <div class="panel-body">
-                <div id="grafico11" style="height:300px" ></div>
-            </div><!-- End .panel-body -->
-        </div><!-- End .widget -->
-    </div>
-    <div class="col-lg-6">
-        <div class="panel" style="margin-bottom:20px;">
-            <div class="panel-heading">
-                <div class="icon"><i class="icon20 i-health"></i></div>
-                <h4>Enlistamiento de propiedades</h4>
-                <a href="#" class="minimize"></a>
-            </div><!-- End .panel-heading -->
-
-            <div class="panel-body">
-                <div id="grafico8" style="height:300px" ></div>
-            </div><!-- End .panel-body -->
-        </div><!-- End .widget -->
-    </div>
-
-</div>
 
 
 
 <script>
-
-    $(document).ready(function(){
-            //https://www.w3schools.com/js/js_graphics_google_chart.asp
-            google.charts.load('current',{packages:['corechart']});
-
-
-            //Propiedades por Agente
-            ///
-            ////////////////////////////////////////////////
-            var objDataSource8	 												= new Array();
-            var RealState_get_PropiedadesPorAgentes			 					= JSON.parse('<?php echo json_encode($RealState_get_PropiedadesPorAgentes); ?>');
-            objDataSource8.push(new Array("Agente","Cantidad"));
-            for(var i = 0 ; i < RealState_get_PropiedadesPorAgentes.length;i++)
-            {
-                objDataSource8.push(
-                    new Array(
-                        RealState_get_PropiedadesPorAgentes[i].Indicador,
-                        parseInt(RealState_get_PropiedadesPorAgentes[i].Cantidad)
-                    )
-                );
-            }
+    
+    //wg-$(document).ready(function(){
+    //wg-        // Carga Google Charts
+    //wg-        google.charts.load('current',{packages:['corechart']});
 
 
-            google.charts.setOnLoadCallback(
-                function () {
+    // ============================================================
+    //wg-// PROPIEDADES POR AGENTE
+    // ============================================================
 
-                    var data = google.visualization.arrayToDataTable(
-                        objDataSource8
-                    );
+    //wg-var objDataSource8 = new Array();
 
-                    var options2 = {
-                        title: 'Enlistamiento de propiedades',
-                        colors: ['#3399FF', '#9966FF', '#FF33CC', '#FF6633', '#FFFF33'],
-                    };
+    //wg-// PHP deshabilitado (no se ejecuta)
+    //wg-var RealState_get_PropiedadesPorAgentes = JSON.parse(
+    //wg-    '<?php /* echo json_encode($RealState_get_PropiedadesPorAgentes); */ ?>'
+    //wg-);
 
-                    var chart = new google.visualization.AreaChart(document.getElementById('grafico8'));
-                    chart.draw(data, options2);
+    //wg-objDataSource8.push(new Array("Agente","Cantidad"));
 
-                }
-            );
+    //wg-for(var i = 0 ; i < RealState_get_PropiedadesPorAgentes.length;i++)
+    //wg-{
+    //wg-    objDataSource8.push(
+    //wg-        new Array(
+    //wg-            RealState_get_PropiedadesPorAgentes[i].Indicador,
+    //wg-            parseInt(RealState_get_PropiedadesPorAgentes[i].Cantidad)
+    //wg-        )
+    //wg-    );
+    //wg-}
 
+    //wg-google.charts.setOnLoadCallback(function () {
+    //wg-    var data = google.visualization.arrayToDataTable(objDataSource8);
 
-            //Propiedades por Agente vs Metas
-            ///
-            ////////////////////////////////////////////////
-            var RealState_get_PropiedadesPorAgentesMetas 				 		= JSON.parse('<?php echo json_encode($RealState_get_PropiedadesPorAgentesMetas); ?>');
-            var objDataSource9	 												= new Array();
-            objDataSource9.push(new Array("Agente","Cantidad"));
-            for(var i = 0 ; i < RealState_get_PropiedadesPorAgentesMetas.length;i++)
-            {
-                objDataSource9.push(
-                    new Array(
-                        RealState_get_PropiedadesPorAgentesMetas[i].Indicador,
-                        parseInt(RealState_get_PropiedadesPorAgentesMetas[i].Cantidad)
-                    )
-                );
-            }
+    //wg-    var options2 = {
+    //wg-        title: 'Enlistamiento de propiedades',
+    //wg-        colors: ['#3399FF', '#9966FF', '#FF33CC', '#FF6633', '#FFFF33'],
+    //wg-    };
 
-
-            google.charts.setOnLoadCallback(
-                function () {
-
-                    var data = google.visualization.arrayToDataTable(
-                        objDataSource9
-                    );
-
-                    var options2 = {
-                        title: 'Enlistamiento de propiedades metas',
-						/*isStacked: 'percent',*/
-                        colors: ['#3399FF', '#9966FF', '#FF33CC', '#FF6633', '#FFFF33'],
-						/*
-						hAxis: {
-							title: 'Year',
-							format: '0'
-						},
-						vAxis: {
-							title: 'Percentage',
-							format: '#%'
-						}
-						*/ 
-                    };
-
-                    var chart = new google.visualization.AreaChart(document.getElementById('grafico9'));
-                    chart.draw(data, options2);
-
-                }
-            );
+    //wg-    var chart = new google.visualization.AreaChart(document.getElementById('grafico8'));
+    //wg-    chart.draw(data, options2);
+    //wg-});
 
 
-            //Agente Rendimiento Anual de Ventas propiedades
-            ///
-            ////////////////////////////////////////////////
-            var objDataSource10	 												= new Array();
-            var RealState_get_PropiedadesRendimientoAnualVentas			 		= JSON.parse('<?php echo json_encode($RealState_get_PropiedadesRendimientoAnualVentas); ?>');
-            objDataSource10.push(new Array("Clasificacion","Cantidad"));
-            for(var i = 0 ; i < RealState_get_PropiedadesRendimientoAnualVentas.length;i++)
-            {
-                objDataSource10.push(
-                    new Array(
-                        RealState_get_PropiedadesRendimientoAnualVentas[i].Indicador,
-                        parseInt(RealState_get_PropiedadesRendimientoAnualVentas[i].Cantidad)
-                    )
-                );
-            }
+    // ============================================================
+    //wg-// PROPIEDADES POR AGENTE VS METAS
+    // ============================================================
 
-            google.charts.setOnLoadCallback(
-                function () {
+    //wg-var RealState_get_PropiedadesPorAgentesMetas = JSON.parse(
+    //wg-    '<?php /* echo json_encode($RealState_get_PropiedadesPorAgentesMetas); */ ?>'
+    //wg-);
 
-                    var data = google.visualization.arrayToDataTable(
-                        objDataSource10
-                    );
+    //wg-var objDataSource9 = new Array();
+    //wg-objDataSource9.push(new Array("Agente","Cantidad"));
 
-                    var options = {
+    //wg-for(var i = 0 ; i < RealState_get_PropiedadesPorAgentesMetas.length;i++)
+    //wg-{
+    //wg-    objDataSource9.push(
+    //wg-        new Array(
+    //wg-            RealState_get_PropiedadesPorAgentesMetas[i].Indicador,
+    //wg-            parseInt(RealState_get_PropiedadesPorAgentesMetas[i].Cantidad)
+    //wg-        )
+    //wg-    );
+    //wg-}
 
-                        title: 'Rendimiento anual de ventas',
-                        colors: ['#FF5733', '#FFC300', '#FF85A2', '#FF33FF', '#33FFBD'],
-                        vAxis: {title: 'Clasificacion'},
-                        hAxis: {title: 'Agente'},
-                        seriesType: 'bars',
-                        series: {5: {type: 'line'}}
+    //wg-google.charts.setOnLoadCallback(function () {
 
+    //wg-    var data = google.visualization.arrayToDataTable(objDataSource9);
 
+    //wg-    var options2 = {
+    //wg-        title: 'Enlistamiento de propiedades metas',
+    //wg-        /*isStacked: 'percent',*/
+    //wg-        colors: ['#3399FF', '#9966FF', '#FF33CC', '#FF6633', '#FFFF33'],
+    //wg-    };
 
-                    };
+    //wg-    var chart = new google.visualization.AreaChart(document.getElementById('grafico9'));
+    //wg-    chart.draw(data, options2);
 
-                    var chart = new google.visualization.ComboChart(document.getElementById('grafico10'));
-                    chart.draw(data, options);
-
-                }
-            );
+    //wg-});
 
 
+    // ============================================================
+    //wg-// RENDIMIENTO ANUAL DE VENTAS
+    // ============================================================
 
-            //Propiedades Agente Rendimiento anual de enlistamiento
-            ///
-            ////////////////////////////////////////////////
-            var objDataSource11	 												= new Array();
-            var RealState_get_PropiedadesRendimientoAnualEnlistamiento		 	= JSON.parse('<?php echo json_encode($RealState_get_PropiedadesRendimientoAnualEnlistamiento); ?>');
-            objDataSource11.push(new Array("Agente","Cantidad"));
-            for(var i = 0 ; i < RealState_get_PropiedadesRendimientoAnualEnlistamiento.length;i++)
-            {
-                objDataSource11.push(
-                    new Array(
-                        RealState_get_PropiedadesRendimientoAnualEnlistamiento[i].Indicador,
-                        parseInt(RealState_get_PropiedadesRendimientoAnualEnlistamiento[i].Cantidad)
-                    )
-                );
-            }
+    //wg-var objDataSource10 = new Array();
 
-            google.charts.setOnLoadCallback(
-                function () {
+    //wg-var RealState_get_PropiedadesRendimientoAnualVentas = JSON.parse(
+    //wg-    '<?php /* echo json_encode($RealState_get_PropiedadesRendimientoAnualVentas); */ ?>'
+    //wg-);
 
-                    var data = google.visualization.arrayToDataTable(
-                        objDataSource11
-                    );
+    //wg-objDataSource10.push(new Array("Clasificacion","Cantidad"));
 
-                    var options = {
-                        title: 'Rendimiento anual de enlistamiento',
-                        colors: ['#33A1FF', '#FF3366', '#FF3333', '#33FF33', '#33FFA8'],
-                    };
+    //wg-for(var i = 0 ; i < RealState_get_PropiedadesRendimientoAnualVentas.length;i++)
+    //wg-{
+    //wg-    objDataSource10.push(
+    //wg-        new Array(
+    //wg-            RealState_get_PropiedadesRendimientoAnualVentas[i].Indicador,
+    //wg-            parseInt(RealState_get_PropiedadesRendimientoAnualVentas[i].Cantidad)
+    //wg-        )
+    //wg-    );
+    //wg-}
 
-                    var chart = new google.visualization.BarChart(document.getElementById('grafico11'));
-                    chart.draw(data, options);
+    //wg-google.charts.setOnLoadCallback(function () {
 
-                }
-            );
+    //wg-    var data = google.visualization.arrayToDataTable(objDataSource10);
 
+    //wg-    var options = {
+    //wg-        title: 'Rendimiento anual de ventas',
+    //wg-        colors: ['#FF5733', '#FFC300', '#FF85A2', '#FF33FF', '#33FFBD'],
+    //wg-        vAxis: {title: 'Clasificacion'},
+    //wg-        hAxis: {title: 'Agente'},
+    //wg-        seriesType: 'bars',
+    //wg-        series: {5: {type: 'line'}}
+    //wg-    };
 
+    //wg-    var chart = new google.visualization.ComboChart(document.getElementById('grafico10'));
+    //wg-    chart.draw(data, options);
 
-
-
-
-            $(document).on("click","#btnSalvarFiltro",function(){
-                var txtDateStart		=	$("#txtDateStart").val();
-                var txtDateFinish		=	$("#txtDateFinish").val();
-                fnWaitOpen();
-                window.location	= "<?php echo base_url(); ?>/app_stadistic_dashboards/real_state/txtDateStart/"+txtDateStart+"/txtDateFinish/"+txtDateFinish;
-
-            });
-
-            $('#txtDateStart').datepicker({format:"yyyy-mm-dd"});
-            $('#txtDateFinish').datepicker({format:"yyyy-mm-dd"});
+    //wg-});
 
 
+    // ============================================================
+    //wg-// RENDIMIENTO ANUAL DE ENLISTAMIENTO
+    // ============================================================
 
-        }
-    );
+    //wg-var objDataSource11 = new Array();
+
+    //wg-var RealState_get_PropiedadesRendimientoAnualEnlistamiento = JSON.parse(
+    //wg-    '<?php /* echo json_encode($RealState_get_PropiedadesRendimientoAnualEnlistamiento); */ ?>'
+    //wg-);
+
+    //wg-objDataSource11.push(new Array("Agente","Cantidad"));
+
+    //wg-for(var i = 0 ; i < RealState_get_PropiedadesRendimientoAnualEnlistamiento.length;i++)
+    //wg-{
+    //wg-    objDataSource11.push(
+    //wg-        new Array(
+    //wg-            RealState_get_PropiedadesRendimientoAnualEnlistamiento[i].Indicador,
+    //wg-            parseInt(RealState_get_PropiedadesRendimientoAnualEnlistamiento[i].Cantidad)
+    //wg-        )
+    //wg-    );
+    //wg-}
+
+    //wg-google.charts.setOnLoadCallback(function () {
+
+    //wg-    var data = google.visualization.arrayToDataTable(objDataSource11);
+
+    //wg-    var options = {
+    //wg-        title: 'Rendimiento anual de enlistamiento',
+    //wg-        colors: ['#33A1FF', '#FF3366', '#FF3333', '#33FF33', '#33FFA8'],
+    //wg-    };
+
+    //wg-    var chart = new google.visualization.BarChart(document.getElementById('grafico11'));
+    //wg-    chart.draw(data, options);
+
+    //wg-});
 
 
+    // ============================================================
+    //wg-// FILTRO DE FECHAS
+    // ============================================================
+
+    //wg-$(document).on("click","#btnSalvarFiltro",function(){
+
+    //wg-    var txtDateStart  = $("#txtDateStart").val();
+    //wg-    var txtDateFinish = $("#txtDateFinish").val();
+
+    //wg-    fnWaitOpen();
+
+    //wg-    window.location = "<?php /* echo base_url(); */ ?>/app_stadistic_dashboards/real_state/txtDateStart/"+txtDateStart+"/txtDateFinish/"+txtDateFinish;
+
+    //wg-});
+
+    //wg-$('#txtDateStart').datepicker({format:"yyyy-mm-dd"});
+    //wg-$('#txtDateFinish').datepicker({format:"yyyy-mm-dd"});
 
 
-
-
-
+    //wg-});
 
 </script>
