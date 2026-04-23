@@ -18647,22 +18647,22 @@ function helper_reporte80mmTransactionMasterPabloRosales(
                       <meta name='viewport' content='width=device-width, initial-scale=1.0' />
                       <style>
                         @page {       
-                          size: 2.7in 60in;                  
+                          size: 2.8in 60in;                  
                           margin-top:0px;
-                          margin-left:30px;
-                          margin-right:15px;
+                          margin-left:5px;
+                          margin-right:-15px;
                         }
                         table{
                           font-size: x-small;
-                          font-weight: bold;
-                          font-family: Consolas, monaco, monospace;
+						  font-weight: bold;
+						  font-family: Consolas, monaco, monospace;
                         }
                       </style>
                     </head>
         
                     <body>
         
-                      <table style='width:100%'>
+                      <table style='width:95%'>
                         <tr>
                           <td colspan='3' style='text-align:center'>
                             <img  src='".$base64."' width='110'  >
