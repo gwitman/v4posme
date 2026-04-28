@@ -1372,14 +1372,23 @@ class app_box_attendance extends _BaseController {
 
 
 			//Obtener la solvencia
-			if($CantidadMora >= 0)
+			if($CantidadMora > 0)
 			{
 				$txtDetailReference1	= "NO";	
 				$txtDetailReference4	= 0;
 			}
-			if($CantidadMora < 0)
-			{							
-				$txtDetailReference1 = "SI";
+			else
+			{					
+				if($FechaProximoPagoMora == 0)
+				{
+					$txtDetailReference1	= "NO";	
+					$txtDetailReference4	= 0;
+				}
+				else
+				{
+					$txtDetailReference1 = "SI";
+				}
+				
 			}
 			
 			
