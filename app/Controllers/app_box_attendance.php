@@ -1288,15 +1288,7 @@ class app_box_attendance extends _BaseController {
 					$CantidadMora = !empty($CantidadMora) ? max($CantidadMora) : 0;
 			}
 				
-			if($CantidadMora > 0)
-			{
-				$txtDetailReference1	= "NO";	
-				$txtDetailReference4	= 0;
-			}
-			if($CantidadMora <= 0)
-			{							
-				$txtDetailReference1 = "SI";
-			}
+			
 
 			////Obtener numero de documento, minimo
 			////////////////////////////////
@@ -1377,6 +1369,18 @@ class app_box_attendance extends _BaseController {
 				$txtDetailReference4 = 0;						
 			else 
 				$txtDetailReference4 = ( $FechaProximoPagoMora * -1 );	
+
+
+			//Obtener la solvencia
+			if($CantidadMora >= 0)
+			{
+				$txtDetailReference1	= "NO";	
+				$txtDetailReference4	= 0;
+			}
+			if($CantidadMora < 0)
+			{							
+				$txtDetailReference1 = "SI";
+			}
 			
 			
 			//Obtener transaccion
