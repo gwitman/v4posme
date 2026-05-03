@@ -38,6 +38,9 @@ RUN pecl install memcached \
 # 🔥 Activar mod_rewrite
 RUN a2enmod rewrite
 
+# 🚀 AQUÍ VA TU CONFIGURACIÓN DE MEMORIA
+RUN echo "memory_limit=1024M" > /usr/local/etc/php/conf.d/memory-limit.ini
+
 # ⚡ Optimización OPCACHE
 RUN echo "opcache.enable=1" > /usr/local/etc/php/conf.d/opcache.ini \
  && echo "opcache.memory_consumption=128" >> /usr/local/etc/php/conf.d/opcache.ini \
