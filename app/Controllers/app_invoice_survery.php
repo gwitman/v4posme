@@ -250,14 +250,28 @@ class app_invoice_survery extends _BaseController {
 				
 				////Mandar mensjes por whatapp al cliente				
 				$url				= base_url()."/app_invoice_survery/viewRegisterFormatoPaginaNormal80mmOpcion1/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID;
-				$mensajeCliente		= "[simbol-mano-derecha] Su pedido esta siendo procesado : ".$objTM["transactionNumber"]."  [simbol-link] ".$url;
-				$this->core_web_whatsap->sendMessagePosMeConnect($companyID, replaceSimbol($mensajeCliente), clearNumero($objCustomer[0]->phoneNumber));
-				
+				$mensajeCliente		= "[simbol-mano-derecha] Su pedido esta siendo procesado : ".$objTM["transactionNumber"]."  [simbol-link] ".$url;				
+				$this->core_web_whatsap->sendMessageGeneric(
+						$objCompany->type,
+						APP_COMPANY, 
+						replaceSimbol($mensajeCliente), 
+						getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
+						true,
+						""
+					);
+
 				
 				////Mandar mensaje por whatapp al propietario
 				$mensajeColaborador	= "[simbol-mano-derecha] Hay una nueva orden de trabajo:  ".$objTM["transactionNumber"].".  [simbol-link] ".$url;
-				$this->core_web_whatsap->sendMessagePosMeConnect($companyID, replaceSimbol($mensajeColaborador), clearNumero($objColaborador[0]->phoneNumber));
-				
+				$this->core_web_whatsap->sendMessageGeneric(
+						$objCompany->type,
+						APP_COMPANY, 
+						replaceSimbol($mensajeColaborador), 
+						getNumberPhone(clearNumero($objColaborador[0]->phoneNumber)),
+						true,
+						""
+					);
+
 				
                 $db->transCommit();
 				$dataSession["error"] 				= false;
