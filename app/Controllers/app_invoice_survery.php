@@ -26,6 +26,13 @@ class app_invoice_survery extends _BaseController {
 			$dataview["key"]	= $key;
 			
 			$companyID					= APP_COMPANY;
+			$objCompany 				= $this->Company_Model->get_rowByPK(APP_COMPANY);
+			if(empty($key) || $key == "" )
+			{
+				$key 				= $objCompany->type;
+				$dataview["key"]	= $key;
+			}
+
 			$objListPrice 				= $this->List_Price_Model->getListPriceToApply($companyID);
 			$dataview["objListItem"]	= $this->Item_Model->get_rowByItemReference1And_RealStateRoomBatchServices($objListPrice->listPriceID,$key);
 			

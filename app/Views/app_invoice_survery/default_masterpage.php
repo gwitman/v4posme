@@ -10,14 +10,11 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>¡Vota u Ordena!</title>
   <link rel="icon" type="image/x-icon" href="<?= APP_URL_RESOURCE_CSS_JS ?>/resource/img/favicon.ico"/>
-  <link
-    href="<?= base_url()?>/resource/css/bootstrap5/bootstrap.min.css"
-    rel="stylesheet"
-  />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <link href="<?= base_url()?>/resource/css/bootstrap5/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     body {
-      background: <?=getBahavioDB($key, 'app_invoice_survery', 'fondo_encuesta', "linear-gradient(135deg, #FFA07A, #FF7F50)")?>;
+      background: <?=getBahavioDB($key, 'app_invoice_survery', 'fondo_encuesta', "linear-gradient(135deg, #1a1a2e, #16213e, #0f3460)")?>;
       font-family: 'Montserrat', sans-serif;
       min-height: 100vh;
     }
@@ -25,20 +22,21 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
       max-width: 800px;
       margin: 30px auto;
       background: #fff;
-      border-radius: 15px;
+      border-radius: 18px;
       padding: 30px;
-      box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+      box-shadow: 0 12px 32px rgba(0,0,0,0.3);
     }
     h1 {
       text-align: center;
       margin-bottom: 10px;
-      color: #FF6347;
+      color: #e63946;
+      font-weight: 700;
     }
     .tagline {
       text-align: center;
-      font-size: 1.1rem;
-      margin-bottom: 30px;
-      color: #555;
+      font-size: 1rem;
+      margin-bottom: 28px;
+      color: #666;
     }
     .logo {
       display: block;
@@ -46,156 +44,163 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
       max-width: 100px;
     }
     .form-label {
-      color: #FF6347;
+      color: #e63946;
+      font-weight: 600;
     }
-    .quantity-row {
-      display: none;
-      margin-left: 30px;
-      margin-top: 5px;
+    /* ---- Tarjeta de producto ---- */
+    .product-card {
+      background: #fafafa;
+      border: 1.5px solid #eee;
+      border-radius: 14px;
+      padding: 14px;
+      margin-bottom: 14px;
+      transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .summary-screen {
-      display: none;
+    .product-card.selected {
+      border-color: #e63946;
+      box-shadow: 0 4px 16px rgba(230,57,70,0.15);
+      background: #fff5f5;
     }
-    .table > :not(caption) > * > * {
-      vertical-align: middle;
-    }
-    
-    /* --- MODIFICADO: Estilos para las imágenes de producto --- */
-    .product-image {
-      width: 100px; /* Hacemos las imágenes más grandes */
-      height: 100px; /* Hacemos las imágenes más grandes */
-      object-fit: cover; /* Recorta la imagen para cubrir el área, manteniendo la proporción */
-      border-radius: 15px; /* Bordes redondeados */
-      border: 2px solid #FF6347; /* Borde para resaltarlas */
-      padding: 5px; /* Pequeño padding interno */
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Sombra sutil */
-    }
-    
-    /* --- INICIO: Estilos personalizados para el Checkbox --- */
-    .product-selection-row {
-      position: relative;
+    .product-header {
       display: flex;
       align-items: center;
-      padding-left: 40px;
+      gap: 12px;
     }
-
-    .form-check .option {
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        appearance: none;
-        position: absolute;
-        left: 0;
-        top: 50%;
-        transform: translateY(-50%);
-        width: 28px;
-        height: 28px;
-        border: 2px solid #FF6347;
-        border-radius: 6px;
-        background-color: #f8f8f8;
-        cursor: pointer;
-        margin: 0;
-        transition: background-color 0.2s, border-color 0.2s, box-shadow 0.2s;
-        z-index: 1;
+    .product-image {
+      width: 80px;
+      height: 80px;
+      object-fit: cover;
+      border-radius: 12px;
+      border: 2px solid #e63946;
+      flex-shrink: 0;
     }
-
-    .form-check .option::before {
-        content: '';
-        display: block;
-        width: 14px;
-        height: 14px;
-        background-color: white;
-        border-radius: 2px;
-        transform: translate(5px, 5px) scale(0);
-        transition: transform 0.2s ease-in-out;
+    .product-info {
+      flex-grow: 1;
     }
-
-    .form-check .option:checked {
-        background-color: #FF6347;
-        border-color: #FF6347;
+    .product-name {
+      font-weight: 700;
+      font-size: 1rem;
+      color: #222;
+      margin-bottom: 2px;
     }
-
-    .form-check .option:checked::before {
-        transform: translate(5px, 5px) scale(1);
+    .product-price {
+      font-size: 0.9rem;
+      color: #e63946;
+      font-weight: 600;
     }
-
-    .form-check .option:not(:checked):hover {
-        border-color: #FFA07A;
-        background-color: #fff;
+    /* Checkbox personalizado */
+    .custom-check {
+      width: 26px;
+      height: 26px;
+      border: 2.5px solid #e63946;
+      border-radius: 7px;
+      background: #f8f8f8;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      flex-shrink: 0;
+      transition: background 0.2s, border-color 0.2s;
+      position: relative;
     }
-
-    .form-check .option:focus {
-        outline: none;
-        box-shadow: 0 0 0 3px rgba(255, 99, 71, 0.5);
+    .custom-check:checked {
+      background: #e63946;
+      border-color: #e63946;
     }
-
-    .product-details {
-        display: flex;
-        align-items: center;
-        flex-grow: 1;
+    .custom-check:checked::after {
+      content: '✓';
+      color: #fff;
+      font-size: 15px;
+      font-weight: 700;
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
     }
-    /* --- FIN: Estilos personalizados para el Checkbox --- */
-
-    /* --- INICIO: Media Queries para Responsividad --- */
-    @media (max-width: 768px) {
-      .container {
-        margin: 15px auto;
-        padding: 20px;
-      }
-      h1 {
-        font-size: 1.8rem;
-      }
-      .tagline {
-        font-size: 1rem;
-      }
-      .product-image {
-        width: 70px; /* Tamaño de imagen ligeramente más pequeño en móviles */
-        height: 70px;
-        border-radius: 10px; /* Bordes ligeramente menos redondeados en móviles */
-      }
-      .form-check-label {
-        font-size: 1rem;
-      }
-      .product-selection-row {
-        padding-left: 35px; /* Ajuste del padding para el checkbox en móviles */
-      }
-      .form-check .option {
-        width: 24px; /* Tamaño del checkbox ligeramente más pequeño en móviles */
-        height: 24px;
-      }
-      .form-check .option::before {
-        width: 12px;
-        height: 12px;
-        transform: translate(4px, 4px) scale(0);
-      }
-      .form-check .option:checked::before {
-        transform: translate(4px, 4px) scale(1);
-      }
-      .quantity-row {
-        margin-left: 20px; /* Ajuste del margen en móviles */
-      }
-      .table th, .table td {
-        font-size: 0.9rem; /* Tamaño de texto de tabla más pequeño */
-      }
+    /* Botón ver foto */
+    .btn-specs {
+      font-size: 0.78rem;
+      padding: 4px 10px;
+      border-radius: 20px;
+      border: 1.5px solid #e63946;
+      color: #e63946;
+      background: transparent;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
     }
-    /* --- FIN: Media Queries para Responsividad --- */
-
+    .btn-specs:hover {
+      background: #e63946;
+      color: #fff;
+    }
+    /* Área de opciones del producto (combo + cantidad + comentario) */
+    .product-options {
+      display: none;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px dashed #ddd;
+    }
+    .product-options .form-label {
+      font-size: 0.85rem;
+      margin-bottom: 4px;
+    }
+    .quantity-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .quantity-row label {
+      color: #e63946;
+      font-weight: 600;
+      font-size: 0.85rem;
+      white-space: nowrap;
+    }
+    /* Resumen */
+    .summary-screen { display: none; }
+    .table > :not(caption) > * > * { vertical-align: middle; }
+    /* Modal de producto */
+    .modal-product-img {
+      width: 100%;
+      max-height: 300px;
+      object-fit: contain;
+      border-radius: 12px;
+      margin-bottom: 16px;
+    }
+    .spec-badge {
+      display: inline-block;
+      background: #fff0f0;
+      color: #e63946;
+      border: 1px solid #e63946;
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: 0.82rem;
+      margin: 3px 2px;
+      font-weight: 600;
+    }
+    /* Responsive */
+    @media (max-width: 576px) {
+      .container { margin: 10px; padding: 16px; border-radius: 12px; }
+      h1 { font-size: 1.5rem; }
+      .product-image { width: 64px; height: 64px; }
+      .product-name { font-size: 0.92rem; }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="logo">
-        <img class="img-fluid" src="<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_logo', 'cow.png')?>" alt="">
+      <img class="img-fluid" src="<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_logo', 'cow.png')?>" alt="Logo">
     </div>
     <h1>
-        <img width="40px" class="img-fluid" src="<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_titulo', 'cow.png')?>" alt="">
-        <?= getBahavioDB($key, 'app_invoice_survery', 'titulo', '¡Vota u Ordena!')?>
+      <?= getBahavioDB($key, 'app_invoice_survery', 'img_titulo', '<img width="36px" class="img-fluid" src="/resource/img/cow.png" alt="">')?>
+      <?= getBahavioDB($key, 'app_invoice_survery', 'titulo', '¡Vota u Ordena!')?>
     </h1>
     <p class="tagline"><?= getBahavioDB($key, 'app_invoice_survery', 'subtitulo', '¡Elige tus productos favoritos y confirma tu pedido!')?></p>
 
-    <form id="orderForm" method="POST" action="<?php echo base_url()."/app_invoice_survery/insertElement"; ?>" >
+    <form id="orderForm" method="POST" action="<?php echo base_url()."/app_invoice_survery/insertElement"; ?>">
+      <input type="hidden" name="key" id="key" value="<?php echo $key; ?>">
+
       <div class="mb-3">
         <label for="name" class="form-label">Nombre:</label>
-		<input type="hidden" name="key" id="key" value="<?php echo $key; ?>">
         <input type="text" class="form-control" id="name" name="name" placeholder="Ingresa tu nombre" required>
       </div>
       <div class="mb-3">
@@ -210,47 +215,128 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
       <div class="mb-3">
         <label class="form-label">Selecciona tus productos:</label>
 
+        <?php if($objListItem): foreach($objListItem as $item):
+          $itemImg    = !empty($item->urlImage) ? $item->urlImage : base_url().'/resource/img/'.getBahavioDB($key, 'app_invoice_survery', 'img_item', 'cow.png');
+          $itemDesc   = !empty($item->description) ? $item->description : '';
+          $condoRaw   = !empty($item->realStateReferenceCondominio) ? $item->realStateReferenceCondominio : '';
+          $condoOpts  = array_filter(array_map('trim', explode("\n", $condoRaw)));
+        ?>
+        <div class="product-card" id="card<?php echo $item->itemID; ?>">
+          <div class="product-header">
+            <!-- Checkbox -->
+            <input class="custom-check option" type="checkbox"
+              value="<?php echo htmlspecialchars($item->name); ?>"
+              data-price="<?php echo round($item->price1,2); ?>"
+              data-item-id="<?php echo $item->itemID; ?>"
+              id="product<?php echo $item->itemID; ?>">
 
-		<?php
-			if($objListItem)
-			{
-				foreach($objListItem as $item)
-				{
-					?>
-					<div class="form-check mb-2">
-					  <div class="product-selection-row">
-						<input class="form-check-input option" type="checkbox" value="<?php echo $item->name; ?>" data-price="<?php echo round($item->price1,2); ?>" data-img-src="desayuno.jpg" id="product<?php echo $item->itemID; ?>">
-						<div class="product-details">
-						  <img class="product-image me-2" src="<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_item', 'cow.png')?>" alt="<?php echo $item->name; ?>">
-						  <label class="form-check-label" for="product<?php echo $item->itemID; ?>">
-							<?php echo $item->name; ?> <?= $showPrice=='true' ?  '(C$'.round($item->price1,2).')' : ''; ?>
-						  </label>
-						</div>
-					  </div>
-					  <div class="quantity-row row g-0 <?= getBahavioDB($key, 'app_invoice_survery','ocultar_cantidad','')?>">
-						<div class="col-auto">
-						  <label class="col-form-label me-2">Cantidad:</label>
-						</div>
-						<div class="col-4">
-						  <input name="itemID[]" value="<?php echo $item->itemID; ?>" type="hidden" />
-						  <input name="price[]" value="<?= round($item->price1,2) ?>" type="hidden" />
-						  <input name="quantity[]" type="number" class="form-control quantity" min="<?= getBahavioDB($key, 'app_invoice_survery','cantidad_default','0')?>" max="10" value="<?= getBahavioDB($key, 'app_invoice_survery','cantidad_default','0')?>" />
-						</div>
-					  </div>
-					</div>
-					<?php
-				}
-			}
-		?>
-        
+            <!-- Imagen -->
+            <img class="product-image"
+              src="<?php echo $itemImg; ?>"
+              alt="<?php echo htmlspecialchars($item->name); ?>">
 
+            <!-- Info -->
+            <div class="product-info">
+              <div class="product-name"><?php echo htmlspecialchars($item->name); ?></div>
+              <?php if($showPrice == 'true'): ?>
+              <div class="product-price">C$ <?php echo number_format(round($item->price1,2),2); ?></div>
+              <?php endif; ?>
+            </div>
+
+            <!-- Botón ver foto/specs -->
+            <button type="button" class="btn-specs"
+              data-bs-toggle="modal"
+              data-bs-target="#modalProduct<?php echo $item->itemID; ?>">
+              🏍️ Ver foto
+            </button>
+          </div>
+
+          <!-- Opciones: combo + cantidad + comentario (se muestran al seleccionar) -->
+          <div class="product-options" id="opts<?php echo $item->itemID; ?>">
+
+            <?php if(!empty($condoOpts)): ?>
+            <div class="mb-2">
+              <label class="form-label">Variante / Referencia:</label>
+              <select class="form-select form-select-sm combo-option" name="combo[<?php echo $item->itemID; ?>]">
+                <option value="">-- Selecciona una opción --</option>
+                <?php foreach($condoOpts as $opt): ?>
+                <option value="<?php echo htmlspecialchars($opt); ?>"><?php echo htmlspecialchars($opt); ?></option>
+                <?php endforeach; ?>
+              </select>
+            </div>
+            <?php endif; ?>
+
+            <div class="<?= getBahavioDB($key, 'app_invoice_survery','ocultar_cantidad','')?>">
+              <div class="quantity-row mb-2">
+                <label>Cantidad:</label>
+                <input name="itemID[]" value="<?php echo $item->itemID; ?>" type="hidden"/>
+                <input name="price[]" value="<?= round($item->price1,2) ?>" type="hidden"/>
+                <input name="quantity[]" type="number" class="form-control form-control-sm quantity"
+                  style="max-width:90px"
+                  min="<?= getBahavioDB($key, 'app_invoice_survery','cantidad_default','0')?>"
+                  max="10"
+                  value="<?= getBahavioDB($key, 'app_invoice_survery','cantidad_default','0')?>"/>
+              </div>
+            </div>
+
+            <div class="mb-1">
+              <label class="form-label">Comentario (opcional):</label>
+              <textarea class="form-control form-control-sm item-comment"
+                name="comment[<?php echo $item->itemID; ?>]"
+                rows="2"
+                placeholder="Ej: color rojo, talla M, instrucciones especiales..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Modal de foto / especificaciones del producto -->
+        <div class="modal fade" id="modalProduct<?php echo $item->itemID; ?>" tabindex="-1" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="border-radius:16px; overflow:hidden;">
+              <div class="modal-header" style="background:#e63946; color:#fff; border:none;">
+                <h5 class="modal-title fw-bold">🏍️ <?php echo htmlspecialchars($item->name); ?></h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body text-center">
+                <img class="modal-product-img"
+                  src="<?php echo $itemImg; ?>"
+                  alt="<?php echo htmlspecialchars($item->name); ?>">
+
+                <?php if($showPrice == 'true'): ?>
+                <p class="fw-bold" style="color:#e63946; font-size:1.2rem;">
+                  C$ <?php echo number_format(round($item->price1,2),2); ?>
+                </p>
+                <?php endif; ?>
+
+                <?php if(!empty($itemDesc)): ?>
+                <p class="text-muted" style="font-size:0.9rem; text-align:left;"><?php echo nl2br(htmlspecialchars($itemDesc)); ?></p>
+                <?php endif; ?>
+
+                <?php if(!empty($condoOpts)): ?>
+                <div class="text-start mt-2">
+                  <p class="form-label mb-1">Variantes disponibles:</p>
+                  <?php foreach($condoOpts as $opt): ?>
+                  <span class="spec-badge"><?php echo htmlspecialchars($opt); ?></span>
+                  <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
+              </div>
+              <div class="modal-footer" style="border:none;">
+                <button type="button" class="btn btn-danger w-100" data-bs-dismiss="modal">Cerrar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <?php endforeach; endif; ?>
       </div>
 
-      <button type="button" class="btn btn-primary w-100 mb-3" id="verifyBtn">
-          <?= getBahavioDB($key, 'app_invoice_survery', 'boton_verificar', 'Verificar Selección')?>
+      <button type="button" class="btn btn-danger w-100 mb-3 fw-bold" id="verifyBtn" style="border-radius:10px; padding:12px; font-size:1rem;">
+        🛒 <?= getBahavioDB($key, 'app_invoice_survery', 'boton_verificar', 'Verificar Selección')?>
       </button>
     </form>
 
+    <!-- Pantalla de resumen -->
     <div class="summary-screen">
       <h4>📋 <?= getBahavioDB($key, 'app_invoice_survery', 'titulo_resumen', 'Resumen de tu orden')?></h4>
       <p><strong>Nombre:</strong> <span id="summaryName"></span></p>
@@ -258,17 +344,19 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
       <p><strong>Teléfono:</strong> <span id="summaryPhone"></span></p>
 
       <table class="table table-bordered mt-3">
-        <thead>
+        <thead class="table-danger">
           <tr>
             <th>Producto</th>
-            <th>Cantidad</th>
+            <th>Variante</th>
+            <th>Cant.</th>
+            <th>Comentario</th>
             <th class="trSubtotal">Subtotal</th>
           </tr>
         </thead>
         <tbody id="summaryOptions"></tbody>
         <tfoot>
           <tr id="trTotal">
-            <th colspan="2">Total</th>
+            <th colspan="4">Total</th>
             <th id="summaryTotal">C$ 0</th>
           </tr>
         </tfoot>
@@ -280,59 +368,62 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
       </div>
     </div>
   </div>
-  
-  
-  	<div id="modalValidSurvery" style="display:none">
-		<h3>FALTAN DATOS</h3>
-		<br/>
-		Escribir todos los campos
-	</div>
-	<?php
-		helper_getHtmlOfModalDialog("ModalValidSurvery","modalValidSurvery","fnAceptarModalValidSurvery",true,false);
-	?>
+
+  <div id="modalValidSurvery" style="display:none">
+    <h3>FALTAN DATOS</h3>
+    <br/>
+    Escribir todos los campos requeridos y seleccionar al menos un producto.
+  </div>
+  <?php helper_getHtmlOfModalDialog("ModalValidSurvery","modalValidSurvery","fnAceptarModalValidSurvery",true,false); ?>
 
   <script src="<?= base_url()?>/resource/js/jquery-3.7.1.min.js"></script>
   <script src="<?= base_url()?>/resource/js/bootstrap5/bootstrap.bundle.min.js"></script>
   <script>
     $(document).ready(function() {
+
+      // Mostrar/ocultar opciones al marcar checkbox
       $('.option').change(function() {
+        let itemId = $(this).data('item-id');
+        let card   = $('#card' + itemId);
+        let opts   = $('#opts' + itemId);
         if ($(this).is(':checked')) {
-          $(this).closest('.form-check').find('.quantity-row').slideDown();
+          card.addClass('selected');
+          opts.slideDown(200);
         } else {
-          $(this).closest('.form-check').find('.quantity-row').slideUp();
+          card.removeClass('selected');
+          opts.slideUp(200);
         }
       });
 
+      // Validar rango de cantidad
       $(document).on('input', '.quantity', function() {
         let val = parseInt($(this).val());
-        if (isNaN(val) || val < 1) {
-          $(this).val(1);
-        } else if (val > 10) {
-          $(this).val(10);
-        }
+        if (isNaN(val) || val < 1) $(this).val(1);
+        else if (val > 10) $(this).val(10);
       });
 
+      // Verificar selección
       $('#verifyBtn').click(function() {
-        let name = $('#name').val();
-        let address = $('#address').val();
-        let phone = $('#phone').val();
+        let name    = $('#name').val().trim();
+        let address = $('#address').val().trim();
+        let phone   = $('#phone').val().trim();
         let options = [];
-        let total = 0;
+        let total   = 0;
 
         $('.option:checked').each(function() {
+          let itemId      = $(this).data('item-id');
           let productName = $(this).val();
-          let price = parseFloat($(this).data('price'));
-          let qty = parseInt($(this).closest('.form-check').find('.quantity').val());
+          let price       = parseFloat($(this).data('price'));
+          let optsDiv     = $('#opts' + itemId);
+          let qty         = parseInt(optsDiv.find('.quantity').val()) || 1;
           qty = Math.min(Math.max(qty, 1), 10);
-          let subtotal = qty * price;
+          let subtotal    = qty * price;
           total += subtotal;
 
-          options.push({
-            name: productName,
-            quantity: qty,
-            price: price,
-            subtotal: subtotal
-          });
+          let comboVal  = optsDiv.find('.combo-option').val() || '';
+          let commentVal = optsDiv.find('.item-comment').val().trim() || '';
+
+          options.push({ name: productName, quantity: qty, price: price, subtotal: subtotal, combo: comboVal, comment: commentVal });
         });
 
         if (!name || !address || !phone || options.length === 0) {
@@ -345,20 +436,24 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
         $('#summaryPhone').text(phone);
 
         $('#summaryOptions').empty();
-        $.each(options, function(i, option) {
-		  
+        $.each(options, function(i, o) {
+          let comboCell   = o.combo   ? `<span class="spec-badge">${o.combo}</span>`   : '<span class="text-muted">—</span>';
+          let commentCell = o.comment ? `<small>${o.comment}</small>` : '<span class="text-muted">—</span>';
           $('#summaryOptions').append(
             `<tr>
-              <td>${option.name}</td>
-              <td>${option.quantity}</td>
-              <td class="trSubtotal">C$${option.subtotal.toFixed(2)}</td>
+              <td><strong>${o.name}</strong></td>
+              <td>${comboCell}</td>
+              <td>${o.quantity}</td>
+              <td>${commentCell}</td>
+              <td class="trSubtotal">C$ ${o.subtotal.toFixed(2)}</td>
             </tr>`
           );
         });
-       <?php if($showTotal == 'false') echo "$('#trTotal').hide();" ?>
-       <?php if($showSubTotal == 'false') echo "$('.trSubtotal').hide();" ?>
 
-        $('#summaryTotal').text('C$' + total.toFixed(2));
+        <?php if($showTotal == 'false') echo "$('#trTotal').hide();"; ?>
+        <?php if($showSubTotal == 'false') echo "$('.trSubtotal').hide();"; ?>
+
+        $('#summaryTotal').text('C$ ' + total.toFixed(2));
         $('#orderForm').slideUp();
         $('.summary-screen').slideDown();
       });
