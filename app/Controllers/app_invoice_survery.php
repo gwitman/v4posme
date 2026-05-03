@@ -257,7 +257,7 @@ class app_invoice_survery extends _BaseController {
 						replaceSimbol($mensajeCliente), 
 						getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
 						true,
-						""
+						"" 
 					);
 
 				
