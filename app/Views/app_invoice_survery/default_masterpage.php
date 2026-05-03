@@ -258,7 +258,7 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
             <?php if(!empty($condoOpts)): ?>
             <div class="mb-2">
               <label class="form-label">Variante / Referencia:</label>
-              <select class="form-select form-select-sm combo-option" name="combo[<?php echo $item->itemID; ?>]">
+              <select class="form-select form-select-sm combo-option" name="combo_reference[<?php echo $item->itemID; ?>]">
                 <option value="">-- Selecciona una opción --</option>
                 <?php foreach($condoOpts as $opt): ?>
                 <option value="<?php echo htmlspecialchars($opt); ?>"><?php echo htmlspecialchars($opt); ?></option>
@@ -283,7 +283,7 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
             <div class="mb-1">
               <label class="form-label">Comentario (opcional):</label>
               <textarea class="form-control form-control-sm item-comment"
-                name="comment[<?php echo $item->itemID; ?>]"
+                name="comment_reference[<?php echo $item->itemID; ?>]"
                 rows="2"
                 placeholder="Ej: color rojo, talla M, instrucciones especiales..."></textarea>
             </div>

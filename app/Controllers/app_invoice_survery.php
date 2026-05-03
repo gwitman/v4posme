@@ -75,19 +75,24 @@ class app_invoice_survery extends _BaseController {
 			
 			
 			//Obtener datos
-			$name			= $this->request->getPost("name");
-			$phone			= $this->request->getPost("phone");
-			$direccion 		= $this->request->getPost("address");
-			$listItem		= $this->request->getPost("itemID");
-			$listQuantity	= $this->request->getPost("quantity");
-			$listPrice		= $this->request->getPost("price");
+			$name						= $this->request->getPost("name");
+			$phone						= $this->request->getPost("phone");
+			$direccion 					= $this->request->getPost("address");
+			$listItem					= $this->request->getPost("itemID");
+			$listQuantity				= $this->request->getPost("quantity");
+			$listPrice					= $this->request->getPost("price");
+			$listComboReference			= $this->request->getPost("combo_reference");
+			$listCommentReference		= $this->request->getPost("comment_reference");
 			
 			
 			//Buscar el colaborador
 			$objColaborador	= $this->Employee_Model->get_rowByItemReference1($key);
+			if(!$objColaborador)
+			$objColaborador	= $this->Employee_Model->get_rowByItemReference1("");
 			
 			//Buscar el cliente
 			$objCustomer	= $this->Customer_Model->get_rowByItemReference1($phone,$key);
+			
 			
 			
 			//Obtener el login
@@ -188,12 +193,13 @@ class app_invoice_survery extends _BaseController {
 
 	
 				foreach($listItem  as $key => $value)
-				{
-					
-					$itemID				 = $listItem[$key];
-					$quantity			 = $listQuantity[$key];
-					$price			 	 = $listPrice[$key];
-					
+				{					
+					$itemID				 	= $listItem[$key];
+					$quantity			 	= $listQuantity[$key];
+					$price			 	 	= $listPrice[$key];
+					$combo_reference  		= $listCommentReference[$itemID];
+					$coment_reference 		= $listComboReference[$itemID];
+
 					if($quantity <= 0)
 						continue;
 					
@@ -213,8 +219,8 @@ class app_invoice_survery extends _BaseController {
 					$objTMD["discount"]      = 0;
 					$objTMD["promotionID"]   = 0;
 
-					$objTMD["reference1"]                 = 0;
-					$objTMD["reference2"]                 = 0;
+					$objTMD["reference1"]                 = $coment_reference;
+					$objTMD["reference2"]                 = $combo_reference;
 					$objTMD["reference3"]                 = 0;
 					$objTMD["catalogStatusID"]            = 0;
 					$objTMD["inventoryStatusID"]          = 0;
