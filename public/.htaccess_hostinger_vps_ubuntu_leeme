@@ -3,6 +3,11 @@ docker compose build
 docker compose up -d
 
 
+docker compose down
+docker compose build --no-cache
+docker compose up -d
+
+
 docker exec -it web bash
 
 sed -i 's/AllowOverride None/AllowOverride All/g' /etc/apache2/apache2.conf
