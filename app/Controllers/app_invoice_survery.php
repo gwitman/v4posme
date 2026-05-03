@@ -376,7 +376,7 @@ class app_invoice_survery extends _BaseController {
 		    
 			foreach($datView["objTMD"] as $detail_){
 				$row = array(
-					$detail_->itemName. " ". strtolower($detail_->skuFormatoDescription)."-comand-new-row",  				
+					$detail_->itemName." ".$detail_->reference1." ".$detail_->reference2. " ". strtolower($detail_->skuFormatoDescription)."-comand-new-row",  				
 					"none",
 					"none"
 				);
