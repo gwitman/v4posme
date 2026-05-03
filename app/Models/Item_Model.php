@@ -435,6 +435,49 @@ class Item_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
+   function get_rowByItemReference1And_RealStateRoomBatchServices($listPriceID,$reference1){
+		$db 	= db_connect();
+		$builder	= $db->table("tb_item");    
+		$sql = "";
+		$sql = sprintf("
+			select 
+				i.itemID,
+				i.itemNumber,
+				i.barCode,
+				i.`name` ,
+				i.quantity,
+				(
+					select 
+						k.price  
+					from 
+						tb_price k 
+					where 
+						k.itemID = i.itemID and 
+						k.listPriceID = $listPriceID and 
+						k.typePriceID = 154  limit 1  
+				) as price1, 
+				(
+					select 
+						k.price  
+					from 
+						tb_price k 
+					where 
+						k.itemID = i.itemID and 
+						k.listPriceID = $listPriceID and 
+						k.typePriceID = 155  limit 1  
+				) as price2, 
+				i.realStateReferenceCondominio
+			from 
+				tb_item i 
+			where 
+				i.isActive = 1 and 
+				i.reference1 = '".$reference1."' and  
+				i.realStateRoomBatchServices  = 1 
+		");	
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
    
    
 }

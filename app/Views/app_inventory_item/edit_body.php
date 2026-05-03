@@ -680,7 +680,7 @@
 								<div class="form-group								                       <?php echo getBehavio($company->type, "app_inventory_item", "fieldInmobiliaria", "hidden"); ?>">
 										<label class="col-lg-4 control-label" for="normal">Condominio</label>
 										<div class="col-lg-8">
-											<input class="form-control"  type="text"  name="txtRealStateReferenceCondominio" id="txtRealStateReferenceCondominio" value="<?php echo $objItem->realStateReferenceCondominio; ?>">
+											<textarea class="form-control" name="txtRealStateReferenceCondominio" id="txtRealStateReferenceCondominio" rows="5" placeholder="Escribe aquí..."><?php echo $objItem->realStateReferenceCondominio; ?></textarea>
 										</div>
 								</div>
 

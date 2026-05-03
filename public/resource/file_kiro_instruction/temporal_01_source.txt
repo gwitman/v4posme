@@ -1,1 +1,14 @@
-﻿
+﻿revisa el archivo Views/app_invoice_survery/default_masterpage.php  en ese 
+archivo hay un foreach, a la varaible $item de cada elemento del foreach tiene dos campos nuevos,  
+uno de ellos es el campo "realStateReferenceCondominio" ese campo es un string  que qe tiene ese string 
+enter, el objetivo es hacer un split de cada enter, y a ese array resultando mostralo ante de la input de candiad 
+en forma de un combogox,  luego se escriba la cantidad, y luego el usuario, hay que agregar un campo 
+input que sea un comentari donde la perona puede agregar comentario, a su pedido.  
+Adcional que en la pantalal hay un boton que diga ver foto o especificaciones, y se muetra una pantalla modal 
+con la infrmacon del prodroducto, es informacion viene ahi mismo en la variable $item, y la imagen en grande, recueda que 
+el estilo debe versie muy bien en dispotivos mobiles,  
+el sitio esta pensado para levantar pedidos de una tienda de motos, por lo tanto debe ser amigable y bonito,   
+una ves que el usuario a seleccionad los productos, yseleccionado las combobx si hay elemento configurados, y una 
+ves ecribo el comentario, 
+al dar clic en verificar seleccion deme de mostrarse esa informacion tanto el comentario, comobo el valor del combo seleccionad 
+en la vista preliminar de verificacion,
