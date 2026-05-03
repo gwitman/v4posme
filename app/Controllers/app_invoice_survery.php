@@ -35,6 +35,10 @@ class app_invoice_survery extends _BaseController {
 
 			$objListPrice 				= $this->List_Price_Model->getListPriceToApply($companyID);
 			$dataview["objListItem"]	= $this->Item_Model->get_rowByItemReference1And_RealStateRoomBatchServices($objListPrice->listPriceID,$key);
+			if(!$dataview["objListItem"])
+			{
+				$dataview["objListItem"]	= $this->Item_Model->get_rowByItemReference1And_RealStateRoomBatchServices($objListPrice->listPriceID,"");
+			}
 			
 			//Buscar el colaborador
 			$objColaborador				= $this->Employee_Model->get_rowByItemReference1($key);

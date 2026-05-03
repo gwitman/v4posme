@@ -216,7 +216,8 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
         <label class="form-label">Selecciona tus productos:</label>
 
         <?php if($objListItem): foreach($objListItem as $item):
-          $itemImg    = !empty($item->urlImage) ? $item->urlImage : base_url().'/resource/img/'.getBahavioDB($key, 'app_invoice_survery', 'img_item', 'cow.png');
+          //$itemImg    = !empty($item->urlImage) ? $item->urlImage : base_url().'/resource/img/'.getBahavioDB($key, 'app_invoice_survery', 'img_item', 'cow.png');
+          $itemImg    = base_url()."/resource/file_company/company_2/component_33/component_item_".$item->itemID."/default_public.jpg";
           $itemDesc   = !empty($item->description) ? $item->description : '';
           $condoRaw   = !empty($item->realStateReferenceCondominio) ? $item->realStateReferenceCondominio : '';
           $condoOpts  = array_filter(array_map('trim', explode("\n", $condoRaw)));
