@@ -1,0 +1,67 @@
+services:
+  web:
+    build: .
+    container_name: web
+    restart: unless-stopped
+    volumes:
+      - ./app:/var/www/html
+    expose:
+      - "80"
+
+  db:
+    image: mysql:8.0
+    container_name: db
+    restart: unless-stopped
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: CambiaEstaClave
+      MYSQL_DATABASE: miapp
+      MYSQL_USER: miusuario
+      MYSQL_PASSWORD: MiClaveSegura
+    volumes:
+      - db_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+    expose:
+      - "80"
+    depends_on:
+      - db
+
+  caddy:
+    image: caddy:2
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    command:
+      - sh
+      - -c
+      - |
+        cat >/etc/caddy/Caddyfile <<'EOF'
+        alphadblmotor.tech {
+          reverse_proxy web:80
+        }
+        phpmyadmin.alphadblmotor.tech {
+          reverse_proxy phpmyadmin:80
+        }
+        EOF
+        caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
+    volumes:
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - web
+      - phpmyadmin
+
+volumes:
+  db_data:
+  caddy_data:
+  caddy_config:
