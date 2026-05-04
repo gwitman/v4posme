@@ -4,7 +4,7 @@
 		<!-- botonera -->
 		<div class="email-bar" style="border-left:1px solid #c9c9c9">
 			<div class="btn-group pull-right">
-				<?php
+					<?php
                     if ($callback == "false") {
                     ?>
 						<a href="<?php echo base_url(); ?>/app_inventory_item/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>
@@ -16,12 +16,14 @@
 							<li><a href="#" id="btnPrinterdConPrecio"   ><font style="vertical-align: inherit;"><font style="vertical-align: inherit;"><i class="icon16 i-print"></i> Sticker con precio</font></font></a></li>
 						</ul>
 
-						<?php
-                            } else {
-                            ?>
-<?php
-    }
-?>
+					<?php                            
+					} 
+					else 
+					{
+                    ?>
+					<?php
+    				}
+					?>
 				<a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
 			</div>
 		</div>
@@ -685,7 +687,7 @@
 								</div>
 
 								<div class="form-group								                       <?php echo getBehavio($company->type, "app_inventory_item", "fieldInmobiliaria", "hidden"); ?>">
-										<label class="col-lg-4 control-label" for="normal">Zona</label>
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type, "app_inventory_item", "lblZona", "Zona"); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtRealStateReferenceZone" id="txtRealStateReferenceZone" value="<?php echo $objItem->realStateReferenceZone; ?>">
 										</div>
