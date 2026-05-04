@@ -41,7 +41,7 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
     .logo {
       display: block;
       margin: 0 auto 20px;
-      max-width: 100px;
+      <?= getBahavioDB($key, 'app_invoice_survery', 'sizeImageSurvary', 'max-width: 100px;')?>
     }
     .form-label {
       color: #e63946;
