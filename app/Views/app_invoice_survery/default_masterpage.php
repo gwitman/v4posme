@@ -179,6 +179,62 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
       margin: 3px 2px;
       font-weight: 600;
     }
+    /* Buscador y filtros */
+    .search-filter-bar {
+      margin-bottom: 16px;
+    }
+    .search-input-wrap {
+      position: relative;
+    }
+    .search-input-wrap input {
+      padding-left: 36px;
+      border-radius: 20px;
+      border: 1.5px solid #ddd;
+      font-size: 0.9rem;
+    }
+    .search-input-wrap input:focus {
+      border-color: #e63946;
+      box-shadow: 0 0 0 0.15rem rgba(230,57,70,0.15);
+      outline: none;
+    }
+    .search-icon {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #aaa;
+      font-size: 0.9rem;
+      pointer-events: none;
+    }
+    .category-pills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .pill {
+      padding: 4px 14px;
+      border-radius: 20px;
+      border: 1.5px solid #e63946;
+      color: #e63946;
+      background: transparent;
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+      white-space: nowrap;
+    }
+    .pill.active, .pill:hover {
+      background: #e63946;
+      color: #fff;
+    }
+    .no-results {
+      text-align: center;
+      color: #aaa;
+      font-size: 0.9rem;
+      padding: 20px 0;
+      display: none;
+    }
     /* Responsive */
     @media (max-width: 576px) {
       .container { margin: 10px; padding: 16px; border-radius: 12px; }
@@ -238,6 +294,36 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
       <div class="mb-3">
         <label class="form-label">Selecciona tus productos:</label>
 
+        <!-- Buscador y filtro por categoría -->
+        <div class="search-filter-bar">
+          <div class="search-input-wrap">
+            <span class="search-icon">🔍</span>
+            <input type="text" id="searchInput" class="form-control" placeholder="Buscar producto...">
+          </div>
+          <?php
+            // Recolectar categorías únicas no vacías
+            $categories = [];
+            if($objListItem) {
+              foreach($objListItem as $it) {
+                $cat = trim($it->categoryName ?? '');
+                if($cat !== '' && !in_array($cat, $categories)) {
+                  $categories[] = $cat;
+                }
+              }
+            }
+          ?>
+          <?php if(!empty($categories)): ?>
+          <div class="category-pills" id="categoryPills">
+            <button type="button" class="pill active" data-cat="">Todos</button>
+            <?php foreach($categories as $cat): ?>
+            <button type="button" class="pill" data-cat="<?= htmlspecialchars($cat) ?>"><?= htmlspecialchars($cat) ?></button>
+            <?php endforeach; ?>
+          </div>
+          <?php endif; ?>
+        </div>
+
+        <div id="noResults" class="no-results">No se encontraron productos.</div>
+
         <?php if($objListItem): foreach($objListItem as $item):
           //$itemImg    = !empty($item->urlImage) ? $item->urlImage : base_url().'/resource/img/'.getBahavioDB($key, 'app_invoice_survery', 'img_item', 'cow.png');
           $itemImg    = base_url()."/resource/file_company/company_2/component_33/component_item_".$item->itemID."/default_public.jpg";
@@ -245,7 +331,9 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
           $condoRaw   = !empty($item->realStateReferenceCondominio) ? $item->realStateReferenceCondominio : '';
           $condoOpts  = array_filter(array_map('trim', explode("\n", $condoRaw)));
         ?>
-        <div class="product-card" id="card<?php echo $item->itemID; ?>">
+        <div class="product-card" id="card<?php echo $item->itemID; ?>"
+          data-name="<?php echo strtolower(htmlspecialchars($item->name)); ?>"
+          data-category="<?php echo strtolower(htmlspecialchars(trim($item->categoryName ?? ''))); ?>">
           <div class="product-header">
             <!-- Checkbox -->
             <input class="custom-check option" type="checkbox"
@@ -489,6 +577,36 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
 
       $('#confirmOrderBtn').click(function() {
         $('#orderForm').submit();
+      });
+
+      // --- Buscador y filtro por categoría ---
+      let activeCat = '';
+
+      function filterProducts() {
+        let text = $('#searchInput').val().toLowerCase().trim();
+        let visible = 0;
+        $('.product-card').each(function() {
+          let name = $(this).data('name') || '';
+          let cat  = $(this).data('category') || '';
+          let matchText = text === '' || name.includes(text);
+          let matchCat  = activeCat === '' || cat === activeCat;
+          if (matchText && matchCat) {
+            $(this).show();
+            visible++;
+          } else {
+            $(this).hide();
+          }
+        });
+        $('#noResults').toggle(visible === 0);
+      }
+
+      $('#searchInput').on('input', filterProducts);
+
+      $(document).on('click', '#categoryPills .pill', function() {
+        $('#categoryPills .pill').removeClass('active');
+        $(this).addClass('active');
+        activeCat = $(this).data('cat').toLowerCase();
+        filterProducts();
       });
     });
   </script>

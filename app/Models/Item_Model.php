@@ -446,6 +446,7 @@ class Item_Model extends Model  {
 				i.barCode,
 				i.`name` ,
 				i.quantity,
+				ic.`name` as categoryName,
 				(
 					select 
 						k.price  
@@ -469,6 +470,8 @@ class Item_Model extends Model  {
 				i.realStateReferenceCondominio
 			from 
 				tb_item i 
+				inner join tb_item_category ic on 
+					ic.inventoryCategoryID = i.inventoryCategoryID 
 			where 
 				i.isActive = 1 and 
 				i.reference1 = '".$reference1."' and  
