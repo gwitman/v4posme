@@ -17,14 +17,17 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
       background: <?=getBahavioDB($key, 'app_invoice_survery', 'fondo_encuesta', "linear-gradient(135deg, #1a1a2e, #16213e, #0f3460)")?>;
       font-family: 'Montserrat', sans-serif;
       min-height: 100vh;
+      overflow-x: hidden;
     }
     .container {
       max-width: 800px;
+      width: 100%;
       margin: 30px auto;
       background: #fff;
       border-radius: 18px;
       padding: 30px;
       box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+      box-sizing: border-box;
     }
     h1 {
       text-align: center;
@@ -182,6 +185,26 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
       h1 { font-size: 1.5rem; }
       .product-image { width: 64px; height: 64px; }
       .product-name { font-size: 0.92rem; }
+    }
+    @media (max-width: 720px) {
+      .container {
+        margin: 0;
+        border-radius: 0;
+        padding: 16px;
+      }
+      .product-header {
+        flex-wrap: wrap;
+      }
+      .product-info {
+        flex: 1 1 0;
+        min-width: 0;
+      }
+      .btn-specs {
+        order: 3;
+        width: 100%;
+        margin-top: 8px;
+        text-align: center;
+      }
     }
   </style>
 </head>
