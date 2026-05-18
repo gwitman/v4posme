@@ -2302,6 +2302,8 @@ class app_box_share extends _BaseController {
 
 			$datView["viewRegisterFormatoPaginaNormal80mmOpcion1_LabelAfterDateTime"] 
 													= ""; 
+
+													
 			
 			//Configurar Detalle			
 			$confiDetalle = array();
