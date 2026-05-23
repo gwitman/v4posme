@@ -290,7 +290,41 @@
 										</div>
 									</div>
 									
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="selectFilter">Sub Status</label>
+										<div class="col-lg-8">
+											<select name="txtStatusIDSecondary" id="txtStatusIDSecondary" class="select2">
+													<option></option>
+													<?php
+													if($objListSubStatus)
+													foreach($objListSubStatus as $ws){
+														if($ws->workflowStageID == $objTransactionMaster->isTemplate)
+															echo "<option value='".$ws->workflowStageID."' selected>".$ws->name."</option>";
+														else
+															echo "<option value='".$ws->workflowStageID."'>".$ws->name."</option>";
+													}
+													?>
+											</select>
+										</div>
+									</div>
 									
+									<div class="form-group">
+										<label class="col-lg-4 control-label" for="selectFilter">Tipo</label>
+										<div class="col-lg-8">
+											<select name="txtTypeID" id="txtTypeID" class="select2">
+													<option></option>
+													<?php
+													if($objListTipo)
+													foreach($objListTipo as $ws){
+														if($ws->catalogItemID == $objTransactionMaster->printerQuantity)
+															echo "<option value='".$ws->catalogItemID."' selected>".$ws->name."</option>";
+														else
+															echo "<option value='".$ws->catalogItemID."'>".$ws->name."</option>";
+													}
+													?>
+											</select>
+										</div>
+									</div>
 								
 							</div>
 							<div class="col-lg-6">

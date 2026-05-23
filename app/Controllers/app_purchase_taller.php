@@ -127,6 +127,8 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","routeID",$companyID);
 			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","mesaID",$companyID);
 			$dataView["objComponentItem"]		= $objComponentItem;
+			$dataView["objListSubStatus"]		= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_workshop_taller","statusIDSecondary",$dataView["objTransactionMaster"]->isTemplate,$companyID,$branchID,$roleID);
+			$dataView["objListTipo"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","typeID",$companyID);
 			
 			$dataView["objListComments"]		= $this->core_web_catalog->getCatalogAllItem("tb_comments","catalogStatusID",$companyID);
 
@@ -328,6 +330,8 @@ class app_purchase_taller extends _BaseController {
 			//$objTMNew["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtCustomerCreditLineID");//--fin peticion get o post
 			//$objTMNew["descriptionReference"] 		= "reference1:input,reference2:input,reference3:Gestor de Cobro,reference4:Linea de credito del Cliente";
 			$objTMNew["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");
+			$objTMNew["isTemplate"] 					= /*inicio get post*/ $this->request->getPost("txtStatusIDSecondary");
+			$objTMNew["printerQuantity"]				= /*inicio get post*/ $this->request->getPost("txtTypeID");
 			$objTMNew["amount"] 						= /*inicio get post*/ $this->request->getPost("txtDetailAmount");	
 			$objTMNew["entityID"]						= /*inicio get post*/ $this->request->getPost("txtCustomerID");
 			$objTMNew["entityIDSecondary"]				= /*inicio get post*/ $this->request->getPost("txtEmployerID");
@@ -355,7 +359,7 @@ class app_purchase_taller extends _BaseController {
 				$objTMI["zoneID"]						= /*inicio get post*/ $this->request->getPost("txtZoneID");				
 				$objTMI["reference2"]					= /*inicio get post*/ $this->request->getPost("txtInfoReference2");
 				$objTMI["reference1"]					= /*inicio get post*/ $this->request->getPost("txtInfoReference1");
-				$objTMI["referenceClientName"]			= /*inicio get post*/ $this->request->getPost("txtReferenceClientName");
+				$objTMI["referenceClientName"]			= /*inicio get post*/ $this->request->getPost("txtReferenceClientName");				
 				$this->Transaction_Master_Info_Model-> update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMI);
 				
 			}
@@ -656,6 +660,8 @@ class app_purchase_taller extends _BaseController {
 			$objTM["reference3"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference3");
 			$objTM["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtReference4");
 			$objTM["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");
+			$objTM["isTemplate"]		 			= /*inicio get post*/ $this->request->getPost("txtStatusIDSecondary");
+			$objTM["printerQuantity"]				= /*inicio get post*/ $this->request->getPost("txtTypeID");
 			$objTM["amount"] 						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost('txtDetailAmount'));
 			$objTM["isApplied"] 					= 0;
 			$objTM["journalEntryID"] 				= 0;
@@ -684,7 +690,7 @@ class app_purchase_taller extends _BaseController {
 			$objTMI["zoneID"]						= /*inicio get post*/ $this->request->getPost("txtZoneID");
 			$objTMI["reference2"]					= /*inicio get post*/ $this->request->getPost("txtInfoReference2");
 			$objTMI["reference1"]					= /*inicio get post*/ $this->request->getPost("txtInfoReference1");
-			$objTMI["referenceClientName"]			= /*inicio get post*/ $this->request->getPost("txtReferenceClientName");
+			$objTMI["referenceClientName"]			= /*inicio get post*/ $this->request->getPost("txtReferenceClientName");			
 			$this->Transaction_Master_Info_Model->insert_app_posme($objTMI);
 			
 
@@ -1082,6 +1088,8 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","routeID",$companyID);
 			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","mesaID",$companyID);
 			$dataView["objListComments"]		= $this->core_web_catalog->getCatalogAllItem("tb_comments","catalogStatusID",$companyID);
+			$dataView["objListSubStatus"]		= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_workshop_taller","statusIDSecondary",$companyID,$branchID,$roleID);
+			$dataView["objListTipo"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","typeID",$companyID);
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
