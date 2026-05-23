@@ -892,16 +892,16 @@
 								<br/>
 								<?php if(!empty($objListTrackingLead)): ?>
 								<table id="tb_traking_lead" class="table table-bordered table-hover table-striped">
-									<thead style="background-color:#4e73df; color:#fff;">
-									  <tr>
-										<th style="width:40px;">#</th>
-										<th>No.</th>
-										<th>Fecha</th>
-										<th>Tipo</th>
-										<th>Sub Tipo</th>
-										<th>Categoria</th>
-										<th>Comentario</th>
-										<th>Estado</th>
+									<thead>
+									  <tr style="background: linear-gradient(135deg, #1a237e 0%, #283593 40%, #3949ab 100%); color:#fff; text-shadow: 0 1px 2px rgba(0,0,0,0.4); font-size:13px; letter-spacing:0.5px;">
+										<th style="width:40px; border-color:#3949ab; padding:10px 8px;">#</th>
+										<th style="border-color:#3949ab; padding:10px 8px;">No.</th>
+										<th style="border-color:#3949ab; padding:10px 8px;">📅 Fecha</th>
+										<th style="border-color:#3949ab; padding:10px 8px;">🏷️ Tipo</th>
+										<th style="border-color:#3949ab; padding:10px 8px;">🔖 Sub Tipo</th>
+										<th style="border-color:#3949ab; padding:10px 8px;">📂 Categoría</th>
+										<th style="border-color:#3949ab; padding:10px 8px;">💬 Comentario</th>
+										<th style="border-color:#3949ab; padding:10px 8px;">✅ Estado</th>
 									  </tr>
 									</thead>
 									<tbody>

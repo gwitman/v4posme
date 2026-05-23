@@ -517,8 +517,8 @@ class Transaction_Master_Model extends Model  {
 		$sql = $sql.sprintf("FROM 
 								  	tb_transaction_master tm ");
 		$sql = $sql.sprintf("		INNER JOIN tb_workflow_stage ws ON ws.workflowStageID = tm.statusID ");
-		$sql = $sql.sprintf("		LEFT JOIN tb_catalog_item ci_tipo ON ci_tipo.catalogItemID = tm.areaID ");
-		$sql = $sql.sprintf("		LEFT JOIN tb_catalog_item ci_subtipo ON ci_subtipo.catalogItemID = tm.priorityID ");
+		$sql = $sql.sprintf("		LEFT JOIN tb_public_catalog_detail ci_tipo ON ci_tipo.publicCatalogDetailID = tm.areaID ");
+		$sql = $sql.sprintf("		LEFT JOIN tb_public_catalog_detail ci_subtipo ON ci_subtipo.publicCatalogDetailID = tm.priorityID ");
 		$sql = $sql.sprintf("WHERE 
 								tm.entityID = %d ", $customerID);
 		$sql = $sql.sprintf("	AND tm.isActive = 1 ");

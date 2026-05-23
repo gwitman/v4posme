@@ -31,8 +31,8 @@ class app_cxc_leads extends _BaseController {
 			$objTM["branchID"]						= $dataSession["user"]->branchID;
 			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_customer_leads",0);
 			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($dataSession["user"]->companyID,$transactionID);			
-			$objTM["transactionOn"]					= date("Y-m-d H:m:s");
-			$objTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
+			$objTM["transactionOn"]					= helper_getDateTime();
+			$objTM["statusIDChangeOn"]				= helper_getDateTime();
 			$objTM["componentID"] 					= $objComponentShare->componentID;
 			$objTM["note"] 							= /*inicio get post*/ $this->request->getPost("txtLeadComentario");//--fin peticion get o post
 			$objTM["sign"] 							= $objT->signInventory;
