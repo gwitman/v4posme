@@ -3,10 +3,10 @@
 $(document).ready(function(){		
 	var varParameterCantidadItemPoup		= '<?php echo $objParameterCantidadItemPoup; ?>';  
 				 
-		$('#txtDate').datepicker({format:"yyyy-mm-dd"});
-		$('#txtDate').val(moment().format("YYYY-MM-DD"));	
-		$("#txtDate").datepicker("update");
-		$('.txt-numeric').mask('000,000.00', {reverse: true});
+	$('#txtDate').datepicker({format:"yyyy-mm-dd"});
+	$('#txtDate').val(moment().format("YYYY-MM-DD"));	
+	$("#txtDate").datepicker("update");
+	$('.txt-numeric').mask('000,000.00', {reverse: true});
 		
 	
 	
@@ -85,6 +85,9 @@ $(document).ready(function(){
 		fnAgregarFila();
 	});
 	
+	<?php 
+	echo $objReadyPostScript;
+	?>
 	
 });
 

@@ -56,7 +56,9 @@
 								
 									<input type="hidden" name="txtCompanyID" value="<?php echo $objTransactionMaster->companyID; ?>">
 									<input type="hidden" name="txtTransactionID" value="<?php echo $objTransactionMaster->transactionID; ?>">
-									<input type="hidden" name="txtTransactionMasterID" value="<?php echo $objTransactionMaster->transactionMasterID; ?>">
+									<input type="hidden" name="txtTransactionMasterID" id="txtTransactionMasterID" value="<?php echo $objTransactionMaster->transactionMasterID; ?>">
+									<input type="hidden" name="txtRoleID" id="txtRoleID" value="<?php echo $roleID; ?>">
+									<input type="hidden" name="txtUserID" id="txtUserID" value="<?php echo $userID; ?>">
 									
 									
 									
@@ -300,7 +302,7 @@
 													{
 														if($ws == null)
 															continue;
-														
+
 														if($ws->workflowStageID == $objTransactionMaster->isTemplate)
 															echo "<option value='".$ws->workflowStageID."' selected>".$ws->name."</option>";
 														else
@@ -448,11 +450,11 @@
 											<tr>
 												<td>
 													<input type="hidden" name="commentsDetailID[]" value="<?= $value->transactionMasterDetailID?>" />
-													<input class="form-control" type="text" name="txtComentarioTallerArray[]" value="<?= $value->reference1 ?>">
+													<input class="form-control txtComentarioTallerArray" type="text" name="txtComentarioTallerArray[]" value="<?= $value->reference1 ?>">
 												</td>
 												<td>
 													<label class="sr-only" for="txtCommentsID">Seleccionar Situación</label>
-													<select name="txtCommentsIDArray[]" id="comboCommentsId" class="select2"  >
+													<select name="txtCommentsIDArray[]" id="comboCommentsId" class="select2 comboCommentsIdClass"  >
 															<option></option>																
 															<?php
 															$count = 0;
@@ -466,7 +468,7 @@
 													</select>
 												</td>
 												<td>
-													<button type="button" class="btn btn-flat btn-danger" onclick="fnEliminarFila(this)">
+													<button type="button" class="btn btn-flat btn-danger btnDeleteReferencias" onclick="fnEliminarFila(this)">
 														<i class="fas fa-trash"></i>
 													</button>
 												</td>

@@ -49,7 +49,9 @@
 					<div class="tab-pane fade in active" id="home">	
 						<div class="row">										
 							<div class="col-lg-6">
-								
+									<input type="hidden" name="txtRoleID" id="txtRoleID" value="<?php echo $roleID; ?>">
+									<input type="hidden" name="txtUserID" id="txtUserID" value="<?php echo $userID; ?>">
+									<input type="hidden" name="txtTransactionMasterID" id="txtTransactionMasterID" value="0">
 					
 									<div class="form-group">
 										<label class="col-lg-4 control-label" for="datepicker">Fecha</label>
