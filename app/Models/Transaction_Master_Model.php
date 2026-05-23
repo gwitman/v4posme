@@ -496,6 +496,39 @@ class Transaction_Master_Model extends Model  {
 		
 	}
 
+	function getRowAll_Lead_ByEntityID($customerID)
+	{
+		$db = db_connect();
+		$sql = "";
+		$sql = $sql.sprintf("SELECT ");
+		$sql = $sql.sprintf("    tm.transactionMasterID, ");
+		$sql = $sql.sprintf("    tm.transactionNumber, ");
+		$sql = $sql.sprintf("    tm.transactionOn, ");
+		$sql = $sql.sprintf("    tm.note, ");
+		$sql = $sql.sprintf("    tm.areaID, ");
+		$sql = $sql.sprintf("    tm.priorityID, ");
+		$sql = $sql.sprintf("    tm.reference1, ");
+		$sql = $sql.sprintf("    tm.statusID, ");
+		$sql = $sql.sprintf("    tm.entityID, ");
+		$sql = $sql.sprintf("    tm.createdOn, ");
+		$sql = $sql.sprintf("    ws.name AS statusName, ");
+		$sql = $sql.sprintf("    ci_tipo.name AS tipoName, ");
+		$sql = $sql.sprintf("    ci_subtipo.name AS subTipoName ");
+		$sql = $sql.sprintf("FROM 
+								  	tb_transaction_master tm ");
+		$sql = $sql.sprintf("		INNER JOIN tb_workflow_stage ws ON ws.workflowStageID = tm.statusID ");
+		$sql = $sql.sprintf("		LEFT JOIN tb_catalog_item ci_tipo ON ci_tipo.catalogItemID = tm.areaID ");
+		$sql = $sql.sprintf("		LEFT JOIN tb_catalog_item ci_subtipo ON ci_subtipo.catalogItemID = tm.priorityID ");
+		$sql = $sql.sprintf("WHERE 
+								tm.entityID = %d ", $customerID);
+		$sql = $sql.sprintf("	AND tm.isActive = 1 ");
+		$sql = $sql.sprintf("	AND tm.transactionID IN ( 42 /*lead de clientes */ )  ");
+		$sql = $sql.sprintf("ORDER BY 
+								tm.transactionMasterID DESC ");
+
+		return $db->query($sql)->getResult();
+	}
+
 	function get_rowByTransactionNumberMobile_AndUser($companyID,$transactionNumberMobile,$userName)
     {
 	   	$db 		= db_connect();
@@ -569,5 +602,11 @@ class Transaction_Master_Model extends Model  {
 		//Ejecutar Consulta		
 		return $db->query($sql)->getRow();
     } 
+	
+
+
 }
+
 ?>
+
+

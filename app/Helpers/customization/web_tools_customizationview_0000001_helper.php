@@ -554,6 +554,15 @@ function getBehavio($type_company, $key_controller, $key_element, $default_value
             fnShowNotification('Escribir ID Encuentra 24 solo puede tener números','error',timerNotification);
 			result = false;
         } 
+
+	    //Validar que el campo sea solo numero
+		debugger;
+		var regexOnlyNumber = /^[0-9+\-#().]+$/;
+		if (!regexOnlyNumber.test($('#txtPhoneNumber').val())) 
+		{
+			fnShowNotification('El campo Teléfono solo puede contener números y los caracteres + - # . ( )','error',timerNotification);
+			result = false;
+		}
 		
 		
 		",	

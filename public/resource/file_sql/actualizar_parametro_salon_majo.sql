@@ -1,4 +1,5 @@
 /*BD: 	dbzrgnyjgcvdbd:salon_majo*/
+/*Servidor:		siteground.net */
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

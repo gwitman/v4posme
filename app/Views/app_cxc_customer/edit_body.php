@@ -108,6 +108,7 @@
 							<li><a href="#dropdown-recordatorio" data-toggle="tab">Recordatorios</a></li>
 						 </ul>
 					</li>
+					<li class="<?php echo getBehavio($company->type,"app_cxc_customer","divPestanaTrakingLead",""); ?>" ><a href="#traking-lead" data-toggle="tab">Traking Lead.</a></li>
 				</ul>
 				
 				<div class="tab-content">
@@ -882,6 +883,50 @@
 									</tbody>
 								</table>
 								
+							</div>
+						</div>
+					</div>
+					<div class="tab-pane fade" id="traking-lead">
+						<div class="row">
+							<div class="col-lg-12">
+								<br/>
+								<?php if(!empty($objListTrackingLead)): ?>
+								<table id="tb_traking_lead" class="table table-bordered table-hover table-striped">
+									<thead style="background-color:#4e73df; color:#fff;">
+									  <tr>
+										<th style="width:40px;">#</th>
+										<th>No.</th>
+										<th>Fecha</th>
+										<th>Tipo</th>
+										<th>Sub Tipo</th>
+										<th>Categoria</th>
+										<th>Comentario</th>
+										<th>Estado</th>
+									  </tr>
+									</thead>
+									<tbody>
+									<?php
+									$i = 1;
+									foreach($objListTrackingLead as $lead):
+									?>
+									<tr>
+										<td><?php echo $i++; ?></td>
+										<td><span class="badge" style="background-color:#4e73df;"><?php echo htmlspecialchars($lead->transactionNumber); ?></span></td>
+										<td><?php echo htmlspecialchars($lead->transactionOn); ?></td>
+										<td><?php echo htmlspecialchars($lead->tipoName ?? '-'); ?></td>
+										<td><?php echo htmlspecialchars($lead->subTipoName ?? '-'); ?></td>
+										<td><?php echo htmlspecialchars($lead->reference1 ?? '-'); ?></td>
+										<td><?php echo htmlspecialchars($lead->note ?? '-'); ?></td>
+										<td><span class="label label-info"><?php echo htmlspecialchars($lead->statusName); ?></span></td>
+									</tr>
+									<?php endforeach; ?>
+									</tbody>
+								</table>
+								<?php else: ?>
+								<div class="alert alert-info">
+									<i class="icon16 i-info"></i> No hay registros de tracking de leads para este cliente.
+								</div>
+								<?php endif; ?>
 							</div>
 						</div>
 					</div>

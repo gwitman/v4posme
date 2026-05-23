@@ -6,6 +6,17 @@
 /******************************************************************/	
 
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "0" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "TALLER_ROLE_EXTERNAL"; ##Agregar productos repetidos en la facturaion mobile
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "0" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "TALLER_EMPLOYER_DEFAULT"; ##Agregar productos repetidos en la facturaion mobile
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 

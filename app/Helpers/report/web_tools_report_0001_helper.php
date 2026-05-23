@@ -8856,6 +8856,14 @@ function helper_reporte80mmTransactionMaster(
                             ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->tax1)."
                           </td>
                         </tr> 
+						<tr>
+                          <td colspan='2'>
+                            % SERVICIO
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->tax2)."
+                          </td>
+                        </tr> 
                         <tr>
                           <td colspan='2'>
                             DESC
@@ -8869,7 +8877,7 @@ function helper_reporte80mmTransactionMaster(
                             TOTAL
                           </td>
                           <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount)."
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount + $objTransactionMastser->tax2)."
                           </td>
                         </tr>
    
@@ -8878,7 +8886,7 @@ function helper_reporte80mmTransactionMaster(
                             RECIBIDO
                           </td>
                           <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount + $objTransactionMasterInfo->changeAmount)."
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount + $objTransactionMasterInfo->changeAmount + $objTransactionMastser->tax2 )."
                           </td>
                         </tr>
                          <tr>

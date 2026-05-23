@@ -178,6 +178,9 @@ class app_cxc_customer extends _BaseController {
                 throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 			$datView["objComponentItem"] = $objComponentItem;
 			
+			//Obtener historial de leads del cliente
+			$datView["objListTrackingLead"]	= $this->Transaction_Master_Model->getRowAll_Lead_ByEntityID($entityID);
+
 			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			=  $this->core_web_notification->get_message();
