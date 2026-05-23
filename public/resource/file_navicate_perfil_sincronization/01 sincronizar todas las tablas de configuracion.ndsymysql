@@ -20,7 +20,7 @@
     "TargetCloudInstanceName": "",
     "TargetProject": "",
     "TargetProjectOwnerNavicatID": "",
-    "TargetSchema": "dbzrgnyjgcvdbd",
+    "TargetSchema": "dbjznvjrsdpypf",
     "TargetServer": "posme.net",
     "TargetServerServiceProvider": 0,
     "TargetServerType": "MYSQL",
@@ -130,6 +130,18 @@
       },
       "Target": {
         "Name": "tb_component_autorization_detail",
+        "ObjectType": "Table_MYSQL"
+      },
+      "Keys": [],
+      "Fields": []
+    },
+	{
+      "Source": {
+        "Name": "tb_component_autorization_detail_page",
+        "ObjectType": "Table_MYSQL"
+      },
+      "Target": {
+        "Name": "tb_component_autorization_detail_page",
         "ObjectType": "Table_MYSQL"
       },
       "Keys": [],

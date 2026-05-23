@@ -2561,7 +2561,7 @@
 					objConcepto2 	= jLinq.from(objConcepto).where(function(obj){ return (obj.name === "TAX_SERVICES"); }).select();
 					if( objConcepto2.length > 0 )
 					{
-						var amount = objConcepto1[0].valueOut;
+						var amount = objConcepto2[0].valueOut;
 						objTableDetail.fnUpdate( fnFormatNumber(amount,2), objind_, columnasTableDetail.taxServices );
 					}
 				}

@@ -1099,7 +1099,7 @@ class app_purchase_taller extends _BaseController {
 			//Obtener los permiso del rol sobre la pagina en base al estado
 			$dataView["objComponentAurotizationDetailPage"]	= $this->Component_Autorization_Detail_Page_Model->get_rowByWorkflowStageID_And_RoleID_Type(
 					$companyID,$roleID,$dataView["company"]->flavorID,
-					$dataView["objTransactionMaster"]->isTemplate,"new");
+					$dataView["objListSubStatus"][0]->workflowStageID,"new");
 
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
