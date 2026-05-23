@@ -153,7 +153,12 @@ class app_purchase_taller extends _BaseController {
 			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
 			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
 
-			
+
+			//Obtener los permiso del rol sobre la pagina en base al estado
+			$dataView["objComponentAurotizationDetailPage"]	= $this->Component_Autorization_Detail_Page->get_rowByWorkflowStageID_And_RoleID_Type(
+					$companyID,$roleID,$dataView["company"]->flavorID,
+					$dataView["objTransactionMaster"]->isTemplate,"edit");
+
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();

@@ -537,3 +537,13 @@
 		</div>
 	</div>
 </div>
+
+<?php
+if($objComponentAurotizationDetailPage) 
+{
+	foreach($objComponentAurotizationDetailPage as $config)
+	{
+		echo $config->scriptCss."\n\r\n\r\n\r";
+	}
+}
+?>

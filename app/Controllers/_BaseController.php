@@ -69,6 +69,7 @@ use App\Models\Core\Company_Subelement_audit_Model;
 use App\Models\Core\Component_Audit_detail_Model;
 use App\Models\Core\Component_Audit_Model;
 use App\Models\Core\Component_Autorization_Model;
+use App\Models\Core\Component_Autorization_Detail_Page_Model;
 use App\Models\Core\Component_Model;
 use App\Models\Core\Counter_Model;
 use App\Models\Core\Currency_Model;
@@ -303,6 +304,7 @@ abstract class _BaseController extends Controller
     protected $Company_Parameter_Model;
     protected $Company_Subelement_audit_Model;
     protected $Component_Audit_detail_Model;
+	protected $Component_Autorization_Detail_Page_Model;
     protected $Component_Audit_Model;
     protected $Component_Autorization_Model;
     protected $Component_Element_Model;
@@ -484,6 +486,7 @@ abstract class _BaseController extends Controller
         $this->Company_Parameter_Model= new Company_Parameter_Model();
         $this->Company_Subelement_audit_Model= new Company_Subelement_audit_Model();
         $this->Component_Audit_detail_Model= new Component_Audit_detail_Model();
+		$this->Component_Autorization_Detail_Page_Model = new Component_Autorization_Detail_Page_Model();
         $this->Component_Audit_Model= new Component_Audit_Model();
         $this->Component_Autorization_Model= new Component_Autorization_Model();
 
