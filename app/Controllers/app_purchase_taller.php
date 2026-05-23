@@ -155,7 +155,7 @@ class app_purchase_taller extends _BaseController {
 
 
 			//Obtener los permiso del rol sobre la pagina en base al estado
-			$dataView["objComponentAurotizationDetailPage"]	= $this->Component_Autorization_Detail_Page->get_rowByWorkflowStageID_And_RoleID_Type(
+			$dataView["objComponentAurotizationDetailPage"]	= $this->Component_Autorization_Detail_Page_Model->get_rowByWorkflowStageID_And_RoleID_Type(
 					$companyID,$roleID,$dataView["company"]->flavorID,
 					$dataView["objTransactionMaster"]->isTemplate,"edit");
 
@@ -1096,6 +1096,11 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objListSubStatus"]		= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_workshop_taller","statusIDSecondary",$companyID,$branchID,$roleID);
 			$dataView["objListTipo"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","typeID",$companyID);
 			
+			//Obtener los permiso del rol sobre la pagina en base al estado
+			$dataView["objComponentAurotizationDetailPage"]	= $this->Component_Autorization_Detail_Page_Model->get_rowByWorkflowStageID_And_RoleID_Type(
+					$companyID,$roleID,$dataView["company"]->flavorID,
+					$dataView["objTransactionMaster"]->isTemplate,"new");
+
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
