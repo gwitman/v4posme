@@ -128,8 +128,7 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","mesaID",$companyID);
 			$dataView["objComponentItem"]		= $objComponentItem;
 			$dataView["objListSubStatus"]		= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_workshop_taller","statusIDSecondary",$dataView["objTransactionMaster"]->isTemplate,$companyID,$branchID,$roleID);
-			$dataView["objListTipo"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","typeID",$companyID);
-			
+			$dataView["objListTipo"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","typeID",$companyID);			
 			$dataView["objListComments"]		= $this->core_web_catalog->getCatalogAllItem("tb_comments","catalogStatusID",$companyID);
 
 			$objParameterUrlPrinter 						= $this->core_web_parameter->getParameter("WORKSHOW_URL_PRINTER_TALLER",$companyID);
@@ -967,7 +966,7 @@ class app_purchase_taller extends _BaseController {
 			if(!$this->validation->withRequest($this->request)->run()){
 				$stringValidation = $this->core_web_tools->formatMessageError($this->validation->getErrors());
 				$this->core_web_notification->set_message(true,$stringValidation);
-				$this->response->redirect(base_url()."/".'app_purchase_taller/add');
+				$this->response->redirect(base_url()."/".'app_purchase_taller/add');				
 				exit;
 			} 
 			

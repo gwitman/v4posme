@@ -294,10 +294,13 @@
 										<label class="col-lg-4 control-label" for="selectFilter">Sub Status</label>
 										<div class="col-lg-8">
 											<select name="txtStatusIDSecondary" id="txtStatusIDSecondary" class="select2">
-													<option></option>
 													<?php
 													if($objListSubStatus)
-													foreach($objListSubStatus as $ws){
+													foreach($objListSubStatus as $ws)
+													{
+														if($ws == null)
+															continue;
+														
 														if($ws->workflowStageID == $objTransactionMaster->isTemplate)
 															echo "<option value='".$ws->workflowStageID."' selected>".$ws->name."</option>";
 														else
