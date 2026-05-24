@@ -2633,7 +2633,14 @@ class app_inventory_inputunpost extends _BaseController {
 			$objParameterCantidadItemPoup					= $objParameterCantidadItemPoup->value;
 			$datView["objParameterCantidadItemPoup"] 		= $objParameterCantidadItemPoup;
 			$datView["objListCompanyPageSetting"]			= $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"app_inventory_inputunpost");
-			
+			$datView["pantallaCompra_hiddenSummaryISC"] 	= getBahavioSession(
+					$dataSession["company"]->type, 
+					"app_inventory_inputunpost", 
+					"pantallaCompra_hiddenSummaryISC", 
+					"",
+					$datView["objListCompanyPageSetting"]
+				);
+
 			//Renderizar Resultado
 			$dataSession["notification"]					= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]							=  $this->core_web_notification->get_message();
@@ -2745,7 +2752,14 @@ class app_inventory_inputunpost extends _BaseController {
 			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
 			$objParameterCantidadItemPoup				= $objParameterCantidadItemPoup->value;
 			$dataView["objParameterCantidadItemPoup"] 	= $objParameterCantidadItemPoup;
-			
+			$dataView["pantallaCompra_hiddenSummaryISC"]= getBahavioSession(
+					$dataSession["company"]->type, 
+					"app_inventory_inputunpost", 
+					"pantallaCompra_hiddenSummaryISC", 
+					"",
+					$dataView["objListCompanyPageSetting"]
+				);
+
 			//Renderizar Resultado 
 			$dataSession["notification"]		= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]				= $this->core_web_notification->get_message();

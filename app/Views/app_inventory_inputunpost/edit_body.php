@@ -379,7 +379,7 @@
 										<input type="text" id="txtIva" name="txtIva"  class="col-lg-12" readonly="readonly" value="<?php echo floor($objTM->tax1 * 100) / 100;  ?>" style="text-align:right"/>
 									</td>
 								</tr>
-								<tr>
+								<tr class="<?php  echo $pantallaCompra_hiddenSummaryISC; ?>">
 									<th>ISC</th>
 									<td >
 										<input type="text" id="txtIsc" name="txtIsc"  class="col-lg-12" readonly="readonly" value="<?php echo floor($objTM->tax2 * 100) / 100;  ?>" style="text-align:right"/>
