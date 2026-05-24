@@ -2357,25 +2357,71 @@
 														enableKeyEvents: true,
 														listeners: {
 															change: function(field, newValue) {
-																
-																if (isLoading) return; // Detener evento
-																
-																// Aquí podés manejar el cambio y actualizar el store
-																var record = field.getWidgetRecord();
-																
-																if (record) {  // se asegura que record NO sea undefined ni null
-																	record.set('txtTMD_txtPrice', newValue);
-																	
-																			
-																	
-																	var grid 		= field.up('grid');          // obtiene el grid
-																	var store 		= grid.getStore();          // obtiene el store
-																	var rowIndex 	= store.indexOf(record); // índice del record en el store
 
-																	fnRecalculateDetail(true,"", rowIndex);
-																	
+																if (isLoading) return;
+
+																var record = field.getWidgetRecord();
+																if (!record) return;
+
+																// Debounce: esperar 800ms tras el último teclazo
+																if (field._precioTimer) {
+																	clearTimeout(field._precioTimer);
 																}
-																
+
+																field._precioTimer = setTimeout(function() {
+																	field._precioTimer = null;
+
+																	var precio1        = parseFloat(record.get('txtTMD_txtItemPrecio1')) || 0;
+																	var cantidad       = parseFloat(record.get('txtTMD_txtQuantity'))    || 0;
+																	var precioAnterior = parseFloat(record.get('txtTMD_txtPrice'))       || 0;
+																	var nuevoPrecio    = parseFloat(newValue)                            || 0;
+																	var itemID         = record.get('txtTMD_txtItemID');
+
+																	// Obtener el costo real desde IndexDB
+																	indexDBGetLocalProductoByItemID(itemID, function(resultado) {
+
+																		var costo = 0;
+																		if (resultado.productos && resultado.productos.length > 0) {
+																			var viewport    = Ext.getCmp('miVentanaPrincipal');
+																			var currencyID  = viewport ? viewport.down("#txtCurrencyID").getValue()  : null;
+																			var warehouseID = viewport ? viewport.down("#txtWarehouseID").getValue() : null;
+
+																			var filtrado = Ext.Array.filter(resultado.productos, function(obj) {
+																				return obj.currencyID === currencyID && obj.warehouseID === warehouseID;
+																			});
+
+																			if (filtrado.length > 0) {
+																				costo = parseFloat(filtrado[0].cost) || 0;
+																			}
+																		}
+
+																		// Caso 1: precio por debajo o igual al costo → rechazar
+																		if (costo > 0 && nuevoPrecio <= costo) {
+																			record.set('txtTMD_txtPrice', precioAnterior);
+																			field.suspendEvents();
+																			field.setValue(precioAnterior);
+																			field.resumeEvents();
+																			Ext.Msg.alert('Precio inválido', 'El precio no puede ser menor o igual al costo del producto.');
+																			console.log("valor del costo original del producto:" + costo);
+																			return;
+																		}
+
+																		// Actualizar precio en el record
+																		record.set('txtTMD_txtPrice', nuevoPrecio);
+
+																		// Caso 2: precio entre costo y precio1 → descuento automático
+																		if (nuevoPrecio < precio1) {
+																			var descuentoItem = (precio1 - nuevoPrecio) * cantidad;
+																			record.set('txtTMD_txtDiscountByItem', descuentoItem);
+																		} else {
+																			// Caso 3: precio >= precio1 → sin descuento
+																			record.set('txtTMD_txtDiscountByItem', 0);
+																		}
+
+																		// Recalcular resumen sumando los descuentos ya establecidos en cada ítem
+																		fnRecalculateDetail(true, "sumarizar");
+																	});
+																}, 800);
 															}
 														}
 													}
@@ -5836,11 +5882,19 @@
 			
 			
 			var precio 					= store.getAt(index).get("txtTMD_txtPrice"); 
+			var precio1					= parseFloat(store.getAt(index).get("txtTMD_txtItemPrecio1")) || 0;
 			var subtotal    			= precio * cantidad;
 			store.getAt(index).set("txtTMD_txtSubTotal",subtotal);
 			
-			var descuento				= subtotal * (porcentajeDescuento / 100);
-			store.getAt(index).set("txtTMD_txtDiscountByItem",descuento);
+			// Si el precio fue modificado manualmente (menor que precio1), recalcular descuento por diferencia de precio
+			// Si no, aplicar el porcentaje global de descuento
+			var descuento = 0;
+			if (precio1 > 0 && precio < precio1) {
+				descuento = (precio1 - precio) * cantidad;
+			} else {
+				descuento = subtotal * (porcentajeDescuento / 100);
+			}
+			store.getAt(index).set("txtTMD_txtDiscountByItem", descuento);
 			
 			
 			var grid 						= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
