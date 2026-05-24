@@ -454,6 +454,32 @@ class app_inventory_report extends _BaseController {
 				
 				
 			if(!($viewReport && $startOn && $endOn  )){
+				$data["objListCompanyPageSetting"]	= $this->Company_Page_Setting_Model->get_rowByKeyAndController(
+					$dataSession["company"]->type,
+					"app_inventory_report"
+				);
+				$data["hiddenDateStartAndEnd"] 		= getBahavioSession(
+					$dataSession["company"]->type, 
+					"app_inventory_report", 
+					"rotacionInventario_hiddenDateStartAndEnd", 
+					"",
+					$data["objListCompanyPageSetting"]
+				);
+				$data["hiddenHourStartAndEnd"] 		= getBahavioSession(
+					$dataSession["company"]->type, 
+					"app_inventory_report", 
+					"rotacionInventario_hiddenHourStartAndEnd", 
+					"",
+					$data["objListCompanyPageSetting"]
+				);
+				$data["monthBefore"] 				= getBahavioSession(
+					$dataSession["company"]->type, 
+					"app_inventory_report", 
+					"rotacionInventario_monthBefore", 
+					"0",
+					$data["objListCompanyPageSetting"]
+				);
+				
 				$data["objListWarehouse"]	= $this->Userwarehouse_Model->getRowByUserID($companyID,$userID);
 				//Renderizar Resultado 
 				$dataSession["message"]		= $this->core_web_notification->get_message();
@@ -469,6 +495,13 @@ class app_inventory_report extends _BaseController {
 				$companyID 		= $dataSession["user"]->companyID;
 				$startOn 		= $startOn." ".$horaInicial;
 				$endOn 			= $endOn." ".$horaFinal;
+
+				$fechaInicio 	= new \DateTime($startOn);
+				$fechaFin    	= new \DateTime($endOn);
+				$diferencia 	= $fechaInicio->diff($fechaFin);
+				$diferenciaDay  = $diferencia->days+1;
+				
+
 				
 				//Get Component
 				$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
@@ -480,7 +513,7 @@ class app_inventory_report extends _BaseController {
 				$query			= "CALL pr_inventory_get_report_ratation(?,?,?,?,?,?,?);";
 				$objData		= $this->Bd_Model->executeRenderMultipleNative(
 					$query,
-					[$userID,$tocken,$companyID,$warehouseID,$startOn,$endOn,365]
+					[$userID,$tocken,$companyID,$warehouseID,$startOn,$endOn,$diferenciaDay]
 				);			
 				
 				if(isset($objData))

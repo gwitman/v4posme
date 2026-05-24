@@ -80,7 +80,7 @@
 					<td style="text-align:left;font-weight:bold" class="border">Cantidad de venta</td>					
 					<td style="text-align:left;font-weight:bold" class="border">Cantidad actual</td>
 					<td style="text-align:left;font-weight:bold" class="border">Rotacion</td>
-					<td style="text-align:left;font-weight:bold" class="border">Rotacion en 1 año</td>				
+					<td style="text-align:left;font-weight:bold" class="border">Rotacion</td>				
 				</tr>
 			
 			</thead>				
@@ -108,11 +108,11 @@
 						echo "</td>";
 						
 						echo "<td style='text-align:right;border-top: 0px;border-left: 0px;'  class='border'>";
-							echo (number_format($i["rotacion"],2,'.',','));
+							echo (number_format($i["rotacion"],2,'.',','))." veces";
 						echo "</td>";
 
 						echo "<td style='text-align:right;border-top: 0px;border-left: 0px;'  class='border'>";
-							echo (number_format($i["rotacion_dia"],2,'.',','));
+							echo (number_format($i["rotacion_dia"],2,'.',','))." dias";
 						echo "</td>";
 					echo "</tr>";
 				}
@@ -125,7 +125,7 @@
 					<td style="text-align:left;font-weight:bold" class="border">Cantidad de venta</td>					
 					<td style="text-align:left;font-weight:bold" class="border">Cantidad actual</td>
 					<td style="text-align:left;font-weight:bold" class="border">Rotacion</td>
-					<td style="text-align:left;font-weight:bold" class="border">Rotacion en 1 año</td>		
+					<td style="text-align:left;font-weight:bold" class="border">Rotacion</td>		
 				</tr>
 			</tfoot>
 		</table>

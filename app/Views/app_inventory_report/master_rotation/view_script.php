@@ -1,9 +1,14 @@
 <!-- ./ page heading -->
 <script>				
 	$(document).ready(function(){
-		$('#txtStartOn').datepicker({format:"yyyy-mm-dd"});
-		$('#txtStartOn').val(moment().format("YYYY-MM-DD"));						 						
-		$("#txtStartOn").datepicker("update");												
+		$('#txtStartOn').datepicker({format:"yyyy-mm-dd"});		
+		$('#txtStartOn').val(
+			moment().subtract('months',<?php echo $monthBefore; ?>).format("YYYY-MM-DD")
+		);
+		$('#txtStartOn').datepicker('update');		
+		
+
+
 		$('#txtEndOn').datepicker({format:"yyyy-mm-dd"});
 		$('#txtEndOn').val(moment().format("YYYY-MM-DD"));	
 		$("#txtEndOn").datepicker("update");						
