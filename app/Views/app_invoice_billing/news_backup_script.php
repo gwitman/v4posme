@@ -2673,7 +2673,8 @@
 													value: 0 , 
 													name: 'txtPorcentajeDescuento' , 
 													id:'txtPorcentajeDescuento', 
-													readOnly:false, 
+													readOnly:false,
+													hidden: <?php echo getBahavioSession($company->type, "app_invoice_billing", "ocultarCampoPorcentajeDescuento", "false",$objListCompanyPageSetting); ?>,
 													fieldStyle: 'font-weight:bold; color:#2E7D32; font-size:18px; text-align:right;',
 													listeners: {
 														change: fnChange_PorcentageDescuento
@@ -2685,7 +2686,7 @@
 													name: 'txtDescuento' , 
 													id:'txtDescuento',
 													xtype: 'numberfield',
-													readOnly: false,
+													readOnly: <?php echo getBahavioSession($company->type, "app_invoice_billing", "soloLecturaCampoDescuento", "false",$objListCompanyPageSetting); ?>,
 													minValue: 0,
 													decimalPrecision: 4,
 													step: 0.0001,
