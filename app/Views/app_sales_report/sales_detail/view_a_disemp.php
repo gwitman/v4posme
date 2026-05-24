@@ -32,8 +32,9 @@
 		$configColumn["4"]["Titulo"] 		= "Cliente";		
 		$configColumn["5"]["Titulo"] 		= "Precio unitario";
 		$configColumn["6"]["Titulo"] 		= "Cantidad";
+		$configColumn["19"]["Titulo"] 		= "Descuento";
 		$configColumn["7"]["Titulo"] 		= "Costo unitario";
-		$configColumn["8"]["Titulo"] 		= "Costo Total";
+		$configColumn["8"]["Titulo"] 		= "Costo Total";		
 		$configColumn["9"]["Titulo"] 		= "Precio Total";
 		$configColumn["10"]["Titulo"] 		= "Utilidad";
 		$configColumn["11"]["Titulo"] 		= "Utilidad %";		
@@ -52,6 +53,7 @@
 		$configColumn["4"]["FiledSouce"] 		= "legalName";		
 		$configColumn["5"]["FiledSouce"] 		= "unitaryPrice";
 		$configColumn["6"]["FiledSouce"] 		= "quantity";
+		$configColumn["19"]["FiledSouce"] 		= "discount";
 		$configColumn["7"]["FiledSouce"] 		= "unitaryCost";
 		$configColumn["8"]["FiledSouce"] 		= "cost";
 		$configColumn["9"]["FiledSouce"] 		= "amount";
@@ -72,6 +74,7 @@
 		$configColumn["4"]["Formato"] 		= "";		
 		$configColumn["5"]["Formato"] 		= "Number";
 		$configColumn["6"]["Formato"] 		= "Number";
+		$configColumn["19"]["Formato"] 		= "Number";
 		$configColumn["7"]["Formato"] 		= "Number";
 		$configColumn["8"]["Formato"] 		= "Number";
 		$configColumn["9"]["Formato"] 		= "Number";
@@ -92,6 +95,7 @@
 		$configColumn["4"]["Width"] 		= "250px";		
 		$configColumn["5"]["Width"] 		= "100px";
 		$configColumn["6"]["Width"] 		= "100px";
+		$configColumn["19"]["Width"] 		= "100px";
 		$configColumn["7"]["Width"] 		= "100px";
 		$configColumn["8"]["Width"] 		= "140px";
 		$configColumn["9"]["Width"] 		= "140px";
@@ -112,20 +116,20 @@
 		$configColumn["4"]["Total"] 		= False;		
 		$configColumn["5"]["Total"] 		= False;
 		$configColumn["6"]["Total"] 		= False;
+		$configColumn["19"]["Total"] 		= False;
 		$configColumn["7"]["Total"] 		= False;
 		$configColumn["8"]["Total"] 		= True;
 		$configColumn["9"]["Total"] 		= True;
 		$configColumn["10"]["Total"] 		= True;
-		$configColumn["11"]["Total"] 		= False;
-		
+		$configColumn["11"]["Total"] 		= False;		
 		$configColumn["12"]["Total"] 		= False;
 		$configColumn["13"]["Total"] 		= False;	
 		$configColumn["14"]["Total"] 		= False;	
 		$configColumn["15"]["Total"] 		= False;
 		$configColumn["16"]["Total"] 		= True;
 		$configColumn["17"]["Total"] 		= True;
-		$configColumn["18"]["Total"] 		= True;
-		
+		$configColumn["18"]["Total"] 		= True;	
+			
 		$configColumn["11"]["Promedio"] 	= True;
 		
 		$resultado 	= helper_reporteGeneralCreateTable($objDetail,$configColumn,'0px',NULL,NULL);
