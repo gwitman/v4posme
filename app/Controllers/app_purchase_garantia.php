@@ -723,6 +723,7 @@ class app_purchase_garantia extends _BaseController {
 			
 			 //Validar Formulario
 			if(!$this->validation->withRequest($this->request)->run()){
+				
 				$stringValidation = $this->core_web_tools->formatMessageError($this->validation->getErrors());
 				$this->core_web_notification->set_message(true,$stringValidation);
 				$this->response->redirect(base_url()."/".'app_purchase_garantia/add');
@@ -731,6 +732,7 @@ class app_purchase_garantia extends _BaseController {
 			
 			//Guardar o Editar Registro						
 			if($mode == "new"){
+				
 				$this->insertElement($dataSession);
 			}
 			else if ($mode == "edit"){
@@ -757,7 +759,7 @@ class app_purchase_garantia extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}		
 			
 	}
