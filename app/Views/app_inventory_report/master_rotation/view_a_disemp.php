@@ -108,11 +108,11 @@
 						echo "</td>";
 						
 						echo "<td style='text-align:right;border-top: 0px;border-left: 0px;'  class='border'>";
-							echo (number_format($i["rotacion"],2,'.',','))." veces";
+							echo $i["rotacion"];
 						echo "</td>";
 
 						echo "<td style='text-align:right;border-top: 0px;border-left: 0px;'  class='border'>";
-							echo (number_format($i["rotacion_dia"],2,'.',','))." dias";
+							echo $i["rotacion_dia"];
 						echo "</td>";
 					echo "</tr>";
 				}
