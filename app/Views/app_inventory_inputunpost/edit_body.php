@@ -255,13 +255,13 @@
 								</div>	
 								
 								<div class="form-group">
-										<label class="col-lg-4 control-label" for="normal">Referencia2</label>
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBahavioSession($company->type, "app_inventory_inputunpost", "lblReference2", "Referencia3",$objListCompanyPageSetting); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtReference2" id="txtReference2" value="<?php echo $objTM->reference2; ?>">												
 										</div>
 								</div>											
 								<div class="form-group">
-										<label class="col-lg-4 control-label" for="normal">Referencia3</label>
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBahavioSession($company->type, "app_inventory_inputunpost", "lblReference3", "Referencia3",$objListCompanyPageSetting); ?></label>
 										<div class="col-lg-8">
 											<input class="form-control"  type="text"  name="txtReference3" id="txtReference3" value="<?php echo $objTM->reference3; ?>">												
 										</div>
