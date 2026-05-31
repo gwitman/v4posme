@@ -291,6 +291,17 @@ class Transaction_Master_Detail_Model extends Model  {
 			$sql = $sql.sprintf(" where td.transactionMasterID = $transactionMasterID and td.isActive = 1 ");
 		}
 
+		if($componentID == 136 /* Orden de taller zona de cliente : tb_transaction_master_taller_zone_customer*/)
+		{
+			$sql      = sprintf("select 
+									td.reference1,
+									ci.name									
+								");
+			$sql = $sql.sprintf(" from tb_transaction_master_detail td");
+			$sql = $sql.sprintf(" inner join tb_catalog_item ci on ci.catalogItemID = td.catalogStatusID ");			
+			$sql = $sql.sprintf(" where td.transactionMasterID = $transactionMasterID and td.isActive = 1 ");
+		}
+
 		if($componentID == 119 || $componentID == 121)
 		{
 			/*Entrada de Activo Fijo: tb_transaction_master_fixedassent_input - 119*/
