@@ -1,5 +1,5 @@
 /*BD: 	dbg2u7j48asmvd:parametro_gym_jalapa*/
-/*SERVIDOR:		siteground*/
+/*SERVIDOR:		siteground .net*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
