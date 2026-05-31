@@ -126,9 +126,7 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objListMarca"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","zoneID",$companyID);
 			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","routeID",$companyID);
 			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","mesaID",$companyID);
-			$dataView["objComponentItem"]		= $objComponentItem;
-			$dataView["objListSubStatus"]		= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_workshop_taller","statusIDSecondary",$dataView["objTransactionMaster"]->isTemplate,$companyID,$branchID,$roleID);
-			$dataView["objListTipo"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","typeID",$companyID);			
+			$dataView["objComponentItem"]		= $objComponentItem;			
 			$dataView["objListComments"]		= $this->core_web_catalog->getCatalogAllItem("tb_comments","catalogStatusID",$companyID);
 
 			$objParameterUrlPrinter 						= $this->core_web_parameter->getParameter("WORKSHOW_URL_PRINTER_TALLER",$companyID);
@@ -347,8 +345,8 @@ class app_purchase_taller extends _BaseController {
 			//$objTMNew["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtCustomerCreditLineID");//--fin peticion get o post
 			//$objTMNew["descriptionReference"] 		= "reference1:input,reference2:input,reference3:Gestor de Cobro,reference4:Linea de credito del Cliente";
 			$objTMNew["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");
-			$objTMNew["isTemplate"] 					= /*inicio get post*/ $this->request->getPost("txtStatusIDSecondary");
-			$objTMNew["printerQuantity"]				= /*inicio get post*/ $this->request->getPost("txtTypeID");
+			$objTMNew["isTemplate"] 					= 0;
+			$objTMNew["printerQuantity"]				= 0;
 			$objTMNew["amount"] 						= /*inicio get post*/ $this->request->getPost("txtDetailAmount");	
 			$objTMNew["entityID"]						= /*inicio get post*/ $this->request->getPost("txtCustomerID");
 			$objTMNew["entityIDSecondary"]				= /*inicio get post*/ $this->request->getPost("txtEmployerID");
@@ -677,8 +675,8 @@ class app_purchase_taller extends _BaseController {
 			$objTM["reference3"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference3");
 			$objTM["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtReference4");
 			$objTM["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");
-			$objTM["isTemplate"]		 			= /*inicio get post*/ $this->request->getPost("txtStatusIDSecondary");
-			$objTM["printerQuantity"]				= /*inicio get post*/ $this->request->getPost("txtTypeID");
+			$objTM["isTemplate"]		 			= 0;
+			$objTM["printerQuantity"]				= 0;
 			$objTM["amount"] 						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost('txtDetailAmount'));
 			$objTM["isApplied"] 					= 0;
 			$objTM["journalEntryID"] 				= 0;
@@ -1105,15 +1103,8 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","routeID",$companyID);
 			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","mesaID",$companyID);
 			$dataView["objListComments"]		= $this->core_web_catalog->getCatalogAllItem("tb_comments","catalogStatusID",$companyID);
-			$dataView["objListSubStatus"]		= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_workshop_taller","statusIDSecondary",$companyID,$branchID,$roleID);
-			$dataView["objListTipo"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","typeID",$companyID);
 			
-			//Obtener los permiso del rol sobre la pagina en base al estado
-			$dataView["objComponentAurotizationDetailPage"]	= $this->Component_Autorization_Detail_Page_Model->get_rowByWorkflowStageID_And_RoleID_Type(
-					$companyID,$roleID,$dataView["company"]->flavorID,
-					$dataView["objListSubStatus"][0]->workflowStageID,"new");
-
-
+			
 			$dataView["objListCompanyPageSetting"]			= $this->Company_Page_Setting_Model->get_rowByKeyAndController(
 				$dataView["company"]->type,
 				"app_purchase_taller"
