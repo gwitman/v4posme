@@ -9,7 +9,7 @@
 			if(objRowTableListView != undefined){
 				fnWaitOpen();
 				var data 		= objTableListView.fnGetData(objRowTableListView);			
-				window.location	= "<?php echo base_url(); ?>/app_purchase_taller/edit/companyID/"+data[0]+"/transactionID/"+data[1]+"/transactionMasterID/"+data[2];
+				window.location	= "<?php echo base_url(); ?>/app_purchase_request/edit/companyID/"+data[0]+"/transactionID/"+data[1]+"/transactionMasterID/"+data[2];
 			}
 			else{
 				fnShowNotification("Seleccionar el Registro...","error");
@@ -22,7 +22,7 @@
 						cache       : false,
 						dataType    : 'json',
 						type        : 'POST',
-						url  		: "<?php echo base_url(); ?>/app_purchase_taller/searchTransactionMaster",
+						url  		: "<?php echo base_url(); ?>/app_purchase_request/searchTransactionMaster",
 						data 		: {transactionNumber : $("#txtSearchTransaction").val() },
 						success:function(data){
 							console.info("complete delete success");
@@ -31,7 +31,7 @@
 								fnShowNotification(data.message,"error");
 							}
 							else{		
-								window.location = "<?php echo base_url(); ?>/app_purchase_taller/edit/companyID/"+data.companyID+"/transactionID/"+data.transactionID+"/transactionMasterID/"+data.transactionMasterID;
+								window.location = "<?php echo base_url(); ?>/app_purchase_request/edit/companyID/"+data.companyID+"/transactionID/"+data.transactionID+"/transactionMasterID/"+data.transactionMasterID;
 							}
 						},
 						error:function(xhr,data){	
@@ -51,7 +51,7 @@
 						cache       : false,
 						dataType    : 'json',
 						type        : 'POST',
-						url  		: "<?php echo base_url(); ?>/app_purchase_taller/delete",
+						url  		: "<?php echo base_url(); ?>/app_purchase_request/delete",
 						data 		: {companyID : data[0], transactionID :data[1],transactionMasterID : data[2] },
 						success:function(data){
 							console.info("complete delete success");
@@ -78,12 +78,12 @@
 		});
 		$(document).on("click","#btnNuevo",function(){
 			fnWaitOpen();
-			window.location	= "<?php echo base_url(); ?>/app_purchase_taller/add";
+			window.location	= "<?php echo base_url(); ?>/app_purchase_request/add";
 		});
 	});
 	
 	function fn_aceptCallback(data){
 			var dataViewID 	= data[0];
-			window.location = "../../app_purchase_taller/index/"+dataViewID;   
+			window.location = "../../app_purchase_request/index/"+dataViewID;   
 	}					
 </script>

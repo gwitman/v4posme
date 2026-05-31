@@ -9,8 +9,6 @@
 		$('.txt-numeric').mask('000,000.00', {reverse: true});
 		var urlPrinterInput  = '<?php echo $objParameterUrlPrinterInput; ?>';
 		var urlPrinterOutput = '<?php echo $objParameterUrlPrinterOutput; ?>';
-		var urlPrinterStiker = '<?php echo $objParameterUrlPrinterSticker; ?>';
-		
 		
 		//Regresar a la lista
 		$(document).on("click","#btnBack",function(){
@@ -27,7 +25,7 @@
 		//Evento Agregar el Usuario
 		$(document).on("click","#btnAcept",function(){
 				$( "#form-new-invoice" ).attr("method","POST");
-				$( "#form-new-invoice" ).attr("action","<?php echo base_url(); ?>/app_purchase_taller/save/edit");
+				$( "#form-new-invoice" ).attr("action","<?php echo base_url(); ?>/app_purchase_request/save/edit");
 				
 				if(validateForm()){
 					fnWaitOpen();
@@ -49,11 +47,6 @@
 					fnWaitClose();																	
 		});
 		
-		$(document).on("click","#btnPrinterStiker",function(){
-					fnWaitOpen();
-					window.open("<?php echo base_url(); ?>"+"/"+urlPrinterStiker+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>", '_blank');
-					fnWaitClose();																	
-		});
 		
 		
 		
@@ -65,7 +58,7 @@
 					cache       : false,
 					dataType    : 'json',
 					type        : 'POST',
-					url  		: "<?php echo base_url(); ?>/app_purchase_taller/delete",
+					url  		: "<?php echo base_url(); ?>/app_purchase_request/delete",
 					data 		: {companyID : <?php echo $objTransactionMaster->companyID;?>, transactionID : <?php echo $objTransactionMaster->transactionID;?>,transactionMasterID : <?php echo $objTransactionMaster->transactionMasterID; ?>  },
 					success:function(data){
 						console.info("complete delete success");
@@ -74,7 +67,7 @@
 							fnShowNotification(data.message,"error");
 						}
 						else{
-							window.location = "<?php echo base_url(); ?>/app_purchase_taller/index";
+							window.location = "<?php echo base_url(); ?>/app_purchase_request/index";
 						}
 					},
 					error:function(xhr,data){	
@@ -194,7 +187,7 @@
 			result = false;
 		}
 		
-		<?php echo getBehavio($company->type,"app_purchase_taller","scriptValidateForm","") ?>
+		<?php echo getBehavio($company->type,"app_purchase_request","scriptValidateForm","") ?>
 		return result;
 	}
 	

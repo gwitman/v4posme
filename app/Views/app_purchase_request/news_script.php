@@ -25,7 +25,7 @@ $(document).ready(function(){
 	//Evento Agregar el Usuario
 	$(document).on("click","#btnAcept",function(){
 			$( "#form-new-invoice" ).attr("method","POST");
-			$( "#form-new-invoice" ).attr("action","<?php echo base_url(); ?>/app_purchase_taller/save/new");
+			$( "#form-new-invoice" ).attr("action","<?php echo base_url(); ?>/app_purchase_request/save/new");
 			
 			if(validateForm()){
 				fnWaitOpen();
@@ -141,7 +141,7 @@ function validateForm(){
 	}
 	
 	
-	<?php echo getBehavio($company->type,"app_purchase_taller","scriptValidateForm","") ?>
+	<?php echo getBehavio($company->type,"app_purchase_request","scriptValidateForm","") ?>
 	return result;
 }
 

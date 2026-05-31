@@ -1,7 +1,7 @@
 <?php
 //posme:2023-02-27
 namespace App\Controllers;
-class app_purchase_taller extends _BaseController {
+class app_purchase_request extends _BaseController {
 	
     
     function edit(){ 
@@ -45,13 +45,13 @@ class app_purchase_taller extends _BaseController {
 			
 			if((!$companyID || !$transactionID  || !$transactionMasterID))
 			{ 
-				$this->response->redirect(base_url()."/".'app_purchase_taller/add');	
+				$this->response->redirect(base_url()."/".'app_purchase_request/add');	
 			} 		
 			
 			//Componente de facturacion
-			$objComponentTransactionShare	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_workshop_taller");
+			$objComponentTransactionShare	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_taller_zone_customer");
 			if(!$objComponentTransactionShare)
-			throw new \Exception("EL COMPONENTE 'tb_transaction_master_workshop_taller' NO EXISTE...");
+			throw new \Exception("EL COMPONENTE 'tb_transaction_master_taller_zone_customer' NO EXISTE...");
 		
 			
 			$objCurrency						= $this->core_web_currency->getCurrencyDefault($companyID);
@@ -120,29 +120,17 @@ class app_purchase_taller extends _BaseController {
 			$dataView["branchName"]				= $dataSession["branch"]->name;
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
 			$dataView["objComponentShare"]		= $objComponentTransactionShare;					
-			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_workshop_taller","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
-			$dataView["objListEstadosEquipo"]	= $this->core_web_catalog->getCatalogAllItemIncludeId("tb_transaction_master_workshop_taller","areaID",$companyID,$dataView["objTransactionMaster"]->areaID);
-			$dataView["objListAccesorios"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","priorityID",$companyID);
-			$dataView["objListMarca"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","zoneID",$companyID);
-			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","routeID",$companyID);
-			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","mesaID",$companyID);
+			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_taller_zone_customer","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
+			$dataView["objListEstadosEquipo"]	= $this->core_web_catalog->getCatalogAllItemIncludeId("tb_transaction_master_taller_zone_customer","areaID",$companyID,$dataView["objTransactionMaster"]->areaID);
+			$dataView["objListAccesorios"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","priorityID",$companyID);
+			$dataView["objListMarca"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","zoneID",$companyID);
+			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","routeID",$companyID);
+			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","mesaID",$companyID);
 			$dataView["objComponentItem"]		= $objComponentItem;
-			$dataView["objListSubStatus"]		= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_workshop_taller","statusIDSecondary",$dataView["objTransactionMaster"]->isTemplate,$companyID,$branchID,$roleID);
-			$dataView["objListTipo"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","typeID",$companyID);			
+			$dataView["objListSubStatus"]		= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_taller_zone_customer","statusIDSecondary",$dataView["objTransactionMaster"]->isTemplate,$companyID,$branchID,$roleID);
+			$dataView["objListTipo"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","typeID",$companyID);			
 			$dataView["objListComments"]		= $this->core_web_catalog->getCatalogAllItem("tb_comments","catalogStatusID",$companyID);
 
-			$objParameterUrlPrinter 						= $this->core_web_parameter->getParameter("WORKSHOW_URL_PRINTER_TALLER",$companyID);
-			$objParameterUrlPrinter 						= $objParameterUrlPrinter->value;
-			$dataView["objParameterUrlPrinterInput"]	 	= $objParameterUrlPrinter;
-			
-			$objParameterUrlPrinter 						= $this->core_web_parameter->getParameter("WORKSHOW_URL_PRINTER_TALLER_OUTPUT",$companyID);
-			$objParameterUrlPrinter 						= $objParameterUrlPrinter->value;
-			$dataView["objParameterUrlPrinterOutput"]	 	= $objParameterUrlPrinter;
-			
-			$objParameterUrlPrinter 						= $this->core_web_parameter->getParameter("WORKSHOW_URL_PRINTER_TALLER_STIKER",$companyID);
-			$objParameterUrlPrinter 						= $objParameterUrlPrinter->value;
-			$dataView["objParameterUrlPrinterSticker"]	 	= $objParameterUrlPrinter;
-			
 			
 			$objParameterUrlServerFile 					= $this->core_web_parameter->getParameter("CORE_FILE_SERVER",$companyID);
 			$objParameterUrlServerFile 					= $objParameterUrlServerFile->value;
@@ -160,23 +148,27 @@ class app_purchase_taller extends _BaseController {
 
 			$dataView["objListCompanyPageSetting"]			= $this->Company_Page_Setting_Model->get_rowByKeyAndController(
 				$dataView["company"]->type,
-				"app_purchase_taller"
+				"app_purchase_request"
 			);
 			$dataView["objReadyPostScript"] 				= getBahavioSession(
 					$dataView["company"]->type, 
-					"app_purchase_taller", 
+					"app_purchase_request", 
 					"readyPostScript", 
 					"",
 					$dataView["objListCompanyPageSetting"]
 			);
-			$dataView["objReadyPostScript"]					= getBahavioLargeDB($dataView["company"]->type,"app_purchase_taller","readyPostScript","");
+			$dataView["objReadyPostScript"]					= getBahavioLargeDB($dataView["company"]->type,"app_purchase_request","readyPostScript","");
+
+			
+			$dataView["objParameterUrlPrinterInput"]	 	= getBahavioSession($dataView["company"]->type,"app_purchase_request", "objParameterUrlPrinterInput",  "app_purchase_request/viewPrinterFormatoA4",$dataView["objListCompanyPageSetting"]);
+			$dataView["objParameterUrlPrinterOutput"]	 	= getBahavioSession($dataView["company"]->type,"app_purchase_request", "objParameterUrlPrinterOutput", "app_purchase_request/viewPrinterFormatoA4Output",$dataView["objListCompanyPageSetting"]);
 
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
-			$dataSession["head"]			= /*--inicio view*/ view('app_purchase_taller/edit_head',$dataView);//--finview
-			$dataSession["body"]			= /*--inicio view*/ view('app_purchase_taller/edit_body',$dataView);//--finview
-			$dataSession["script"]			= /*--inicio view*/ view('app_purchase_taller/edit_script',$dataView);//--finview
+			$dataSession["head"]			= /*--inicio view*/ view('app_purchase_request/edit_head',$dataView);//--finview
+			$dataSession["body"]			= /*--inicio view*/ view('app_purchase_request/edit_body',$dataView);//--finview
+			$dataSession["script"]			= /*--inicio view*/ view('app_purchase_request/edit_script',$dataView);//--finview
 			$dataSession["footer"]			= "";
 			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r
 			
@@ -244,7 +236,7 @@ class app_purchase_taller extends _BaseController {
 				
 				
 			//Si el documento esta aplicado crear el contra documento
-			if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_workshop_taller","statusID",$objTM->statusID,COMMAND_ELIMINABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
+			if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_taller_zone_customer","statusID",$objTM->statusID,COMMAND_ELIMINABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
 			throw new \Exception(NOT_WORKFLOW_DELETE);
 			
 			//Eliminar el Registro			
@@ -286,9 +278,9 @@ class app_purchase_taller extends _BaseController {
 			
 			
 			//Obtener el Componente de Transacciones Facturacion
-			$objComponentShare			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_workshop_taller");
+			$objComponentShare			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_taller_zone_customer");
 			if(!$objComponentShare)
-			throw new \Exception("EL COMPONENTE 'tb_transaction_master_workshop_taller' NO EXISTE...");
+			throw new \Exception("EL COMPONENTE 'tb_transaction_master_taller_zone_customer' NO EXISTE...");
 			
 			$objComponentFile			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_file");
 			if(!$objComponentFile)
@@ -324,7 +316,7 @@ class app_purchase_taller extends _BaseController {
 			throw new \Exception(NOT_EDIT);
 			
 			//Validar si el estado permite editar
-			if(!$this->core_web_workflow->validateWorkflowStage("tb_transaction_master_workshop_taller","statusID",$objTM->statusID,COMMAND_EDITABLE_TOTAL,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
+			if(!$this->core_web_workflow->validateWorkflowStage("tb_transaction_master_taller_zone_customer","statusID",$objTM->statusID,COMMAND_EDITABLE_TOTAL,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
 			throw new \Exception(NOT_WORKFLOW_EDIT);					
 			
 			//if($this->core_web_accounting->cycleIsCloseByDate($companyID,$objTM->transactionOn))
@@ -359,7 +351,7 @@ class app_purchase_taller extends _BaseController {
 			
 			//El Estado solo permite editar el workflow
 			$actualizarTransaccionPermtida				= true;
-			if($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_workshop_taller","statusID",$objTM->statusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)){
+			if($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_taller_zone_customer","statusID",$objTM->statusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)){
 				$actualizarTransaccionPermtida			= false;
 				$objTMNew								= array();
 				$objTMNew["statusID"] 					= /*inicio get post*/ $this->request->getPost("txtStatusID");						
@@ -498,94 +490,6 @@ class app_purchase_taller extends _BaseController {
 			
 			//Obtener plantilla de whatsapp
 			$warrning = false;
-			if($this->core_web_whatsap->validSendMessage(APP_COMPANY))
-			{
-				$catalogItemEtapa 			= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","areaID",$companyID,$objTMNew["areaID"]);
-				$catalogItemArticulo		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","routeID",$companyID,$objTMI["routeID"]);								
-				$objPC_PlantillaWhatsapp 	= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_workshop_taller.templates_whatsapp")->where("isActive",1)->where("flavorID",$dataSession["company"]->flavorID)->find();				
-				$objPCD_PlantillaWhatsapp   = false;			
-				if($objPC_PlantillaWhatsapp)
-				{
-					//Obtener la plantilla corresponeidnte a la etapa					
-					$objPCD_PlantillaWhatsapp	= $this->Public_Catalog_Detail_Model->asObject()->
-													where("publicCatalogID",$objPC_PlantillaWhatsapp[0]->publicCatalogID)->
-													where( "isActive",1)->
-													where( "name",$catalogItemEtapa->name)->
-													findAll();					
-					$themplate 					= "";
-					if($objPCD_PlantillaWhatsapp)
-					{
-						
-						$themplate 				= helper_RequestGetValueObjet($objPCD_PlantillaWhatsapp[0],"description","");
-						if($themplate != "")
-						{
-							
-							//Obtener al cliente
-							$dataView["objCustomer"]				= $this->Customer_Model->get_rowByEntity($companyID,$objTMNew["entityID"]);
-							$dataView["objCustomerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$dataView["objCustomer"]->entityID);
-							$dataView["objCustomerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$dataView["objCustomer"]->entityID);
-
-							//Obtener colaborador
-							$dataView["objEmployer"]				= $this->Employee_Model->get_rowByEntityID($companyID,$objTMNew["entityIDSecondary"]);
-							$dataView["objEmployerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
-							$dataView["objEmployerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
-							$dataView["objEmployerPhone"]			= $this->Entity_Phone_Model->get_rowByEntity( $dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID );
-							$dataView["objEmployerPhoneNumber"]		= $dataView["objEmployerPhone"] ? $dataView["objEmployerPhone"][0]->number : "N/D";
-							
-							//Obtener Factura
-							$dataView["objBilling"]					= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$objTMNew["note"]);							
-							$dataView["objCatalogItemAreaID"] 		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","areaID",$companyID,$objTMNew["areaID"]);
-							
-							$articleDesc	= strtoupper($catalogItemArticulo->name) == strtoupper("Otros") ? $objTMI["referenceClientName"] : $catalogItemArticulo->name; 
-							$themplate 		= str_replace("{customer_name}",helper_RequestGetValueObjet($dataView["objCustomerNatural"],"firstName",""),$themplate);
-							$themplate 		= str_replace("{employeer_name}",helper_RequestGetValueObjet($dataView["objEmployerNatural"],"firstName",""),$themplate);
-							$themplate 		= str_replace("{employeer_phone}",$dataView["objEmployerPhoneNumber"],$themplate);
-							$themplate 		= str_replace("{status_name}",helper_RequestGetValueObjet($dataView["objCatalogItemAreaID"],"name",""),$themplate);
-							$themplate 		= str_replace("{transaction_number}",helper_RequestGetValueObjet($dataView["objBilling"],"transactionNumber",""),$themplate);
-							$themplate		= str_replace("{amount}",$objTMNew["amount"],$themplate);
-							$themplate 		= str_replace("{text}",$objTMNew["reference1"],$themplate);
-							$themplate 		= str_replace("{article}",$articleDesc,$themplate);
-							$themplate		= replaceSimbol($themplate);
-							
-							$numerDestino 	= clearNumero($dataView["objCustomer"]->phoneNumber); 
-							$warrning = true;
-							$this->core_web_notification->set_message(false,"A:".$numerDestino." - ".substr($themplate,0,55)." ...");
-							
-							
-							
-							$this->core_web_whatsap->sendMessageGeneric(
-									$objCompany->type,
-									$objCompany->companyID,
-									$themplate,
-									getNumberPhone(clearNumero($numerDestino)),
-									false,
-									""
-							);
-							
-						}
-						else 
-						{
-							$warrning = true;
-							$this->core_web_notification->set_message(true,"Pedido guardado correctamente, WhatsApp no enviado, configurar mensaje en plantilla (tb_transaction_master_workshop_taller.templates_whatsapp) campo Grupo");	
-						}
-					}
-					else {
-						$warrning = true;
-						$this->core_web_notification->set_message(true,"Pedido guardado correctamente, WhatsApp no enviado, configurar mensaje en plantilla (tb_transaction_master_workshop_taller.templates_whatsapp)");	
-					}
-				}	
-				else {
-					$warrning = true;
-					$this->core_web_notification->set_message(true,"Pedido guardado correctamente, WhatsApp no enviado, configurar plantailla (tb_transaction_master_workshop_taller.templates_whatsapp)");	
-				}				
-			}
-			else {
-				$warrning = true;
-				$this->core_web_notification->set_message(true,"Pedido guardado correctamente, WhatsApp no enviado, por falta de saldo.");
-			}
-			
-			
-			
 			if($db->transStatus() !== false)
 			{
 				
@@ -593,13 +497,13 @@ class app_purchase_taller extends _BaseController {
 				if($warrning == false )
 				$this->core_web_notification->set_message(false,SUCCESS);		
 			
-				$this->response->redirect(base_url()."/".'app_purchase_taller/edit/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID);
+				$this->response->redirect(base_url()."/".'app_purchase_request/edit/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID);
 				
 			}
 			else{
 				$db->transRollback();	
 				$this->core_web_notification->set_message(true,$this->db->_error_message());
-				$this->response->redirect(base_url()."/".'app_purchase_taller/add');	
+				$this->response->redirect(base_url()."/".'app_purchase_request/add');	
 			}
 			
 			
@@ -639,9 +543,9 @@ class app_purchase_taller extends _BaseController {
 			$this->core_web_permission->getValueLicense($dataSession["user"]->companyID,get_class($this)."/"."index");
 			
 			//Obtener el Componente de Transacciones Facturacion
-			$objComponentShare			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_workshop_taller");
+			$objComponentShare			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_taller_zone_customer");
 			if(!$objComponentShare)
-			throw new \Exception("EL COMPONENTE 'tb_transaction_master_workshop_taller' NO EXISTE...");
+			throw new \Exception("EL COMPONENTE 'tb_transaction_master_taller_zone_customer' NO EXISTE...");
 		
 			$objComponentFile			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_file");
 			if(!$objComponentFile)
@@ -655,7 +559,7 @@ class app_purchase_taller extends _BaseController {
 			throw new \Exception("EL DOCUMENTO NO PUEDE INGRESAR, EL CICLO CONTABLE ESTA CERRADO");
 			
 			//Obtener transaccion
-			$transactionID 							= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID,"tb_transaction_master_workshop_taller",0);
+			$transactionID 							= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID,"tb_transaction_master_taller_zone_customer",0);
 			$companyID 								= $dataSession["user"]->companyID;
 			$objT 									= $this->Transaction_Model->getByCompanyAndTransaction($dataSession["user"]->companyID,$transactionID);
 			$objCompany								= $dataSession["company"];
@@ -663,7 +567,7 @@ class app_purchase_taller extends _BaseController {
 			$objTM["companyID"] 					= $dataSession["user"]->companyID;
 			$objTM["transactionID"] 				= $transactionID;			
 			$objTM["branchID"]						= /*inicio get post*/ $this->request->getPost("txtBranchID");
-			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_workshop_taller",0);
+			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_taller_zone_customer",0);
 			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($dataSession["user"]->companyID,$transactionID);			
 			$objTM["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
 			$objTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
@@ -838,104 +742,13 @@ class app_purchase_taller extends _BaseController {
 				
 			//Envio de whatsapp
 			$warrning = false;
-			if($this->core_web_whatsap->validSendMessage(APP_COMPANY))
-			{
-				
-				
-				$catalogItemEtapa 			= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","areaID",$companyID,$objTM["areaID"]);
-				$catalogItemArticulo		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","routeID",$companyID,$objTMI["routeID"]);								
-				$objPC_PlantillaWhatsapp 	= $this->Public_Catalog_Model->asObject()->where("systemName","tb_transaction_master_workshop_taller.templates_whatsapp")->where("isActive",1)->where("flavorID",$dataSession["company"]->flavorID)->find();				
-				$objPCD_PlantillaWhatsapp   = false;			
-				if($objPC_PlantillaWhatsapp)
-				{
-					
-					//Obtener la plantilla corresponeidnte a la etapa					
-					$objPCD_PlantillaWhatsapp	= $this->Public_Catalog_Detail_Model->asObject()->
-													where("publicCatalogID",$objPC_PlantillaWhatsapp[0]->publicCatalogID)->
-													where( "isActive",1)->
-													where( "name",$catalogItemEtapa->name)->
-													findAll();					
-					
-					$themplate 					= "";
-					if($objPCD_PlantillaWhatsapp)
-					{
-						
-						$themplate 				= helper_RequestGetValueObjet($objPCD_PlantillaWhatsapp[0],"description","");						
-						if($themplate != "")
-						{
-							
-							//Obtener al cliente
-							$dataView["objCustomer"]				= $this->Customer_Model->get_rowByEntity($companyID,$objTM["entityID"]);
-							$dataView["objCustomerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$dataView["objCustomer"]->entityID);
-							$dataView["objCustomerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$dataView["objCustomer"]->entityID);
-
-							//Obtener colaborador
-							$dataView["objEmployer"]				= $this->Employee_Model->get_rowByEntityID($companyID,$objTM["entityIDSecondary"]);
-							$dataView["objEmployerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
-							$dataView["objEmployerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
-							$dataView["objEmployerPhone"]			= $this->Entity_Phone_Model->get_rowByEntity( $dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID );
-							$dataView["objEmployerPhoneNumber"]		= $dataView["objEmployerPhone"] ? $dataView["objEmployerPhone"][0]->number : "N/D";
-							
-							//Obtener Factura
-							$dataView["objBilling"]					= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$objTM["note"]);							
-							$dataView["objCatalogItemAreaID"] 		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","areaID",$companyID,$objTM["areaID"]);
-							
-							$articleDesc	= strtoupper($catalogItemArticulo->name) == strtoupper("Otros") ? $objTMI["referenceClientName"] : $catalogItemArticulo->name; 
-							$themplate 		= str_replace("{customer_name}",helper_RequestGetValueObjet($dataView["objCustomerNatural"],"firstName",""),$themplate);
-							$themplate 		= str_replace("{employeer_name}",helper_RequestGetValueObjet($dataView["objEmployerNatural"],"firstName",""),$themplate);
-							$themplate 		= str_replace("{employeer_phone}",$dataView["objEmployerPhoneNumber"],$themplate);
-							$themplate 		= str_replace("{status_name}",helper_RequestGetValueObjet($dataView["objCatalogItemAreaID"],"name",""),$themplate);
-							$themplate 		= str_replace("{transaction_number}",helper_RequestGetValueObjet($dataView["objBilling"],"transactionNumber",""),$themplate);
-							$themplate		= str_replace("{amount}",$objTM["amount"],$themplate);
-							$themplate 		= str_replace("{text}",$objTM["reference1"],$themplate);							
-							$themplate 		= str_replace("{article}", $articleDesc ,$themplate);							
-							$numerDestino 	= clearNumero($dataView["objCustomer"]->phoneNumber); 
-							$warrning 		= true;							
-							$this->core_web_notification->set_message(false,"A:".$numerDestino." - ".substr($themplate,0,55)." ...");
-							
-							
-							
-							$this->core_web_whatsap->sendMessageGeneric(
-									$objCompany->type,
-									$objCompany->companyID,
-									$themplate,
-									getNumberPhone(clearNumero($numerDestino)),
-									false,
-									""
-							);
-							
-						}
-						else 
-						{
-							$warrning = true;
-							$this->core_web_notification->set_message(true,"Pedido guardado correctamente, whatsap no enviado, configurar mensaje en plantilla (tb_transaction_master_workshop_taller.templates_whatsapp) campo Grupo");	
-						}
-					}
-					else {
-						$warrning = true;
-						$this->core_web_notification->set_message(true,"Pedido guardado correctamente, whatsap no enviado, configurar mensaje en plantilla (tb_transaction_master_workshop_taller.templates_whatsapp)");	
-					}
-				}	
-				else {
-					$warrning = true;
-					$this->core_web_notification->set_message(true,"Pedido guardado correctamente, whatsap no enviado, configurar plantailla (tb_transaction_master_workshop_taller.templates_whatsapp)");	
-				}				
-			}
-			else {
-				$warrning = true;
-				$this->core_web_notification->set_message(true,"Pedido guardado correctamente, whatsap no enviado, por falta de saldo.");
-			}
-			
-			
-			
-			
 			if($db->transStatus() !== false){
 				$db->transCommit();						
 				
 				if($warrning == false )
 				$this->core_web_notification->set_message(false,SUCCESS);		
 			
-				$this->response->redirect(base_url()."/".'app_purchase_taller/edit/companyID/'.$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID);
+				$this->response->redirect(base_url()."/".'app_purchase_request/edit/companyID/'.$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID);
 			}
 			else{
 				$db->transRollback();	
@@ -944,7 +757,7 @@ class app_purchase_taller extends _BaseController {
 				$errorMessage 	= $db->error()["message"];				
 
 				$this->core_web_notification->set_message(true,$errorMessage);
-				$this->response->redirect(base_url()."/".'app_purchase_taller/add');	
+				$this->response->redirect(base_url()."/".'app_purchase_request/add');	
 			}
 		}
 		catch(\Exception $ex){
@@ -979,7 +792,7 @@ class app_purchase_taller extends _BaseController {
 			if(!$this->validation->withRequest($this->request)->run()){
 				$stringValidation = $this->core_web_tools->formatMessageError($this->validation->getErrors());
 				$this->core_web_notification->set_message(true,$stringValidation);
-				$this->response->redirect(base_url()."/".'app_purchase_taller/add');				
+				$this->response->redirect(base_url()."/".'app_purchase_request/add');				
 				exit;
 			} 
 			
@@ -993,7 +806,7 @@ class app_purchase_taller extends _BaseController {
 			else{
 				$stringValidation = "El modo de operacion no es correcto (new|edit)";
 				$this->core_web_notification->set_message(true,$stringValidation);
-				$this->response->redirect(base_url()."/".'app_purchase_taller/add');
+				$this->response->redirect(base_url()."/".'app_purchase_request/add');
 				exit;
 			}
 			
@@ -1048,7 +861,7 @@ class app_purchase_taller extends _BaseController {
 			$companyID 							= $dataSession["user"]->companyID;
 			$branchID 							= $dataSession["user"]->branchID;
 			$roleID 							= $dataSession["role"]->roleID;
-			$transactionID 						= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID,"tb_transaction_master_workshop_taller",0);
+			$transactionID 						= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID,"tb_transaction_master_taller_zone_customer",0);
 			$objCurrency						= $this->core_web_currency->getCurrencyDefault($companyID);
 			$targetCurrency						= $this->core_web_currency->getCurrencyExternal($companyID);			
 			$objListCurrency					= $this->Company_Currency_Model->getByCompany($companyID);
@@ -1098,15 +911,15 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
 
 			$dataView["objCaudal"]				= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);			
-			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_workshop_taller","statusID",$companyID,$branchID,$roleID);
-			$dataView["objListEstadosEquipo"]	= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","areaID",$companyID);
-			$dataView["objListAccesorios"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","priorityID",$companyID);
-			$dataView["objListMarca"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","zoneID",$companyID);
-			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","routeID",$companyID);
-			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","mesaID",$companyID);
+			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_taller_zone_customer","statusID",$companyID,$branchID,$roleID);
+			$dataView["objListEstadosEquipo"]	= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","areaID",$companyID);
+			$dataView["objListAccesorios"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","priorityID",$companyID);
+			$dataView["objListMarca"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","zoneID",$companyID);
+			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","routeID",$companyID);
+			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","mesaID",$companyID);
 			$dataView["objListComments"]		= $this->core_web_catalog->getCatalogAllItem("tb_comments","catalogStatusID",$companyID);
-			$dataView["objListSubStatus"]		= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_workshop_taller","statusIDSecondary",$companyID,$branchID,$roleID);
-			$dataView["objListTipo"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","typeID",$companyID);
+			$dataView["objListSubStatus"]		= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_taller_zone_customer","statusIDSecondary",$companyID,$branchID,$roleID);
+			$dataView["objListTipo"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","typeID",$companyID);
 			
 			//Obtener los permiso del rol sobre la pagina en base al estado
 			$dataView["objComponentAurotizationDetailPage"]	= $this->Component_Autorization_Detail_Page_Model->get_rowByWorkflowStageID_And_RoleID_Type(
@@ -1116,23 +929,23 @@ class app_purchase_taller extends _BaseController {
 
 			$dataView["objListCompanyPageSetting"]			= $this->Company_Page_Setting_Model->get_rowByKeyAndController(
 				$dataView["company"]->type,
-				"app_purchase_taller"
+				"app_purchase_request"
 			);
 			$dataView["objReadyPostScript"] 				= getBahavioSession(
 					$dataView["company"]->type, 
-					"app_purchase_taller", 
+					"app_purchase_request", 
 					"readyPostScript", 
 					"",
 					$dataView["objListCompanyPageSetting"]
 			);
-			$dataView["objReadyPostScript"]					= getBahavioLargeDB($dataView["company"]->type,"app_purchase_taller","readyPostScript","");
+			$dataView["objReadyPostScript"]					= getBahavioLargeDB($dataView["company"]->type,"app_purchase_request","readyPostScript","");
 
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
-			$dataSession["head"]			= /*--inicio view*/ view('app_purchase_taller/news_head',$dataView);//--finview
-			$dataSession["body"]			= /*--inicio view*/ view('app_purchase_taller/news_body',$dataView);//--finview
-			$dataSession["script"]			= /*--inicio view*/ view('app_purchase_taller/news_script',$dataView);//--finview
+			$dataSession["head"]			= /*--inicio view*/ view('app_purchase_request/news_head',$dataView);//--finview
+			$dataSession["body"]			= /*--inicio view*/ view('app_purchase_request/news_body',$dataView);//--finview
+			$dataSession["script"]			= /*--inicio view*/ view('app_purchase_request/news_script',$dataView);//--finview
 			$dataSession["footer"]			= "";
 			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r
 			
@@ -1180,9 +993,9 @@ class app_purchase_taller extends _BaseController {
 			
 			}	
 			//Obtener el componente Para mostrar la lista de AccountType
-			$objComponent		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_workshop_taller");
+			$objComponent		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_taller_zone_customer");
 			if(!$objComponent)
-			throw new \Exception("00409 EL COMPONENTE 'tb_transaction_master_workshop_taller' NO EXISTE...");
+			throw new \Exception("00409 EL COMPONENTE 'tb_transaction_master_taller_zone_customer' NO EXISTE...");
 			
 			
 			//Vista por defecto PC
@@ -1223,10 +1036,10 @@ class app_purchase_taller extends _BaseController {
 			$dataSession["company"]			= $dataSession["company"];
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
-			$dataSession["head"]			= /*--inicio view*/ view('app_purchase_taller/list_head',$dataSession);//--finview
-			$dataSession["footer"]			= /*--inicio view*/ view('app_purchase_taller/list_footer');//--finview
+			$dataSession["head"]			= /*--inicio view*/ view('app_purchase_request/list_head',$dataSession);//--finview
+			$dataSession["footer"]			= /*--inicio view*/ view('app_purchase_request/list_footer');//--finview
 			$dataSession["body"]			= $dataViewRender; 
-			$dataSession["script"]			= /*--inicio view*/ view('app_purchase_taller/list_script');//--finview
+			$dataSession["script"]			= /*--inicio view*/ view('app_purchase_request/list_script');//--finview
 			$dataSession["script"]			= $dataSession["script"].$this->core_web_javascript->createVar("componentID",$objComponent->componentID);   
 			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r	
 		}
@@ -1339,9 +1152,9 @@ class app_purchase_taller extends _BaseController {
 			
 			
 			//Obtener el Componente de Transacciones Facturacion
-			$objComponentTaller			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_workshop_taller");
+			$objComponentTaller			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_taller_zone_customer");
 			if(!$objComponentTaller)
-			throw new \Exception("EL COMPONENTE 'tb_transaction_master_workshop_taller' NO EXISTE...");
+			throw new \Exception("EL COMPONENTE 'tb_transaction_master_taller_zone_customer' NO EXISTE...");
 		
 		
 			//Get Component
@@ -1359,7 +1172,7 @@ class app_purchase_taller extends _BaseController {
 			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID,$transactionID,$transactionMasterID,$objComponentTaller->componentID);
 			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
-			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_workshop_taller","statusID",$datView["objTM"]->statusID,$companyID,APP_BRANCH,APP_ROL_SUPERADMIN);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_taller_zone_customer","statusID",$datView["objTM"]->statusID,$companyID,APP_BRANCH,APP_ROL_SUPERADMIN);
 			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
 			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($companyID,$datView["objUser"]->locationID);
 			
@@ -1417,15 +1230,15 @@ class app_purchase_taller extends _BaseController {
 			$dataView["branchID"]				= $dataSession["branch"]->branchID;
 			$dataView["branchName"]				= $dataSession["branch"]->name;
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);						
-			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_workshop_taller","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
-			$dataView["objListEstadosEquipo"]	= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","areaID",$companyID);
-			$dataView["objListAccesorios"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","priorityID",$companyID);
-			$dataView["objItemAccesorios"]		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","priorityID",$companyID,$dataView["objTransactionMaster"]->priorityID);
-			$dataView["objListMarca"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","zoneID",$companyID);
-			$dataView["objItemMarca"]			= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","zoneID",$companyID,$dataView["objTransactionMasterInfo"]->zoneID);
-			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","routeID",$companyID);
-			$dataView["objItemArticulo"]		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","routeID",$companyID,$dataView["objTransactionMasterInfo"]->routeID);
-			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","mesaID",$companyID);
+			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_taller_zone_customer","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
+			$dataView["objListEstadosEquipo"]	= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","areaID",$companyID);
+			$dataView["objListAccesorios"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","priorityID",$companyID);
+			$dataView["objItemAccesorios"]		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_taller_zone_customer","priorityID",$companyID,$dataView["objTransactionMaster"]->priorityID);
+			$dataView["objListMarca"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","zoneID",$companyID);
+			$dataView["objItemMarca"]			= $this->core_web_catalog->getCatalogItem("tb_transaction_master_taller_zone_customer","zoneID",$companyID,$dataView["objTransactionMasterInfo"]->zoneID);
+			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","routeID",$companyID);
+			$dataView["objItemArticulo"]		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_taller_zone_customer","routeID",$companyID,$dataView["objTransactionMasterInfo"]->routeID);
+			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","mesaID",$companyID);
 			$dataView["objTMD"]					= $datView["objTMD"];
 			
 			
@@ -1549,9 +1362,9 @@ class app_purchase_taller extends _BaseController {
 			
 			
 			//Obtener el Componente de Transacciones Facturacion
-			$objComponentTaller			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_workshop_taller");
+			$objComponentTaller			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_taller_zone_customer");
 			if(!$objComponentTaller)
-			throw new \Exception("EL COMPONENTE 'tb_transaction_master_workshop_taller' NO EXISTE...");
+			throw new \Exception("EL COMPONENTE 'tb_transaction_master_taller_zone_customer' NO EXISTE...");
 		
 		
 			//Get Component
@@ -1569,7 +1382,7 @@ class app_purchase_taller extends _BaseController {
 			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID,$transactionID,$transactionMasterID,$objComponentTaller->componentID);
 			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
-			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_workshop_taller","statusID",$datView["objTM"]->statusID,$companyID,APP_BRANCH,APP_ROL_SUPERADMIN);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_taller_zone_customer","statusID",$datView["objTM"]->statusID,$companyID,APP_BRANCH,APP_ROL_SUPERADMIN);
 			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
 			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($companyID,$datView["objUser"]->locationID);
 			
@@ -1627,15 +1440,15 @@ class app_purchase_taller extends _BaseController {
 			$dataView["branchID"]				= $dataSession["branch"]->branchID;
 			$dataView["branchName"]				= $dataSession["branch"]->name;
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);						
-			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_workshop_taller","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
-			$dataView["objListEstadosEquipo"]	= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","areaID",$companyID);
-			$dataView["objListAccesorios"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","priorityID",$companyID);
-			$dataView["objItemAccesorios"]		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","priorityID",$companyID,$dataView["objTransactionMaster"]->priorityID);
-			$dataView["objListMarca"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","zoneID",$companyID);
-			$dataView["objItemMarca"]			= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","zoneID",$companyID,$dataView["objTransactionMasterInfo"]->zoneID);
-			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","routeID",$companyID);
-			$dataView["objItemArticulo"]		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","routeID",$companyID,$dataView["objTransactionMasterInfo"]->routeID);
-			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","mesaID",$companyID);
+			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_taller_zone_customer","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
+			$dataView["objListEstadosEquipo"]	= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","areaID",$companyID);
+			$dataView["objListAccesorios"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","priorityID",$companyID);
+			$dataView["objItemAccesorios"]		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_taller_zone_customer","priorityID",$companyID,$dataView["objTransactionMaster"]->priorityID);
+			$dataView["objListMarca"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","zoneID",$companyID);
+			$dataView["objItemMarca"]			= $this->core_web_catalog->getCatalogItem("tb_transaction_master_taller_zone_customer","zoneID",$companyID,$dataView["objTransactionMasterInfo"]->zoneID);
+			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","routeID",$companyID);
+			$dataView["objItemArticulo"]		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_taller_zone_customer","routeID",$companyID,$dataView["objTransactionMasterInfo"]->routeID);
+			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","mesaID",$companyID);
 			$dataView["objTMD"]					= $datView["objTMD"];
 			
 			
@@ -1748,7 +1561,7 @@ class app_purchase_taller extends _BaseController {
 			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
 			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
-			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_workshop_taller","statusID",$datView["objTM"]->statusID,$companyID,APP_BRANCH,APP_ROL_SUPERADMIN);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_taller_zone_customer","statusID",$datView["objTM"]->statusID,$companyID,APP_BRANCH,APP_ROL_SUPERADMIN);
 			
 			
 			
@@ -1805,15 +1618,15 @@ class app_purchase_taller extends _BaseController {
 			$dataView["branchID"]				= $dataSession["branch"]->branchID;
 			$dataView["branchName"]				= $dataSession["branch"]->name;
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);						
-			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_workshop_taller","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
-			$dataView["objListEstadosEquipo"]	= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","areaID",$companyID);
-			$dataView["objListAccesorios"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","priorityID",$companyID);
-			$dataView["objItemAccesorios"]		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","priorityID",$companyID,$dataView["objTransactionMaster"]->priorityID);
-			$dataView["objListMarca"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","zoneID",$companyID);
-			$dataView["objItemMarca"]			= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","zoneID",$companyID,$dataView["objTransactionMasterInfo"]->zoneID);
-			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","routeID",$companyID);
-			$dataView["objItemArticulo"]		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","routeID",$companyID,$dataView["objTransactionMasterInfo"]->routeID);
-			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","mesaID",$companyID);
+			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_taller_zone_customer","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
+			$dataView["objListEstadosEquipo"]	= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","areaID",$companyID);
+			$dataView["objListAccesorios"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","priorityID",$companyID);
+			$dataView["objItemAccesorios"]		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_taller_zone_customer","priorityID",$companyID,$dataView["objTransactionMaster"]->priorityID);
+			$dataView["objListMarca"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","zoneID",$companyID);
+			$dataView["objItemMarca"]			= $this->core_web_catalog->getCatalogItem("tb_transaction_master_taller_zone_customer","zoneID",$companyID,$dataView["objTransactionMasterInfo"]->zoneID);
+			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","routeID",$companyID);
+			$dataView["objItemArticulo"]		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_taller_zone_customer","routeID",$companyID,$dataView["objTransactionMasterInfo"]->routeID);
+			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","mesaID",$companyID);
 			
 			
 			
