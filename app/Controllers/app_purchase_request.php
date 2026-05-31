@@ -126,8 +126,7 @@ class app_purchase_request extends _BaseController {
 			$dataView["objListMarca"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","zoneID",$companyID);
 			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","routeID",$companyID);
 			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","mesaID",$companyID);
-			$dataView["objComponentItem"]		= $objComponentItem;
-			$dataView["objListSubStatus"]		= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_taller_zone_customer","statusIDSecondary",$dataView["objTransactionMaster"]->isTemplate,$companyID,$branchID,$roleID);
+			$dataView["objComponentItem"]		= $objComponentItem;			
 			$dataView["objListTipo"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","typeID",$companyID);			
 			$dataView["objListComments"]		= $this->core_web_catalog->getCatalogAllItem("tb_comments","catalogStatusID",$companyID);
 
@@ -140,11 +139,6 @@ class app_purchase_request extends _BaseController {
 			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
 			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
 
-
-			//Obtener los permiso del rol sobre la pagina en base al estado
-			$dataView["objComponentAurotizationDetailPage"]	= $this->Component_Autorization_Detail_Page_Model->get_rowByWorkflowStageID_And_RoleID_Type(
-					$companyID,$roleID,$dataView["company"]->flavorID,
-					$dataView["objTransactionMaster"]->isTemplate,"edit");
 
 			$dataView["objListCompanyPageSetting"]			= $this->Company_Page_Setting_Model->get_rowByKeyAndController(
 				$dataView["company"]->type,
@@ -339,7 +333,7 @@ class app_purchase_request extends _BaseController {
 			//$objTMNew["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtCustomerCreditLineID");//--fin peticion get o post
 			//$objTMNew["descriptionReference"] 		= "reference1:input,reference2:input,reference3:Gestor de Cobro,reference4:Linea de credito del Cliente";
 			$objTMNew["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");
-			$objTMNew["isTemplate"] 					= /*inicio get post*/ $this->request->getPost("txtStatusIDSecondary");
+			$objTMNew["isTemplate"] 					= 0;
 			$objTMNew["printerQuantity"]				= /*inicio get post*/ $this->request->getPost("txtTypeID");
 			$objTMNew["amount"] 						= /*inicio get post*/ $this->request->getPost("txtDetailAmount");	
 			$objTMNew["entityID"]						= /*inicio get post*/ $this->request->getPost("txtCustomerID");
@@ -581,7 +575,7 @@ class app_purchase_request extends _BaseController {
 			$objTM["reference3"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference3");
 			$objTM["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtReference4");
 			$objTM["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");
-			$objTM["isTemplate"]		 			= /*inicio get post*/ $this->request->getPost("txtStatusIDSecondary");
+			$objTM["isTemplate"]		 			= 0;
 			$objTM["printerQuantity"]				= /*inicio get post*/ $this->request->getPost("txtTypeID");
 			$objTM["amount"] 						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost('txtDetailAmount'));
 			$objTM["isApplied"] 					= 0;
@@ -917,16 +911,10 @@ class app_purchase_request extends _BaseController {
 			$dataView["objListMarca"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","zoneID",$companyID);
 			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","routeID",$companyID);
 			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","mesaID",$companyID);
-			$dataView["objListComments"]		= $this->core_web_catalog->getCatalogAllItem("tb_comments","catalogStatusID",$companyID);
-			$dataView["objListSubStatus"]		= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_taller_zone_customer","statusIDSecondary",$companyID,$branchID,$roleID);
+			$dataView["objListComments"]		= $this->core_web_catalog->getCatalogAllItem("tb_comments","catalogStatusID",$companyID);			
 			$dataView["objListTipo"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","typeID",$companyID);
 			
-			//Obtener los permiso del rol sobre la pagina en base al estado
-			$dataView["objComponentAurotizationDetailPage"]	= $this->Component_Autorization_Detail_Page_Model->get_rowByWorkflowStageID_And_RoleID_Type(
-					$companyID,$roleID,$dataView["company"]->flavorID,
-					$dataView["objListSubStatus"][0]->workflowStageID,"new");
-
-
+			
 			$dataView["objListCompanyPageSetting"]			= $this->Company_Page_Setting_Model->get_rowByKeyAndController(
 				$dataView["company"]->type,
 				"app_purchase_request"
