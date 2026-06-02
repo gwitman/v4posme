@@ -102,8 +102,9 @@ class app_purchase_request extends _BaseController {
 
 			//Obtener colaborador
 			$dataView["objEmployer"]				= $this->Employee_Model->get_rowByEntityID($companyID,$dataView["objTransactionMaster"]->entityIDSecondary);
-			$dataView["objEmployerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
-			$dataView["objEmployerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
+			$entityIDEmployer 						= $dataView["objEmployer"] ? $dataView["objEmployer"]->entityID : 0 ;
+			$dataView["objEmployerNatural"]			= $this->Natural_Model->get_rowByPK($dataSession["company"]->companyID,$dataSession["user"]->branchID,$entityIDEmployer);
+			$dataView["objEmployerLegal"]			= $this->Legal_Model->get_rowByPK($dataSession["company"]->companyID,$dataSession["user"]->branchID,$entityIDEmployer);
 			
 			//Obtener Factura
 			$dataView["objBilling"]					= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$dataView["objTransactionMaster"]->note);
@@ -120,8 +121,9 @@ class app_purchase_request extends _BaseController {
 			$dataView["branchName"]				= $dataSession["branch"]->name;
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
 			$dataView["objComponentShare"]		= $objComponentTransactionShare;					
-			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_taller_zone_customer","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
-			$dataView["objListEstadosEquipo"]	= $this->core_web_catalog->getCatalogAllItemIncludeId("tb_transaction_master_taller_zone_customer","areaID",$companyID,$dataView["objTransactionMaster"]->areaID);
+			$dataView["objListWorkflowStage"]			= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_taller_zone_customer","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);			
+			$dataView["objListWorkflowStageCurrent"]	= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($dataView["objTransactionMaster"]->statusID);			
+			$dataView["objListEstadosEquipo"]			= $this->core_web_catalog->getCatalogAllItemIncludeId("tb_transaction_master_taller_zone_customer","areaID",$companyID,$dataView["objTransactionMaster"]->areaID);
 			$dataView["objListAccesorios"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","priorityID",$companyID);
 			$dataView["objListMarca"]			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","zoneID",$companyID);
 			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","routeID",$companyID);
@@ -156,6 +158,14 @@ class app_purchase_request extends _BaseController {
 			
 			$dataView["objParameterUrlPrinterInput"]	 	= getBahavioSession($dataView["company"]->type,"app_purchase_request", "objParameterUrlPrinterInput",  "app_purchase_request/viewPrinterFormatoA4",$dataView["objListCompanyPageSetting"]);
 			$dataView["objParameterUrlPrinterOutput"]	 	= getBahavioSession($dataView["company"]->type,"app_purchase_request", "objParameterUrlPrinterOutput", "app_purchase_request/viewPrinterFormatoA4Output",$dataView["objListCompanyPageSetting"]);
+
+			//Obtener los permisos por el rol del usuario y por el estado actual del registro
+			//Para saber que campos puede modificar y cuales no
+			$dataView["objComponent_Autorization_Detail_Page_Model"] = $this->Component_Autorization_Detail_Page_Model->get_rowByWorkflowStageID_And_RoleID_Type(
+				$dataSession["user"]->companyID,$dataSession["role"]->roleID,$dataSession["company"]->flavorID,
+				$dataView["objTransactionMaster"]->statusID,"edit");
+
+			
 
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);

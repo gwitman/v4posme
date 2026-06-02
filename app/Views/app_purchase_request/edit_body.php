@@ -111,13 +111,34 @@
 											<select name="txtStatusID" id="txtStatusID" class="select2">
 													<option></option>																
 													<?php
-													if($objListWorkflowStage)
-													foreach($objListWorkflowStage as $ws){
-														
-														if($ws->workflowStageID == $objTransactionMaster->statusID)
-															echo "<option value='".$ws->workflowStageID."' selected>".$ws->name."</option>";
+													if($objListWorkflowStage){
+														if(count($objListWorkflowStage) > 0 )
+														{
+															foreach($objListWorkflowStage as $ws){
+																
+																if($ws == null) 
+																	continue;
+
+																if($ws->workflowStageID == $objTransactionMaster->statusID)
+																	echo "<option value='".$ws->workflowStageID."' selected>".$ws->name."</option>";
+																else 
+																	echo "<option value='".$ws->workflowStageID."' >".$ws->name."</option>";
+															}
+														}
 														else 
-															echo "<option value='".$ws->workflowStageID."' >".$ws->name."</option>";
+														{
+															if($objListWorkflowStageCurrent)
+															{
+																echo "<option value='".$objListWorkflowStageCurrent[0]->workflowStageID."' selected>".$objListWorkflowStageCurrent[0]->name."</option>";
+															}
+														}
+													}
+													else 
+													{
+														if($objListWorkflowStageCurrent)
+														{
+															echo "<option value='".$objListWorkflowStageCurrent[0]->workflowStageID."' selected>".$objListWorkflowStageCurrent[0]->name."</option>";
+														}
 													}
 													?>
 											</select>
@@ -154,8 +175,8 @@
 										<label class="col-lg-4 control-label" for="buttons"><?php echo getBehavio($company->type,"app_purchase_request","labelTecnico","Tecnico");  ?></label>
 										<div class="col-lg-8">
 											<div class="input-group">
-												<input type="hidden" id="txtEmployerID" name="txtEmployerID" value="<?php echo $objEmployer->entityID;  ?>">
-												<input class="form-control" readonly id="txtEmployerDescription" type="txtEmployerDescription" value="<?php echo $objEmployerNatural != null ? strtoupper($objEmployer->employeNumber . " ". $objEmployerNatural->firstName . " ". $objEmployerNatural->lastName ) : strtoupper($objEmployer->employeNumber." ".$objEmployerLegal->comercialName); ?>">
+												<input type="hidden" id="txtEmployerID" name="txtEmployerID" value="<?php echo $objEmployer != null ? $objEmployer->entityID : 0 ;  ?>">
+												<input class="form-control" readonly id="txtEmployerDescription" type="txtEmployerDescription" value="<?php echo $objEmployerNatural ? ($objEmployerNatural != null ? strtoupper($objEmployer->employeNumber . " ". $objEmployerNatural->firstName . " ". $objEmployerNatural->lastName ) : strtoupper($objEmployer->employeNumber." ".$objEmployerLegal->comercialName)) : ""; ?>">
 												
 												<span class="input-group-btn">
 													<button class="btn btn-danger" type="button" id="btnClearEmployer">

@@ -135,10 +135,6 @@ function validateForm(){
 		result = false;
 	}
 	
-	if($("#txtEmployerID").val() == ""){
-		fnShowNotification("Seleccionar tecnico","error",timerNotification);
-		result = false;
-	}
 	
 	
 	<?php echo getBehavio($company->type,"app_purchase_request","scriptValidateForm","") ?>

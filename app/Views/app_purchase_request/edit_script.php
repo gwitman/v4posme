@@ -10,6 +10,18 @@
 		var urlPrinterInput  = '<?php echo $objParameterUrlPrinterInput; ?>';
 		var urlPrinterOutput = '<?php echo $objParameterUrlPrinterOutput; ?>';
 		
+		
+		<?php 
+		if($objComponent_Autorization_Detail_Page_Model)
+		{
+			foreach($objComponent_Autorization_Detail_Page_Model as $configStatusPermission)
+			{
+				echo "//".$configStatusPermission->componentAutorizationDetailPageID." ".$configStatusPermission->name;
+				echo "\r\n\r\n".$configStatusPermission->scriptJavas."\r\n\r\n";
+			}
+		}
+		?>
+
 		//Regresar a la lista
 		$(document).on("click","#btnBack",function(){
 				fnWaitOpen();

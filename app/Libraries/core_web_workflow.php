@@ -619,7 +619,17 @@ class core_web_workflow {
 				if(!$exists)
 				$i = null;
 			}				
+			
+
+			
+
+			$objWorkflowStage = array_filter($objWorkflowStage, function ($valor) {
+				return $valor !== null;
+			});
+			$objWorkflowStage = array_values($objWorkflowStage);
 			return $objWorkflowStage; 
+
+
 		}
 		
    }  
