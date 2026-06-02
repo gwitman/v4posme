@@ -163,26 +163,10 @@
 									</div>
 									
 									
-									<div class="form-group <?php echo getBehavio($company->type,"app_purchase_request","classTxtFactura","");  ?>">
-										<label class="col-lg-4 control-label" for="buttons">Factura</label>
+									<div class="form-group <?php echo getBehavio($company->type,"app_purchase_request","classNumber","");  ?>">
+										<label class="col-lg-4 control-label" for="normal">Numero</label>
 										<div class="col-lg-8">
-											<div class="input-group">
-												<input type="hidden" id="txtNote" name="txtNote" value="">
-												<input class="form-control" readonly id="txtNoteDescription" type="txtNoteDescription" value="">
-												
-												<span class="input-group-btn">
-													<button class="btn btn-danger" type="button" id="btnClearNote">
-														<i aria-hidden="true" class="i-undo-2"></i>
-														clear
-													</button>
-												</span>
-												<span class="input-group-btn">
-													<button class="btn btn-primary" type="button" id="btnSearchNote">
-														<i aria-hidden="true" class="i-search-5"></i>
-														buscar
-													</button>
-												</span>											
-											</div>
+											<input class="form-control"  type="text"  name="txtNumber" id="txtNumber" value="">
 										</div>
 									</div>
 									
@@ -228,12 +212,7 @@
 										</div>
 									</div>
 									
-									<div class="form-group <?php echo getBehavio($company->type,"app_purchase_request","classDescOtros","");  ?> ">
-										<label class="col-lg-4 control-label" for="normal">Desc. otros</label>
-										<div class="col-lg-8">
-											<input class="form-control"  type="text"  name="txtReferenceClientName" id="txtReferenceClientName" value="">
-										</div>
-									</div>
+									
 
 									<div class="form-group">
 										<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_purchase_request","labelMarca","Marca");  ?></label>
@@ -311,6 +290,36 @@
 													}
 													?>
 											</select>
+										</div>
+									</div>
+
+									<div class="form-group <?php echo getBehavio($company->type,"app_purchase_request","classDescOtros","");  ?> ">
+										<label class="col-lg-4 control-label" for="normal">Cotizacion</label>
+										<div class="col-lg-8">
+											<input class="form-control"  type="text"  name="txtReferenceClientName" id="txtReferenceClientName" value="">
+										</div>
+									</div>
+
+									<div class="form-group <?php echo getBehavio($company->type,"app_purchase_request","classTxtFactura","");  ?>">
+										<label class="col-lg-4 control-label" for="buttons">Factura</label>
+										<div class="col-lg-8">
+											<div class="input-group">
+												<input type="hidden" id="txtNote" name="txtNote" value="">
+												<input class="form-control" readonly id="txtNoteDescription" type="txtNoteDescription" value="">
+												
+												<span class="input-group-btn">
+													<button class="btn btn-danger" type="button" id="btnClearNote">
+														<i aria-hidden="true" class="i-undo-2"></i>
+														clear
+													</button>
+												</span>
+												<span class="input-group-btn">
+													<button class="btn btn-primary" type="button" id="btnSearchNote">
+														<i aria-hidden="true" class="i-search-5"></i>
+														buscar
+													</button>
+												</span>											
+											</div>
 										</div>
 									</div>
 								

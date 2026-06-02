@@ -4365,6 +4365,11 @@
 	});	
 	function fnFillFactura(formPanel, obj) 
 	{
+		// Bloquear eventos reactivos mientras se cargan los datos para evitar
+		// que los listeners de cambio (fnChange_Descuento, fnChange_PorcentageDescuento)
+		// recalculen con el grid vacío y corrompan los valores del resumen.
+		isUpdatingProgrammatically = true;
+
 		//txtTM_transactionNumber
 		var miVentanaPrincipal_ 	= Ext.getCmp('miVentanaPrincipal');
 		var miVentanaDePago_		= Ext.getCmp('miVentanaDePago');
@@ -4910,8 +4915,8 @@
 			
 			
 			//recalcular detalle
-			fnRecalculateDetail(false,"");
-			
+			debugger;			
+			fnRecalculateDetail(false,"sumarizar");			
 			grid.getView().refresh();
 			grid.updateLayout();
 			
@@ -5094,6 +5099,9 @@
 		{
 			campoNombre.setValue( obj.txtReceiptAmountPoint );
 		}
+
+		// Restaurar eventos reactivos — todos los campos ya fueron cargados
+		isUpdatingProgrammatically = false;
 	
 			
 	}
@@ -5783,6 +5791,7 @@
 		var despuesDeRecalcularTotalRecibidoIgualCero	= <?php echo getBehavio($company->type, "app_invoice_billing", "despuesDeRecalcularTotalRecibidoIgualCero", "false"); ?>;
 		var invoiceTypeCredit 							= false;
 
+		//recalcular el detalle y el total, de todos los registros
         if(index == -1 && tipo_calculate != "sumarizar")
 		{
 			var cantidad 				= 0;
@@ -5862,6 +5871,7 @@
 			}
 		}
 
+		//recalcular un registro en especifico , recalcula el total
 		if(index > -1 && tipo_calculate != "sumarizar")
 		{
 			
@@ -5939,6 +5949,7 @@
 			
 		}
 		
+		//solo recalcula el total
 		if(tipo_calculate == "sumarizar")
 		{
 			var grid 						= viewport.down('#gridDetailTransactionMaster'); // encuentra el grid
@@ -6470,7 +6481,7 @@
 		objFormulario.txtSubTotal							= 0;
 		objFormulario.txtIva								= 0;
 		objFormulario.txtPorcentajeDescuento				= datos.data.objTransactionMaster.tax4; 
-		objFormulario.txtDescuento							= datos.data.objTransactionMaster.discount; 
+		objFormulario.txtDescuento							= 0;
 		objFormulario.txtServices							= 0;
 		objFormulario.txtTotal								= 0;
 		
@@ -6494,7 +6505,7 @@
 		
 		
 		
-		//cargar detalle
+		//cargar detalle		
 		objFormulario.txtTransactionMasterDetail			= [];
 		var typePriceID 									=  154; /*publico*/
 		var varDetailReferences								= datos.data.objTransactionMasterDetailReferences;
@@ -6593,7 +6604,7 @@
 					txtTMD_txtSku: skuFormatoDescription,
 					txtTMD_txtQuantity: row.quantity,
 					txtTMD_txtPrice: row.unitaryPrice,
-					txtTMD_txtSubTotal: row.unitaryPrice * row.quantity ,
+					txtTMD_txtSubTotal: (Number(row.unitaryPrice) * Number(row.quantity)) + Number(row.discount),
 					txtTMD_txtIva: iva_,
 					txtTMD_skuQuantityBySku: skuQuantityBySku,
 					txtTMD_unitaryPriceInvidual: row.unitaryPrice,
@@ -6613,12 +6624,19 @@
 					txtTMD_txtCommisionByBankByItem: row.tax3 
 				};
 				
-				
+				debugger;
+				objFormulario.txtSubTotal 	= Number(objFormulario.txtSubTotal) + (Number(record.txtTMD_txtQuantity) *  (Number(record.txtTMD_txtPrice))) + Number(record.txtTMD_txtDiscountByItem);
+				objFormulario.txtIva 		= Number(objFormulario.txtIva) + Number(record.txtTMD_txtIva);
+				objFormulario.txtDescuento 	= Number(objFormulario.txtDescuento) + Number(record.txtTMD_txtDiscountByItem);
+				objFormulario.txtTotal 		= Number(objFormulario.txtSubTotal) + Number(objFormulario.txtIva) - Number(objFormulario.txtDescuento);
 				objFormulario.txtTransactionMasterDetail.push(record);
 			}
 		}
 		
+
+
 		//cargar lso datos en pantalla		
+		debugger;
 		fnFillFactura("miVentanaPrincipal", objFormulario );
 		
 	}

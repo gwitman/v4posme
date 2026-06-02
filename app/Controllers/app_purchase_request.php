@@ -330,8 +330,8 @@ class app_purchase_request extends _BaseController {
 			$objTMNew["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtReference4");
 			
 			//$objTMNew["reference3"] 					= /*inicio get post*/ $this->request->getPost("txtEmployeeID");//--fin peticion get o post
-			//$objTMNew["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtCustomerCreditLineID");//--fin peticion get o post
-			//$objTMNew["descriptionReference"] 		= "reference1:input,reference2:input,reference3:Gestor de Cobro,reference4:Linea de credito del Cliente";
+			//$objTMNew["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtCustomerCreditLineID");//--fin peticion get o post			
+			$objTMNew["descriptionReference"] 			= /*inicio get post*/ $this->request->getPost("txtNumber");
 			$objTMNew["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");
 			$objTMNew["isTemplate"] 					= 0;
 			$objTMNew["printerQuantity"]				= /*inicio get post*/ $this->request->getPost("txtTypeID");
@@ -574,7 +574,9 @@ class app_purchase_request extends _BaseController {
 			$objTM["reference2"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference2");
 			$objTM["reference3"] 					= /*inicio get post*/ $this->request->getPost("txtDetailReference3");
 			$objTM["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtReference4");
+			$objTM["descriptionReference"] 			= /*inicio get post*/ $this->request->getPost("txtNumber");
 			$objTM["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");
+
 			$objTM["isTemplate"]		 			= 0;
 			$objTM["printerQuantity"]				= /*inicio get post*/ $this->request->getPost("txtTypeID");
 			$objTM["amount"] 						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost('txtDetailAmount'));
