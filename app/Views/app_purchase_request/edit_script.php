@@ -12,9 +12,9 @@
 		
 		
 		<?php 
-		if($objComponent_Autorization_Detail_Page_Model)
+		if($objComponent_Autorization_Detail_Page_Model_EditJavaReady)
 		{
-			foreach($objComponent_Autorization_Detail_Page_Model as $configStatusPermission)
+			foreach($objComponent_Autorization_Detail_Page_Model_EditJavaReady as $configStatusPermission)
 			{
 				echo "//".$configStatusPermission->componentAutorizationDetailPageID." ".$configStatusPermission->name;
 				echo "\r\n\r\n".$configStatusPermission->scriptJavas."\r\n\r\n";
@@ -200,6 +200,17 @@
 		}
 		
 		<?php echo getBehavio($company->type,"app_purchase_request","scriptValidateForm","") ?>
+
+		<?php 
+		if($objComponent_Autorization_Detail_Page_Model_ValidateForm)
+		{
+			foreach($objComponent_Autorization_Detail_Page_Model_ValidateForm as $configStatusPermission)
+			{
+				echo "//".$configStatusPermission->componentAutorizationDetailPageID." ".$configStatusPermission->name;
+				echo "\r\n\r\n".$configStatusPermission->scriptJavas."\r\n\r\n";
+			}
+		}
+		?>
 		return result;
 	}
 	

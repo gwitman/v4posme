@@ -161,9 +161,12 @@ class app_purchase_request extends _BaseController {
 
 			//Obtener los permisos por el rol del usuario y por el estado actual del registro
 			//Para saber que campos puede modificar y cuales no
-			$dataView["objComponent_Autorization_Detail_Page_Model"] = $this->Component_Autorization_Detail_Page_Model->get_rowByWorkflowStageID_And_RoleID_Type(
+			$dataView["objComponent_Autorization_Detail_Page_Model_EditJavaReady"] = $this->Component_Autorization_Detail_Page_Model->get_rowByWorkflowStageID_And_RoleID_Type(
 				$dataSession["user"]->companyID,$dataSession["role"]->roleID,$dataSession["company"]->flavorID,
-				$dataView["objTransactionMaster"]->statusID,"edit");
+				$dataView["objTransactionMaster"]->statusID,"edit_jascript_ready");
+			$dataView["objComponent_Autorization_Detail_Page_Model_ValidateForm"] = $this->Component_Autorization_Detail_Page_Model->get_rowByWorkflowStageID_And_RoleID_Type(
+				$dataSession["user"]->companyID,$dataSession["role"]->roleID,$dataSession["company"]->flavorID,
+				$dataView["objTransactionMaster"]->statusID,"edit_ValidateForm");
 
 			
 
