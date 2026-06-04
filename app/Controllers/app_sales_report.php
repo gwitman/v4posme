@@ -150,6 +150,73 @@ class app_sales_report extends _BaseController {
 				$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
 				
 				
+				if(isset($objData) && count($objData) > 1500)
+				{
+					$objParameterDeliminterCsv	= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
+					$objParameterDeliminterCsv	= $objParameterDeliminterCsv->value;
+
+					// Mapa clave => etiqueta amigable.
+					// Las columnas que NO aparezcan aquí se omiten del CSV.
+					$columnMap = [
+						"transactionNumber"   => "Documento",
+						"transactionOn"       => "Fecha Transaccion",
+						"createdOn"           => "Fecha Creacion",
+						"customerNumber"      => "No. Cliente",
+						"legalName"           => "Cliente",
+						"zone"                => "Zona",
+						"currencyName"        => "Moneda",
+						"exchangeRate"        => "Tasa de Cambio",
+						"itemNumber"          => "Codigo Producto",
+						"itemName"            => "Producto",
+						"nameCategory"        => "Categoria",
+						"quantity"            => "Cantidad",
+						"unitaryCost"         => "Costo Unitario",
+						"unitaryPrice"        => "Precio Unitario",
+						"discount"            => "Descuento",
+						"cost"                => "Costo Total",
+						"amount"              => "Monto",
+						"amountConIva"        => "Monto con IVA",
+						"iva"                 => "IVA %",
+						"ivaTotal"            => "IVA Total",
+						"utilidad"            => "Utilidad",
+						"utilidad_porcentual" => "Utilidad %",
+						"employerName"        => "Empleado",
+						"nickname"            => "Usuario",
+						"Agent"               => "Agente",
+						"note"                => "Nota",
+						"Commentary"          => "Comentario",
+						"amountCommision"     => "Comision",
+					];
+
+					$filename = 'sales_detail_'.date('Ymd').'.csv';
+
+					// Limpiar cualquier salida previa antes de enviar el archivo
+					while(ob_get_level()) { ob_end_clean(); }
+
+					header("Content-Description: File Transfer");
+					header("Content-Disposition: attachment; filename=$filename");
+					header("Content-Type: application/csv; charset=utf-8");
+					header("Content-Transfer-Encoding: binary");
+
+					$file = fopen('php://output', 'w');
+					fputs($file, "\xEF\xBB\xBF");
+
+					// Encabezado: solo columnas definidas en $columnMap
+					fputcsv($file, array_values($columnMap), $objParameterDeliminterCsv);
+
+					foreach($objData as $line){
+						$line = (array)$line;
+						$row  = [];
+						foreach(array_keys($columnMap) as $col){
+							$row[] = isset($line[$col]) ? $line[$col] : '';
+						}
+						fputcsv($file, $row, $objParameterDeliminterCsv);
+					}
+
+					fclose($file);
+					exit;
+				}
+
 				if($dataSession["company"]->flavorID == 728)
 				return view("app_sales_report/sales_detail/view_a_disemp_pasteleria_lizzette",$objDataResult);//--finview-r
 				else if($dataSession["company"]->type == "san_rafael")
