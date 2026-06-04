@@ -1005,13 +1005,17 @@ class app_purchase_request extends _BaseController {
 			if($dataViewID == null and   $dataSession["user"]->useMobile != 1 ){				
 				$targetComponentID			= $this->session->get('company')->flavorID;	
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
+				$parameter["{roleID}"]		= $this->session->get('role')->roleID;
+				$parameter["{userID}"]		= $this->session->get('user')->userID;
 				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
 				
 				
 				if(!$dataViewData){
 					
 					$targetComponentID			= 0;	
-					$parameter["{companyID}"]	= $this->session->get('user')->companyID;					
+					$parameter["{companyID}"]	= $this->session->get('user')->companyID;	
+					$parameter["{roleID}"]		= $this->session->get('role')->roleID;	
+					$parameter["{userID}"]		= $this->session->get('user')->userID;			
 					$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);				
 					$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 				}
@@ -1024,6 +1028,8 @@ class app_purchase_request extends _BaseController {
 			//Vista por defecto MOBILE
 			else if( $dataSession["user"]->useMobile == 1 ){
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
+				$parameter["{roleID}"]		= $this->session->get('role')->roleID;
+				$parameter["{userID}"]		= $this->session->get('user')->userID;
 				$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$objComponent->componentID,"DEFAULT_MOBILE_LISTA_INGRESO_A_CAJA",CALLERID_LIST,$resultPermission,$parameter); 			
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			} 
@@ -1031,6 +1037,8 @@ class app_purchase_request extends _BaseController {
 			else 
 			{
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
+				$parameter["{roleID}"]		= $this->session->get('role')->roleID;
+				$parameter["{userID}"]		= $this->session->get('user')->userID;
 				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 			
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			}
