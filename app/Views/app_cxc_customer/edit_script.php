@@ -1046,6 +1046,7 @@
 				objTableLine.fnUpdate( data.txtCurrencyID, i, 3 );
 				objTableLine.fnUpdate( data.txtStatusID, i, 4 );
 				objTableLine.fnUpdate( data.txtLimitCredit, i, 16 );
+				objTableLine.fnUpdate( data.txtLimitBalance, i, 17 );
 				objTableLine.fnUpdate( data.txtInteresYear, i, 5 );
 				objTableLine.fnUpdate( data.txtPeriodPay, i, 10 );
 				objTableLine.fnUpdate( data.txtTerm, i, 12 );
@@ -1089,7 +1090,7 @@
 			data.txtCreditLineIDDesc,	/*linea*/
 			'N/D',						/*numero*/
 			data.txtLimitCredit, 		/*limite*/
-			data.txtLimitCredit, 		/*balance*/
+			data.txtLimitBalance, 		/*balance*/
 			data.txtStatusIDDesc, 		/*statusName*/
 			data.txtCurrencyIDDesc,		/*currencyName*/
 			data.txtTypeAmortization,	/*typeAmortization*/

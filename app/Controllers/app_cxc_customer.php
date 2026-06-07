@@ -540,9 +540,9 @@ class app_cxc_customer extends _BaseController {
 				
 				//Actualizar Customer Credit
 				$objCustomerCredit 							= $this->Customer_Credit_Model->get_rowByPK($companyID_,$branchID_,$entityID_);
-				$objCustomerCreditNew["limitCreditDol"] 	= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtLimitCreditDol"));
-				$objCustomerCreditNew["balanceDol"] 		= $objCustomerCreditNew["limitCreditDol"] - ($objCustomerCredit->limitCreditDol - $objCustomerCredit->balanceDol);
-				$objCustomerCreditNew["incomeDol"] 			= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtIncomeDol"));
+				$objCustomerCreditNew["limitCreditDol"] 	= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtLimitCreditDol"));				
+				$objCustomerCreditNew["balanceDol"] 		= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtLimitBalanceDol"));
+				$objCustomerCreditNew["incomeDol"] 			= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtIncomeDol"));				
 				$this->Customer_Credit_Model->update_app_posme($companyID_,$branchID_,$entityID_,$objCustomerCreditNew);
 				
 				//actualizar cuenta
@@ -624,7 +624,7 @@ class app_cxc_customer extends _BaseController {
 					$objCustomerCreditLine["accountNumber"]	= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_customer_credit_line",0);
 					$objCustomerCreditLine["currencyID"]	= $arrayListCreditCurrencyID[$key];
 					$objCustomerCreditLine["limitCredit"]	= helper_StringToNumber($arrayListCreditLimit[$key]);
-					$objCustomerCreditLine["balance"]		= helper_StringToNumber($arrayListCreditLimit[$key]);
+					$objCustomerCreditLine["balance"]		= helper_StringToNumber($arrayListCreditBalance[$key]);
 					$objCustomerCreditLine["interestYear"]	= helper_StringToNumber($arrayListCreditInterestYear[$key]);
 					$objCustomerCreditLine["interestPay"]	= $arrayListCreditInterestPay[$key];
 					$objCustomerCreditLine["totalPay"]		= $arrayListCreditTotalPay[$key];
@@ -652,7 +652,7 @@ class app_cxc_customer extends _BaseController {
 					$objCustomerCreditLineNew["creditLineID"]		= $arrayListCreditLineID[$key];
 					$objCustomerCreditLineNew["limitCredit"]		= helper_StringToNumber($arrayListCreditLimit[$key]);
 					$objCustomerCreditLineNew["interestYear"]		= helper_StringToNumber($arrayListCreditInterestYear[$key]);
-					$objCustomerCreditLineNew["balance"] 			= $objCustomerCreditLineNew["limitCredit"] - ($objCustomerCreditLine->limitCredit - $objCustomerCreditLine->balance);
+					$objCustomerCreditLineNew["balance"] 			= helper_StringToNumber($arrayListCreditBalance[$key]);
 					$objCustomerCreditLineNew["periodPay"]			= $arrayListCreditPeriodPay[$key];
 					$objCustomerCreditLineNew["term"]				= helper_StringToNumber($arrayListCreditTerm[$key]);
 					$objCustomerCreditLineNew["note"]				= $arrayListCreditNote[$key];
@@ -663,13 +663,11 @@ class app_cxc_customer extends _BaseController {
 					$exchangeRate 										= $this->core_web_currency->getRatio($companyID,$dateOn,1,$objCustomerCreditLine->currencyID,$objCurrencyDolares->currencyID);					
 					$exchangeRateAmount									= $objCustomerCreditLineNew["limitCredit"];
 					
-					//Si el balance es mayor que el limite igual el balance al limite
 					if($objCustomerCreditLineNew["balance"] > $objCustomerCreditLineNew["limitCredit"])
-					$objCustomerCreditLineNew["balance"] = $objCustomerCreditLineNew["limitCredit"];
-					
+					throw new \Exception("BALANCE NO PUEDE SER MAYOR QUE EL LIMITE EN LA LINEA");
+
 					//actualizar
 					$this->Customer_Credit_Line_Model->update_app_posme($customerCreditLineID,$objCustomerCreditLineNew);
-					
 					
 			
 				}
@@ -689,15 +687,8 @@ class app_cxc_customer extends _BaseController {
 			
 			
 			//Validar Limite de Credito
-			if($exchangeRateTotal > $objCustomerCreditNew["limitCreditDol"])
-			throw new \Exception("LINEAS DE CREDITOS MAL CONFIGURADAS LÍMITE EXCEDIDO");
-			
-			//Actualizar Balance
-			if($objCustomerCreditNew["balanceDol"] > $objCustomerCreditNew["limitCreditDol"]){
-				$objCustomerCreditNew["balanceDol"] = $objCustomerCreditNew["limitCreditDol"];
-				$this->Customer_Credit_Model->update_app_posme($companyID_,$branchID_,$entityID_,$objCustomerCreditNew);
-			}
-			
+			//if($exchangeRateTotal > $objCustomerCreditNew["limitCreditDol"])
+			//throw new \Exception("LINEAS DE CREDITOS MAL CONFIGURADAS LÍMITE EXCEDIDO");
 			
 			//Confirmar Entidad
 			if($db->transStatus() !== false){
@@ -1048,7 +1039,7 @@ class app_cxc_customer extends _BaseController {
 			$objCustomerCredit["branchID"] 			= $objEntity["branchID"];
 			$objCustomerCredit["entityID"] 			= $entityID;
 			$objCustomerCredit["limitCreditDol"] 	= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtLimitCreditDol"));
-			$objCustomerCredit["balanceDol"] 		= $objCustomerCredit["limitCreditDol"];
+			$objCustomerCredit["balanceDol"] 		= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtLimitBalanceDol"));
 			$objCustomerCredit["incomeDol"] 		= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtIncomeDol"));
 			$this->Customer_Credit_Model->insert_app_posme($objCustomerCredit);
 			
@@ -1112,6 +1103,7 @@ class app_cxc_customer extends _BaseController {
 				 $arrayListCreditLineID[0] 			= $creditLineDefault;
 				 $arrayListCreditCurrencyID[0]		= $this->core_web_currency->getCurrencyDefault($companyID)->currencyID;
 				 $arrayListCreditLimit[0]			= 300000;
+				 $arrayListCreditBalance[0]			= 300000;
 				 $arrayListCreditInterestYear[0]	= $interesDefault;
 				 $arrayListCreditInterestPay[0]		= 0;
 				 $arrayListCreditTotalPay[0]		= 0;
@@ -1136,7 +1128,7 @@ class app_cxc_customer extends _BaseController {
 					$objCustomerCreditLine["accountNumber"]	= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_customer_credit_line",0);
 					$objCustomerCreditLine["currencyID"]	= $arrayListCreditCurrencyID[$key];
 					$objCustomerCreditLine["limitCredit"]	= helper_StringToNumber($arrayListCreditLimit[$key]);
-					$objCustomerCreditLine["balance"]		= helper_StringToNumber($arrayListCreditLimit[$key]);
+					$objCustomerCreditLine["balance"]		= helper_StringToNumber($arrayListCreditBalance[$key]);
 					$objCustomerCreditLine["interestYear"]	= helper_StringToNumber($arrayListCreditInterestYear[$key]);
 					$objCustomerCreditLine["interestPay"]	= $arrayListCreditInterestPay[$key];
 					$objCustomerCreditLine["totalPay"]		= $arrayListCreditTotalPay[$key];
@@ -1172,8 +1164,8 @@ class app_cxc_customer extends _BaseController {
 			
 			
 			//Validar Limite de Credito
-			if($exchangeRateTotal > $objCustomerCredit["limitCreditDol"])
-			throw new \Exception("LINEAS DE CREDITOS MAL CONFIGURADAS LÍMITE EXCEDIDO");
+			//if($exchangeRateTotal > $objCustomerCredit["limitCreditDol"])
+			//throw new \Exception("LINEAS DE CREDITOS MAL CONFIGURADAS LÍMITE EXCEDIDO");
 			
 			//Crear la Carpeta para almacenar los Archivos del Cliente
 			$pathfile = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$entityID;			
@@ -1390,7 +1382,7 @@ class app_cxc_customer extends _BaseController {
             $objCustomerCredit["branchID"] 			= $objEntity["branchID"];
             $objCustomerCredit["entityID"] 			= $entityID;
             $objCustomerCredit["limitCreditDol"] 	= 900000;
-            $objCustomerCredit["balanceDol"] 		= $objCustomerCredit["limitCreditDol"];
+            $objCustomerCredit["balanceDol"] 		= 900000;
             $objCustomerCredit["incomeDol"] 		= 5000;
             $this->Customer_Credit_Model->insert_app_posme($objCustomerCredit);
 
@@ -1426,6 +1418,7 @@ class app_cxc_customer extends _BaseController {
                 $arrayListCreditLineID[0] 			= $creditLineDefault;
                 $arrayListCreditCurrencyID[0]		= $this->core_web_currency->getCurrencyDefault($companyID)->currencyID;
                 $arrayListCreditLimit[0]			= 300000;
+				$arrayListCreditBalance[0]			= 300000;
                 $arrayListCreditInterestYear[0]		= $interesDefault;
                 $arrayListCreditInterestPay[0]		= 0;
                 $arrayListCreditTotalPay[0]			= 0;
@@ -1450,7 +1443,7 @@ class app_cxc_customer extends _BaseController {
                     $objCustomerCreditLine["accountNumber"]	= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_customer_credit_line",0);
                     $objCustomerCreditLine["currencyID"]	= $arrayListCreditCurrencyID[$key];
                     $objCustomerCreditLine["limitCredit"]	= helper_StringToNumber($arrayListCreditLimit[$key]);
-                    $objCustomerCreditLine["balance"]		= helper_StringToNumber($arrayListCreditLimit[$key]);
+                    $objCustomerCreditLine["balance"]		= helper_StringToNumber($arrayListCreditBalance[$key]);
                     $objCustomerCreditLine["interestYear"]	= helper_StringToNumber($arrayListCreditInterestYear[$key]);
                     $objCustomerCreditLine["interestPay"]	= $arrayListCreditInterestPay[$key];
                     $objCustomerCreditLine["totalPay"]		= $arrayListCreditTotalPay[$key];
@@ -1487,8 +1480,8 @@ class app_cxc_customer extends _BaseController {
 
 
             //Validar Limite de Credito
-            if($exchangeRateTotal > $objCustomerCredit["limitCreditDol"])
-                throw new \Exception("LINEAS DE CREDITOS MAL CONFIGURADAS LÍMITE EXCEDIDO");
+            //if($exchangeRateTotal > $objCustomerCredit["limitCreditDol"])
+            //    throw new \Exception("LINEAS DE CREDITOS MAL CONFIGURADAS LÍMITE EXCEDIDO");
 			
 			
 			//Asociar el cliente al colaborador

@@ -496,7 +496,7 @@
 								<div class="form-group">
 										<label class="col-lg-4 control-label" for="normal">Balance US$</label>
 										<div class="col-lg-8">
-											<input class="form-control txt-numeric"  type="text" readonly  name="txtBalanceDol" id="txtBalanceDol" value="">												
+											<input class="form-control txt-numeric"  type="text"   name="txtLimitBalanceDol" id="txtLimitBalanceDol" value="">												
 										</div>
 								</div>
 								

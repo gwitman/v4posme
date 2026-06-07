@@ -81,6 +81,16 @@
 															</div>
 														</div>
 													</div>
+
+													<div class="form-group">
+														<label class="col-lg-2 control-label" for="preapend">Balance</label>
+														<div class="col-lg-10">
+															<div class="input-group">
+																<span class="input-group-addon">$</span>
+																<input class="form-control txt-numeric" id="txtLimitBalance" type="text" placeholder="" value="<?php echo sprintf("%01.2f",$objCustomerCreditLine->balance); ?>">
+															</div>
+														</div>
+													</div>
 													
 													<div class="form-group">
 														<label class="col-lg-2 control-label" for="preapend">Interes Anual</label>

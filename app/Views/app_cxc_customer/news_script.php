@@ -827,7 +827,7 @@
 			data.txtCreditLineIDDesc,
 			'N/D',
 			data.txtLimitCredit,
-			data.txtLimitCredit,
+			data.txtLimitBalance,
 			data.txtStatusIDDesc,
 			data.txtCurrencyIDDesc,
 			data.txtTypeAmortization,
