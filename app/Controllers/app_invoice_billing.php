@@ -10875,6 +10875,8 @@ class app_invoice_billing extends _BaseController {
 			else{			
 				//visualizar				
 				$this->dompdf->stream("file.pdf ", ['Attachment' => $objParameterShowDownloadPreview ]);
+				exit;
+
 			}
 			
 			
@@ -14911,10 +14913,10 @@ class app_invoice_billing extends _BaseController {
 			
 			$objCompany 			= $this->Company_Model->get_rowByPK($companyID);					
 			$objParameter	        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
-			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);			
 			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
-			$dataView["objNaturalEmployer"] 					= $this->Employee_Model->get_rowByInvoiceItem($companyID,$transactionMasterID,$itemIDArray[1]);
+			$dataView["objNaturalEmployer"] 					= $this->Employee_Model->get_rowByInvoiceItem($companyID,$transactionMasterID,$itemIDArray[0]);
 			$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterDetailWarehouse"]	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterID,$objComponentItem->componentID);
@@ -15047,7 +15049,6 @@ class app_invoice_billing extends _BaseController {
 					$confiDetalle,
 					$detalle,
 					$dataView, 
-					$objParameterTelefono,
 					"",
 					"",
 					"",
@@ -15079,7 +15080,8 @@ class app_invoice_billing extends _BaseController {
 			}
 			else
 			{
-				$dataView["comment"] 	= helper_InsertarEntrePartes($transactionComment,"<br/>",13);
+				//$dataView["comment"] 	= helper_InsertarEntrePartes($transactionComment,"<br/>",13);
+				$dataView["comment"] 	= $transactionComment;
 				$html 					= helper_reporte58mmCocina(
 					"FACTURA",
 					$objCompany,

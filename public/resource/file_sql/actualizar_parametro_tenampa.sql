@@ -1,4 +1,5 @@
 /*BD: 	dbkxs0cvuoq4zw:tenampa*/
+/*Servidor  siteground .net*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
