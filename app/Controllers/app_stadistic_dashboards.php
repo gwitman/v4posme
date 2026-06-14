@@ -87,7 +87,7 @@ class app_stadistic_dashboards extends _BaseController
             $dataSession["roleName"]												= $dataSession["role"]->name;
             $dataSession["firstDate"]												= $firstDate;
             $dataSession["lastDate"]												= $lastDate;
-            $dataSession["RealState_get_ClienteFuenteDeContacto"]					= $this->Transaction_Master_Detail_Model->RealState_get_ClienteFuenteDeContacto($dataSession["user"]->companyID,$firstDate,$lastDate);
+            $dataSession["RealState_get_ClienteFuenteDeContacto"]					= $this->Transaction_Master_Detail_Model->RealState_get_ClienteFuenteDeContacto($dataSession["user"]->companyID,$firstDate,$lastDate);            
             $dataSession["RealState_get_ClientesInteres"]							= $this->Transaction_Master_Detail_Model->RealState_get_ClientesInteres($dataSession["user"]->companyID,$firstDate,$lastDate);
             $dataSession["RealState_get_ClientesTipoPropiedad"]						= $this->Transaction_Master_Detail_Model->RealState_get_ClientesTipoPropiedad($dataSession["user"]->companyID,$firstDate,$lastDate);
             $dataSession["RealState_get_ClientesPorAgentes"]						= $this->Transaction_Master_Detail_Model->RealState_get_ClientesPorAgentes($dataSession["user"]->companyID,$firstDate,$lastDate);

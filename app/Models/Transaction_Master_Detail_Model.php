@@ -1464,7 +1464,7 @@ class Transaction_Master_Detail_Model extends Model  {
 					c.formContactID = u.catalogItemID 
 			where 
 				c.isActive =  1 and 
-				c.createdOn  between '$dateFirst' and '$dateLast'  				
+				c.modifiedOn  between '$dateFirst' and '$dateLast'  				
 			group by 
 				u.name 
 			order by 
@@ -1491,7 +1491,7 @@ class Transaction_Master_Detail_Model extends Model  {
 				inner join tb_catalog_item ci on 
 					x.categoryID = ci.catalogItemID 
 			where 
-				x.createdOn between '$dateFirst' and '$dateLast'  
+				x.modifiedOn between '$dateFirst' and '$dateLast'  
 			group by  
 				1
 		");
@@ -1516,7 +1516,7 @@ class Transaction_Master_Detail_Model extends Model  {
 				inner join tb_catalog_item ci on 
 					x.clasificationID = ci.catalogItemID 
 			where 
-				x.createdOn between '$dateFirst' and '$dateLast'  
+				x.modifiedOn between '$dateFirst' and '$dateLast'  
 			group by  
 				1
 		");
@@ -1541,7 +1541,7 @@ class Transaction_Master_Detail_Model extends Model  {
 				inner join tb_naturales  u on 
 					x.entityContactID = u.entityID  
 			where 
-				x.createdOn between '$dateFirst' and '$dateLast'  
+				x.modifiedOn between '$dateFirst' and '$dateLast'  
 			group by  
 				1
 		");
@@ -1569,7 +1569,7 @@ class Transaction_Master_Detail_Model extends Model  {
 				inner join tb_naturales nat on 
 					nat.entityID = x.entityContactID 
 			where 
-				x.createdOn between '$dateFirst' and '$dateLast'  
+				x.modifiedOn between '$dateFirst' and '$dateLast'  
 			group by  
 				1,2
 		");
@@ -1594,7 +1594,7 @@ class Transaction_Master_Detail_Model extends Model  {
 				inner join tb_workflow_stage ws on 
 					ws.workflowStageID = x.statusID 
 			where 
-				x.createdOn between '$dateFirst' and '$dateLast'  
+				x.modifiedOn between '$dateFirst' and '$dateLast'  
 			group by  
 				1
 		");

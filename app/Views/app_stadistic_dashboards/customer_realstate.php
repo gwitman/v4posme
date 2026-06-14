@@ -132,7 +132,7 @@
             </div><!-- End .panel-heading -->
 
             <div class="panel-body">
-                <div id="grafico5" style="height:300px" ></div>
+                <div id="grafico5" style="height:380px" ></div>
             </div><!-- End .panel-body -->
         </div><!-- End .widget -->
     </div>
@@ -215,12 +215,14 @@
 
                     var options = {
                         title: 'Fuente de contacto',
-						isStacked: 'percent',
                         colors: ['#FF5733', '#FFC300', '#FF85A2', '#FF33FF', '#33FFBD'],
-                        seriesType: 'bars',
+                        legend: { position: 'none' },
+                        vAxis: { title: 'Cantidad', minValue: 0 },
+                        hAxis: { title: 'Fuente' },
+                        bar: { groupWidth: '60%' },
                     };
 
-                    var chart = new google.visualization.ComboChart(document.getElementById('grafico1'));
+                    var chart = new google.visualization.ColumnChart(document.getElementById('grafico1'));
                     chart.draw(data, options);
 
                 }
@@ -382,12 +384,19 @@
                     var options = {
                         title: 'Clasificacion de clientes',
                         colors: ['#FF5733', '#FFC300', '#FF85A2', '#FF33FF', '#33FFBD'],
-                        vAxis: {title: 'Clasificacion'},
-                        hAxis: {title: 'Agente'},
+                        vAxis: { title: 'Cantidad', minValue: 0 },
+                        hAxis: { title: 'Agente', slantedText: true, slantedTextAngle: 30 },
                         seriesType: 'bars',
-                        series: {5: {type: 'line'}}
-
-
+                        series: { 5: { type: 'line' } },
+                        legend: {
+                            position: 'bottom',
+                            alignment: 'center',
+                            textStyle: { fontSize: 11 },
+                            pagingTextStyle: { fontSize: 11 },
+                            scrollArrows: { activeColor: '#333', inactiveColor: '#ccc' }
+                        },
+                        chartArea: { width: '75%', height: '55%', top: 40 },
+                        fontSize: 11,
                     };
 
                     var chart = new google.visualization.ComboChart(document.getElementById('grafico5'));
