@@ -4428,7 +4428,8 @@ class app_box_share extends _BaseController {
 			array_push($detalle,$row);
 			
 			
-			
+			$datView["viewRegisterFormatoPaginaNormal80mmOpcion1_LabelAfterDateTime"] 
+					= ""; 
 			
 			//Generar Reporte
 			$html = helper_reporte80mmTransactionMaster(
@@ -4448,7 +4449,7 @@ class app_box_share extends _BaseController {
 				"",
 				"",
 				"",
-				array()
+				$datView
 			);
 			
 			$this->dompdf->loadHTML($html);
