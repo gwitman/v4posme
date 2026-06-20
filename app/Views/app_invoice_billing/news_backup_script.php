@@ -8,6 +8,7 @@
 	var varUrlPrinter										= '<?php echo $urlPrinterDocument; ?>';
 	var varParameterAmortizationDuranteFactura				= <?php echo $objParameterAmortizationDuranteFactura; ?>;
 	var varParameterInvoiceBillingPrinterCocinaUrl			= '<?php echo $objParameterINVOICE_URL_PRINTER_COCINA; ?>';
+	var varParameterInvoiceNewRowToAddItem					= '<?php echo $objParameterINVOICE_NEWROW_TO_ADDITEM; ?>';
 	
 	var varGlobalNumber						= 0;
 	var varStatusInvoiceAplicado			= 67; //Estado Aplicada
@@ -1066,7 +1067,7 @@
 								grid.on('itemdblclick', function(view, record) {
 									fnBtnSeleccionProducto();
 								});
-							}
+							} 
 						}
 					},
 					items: [<?php echo $objCompanyDataView_BuscarProductos["view_config"]->jsonConfiguration; ?> ],

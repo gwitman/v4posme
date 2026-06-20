@@ -6,6 +6,13 @@
 /******************************************************************/	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_NEWROW_TO_ADDITEM"; ##Agregar filas nuevos al momento de facturar
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "0" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 

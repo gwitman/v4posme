@@ -3932,6 +3932,7 @@ class app_invoice_billing extends _BaseController {
 			$objParameterEsResrarante																= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_IS_RESTAURANT");
 			$objParameterEsResrarante																= $objParameterEsResrarante->value;
 			$dataView["objParameterEsResrarante"] 													= $objParameterEsResrarante;
+			$dataView["objParameterINVOICE_NEWROW_TO_ADDITEM"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_NEWROW_TO_ADDITEM")->value;
 			
 						
 			if(!$dataView["objCustomerDefault"])
