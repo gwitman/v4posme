@@ -4,7 +4,8 @@
 	let objCausalTypeCredit 								= JSON.parse('<?php echo json_encode($objCausalTypeCredit); ?>');
 	let objListCustomerCreditLine 							= JSON.parse('<?php echo json_encode($objListCustomerCreditLine); ?>');	
 	let objCurrencyCordoba 									= JSON.parse('<?php echo json_encode($objCurrencyCordoba); ?>');
-	var varParameterINVOICE_BILLING_VALIDATE_EXONERATION 	= '<?php echo $objParameterINVOICE_BILLING_VALIDATE_EXONERATION; ?>';	
+	var varParameterINVOICE_BILLING_VALIDATE_EXONERATION 	= '<?php echo $objParameterINVOICE_BILLING_VALIDATE_EXONERATION; ?>';
+	var varParameterInvoiceValidateCostInPrice				= '<?php echo $objParameterINVOICE_BILLING_VALIDATE_COST_IN_PRICE; ?>';	
 	var varUrlPrinter										= '<?php echo $urlPrinterDocument; ?>';
 	var varParameterAmortizationDuranteFactura				= <?php echo $objParameterAmortizationDuranteFactura; ?>;
 	var varParameterInvoiceBillingPrinterCocinaUrl			= '<?php echo $objParameterINVOICE_URL_PRINTER_COCINA; ?>';
@@ -2455,7 +2456,7 @@
 																		}
 
 																		// Caso 1: precio por debajo o igual al costo → rechazar
-																		if (costo > 0 && nuevoPrecio <= costo) {
+																		if (varParameterInvoiceValidateCostInPrice === 'true' && costo > 0 && nuevoPrecio <= costo) {
 																			record.set('txtTMD_txtPrice', precioAnterior);
 																			field.suspendEvents();
 																			field.setValue(precioAnterior);
