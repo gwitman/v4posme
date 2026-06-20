@@ -265,7 +265,7 @@
 
 						var options = {
 						  title: 'Venta vs Sucursal',
-						  colors: ['#f3b49f', '#006E98', '#ec8f6e', '#f3b49f', '#f6c7b6'],
+						  colors: ['#13c139', '#eb5818', '#d4fa3a', '#0ec08a', '#5bb8e7'],
 						};
 
 						var chart = new google.visualization.PieChart(document.getElementById('grafico5'));
