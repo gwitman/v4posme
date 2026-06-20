@@ -4079,10 +4079,25 @@
 		}
 		function fnBtnEliminarProductoDetail(btn) 
 		{
-			var grid = btn.up('grid');
-			var selection = grid.getSelectionModel().getSelection();
-			if (selection.length > 0) {
-				grid.getStore().remove(selection);
+			var grid      = btn.up('grid');
+			var store     = grid.getStore();
+
+			// Recopilar registros marcados via checkcolumn
+			var checkedRecords = [];
+			store.each(function(record) {
+				if (record.get('txtTMD_checked')) {
+					checkedRecords.push(record);
+				}
+			});
+
+			// Si no hay checks, intentar con la selección de fila normal
+			if (checkedRecords.length === 0) {
+				checkedRecords = grid.getSelectionModel().getSelection();
+			}
+
+			if (checkedRecords.length > 0) {
+				store.remove(checkedRecords);
+				fnRecalculateDetail(true, "sumarizar");
 			} else {
 				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">Seleccione al menos un producto para eliminar.</span>');
 			}
