@@ -6180,6 +6180,34 @@
 		}
 		
 		
+		// Si varParameterInvoiceNewRowToAddItem es "false", buscar si el item ya existe
+		// y solo aumentar la cantidad en lugar de agregar una nueva fila
+		if (varParameterInvoiceNewRowToAddItem === "false")
+		{
+			var existingRecord = null;
+			store.each(function(r) {
+				if (String(r.get('txtTMD_txtItemID')) === String(filterResult.itemID)) {
+					existingRecord = r;
+					return false; // rompe el loop
+				}
+			});
+
+			if (existingRecord !== null)
+			{
+				var addQty = filterResult.QuantityInput ?? 1;
+				var currentQty = existingRecord.get('txtTMD_txtQuantity') || 0;
+				existingRecord.set('txtTMD_txtQuantity', Number(currentQty) + Number(addQty));
+
+				var existingIdx = store.indexOf(existingRecord);
+				fnGetConcept(filterResult.itemID, "ALL");
+				fnRecalculateDetail(true, "", existingIdx);
+
+				viewport.down("#txtScanerCodigo").focus(false, 200);
+				console.info("fin onCompleteNewItem (cantidad incrementada)");
+				return;
+			}
+		}
+
 		var newRecord 				= store.insert(0, record)[0];
 		//var newRecord 			= store.add(record)[0];
 		
