@@ -2437,6 +2437,10 @@
 																	var nuevoPrecio    = parseFloat(newValue)                            || 0;
 																	var itemID         = record.get('txtTMD_txtItemID');
 
+																	var gridPrice      = field.up('grid');
+																	var storePrice     = gridPrice.getStore();
+																	var rowIndex       = storePrice.indexOf(record);
+
 																	// Obtener el costo real desde IndexDB
 																	indexDBGetLocalProductoByItemID(itemID, function(resultado) {
 
@@ -2478,8 +2482,8 @@
 																			record.set('txtTMD_txtDiscountByItem', 0);
 																		}
 
-																		// Recalcular resumen sumando los descuentos ya establecidos en cada ítem
-																		fnRecalculateDetail(true, "sumarizar");
+																		// Recalcular subtotal de la fila y sumarizar totales
+																		fnRecalculateDetail(true, "", rowIndex);
 																	});
 																}, 800);
 															}
@@ -5894,10 +5898,14 @@
 				descuento += parseFloat(record.get('txtTMD_txtDiscountByItem')) || 0;
 			});
 			store.each(function(record){
-				ivaGeneral += parseFloat(record.get('txtTMD_txtIva')) || 0;
+				var rowSubtotal = parseFloat(record.get('txtTMD_txtSubTotal')) || 0;
+				var rowIvaPct   = parseFloat(record.get('txtTMD_txtIva')) || 0;
+				ivaGeneral += rowSubtotal * rowIvaPct;
 			});
 			store.each(function(record){
-				serviceGeneral += parseFloat(record.get('txtTMD_txtTaxServices')) || 0;
+				var rowSubtotal    = parseFloat(record.get('txtTMD_txtSubTotal')) || 0;
+				var rowServicePct  = parseFloat(record.get('txtTMD_txtTaxServices')) || 0;
+				serviceGeneral += rowSubtotal * rowServicePct;
 			});
 			
 			totalGeneral				    = subtotalGeneral + ivaGeneral + serviceGeneral - descuento;			
@@ -5942,11 +5950,15 @@
 			});
 
 			store.each(function(record){
-				ivaGeneral += parseFloat(record.get('txtTMD_txtIva')) || 0;
+				var rowSubtotal = parseFloat(record.get('txtTMD_txtSubTotal')) || 0;
+				var rowIvaPct   = parseFloat(record.get('txtTMD_txtIva')) || 0;
+				ivaGeneral += rowSubtotal * rowIvaPct;
 			});
 
 			store.each(function(record){
-				serviceGeneral += parseFloat(record.get('txtTMD_txtTaxServices')) || 0;
+				var rowSubtotal    = parseFloat(record.get('txtTMD_txtSubTotal')) || 0;
+				var rowServicePct  = parseFloat(record.get('txtTMD_txtTaxServices')) || 0;
+				serviceGeneral += rowSubtotal * rowServicePct;
 			});
 
 			totalGeneral				    = subtotalGeneral + ivaGeneral + serviceGeneral - descuento;			
