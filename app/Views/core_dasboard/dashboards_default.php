@@ -126,7 +126,7 @@
 						
 							<div class="panel-body">
 								<blockquote>
-									<p class="text-success">VALOR: <?php echo number_format($objExchangeRateCordobaDolar,2); ?></p>									
+									<p class="text-success">VALOR: <?php echo number_format($objExchangeRateCordobaDolar,4); ?></p>									
 									<small>Dolar a Cordoba</small>
 								</blockquote>
 								

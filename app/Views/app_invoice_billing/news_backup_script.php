@@ -560,6 +560,53 @@
 			
 		});
 
+		miVentanaAyuda = Ext.create('Ext.window.Window', {
+			title: '📘 Manual de Accesos Rápidos',
+			cls: 'win-titulo-blanco',
+			width: 550,
+			height: 420,
+			modal: true,
+			layout: 'fit',
+			resizable: false,
+			bodyPadding: 15,
+			closeAction: 'hide',
+			items: [{
+				xtype: 'component',
+				autoScroll: true,
+				html: `
+					<div style="font-family: Arial; font-size:14px;">
+						<h2 style="color:#1a73e8; margin-top:0;">⌨ Accesos Rápidos del Sistema</h2>
+						<p style="margin-bottom:15px;">Utiliza las siguientes combinaciones de teclas para trabajar de forma más rápida y eficiente:</p>
+						<table style="width:100%; border-collapse:collapse;">
+							<tr style="background:#f5f5f5;">
+								<th style="padding:8px; border:1px solid #ddd;">Tecla</th>
+								<th style="padding:8px; border:1px solid #ddd;">Acción</th>
+							</tr>
+							<tr><td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F1</td><td style="padding:8px; border:1px solid #ddd;">Abrir este manual de ayuda</td></tr>
+							<tr><td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F2</td><td style="padding:8px; border:1px solid #ddd;">Activar escáner</td></tr>
+							<tr><td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F3</td><td style="padding:8px; border:1px solid #ddd;">Guardar información</td></tr>
+							<tr><td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F4</td><td style="padding:8px; border:1px solid #ddd;">Aplicar cambios</td></tr>
+							<tr><td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F6</td><td style="padding:8px; border:1px solid #ddd;">Abrir opciones de pago</td></tr>
+							<tr><td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F7</td><td style="padding:8px; border:1px solid #ddd;">Nueva factura</td></tr>
+							<tr><td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F8</td><td style="padding:8px; border:1px solid #ddd;">Eliminar factura</td></tr>
+							<tr><td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F9</td><td style="padding:8px; border:1px solid #ddd;">Seleccionar Posicion</td></tr>
+							<tr><td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F10</td><td style="padding:8px; border:1px solid #ddd;">Seleccionar Producto por Categoria</td></tr>
+							<tr><td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F11</td><td style="padding:8px; border:1px solid #ddd;">Abrir seleccion de producto</td></tr>
+							<tr><td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F12</td><td style="padding:8px; border:1px solid #ddd;">Imprimir factura</td></tr>
+						</table>
+						<p style="margin-top:15px; color:#666;">💡 Consejo: Memorizar estos atajos aumenta considerablemente la velocidad de operación del sistema.</p>
+					</div>
+				`
+			}],
+			buttons: [{
+				text: 'Cerrar',
+				iconCls: 'fa fa-times',
+				handler: function () {
+					miVentanaAyuda.hide();
+				}
+			}]
+		});
+
 		miVentanaEsperando.show();
 		
 		miVentanaDePago = Ext.create('Ext.window.Window', {
@@ -2789,110 +2836,7 @@
 			// F1 para ayuda
 			if (e.getKey() === Ext.event.Event.F1) {
 				e.preventDefault(); // evita la acción por defecto del navegador
-				win = Ext.create('Ext.window.Window', {
-					id: 'winAyudaAtajos',
-					title: '📘 Manual de Accesos Rápidos',
-					cls: 'win-titulo-blanco',
-					width: 550,
-					height: 420,
-					modal: true,
-					layout: 'fit',
-					resizable: false,
-					bodyPadding: 15,
-					closeAction: 'hide',
-
-					items: [{
-						xtype: 'component',
-						autoScroll: true,
-						html: `
-							<div style="font-family: Arial; font-size:14px;">
-								<h2 style="color:#1a73e8; margin-top:0;">
-									⌨ Accesos Rápidos del Sistema
-								</h2>
-
-								<p style="margin-bottom:15px;">
-									Utiliza las siguientes combinaciones de teclas para trabajar
-									de forma más rápida y eficiente:
-								</p>
-
-								<table style="width:100%; border-collapse:collapse;">
-									<tr style="background:#f5f5f5;">
-										<th style="padding:8px; border:1px solid #ddd;">Tecla</th>
-										<th style="padding:8px; border:1px solid #ddd;">Acción</th>
-									</tr>
-
-									<tr>
-										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F1</td>
-										<td style="padding:8px; border:1px solid #ddd;">Abrir este manual de ayuda</td>
-									</tr>
-
-									<tr>
-										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F2</td>
-										<td style="padding:8px; border:1px solid #ddd;">Activar escáner</td>
-									</tr>
-
-									<tr>
-										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F3</td>
-										<td style="padding:8px; border:1px solid #ddd;">Guardar información</td>
-									</tr>
-
-									<tr>
-										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F4</td>
-										<td style="padding:8px; border:1px solid #ddd;">Aplicar cambios</td>
-									</tr>									
-									
-									<tr>
-										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F6</td>
-										<td style="padding:8px; border:1px solid #ddd;">Abrir opciones de pago</td>
-									</tr>
-									
-									<tr>
-										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F7</td>
-										<td style="padding:8px; border:1px solid #ddd;">Nueva factura</td>
-									</tr>
-									
-									<tr>
-										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F8</td>
-										<td style="padding:8px; border:1px solid #ddd;">Eliminar factura</td>
-									</tr>
-									
-									<tr>
-										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F9</td>
-										<td style="padding:8px; border:1px solid #ddd;">Seleccionar Posicion</td>
-									</tr>
-									
-									<tr>
-										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F10</td>
-										<td style="padding:8px; border:1px solid #ddd;">Seleccionar Producto por Categoria</td>
-									</tr>
-
-									<tr>
-										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F11</td>
-										<td style="padding:8px; border:1px solid #ddd;">Abrir seleccion de producto</td>
-									</tr>
-									
-									<tr>
-										<td style="padding:8px; border:1px solid #ddd; font-weight:bold;">F12</td>
-										<td style="padding:8px; border:1px solid #ddd;">Imprimir factura</td>
-									</tr>
-								</table>
-
-								<p style="margin-top:15px; color:#666;">
-									💡 Consejo: Memorizar estos atajos aumenta considerablemente
-									la velocidad de operación del sistema.
-								</p>
-							</div>
-						`
-					}],
-
-					buttons: [{
-						text: 'Cerrar',
-						iconCls: 'fa fa-times',
-						handler: function () {
-							win.hide();
-						}
-					}]
-				}).show();
+				miVentanaAyuda.show();
 			}
 			
 			// F2 para ir a un input scanear
