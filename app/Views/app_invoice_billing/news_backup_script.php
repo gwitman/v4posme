@@ -1058,6 +1058,17 @@
 					modal: true,
 					layout: 'fit',
 					closeAction: 'hide',
+					listeners: {
+						afterrender: function(win) {
+							// Agregar doble clic al grid interno para seleccionar producto directamente
+							var grid = win.down('grid');
+							if (grid) {
+								grid.on('itemdblclick', function(view, record) {
+									fnBtnSeleccionProducto();
+								});
+							}
+						}
+					},
 					items: [<?php echo $objCompanyDataView_BuscarProductos["view_config"]->jsonConfiguration; ?> ],
 					bbar: [
 						'->',
