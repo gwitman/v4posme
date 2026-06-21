@@ -1221,7 +1221,7 @@ class core_web_whatsap {
 			$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
 			$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
 
-			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION".$instanciaName);
+			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
 			$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
 			$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
 
@@ -1237,15 +1237,26 @@ class core_web_whatsap {
 			$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
 			$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
 
-			// Obtener session_id: si $instanciaName es numerico, hacer split y tomar el indice
+			// Obtener session_id: si $instanciaName viene vacio, usar el valor tal cual
+			// Si tiene un key, parsear el formato 'key':guid y buscar el guid correspondiente
 			$sessionIdValue = $objCP_WhatsapUrlSession->value;
-			if($instanciaName !== "" && is_numeric($instanciaName))
+			if($instanciaName !== "")
 			{
-				$sessionParts 	= explode(",", $sessionIdValue);
-				$indice 		= intval($instanciaName);
-				if(isset($sessionParts[$indice]))
+				$pairs = explode(",", $sessionIdValue);
+				foreach($pairs as $pair)
 				{
-					$sessionIdValue = trim($sessionParts[$indice]);
+					$pair = trim($pair);
+					$parts = explode(":", $pair, 2);
+					if(count($parts) == 2)
+					{
+						$key = trim($parts[0], " '\"");
+						$val = trim($parts[1], " '\"");
+						if($key === $instanciaName)
+						{
+							$sessionIdValue = $val;
+							break;
+						}
+					}
 				}
 			}
 
@@ -1453,7 +1464,7 @@ class core_web_whatsap {
 			$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
 			$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
 
-			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION".$instanciaName);
+			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
 			$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
 			$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
 
@@ -1476,15 +1487,26 @@ class core_web_whatsap {
 			);
 			
 			
-			// Obtener session_id: si $instanciaName es numerico, hacer split y tomar el indice
+			// Obtener session_id: si $instanciaName viene vacio, usar el valor tal cual
+			// Si tiene un key, parsear el formato 'key':guid y buscar el guid correspondiente
 			$sessionIdValue = $objCP_WhatsapUrlSession->value;
-			if($instanciaName !== "" && is_numeric($instanciaName))
+			if($instanciaName !== "")
 			{
-				$sessionParts 	= explode(",", $sessionIdValue);
-				$indice 		= intval($instanciaName);
-				if(isset($sessionParts[$indice]))
+				$pairs = explode(",", $sessionIdValue);
+				foreach($pairs as $pair)
 				{
-					$sessionIdValue = trim($sessionParts[$indice]);
+					$pair = trim($pair);
+					$parts = explode(":", $pair, 2);
+					if(count($parts) == 2)
+					{
+						$key = trim($parts[0], " '\"");
+						$val = trim($parts[1], " '\"");
+						if($key === $instanciaName)
+						{
+							$sessionIdValue = $val;
+							break;
+						}
+					}
 				}
 			}
 
@@ -2073,7 +2095,7 @@ class core_web_whatsap {
 		curl_multi_close($multiHandle);
 		return $results;
 	}
-	function sendMessageWapi2OnlyTextMasive($companyID,$chatSend,$pathRemember,$instanceName) 
+	function sendMessageWapi2OnlyTextMasive($companyID,$chatSend,$pathRemember,$instanceName="") 
 	{
 		
 		$Parameter_Model 			= new Parameter_Model();
@@ -2108,15 +2130,26 @@ class core_web_whatsap {
 		$sendSignature 	= false;
 		$closeTicket 	= true;
 		
-		// Obtener session_id: si $instanceName es numerico, hacer split y tomar el indice
+		// Obtener session_id: si $instanceName viene vacio, usar el valor tal cual
+		// Si tiene un key, parsear el formato 'key':guid y buscar el guid correspondiente
 		$sessionIdValue = $objCP_WhatsapUrlSession->value;
-		if($instanceName !== "" && is_numeric($instanceName))
+		if($instanceName !== "")
 		{
-			$sessionParts 	= explode(",", $sessionIdValue);
-			$indice 		= intval($instanceName);
-			if(isset($sessionParts[$indice]))
+			$pairs = explode(",", $sessionIdValue);
+			foreach($pairs as $pair)
 			{
-				$sessionIdValue = trim($sessionParts[$indice]);
+				$pair = trim($pair);
+				$parts = explode(":", $pair, 2);
+				if(count($parts) == 2)
+				{
+					$key = trim($parts[0], " '\"");
+					$val = trim($parts[1], " '\"");
+					if($key === $instanceName)
+					{
+						$sessionIdValue = $val;
+						break;
+					}
+				}
 			}
 		}
 		
