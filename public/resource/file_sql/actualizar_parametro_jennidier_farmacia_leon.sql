@@ -1,5 +1,5 @@
-/*BD: 	dbsooqjlkt9t32:parametro_jennidier_farmacia_leon*/
-/*SERVIDOR:		siteground #2  posme.nl*/
+/*BD: 	dbnbgc3kst2a0w:parametro_jennidier_farmacia_leon*/
+/*SERVIDOR:		siteground   posme.net*/  
 
 /******************************************************************/
 /*****Personalizar pantalla**********/

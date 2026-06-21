@@ -1,5 +1,5 @@
-/*BD: 	dbgpekrytuyktx:parametro_jorge_ramirez_el_barro*/
-/*SERVIDOR: siteground #2  posme.nl*/
+/*BD: 	dby34xmgdukusa:parametro_jorge_ramirez_el_barro*/
+/*SERVIDOR: siteground   posme.net*/  
 
 
 /******************************************************************/

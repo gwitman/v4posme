@@ -1,11 +1,42 @@
-/*BD: 	dbsvc1dvcmghbs:parametro_jk_selectivo*/
-/*SERVIDOR:		siteground   .net*/ 
+/*BD: 	dbrzglgm0yzali :parametro_mi_mercadito*/
+/*SERVIDOR:		siteground .net*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_VALIDATE_COST_IN_PRICE"; ##Validar el costo al momento de meter el precio
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_NEWROW_TO_ADDITEM"; ##Agregar filas nuevos al momento de facturar
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "0" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "TALLER_CUSTOMER_EXTERNAL"; ##Agregar productos repetidos en la facturaion mobile
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "0" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "TALLER_ROLE_EXTERNAL"; ##Agregar productos repetidos en la facturaion mobile
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "0" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "TALLER_EMPLOYER_DEFAULT"; ##Agregar productos repetidos en la facturaion mobile
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
@@ -1601,7 +1632,7 @@ WHERE
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_SHOW_DOWNLOAD_PREVIEW";#No mostrar previoew, solo descargar
@@ -1931,7 +1962,7 @@ WHERE
 /***************************************************************/
 		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Jesus Abrham" 
+	tb_company_parameter.value = "Eusebia Del Carmen Dumas Ruiz" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
@@ -1946,28 +1977,28 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "2812806071011X" 
+	tb_company_parameter.value = "047-160483-0000C" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "2812806071011X" 
+	tb_company_parameter.value = "047-160483-0000C" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 5821-8180" 
+	tb_company_parameter.value = "TEL: 8505-7109" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 5821-8180" 
+	tb_company_parameter.value = "TEL: 8505-7109" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1975,15 +2006,15 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Costado arriba, Nueva policia de la proquinsa 75vrs. al Sur" 
+	tb_company_parameter.value = "Donde fue aserrio santa fe, 2c abajo 15v.sur" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'JK Selectivos #01' , address = 'Costado arriba, Nueva policia de la proquinsa 75vrs. al Sur' ,
-	flavorID = 1150 /*usuarioID*/,type='jkSelectivo'  , abreviature='demo'
+	NAME = 'Mi Mercadito' , address = 'Sucursal #01 : Alcaldia 3c al este, media al norte mano izquierda  Y/O  Sucursal #02 : Frente al granero municipal.' ,
+	flavorID = 1192 /*usuarioID*/,type='miMercadito'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
@@ -1996,25 +2027,25 @@ Eliminar o desactivar usuarios
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	
- 1144,  
- 1145, 
- 1146,
- 1147,  
- 1148, 
- 1149, 
- 1150
+ 1186,  
+ 1187, 
+ 1188,
+ 1189,  
+ 1190, 
+ 1191, 
+ 1192
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	1078,
-	1079,
-	1080,
-	1081,
-	1082,
-	1083,
-	1084
+	1120,
+	1121,
+	1122,
+	1123,
+	1124,
+	1125,
+	1126
 );
 */
 

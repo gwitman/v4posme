@@ -1,5 +1,5 @@
-/*BD: 	db2un9rdervdja:parametro_farma_byb*/
-/*SERVIDOR:		siteground #2  posme.nl*/
+/*BD: 	dbfpx8cxc2eru4:parametro_farma_byb*/
+/*SERVIDOR:		siteground   posme.net*/  
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 

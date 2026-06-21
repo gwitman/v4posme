@@ -1237,12 +1237,24 @@ class core_web_whatsap {
 			$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
 			$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
 
+			// Obtener session_id: si $instanciaName es numerico, hacer split y tomar el indice
+			$sessionIdValue = $objCP_WhatsapUrlSession->value;
+			if($instanciaName !== "" && is_numeric($instanciaName))
+			{
+				$sessionParts 	= explode(",", $sessionIdValue);
+				$indice 		= intval($instanciaName);
+				if(isset($sessionParts[$indice]))
+				{
+					$sessionIdValue = trim($sessionParts[$indice]);
+				}
+			}
+
 			$params=array(			
 			'message' 		=> $message
 			);
 			
 			$url  = $objCP_WhatsapUrlSendMessage->value;
-			$url  = $url."/".$phoneDestino."/message?session_id=".$objCP_WhatsapUrlSession->value;
+			$url  = $url."/".$phoneDestino."/message?session_id=".$sessionIdValue;
 			
 			$curl = curl_init();
 			curl_setopt_array($curl, array(
@@ -1463,8 +1475,21 @@ class core_web_whatsap {
 			'caption'		=> $message
 			);
 			
+			
+			// Obtener session_id: si $instanciaName es numerico, hacer split y tomar el indice
+			$sessionIdValue = $objCP_WhatsapUrlSession->value;
+			if($instanciaName !== "" && is_numeric($instanciaName))
+			{
+				$sessionParts 	= explode(",", $sessionIdValue);
+				$indice 		= intval($instanciaName);
+				if(isset($sessionParts[$indice]))
+				{
+					$sessionIdValue = trim($sessionParts[$indice]);
+				}
+			}
+
 			$url  = $objCP_WhatsapUrlSendMessage->value;
-			$url  = $url."/".$phoneDestino."/pdf?session_id=".$objCP_WhatsapUrlSession->value;
+			$url  = $url."/".$phoneDestino."/pdf?session_id=".$sessionIdValue;
 			log_message("error",print_r("url send mensaje:".$url,true));
 			
 			$curl = curl_init();
