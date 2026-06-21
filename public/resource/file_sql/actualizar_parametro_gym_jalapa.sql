@@ -669,7 +669,7 @@ WHERE
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "54bbacf3-1acc-4e2a-9df0-750f466181a6" 
+	tb_company_parameter.value = "54bbacf3-1acc-4e2a-9df0-750f466181a6,    7af5539d-0708-453a-bb06-26948a020d1a" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";## Wapi2  Se usa para poner un label al sistema,  como un segundo nombre de sistema

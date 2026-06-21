@@ -2073,7 +2073,7 @@ class core_web_whatsap {
 		curl_multi_close($multiHandle);
 		return $results;
 	}
-	function sendMessageWapi2OnlyTextMasive($companyID,$chatSend,$pathRemember) 
+	function sendMessageWapi2OnlyTextMasive($companyID,$chatSend,$pathRemember,$instanceName) 
 	{
 		
 		$Parameter_Model 			= new Parameter_Model();
@@ -2108,6 +2108,17 @@ class core_web_whatsap {
 		$sendSignature 	= false;
 		$closeTicket 	= true;
 		
+		// Obtener session_id: si $instanceName es numerico, hacer split y tomar el indice
+		$sessionIdValue = $objCP_WhatsapUrlSession->value;
+		if($instanceName !== "" && is_numeric($instanceName))
+		{
+			$sessionParts 	= explode(",", $sessionIdValue);
+			$indice 		= intval($instanceName);
+			if(isset($sessionParts[$indice]))
+			{
+				$sessionIdValue = trim($sessionParts[$indice]);
+			}
+		}
 		
 		// Inicializamos cURLs
 		$multiHandle = curl_multi_init();
@@ -2122,7 +2133,7 @@ class core_web_whatsap {
 			];
 			
 			echo "enviar mensaje a ".$phone."</br>";
-			$sendCurl 	= $url."/".$phone."/message?session_id=".$objCP_WhatsapUrlSession->value; 
+			$sendCurl 	= $url."/".$phone."/message?session_id=".$sessionIdValue; 
 			$ch 		= curl_init($sendCurl);	
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data) );
