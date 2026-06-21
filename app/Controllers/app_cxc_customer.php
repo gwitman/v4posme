@@ -2124,7 +2124,7 @@ class app_cxc_customer extends _BaseController {
 					"👉 NJ GYM Carnet de Membresia 👍",
 					getNumberPhone(clearNumero($phoneNumber)),
 					true,
-					""					
+					"default"					
 				);
 			}
 					

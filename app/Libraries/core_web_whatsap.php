@@ -247,6 +247,7 @@ class core_web_whatsap {
    }
    function sendMessageTypePdfGeneric( $typeCompany,$companyID, $urlPdf,$fileName,$message, $phoneDestino,$esperarRespuesta ,$instanciaName)
    {
+	   
 	   if($typeCompany == "gymJalapa")
 	   {
 		  return $this->sendMessageWapi2Pdf( $companyID, $urlPdf,$fileName,$message, $phoneDestino,$esperarRespuesta,$instanciaName );
@@ -1510,8 +1511,9 @@ class core_web_whatsap {
 				}
 			}
 
+			
 			$url  = $objCP_WhatsapUrlSendMessage->value;
-			$url  = $url."/".$phoneDestino."/pdf?session_id=".$sessionIdValue;
+			$url  = $url."/".$phoneDestino."/pdf?session_id=".$sessionIdValue;			
 			log_message("error",print_r("url send mensaje:".$url,true));
 			
 			$curl = curl_init();
@@ -2095,7 +2097,7 @@ class core_web_whatsap {
 		curl_multi_close($multiHandle);
 		return $results;
 	}
-	function sendMessageWapi2OnlyTextMasive($companyID,$chatSend,$pathRemember,$instanceName="") 
+	function sendMessageWapi2OnlyTextMasive($companyID,$chatSend,$pathRemember,$instanceName) 
 	{
 		
 		$Parameter_Model 			= new Parameter_Model();
