@@ -2369,13 +2369,14 @@ class app_notification extends _BaseController
 		if(!$objListCollections)
 			return;
 		
-		if(count($objListCollections) <= 0)
+		if(count($objListCollections) <= 0){			
 			return;
+		}
 		
 		$chatSend			= [];
 		$pathRemember		= "";
 		foreach($objListCollections as $item)
-		{
+		{			
 $rowx 					= array();
 $rowx["firstName"] 		= $item->firstName;
 $rowx["phoneNumber"] 	= getNumberPhone(clearNumero($item->phoneNumber));
@@ -2411,8 +2412,9 @@ Le recordamos que tiene un saldo pendiente:
 		//Recorrer todos los cobros, 
 		$objListCollections = $this->Customer_Credit_Document_Model->get_rowByCobroPorGymJalapa(APP_COMPANY);
 		if(!$objListCollections)
+		{
 			return;
-		
+		}
 		if(count($objListCollections) <= 0)
 			return;
 		
@@ -2420,6 +2422,7 @@ Le recordamos que tiene un saldo pendiente:
 		$pathRemember		= "";
 		foreach($objListCollections as $item)
 		{
+			
 $rowx 					= array();
 $rowx["firstName"] 		= $item->firstName;
 $rowx["phoneNumber"] 	= getNumberPhone(clearNumero($item->phoneNumber));

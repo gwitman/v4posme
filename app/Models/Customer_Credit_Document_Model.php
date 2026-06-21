@@ -889,7 +889,7 @@ class Customer_Credit_Document_Model extends Model  {
 			HAVING 
 				fechaPrometidaPago IS NULL OR fechaPrometidaPago <= CURDATE()
 			ORDER BY 
-				res.firstName ; 
+				res.firstName; 
 		";
 		
 		
