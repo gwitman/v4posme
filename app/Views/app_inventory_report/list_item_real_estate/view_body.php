@@ -69,6 +69,8 @@
 											<?php
 											if($objListWorkflowStage)
 											foreach($objListWorkflowStage as $i){
+
+												if($i != null)
 												echo "<option value='".$i->workflowStageID."'>".$i->name."</option>";
 											}
 											?>														
