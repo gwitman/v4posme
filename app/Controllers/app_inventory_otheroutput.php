@@ -464,10 +464,12 @@ class app_inventory_otheroutput extends _BaseController
 					$lote 									= $arrayListLote[$key];
 					$vencimiento							= $arrayListVencimiento[$key];
 
-					$objWarehouse = $this->Warehouse_Model->get_rowByPK($objTM["companyID"], $objTM["sourceWarehouseID"]);
-					$nombreBodega = $objWarehouse ? $objWarehouse->name : 'Desconocida';
-					if ($objItem->quantity < helper_StringToNumber($arrayListQuantity[$key]))
-						throw new \Exception("La cantidad que intenta sacar (" . $arrayListQuantity[$key] . ") de '" . $objItem->itemNumber . " " . $objItem->name . "' es mayor que la disponible en bodega '" . $nombreBodega . "' (Disponible: " . $objItem->quantity . ")");
+					$objItemWarehouse 		= $this->Itemwarehouse_Model->getByPK($objTM["companyID"], $value, $objTM["sourceWarehouseID"]);
+					$objWarehouse 			= $this->Warehouse_Model->get_rowByPK($objTM["companyID"], $objTM["sourceWarehouseID"]);
+					$nombreBodega 			= $objWarehouse ? $objWarehouse->name : 'Desconocida';
+					$cantidadDisponible 	= $objItemWarehouse ? $objItemWarehouse->quantity : 0;
+					if ($cantidadDisponible < helper_StringToNumber($arrayListQuantity[$key]))
+						throw new \Exception("La cantidad que intenta sacar (" . $arrayListQuantity[$key] . ") de '" . $objItem->itemNumber . " " . $objItem->name . "' es mayor que la disponible en bodega '" . $nombreBodega . "' (Disponible: " . $cantidadDisponible . ")");
 
 					$objTMD["companyID"] 					= $objTM["companyID"];
 					$objTMD["transactionID"] 				= $objTM["transactionID"];
@@ -800,10 +802,11 @@ class app_inventory_otheroutput extends _BaseController
 					$objItem 									= $this->Item_Model->get_rowByPK($objTM->companyID, $value);
 					$objItemWarehouse							= $this->Itemwarehouse_Model->getByPK($objTM->companyID, $objItem->itemID, $objTMNew["sourceWarehouseID"]);
 
-					$objWarehouse = $this->Warehouse_Model->get_rowByPK($objTM->companyID, $objTMNew["sourceWarehouseID"]);
-					$nombreBodega = $objWarehouse ? $objWarehouse->name : 'Desconocida';
-					if ($objItemWarehouse->quantity < helper_StringToNumber($arrayListQuantity[$key]))
-						throw new \Exception("La cantidad que intenta sacar (" . $arrayListQuantity[$key] . ") de '" . $objItem->itemNumber . " " . $objItem->name . "' es mayor que la disponible en bodega '" . $nombreBodega . "' (Disponible: " . $objItemWarehouse->quantity . ")");
+					$objWarehouse 		= $this->Warehouse_Model->get_rowByPK($objTM->companyID, $objTMNew["sourceWarehouseID"]);
+					$nombreBodega 		= $objWarehouse ? $objWarehouse->name : 'Desconocida';
+					$cantidadDisponible = $objItemWarehouse ? $objItemWarehouse->quantity : 0;
+					if ($cantidadDisponible < helper_StringToNumber($arrayListQuantity[$key]))
+						throw new \Exception("La cantidad que intenta sacar (" . $arrayListQuantity[$key] . ") de '" . $objItem->itemNumber . " " . $objItem->name . "' es mayor que la disponible en bodega '" . $nombreBodega . "' (Disponible: " . $cantidadDisponible . ")");
 
 
 					//Nuevo Detalle
