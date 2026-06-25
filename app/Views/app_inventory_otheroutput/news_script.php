@@ -166,7 +166,10 @@
 			var quantity 	=  $(this).val();
 			
 			if( fnFormatFloat(objdat_[6]) < fnFormatFloat(quantity) ){
-					fnShowNotification("La cantidad es mayor que la disponible en bodega","error",1000);
+					var disponible 		= objdat_[6];
+					var intentado 		= quantity;
+					var nombreBodega 	= $("#txtWarehouseSourceID option:selected").text();
+					fnShowNotification("La cantidad que intenta sacar ("+intentado+") es mayor que la disponible en bodega '"+nombreBodega+"' (Disponible: "+disponible+")","error",5000);
 					objTableDetailTransaction.fnUpdate( objdat_[6], objind_, 6 );
 			}
 			else{
