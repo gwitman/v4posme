@@ -669,7 +669,7 @@ WHERE
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "'default':54bbacf3-1acc-4e2a-9df0-750f466181a6,    'Gym Jalapa Cobros':7af5539d-0708-453a-bb06-26948a020d1a" 
+	tb_company_parameter.value = "'default':d738010e-37db-4036-8596-28d9d81b4bec,    'Gym Jalapa Cobros':7af5539d-0708-453a-bb06-26948a020d1a" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";## Wapi2  Se usa para poner un label al sistema,  como un segundo nombre de sistema

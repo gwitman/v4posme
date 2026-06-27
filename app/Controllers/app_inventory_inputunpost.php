@@ -2409,7 +2409,8 @@ class app_inventory_inputunpost extends _BaseController {
 					];
 					
 					
-					$objItemNewApiID	= $controllerApi->save("apinew", $objItemNewApi, $dataSession);							
+					$objItemNewApiID	= $controllerApi->save("apinew", $objItemNewApi, $dataSession);	
+					log_message("error",print_r($objItemNewApiID,true));						
 					$objItem			= $this->Item_Model->get_rowByPK($companyID,$objItemNewApiID);
 					if(!$objItem)
 					{

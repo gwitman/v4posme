@@ -762,22 +762,33 @@ class app_inventory_item extends _BaseController
             }
             if ($method == "apinew") {
 
+                log_message('debug', '[APINEW_DEBUG] INICIO - method=apinew, item recibido: ' . json_encode($item));
+
                 $companyID           											= APP_COMPANY;
                 $branchID            											= APP_BRANCH;
+
+                log_message('debug', '[APINEW_DEBUG] PASO 1 - companyID=' . $companyID . ', branchID=' . $branchID);
+
                 $paisDefault         											= $this->core_web_parameter->getParameterValue("CXC_PAIS_DEFAULT", $companyID);
                 $departamentoDefault 											= $this->core_web_parameter->getParameterValue("CXC_DEPARTAMENTO_DEFAULT", $companyID);
                 $municipioDefault    											= $this->core_web_parameter->getParameterValue("CXC_MUNICIPIO_DEFAULT", $companyID);
                 $validateBarCode     											= $this->core_web_parameter->getParameterValue("INVENTORY_BAR_CODE_UNIQUE", $companyID);
 				$valueParameter_INVENTORY_INSRT_ALL_WAREHOUSE_IN_NEWITEM     	= $this->core_web_parameter->getParameterValue("INVENTORY_INSRT_ALL_WAREHOUSE_IN_NEWITEM", $companyID);
 
+                log_message('debug', '[APINEW_DEBUG] PASO 2 - parametros: paisDefault=' . $paisDefault . ', departamentoDefault=' . $departamentoDefault . ', municipioDefault=' . $municipioDefault . ', validateBarCode=' . $validateBarCode . ', INVENTORY_INSRT_ALL_WAREHOUSE=' . $valueParameter_INVENTORY_INSRT_ALL_WAREHOUSE_IN_NEWITEM);
+
                 $paisID         = empty( /*inicio get post*/$item['txtCountryID']/*//--fin peticion get o post*/) ? $paisDefault : /*inicio get post*/$item['txtCountryID']; /*//--fin peticion get o post*/
                 $departamentoId = empty( /*inicio get post*/$item['txtStateID']/*//--fin peticion get o post*/) ? $departamentoDefault : /*inicio get post*/$item['txtStateID']; /*//--fin peticion get o post*/
                 $municipioId    = empty( /*inicio get post*/$item['txtCityID']/*//--fin peticion get o post*/) ? $municipioDefault : /*inicio get post*/$item['txtCityID']; /*//--fin peticion get o post*/
+
+                log_message('debug', '[APINEW_DEBUG] PASO 3 - paisID=' . $paisID . ', departamentoId=' . $departamentoId . ', municipioId=' . $municipioId);
 
                 //Ingresar Cuenta
                 $db = db_connect();
                 $db->transStart();
                 $objParameterAll                = $this->core_web_parameter->getParameterAll($companyID);
+
+                log_message('debug', '[APINEW_DEBUG] PASO 4 - transStart OK, objParameterAll obtenido');
                 $callback                       = /*inicio get post*/$item["txtCallback"];
                 $comando                        = /*inicio get post*/$item["txtComando"];
                 $objItem["companyID"]           = $companyID;
@@ -785,6 +796,8 @@ class app_inventory_item extends _BaseController
                 $objItem["inventoryCategoryID"] = /*inicio get post*/$item["txtInventoryCategoryID"];
                 $nameProducto                   = /*inicio get post*/rtrim(ltrim(str_replace("\\", "", str_replace("'", "", $item["txtName"]))));
                 $nameProducto                   = str_replace('"', "", $nameProducto);
+
+                log_message('debug', '[APINEW_DEBUG] PASO 5 - callback=' . $callback . ', comando=' . $comando . ', inventoryCategoryID=' . $objItem["inventoryCategoryID"] . ', nameProducto=' . $nameProducto);
 
                 $cache = \Config\Services::cache();
                 $cache->save('app_inventory_item_last_inventory_category', $objItem["inventoryCategoryID"], TIME_CACHE_APP);
@@ -797,20 +810,29 @@ class app_inventory_item extends _BaseController
 
                 $objItem["familyID"]   = /*inicio get post*/$item["txtFamilyID"];
                 $objItem["itemNumber"] = $this->core_web_counter->goNextNumber($companyID, $branchID, "tb_item", 0);
+
+                log_message('debug', '[APINEW_DEBUG] PASO 6 - familyID=' . $objItem["familyID"] . ', itemNumber=' . $objItem["itemNumber"]);
                 $objItem["barCode"]    = /*inicio get post*/$item["txtBarCode"] == "" ? str_replace("ITT", "7777", $objItem["itemNumber"] . "") : /*inicio get post*/$item["txtBarCode"];
                 $objItem["barCode"]    = str_replace(PHP_EOL, ",", ltrim(rtrim($objItem["barCode"])));
                 $objItem["barCode"]    = str_replace(",,", ",", $objItem["barCode"]);
                 $objItem["barCode"]    = str_replace(["\n\r", "\n", "\r"], "", $objItem["barCode"]);
+
+                log_message('debug', '[APINEW_DEBUG] PASO 6a - barCode generado=' . $objItem["barCode"]);
+
                 $objItemValidBarCode   = $this->Item_Model->get_rowByCodeBarra($companyID, $objItem["barCode"]);
+
+                log_message('debug', '[APINEW_DEBUG] PASO 6b - get_rowByCodeBarra result=' . ($objItemValidBarCode ? 'EXISTE' : 'NO_EXISTE') . ', validateBarCode=' . $validateBarCode);
 
                 if (strtoupper($validateBarCode) == strtoupper("true")) {
                     if ($objItemValidBarCode) {
+                        log_message('debug', '[APINEW_DEBUG] PASO 6c - BARCODE DUPLICADO, saliendo...');
                         $this->core_web_notification->set_message(true, "Codigo de barra ya existe.");
                         $this->response->redirect(base_url() . "/" . 'app_inventory_item/add');
                         return;
                     }
 
                     $objItemValidBarCode = $this->Item_Model->get_rowByCodeBarraSimilar($companyID, $objItem["barCode"]);
+                    log_message('debug', '[APINEW_DEBUG] PASO 6d - get_rowByCodeBarraSimilar result=' . ($objItemValidBarCode ? 'ENCONTRADO' : 'NO_ENCONTRADO'));
                     if ($objItemValidBarCode) {
 
                         foreach ($objItemValidBarCode as $objItemSimiliar) {
@@ -818,6 +840,7 @@ class app_inventory_item extends _BaseController
 
                             foreach ($codeTemp as $arrayCode) {
                                 if ($arrayCode == $objItem["barCode"]) {
+                                    log_message('debug', '[APINEW_DEBUG] PASO 6e - BARCODE SIMILAR DUPLICADO, saliendo...');
                                     $this->core_web_notification->set_message(true, "Codigo de barra ya existe.");
                                     $this->response->redirect(base_url() . "/" . 'app_inventory_item/add');
                                     return;
@@ -827,6 +850,8 @@ class app_inventory_item extends _BaseController
                         }
                     }
                 }
+
+                log_message('debug', '[APINEW_DEBUG] PASO 6f - Validacion barcode completada, asignando campos basicos...');
 
                 $objItem["name"]                  = $nameProducto;
                 $objItem["description"]           = /*inicio get post*/$item["txtDescription"];
@@ -852,6 +877,9 @@ class app_inventory_item extends _BaseController
                 $objItem["isActive"]              = 1;
                 $objItem["currencyID"]            = /*inicio get post*/$item["txtCurrencyID"];
 
+                log_message('debug', '[APINEW_DEBUG] PASO 6g - Campos basicos asignados OK: name=' . $objItem["name"] . ', statusID=' . $objItem["statusID"] . ', unitMeasureID=' . $objItem["unitMeasureID"] . ', currencyID=' . $objItem["currencyID"]);
+                log_message('debug', '[APINEW_DEBUG] PASO 6g2 - isPerishable=' . $objItem["isPerishable"] . ', isServices=' . $objItem["isServices"] . ', isInvoice=' . $objItem["isInvoice"] . ', factorBox=' . $objItem["factorBox"] . ', factorProgram=' . $objItem["factorProgram"]);
+
                 $objItem["realStateRoomBatchServices"]   = ! isset( /*inicio get post*/$item["txtRealStateRoomBatchServices"]) ? 0 : /*inicio get post*/$item["txtRealStateRoomBatchServices"];
                 $objItem["realStateRoomServices"]        = ! isset( /*inicio get post*/$item["txtRealStateRoomServices"]) ? 0 : /*inicio get post*/$item["txtRealStateRoomServices"];
                 $objItem["realStateWallInCloset"]        = ! isset( /*inicio get post*/$item["txtRealStateWallInCloset"]) ? 0 : /*inicio get post*/$item["txtRealStateWallInCloset"];
@@ -861,6 +889,9 @@ class app_inventory_item extends _BaseController
                 $objItem["realStateRooBatchVisit"]       = ! isset( /*inicio get post*/$item["txtRealStateRooBatchVisit"]) ? 0 : /*inicio get post*/$item["txtRealStateRooBatchVisit"];
                 $objItem["realStateContractCorrentaje"]  = ! isset( /*inicio get post*/$item["txtRealStateContractCorrentaje"]) ? 0 : /*inicio get post*/$item["txtRealStateContractCorrentaje"];
                 $objItem["realStatePlanReference"]       = ! isset( /*inicio get post*/$item["txtRealStatePlanReference"]) ? 0 : /*inicio get post*/$item["txtRealStatePlanReference"];
+
+                log_message('debug', '[APINEW_DEBUG] PASO 6h - realState booleans asignados OK');
+
                 $objItem["realStateLinkYoutube"]         = /*inicio get post*/$item["txtRealStateLinkYoutube"];
                 $objItem["realStateLinkPaginaWeb"]       = /*inicio get post*/$item["txtRealStateLinkPaginaWeb"];
                 $objItem["realStateLinkPhontos"]         = /*inicio get post*/$item["txtRealStateLinkPhontos"];
@@ -871,6 +902,9 @@ class app_inventory_item extends _BaseController
                 $objItem["realStateReferenceCondominio"] = /*inicio get post*/$item["txtRealStateReferenceCondominio"];
                 $objItem["realStateReferenceZone"]       = /*inicio get post*/$item["txtRealStateReferenceZone"];
                 $objItem["realStateGerenciaExclusive"]   = /*inicio get post*/$item["txtRealStateGerenciaExclusive"];
+
+                log_message('debug', '[APINEW_DEBUG] PASO 6i - realState links y references asignados OK');
+
                 $objItem["realStateCountryID"]           = $paisID;
                 $objItem["realStateStateID"]             = $departamentoId;
                 $objItem["realStateCityID"]              = $municipioId;
@@ -883,10 +917,19 @@ class app_inventory_item extends _BaseController
 				
                 $objItem["quantityInvoice"]              = 0;
                 $objItem["dateLastUse"]                  = helper_getDateTime();
+
+                log_message('debug', '[APINEW_DEBUG] PASO 6j - Todos los campos asignados OK. realStateEmail=' . $objItem["realStateEmail"] . ', realStatePhone=' . $objItem["realStatePhone"] . ', realStateDateExpired=' . $objItem["realStateDateExpired"] . ', modifiedOn=' . $objItem["modifiedOn"]);
+
+                log_message('debug', '[APINEW_DEBUG] PASO 7 - objItem completo antes de audit: ' . json_encode($objItem));
+
                 $this->core_web_auditoria->setAuditCreatedAdmin($objItem, $this->request);
+
+                log_message('debug', '[APINEW_DEBUG] PASO 8 - setAuditCreatedAdmin OK, insertando item...');
 
                 $itemID    = $this->Item_Model->insert_app_posme($objItem);
                 $companyID = $objItem["companyID"];
+
+                log_message('debug', '[APINEW_DEBUG] PASO 9 - item insertado, itemID=' . $itemID . ', companyID=' . $companyID);
                 //Crear la Carpeta para almacenar los Archivos del Item
                 $pathFileFloder = PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponent->componentID . "/component_item_" . $itemID;
                 if (! file_exists($pathFileFloder)) {
@@ -906,6 +949,8 @@ class app_inventory_item extends _BaseController
                 $objListWarehouseID           = /*inicio get post*/$item["txtDetailWarehouseID"];
                 $objListWarehouseQuantityMax  = /*inicio get post*/$item["txtDetailQuantityMax"];
                 $objListWarehouseQuantityMain = /*inicio get post*/$item["txtDetailQuantityMin"];
+
+                log_message('debug', '[APINEW_DEBUG] PASO 10 - Bodegas: objListWarehouseID=' . json_encode($objListWarehouseID));
 
                 if ($objListWarehouseID) {
                     foreach ($objListWarehouseID as $key => $value) {
@@ -944,9 +989,14 @@ class app_inventory_item extends _BaseController
 					}
 				}
 
+                log_message('debug', '[APINEW_DEBUG] PASO 11 - Bodegas completadas OK');
+
                 //Guardar Detalle de sku
                 $objListCatalogItemSKU      = /*inicio get post*/$item["txtDetailSkuCatalogItemID"];
                 $objListCatalogItemSKUValue = /*inicio get post*/$item["txtDetailSkuValue"];
+
+                log_message('debug', '[APINEW_DEBUG] PASO 12 - SKU: objListCatalogItemSKU=' . json_encode($objListCatalogItemSKU));
+
                 if ($objListCatalogItemSKU) {
                     foreach ($objListCatalogItemSKU as $key => $value) {
                         $objSku["itemID"]        = $itemID;
@@ -995,6 +1045,9 @@ class app_inventory_item extends _BaseController
                 $arrayListComisionValue   = /*inicio get post*/$item["txtDetailTypeComisionValue"];
                 $arrayTypePrecioId        = /*inicio get post*/$item["txtDetailTypePriceID"];
                 $arrayListPrecioID        = /*inicio get post*/$item["txtDetailListPriceID"];
+
+                log_message('debug', '[APINEW_DEBUG] PASO 14 - Proveedores completados OK. Precios: arrayTypePrecioId=' . json_encode($arrayTypePrecioId) . ', arrayListPrecioValue=' . json_encode($arrayListPrecioValue) . ', arrayListPrecioID=' . json_encode($arrayListPrecioID));
+
                 $objParameterPriceDefault = $this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST", $companyID);
                 $listPriceID              = $objParameterPriceDefault->value;
                 $objTipePrice             = $this->core_web_catalog->getCatalogAllItem("tb_price", "typePriceID", $companyID);
@@ -1029,11 +1082,15 @@ class app_inventory_item extends _BaseController
                     $this->core_web_barcode->generate($pathFileCodeBarra, $objItem["barCode"], "80", "horizontal", "code128", false, 1);
                 }
 
+                log_message('debug', '[APINEW_DEBUG] PASO 15 - Precios y barcode completados OK. transStatus=' . ($db->transStatus() !== false ? 'OK' : 'FAIL'));
+
                 if ($db->transStatus() !== false) {
                     $db->transCommit();
                 } else {
                     $db->transRollback();
                 }
+
+                log_message('debug', '[APINEW_DEBUG] PASO 16 - FIN apinew, retornando itemID=' . $itemID);
 
                 return $itemID;
             }
@@ -1561,7 +1618,7 @@ class app_inventory_item extends _BaseController
                 return $resultView;
             }
             if ($method == "apinew") {
-                log_message("error", print_r($ex, true));
+                log_message("error", '[APINEW_DEBUG] EXCEPCION en apinew - Linea: ' . $ex->getLine() . ' - Mensaje: ' . $ex->getMessage() . ' - Archivo: ' . $ex->getFile() . ' - Trace: ' . $ex->getTraceAsString());
             }
 
         }
