@@ -5823,7 +5823,7 @@
 			
 			
 			descuento 		= subtotalGeneral * (porcentajeDescuento / 100);
-			totalGeneral 	= subtotalGeneral + serviceGeneral + ivaGeneral - descuento;
+			totalGeneral 	= subtotalGeneral + serviceGeneral + ivaGeneral;
 
 			isUpdatingProgrammatically = true;
 			viewport.down("#txtSubTotal").setValue(subtotalGeneral);
@@ -5908,7 +5908,7 @@
 				serviceGeneral += rowSubtotal * rowServicePct;
 			});
 			
-			totalGeneral				    = subtotalGeneral + ivaGeneral + serviceGeneral - descuento;			
+			totalGeneral				    = subtotalGeneral + ivaGeneral + serviceGeneral;			
 			isUpdatingProgrammatically = true;
 			viewport.down("#txtSubTotal").setValue(subtotalGeneral);
 			viewport.down("#txtDescuento").setValue(descuento);
@@ -5961,7 +5961,7 @@
 				serviceGeneral += rowSubtotal * rowServicePct;
 			});
 
-			totalGeneral				    = subtotalGeneral + ivaGeneral + serviceGeneral - descuento;			
+			totalGeneral				    = subtotalGeneral + ivaGeneral + serviceGeneral;			
 			isUpdatingProgrammatically = true;
 			viewport.down('#txtSubTotal').setValue(subtotalGeneral);
 			viewport.down('#txtDescuento').setValue(descuento);
