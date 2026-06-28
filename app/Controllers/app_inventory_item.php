@@ -1923,9 +1923,9 @@ class app_inventory_item extends _BaseController
             if ($dataViewID == null) {
                 $targetComponentID        = $this->session->get('company')->flavorID;
                 $parameter["{companyID}"] = $this->session->get('user')->companyID;
-                $dataViewData             = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
-
+                $dataViewData             = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);                
                 if (! $dataViewData) {
+                    
                     $targetComponentID        = 0;
                     $parameter["{companyID}"] = $this->session->get('user')->companyID;
                     $dataViewData             = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
