@@ -6616,7 +6616,7 @@
 					txtTMD_txtSku: skuFormatoDescription,
 					txtTMD_txtQuantity: row.quantity,
 					txtTMD_txtPrice: row.unitaryPrice,
-					txtTMD_txtSubTotal: (Number(row.unitaryPrice) * Number(row.quantity)) + Number(row.discount),
+					txtTMD_txtSubTotal: (Number(row.unitaryPrice) * Number(row.quantity)),
 					txtTMD_txtIva: iva_,
 					txtTMD_skuQuantityBySku: skuQuantityBySku,
 					txtTMD_unitaryPriceInvidual: row.unitaryPrice,
@@ -6637,10 +6637,10 @@
 				};
 				
 				debugger;
-				objFormulario.txtSubTotal 	= Number(objFormulario.txtSubTotal) + (Number(record.txtTMD_txtQuantity) *  (Number(record.txtTMD_txtPrice))) + Number(record.txtTMD_txtDiscountByItem);
+				objFormulario.txtSubTotal 	= Number(objFormulario.txtSubTotal) + (Number(record.txtTMD_txtQuantity) *  (Number(record.txtTMD_txtPrice)));
 				objFormulario.txtIva 		= Number(objFormulario.txtIva) + Number(record.txtTMD_txtIva);
 				objFormulario.txtDescuento 	= Number(objFormulario.txtDescuento) + Number(record.txtTMD_txtDiscountByItem);
-				objFormulario.txtTotal 		= Number(objFormulario.txtSubTotal) + Number(objFormulario.txtIva) - Number(objFormulario.txtDescuento);
+				objFormulario.txtTotal 		= Number(objFormulario.txtSubTotal) + Number(objFormulario.txtIva);
 				objFormulario.txtTransactionMasterDetail.push(record);
 			}
 		}
