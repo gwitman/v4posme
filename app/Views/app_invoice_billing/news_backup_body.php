@@ -409,6 +409,73 @@
     display: inline-block;
 }
 
+/* ===== HOVER BOTONES: fondo blanco con texto/iconos visibles ===== */
+.btn-azul.x-btn-over .x-btn-inner,
+.btn-azul.x-btn-over .x-fa,
+.btn-azul.x-btn-over .x-btn-icon-el{
+    color:#1565C0 !important;
+}
+
+.btn-verde.x-btn-over .x-btn-inner,
+.btn-verde.x-btn-over .x-fa,
+.btn-verde.x-btn-over .x-btn-icon-el{
+    color:#2E7D32 !important;
+}
+
+.btn-rojo.x-btn-over .x-btn-inner,
+.btn-rojo.x-btn-over .x-fa,
+.btn-rojo.x-btn-over .x-btn-icon-el{
+    color:#C62828 !important;
+}
+
+.btn-amarillo.x-btn-over .x-btn-inner,
+.btn-amarillo.x-btn-over .x-fa,
+.btn-amarillo.x-btn-over .x-btn-icon-el{
+    color:#F9A825 !important;
+}
+
+.btn-naranja.x-btn-over .x-btn-inner,
+.btn-naranja.x-btn-over .x-fa,
+.btn-naranja.x-btn-over .x-btn-icon-el{
+    color:#EF6C00 !important;
+}
+
+.btn-morado.x-btn-over .x-btn-inner,
+.btn-morado.x-btn-over .x-fa,
+.btn-morado.x-btn-over .x-btn-icon-el{
+    color:#6A1B9A !important;
+}
+
+.btn-celeste.x-btn-over .x-btn-inner,
+.btn-celeste.x-btn-over .x-fa,
+.btn-celeste.x-btn-over .x-btn-icon-el{
+    color:#00ACC1 !important;
+}
+
+.btn-gris.x-btn-over .x-btn-inner,
+.btn-gris.x-btn-over .x-fa,
+.btn-gris.x-btn-over .x-btn-icon-el{
+    color:#455A64 !important;
+}
+
+.btn-nuevo.x-btn-over .x-btn-inner,
+.btn-nuevo.x-btn-over .x-fa,
+.btn-nuevo.x-btn-over .x-btn-icon-el{
+    color:var(--fact-primary) !important;
+}
+
+.btn-imprimir.x-btn-over .x-btn-inner,
+.btn-imprimir.x-btn-over .x-fa,
+.btn-imprimir.x-btn-over .x-btn-icon-el{
+    color:#E65100 !important;
+}
+
+.btn-eliminar.x-btn-over .x-btn-inner,
+.btn-eliminar.x-btn-over .x-fa,
+.btn-eliminar.x-btn-over .x-btn-icon-el{
+    color:var(--fact-danger) !important;
+}
+
 </style>
 
 
