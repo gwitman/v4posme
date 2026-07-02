@@ -391,7 +391,7 @@ class core_view extends _BaseController {
 		$iDisplayLength 					= helper_SegmentsByIndex($this->uri->getSegments(),10,$iDisplayLength);	
 		$sSearch 							= helper_SegmentsByIndex($this->uri->getSegments(),11,$sSearch);	
 		
-		$sSearch 									= str_replace("%25","%",$sSearch);
+		$sSearch 									= str_replace("cmd_widget_space","%",$sSearch);
 		$parameter["{componentid}"]					= $componentid;
 		$parameter["{fnCallback}"]					= $fnCallback;
 		$parameter["{viewname}"]					= $viewname;

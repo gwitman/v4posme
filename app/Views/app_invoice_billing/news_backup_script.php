@@ -2816,6 +2816,7 @@
 													id:'txtServices',
 													readOnly:true, 
 													disabled: false, 
+													hidden: <?php echo getBahavioSession($company->type, "app_invoice_billing", "ocultarCampoPorcentajeServicio", "false",$objListCompanyPageSetting); ?>,
 													fieldStyle: 'font-weight:bold; color:#fffff; font-size:18px; text-align:right;'
 												},
 												{ 
