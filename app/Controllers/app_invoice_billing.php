@@ -1442,7 +1442,6 @@ class app_invoice_billing extends _BaseController {
 			}			
 			
 			//Actualizar Transaccion
-			$amountTotal 			= $amountTotal-$varDescuento;
             $objTMNew["subAmount"]  = $subAmountTotal;
             $objTMNew["tax1"] 		= $tax1Total;
 			$objTMNew["tax2"] 		= $tax2Total;
@@ -2296,7 +2295,6 @@ class app_invoice_billing extends _BaseController {
 					
 				}
 			}
-			$amountTotal = $amountTotal-$varDescuento;
 			//Actualizar Transaccion
             $objTM["subAmount"] = $subAmountTotal;
             $objTM["tax1"] 		= $tax1Total;
