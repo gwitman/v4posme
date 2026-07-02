@@ -114,10 +114,10 @@
 		$configColumn["2"]["Total"] 		= False;		
 		$configColumn["3"]["Total"] 		= False;		
 		$configColumn["4"]["Total"] 		= False;		
-		$configColumn["5"]["Total"] 		= False;
-		$configColumn["6"]["Total"] 		= False;
-		$configColumn["19"]["Total"] 		= False;
-		$configColumn["7"]["Total"] 		= False;
+		$configColumn["5"]["Total"] 		= True;
+		$configColumn["6"]["Total"] 		= True;
+		$configColumn["19"]["Total"] 		= True;
+		$configColumn["7"]["Total"] 		= True;
 		$configColumn["8"]["Total"] 		= True;
 		$configColumn["9"]["Total"] 		= True;
 		$configColumn["10"]["Total"] 		= True;
@@ -130,8 +130,7 @@
 		$configColumn["17"]["Total"] 		= True;
 		$configColumn["18"]["Total"] 		= True;	
 			
-		$configColumn["11"]["Promedio"] 	= True;
-		
+		$configColumn["11"]["Promedio"] 	= True;		
 		$resultado 	= helper_reporteGeneralCreateTable($objDetail,$configColumn,'0px',NULL,NULL);
 		?>
 		
