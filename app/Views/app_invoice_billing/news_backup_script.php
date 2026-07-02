@@ -3824,14 +3824,17 @@
 				return;
 			}
 			
-			// Calcular monto correspondiente
-			var subtotal 			= viewport.down('#txtSubTotal').getValue() || 0;
-			var montoDescuento 		= subtotal * (porcentaje / 100);
-			montoDescuento 			= Math.round(montoDescuento * 10000) / 10000; // 4 decimales
+			// Aplicar el % de descuento al precio de cada producto
+			var grid = viewport.down('#gridDetailTransactionMaster');
+			var store = grid.getStore();
 			
-			// Actualizar campo de monto SIN disparar su evento
 			isUpdatingProgrammatically = true;
-			viewport.down('#txtDescuento').setValue(montoDescuento);
+			store.each(function (record) {
+				var precioOriginal = parseFloat(record.get('txtTMD_txtItemPrecio1')) || 0;
+				var nuevoPrecio = precioOriginal - (precioOriginal * porcentaje / 100);
+				nuevoPrecio = Math.round(nuevoPrecio * 10000) / 10000;
+				record.set('txtTMD_txtPrice', nuevoPrecio);
+			});
 			isUpdatingProgrammatically = false;
 			
 			if (window.miVentanaEsperando && miVentanaEsperando.show) {
@@ -3843,9 +3846,6 @@
 			if (window.miVentanaEsperando ) {
 				miVentanaEsperando.hide();
 			}
-
-	
-			 
 		}
 		function fnChange_Descuento(field, newValue, oldValue) 
 		{
