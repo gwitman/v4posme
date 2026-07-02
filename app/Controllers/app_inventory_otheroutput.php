@@ -458,6 +458,7 @@ class app_inventory_otheroutput extends _BaseController
 			$arrayListLote	 								= /*inicio get post*/ $this->request->getPost("txtDetailLote");
 			$arrayListVencimiento							= /*inicio get post*/ $this->request->getPost("txtDetailVencimiento");
 
+			$itemsNoProcessed = array();
 			if (!empty($arrayListItemID)) {
 				foreach ($arrayListItemID as $key => $value) {
 					$objItem 								= $this->Item_Model->get_rowByPK($objTM["companyID"], $value);
@@ -468,8 +469,10 @@ class app_inventory_otheroutput extends _BaseController
 					$objWarehouse 			= $this->Warehouse_Model->get_rowByPK($objTM["companyID"], $objTM["sourceWarehouseID"]);
 					$nombreBodega 			= $objWarehouse ? $objWarehouse->name : 'Desconocida';
 					$cantidadDisponible 	= $objItemWarehouse ? $objItemWarehouse->quantity : 0;
-					if ($cantidadDisponible < helper_StringToNumber($arrayListQuantity[$key]))
-						throw new \Exception("La cantidad que intenta sacar (" . $arrayListQuantity[$key] . ") de '" . $objItem->itemNumber . " " . $objItem->name . "' es mayor que la disponible en bodega '" . $nombreBodega . "' (Disponible: " . $cantidadDisponible . ")");
+					if ($cantidadDisponible < helper_StringToNumber($arrayListQuantity[$key])) {
+						$itemsNoProcessed[] = "'" . $objItem->itemNumber . " " . $objItem->name . "' (Solicitado: " . $arrayListQuantity[$key] . ", Disponible en '" . $nombreBodega . "': " . $cantidadDisponible . ")";
+						continue;
+					}
 
 					$objTMD["companyID"] 					= $objTM["companyID"];
 					$objTMD["transactionID"] 				= $objTM["transactionID"];
@@ -545,7 +548,12 @@ class app_inventory_otheroutput extends _BaseController
 
 			if ($db->transStatus() !== false) {
 				$db->transCommit();
-				$this->core_web_notification->set_message(false, SUCCESS);
+				if (!empty($itemsNoProcessed)) {
+					$warningMsg = SUCCESS . " | Los siguientes productos NO se incluyeron por falta de stock: " . implode(", ", $itemsNoProcessed);
+					$this->core_web_notification->set_message(true, $warningMsg);
+				} else {
+					$this->core_web_notification->set_message(false, SUCCESS);
+				}
 				$this->response->redirect(base_url() . "/" . 'app_inventory_otheroutput/edit/companyID/' . $companyID . "/transactionID/" . $objTM["transactionID"] . "/transactionMasterID/" . $transactionMasterID);
 			} else {
 				$db->transRollback();
@@ -794,6 +802,7 @@ class app_inventory_otheroutput extends _BaseController
 
 			$this->Transaction_Master_Detail_Model->deleteWhereIDNotIn($companyID, $transactionID, $transactionMasterID, $listTMD_ID);
 
+			$itemsNoProcessed = array();
 			if (!empty($arrayListItemID)) {
 				foreach ($arrayListItemID as $key => $value) {
 					$transactionMasterDetailID					= $listTMD_ID[$key];
@@ -805,8 +814,10 @@ class app_inventory_otheroutput extends _BaseController
 					$objWarehouse 		= $this->Warehouse_Model->get_rowByPK($objTM->companyID, $objTMNew["sourceWarehouseID"]);
 					$nombreBodega 		= $objWarehouse ? $objWarehouse->name : 'Desconocida';
 					$cantidadDisponible = $objItemWarehouse ? $objItemWarehouse->quantity : 0;
-					if ($cantidadDisponible < helper_StringToNumber($arrayListQuantity[$key]))
-						throw new \Exception("La cantidad que intenta sacar (" . $arrayListQuantity[$key] . ") de '" . $objItem->itemNumber . " " . $objItem->name . "' es mayor que la disponible en bodega '" . $nombreBodega . "' (Disponible: " . $cantidadDisponible . ")");
+					if ($cantidadDisponible < helper_StringToNumber($arrayListQuantity[$key])) {
+						$itemsNoProcessed[] = "'" . $objItem->itemNumber . " " . $objItem->name . "' (Solicitado: " . $arrayListQuantity[$key] . ", Disponible en '" . $nombreBodega . "': " . $cantidadDisponible . ")";
+						continue;
+					}
 
 
 					//Nuevo Detalle
@@ -867,7 +878,12 @@ class app_inventory_otheroutput extends _BaseController
 
 			if ($db->transStatus() !== false) {
 				$db->transCommit();
-				$this->core_web_notification->set_message(false, SUCCESS);
+				if (!empty($itemsNoProcessed)) {
+					$warningMsg = SUCCESS . " | Los siguientes productos NO se actualizaron por falta de stock: " . implode(", ", $itemsNoProcessed);
+					$this->core_web_notification->set_message(true, $warningMsg);
+				} else {
+					$this->core_web_notification->set_message(false, SUCCESS);
+				}
 				$this->response->redirect(base_url() . "/" . 'app_inventory_otheroutput/edit/companyID/' . $companyID . "/transactionID/" . $transactionID . "/transactionMasterID/" . $transactionMasterID);
 			} else {
 				$db->transRollback();
