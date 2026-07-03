@@ -5874,12 +5874,12 @@
 			store.getAt(index).set("txtTMD_txtSubTotal",subtotal);
 			
 			// Si el precio fue modificado manualmente (menor que precio1), recalcular descuento por diferencia de precio
-			// Si no, aplicar el porcentaje global de descuento
+			// Si el precio es >= precio1, no hay descuento para esta fila
 			var descuento = 0;
 			if (precio1 > 0 && precio < precio1) {
 				descuento = (precio1 - precio) * cantidad;
 			} else {
-				descuento = subtotal * (porcentajeDescuento / 100);
+				descuento = 0;
 			}
 			store.getAt(index).set("txtTMD_txtDiscountByItem", descuento);
 			
@@ -5913,6 +5913,10 @@
 			isUpdatingProgrammatically = true;
 			viewport.down("#txtSubTotal").setValue(subtotalGeneral);
 			viewport.down("#txtDescuento").setValue(descuento);
+			// Si el descuento total es 0, limpiar el porcentaje de descuento
+			if (descuento === 0) {
+				viewport.down("#txtPorcentajeDescuento").setValue(0);
+			}
 			viewport.down("#txtIva").setValue(ivaGeneral);
 			viewport.down("#txtServices").setValue(serviceGeneral);
 			viewport.down("#txtTotal").setValue(totalGeneral);
