@@ -2803,6 +2803,10 @@ class app_invoice_billing extends _BaseController {
 
 
 				//Ingresar en Kardex.
+
+				log_message("error","companyID".print_r($companyID,true));
+				log_message("error","transactionID".print_r($transactionID,true));
+				log_message("error","transactionMasterID".print_r($transactionMasterID,true));
 				$this->core_web_inventory->calculateKardexNewOutput($companyID,$transactionID,$transactionMasterID);			
 
 				//Crear Conceptos.
@@ -2813,12 +2817,21 @@ class app_invoice_billing extends _BaseController {
 				$exisCausalInCredit		= null;
 				$exisCausalInCredit		= array_search($objTM["transactionCausalID"] ,$causalIDTypeCredit);
 
+				log_message("error","[insertElementMobil] === INICIO SECCION CREDITO ===");
+				log_message("error","[insertElementMobil] parameterCausalTypeCredit->value: ".print_r($parameterCausalTypeCredit->value,true));
+				log_message("error","[insertElementMobil] causalIDTypeCredit: ".print_r($causalIDTypeCredit,true));
+				log_message("error","[insertElementMobil] objTM[transactionCausalID]: ".print_r($objTM["transactionCausalID"],true));
+				log_message("error","[insertElementMobil] exisCausalInCredit: ".print_r($exisCausalInCredit,true));
+				log_message("error","[insertElementMobil] transactionMaster->CustomerCreditLineId: ".print_r($transactionMaster->CustomerCreditLineId,true));
+
 				//si la factura es de credito
 				if($exisCausalInCredit || $exisCausalInCredit === 0){
 
+					log_message("error","[insertElementMobil] >>> ENTRO EN BLOQUE DE CREDITO");
 
 					//Crear documento del modulo
 					$objCustomerCreditLine 								= $this->Customer_Credit_Line_Model->get_rowByPK($transactionMaster->CustomerCreditLineId);
+					log_message("error","[insertElementMobil] objCustomerCreditLine: ".print_r($objCustomerCreditLine,true));
 					$objCustomerCreditDocument["companyID"] 			= $companyID;
 					$objCustomerCreditDocument["entityID"] 				= $objCustomerCreditLine->entityID;
 					$objCustomerCreditDocument["customerCreditLineID"] 	= $objCustomerCreditLine->customerCreditLineID;
@@ -2831,6 +2844,12 @@ class app_invoice_billing extends _BaseController {
 					$objCustomerCreditDocument["amount"] 				= $amountTotal; 
 					$objCustomerCreditDocument["balance"] 				= $amountTotal;
 					$objCatalogItemDayExclude 							= $this->Catalog_Item_Model->get_rowByCatalogItemID($objCustomerCreditLine->dayExcluded);
+
+					log_message("error","[insertElementMobil] objCustomerCreditDocument INICIAL: ".print_r($objCustomerCreditDocument,true));
+					log_message("error","[insertElementMobil] objParameterAmortizationDuranteFactura: ".$objParameterAmortizationDuranteFactura);
+					log_message("error","[insertElementMobil] objTM[currencyID]: ".$objTM["currencyID"]);
+					log_message("error","[insertElementMobil] amountTotal: ".$amountTotal);
+					log_message("error","[insertElementMobil] objTM[exchangeRate]: ".$objTM["exchangeRate"]);
 
 					if($objParameterAmortizationDuranteFactura == "true" &&  $objTM["currencyID"] == 1 /*cordoba*/)
 					{
@@ -2890,13 +2909,25 @@ class app_invoice_billing extends _BaseController {
 					
 					$objCustomerCreditDocument["typeAmortization"] 		= $objCustomerCreditLine->typeAmortization;					
 					$objCustomerCreditDocument["reportSinRiesgo"] 	 	= 1;
+
+					log_message("error","[insertElementMobil] objCustomerCreditDocument FINAL antes de insert: ".print_r($objCustomerCreditDocument,true));
+
 					$customerCreditDocumentID 							= $this->Customer_Credit_Document_Model->insert_app_posme($objCustomerCreditDocument);
+
+					log_message("error","[insertElementMobil] customerCreditDocumentID insertado: ".$customerCreditDocumentID);
+
 					$periodPay 											= $this->Catalog_Item_Model->get_rowByCatalogItemID($objCustomerCreditLine->periodPay);
 
 					if($objParameterAmortizationDuranteFactura == "true")
 					{
 						$periodPay 										= $this->Catalog_Item_Model->get_rowByCatalogItemID( $objTM["periodPay"] );
 					}
+
+					log_message("error","[insertElementMobil] periodPay->sequence: ".print_r($periodPay->sequence ?? 'NULL',true));
+					log_message("error","[insertElementMobil] objCustomerCreditLine->typeAmortization: ".$objCustomerCreditLine->typeAmortization);
+					log_message("error","[insertElementMobil] objTM[transactionOn2] (fecha credito): ".$objTM["transactionOn2"]);
+					log_message("error","[insertElementMobil] objCatalogItemDayExclude: ".print_r($objCatalogItemDayExclude,true));
+					log_message("error","[insertElementMobil] flavorID: ".$dataSession["company"]->flavorID);
 					
 					
 					$objCatalogItem_DiasNoCobrables 		= $this->core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES",$companyID);
@@ -2905,6 +2936,7 @@ class app_invoice_billing extends _BaseController {
 					
 
 					//Crear tabla de amortizacion
+					log_message("error","[insertElementMobil] Parametros amort(): monto=".$objCustomerCreditDocument["amount"]." interes=".$objCustomerCreditDocument["interes"]." term=".$objCustomerCreditDocument["term"]." frecuencia=".$periodPay->sequence." fechaCredito=".$objTM["transactionOn2"]." tipoAmort=".$objCustomerCreditLine->typeAmortization);
 					$this->financial_amort->amort(
 						$objCustomerCreditDocument["amount"], 		/*monto*/
 						$objCustomerCreditDocument["interes"],		/*interes anual*/
@@ -2920,6 +2952,7 @@ class app_invoice_billing extends _BaseController {
 					);
 
 					$tableAmortization = $this->financial_amort->getTable();
+					log_message("error","[insertElementMobil] tableAmortization count detail: ".( isset($tableAmortization["detail"]) ? count($tableAmortization["detail"]) : 'NULL' ));
 					if($tableAmortization["detail"])
 					{
 						$sequence = 0;
@@ -2964,20 +2997,37 @@ class app_invoice_billing extends _BaseController {
 					$montoTotalCordobaCredit = $objTM["currencyID"] == $objCurrencyCordoba->currencyID ? $objCustomerCreditDocument["amount"] : round(($objCustomerCreditDocument["amount"] * $objTM["exchangeRate"]),2) ;
 					$montoTotalDolaresCredit = $objTM["currencyID"] == $objCurrencyDolares->currencyID ? $objCustomerCreditDocument["amount"] : round(($objCustomerCreditDocument["amount"] / $objTM["exchangeRate"]),2) ;
 				
+					log_message("error","[insertElementMobil] montoTotalCordobaCredit: ".$montoTotalCordobaCredit);
+					log_message("error","[insertElementMobil] montoTotalDolaresCredit: ".$montoTotalDolaresCredit);
 
 					//disminuir el balance de general	
 					$objCustomerCredit 					= $this->Customer_Credit_Model->get_rowByPK($objCustomerCreditLine->companyID,$objCustomerCreditLine->branchID,$objCustomerCreditLine->entityID);
+					
+					log_message("error","[insertElementMobil] objCustomerCredit->balanceDol ANTES: ".($objCustomerCredit->balanceDol ?? 'NULL'));
+					
 					$objCustomerCreditNew["balanceDol"]	= $objCustomerCredit->balanceDol - $montoTotalDolaresCredit;
+					
+					log_message("error","[insertElementMobil] objCustomerCreditNew[balanceDol] NUEVO: ".$objCustomerCreditNew["balanceDol"]);
+					
 					$this->Customer_Credit_Model->update_app_posme($objCustomerCreditLine->companyID,$objCustomerCreditLine->branchID,$objCustomerCreditLine->entityID,$objCustomerCreditNew);
 
 
 
 					//disminuir el balance de linea
+					log_message("error","[insertElementMobil] objCustomerCreditLine->balance ANTES: ".$objCustomerCreditLine->balance);
+					log_message("error","[insertElementMobil] objCustomerCreditLine->currencyID: ".$objCustomerCreditLine->currencyID);
+					log_message("error","[insertElementMobil] objCurrencyCordoba->currencyID: ".$objCurrencyCordoba->currencyID);
+					
 					if($objCustomerCreditLine->currencyID == $objCurrencyCordoba->currencyID)
 					$objCustomerCreditLineNew["balance"]	= $objCustomerCreditLine->balance - $montoTotalCordobaCredit;
 					else
 					$objCustomerCreditLineNew["balance"]	= $objCustomerCreditLine->balance - $montoTotalDolaresCredit;								
+					
+					log_message("error","[insertElementMobil] objCustomerCreditLineNew[balance] NUEVO: ".$objCustomerCreditLineNew["balance"]);
+					
 					$this->Customer_Credit_Line_Model->update_app_posme($objCustomerCreditLine->customerCreditLineID,$objCustomerCreditLineNew);
+					
+					log_message("error","[insertElementMobil] === FIN SECCION CREDITO ===");
 				}
 
 			}

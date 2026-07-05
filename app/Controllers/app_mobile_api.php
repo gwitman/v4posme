@@ -321,6 +321,9 @@ class app_mobile_api extends _BaseController
 						$this->Transaction_Master_Model->delete_app_posme($objTmOld->companyID,$objTmOld->transactionID,$objTmOld->transactionMasterID);						
 					}
 					
+					log_message("error","transactionMasterNumberOriginal".print_r($transactionMasterNumberOriginal,true));
+					log_message("error","objTm".print_r($objTm,true));
+					log_message("error","resultado".print_r($resultado,true));
                     $billingController->insertElementMobil($dataSession,$transactionMasterNumberOriginal,$objTm, $resultado);
 					log_message("error",print_r("0008.005",true));
 					$idexCount++;
