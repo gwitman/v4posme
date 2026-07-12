@@ -79,6 +79,26 @@
 							</div>
 						</div>
 						
+						<div class="form-group">
+							<label class="col-lg-6 control-label" for="selectFilter">Colaborador (Agente)</label>
+							<div class="col-lg-6"> 
+								<div class="col-lg-6">
+								</div>
+								<div class="col-lg-6">
+									<select name="txtAgenteFilter" id="txtAgenteFilter" class="select2">
+											<option value="0">TODOS</option>
+											<?php
+											if(isset($objListAgente) && $objListAgente)
+											foreach($objListAgente as $i){
+												if($i != null)
+												echo "<option value='".$i->entityID."'>".$i->firstName." ".$i->lastName."</option>";
+											}
+											?>														
+									</select>
+								</div>													
+							</div>
+						</div>
+						
 						<div class="form-group ">
 							<label class="col-lg-6 control-label" for="selectFilter">Propietario</label>
 							<div class="col-lg-6"> 

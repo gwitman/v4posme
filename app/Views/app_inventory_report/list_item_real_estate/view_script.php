@@ -17,6 +17,7 @@
 			var numberEncuentra24		=	$("#txtNumberEncuentra24").val();	
 			var typeDate				=	$("#txtTypeDate").val();	
 			var workflowStageID			=	$("#txtWorkflowStageID").val();	
+			var agenteFilter			=	$("#txtAgenteFilter").val();	
 			
 			if(namePropietario == "")
 			{
@@ -28,6 +29,15 @@
 				numberEncuentra24 = "none";
 			}	
 			
+			if(agenteFilter == "" || agenteFilter == null)
+			{
+				agenteFilter = "none";
+			}
+			else
+			{
+				agenteFilter = encodeURIComponent(agenteFilter);
+			}
+			
 			if(!( startOn == "" || endOn == "" ) ){
 				fnWaitOpen();
 				window.location	= "<?php echo base_url(); ?>/app_inventory_report/list_item_real_estate/viewReport/true/startOn/"+
@@ -35,7 +45,8 @@
 					"/warehouseID/"+warehouseID+"/namePropietario/"+namePropietario+
 					"/numberEncuentra24/"+numberEncuentra24+
 					"/typeDate/"+typeDate+
-					"/workflowStageID/"+workflowStageID;
+					"/workflowStageID/"+workflowStageID+
+					"/agenteFilter/"+agenteFilter;
 			}
 			else{
 				fnShowNotification("Completar los Parametros","error");

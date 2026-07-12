@@ -358,7 +358,6 @@
 							"Acepta mascota",
 							"Diseño de propiedad",
 							"Estilo de cocina",
-							"Corretaje",
 							"Plan de referido",
 							"Otros Link",
 							"Foto",

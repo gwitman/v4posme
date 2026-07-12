@@ -1148,10 +1148,12 @@ class app_inventory_report extends _BaseController {
 			$namePropietario		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"namePropietario");//--finuri
 			$numberEncuentra24		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"numberEncuentra24");//--finuri
 			$workflowStageID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"workflowStageID");//--finuri
+			$agenteFilter			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"agenteFilter");//--finuri
 			$csvGenerate			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"csvGenerate");//--finuri
 			$csvGenerate			= ($csvGenerate === "true") ? true : false;
 			$namePropietario		= $namePropietario == "numberEncuentra24" ? "" : $namePropietario;
 			$numberEncuentra24		= $numberEncuentra24 == "numberEncuentra24" ? "" : $numberEncuentra24;
+			$agenteFilter			= ($agenteFilter == "" || $agenteFilter == "none") ? "" : urldecode($agenteFilter);
 			
 			if(!$csvGenerate && !($viewReport && $startOn && $endOn  )){
 				
@@ -1159,6 +1161,8 @@ class app_inventory_report extends _BaseController {
 				$dataSession["objListWorkflowStage"] 	= $this->core_web_workflow->getWorkflowAllStage('tb_item',   'statusID',  $companyID,$branchID,$roleID);				
 				$dataSession["objListCategoryItem"]		= $this->Itemcategory_Model->getByCompany($companyID);
 				$dataSession["objListWarehouse"]		= $this->Userwarehouse_Model->getRowByUserID($companyID,$userID);
+				//Obtener lista de colaboradores (agentes)
+				$dataSession["objListAgente"]			= $this->Employee_Model->get_rowByCompanyID($companyID);
 				$dataSession["message"]					= $this->core_web_notification->get_message();
 				$dataSession["head"]					= /*--inicio view*/ view('app_inventory_report/list_item_real_estate/view_head');//--finview
 				$dataSession["body"]					= /*--inicio view*/ view('app_inventory_report/list_item_real_estate/view_body',$dataSession);//--finview
@@ -1261,6 +1265,16 @@ class app_inventory_report extends _BaseController {
 											) or 
 											(
 												".$workflowStageID." = 0 
+											)
+										)
+										AND 
+										(
+											(
+												'".$agenteFilter."' != '0' and 
+												x.`entityIDAgente` = '".$agenteFilter."'
+											) or 
+											(
+												'".$agenteFilter."' = '0'
 											)
 										)
 										
