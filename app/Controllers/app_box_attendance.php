@@ -1520,6 +1520,7 @@ class app_box_attendance extends _BaseController {
 			$dataViewParse["address"]				= $objCompany->address;
 			$dataViewParse["customerRuc"]			= $datView["objCustumer"]->customerNumber;
 			$dataViewParse["customerName"]			= $datView["objNatural"]->firstName;
+			$dataViewParse["customerLastName"]		= $datView["objNatural"]->lastName;
 			$dataViewParse["statusName"]			= $datView["objStage"][0]->name;
 			$dataViewParse["solvencyName"]			= $datView["objTM"]->reference1;
 			$dataViewParse["nextPaymentDate"]		= $datView["objTM"]->reference2;
