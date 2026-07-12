@@ -1975,14 +1975,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "De los semáforos de la racachaca 1 cuadra abajo, 10 varas al sur." 
+	tb_company_parameter.value = "Reparto San Juan del gimnasio Hércules 3 1/2 al sur." 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'FRIO Tec' , address = 'De los semáforos de la racachaca 1 cuadra abajo, 10 varas al sur.' ,
+	NAME = 'FRIO Tec' , address = 'Reparto San Juan del gimnasio Hércules 3 1/2 al sur.' ,
 	flavorID = 1158 /*usuarioID*/,type='frioTec'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
