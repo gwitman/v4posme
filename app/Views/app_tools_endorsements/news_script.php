@@ -143,7 +143,7 @@
 					url     : "<?= base_url(); ?>/app_tools_endorsements/getTransactionMasterOld/"+$("#txtTransactionNumber").val()+"/"+endoso.display,
 					type    : 'GET',
 					success : function (respuesta) {
-						
+						debugger;
 						if(respuesta.error == true)
 						{
 							fnWaitClose();
@@ -174,6 +174,34 @@
 						{
 							tagContenedorValorAnterior.html('<input readonly type="text" id="txtValorAnterior" name="txtValorAnterior" class="form-control" placeholder="Ingrese un valor" value="' + valorAnterior + '">');
 							tagContenedorValorNuevo.html('<input type="text" name="txtValorNuevo" id="txtValorNuevo" class="form-control" placeholder="Ingrese un valor">');
+							fnWaitClose();
+						}
+						else if (tipo === "checkbox") 
+						{
+							let checkedAnterior = (valorAnterior == "1") ? "checked" : "";
+							tagContenedorValorAnterior.html(
+								'<div class="switch" data-on="success" data-off="danger">' +
+									'<input type="checkbox" id="txtValorAnterior" name="txtValorAnterior" value="1" ' + checkedAnterior + ' disabled>' +
+								'</div>' +
+								'<input type="hidden" name="txtValorAnterior" value="' + (valorAnterior == "1" ? "1" : "0") + '">'
+							);
+							tagContenedorValorNuevo.html(
+								'<div class="switch" data-on="success" data-off="danger">' +
+									'<input type="checkbox" id="txtValorNuevoCheck" value="1">' +
+								'</div>' +
+								'<input type="hidden" id="txtValorNuevo" name="txtValorNuevo" value="0">'
+							);
+							// Inicializar bootstrapSwitch en los checkboxes recién creados
+							$('#contenedorDinamicoValorAnterior .switch').bootstrapSwitch();
+							$('#contenedorDinamicoValorNuevo .switch').bootstrapSwitch();
+							// Evento change para el checkbox nuevo
+							$(document).off("change", "#txtValorNuevoCheck").on("change", "#txtValorNuevoCheck", function () {
+								if ($(this).is(":checked")) {
+									$("#txtValorNuevo").val("1");
+								} else {
+									$("#txtValorNuevo").val("0");
+								}
+							});
 							fnWaitClose();
 						}
 						

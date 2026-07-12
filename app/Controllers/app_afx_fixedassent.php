@@ -93,6 +93,50 @@ class app_afx_fixedassent extends _BaseController {
 			
 			}
 			
+			//Guardar Propiedades del Activo Fijo
+			try{
+				$objCompanyProp = $this->Company_Model->get_rowByPK($companyID_);
+				$objPropertyCatalog = $this->Public_Catalog_Model->getBySystemNameAndFlavorID('tb_catalog_property_fixedassent', $objCompanyProp->flavorID);
+				if(!$objPropertyCatalog){
+					$objPropertyCatalog = $this->Public_Catalog_Model->getBySystemNameAndFlavorID('tb_catalog_property_fixedassent', 0);
+				}
+				if($objPropertyCatalog && count($objPropertyCatalog) > 0){
+					$objListProps = $this->Public_Catalog_Detail_Model->getView($objPropertyCatalog[0]->publicCatalogID);
+					if($objListProps){
+						foreach($objListProps as $prop){
+							$fieldName 	= 'txtProperty_'.$prop->publicCatalogDetailID;
+							$fieldValue = $this->request->getPost($fieldName);
+							if($prop->reference1 == 'checkbox'){
+								$fieldValue = $fieldValue ? '1' : '0';
+							}
+							//Buscar si ya existe la propiedad
+							$existingProp = $this->Component_Property_Model->get_rowByItemID_And_propertyID($fixedAssentID_, $prop->publicCatalogDetailID);
+							if($existingProp){
+								$dataUpdateProp 			= [];
+								$dataUpdateProp["value"] 	= $fieldValue !== null ? $fieldValue : '';
+								$this->Component_Property_Model->update_app_posme($existingProp->propertyItemID, $dataUpdateProp);
+							}else{
+								if($fieldValue !== null && $fieldValue !== ''){
+									$dataProp 						= [];
+									$dataProp["componentID"] 		= $objComponent->componentID;
+									$dataProp["componentItemID"] 	= $fixedAssentID_;
+									$dataProp["propertyID"] 		= $prop->publicCatalogDetailID;
+									$dataProp["name"] 				= $prop->name;
+									$dataProp["descripcion"] 		= $prop->description;
+									$dataProp["value"] 				= $fieldValue;
+									$dataProp["type"] 				= $prop->reference1;
+									$dataProp["isActive"] 			= 1;
+									$this->Component_Property_Model->insert_app_posme($dataProp);
+								}
+							}
+						}
+					}
+				}
+				log_message('info','[app_afx_fixedassent][updateElement] Propiedades actualizadas para fixedAssentID: '.$fixedAssentID_);
+			}catch(\Exception $exProp){
+				log_message('error','[app_afx_fixedassent][updateElement] Error al guardar propiedades: '.$exProp->getMessage());
+			}
+			
 			//Confirmar Entidad
 			if($db->transStatus() !== false){
 				$db->transCommit();						
@@ -201,6 +245,28 @@ class app_afx_fixedassent extends _BaseController {
 			$datView["objArea"]						= $datView["objFA"]->areaID 	? $this->Public_Catalog_Detail_Model->get_rowByPk($datView["objFA"]->areaID) 	: "";
 			$datView["objProject"]					= $datView["objFA"]->projectID 	? $this->Public_Catalog_Detail_Model->get_rowByPk($datView["objFA"]->projectID) : "";
 			
+			//Obtener Propiedades del Activo Fijo
+			$objCompany = $this->Company_Model->get_rowByPK($companyID);
+			$objPropertyCatalog = $this->Public_Catalog_Model->getBySystemNameAndFlavorID('tb_catalog_property_fixedassent', $objCompany->flavorID);
+			if(!$objPropertyCatalog){
+				$objPropertyCatalog = $this->Public_Catalog_Model->getBySystemNameAndFlavorID('tb_catalog_property_fixedassent', 0);
+			}
+			$datView["objListProperties"] = [];
+			$datView["objListPropertyValues"] = [];
+			if($objPropertyCatalog && count($objPropertyCatalog) > 0){
+				$datView["objListProperties"] = $this->Public_Catalog_Detail_Model->getView($objPropertyCatalog[0]->publicCatalogID);
+				//Obtener valores guardados de las propiedades
+				$objComponentFA_temp = $this->core_web_tools->getComponentIDBy_ComponentName("tb_fixed_assent");
+				if($objComponentFA_temp && $datView["objListProperties"]){
+					foreach($datView["objListProperties"] as $prop){
+						$propValue = $this->Component_Property_Model->get_rowByItemID_And_propertyID($fixedAssentID, $prop->publicCatalogDetailID);
+						if($propValue){
+							$datView["objListPropertyValues"][$prop->publicCatalogDetailID] = $propValue->value;
+						}
+					}
+				}
+			}
+			
 			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			=  $this->core_web_notification->get_message();
@@ -292,6 +358,41 @@ class app_afx_fixedassent extends _BaseController {
 			$db->transStart();
 			$fixedAssentID = $this->Fixed_Assent_Model->insert_app_posme($objFA);
 			
+			//Guardar Propiedades del Activo Fijo
+			try{
+				$objCompanyProp 	= $this->Company_Model->get_rowByPK($companyID);
+				$objPropertyCatalog = $this->Public_Catalog_Model->getBySystemNameAndFlavorID('tb_catalog_property_fixedassent', $objCompanyProp->flavorID);
+				if(!$objPropertyCatalog){
+					$objPropertyCatalog = $this->Public_Catalog_Model->getBySystemNameAndFlavorID('tb_catalog_property_fixedassent', 0);
+				}
+				if($objPropertyCatalog && count($objPropertyCatalog) > 0){
+					$objListProps = $this->Public_Catalog_Detail_Model->getView($objPropertyCatalog[0]->publicCatalogID);
+					if($objListProps){
+						foreach($objListProps as $prop){
+							$fieldName 	= 'txtProperty_'.$prop->publicCatalogDetailID;
+							$fieldValue = $this->request->getPost($fieldName);
+							if($prop->reference1 == 'checkbox'){
+								$fieldValue = $fieldValue ? '1' : '0';
+							}
+							if($fieldValue !== null && $fieldValue !== ''){
+								$dataProp 						= [];
+								$dataProp["componentID"] 		= $objComponent->componentID;
+								$dataProp["componentItemID"] 	= $fixedAssentID;
+								$dataProp["propertyID"] 		= $prop->publicCatalogDetailID;
+								$dataProp["name"] 				= $prop->name;
+								$dataProp["descripcion"] 		= $prop->description;
+								$dataProp["value"] 				= $fieldValue;
+								$dataProp["type"] 				= $prop->reference1;
+								$dataProp["isActive"] 			= 1;
+								$this->Component_Property_Model->insert_app_posme($dataProp);
+							}
+						}
+					}
+				}
+				log_message('info','[app_afx_fixedassent][insertElement] Propiedades guardadas para fixedAssentID: '.$fixedAssentID);
+			}catch(\Exception $exProp){
+				log_message('error','[app_afx_fixedassent][insertElement] Error al guardar propiedades: '.$exProp->getMessage());
+			}
 			
 			//Crear la Carpeta para almacenar los Archivos del Cliente
 			if(!file_exists(PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$fixedAssentID))
@@ -482,6 +583,17 @@ class app_afx_fixedassent extends _BaseController {
 			$dataView["objListCountry"]					= $this->core_web_catalog->getCatalogAllItem("tb_employee","countryID",$companyID);
 			$dataView["objListBranch"]					= $this->Branch_Model->getByCompany($companyID);
 			$dataView["objListTypeFixedAssent"]			= $this->core_web_catalog->getCatalogAllItem("tb_fixed_assent","typeFixedAssentID",$companyID);
+
+			//Obtener Propiedades del Activo Fijo
+			$objCompany 		= $this->Company_Model->get_rowByPK($companyID);
+			$objPropertyCatalog = $this->Public_Catalog_Model->getBySystemNameAndFlavorID('tb_catalog_property_fixedassent', $objCompany->flavorID);
+			if(!$objPropertyCatalog){
+				$objPropertyCatalog = $this->Public_Catalog_Model->getBySystemNameAndFlavorID('tb_catalog_property_fixedassent', 0);
+			}
+			$dataView["objListProperties"] = [];
+			if($objPropertyCatalog && count($objPropertyCatalog) > 0){
+				$dataView["objListProperties"] = $this->Public_Catalog_Detail_Model->getView($objPropertyCatalog[0]->publicCatalogID);
+			}
 
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);

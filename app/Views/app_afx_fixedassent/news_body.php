@@ -33,6 +33,7 @@
 											<li class="active"><a href="#home" data-toggle="tab">Informacion General</a></li>
 											<li><a href="#ubicacion" data-toggle="tab">Ubicacion</a></li>
 											<li><a href="#valores" data-toggle="tab">Valores</a></li>
+											<li><a href="#propiedades" data-toggle="tab">Propiedades</a></li>
 										</ul>
 
 										<div class="tab-content">
@@ -426,6 +427,43 @@
 													</div>
 												</div>
 											</div>
+
+											<!-- Tab Propiedades -->
+											<div class="tab-pane fade" id="propiedades">
+												<div class="row">
+													<?php if(isset($objListProperties) && $objListProperties): ?>
+														<?php
+															$totalProps = count($objListProperties);
+															$half = ceil($totalProps / 2);
+															$propIndex = 0;
+														?>
+														<div class="col-lg-6">
+															<?php foreach($objListProperties as $prop): ?>
+																<?php if($propIndex == $half): ?>
+																</div><div class="col-lg-6">
+																<?php endif; ?>
+																<div class="form-group">
+																	<label class="col-lg-4 control-label"><?php echo $prop->name; ?></label>
+																	<div class="col-lg-8">
+																		<?php if($prop->reference1 == 'checkbox'): ?>
+																			<input type="checkbox" name="txtProperty_<?php echo $prop->publicCatalogDetailID; ?>" id="txtProperty_<?php echo $prop->publicCatalogDetailID; ?>" value="1">
+																		<?php else: ?>
+																			<input class="form-control" type="text" name="txtProperty_<?php echo $prop->publicCatalogDetailID; ?>" id="txtProperty_<?php echo $prop->publicCatalogDetailID; ?>" value="">
+																		<?php endif; ?>
+																	</div>
+																</div>
+																<?php $propIndex++; ?>
+															<?php endforeach; ?>
+														</div>
+													<?php else: ?>
+														<div class="col-lg-12">
+															<p class="text-muted text-center" style="padding: 20px;">No hay propiedades configuradas.</p>
+														</div>
+													<?php endif; ?>
+												</div>
+											</div>
+											<!-- /Tab Propiedades -->
+
 										</div>
 									</div>
 								</form>

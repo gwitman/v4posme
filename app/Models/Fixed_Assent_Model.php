@@ -49,6 +49,20 @@ class Fixed_Assent_Model extends Model  {
 		return $db->query($sql)->getRow();
    }
 
+   function get_rowByFixedAssentCode($companyID,$fixedAssentCode){
+		$db 	= db_connect();
+		
+		$sql = "";
+		$sql = sprintf("select companyID, branchID, fixedAssentID, fixedAssentCode, name, description, modelNumber, marca, colorID, chasisNumber, reference1, reference2, year, asignedEmployeeID, categoryID, typeID, typeDepresiationID, yearOfUtility, currencyID, priceStart, isForaneo, statusID, createdIn, createdOn, createdAt, createdBy, countryID, cityID, municipalityID, address, areaID, projectID, duration, typeFixedAssentID, startOn, ratio, settlementAmount, currentAmount, isActive");
+		$sql = $sql.sprintf(" from tb_fixed_assent i");		
+		$sql = $sql.sprintf(" where i.companyID = %d", $companyID);
+		$sql = $sql.sprintf(" and i.fixedAssentCode = '%s'", $fixedAssentCode);
+		$sql = $sql.sprintf(" and i.isActive = 1");
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getRow();
+   }
+
    	function get_rowByPKListID($companyID,$branchID,$fixedAssetIDList){
 		$db 		= db_connect();
 		$builder	= $db->table("tb_fixed_assent");

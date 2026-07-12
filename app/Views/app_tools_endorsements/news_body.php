@@ -114,6 +114,30 @@
                                     <div id="contenedorDinamicoValorNuevo"></div>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label class="col-lg-4 control-label" for="txtComentario">Comentario</label>
+                                <div class="col-lg-8">
+                                    <input class="form-control" type="text" name="txtComentario" id="txtComentario" placeholder="Escriba el motivo del endoso" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-4 control-label" for="txtReferencia1">Referencia 1</label>
+                                <div class="col-lg-8">
+                                    <input class="form-control" type="text" name="txtReferencia1" id="txtReferencia1" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-4 control-label" for="txtReferencia2">Referencia 2</label>
+                                <div class="col-lg-8">
+                                    <input class="form-control" type="text" name="txtReferencia2" id="txtReferencia2" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-lg-4 control-label" for="txtReferencia3">Referencia 3</label>
+                                <div class="col-lg-8">
+                                    <input class="form-control" type="text" name="txtReferencia3" id="txtReferencia3" />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -146,6 +146,8 @@ class app_tools_endorsements extends _BaseController {
 
     function updateElement($dataSession){
         try{
+            log_message('info', '[updateElement] Inicio');
+
             //PERMISO SOBRE LA FUNCTION
             if(APP_NEED_AUTHENTICATION == true){
                 $permited = false;
@@ -167,9 +169,16 @@ class app_tools_endorsements extends _BaseController {
             $userID 				= $dataSession["user"]->userID;
             $transactionID 			= /*inicio get post*/ $this->request->getPost("txtTransactionIDEndoso");
             $transactionMasterID	= /*inicio get post*/ $this->request->getPost("txtTransactionMasterID");
+
+            log_message('info', '[updateElement] Parametros recibidos - companyID: ' . $companyID . ' | userID: ' . $userID . ' | transactionID: ' . $transactionID . ' | transactionMasterID: ' . $transactionMasterID);
+
             $objTM	 				= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
             $objTMRef 				= $this->Transaction_Master_References_Model->get_rowByTransactionMaster($transactionMasterID);
+
+            log_message('info', '[updateElement] objTM encontrado: ' . ($objTM ? 'SI' : 'NO') . ' | objTMRef encontrado: ' . ($objTMRef ? 'SI' : 'NO'));
+
             $oldStatusID 			= $objTM->statusID;
+            log_message('info', '[updateElement] oldStatusID: ' . $oldStatusID);
 
             //Validar Edicion por el Usuario
             if ($resultPermission 	== PERMISSION_ME && ($objTM->createdBy != $userID))
@@ -185,21 +194,33 @@ class app_tools_endorsements extends _BaseController {
             //buscamos en el catalogo detail con el id, el campo a editar, y lo guardamos
             $catalogItemID			                = /*inicio get post*/ $this->request->getPost("txtValorModificar");
             $findCatalogoDetail                     = $this->Catalog_Item_Model->get_rowByCatalogItemID($catalogItemID);
+
+            log_message('info', '[updateElement] catalogItemID: ' . $catalogItemID . ' | findCatalogoDetail: ' . ($findCatalogoDetail ? json_encode($findCatalogoDetail) : 'NULL'));
+
             $objTMNew["transactionOn"]				= /*inicio get post*/ $this->request->getPost("txtDate");
 			$objTMNew['reference1']                 = /*inicio get post*/ $this->request->getPost("txtTransactionID");
             $objTMNew["statusIDChangeOn"]			= date("Y-m-d H:m:s");
             $objTMNew["statusID"] 					= /*inicio get post*/ $this->request->getPost("txtStatusID");
+            $objTMNew["note"] 						= /*inicio get post*/ $this->request->getPost("txtComentario");
+            $objTMNew["reference2"] 				= /*inicio get post*/ $this->request->getPost("txtReferencia1");
+            $objTMNew["reference3"] 				= /*inicio get post*/ $this->request->getPost("txtReferencia2");
+            $objTMNew["reference4"] 				= /*inicio get post*/ $this->request->getPost("txtReferencia3");
+
+            log_message('info', '[updateElement] objTMNew - transactionOn: ' . $objTMNew["transactionOn"] . ' | reference1: ' . $objTMNew["reference1"] . ' | statusID: ' . $objTMNew["statusID"]);
 
             $db=db_connect();
             $db->transException(true)->transStart();
+            log_message('info', '[updateElement] Transaccion DB iniciada');
 
             //El Estado solo permite editar el workflow
             if($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_endorsements","statusID",$objTM->statusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)){
+                log_message('info', '[updateElement] Solo editable workflow - actualizando solo statusID');
                 $objTMNew								= array();
                 $objTMNew["statusID"] 					= /*inicio get post*/ $this->request->getPost("txtStatusID");
                 $this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMNew);
             }
             else{
+                log_message('info', '[updateElement] Edicion total - actualizando objTMNew completo: ' . json_encode($objTMNew));
                 $this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMNew);
             }
 
@@ -226,9 +247,14 @@ class app_tools_endorsements extends _BaseController {
             $objTMRefNew['reference11']                  = $valorAnterior;
             $objTMRefNew['reference12']                  = $valorNuevo;
 
+            log_message('info', '[updateElement] objTMRefNew: ' . json_encode($objTMRefNew));
+            log_message('info', '[updateElement] valorAnterior: ' . $valorAnterior . ' | valorNuevo: ' . $valorNuevo);
+
             $this->Transaction_Master_References_Model->update_app_posme($objTMRef->transactionMasterReferenceID,$objTMRefNew);
+            log_message('info', '[updateElement] Transaction_Master_References actualizado OK');
 
             //Aplicar el Documento?
+            log_message('info', '[updateElement] Validando si aplica documento - newStatusID: ' . $objTMNew["statusID"] . ' | oldStatusID: ' . $oldStatusID);
             if(
                 $this->core_web_workflow->validateWorkflowStage
                 (
@@ -250,15 +276,27 @@ class app_tools_endorsements extends _BaseController {
 				$transactionNumberFor		= $objTMRefNew['transactionReferenceNumber'];
 				$transactionMasterIDFor		= $objTMRefNew['reference1'];
 				$typeDocumentFor			= $objTMRefNew['reference6'];
+
+                log_message('info', '[updateElement] APLICANDO DOCUMENTO - cadena: ' . $cadena . ' | table: ' . $table . ' | campo: ' . $campo);
+                log_message('info', '[updateElement] valueNuevo: ' . $valueNuevo . ' | transactionMasterIDFor: ' . $transactionMasterIDFor . ' | transactionNumberFor: ' . $transactionNumberFor . ' | typeDocumentFor: ' . $typeDocumentFor);
 				
                 if ($table == "tb_transaction_master") 
 				{
                     $query = "UPDATE ".$table." SET ".$campo." = ? WHERE transactionMasterID = ?;";
+                    log_message('info', '[updateElement] Query ejecutada: ' . $query . ' | Params: [' . $valueNuevo . ', ' . $transactionMasterIDFor . ']');
                     $db->query($query,[$valueNuevo, $transactionMasterIDFor ]);
                 }
 				else if ($table == "tb_transaction_master_info") 
 				{
                     $query = "UPDATE ".$table." SET ".$campo." = ? WHERE transactionMasterID = ?;";
+                    log_message('info', '[updateElement] Query ejecutada: ' . $query . ' | Params: [' . $valueNuevo . ', ' . $transactionMasterIDFor . ']');
+                    $db->query($query,[$valueNuevo, $transactionMasterIDFor ]);
+                }
+                else if ($table == "tb_component_property") 
+				{
+                    $rowKey =  explode('.', $cadena)[2];
+                    $query  = "UPDATE ".$table." SET ".$campo." = ? WHERE componentItemID = ? and name = '".$rowKey."';";
+                    log_message('info', '[updateElement] Query ejecutada: ' . $query . ' | Params: [' . $valueNuevo . ', ' . $transactionMasterIDFor . ']');
                     $db->query($query,[$valueNuevo, $transactionMasterIDFor ]);
                 }
 				else
@@ -270,19 +308,23 @@ class app_tools_endorsements extends _BaseController {
             if($db->transStatus() !== false)
             {
                 $db->transCommit();
+                log_message('info', '[updateElement] Transaccion COMMIT exitoso');
                 $this->core_web_notification->set_message(false,SUCCESS);
                 $this->response->redirect(base_url()."/".'app_tools_endorsements/edit/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID);
             }
             else{
                 $errorCode 		= $db->error()["code"];
                 $errorMessage 	= 'Codigo: '.$errorCode . '; Mensaje '.$db->error()["message"];
+                log_message('error', '[updateElement] Transaccion FALLIDA - ' . $errorMessage);
                 $this->core_web_notification->set_message(true,$errorMessage);
                 $this->response->redirect(base_url()."/".'app_tools_endorsements/add');
             }
         }catch (DatabaseException $e) {
+            log_message('error', '[updateElement] DatabaseException: ' . $e->getMessage());
             echo $e->getMessage();
         }
         catch (Exception $ex){
+            log_message('error', '[updateElement] Exception linea ' . $ex->getLine() . ': ' . $ex->getMessage());
             if (empty($dataSession)) {
                 return redirect()->to(base_url("core_acount/login"));
             }
@@ -346,7 +388,10 @@ class app_tools_endorsements extends _BaseController {
             $objTM["sourceWarehouseID"]				= NULL;
             $objTM["targetWarehouseID"]				= NULL;
             $objTM["isActive"]						= 1;
-            $objTM["note"] 							= "";
+            $objTM["note"] 							= /*inicio get post*/ $this->request->getPost("txtComentario");
+            $objTM["reference2"] 					= /*inicio get post*/ $this->request->getPost("txtReferencia1");
+            $objTM["reference3"] 					= /*inicio get post*/ $this->request->getPost("txtReferencia2");
+            $objTM["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtReferencia3");
 
             $this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);
 
@@ -644,85 +689,123 @@ class app_tools_endorsements extends _BaseController {
         }
     }
 
+	
 	function getTransactionMasterOld($transactionNumber,$getValue)
 	{
-		
-		try{
-            //Validar Authentication
-            if(!$this->core_web_authentication->isAuthenticated())
-                throw new Exception(USER_NOT_AUTENTICATED);
-            $dataSession		= $this->session->get();
-            $companyID          = $dataSession["user"]->companyID;
-			
-			$db					= db_connect();
-			$cadena             = $getValue;			
-			$table              = explode('.', $cadena)[0];
-			$campo              = explode('.', $cadena)[1];
-			$typeDocument		= $transactionNumber;
-			
-			if (
-				str_starts_with($typeDocument, "FAC")  &&
-				$table	== "tb_transaction_master"
-			) 
-			{
-				$query 	= " SELECT 
-								".$campo." as Value 
-							FROM  
-								".$table."  
-							WHERE 
-								transactionNumber = ?;
-						  ";
-				$data 	= $db->query($query,[ $transactionNumber ])->getResult();
-			}
-			else if (
-				str_starts_with($typeDocument, "FAC")  &&
-				$table	== "tb_transaction_master_info"
-			) 
-			{
-				$query 	= " SELECT 
-								".$campo." as Value 
-							FROM  
-								".$table."  
-							WHERE 
-								transactionMasterID = (SELECT uu.transactionMasterID FROM tb_transaction_master uu where uu.transactionNumber = ?);
-						  ";
-				$data 	= $db->query($query,[ $transactionNumber ])->getResult();
-			}
-			else if (
-				str_starts_with($typeDocument, "COMPRA")  &&
-				$table	== "tb_transaction_master"
-			) 
-			{
-				$query 	= " SELECT 
-								".$campo." as Value 
-							FROM  
-								".$table."  
-							WHERE 
-								transactionMasterID = (SELECT uu.transactionMasterID FROM tb_transaction_master uu where uu.transactionNumber = ?);
-						  ";
-				$data 	= $db->query($query,[ $transactionNumber ])->getResult();
-			}
-			else 
-				throw new \Exception("Configurar el tipo de endoso en codigo app_tools_endorsement.getTransactionMasterOld ");
 
-			
-            //Obtener Resultados.
-            return $this->response->setJSON(array(
-                'error'   			=> false,
-                'message' 			=> SUCCESS,
-                'data'	 	        => $data
-            ));//--finjson
+			try{
+				log_message('info', '[getTransactionMasterOld] Inicio - transactionNumber: ' . $transactionNumber . ' | getValue: ' . $getValue);
 
-        }
-        catch(Exception $ex){
-            return $this->response->setJSON(array(
-                'error'   			=> true,
-                'message' 			=> $ex->getMessage(),
-                'data'	 	        => []
-            ));//--finjson
-        }
-		
-	}
+	            //Validar Authentication
+	            if(!$this->core_web_authentication->isAuthenticated())
+	                throw new Exception(USER_NOT_AUTENTICATED);
+	            $dataSession		= $this->session->get();
+	            $companyID          = $dataSession["user"]->companyID;
+
+				log_message('info', '[getTransactionMasterOld] companyID: ' . $companyID);
+
+				$db					= db_connect();
+				$cadena             = $getValue;			
+				$table              = explode('.', $cadena)[0];
+				$campo              = explode('.', $cadena)[1];            
+				$typeDocument		= $transactionNumber;
+
+				log_message('info', '[getTransactionMasterOld] table: ' . $table . ' | campo: ' . $campo . ' | typeDocument: ' . $typeDocument);
+
+				if (
+					str_starts_with($typeDocument, "FAC")  &&
+					$table	== "tb_transaction_master" 
+				) 
+				{
+					log_message('info', '[getTransactionMasterOld] Caso: FAC + tb_transaction_master');
+					$query 	= " SELECT 
+									".$campo." as Value 
+								FROM  
+									".$table."  
+								WHERE 
+									transactionNumber = ?;
+							  ";
+					log_message('info', '[getTransactionMasterOld] Query: ' . $query . ' | Params: [' . $transactionNumber . ']');
+					$data 	= $db->query($query,[ $transactionNumber ])->getResult();
+				}
+				else if (
+					str_starts_with($typeDocument, "FAC")  &&
+					$table	== "tb_transaction_master_info"
+				) 
+				{
+					log_message('info', '[getTransactionMasterOld] Caso: FAC + tb_transaction_master_info');
+					$query 	= " SELECT 
+									".$campo." as Value 
+								FROM  
+									".$table."  
+								WHERE 
+									transactionMasterID = (SELECT uu.transactionMasterID FROM tb_transaction_master uu where uu.transactionNumber = ?);
+							  ";
+					log_message('info', '[getTransactionMasterOld] Query: ' . $query . ' | Params: [' . $transactionNumber . ']');
+					$data 	= $db->query($query,[ $transactionNumber ])->getResult();
+				}
+				else if (
+					str_starts_with($typeDocument, "COMPRA")  &&
+					$table	== "tb_transaction_master"
+				) 
+				{
+					log_message('info', '[getTransactionMasterOld] Caso: COMPRA + tb_transaction_master');
+					$query 	= " SELECT 
+									".$campo." as Value 
+								FROM  
+									".$table."  
+								WHERE 
+									transactionMasterID = (SELECT uu.transactionMasterID FROM tb_transaction_master uu where uu.transactionNumber = ?);
+							  ";
+					log_message('info', '[getTransactionMasterOld] Query: ' . $query . ' | Params: [' . $transactionNumber . ']');
+					$data 	= $db->query($query,[ $transactionNumber ])->getResult();
+				}
+	            else if (
+					str_starts_with($typeDocument, "AFS")  &&
+					$table	== "tb_component_property"
+				) 
+				{
+					log_message('info', '[getTransactionMasterOld] Caso: AFS + tb_component_property');
+	                $rowKey  = explode('.', $cadena)[2];
+					log_message('info', '[getTransactionMasterOld] rowKey: ' . $rowKey);
+					$query 	 = " SELECT 
+									".$campo." as Value 
+								FROM  
+									".$table."  
+								WHERE 
+									tb_component_property.componentItemID = (SELECT uu.fixedAssentID FROM tb_fixed_assent uu where uu.fixedAssentCode = ?) and 
+	                                tb_component_property.name = ?;
+							  ";
+					log_message('info', '[getTransactionMasterOld] Query: ' . $query . ' | Params: [' . $transactionNumber . ', ' . $rowKey . ']');
+					$data 	= $db->query($query,[ $transactionNumber, $rowKey ])->getResult();
+				}
+				else {
+					log_message('error', '[getTransactionMasterOld] No se encontro caso valido para typeDocument: ' . $typeDocument . ' | table: ' . $table);
+					throw new \Exception("Configurar el tipo de endoso en codigo app_tools_endorsement.getTransactionMasterOld ");
+				}
+
+				log_message('info', '[getTransactionMasterOld] Resultado data: ' . json_encode($data));
+
+	            //Obtener Resultados.
+	            return $this->response->setJSON(array(
+	                'error'   			=> false,
+	                'message' 			=> SUCCESS,
+	                'data'	 	        => $data
+	            ));//--finjson
+
+	        }
+	        catch(Exception $ex){
+				log_message('error', '[getTransactionMasterOld] Exception: ' . $ex->getMessage());
+	            return $this->response->setJSON(array(
+	                'error'   			=> true,
+	                'message' 			=> $ex->getMessage(),
+	                'data'	 	        => []
+	            ));//--finjson
+	        }
+
+		}
+
+
     function getTransactionMaster($transactionNumber)
     {
         try{
@@ -731,12 +814,24 @@ class app_tools_endorsements extends _BaseController {
                 throw new Exception(USER_NOT_AUTENTICATED);
             $dataSession		= $this->session->get();
             $companyID          = $dataSession["user"]->companyID;
-			
-		
-			
-			
-			
-            $data				= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$transactionNumber);
+
+            //Si el transactionNumber inicia con AFS, buscar en tb_fixed_assent por fixedAssentCode
+            if(str_starts_with($transactionNumber, "AFS"))
+            {
+                log_message('info', '[app_tools_endorsements.getTransactionMaster] Buscando activo fijo por codigo: '.$transactionNumber.' companyID: '.$companyID);
+                $data = $this->Fixed_Assent_Model->get_rowByFixedAssentCode($companyID, $transactionNumber);
+                if(!$data){
+                    log_message('error', '[app_tools_endorsements.getTransactionMaster] No se encontro activo fijo con codigo: '.$transactionNumber);
+                    throw new Exception("NO SE ENCONTRO EL ACTIVO FIJO CON CODIGO: ".$transactionNumber);
+                }
+            } else {
+                log_message('info', '[app_tools_endorsements.getTransactionMaster] Buscando transaccion por numero: '.$transactionNumber.' companyID: '.$companyID);
+                $data = $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID, $transactionNumber);
+                if(!$data){
+                    log_message('error', '[app_tools_endorsements.getTransactionMaster] No se encontro transaccion con numero: '.$transactionNumber);
+                    throw new Exception("NO SE ENCONTRO EL DOCUMENTO CON NUMERO: ".$transactionNumber);
+                }
+            }
 
             //Obtener Resultados.
             return $this->response->setJSON(array(
@@ -747,6 +842,7 @@ class app_tools_endorsements extends _BaseController {
 
         }
         catch(Exception $ex){
+            log_message('error', '[app_tools_endorsements.getTransactionMaster] Exception: '.$ex->getMessage());
             return $this->response->setJSON(array(
                 'error'   			=> true,
                 'message' 			=> $ex->getMessage(),

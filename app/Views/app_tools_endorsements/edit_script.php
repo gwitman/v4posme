@@ -211,6 +211,36 @@
 					tagContenedorValorNuevo.html('<input type="text" name="txtValorNuevo" id="txtValorNuevo" class="form-control" placeholder="Ingrese un valor" value="' + valorNuevo + '"  >');
 					fnWaitClose();
 				}
+				else if (tipo === "checkbox") 
+				{
+					let checkedAnterior = (valorAnterior == "1") ? "checked" : "";
+					let checkedNuevo    = (valorNuevo == "1") ? "checked" : "";
+					tagContenedorValorAnterior.html(
+						'<div class="switch" data-on="success" data-off="danger">' +
+							'<input type="checkbox" id="txtValorAnterior" name="txtValorAnterior" value="1" ' + checkedAnterior + ' disabled>' +
+						'</div>' +
+						'<input type="hidden" name="txtValorAnterior" value="' + (valorAnterior == "1" ? "1" : "0") + '">'
+					);
+					tagContenedorValorNuevo.html(
+						'<div class="switch" data-on="success" data-off="danger">' +
+							'<input type="checkbox" id="txtValorNuevoCheck" value="1" ' + checkedNuevo + '>' +
+						'</div>' +
+						'<input type="hidden" id="txtValorNuevo" name="txtValorNuevo" value="' + (valorNuevo == "1" ? "1" : "0") + '">'
+					);
+					// Inicializar bootstrapSwitch en los checkboxes recién creados
+					$('#contenedorDinamicoValorAnterior .switch').bootstrapSwitch();
+					$('#contenedorDinamicoValorNuevo .switch').bootstrapSwitch();
+					// Evento change para el checkbox nuevo
+					$(document).off("change", "#txtValorNuevoCheck").on("change", "#txtValorNuevoCheck", function () {
+						if ($(this).is(":checked")) {
+							$("#txtValorNuevo").val("1");
+						} else {
+							$("#txtValorNuevo").val("0");
+						}
+					});
+					fnWaitClose();
+				}
+                
 				
 				
 			}
@@ -269,6 +299,34 @@
 							tagContenedorValorNuevo.html('<input type="text" name="txtValorNuevo" id="txtValorNuevo" class="form-control" placeholder="Ingrese un valor">');
 							fnWaitClose();
 						}
+                        else if (tipo === "checkbox") 
+                        {
+                            let checkedAnterior = (valorAnterior == "1") ? "checked" : "";
+                            tagContenedorValorAnterior.html(
+                                '<div class="switch" data-on="success" data-off="danger">' +
+                                    '<input type="checkbox" id="txtValorAnterior" name="txtValorAnterior" value="1" ' + checkedAnterior + ' disabled>' +
+                                '</div>' +
+                                '<input type="hidden" name="txtValorAnterior" value="' + (valorAnterior == "1" ? "1" : "0") + '">'
+                            );
+                            tagContenedorValorNuevo.html(
+                                '<div class="switch" data-on="success" data-off="danger">' +
+                                    '<input type="checkbox" id="txtValorNuevoCheck" value="1">' +
+                                '</div>' +
+                                '<input type="hidden" id="txtValorNuevo" name="txtValorNuevo" value="0">'
+                            );
+                            // Inicializar bootstrapSwitch en los checkboxes recién creados
+                            $('#contenedorDinamicoValorAnterior .switch').bootstrapSwitch();
+                            $('#contenedorDinamicoValorNuevo .switch').bootstrapSwitch();
+                            // Evento change para el checkbox nuevo
+                            $(document).off("change", "#txtValorNuevoCheck").on("change", "#txtValorNuevoCheck", function () {
+                                if ($(this).is(":checked")) {
+                                    $("#txtValorNuevo").val("1");
+                                } else {
+                                    $("#txtValorNuevo").val("0");
+                                }
+                            });
+                            fnWaitClose();
+                        }
 						
 						
 					}
