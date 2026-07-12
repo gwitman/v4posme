@@ -1339,6 +1339,8 @@ $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNo
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormalA4Opcion1DB/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaNormalA4Opcion1DB');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmCarlosLuis', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmCarlosLuis');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmCarlosLuis/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmCarlosLuis');
+$routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1MiniFerreteriaShalom', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1MiniFerreteriaShalom');
+$routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1MiniFerreteriaShalom/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1MiniFerreteriaShalom');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewPrinterDirectFactura58mm', 'app_invoice_billing::viewPrinterDirectFactura58mm');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewPrinterDirectFactura58mm/(:any)', 'app_invoice_billing::viewPrinterDirectFactura58mm');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewPrinterDirectFactura58mmTiendaJennidier', 'app_invoice_billing::viewPrinterDirectFactura58mmTiendaJennidier');
