@@ -2409,19 +2409,28 @@ Le recordamos que tiene un saldo pendiente:
 	
 	function sendWhatsappDiarioMasiveWapi2CobranzaNjGym()
 	{
+		log_message('info', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] Inicio - companyID: ' . APP_COMPANY);
+		
 		//Recorrer todos los cobros, 
 		$objListCollections = $this->Customer_Credit_Document_Model->get_rowByCobroPorGymJalapa(APP_COMPANY);
 		if(!$objListCollections)
 		{
+			log_message('info', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] No se encontraron cobros pendientes');
 			return;
 		}
 		if(count($objListCollections) <= 0)
+		{
+			log_message('info', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] Lista de cobros vacia');
 			return;
+		}
+		
+		log_message('info', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] Total cobros encontrados: ' . count($objListCollections));
 		
 		$chatSend			= [];
 		$pathRemember		= "";
 		foreach($objListCollections as $item)
 		{
+			log_message('info', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] Procesando cliente: ' . $item->firstName . ' | Phone: ' . $item->phoneNumber . ' | Monto: ' . $item->total . ' ' . $item->simbol);
 			
 $rowx 					= array();
 $rowx["firstName"] 		= $item->firstName;
@@ -2457,8 +2466,12 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 			$chatSend[]				= $rowx;
 		}
 		
+		log_message('info', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] Total mensajes a enviar: ' . count($chatSend));
+		log_message('info', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] Llamando sendMessageWapi2OnlyTextMasive...');
 		
 		$this->core_web_whatsap->sendMessageWapi2OnlyTextMasive(APP_COMPANY,$chatSend,$pathRemember,"Gym Jalapa Cobros");
+		
+		log_message('info', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] Fin del proceso');
 		return;
 		
 		

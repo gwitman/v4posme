@@ -2099,6 +2099,7 @@ class core_web_whatsap {
 	}
 	function sendMessageWapi2OnlyTextMasive($companyID,$chatSend,$pathRemember,$instanceName) 
 	{
+		log_message('info', '[sendMessageWapi2OnlyTextMasive] Inicio - companyID: ' . $companyID . ' | instanceName: ' . $instanceName . ' | Total mensajes: ' . count($chatSend));
 		
 		$Parameter_Model 			= new Parameter_Model();
 		$Company_Parameter_Model 	= new Company_Parameter_Model();
@@ -2132,6 +2133,9 @@ class core_web_whatsap {
 		$sendSignature 	= false;
 		$closeTicket 	= true;
 		
+		log_message('info', '[sendMessageWapi2OnlyTextMasive] Config - url: ' . $url . ' | userId: ' . $userId . ' | queueId: ' . $queueId);
+		log_message('info', '[sendMessageWapi2OnlyTextMasive] sessionValue raw: ' . $objCP_WhatsapUrlSession->value . ' | instanceName: ' . $instanceName);
+		
 		// Obtener session_id: si $instanceName viene vacio, usar el valor tal cual
 		// Si tiene un key, parsear el formato 'key':guid y buscar el guid correspondiente
 		$sessionIdValue = $objCP_WhatsapUrlSession->value;
@@ -2156,6 +2160,7 @@ class core_web_whatsap {
 		}
 		
 		// Inicializamos cURLs
+		log_message('info', '[sendMessageWapi2OnlyTextMasive] sessionIdValue resuelto: ' . $sessionIdValue);
 		$multiHandle = curl_multi_init();
 		$curlHandles = [];
 		foreach ($chatSend as $customer) {
@@ -2167,8 +2172,10 @@ class core_web_whatsap {
 				"message"          	=> $customer["mensaje"]
 			];
 			
+			log_message('info', '[sendMessageWapi2OnlyTextMasive] Preparando envio a phone: ' . $phone . ' | mensaje length: ' . strlen($customer["mensaje"]));
 			echo "enviar mensaje a ".$phone."</br>";
 			$sendCurl 	= $url."/".$phone."/message?session_id=".$sessionIdValue; 
+			log_message('info', '[sendMessageWapi2OnlyTextMasive] URL curl: ' . $sendCurl);
 			$ch 		= curl_init($sendCurl);	
 			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
 			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data) );
@@ -2189,6 +2196,7 @@ class core_web_whatsap {
 		}
 
 		// Ejecutar todas las requests en paralelo		
+		log_message('info', '[sendMessageWapi2OnlyTextMasive] Ejecutando ' . count($curlHandles) . ' requests en paralelo...');
 		$running = null;
 		do {
 			$mrc = curl_multi_exec($multiHandle, $running);
@@ -2200,12 +2208,14 @@ class core_web_whatsap {
 			echo "esperando repuestas</br>";
 		} while ($running > 0);
 		echo "</br>mensajes enviados</br>";
+		log_message('info', '[sendMessageWapi2OnlyTextMasive] Todas las requests completadas');
 		
 		 // Recoger resultados
 		$results = [];
 		foreach ($curlHandles as $ch) {
 			$response 	= curl_multi_getcontent($ch);
 			$status   	= curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			log_message('info', '[sendMessageWapi2OnlyTextMasive] Respuesta - HTTP status: ' . $status . ' | response: ' . $response);
 			echo "resultado de cada envio</br>";		
 			$results[] 	= [
 				"status"   => $status,
@@ -2217,6 +2227,7 @@ class core_web_whatsap {
 			curl_close($ch);
 		}
 		curl_multi_close($multiHandle);	
+		log_message('info', '[sendMessageWapi2OnlyTextMasive] Fin - Total enviados: ' . count($results) . ' | Resultados: ' . json_encode(array_column($results, 'status')));
 		echo "</br>fin del proceso de envio</br>";		
 		return $results;
 	}

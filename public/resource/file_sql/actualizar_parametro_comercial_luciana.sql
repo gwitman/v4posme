@@ -1,27 +1,155 @@
-/*BD: 	dbg2u7j48asmvd:parametro_gym_jalapa*/
-/*SERVIDOR:		siteground .net*/
+/*BD: 	dbsyvexkse3l1g:parametro_comercial_luciana*/
+/*SERVIDOR:		siteground .nt*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_VALIDATE_COST_IN_PRICE"; ##Validar el costo al momento de meter el precio
+
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_NEWROW_TO_ADDITEM"; ##Agregar filas nuevos al momento de facturar
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "0" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "TALLER_CUSTOMER_EXTERNAL"; ##Agregar productos repetidos en la facturaion mobile
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "0" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "TALLER_ROLE_EXTERNAL"; ##Agregar productos repetidos en la facturaion mobile
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "0" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "TALLER_EMPLOYER_DEFAULT"; ##Agregar productos repetidos en la facturaion mobile
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_ALLOW_REPEATED_PRODUCTS"; ##Agregar productos repetidos en la facturaion mobile
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "default" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_PRINTER_INVOICE_FISICAL_FORMAT"; ##Formato de impresion fisia mobile
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_IN_INVOICE_MOSTRAR_DESCUENTO"; ##Ocultar el boton de descuento
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_UPLOAD_AFTER_INVOICE"; ##Despues de cada factura mobile, subir los datos si esta en true
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "PRINTER_REFERENCE_INVOICE_MOBILE"; ##Imprimer las referencias, en las facturas mobile android
+
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CXC_RESTRUCTURE_AMORTIZACION_GYM_IN_SHARE"; ##Restructurar la fecha al momento de aplicar el abono , util enlos gym
 	
+	
+
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "www.google.com" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_PRINTER_QR_IN_INVOICE_URL"; ##Url que escaneara el qr en las facturas mobiles
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_PRINTER_QR_IN_INVOICE"; ##Imprimer el codigo qr en las facturas mobiles	
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION_SECUNDARY"; ##Segunda session_ especial para envio de notificaciones
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "1900-01-01" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_MONTH"; ##Mes de wahtapp
+
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "5125" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CONVERSATION_DEPARTAMENT_EMPLOYER_ASIGNED_NEW_CONVERSATION"; ##Depattamento por defecto para asignar conversaciones  121 es VENTA
+
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CXC_SEND_CARNET_WHATSAPP"; ##Enviar el carent via whatsapp
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CONVERSATION_LIST_CONVERSATION_NOT_PHOTE"; ##No foto en las conversaciones
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CONVERSATION_LIST_CONVERSATION_NOT_BELL"; ##No sonido en las conversaciones
+	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "true" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "BOX_ATTENDANCE_MANUALITY"; ##Marcar Asistencia Manual
+
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_AUTHENTICATE_BY_EMAIL";## Mandar correo de autenticacion al ingrear un usuario
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value 		= "https://api.ultramsg.com/instance41967/messages/image" 
@@ -188,7 +316,7 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_TRAKING_GPS";## Valida si es neceasrio llevar el seguimiento del gps
@@ -439,6 +567,12 @@ WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CXC_SUBCATEGORY_ID_DEFAULT";## Sub Categoria por defecto
 	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "5116" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_SUBCATEGORY_ID_DEFAULT_POSMECONNECT";## Sub Categoria por defecto para posMe Connect_
+	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "102" 
@@ -656,23 +790,23 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://wapi2.com/chat" 
+	tb_company_parameter.value = "https://api.ultramsg.com/instance65915/messages/chat" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyNTIzLCJ0eXBlIjoiYXBpX2FjY2VzcyIsImlhdCI6MTc2ODk0MDc2MSwiZXhwIjoxODAwNDc2NzYxfQ.3BjU5L0xVl-qMfiHuwJFnK6ad2pVmd8CK2zwb5Ohn78" 
+	tb_company_parameter.value = "n5hb8n1wf0r6e27i" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "'default':dd0798b3-17a7-4ed4-b6d1-952618c505ff,    'Gym Jalapa Cobros':8a6af5bf-918f-48c5-8f6f-16466bb67277" 
+	tb_company_parameter.value = "https://api.whaticket.com/api/v1/whatsapps" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";## Wapi2  Se usa para poner un label al sistema,  como un segundo nombre de sistema
+	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
@@ -1506,7 +1640,7 @@ WHERE
 
 /*--Imprimir de orden de compra*/
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_inventory_inputunpost/viewRegisterFormato80mm" 
+	tb_company_parameter.value = "app_inventory_inputunpost/viewRegisterFormatoDB" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_URL_PRINTER_INPUTUNPOST";## URL PARA LA IMPRESION DE ORDEN DE COMPRA
@@ -1828,7 +1962,7 @@ WHERE
 /***************************************************************/
 		
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Jessica Jaqueline Gutiérrez Salgado " 
+	tb_company_parameter.value = "Eusebia Del Carmen Dumas Ruiz" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_NAME";## Witman José González Rostran 
@@ -1843,28 +1977,28 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "489-110789-0000Q" 
+	tb_company_parameter.value = "047-160483-0000C" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "489-110789-0000Q" 
+	tb_company_parameter.value = "047-160483-0000C" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "8664-9240 TEL: 5779-2181" 
+	tb_company_parameter.value = "TEL: 8505-7109" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "8664-9240 TEL: 5779-2181" 
+	tb_company_parameter.value = "TEL: 8505-7109" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1872,15 +2006,15 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "De la ferretería Noel contrucciones 20 metros al norte, Jalapa" 
+	tb_company_parameter.value = "Donde fue aserrio santa fe, 2c abajo 15v.sur" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'NJ GYM' , address = 'De la ferretería Noel contrucciones 20 metros al norte, Jalapa' ,
-	flavorID = 1060 /*usuarioID*/,type='gymJalapa'  , abreviature='demo'
+	NAME = 'Comercial Luciana' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
+	flavorID = 1207 /*usuarioID*/,type='comercialLuciana'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
@@ -1893,25 +2027,25 @@ Eliminar o desactivar usuarios
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	
- 1060,  
- 1061, 
- 1062,
- 1063,  
- 1064, 
- 1065, 
- 1066
+ 1207,  
+ 1208, 
+ 1209,
+ 1210,  
+ 1211, 
+ 1212, 
+ 1213
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	994,
-	995,
-	996,
-	997,
-	998,
-	999,
-	1000
+	1141,
+	1147,
+	1148,
+	1149,
+	1150,
+	1151,
+	1152
 );
 */
 
