@@ -2713,6 +2713,9 @@ class app_cxc_api extends _BaseController {
 		return $this->response->setJSON($result);
 		
 	}
+
+	//https://posme.nl/v4posme/comercial_luciana/public/app_cxc_api/WebHookReceiptMessage_Whatsapp_Wapi2_posMe
+	//example: webhook wapi2
 	public function WebHookReceiptMessage_Whatsapp_Wapi2_posMe()
 	{
 		
@@ -2744,35 +2747,41 @@ class app_cxc_api extends _BaseController {
 		//WG-@lid	Identificador interno/local
 
 		// JSON crudo (string completo)
-		log_message('error', 'Webhook RAW JSON: ' ."WebHookReceiptMessage_Whatsapp_Wapi2_posMe" );	
+		log_message('error', '[Wapi2] ====== INICIO WebHookReceiptMessage_Whatsapp_Wapi2_posMe ======');	
 		$input	 	= $this->request->getJSON(true); // true = array
+		log_message('error', '[Wapi2] INPUT RAW: ' . print_r($input, true));
 		
 		
 		//Solo se permiten mensajes recibidos
 		/*no es un mensaje de recepcion es otro tipo de evento*/ 
 		if($input["event"] != "message")
 		{
+			log_message('error', '[Wapi2] DESCARTADO: event=' . ($input["event"] ?? 'null') . ' (no es message)');
 			return;
 		}
 		
 		//No se permite mensaje de broadcast
 		if(str_contains($input["data"]["from"], 'broadcast'))
 		{
+			log_message('error', '[Wapi2] DESCARTADO: from contiene broadcast -> ' . $input["data"]["from"]);
 			return;
 		}
 		
 		//No se permite mensaje de template
 		if($input["data"]["type"] == "notification_template")
 		{
+			log_message('error', '[Wapi2] DESCARTADO: type=notification_template');
 			return;
 		}
 		
 		/*No se permiten mensaje de cifrado de extremo a extremo*/
 		if( $input["data"]["type"] == "e2e_notification" )
 		{
+			log_message('error', '[Wapi2] DESCARTADO: type=e2e_notification');
 			return;
 		}
 		
+		log_message('error', '[Wapi2] Evento aceptado: event=' . $input["event"] . ', type=' . ($input["data"]["type"] ?? 'null') . ', from=' . ($input["data"]["from"] ?? 'null'));
 		
 		// Captura el POST JSON de Vonage
         if (!$input) {
@@ -2780,13 +2789,17 @@ class app_cxc_api extends _BaseController {
 				'success' => false,
 				'message' => 'JSON inválido input Vonage'
 			];
+			log_message("error","[Wapi2] ERROR: input vacío o nulo");
 			log_message("error",print_r($result,true));
 			return $this->response->setJSON($result)->setStatusCode(200);
         }
 
         // Extraer datos básicos       
-		log_message("error","input: init process message");
-		log_message('error', print_r($input,true));
+		log_message("error","[Wapi2] >> Extrayendo datos del mensaje...");
+		log_message('error', '[Wapi2] input[data][from]: ' . ($input["data"]['from'] ?? 'null'));
+		log_message('error', '[Wapi2] input[data][body]: ' . ($input["data"]['body'] ?? 'null'));
+		log_message('error', '[Wapi2] input[data][type]: ' . ($input["data"]['type'] ?? 'null'));
+		log_message('error', '[Wapi2] input[data][contact][pushname]: ' . ($input["data"]['contact']['pushname'] ?? 'null'));
 
 		
 		$data["customerPhoneNumber"] 			= getNumberPhoneIsContact(clearNumero(($input["data"]['from'] ?? '')));
@@ -2800,21 +2813,31 @@ class app_cxc_api extends _BaseController {
 
 		$data["customerMessageReference"]		= $input["data"]['quotedMsg']["body"] ?? '';
 
+		log_message('error', '[Wapi2] >> Datos extraídos:');
+		log_message('error', '[Wapi2]    customerPhoneNumber: ' . $data["customerPhoneNumber"]);
+		log_message('error', '[Wapi2]    customerFirstName: ' . $data["customerFirstName"]);
+		log_message('error', '[Wapi2]    customerMessage: ' . $data["customerMessage"]);
+		log_message('error', '[Wapi2]    customerMessageType: ' . $data["customerMessageType"]);
+		log_message('error', '[Wapi2]    customerMessageReference: ' . $data["customerMessageReference"]);
+
 
 		//Tipo de mensaje
 		if($data["customerMessageType"] == "chat")
 		{
 			$data["customerMessageType"] = "text";
+			log_message('error', '[Wapi2] Tipo mensaje convertido: chat -> text');
 		}
 		
 		if($data["customerMessageType"] == "image")
 		{
 			$data["customerMessageType"] = "image";
+			log_message('error', '[Wapi2] Tipo mensaje: image');
 		}
 		
 		if($data["customerMessageType"] == "ptt")
 		{
 			$data["customerMessageType"] = "audio";
+			log_message('error', '[Wapi2] Tipo mensaje convertido: ptt -> audio');
 		}
 		
 
@@ -2825,14 +2848,19 @@ class app_cxc_api extends _BaseController {
 			$data["customerMessageType"] == "audio" 
 		)
 		{
+			log_message('error', '[Wapi2] >> Procesando recurso multimedia, tipo: ' . $data["customerMessageType"]);
 			//Guardar la imagen
 			$mediaTipe 	= $input['data']['media']['mimetype']; // ajusta al nombre real del índice
 			$base64 	= $input['data']['media']['data'];
 			$filename 	= $input['data']['media']['filename'];
+			log_message('error', '[Wapi2]    mediaMimetype: ' . $mediaTipe);
+			log_message('error', '[Wapi2]    mediaFilename: ' . $filename);
+			log_message('error', '[Wapi2]    base64 length: ' . strlen($base64));
 			
 			//generar nombre
 			$extension = explode('/', $mediaTipe)[1];
 			$filename  = uniqid('file_') . '.' . $extension;
+			log_message('error', '[Wapi2]    filename generado: ' . $filename);
 
 			// 🔹 Quitar encabezado Base64 si existe
 			if (str_contains($base64, ',')) {
@@ -2841,31 +2869,37 @@ class app_cxc_api extends _BaseController {
 
 			// Decodificar
 			$imageBinary = base64_decode($base64);
+			log_message('error', '[Wapi2]    imageBinary size (bytes): ' . strlen($imageBinary));
 
 
 			//Obtener el componente
 			$objComponentCustomerConversation	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_conversation");
 			if(!$objComponentCustomerConversation)
 			throw new \Exception("EL COMPONENTE 'tb_customer_conversation' NO EXISTE...");
+			log_message('error', '[Wapi2]    componentID: ' . $objComponentCustomerConversation->componentID);
 			
 			
 			//Crear la Carpeta para almacenar los Archivos del Documento
 			$phoneCustomer = $data["customerPhoneNumber"];
 			$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_".$objComponentCustomerConversation->componentID."/component_item_".$phoneCustomer;
+			log_message('error', '[Wapi2]    documentoPath: ' . $documentoPath);
 			if (!file_exists($documentoPath))
 			{
 				mkdir($documentoPath, 0777, true);
+				log_message('error', '[Wapi2]    Carpeta creada: ' . $documentoPath);
 			}
 			
 			// Guardar imagen
 			file_put_contents($documentoPath ."/". $filename, $imageBinary);
+			log_message('error', '[Wapi2]    Archivo guardado: ' . $documentoPath . '/' . $filename);
 			
 			//Obtener la url
 			$url 							= base_url()."/resource/file_company/company_2/component_".$objComponentCustomerConversation->componentID."/component_item_".$phoneCustomer."/".$filename;
 			$data["customerMessage"]	 	= $input['data']['body'] ?? '';
 			$data["customerMessageUrl"]		= $url;
 			$data["customerMessageFile"]	= $url;
-			log_message("error","input: paquete procesado ".print_r($data,true));
+			log_message("error","[Wapi2]    URL publica: " . $url);
+			log_message("error","[Wapi2]    paquete procesado: ".print_r($data,true));
 			
 		}
 		
@@ -2873,6 +2907,7 @@ class app_cxc_api extends _BaseController {
 		if($data["customerMessageReference"] != "")
 		{
 			$data["customerMessage"] = $data["customerMessage"]." <div class='referencia'> ".$data["customerMessageReference"]." </div>";
+			log_message('error', '[Wapi2] Mensaje con referencia agregada');
 		}
 		
 		$customerPhoneNumber 	= $data["customerPhoneNumber"];
@@ -2881,71 +2916,104 @@ class app_cxc_api extends _BaseController {
 		$messageUrl				= $data["customerMessageUrl"];
 		$messageFile			= $data["customerMessageFile"];
 		$messageType			= $data["customerMessageType"];
+		
+		log_message('error', '[Wapi2] >> Autenticando sesión con usuario por defecto...');
 		$dataSession 			= $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
 		$companyID				= $dataSession["user"]->companyID;
 		$branchID				= $dataSession["user"]->branchID;
 		$roleID 				= $dataSession["role"]->roleID;
 		$userID 				= $dataSession["user"]->userID;
+		log_message('error', '[Wapi2]    companyID: ' . $companyID);
+		log_message('error', '[Wapi2]    branchID: ' . $branchID);
+		log_message('error', '[Wapi2]    roleID: ' . $roleID);
+		log_message('error', '[Wapi2]    userID: ' . $userID);
+		log_message('error', '[Wapi2]    customerPhoneNumber: ' . $customerPhoneNumber);
+		log_message('error', '[Wapi2]    customerFirstName: ' . $customerFirstName);
+		log_message('error', '[Wapi2]    message: ' . $message);
+		log_message('error', '[Wapi2]    messageType: ' . $messageType);
 		
-		//Validar si el webhook esta activo
-		if (strpos(strtolower($data["customerMessage"]), 'test') !== false) {
-			 // 2. Limpiar espacios inicio y fin
-			$texto 	= strtolower(trim($data["customerMessage"]));
-
-			// 3. Quitar TODOS los espacios del string
-			$texto 	= str_replace(' ', '', $texto);
-			$texto 	= str_replace('-', '', $texto);
-
-			// 4. Split por :
-			$partes = explode(':', $texto);
-
-			// 5. Obtener valores
-			$mensaje 	= $partes[0] ?? '';
-			$email  	= $partes[1] ?? '';
-			$phone  	= $partes[2] ?? '';
-			
-			
-			//Enviar email
-			log_message("error","input: mandar email de tester");
-			$objCompany 			= $dataSession["company"];
-			$params_["nickname"]	= $dataSession["user"]->nickname;
-			$params_["objCompany"]	= $objCompany;				
-			$params_["mensaje"]		= "Webhook SUCCESS: ".$objCompany->name;
-			$subject 				= "Test de Webhook SUCCESS ".$objCompany->name;
-			$body  					= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview			
-			$this->email->setFrom(EMAIL_APP);
-			$this->email->setTo( $email );
-			$this->email->setSubject($subject);			
-			$this->email->setMessage($body); 			
-			$resultSend01 = $this->email->send();
-			$resultSend02 = $this->email->printDebugger();	
-
-			//Enviar whatsapp
-			log_message("error","input: mandar whatsapp de tester");
-			$result = $this->core_web_whatsap->sendMessageGeneric(
-				$objCompany->type,
-				$objCompany->companyID, 
-				"Test de whatsapp:".$objCompany->name, 
-				getNumberPhone(clearNumero($phone)),
-				true,
-				""
-			);
-			log_message("error","input: fin del proceso");
-			return;
-		}
+		//wg-//Validar si el webhook esta activo
+		//wg-if (strpos(strtolower($data["customerMessage"]), 'test') !== false) {
+		//wg-	log_message('error', '[Wapi2] >> MODO TEST detectado en mensaje');
+		//wg-	 // 2. Limpiar espacios inicio y fin
+		//wg-	$texto 	= strtolower(trim($data["customerMessage"]));
+		//wg-
+		//wg-	// 3. Quitar TODOS los espacios del string
+		//wg-	$texto 	= str_replace(' ', '', $texto);
+		//wg-	$texto 	= str_replace('-', '', $texto);
+		//wg-
+		//wg-	// 4. Split por :
+		//wg-	$partes = explode(':', $texto);
+		//wg-
+		//wg-	// 5. Obtener valores
+		//wg-	$mensaje 	= $partes[0] ?? '';
+		//wg-	$email  	= $partes[1] ?? '';
+		//wg-	$phone  	= $partes[2] ?? '';
+		//wg-	log_message('error', '[Wapi2]    test mensaje: ' . $mensaje);
+		//wg-	log_message('error', '[Wapi2]    test email: ' . $email);
+		//wg-	log_message('error', '[Wapi2]    test phone: ' . $phone);
+		//wg-	
+		//wg-	
+		//wg-	//Enviar email
+		//wg-	$objCompany 			= $dataSession["company"];
+		//wg-	$objParamSendEmail 		= $this->core_web_parameter->getParameter("ACTIVATED_SEND_EMAIL", $companyID);
+		//wg-	$activatedSendEmail 	= ($objParamSendEmail && strtolower(trim($objParamSendEmail->value)) == "true");
+		//wg-	
+		//wg-	if($activatedSendEmail)
+		//wg-	{
+		//wg-		log_message("error","[Wapi2] >> Enviando email de test...");
+		//wg-		$params_["nickname"]	= $dataSession["user"]->nickname;
+		//wg-		$params_["objCompany"]	= $objCompany;				
+		//wg-		$params_["mensaje"]		= "Webhook SUCCESS: ".$objCompany->name;
+		//wg-		$subject 				= "Test de Webhook SUCCESS ".$objCompany->name;
+		//wg-		$body  					= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview			
+		//wg-		$this->email->setFrom(EMAIL_APP);
+		//wg-		$this->email->setTo( $email );
+		//wg-		$this->email->setSubject($subject);			
+		//wg-		$this->email->setMessage($body); 			
+		//wg-		$resultSend01 = $this->email->send();
+		//wg-		$resultSend02 = $this->email->printDebugger();
+		//wg-		log_message('error', '[Wapi2]    email send result: ' . ($resultSend01 ? 'OK' : 'FAIL'));
+		//wg-	}
+		//wg-	else
+		//wg-	{
+		//wg-		log_message('error', '[Wapi2]    ACTIVATED_SEND_EMAIL=false, email NO enviado');
+		//wg-	}
+		//wg-
+		//wg-	//Enviar whatsapp
+		//wg-	log_message("error","[Wapi2] >> Enviando whatsapp de test a: " . getNumberPhone(clearNumero($phone)));
+		//wg-	$result = $this->core_web_whatsap->sendMessageGeneric(
+		//wg-		$objCompany->type,
+		//wg-		$objCompany->companyID, 
+		//wg-		"Test de whatsapp:".$objCompany->name, 
+		//wg-		getNumberPhone(clearNumero($phone)),
+		//wg-		true,
+		//wg-		""
+		//wg-	);
+		//wg-	log_message("error","[Wapi2]    whatsapp test result: " . print_r($result, true));
+		//wg-	log_message("error","[Wapi2] >> FIN MODO TEST");
+		//wg-	return;
+		//wg-}
 		
 		//Obtener al cliente
+		log_message('error', '[Wapi2] >> Buscando cliente por telefono: ' . $customerPhoneNumber);
 		$objCustomer			= $this->Customer_Model->get_rowBy_PhoneNumberAnd_Email_phoneFixed($customerPhoneNumber);
 		if(!$objCustomer)
 		{
+			log_message('error', '[Wapi2]    Cliente NO encontrado, creando nuevo cliente...');
 			$this->core_web_conversation->createCustomer($dataSession,$customerPhoneNumber,$customerFirstName,$this->request);
-			
+			log_message('error', '[Wapi2]    Cliente creado con phone: ' . $customerPhoneNumber . ', nombre: ' . $customerFirstName);
 		}
 		$objCustomer			= $this->Customer_Model->get_rowBy_PhoneNumberAnd_Email_phoneFixed($customerPhoneNumber);
 		if(!$objCustomer)
+		{
+			log_message('error', '[Wapi2] ERROR CRITICO: Cliente no encontrado despues de crearlo, phone: ' . $customerPhoneNumber);
 			throw new \Exception ("Cliente no encontrado");
+		}
+		log_message('error', '[Wapi2]    Cliente encontrado: entityID=' . $objCustomer[0]->entityID . ', firstName=' . $objCustomer[0]->firstName . ', phoneNumber=' . $objCustomer[0]->phoneNumber);
 		
 		//Obtener la conversacion
+		log_message('error', '[Wapi2] >> Buscando conversación para entityID: ' . $objCustomer[0]->entityID);
 		$conversationIsNew			= false;
 		$conversationID				= 0;
 		$lastActivityOnOld			= helper_getDateTime();
@@ -2955,26 +3023,35 @@ class app_cxc_api extends _BaseController {
 		if(!$objCustomerConversation)
 		{
 			$conversationIsNew	= true;
+			log_message('error', '[Wapi2]    Conversación NO existe, creando nueva...');
 			$conversationID 	= $this->core_web_conversation->createConversation($dataSession,$objCustomer[0]->entityID);
 			$lastActivityOnOld	= '1900-01-01 00:00:00';
 			$lastActivityOnNew	= helper_getDateTime();
+			log_message('error', '[Wapi2]    Conversación creada: conversationID=' . $conversationID);
 		}
 		else
 		{
 			$lastActivityOnOld		= $objCustomerConversation[0]->lastActivityOn;
 			$lastActivityOnNew		= helper_getDateTime();
+			log_message('error', '[Wapi2]    Conversación existente: conversationID=' . $objCustomerConversation[0]->conversationID . ', lastActivityOn=' . $lastActivityOnOld);
 		}
-		$objCustomerConversation				= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);		
+		$objCustomerConversation				= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);
+		log_message('error', '[Wapi2]    conversationIsNew=' . ($conversationIsNew ? 'SI' : 'NO') . ', conversationID=' . $objCustomerConversation[0]->conversationID);
+		log_message('error', '[Wapi2]    lastActivityOnOld=' . $lastActivityOnOld . ', lastActivityOnNew=' . $lastActivityOnNew);
+		
 		$objConversation 						= array();
 		$objConversation["messgeConterNotRead"] = 1 ;
 		$objConversation["lastMessage"] 		= $message ;
 		$objConversation["lastActivityOn"] 		= $lastActivityOnNew;
-		$objConversation["messageReceiptOn"] 	= $lastActivityOnNew;		
+		$objConversation["messageReceiptOn"] 	= $lastActivityOnNew;
+		log_message('error', '[Wapi2] >> Actualizando conversación ID=' . $objCustomerConversation[0]->conversationID);
 		$this->Customer_Conversation_Model->update_app_posme($objCustomerConversation[0]->conversationID,$objConversation);
 		
 			
-		//Ingresar el mensaje a la conversacion activa		
+		//Ingresar el mensaje a la conversacion activa
+		log_message('error', '[Wapi2] >> Insertando notificación en conversación...');
 		$objTag		 								= $this->Tag_Model->get_rowByName("MENSAJE DE CONVERSACION");
+		log_message('error', '[Wapi2]    tagID: ' . ($objTag ? $objTag->tagID : 'NULL'));
 		$objNotification 							= array();		
 		$objNotification["errorID"] 				= 0;
 		$objNotification["from"] 					= $objCustomer[0]->firstName;
@@ -3001,13 +3078,25 @@ class app_cxc_api extends _BaseController {
 		$objNotification["entityIDSource"] 			= 0;
 		$objNotification["entityIDTarget"] 			= $objCustomer[0]->entityID;
 		$notificationID 							= $this->Notification_Model->insert_app_posme($objNotification);
+		log_message('error', '[Wapi2]    Notificación insertada: notificationID=' . $notificationID);
 
 		
+		
+		//////////////////////////////////////////////
 		//Obtener la lista de agentes a afiliar
-		$objListEntityIDEmployer 					= $this->core_web_conversation->getAllEmployer($companyID,$dataSession["company"]->type,$customerPhoneNumber,$message,$conversationIsNew );				
+		//////////////////////////////////////////////
+		log_message('error', '[Wapi2] >> Obteniendo lista de agentes (getAllEmployer)...');
+		log_message('error', '[Wapi2]    params: companyID=' . $companyID . ', type=' . $dataSession["company"]->type . ', phone=' . $customerPhoneNumber . ', conversationIsNew=' . ($conversationIsNew ? 'SI' : 'NO'));
+		$objListEntityIDEmployer 					= $this->core_web_conversation->getAllEmployer($companyID,$dataSession["company"]->type,$customerPhoneNumber,$message,$conversationIsNew );
+		log_message('error', '[Wapi2]    getAllEmployer result: ' . print_r($objListEntityIDEmployer, true));
+		
+		log_message('error', '[Wapi2] >> Creando empleadores en conversación (createEmployerInConversation)...');
 		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer["employerList"],$conversationIsNew);
+		log_message('error', '[Wapi2]    Empleadores asociados a conversationID=' . $objCustomerConversation[0]->conversationID);
 		
 		//Categorizar al cliente
+		log_message('error', '[Wapi2] >> Categorizando cliente (categorizeCustomer)...');
+		log_message('error', '[Wapi2]    params: type=' . $dataSession["company"]->type . ', conversationID=' . $objCustomerConversation[0]->conversationID . ', entityID=' . $objCustomer[0]->entityID . ', conversationIsNew=' . ($conversationIsNew ? 'SI' : 'NO') . ', typeAsigned=' . ($objListEntityIDEmployer["typeAsigned"] ?? 'null'));
 		$this->core_web_conversation->categorizeCustomer(
 			$dataSession,
 			$dataSession["company"]->type,
@@ -3018,19 +3107,23 @@ class app_cxc_api extends _BaseController {
 			$conversationIsNew,
 			$objListEntityIDEmployer["typeAsigned"]
 		);
+		log_message('error', '[Wapi2]    categorizeCustomer ejecutado OK');
 		
 		
 		//////////////////////////////////////////////
 		//Notificar a los agentes afiliados
 		//////////////////////////////////////////////
+		log_message('error', '[Wapi2] >> Evaluando notificación a agentes...');
 		$diferenceDate 							= helper_CompareDateTime($lastActivityOnOld,$lastActivityOnNew);
-		log_message("error","Diferencia en fecha entre la conversacion actual y la anterior");
-		log_message("error",print_r($lastActivityOnOld,true));
-		log_message("error",print_r($lastActivityOnNew,true));
-		log_message("error",print_r($diferenceDate,true));		
+		log_message("error","[Wapi2]    lastActivityOnOld: " . $lastActivityOnOld);
+		log_message("error","[Wapi2]    lastActivityOnNew: " . $lastActivityOnNew);
+		log_message("error","[Wapi2]    diferenceDate: " . print_r($diferenceDate, true));
+		log_message("error","[Wapi2]    companyType: " . $dataSession["company"]->type);
 		
 		if( $dataSession["company"]->type == "luciaralstate" )
 		{
+			log_message('error', '[Wapi2]    Tipo: luciaralstate, evaluando condiciones...');
+			log_message('error', '[Wapi2]    comparador=' . $diferenceDate["comparador"] . ', segundos=' . $diferenceDate["segundos"] . ', allowWhatsappCollection=' . $objCustomer[0]->allowWhatsappCollection);
 			//Han pasado almenos 10 segundos desde el utlimo mensaje
 			//Y el numero no esta bloqueado
 			if(
@@ -3039,33 +3132,44 @@ class app_cxc_api extends _BaseController {
 				$objCustomer[0]->allowWhatsappCollection == 0
 			)
 			{			
-				log_message("error","Enviar mensaje colaboradores asignados");
+				log_message("error","[Wapi2] >> Enviando notificación a colaboradores asignados (luciaralstate)...");
 				$urlSend		= base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID;
 				$whatsappLink 	= urlencode($urlSend);
+				log_message('error', '[Wapi2]    urlSend: ' . $urlSend);
 				$short 			= file_get_contents("https://is.gd/create.php?format=simple&url=$whatsappLink");
+				log_message('error', '[Wapi2]    shortUrl: ' . $short);
 			
 				$this->core_web_conversation->notificationEmployerInConversation(
 					$dataSession["company"]->companyID,
 					$dataSession["user"]->branchID,
 					$dataSession["company"]->type,
 					$objCustomerConversation[0]->conversationID,
-				"📩 *Cliente:".$objCustomer[0]->firstName."* ('".$objCustomer[0]->entityID."') ha enviado un mensaje 
+				"� *Cliente:".$objCustomer[0]->firstName."* ('".$objCustomer[0]->entityID."') ha enviado un mensaje 
 
-	👉 Por favor, respóndelo en el siguiente enlace:
+	�👉 Por favor, respóndelo en el siguiente enlace:
 	🌐 ".$short
-				);		
+				);
+				log_message('error', '[Wapi2]    notificationEmployerInConversation ejecutado OK');
+			}
+			else
+			{
+				log_message('error', '[Wapi2]    Condiciones NO cumplidas para notificar (luciaralstate)');
 			}
 
 		}
 		else 
 		{
+			log_message('error', '[Wapi2]    Tipo: ' . $dataSession["company"]->type . ', evaluando condiciones...');
+			log_message('error', '[Wapi2]    comparador=' . $diferenceDate["comparador"] . ', segundos=' . $diferenceDate["segundos"]);
 			//Han pasado almenos 10 segundos desde el utlimo mensaje
 			if($diferenceDate["comparador"] == "-1" && ((int)$diferenceDate["segundos"]) >=  10 )
 			{			
-				log_message("error","Enviar mensaje colaboradores asignados");
+				log_message("error","[Wapi2] >> Enviando notificación a colaboradores asignados...");
 				$urlSend		= base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID;
 				$whatsappLink 	= urlencode($urlSend);
+				log_message('error', '[Wapi2]    urlSend: ' . $urlSend);
 				$short 			= file_get_contents("https://is.gd/create.php?format=simple&url=$whatsappLink");
+				log_message('error', '[Wapi2]    shortUrl: ' . $short);
 			
 				$this->core_web_conversation->notificationEmployerInConversation(
 					$dataSession["company"]->companyID,
@@ -3076,7 +3180,12 @@ class app_cxc_api extends _BaseController {
 
 	👉 Por favor, respóndelo en el siguiente enlace:
 	🌐 ".$short
-				);		
+				);
+				log_message('error', '[Wapi2]    notificationEmployerInConversation ejecutado OK');
+			}
+			else
+			{
+				log_message('error', '[Wapi2]    Condiciones NO cumplidas para notificar');
 			}
 		}
 		
@@ -3089,7 +3198,8 @@ class app_cxc_api extends _BaseController {
 			'converationID'		=> $objCustomerConversation[0]->conversationID,
 			'notificationID'	=> $notificationID
 		];	
-		log_message("error",print_r($result,true));
+		log_message("error","[Wapi2] ====== FIN WebHookReceiptMessage_Whatsapp_Wapi2_posMe ======");
+		log_message("error","[Wapi2] RESULTADO: " . print_r($result,true));
 		return $this->response->setJSON($result);
 		
 	}

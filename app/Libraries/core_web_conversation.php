@@ -315,7 +315,7 @@ class core_web_conversation{
 		else 
 		{
 			/*asignar las conversaciones a todos los colaboradores*/
-			/*sin importar la caga , de tal modo que los colaboradores pueden ver todas la conversaciones a la ves */
+			/*sin importar la carga , de tal modo que los colaboradores pueden ver todas la conversaciones a la ves */
 			/*este esquema no tiene balance de carga*/
 			/***********************/
 			/***********************/
