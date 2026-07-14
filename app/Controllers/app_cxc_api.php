@@ -2932,69 +2932,6 @@ class app_cxc_api extends _BaseController {
 		log_message('error', '[Wapi2]    message: ' . $message);
 		log_message('error', '[Wapi2]    messageType: ' . $messageType);
 		
-		//wg-//Validar si el webhook esta activo
-		//wg-if (strpos(strtolower($data["customerMessage"]), 'test') !== false) {
-		//wg-	log_message('error', '[Wapi2] >> MODO TEST detectado en mensaje');
-		//wg-	 // 2. Limpiar espacios inicio y fin
-		//wg-	$texto 	= strtolower(trim($data["customerMessage"]));
-		//wg-
-		//wg-	// 3. Quitar TODOS los espacios del string
-		//wg-	$texto 	= str_replace(' ', '', $texto);
-		//wg-	$texto 	= str_replace('-', '', $texto);
-		//wg-
-		//wg-	// 4. Split por :
-		//wg-	$partes = explode(':', $texto);
-		//wg-
-		//wg-	// 5. Obtener valores
-		//wg-	$mensaje 	= $partes[0] ?? '';
-		//wg-	$email  	= $partes[1] ?? '';
-		//wg-	$phone  	= $partes[2] ?? '';
-		//wg-	log_message('error', '[Wapi2]    test mensaje: ' . $mensaje);
-		//wg-	log_message('error', '[Wapi2]    test email: ' . $email);
-		//wg-	log_message('error', '[Wapi2]    test phone: ' . $phone);
-		//wg-	
-		//wg-	
-		//wg-	//Enviar email
-		//wg-	$objCompany 			= $dataSession["company"];
-		//wg-	$objParamSendEmail 		= $this->core_web_parameter->getParameter("ACTIVATED_SEND_EMAIL", $companyID);
-		//wg-	$activatedSendEmail 	= ($objParamSendEmail && strtolower(trim($objParamSendEmail->value)) == "true");
-		//wg-	
-		//wg-	if($activatedSendEmail)
-		//wg-	{
-		//wg-		log_message("error","[Wapi2] >> Enviando email de test...");
-		//wg-		$params_["nickname"]	= $dataSession["user"]->nickname;
-		//wg-		$params_["objCompany"]	= $objCompany;				
-		//wg-		$params_["mensaje"]		= "Webhook SUCCESS: ".$objCompany->name;
-		//wg-		$subject 				= "Test de Webhook SUCCESS ".$objCompany->name;
-		//wg-		$body  					= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview			
-		//wg-		$this->email->setFrom(EMAIL_APP);
-		//wg-		$this->email->setTo( $email );
-		//wg-		$this->email->setSubject($subject);			
-		//wg-		$this->email->setMessage($body); 			
-		//wg-		$resultSend01 = $this->email->send();
-		//wg-		$resultSend02 = $this->email->printDebugger();
-		//wg-		log_message('error', '[Wapi2]    email send result: ' . ($resultSend01 ? 'OK' : 'FAIL'));
-		//wg-	}
-		//wg-	else
-		//wg-	{
-		//wg-		log_message('error', '[Wapi2]    ACTIVATED_SEND_EMAIL=false, email NO enviado');
-		//wg-	}
-		//wg-
-		//wg-	//Enviar whatsapp
-		//wg-	log_message("error","[Wapi2] >> Enviando whatsapp de test a: " . getNumberPhone(clearNumero($phone)));
-		//wg-	$result = $this->core_web_whatsap->sendMessageGeneric(
-		//wg-		$objCompany->type,
-		//wg-		$objCompany->companyID, 
-		//wg-		"Test de whatsapp:".$objCompany->name, 
-		//wg-		getNumberPhone(clearNumero($phone)),
-		//wg-		true,
-		//wg-		""
-		//wg-	);
-		//wg-	log_message("error","[Wapi2]    whatsapp test result: " . print_r($result, true));
-		//wg-	log_message("error","[Wapi2] >> FIN MODO TEST");
-		//wg-	return;
-		//wg-}
-		
 		//Obtener al cliente
 		log_message('error', '[Wapi2] >> Buscando cliente por telefono: ' . $customerPhoneNumber);
 		$objCustomer			= $this->Customer_Model->get_rowBy_PhoneNumberAnd_Email_phoneFixed($customerPhoneNumber);
