@@ -131,7 +131,87 @@ class core_web_conversation{
 	   	$result 				= [];
 		$result["employerList"] = [];
 		$result["typeAsigned"] 	= "";		
-	    if(
+		if(
+			$companyType == "comercialLuciana"
+		)
+		{
+			//Esquema de asignacion con balance de carga
+			//Se asigna la conversacion al colaborador que:
+			//01) Tenga permiso para atender whatsapp (get_validatePermissionBy_EmployerID_PuedeAtenderWhatsappInCRM)
+			//02) Tenga la menor cantidad de conversaciones activas (abiertas) asignadas
+			//Se usa la tabla tb_customer_conversation para contar la carga de cada colaborador
+			
+			$arrayListEmployer  	= array();
+			$arrayListEmployerName	= array();
+			
+			//Si la conversacion NO es NUEVA regresar la lista vacia
+			if($conversationIsNew == false)
+			{
+				$result["employerList"] = $arrayListEmployer;
+				$result["typeAsigned"] 	= "ninguna";
+				return $result;
+			}
+			
+			//Obtener la lista de colaboradores de la empresa
+			$objEmployee_Model 				= new Employee_Model();
+			$Customer_Conversation_Model 	= new Customer_Conversation_Model();
+			$objListEmployer 				= $objEmployee_Model->get_rowByCompanyID($companyID);
+			if(!$objListEmployer)
+			{
+				$result["employerList"] = $arrayListEmployer;
+				$result["typeAsigned"] 	= "ninguna";
+				return $result;
+			}
+			
+			//Recorrer los colaboradores y filtrar los que tienen permiso de atender whatsapp
+			//Para cada uno, obtener la cantidad de conversaciones activas (carga de trabajo)
+			$arrayEmployerWithLoad = array();
+			foreach($objListEmployer as $objEmployer)
+			{
+				//Validar si tiene permiso para atender whatsapp
+				$validatePermiso = $objEmployee_Model->get_validatePermissionBy_EmployerID_PuedeAtenderWhatsappInCRM($objEmployer->entityID);
+				if($validatePermiso)
+				{
+					//Obtener la cantidad de conversaciones activas asignadas a este colaborador
+					$objCount 			= $Customer_Conversation_Model->get_countActiveConversationsByEntityIDEmployer($objEmployer->entityID);
+					$totalConversations = ($objCount) ? (int)$objCount->totalConversations : 0;
+					
+					$arrayEmployerWithLoad[] = array(
+						"entityID" 				=> $objEmployer->entityID,
+						"firstName" 			=> $objEmployer->firstName,
+						"totalConversations" 	=> $totalConversations
+					);
+				}
+			}
+			
+			//Ordenar por menor carga de trabajo (menor cantidad de conversaciones primero)
+			if(count($arrayEmployerWithLoad) > 0)
+			{
+				usort($arrayEmployerWithLoad, function($a, $b) {
+					return $a["totalConversations"] - $b["totalConversations"];
+				});
+				
+				//Asignar al colaborador con menos carga (el primero despues de ordenar)
+				$employerMenosCarga 		= $arrayEmployerWithLoad[0];
+				$arrayListEmployer[] 		= $employerMenosCarga["entityID"];
+				$arrayListEmployerName[] 	= $employerMenosCarga["firstName"];
+				$result["typeAsigned"] 		= "balanceCarga";
+				
+				log_message("error","[comercialLuciana] Balance de carga - colaborador asignado: ".$employerMenosCarga["firstName"]." (entityID:".$employerMenosCarga["entityID"].") con ".$employerMenosCarga["totalConversations"]." conversaciones activas");
+			}
+			
+			if(count($arrayListEmployer) > 0)
+			{
+				$result["employerList"] = $arrayListEmployer;
+			}
+			else
+			{
+				$result["employerList"] = $arrayListEmployer;
+				$result["typeAsigned"] 	= "ninguna";
+			}
+			return $result;
+		}
+	    else if(
 			$companyType == "luciaralstate" 
 		)
 		{

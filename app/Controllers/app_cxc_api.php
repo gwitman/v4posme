@@ -3139,15 +3139,13 @@ class app_cxc_api extends _BaseController {
 				$short 			= file_get_contents("https://is.gd/create.php?format=simple&url=$whatsappLink");
 				log_message('error', '[Wapi2]    shortUrl: ' . $short);
 			
+				$messagePreview = mb_strlen($message) > 80 ? mb_substr($message, 0, 80) . '...' : $message;
 				$this->core_web_conversation->notificationEmployerInConversation(
 					$dataSession["company"]->companyID,
 					$dataSession["user"]->branchID,
 					$dataSession["company"]->type,
 					$objCustomerConversation[0]->conversationID,
-				"� *Cliente:".$objCustomer[0]->firstName."* ('".$objCustomer[0]->entityID."') ha enviado un mensaje 
-
-	�👉 Por favor, respóndelo en el siguiente enlace:
-	🌐 ".$short
+					"📩 *Cliente:".$objCustomer[0]->firstName."* ('".$objCustomer[0]->entityID."') ha enviado un mensaje:\n💬 _\"".$messagePreview."\"_\n👉 Por favor, respóndelo en el siguiente enlace: 🌐 ".$short
 				);
 				log_message('error', '[Wapi2]    notificationEmployerInConversation ejecutado OK');
 			}
@@ -3171,15 +3169,13 @@ class app_cxc_api extends _BaseController {
 				$short 			= file_get_contents("https://is.gd/create.php?format=simple&url=$whatsappLink");
 				log_message('error', '[Wapi2]    shortUrl: ' . $short);
 			
+				$messagePreview = mb_strlen($message) > 80 ? mb_substr($message, 0, 80) . '...' : $message;
 				$this->core_web_conversation->notificationEmployerInConversation(
 					$dataSession["company"]->companyID,
 					$dataSession["user"]->branchID,
 					$dataSession["company"]->type,
 					$objCustomerConversation[0]->conversationID,
-				"📩 *Cliente:".$objCustomer[0]->firstName."* ('".$objCustomer[0]->entityID."') ha enviado un mensaje 
-
-	👉 Por favor, respóndelo en el siguiente enlace:
-	🌐 ".$short
+					"📩 *Cliente:".$objCustomer[0]->firstName."* ('".$objCustomer[0]->entityID."') ha enviado un mensaje:\n💬 _\"".$messagePreview."\"_\n👉 Por favor, respóndelo en el siguiente enlace: 🌐 ".$short
 				);
 				log_message('error', '[Wapi2]    notificationEmployerInConversation ejecutado OK');
 			}

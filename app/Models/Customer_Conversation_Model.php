@@ -275,6 +275,29 @@ class Customer_Conversation_Model extends Model
 		return $db->query($sql)->getResult();
 		
     }
+	//Obtener la cantidad de conversaciones activas (abiertas) asignadas a un colaborador
+	//Se usa para balance de carga en la asignacion de nuevas conversaciones
+	function get_countActiveConversationsByEntityIDEmployer($entityIDEmployer)
+	{
+		$db 		= db_connect();
+		$sql 		= "";
+		$sql 		= $sql.sprintf("SELECT ");
+		$sql 		= $sql.sprintf("	COUNT(c.conversationID) as totalConversations ");
+		$sql 		= $sql.sprintf("FROM ");
+		$sql 		= $sql.sprintf("	tb_customer_conversation c ");
+		$sql 		= $sql.sprintf("	INNER JOIN tb_workflow_stage ws ON ");
+		$sql 		= $sql.sprintf("		ws.workflowStageID = c.statusID ");
+		$sql 		= $sql.sprintf("	INNER JOIN tb_company_component_relation ccr ON ");
+		$sql 		= $sql.sprintf("		ccr.componentItemIDSource = c.conversationID ");
+		$sql 		= $sql.sprintf("WHERE ");
+		$sql 		= $sql.sprintf("	ccr.componentItemIDTarget = %d ", $entityIDEmployer);
+		$sql 		= $sql.sprintf("	AND c.isActive = 1 ");
+		$sql 		= $sql.sprintf("	AND ws.isInit = 1 ");
+
+		//Ejecutar Consulta
+		return $db->query($sql)->getRow();
+	}
+
 	function getBy_StartOn_EndOn_EmployerID_InboxID_StatusID(
 			$startOn,$endOn,$entityIDEmployer,$statusIDConversation,$statusIDCustomer,$subCategoryID,
 			$txtStatusResponseID,
