@@ -967,115 +967,164 @@ class core_web_conversation{
 		
 	}
 	
+	
 	function notificationEmployerInConversation($companyID,$branchID,$companyType,$conversationID,$mensaje)
-	{
-		
-		//Afiliar la conversacion a un agente	
-		try
 		{
-			$core_web_whatsap						= new core_web_whatsap();
-			$core_web_tools							= new core_web_tools();
-			$Company_Component_Relation_Model		= new Company_Component_Relation_Model();
-			$Entity_Phone_Model						= new Entity_Phone_Model();
-			$objComponentCustomerConversation		= $core_web_tools->getComponentIDBy_ComponentName("tb_customer_conversation");
-			if(!$objComponentCustomerConversation)
-				throw new \Exception("EL COMPONENTE 'tb_customer_conversation' NO EXISTE...");
-			
-			$objComponentEmployee		= $core_web_tools->getComponentIDBy_ComponentName("tb_employee");
-			if(!$objComponentEmployee)
-				throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
-			
 
-			if($companyType == "luciaralstate")
+			//Afiliar la conversacion a un agente	
+			try
 			{
-				/*se le manda mensaje a la ultima persona que abordo la conversacion */
-				//Obtener la lista de colaboradores de la conversacion
-				log_message("error","Obtener colaboradores asignados a la conversacion");
-				$objListEmployerConversation = $Company_Component_Relation_Model->get_ConversationEmployerBy_ConversationID($conversationID);
-				if(!$objListEmployerConversation)
-					return;
-				
-				//Obtener el tip 5 de las ultimos colaboradores
-				log_message("error","Obtener Top 5 colaboradores asignados a la conversacion");
-				$objListEmployerConversationTop5 = $Company_Component_Relation_Model->get_ConversationTopEmployerBy_ConversationID(5,$conversationID);
-				if(!$objListEmployerConversationTop5)
-					return;
-				
-				//Mandarle mensaje a la ultima persona que converso
-				if($objListEmployerConversationTop5)
+				log_message("error","[notificationEmployerInConversation] INICIO - companyID: {$companyID}, branchID: {$branchID}, companyType: {$companyType}, conversationID: {$conversationID}");
+
+				$core_web_whatsap						= new core_web_whatsap();
+				$core_web_tools							= new core_web_tools();
+				$Company_Component_Relation_Model		= new Company_Component_Relation_Model();
+				$Entity_Phone_Model						= new Entity_Phone_Model();
+
+				$objComponentCustomerConversation		= $core_web_tools->getComponentIDBy_ComponentName("tb_customer_conversation");
+				if(!$objComponentCustomerConversation)
+					throw new \Exception("EL COMPONENTE 'tb_customer_conversation' NO EXISTE...");
+
+				log_message("error","[notificationEmployerInConversation] Componente tb_customer_conversation encontrado");
+
+				$objComponentEmployee		= $core_web_tools->getComponentIDBy_ComponentName("tb_employee");
+				if(!$objComponentEmployee)
+					throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
+
+				log_message("error","[notificationEmployerInConversation] Componente tb_employee encontrado");
+
+				if($companyType == "luciaralstate")
 				{
-					log_message("error","Recorrer cada uno de los colaboradores del top 5: ".$objListEmployerConversationTop5[0]->firstName);
-					$phone = $Entity_Phone_Model->get_rowByPrimaryEntity(
-						$companyID,$branchID,$objListEmployerConversationTop5[0]->entityID
-					);
-					
-					if(!$phone)
+					log_message("error","[notificationEmployerInConversation] Tipo de empresa: luciaralstate");
+
+					/*se le manda mensaje a la ultima persona que abordo la conversacion */
+					//Obtener la lista de colaboradores de la conversacion
+					log_message("error","[notificationEmployerInConversation] Obtener colaboradores asignados a la conversacion ID: {$conversationID}");
+					$objListEmployerConversation = $Company_Component_Relation_Model->get_ConversationEmployerBy_ConversationID($conversationID);
+					if(!$objListEmployerConversation)
+					{
+						log_message("error","[notificationEmployerInConversation] No se encontraron colaboradores asignados a la conversacion. SALIENDO.");
 						return;
-					
-					$phone = clearNumero($phone[0]->number);
-					$core_web_whatsap->sendMessageGeneric(
-						$companyType,
-						$companyID, 
-						$mensaje, 
-						getNumberPhone(clearNumero($phone)),
-						true,
-						"_SECUNDARY"
-					);			
-				
+					}
+
+					log_message("error","[notificationEmployerInConversation] Colaboradores encontrados: ".count($objListEmployerConversation));
+
+					//Obtener el tip 5 de las ultimos colaboradores
+					log_message("error","[notificationEmployerInConversation] Obtener Top 5 colaboradores asignados a la conversacion");
+					$objListEmployerConversationTop5 = $Company_Component_Relation_Model->get_ConversationTopEmployerBy_ConversationID(5,$conversationID);
+					if(!$objListEmployerConversationTop5)
+					{
+						log_message("error","[notificationEmployerInConversation] No se encontro Top 5 de colaboradores. SALIENDO.");
+						return;
+					}
+
+					log_message("error","[notificationEmployerInConversation] Top 5 colaboradores encontrados: ".count($objListEmployerConversationTop5));
+
+					//Mandarle mensaje a la ultima persona que converso
+					if($objListEmployerConversationTop5)
+					{
+						log_message("error","[notificationEmployerInConversation] Primer colaborador del Top 5: ".$objListEmployerConversationTop5[0]->firstName." - entityID: ".$objListEmployerConversationTop5[0]->entityID);
+						$phone = $Entity_Phone_Model->get_rowByPrimaryEntity(
+							$companyID,$branchID,$objListEmployerConversationTop5[0]->entityID
+						);
+
+						if(!$phone)
+						{
+							log_message("error","[notificationEmployerInConversation] No se encontro telefono para entityID: ".$objListEmployerConversationTop5[0]->entityID.". SALIENDO.");
+							return;
+						}
+
+						$phone = clearNumero($phone[0]->number);
+						log_message("error","[notificationEmployerInConversation] Telefono encontrado: {$phone}. Enviando mensaje WhatsApp con sufijo _SECUNDARY");
+
+						$core_web_whatsap->sendMessageGeneric(
+							$companyType,
+							$companyID, 
+							$mensaje, 
+							getNumberPhone(clearNumero($phone)),
+							true,
+							"_SECUNDARY"
+						);
+
+						log_message("error","[notificationEmployerInConversation] Mensaje enviado exitosamente (luciaralstate)");
+
+					}
 				}
+				else 
+				{
+					log_message("error","[notificationEmployerInConversation] Tipo de empresa generico: {$companyType}");
+
+					/*se manda mensaje a la ultima persona que abordo la conversacion */				
+					//Obtener la lista de colaboradores de la conversacion
+					log_message("error","[notificationEmployerInConversation] Obtener colaboradores asignados a la conversacion ID: {$conversationID}");
+					$objListEmployerConversation = $Company_Component_Relation_Model->get_ConversationEmployerBy_ConversationID($conversationID);
+					if(!$objListEmployerConversation)
+					{
+						log_message("error","[notificationEmployerInConversation] No se encontraron colaboradores asignados a la conversacion. SALIENDO.");
+						return;
+					}
+
+					log_message("error","[notificationEmployerInConversation] Colaboradores encontrados: ".count($objListEmployerConversation));
+
+					//Obtener el tip 5 de las ultimos colaboradores
+					log_message("error","[notificationEmployerInConversation] Obtener Top 5 colaboradores asignados a la conversacion");
+					$objListEmployerConversationTop5 = $Company_Component_Relation_Model->get_ConversationTopEmployerBy_ConversationID(5,$conversationID);
+					if(!$objListEmployerConversationTop5)
+					{
+						log_message("error","[notificationEmployerInConversation] No se encontro Top 5 de colaboradores. SALIENDO.");
+						return;
+					}
+
+					log_message("error","[notificationEmployerInConversation] Top 5 colaboradores encontrados: ".count($objListEmployerConversationTop5));
+
+					//Mandarle mensaje a la ultima persona que converso
+					if($objListEmployerConversationTop5)
+					{
+						log_message("error","[notificationEmployerInConversation] Primer colaborador del Top 5: ".$objListEmployerConversationTop5[0]->firstName." - entityID: ".$objListEmployerConversationTop5[0]->entityID);
+						$phone = $Entity_Phone_Model->get_rowByPrimaryEntity(
+							$companyID,$branchID,$objListEmployerConversationTop5[0]->entityID
+						);
+
+						if(!$phone)
+						{
+							log_message("error","[notificationEmployerInConversation] No se encontro telefono para entityID: ".$objListEmployerConversationTop5[0]->entityID.". SALIENDO.");
+							return;
+						}
+
+						$phone = clearNumero($phone[0]->number);
+						log_message("error","[notificationEmployerInConversation] Telefono encontrado: {$phone}. Enviando mensaje WhatsApp sin sufijo");
+
+						$core_web_whatsap->sendMessageGeneric(
+							$companyType,
+							$companyID, 
+							$mensaje, 
+							getNumberPhone(clearNumero($phone)),
+							true,
+							""
+						);
+
+						log_message("error","[notificationEmployerInConversation] Mensaje enviado exitosamente (generico)");
+
+					}
+				}
+
+				log_message("error","[notificationEmployerInConversation] FIN - Proceso completado correctamente");
+
 			}
-			else 
+			catch(\Exception $ex)
 			{
-				/*se manda mensaje a la ultima persona que abordo la conversacion */				
-				//Obtener la lista de colaboradores de la conversacion
-				log_message("error","Obtener colaboradores asignados a la conversacion");
-				$objListEmployerConversation = $Company_Component_Relation_Model->get_ConversationEmployerBy_ConversationID($conversationID);
-				if(!$objListEmployerConversation)
-					return;
-				
-				//Obtener el tip 5 de las ultimos colaboradores
-				log_message("error","Obtener Top 5 colaboradores asignados a la conversacion");
-				$objListEmployerConversationTop5 = $Company_Component_Relation_Model->get_ConversationTopEmployerBy_ConversationID(5,$conversationID);
-				if(!$objListEmployerConversationTop5)
-					return;
-				
-				//Mandarle mensaje a la ultima persona que converso
-				if($objListEmployerConversationTop5)
-				{
-					log_message("error","Recorrer cada uno de los colaboradores del top 5: ".$objListEmployerConversationTop5[0]->firstName);
-					$phone = $Entity_Phone_Model->get_rowByPrimaryEntity(
-						$companyID,$branchID,$objListEmployerConversationTop5[0]->entityID
-					);
-					
-					if(!$phone)
-						return;
-					
-					$phone = clearNumero($phone[0]->number);
-					$core_web_whatsap->sendMessageGeneric(
-						$companyType,
-						$companyID, 
-						$mensaje, 
-						getNumberPhone(clearNumero($phone)),
-						true,
-						""
-					);			
-				
-				}
+				$objException = [
+					'success' => false,
+					'message' => $ex->getMessage(),   // mensaje del error
+					'line'    => $ex->getLine(),      // línea donde ocurrió
+					'file'    => $ex->getFile()       // archivo (opcional pero útil)
+				];
+				log_message("error","[notificationEmployerInConversation] EXCEPCION: ".print_r($objException,true));
 			}
-			
+
 		}
-		catch(\Exception $ex)
-		{
-			$objException = [
-				'success' => false,
-				'message' => $ex->getMessage(),   // mensaje del error
-				'line'    => $ex->getLine(),      // línea donde ocurrió
-				'file'    => $ex->getFile()       // archivo (opcional pero útil)
-			];
-			log_message("error",print_r($objException,true));
-		}
-		
-	}
+
+
 
 	function getMessageSignature($companyID,$typeCompany,$firstNameEmployer,$mensaje)
 	{	

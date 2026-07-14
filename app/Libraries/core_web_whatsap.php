@@ -1210,6 +1210,9 @@ class core_web_whatsap {
 	    //Habilitar 30 mensaje le cuesta: 6 dolares mensuales
 		//try
 		//{
+			log_message('info', '[sendMessageWapi2Text] Inicio - companyID: ' . $companyID . ' | phoneDestino: ' . $phoneDestino . ' | instanciaName: ' . $instanciaName . ' | esperarRespuesta: ' . $esperarRespuesta);
+			log_message('info', '[sendMessageWapi2Text] message: ' . $message);
+
 			$Parameter_Model 			= new Parameter_Model();
 			$Company_Parameter_Model 	= new Company_Parameter_Model();
 
@@ -1217,33 +1220,40 @@ class core_web_whatsap {
 			$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
 			$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
 			$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
+			log_message('info', '[sendMessageWapi2Text] WHATSAP_CURRENT_PROPIETARY_COMMERSE - parameterID: ' . $objPWhatsapPropertyNumberId . ' | value: ' . $objCP_WhatsapPropertyNumber->value);
 
 			$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
 			$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
 			$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
+			log_message('info', '[sendMessageWapi2Text] WHATSAP_TOCKEN - parameterID: ' . $objPWhatsapTokenId . ' | token length: ' . strlen($objCP_WhatsapToken->value));
 
 			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
 			$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
 			$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
+			log_message('info', '[sendMessageWapi2Text] WHATSAP_URL_REQUEST_SESSION - parameterID: ' . $objPWhatsapUrlSessionId . ' | value: ' . $objCP_WhatsapUrlSession->value);
 
 
 			//https://api.ultramsg.com/instance65915/messages/chat
 			$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
 			$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
 			$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
+			log_message('info', '[sendMessageWapi2Text] WAHTSAP_URL_ENVIO_MENSAJE - parameterID: ' . $objPWhatsapUrlSendMessageId . ' | value: ' . $objCP_WhatsapUrlSendMessage->value);
 
 
 
 			$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
 			$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
 			$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
+			log_message('info', '[sendMessageWapi2Text] phoneDestino resuelto: ' . $phoneDestino);
 
 			// Obtener session_id: si $instanciaName viene vacio, usar el valor tal cual
 			// Si tiene un key, parsear el formato 'key':guid y buscar el guid correspondiente
 			$sessionIdValue = $objCP_WhatsapUrlSession->value;
+			log_message('info', '[sendMessageWapi2Text] sessionIdValue raw: ' . $sessionIdValue . ' | instanciaName: ' . $instanciaName);
 			if($instanciaName !== "")
 			{
 				$pairs = explode(",", $sessionIdValue);
+				log_message('info', '[sendMessageWapi2Text] Buscando instancia "' . $instanciaName . '" en ' . count($pairs) . ' pares');
 				foreach($pairs as $pair)
 				{
 					$pair = trim($pair);
@@ -1252,21 +1262,26 @@ class core_web_whatsap {
 					{
 						$key = trim($parts[0], " '\"");
 						$val = trim($parts[1], " '\"");
+						log_message('info', '[sendMessageWapi2Text] Par encontrado - key: ' . $key . ' | val: ' . $val);
 						if($key === $instanciaName)
 						{
 							$sessionIdValue = $val;
+							log_message('info', '[sendMessageWapi2Text] Instancia match! sessionIdValue: ' . $sessionIdValue);
 							break;
 						}
 					}
 				}
 			}
+			log_message('info', '[sendMessageWapi2Text] sessionIdValue final: ' . $sessionIdValue);
 
 			$params=array(			
 			'message' 		=> $message
 			);
+			log_message('info', '[sendMessageWapi2Text] params JSON: ' . json_encode($params));
 			
 			$url  = $objCP_WhatsapUrlSendMessage->value;
 			$url  = $url."/".$phoneDestino."/message?session_id=".$sessionIdValue;
+			log_message('info', '[sendMessageWapi2Text] URL final: ' . $url);
 			
 			$curl = curl_init();
 			curl_setopt_array($curl, array(
@@ -1293,6 +1308,7 @@ class core_web_whatsap {
 			  CURLOPT_SSL_VERIFYHOST 		=> false
 			));
 
+			log_message('info', '[sendMessageWapi2Text] Ejecutando curl_exec...');
 			$response 	= curl_exec($curl);
 			
 			//no espera respuesta
@@ -1300,6 +1316,9 @@ class core_web_whatsap {
 			
 			//si espera respuesta
 			$err 		= curl_error($curl);
+			$httpCode 	= curl_getinfo($curl, CURLINFO_HTTP_CODE);
+			log_message('info', '[sendMessageWapi2Text] curl ejecutado - HTTP code: ' . $httpCode . ' | error: ' . $err);
+			log_message('info', '[sendMessageWapi2Text] response raw: ' . $response);
 			
 			
 			curl_close($curl);
@@ -1317,15 +1336,17 @@ class core_web_whatsap {
 			//Si espera respuesta
 			if ($err)
 			{
-			  log_message("error",print_r("cURL Error #:".$err,true));
+			  log_message("error",'[sendMessageWapi2Text] cURL Error: ' . $err);
 			  $response 	= '{"status":"error","message":"Authentication failed '.$err.'","error":"invalid signature"}';
 			  $resultado 	= json_decode($response, true); // true = array asociativo
+			  log_message('info', '[sendMessageWapi2Text] Resultado (error): ' . print_r($resultado, true));
 			  return $resultado;
 			}
 			else
 			{
-			  log_message("error",print_r($response,true));
+			  log_message('info', '[sendMessageWapi2Text] Respuesta exitosa - response: ' . $response);
 			  $resultado = json_decode($response, true); // true = array asociativo
+			  log_message('info', '[sendMessageWapi2Text] Resultado decodificado: ' . print_r($resultado, true));
 			  return $resultado;
 			}
 

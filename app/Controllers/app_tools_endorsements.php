@@ -705,7 +705,7 @@ class app_tools_endorsements extends _BaseController {
 				log_message('info', '[getTransactionMasterOld] companyID: ' . $companyID);
 
 				$db					= db_connect();
-				$cadena             = $getValue;			
+				$cadena             = str_replace("_SPACE_", " ", $getValue);
 				$table              = explode('.', $cadena)[0];
 				$campo              = explode('.', $cadena)[1];            
 				$typeDocument		= $transactionNumber;

@@ -3102,17 +3102,17 @@ class app_cxc_api extends _BaseController {
 				log_message("error","[Wapi2] >> Enviando notificación a colaboradores asignados...");
 				$urlSend		= base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID;
 				$whatsappLink 	= urlencode($urlSend);
-				log_message('error', '[Wapi2]    urlSend: ' . $urlSend);
-				$short 			= file_get_contents("https://is.gd/create.php?format=simple&url=$whatsappLink");
-				log_message('error', '[Wapi2]    shortUrl: ' . $short);
-			
+				log_message('error', '[Wapi2]    urlSend: ' . $urlSend);				
+				$short 			= $whatsappLink;
+				log_message('error', '[Wapi2]    urlSend: ' . $short);
+
 				$messagePreview = mb_strlen($message) > 80 ? mb_substr($message, 0, 80) . '...' : $message;
 				$this->core_web_conversation->notificationEmployerInConversation(
 					$dataSession["company"]->companyID,
 					$dataSession["user"]->branchID,
 					$dataSession["company"]->type,
 					$objCustomerConversation[0]->conversationID,
-					"📩 *Cliente:".$objCustomer[0]->firstName."* ('".$objCustomer[0]->entityID."') ha enviado un mensaje:\n💬 _\"".$messagePreview."\"_\n👉 Por favor, respóndelo en el siguiente enlace: 🌐 ".$short
+					"📩 *Cliente:". $objCustomer[0]->firstName."* ('".$objCustomer[0]->entityID."') ha enviado un mensaje:\n💬 _\"".$messagePreview."\"_\n👉 Por favor, respóndelo en el siguiente enlace: 🌐 ".$short
 				);
 				log_message('error', '[Wapi2]    notificationEmployerInConversation ejecutado OK');
 			}

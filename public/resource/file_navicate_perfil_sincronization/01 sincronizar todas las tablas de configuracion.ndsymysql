@@ -20,8 +20,8 @@
     "TargetCloudInstanceName": "",
     "TargetProject": "",
     "TargetProjectOwnerNavicatID": "",
-    "TargetSchema": "posme_merge",
-    "TargetServer": "localhost",
+    "TargetSchema": "db73spii9ggork",
+    "TargetServer": "posme.net",
     "TargetServerServiceProvider": 0,
     "TargetServerType": "MYSQL",
     "UseTransaction": false

@@ -263,7 +263,7 @@
 				
 				//obtener los valores anteriores de la tarnsaccion
 				$.ajax({
-					url     : "<?= base_url(); ?>/app_tools_endorsements/getTransactionMasterOld/"+$("#txtTransactionNumber").val()+"/"+endoso.display,
+					url     : "<?= base_url(); ?>/app_tools_endorsements/getTransactionMasterOld/"+$("#txtTransactionNumber").val()+"/"+endoso.display.replace(/ /g, "_SPACE_"),
 					type    : 'GET',
 					success : function (respuesta) {
 						
