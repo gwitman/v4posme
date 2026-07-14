@@ -577,6 +577,13 @@ $messageWithAudioReference = '<div class="referencia">'
 										  @click="openImageModalDownloadDocument(objNotification.subject)"
 									  ><i class="bx bx-file"></i> Documento</span>
 								  </template>
+								  <template v-else-if="objNotification.title == 'document'">
+									  <br/>
+									  <span 
+										  class="badge bg-light text-primary cursor-pointer mt-1" 
+										  @click="openImageModalDownloadDocument(objNotification.subject)"
+									  ><i class="bx bx-file"></i> Documento</span>
+								  </template>
 							  </div>
 								
 							  <div class="message-time">

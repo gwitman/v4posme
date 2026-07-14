@@ -2845,7 +2845,8 @@ class app_cxc_api extends _BaseController {
 		if(
 			$data["customerMessageType"] == "image" || 
 			$data["customerMessageType"] == "pdf"   || 
-			$data["customerMessageType"] == "audio" 
+			$data["customerMessageType"] == "audio" ||
+			$data["customerMessageType"] == "document" 
 		)
 		{
 			log_message('error', '[Wapi2] >> Procesando recurso multimedia, tipo: ' . $data["customerMessageType"]);
