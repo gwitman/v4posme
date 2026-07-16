@@ -159,8 +159,18 @@
 										<label class="col-lg-4 control-label" for="buttons">Cliente</label>
 										<div class="col-lg-8">
 											<div class="input-group">
-												<input type="hidden" id="txtCustomerID" name="txtCustomerID" value="<?php echo $objCustomer->entityID;  ?>">
-												<input class="form-control" readonly id="txtCustomerDescription" type="txtCustomerDescription" value="<?php echo $objCustomerNatural != null ? strtoupper($objCustomer->customerNumber . " ". $objCustomerNatural->firstName . " ". $objCustomerNatural->lastName ) : strtoupper($objCustomer->customerNumber." ".$objCustomerLegal->comercialName); ?>">
+												<input type="hidden" id="txtCustomerID" name="txtCustomerID" value="<?php echo $objCustomer ? $objCustomer->entityID : 0;  ?>">
+												<input class="form-control" readonly id="txtCustomerDescription" type="txtCustomerDescription" value="<?php 
+														if($objCustomer)
+														{
+															if ($objCustomerNatural != null )
+																echo strtoupper($objCustomer->customerNumber . " ". $objCustomerNatural->firstName . " ". $objCustomerNatural->lastName ) ;
+															else 
+																echo strtoupper($objCustomer->customerNumber." ".$objCustomerLegal->comercialName); 
+														}
+														else 
+															echo "";
+												?>">
 												
 												<span class="input-group-btn">
 													<button class="btn btn-danger" type="button" id="btnClearCustomer">

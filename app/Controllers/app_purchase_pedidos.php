@@ -99,9 +99,13 @@ class app_purchase_pedidos extends _BaseController {
 			
 			//Obtener al cliente
 			$dataView["objCustomer"]				= $this->Customer_Model->get_rowByEntity($companyID,$dataView["objTransactionMaster"]->entityID);
-			$dataView["objCustomerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$dataView["objCustomer"]->entityID);
-			$dataView["objCustomerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$dataView["objCustomer"]->entityID);
-
+			$dataView["objCustomerNatural"]			= false;
+			$dataView["objCustomerLegal"]			= false;
+			if($dataView["objCustomer"])
+			{
+				$dataView["objCustomerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$dataView["objCustomer"]->entityID);
+				$dataView["objCustomerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$dataView["objCustomer"]->entityID);
+			}
 
 			//Obtener colaborador
 			$dataView["objEmployer"]				= $this->Employee_Model->get_rowByEntityID($companyID,$dataView["objTransactionMaster"]->entityIDSecondary);
@@ -449,39 +453,40 @@ class app_purchase_pedidos extends _BaseController {
 							
 							//Obtener al cliente
 							$dataView["objCustomer"]				= $this->Customer_Model->get_rowByEntity($companyID,$objTMNew["entityID"]);
-							$dataView["objCustomerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$dataView["objCustomer"]->entityID);
-							$dataView["objCustomerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$dataView["objCustomer"]->entityID);
+							if($dataView["objCustomer"])
+							{
+								$dataView["objCustomerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$dataView["objCustomer"]->entityID);
+								$dataView["objCustomerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objCustomer"]->companyID,$dataView["objCustomer"]->branchID,$dataView["objCustomer"]->entityID);
 
-							//Obtener colaborador
-							$dataView["objEmployer"]				= $this->Employee_Model->get_rowByEntityID($companyID,$objTMNew["entityIDSecondary"]);
-							$dataView["objEmployerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
-							$dataView["objEmployerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
-							$dataView["objEmployerPhone"]			= $this->Entity_Phone_Model->get_rowByEntity( $dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID );
-							$dataView["objEmployerPhoneNumber"]		= $dataView["objEmployerPhone"] ? $dataView["objEmployerPhone"][0]->number : "N/D";
-							
-							//Obtener Factura
-							$dataView["objBilling"]					= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$objTMNew["note"]);							
-							$dataView["objCatalogItemZoneID"] 		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_pedido","zoneID",$companyID,$objTMI["zoneID"]);
-							
-							
-							$themplate = str_replace("{customer_name}",helper_RequestGetValueObjet($dataView["objCustomerNatural"],"firstName",""),$themplate);
-							$themplate = str_replace("{employeer_name}",helper_RequestGetValueObjet($dataView["objEmployerNatural"],"firstName",""),$themplate);
-							$themplate = str_replace("{employeer_phone}",$dataView["objEmployerPhoneNumber"],$themplate);
-							$themplate = str_replace("{status_name}",helper_RequestGetValueObjet($dataView["objCatalogItemZoneID"],"name",""),$themplate);
-							$themplate = str_replace("{transaction_number}",helper_RequestGetValueObjet($dataView["objBilling"],"transactionNumber",""),$themplate);
-							$themplate = str_replace("{amount}",$objTMNew["amount"],$themplate);
-							$themplate = str_replace("{text}",$objTMNew["reference1"],$themplate);
-							
-							$warrning = true;
-							$this->core_web_notification->set_message(false,"Mensaje enviado al No:".$dataView["objCustomer"]->phoneNumber." ---> ".$themplate);
-							
-							$this->core_web_whatsap->sendMessageUltramsg(
-								APP_COMPANY, 
-								$themplate,
-								$dataView["objCustomer"]->phoneNumber
-							);
-							
-							
+								//Obtener colaborador
+								$dataView["objEmployer"]				= $this->Employee_Model->get_rowByEntityID($companyID,$objTMNew["entityIDSecondary"]);
+								$dataView["objEmployerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
+								$dataView["objEmployerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
+								$dataView["objEmployerPhone"]			= $this->Entity_Phone_Model->get_rowByEntity( $dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID );
+								$dataView["objEmployerPhoneNumber"]		= $dataView["objEmployerPhone"] ? $dataView["objEmployerPhone"][0]->number : "N/D";
+								
+								//Obtener Factura
+								$dataView["objBilling"]					= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$objTMNew["note"]);							
+								$dataView["objCatalogItemZoneID"] 		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_pedido","zoneID",$companyID,$objTMI["zoneID"]);
+								
+								
+								$themplate = str_replace("{customer_name}",helper_RequestGetValueObjet($dataView["objCustomerNatural"],"firstName",""),$themplate);
+								$themplate = str_replace("{employeer_name}",helper_RequestGetValueObjet($dataView["objEmployerNatural"],"firstName",""),$themplate);
+								$themplate = str_replace("{employeer_phone}",$dataView["objEmployerPhoneNumber"],$themplate);
+								$themplate = str_replace("{status_name}",helper_RequestGetValueObjet($dataView["objCatalogItemZoneID"],"name",""),$themplate);
+								$themplate = str_replace("{transaction_number}",helper_RequestGetValueObjet($dataView["objBilling"],"transactionNumber",""),$themplate);
+								$themplate = str_replace("{amount}",$objTMNew["amount"],$themplate);
+								$themplate = str_replace("{text}",$objTMNew["reference1"],$themplate);
+								
+								$warrning = true;
+								$this->core_web_notification->set_message(false,"Mensaje enviado al No:".$dataView["objCustomer"]->phoneNumber." ---> ".$themplate);
+								
+								$this->core_web_whatsap->sendMessageUltramsg(
+									APP_COMPANY, 
+									$themplate,
+									$dataView["objCustomer"]->phoneNumber
+								);
+							}
 							
 						}
 						else 
