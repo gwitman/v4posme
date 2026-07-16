@@ -456,7 +456,8 @@ class Transaction_Master_Detail_Model extends Model  {
 		$sql = $sql.sprintf(" where td.companyID = $companyID");
 		$sql = $sql.sprintf(" and td.transactionID = $transactionID");		
 		$sql = $sql.sprintf(" and td.transactionMasterID = $transactionMasterID");		
-		$sql = $sql.sprintf(" and td.isActive= 1");		
+		$sql = $sql.sprintf(" and td.isActive= 1 ");		
+		$sql = $sql.sprintf(" order by td.transactionMasterDetailID asc  ");		
 		
 		
 		//Ejecutar Consulta
