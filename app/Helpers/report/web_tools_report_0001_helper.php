@@ -9068,10 +9068,10 @@ function helper_reporte80mmTransactionMasterMiniShalom(
                       <meta name='viewport' content='width=device-width, initial-scale=1.0' />
                       <style>
                         @page {       
-                          size: 2.7in 11in;                  
+                          size: 2.7in 30in;                  
                           margin-top:0px;
-                          margin-left:10px;
-                          margin-right:0px;
+                          margin-left:0px;
+                          margin-right:5px;
                         }
                         table{
                           font-size: x-small;

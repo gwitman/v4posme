@@ -6530,7 +6530,7 @@
 		var objTransactionMasterItemPrice 					= datos.data.objTransactionMasterItemPrice;
 		if(datos.data.objTransactionMasterDetail.length > 0 )
 		{
-			for(var i = (datos.data.objTransactionMasterDetail.length - 1) ; i >= 0 ; i--)
+			for(var i = 0 ; i < datos.data.objTransactionMasterDetail.length ; i++)
 			{
 				
 				//master detail reference
