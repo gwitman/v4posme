@@ -2841,6 +2841,54 @@ class app_cxc_api extends _BaseController {
 		}
 		
 
+		//Buscar al cliente antes de guardar recursos multimedia
+		$customerPhoneNumber 	= $data["customerPhoneNumber"];
+		$customerFirstName		= "posMeConnect_".$data["customerFirstName"];
+		
+		log_message('error', '[Wapi2] >> Autenticando sesión con usuario por defecto (pre-multimedia)...');
+		$dataSession 			= $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
+		$companyID				= $dataSession["user"]->companyID;
+		$branchID				= $dataSession["user"]->branchID;
+		$roleID 				= $dataSession["role"]->roleID;
+		$userID 				= $dataSession["user"]->userID;
+		log_message('error', '[Wapi2]    companyID: ' . $companyID);
+		log_message('error', '[Wapi2]    branchID: ' . $branchID);
+		log_message('error', '[Wapi2]    roleID: ' . $roleID);
+		log_message('error', '[Wapi2]    userID: ' . $userID);
+		log_message('error', '[Wapi2]    customerPhoneNumber: ' . $customerPhoneNumber);
+		log_message('error', '[Wapi2]    customerFirstName: ' . $customerFirstName);
+		
+		//Obtener al cliente antes de procesar multimedia
+		log_message('error', '[Wapi2] >> Buscando cliente por telefono (pre-multimedia): ' . $customerPhoneNumber);
+		$objCustomer			= $this->Customer_Model->get_rowBy_PhoneNumberAnd_Email_phoneFixed($customerPhoneNumber);
+		if(!$objCustomer)
+		{
+			log_message('error', '[Wapi2]    Cliente NO encontrado, creando nuevo cliente...');
+			$this->core_web_conversation->createCustomer($dataSession,$customerPhoneNumber,$customerFirstName,$this->request);
+			log_message('error', '[Wapi2]    Cliente creado con phone: ' . $customerPhoneNumber . ', nombre: ' . $customerFirstName);
+		}
+		$objCustomer			= $this->Customer_Model->get_rowBy_PhoneNumberAnd_Email_phoneFixed($customerPhoneNumber);
+		if(!$objCustomer)
+		{
+			log_message('error', '[Wapi2] ERROR CRITICO: Cliente no encontrado despues de crearlo, phone: ' . $customerPhoneNumber);
+			throw new \Exception ("Cliente no encontrado");
+		}
+		log_message('error', '[Wapi2]    Cliente encontrado: entityID=' . $objCustomer[0]->entityID . ', firstName=' . $objCustomer[0]->firstName . ', phoneNumber=' . $objCustomer[0]->phoneNumber);
+
+		//Verificar si la categoría del cliente es la de exclusión (CXC_CATEGORY_POSMECONNECT_MESSAGE_PERSON)
+		$paramCategoryPosmeConnect = $this->core_web_parameter->getParameter("CXC_CATEGORY_POSMECONNECT_MESSAGE_PERSON", $companyID);
+		if($paramCategoryPosmeConnect && $paramCategoryPosmeConnect->value)
+		{
+			if($objCustomer[0]->categoryID == $paramCategoryPosmeConnect->value)
+			{
+				log_message('error', '[Wapi2] DESCARTADO: Cliente con categoryID=' . $objCustomer[0]->categoryID . ' coincide con CXC_CATEGORY_POSMECONNECT_MESSAGE_PERSON=' . $paramCategoryPosmeConnect->value . '. No se registra.');
+				return $this->response->setJSON([
+					'success' => false,
+					'message' => 'Cliente excluido por categoría CXC_CATEGORY_POSMECONNECT_MESSAGE_PERSON'
+				])->setStatusCode(200);
+			}
+		}
+
 		//Guardar el recurso o imagen o video o pdf
 		if(
 			$data["customerMessageType"] == "image" || 
@@ -2911,44 +2959,13 @@ class app_cxc_api extends _BaseController {
 			log_message('error', '[Wapi2] Mensaje con referencia agregada');
 		}
 		
-		$customerPhoneNumber 	= $data["customerPhoneNumber"];
-		$customerFirstName		= "posMeConnect_".$data["customerFirstName"];
 		$message				= $data["customerMessage"];
 		$messageUrl				= $data["customerMessageUrl"];
 		$messageFile			= $data["customerMessageFile"];
 		$messageType			= $data["customerMessageType"];
 		
-		log_message('error', '[Wapi2] >> Autenticando sesión con usuario por defecto...');
-		$dataSession 			= $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
-		$companyID				= $dataSession["user"]->companyID;
-		$branchID				= $dataSession["user"]->branchID;
-		$roleID 				= $dataSession["role"]->roleID;
-		$userID 				= $dataSession["user"]->userID;
-		log_message('error', '[Wapi2]    companyID: ' . $companyID);
-		log_message('error', '[Wapi2]    branchID: ' . $branchID);
-		log_message('error', '[Wapi2]    roleID: ' . $roleID);
-		log_message('error', '[Wapi2]    userID: ' . $userID);
-		log_message('error', '[Wapi2]    customerPhoneNumber: ' . $customerPhoneNumber);
-		log_message('error', '[Wapi2]    customerFirstName: ' . $customerFirstName);
 		log_message('error', '[Wapi2]    message: ' . $message);
 		log_message('error', '[Wapi2]    messageType: ' . $messageType);
-		
-		//Obtener al cliente
-		log_message('error', '[Wapi2] >> Buscando cliente por telefono: ' . $customerPhoneNumber);
-		$objCustomer			= $this->Customer_Model->get_rowBy_PhoneNumberAnd_Email_phoneFixed($customerPhoneNumber);
-		if(!$objCustomer)
-		{
-			log_message('error', '[Wapi2]    Cliente NO encontrado, creando nuevo cliente...');
-			$this->core_web_conversation->createCustomer($dataSession,$customerPhoneNumber,$customerFirstName,$this->request);
-			log_message('error', '[Wapi2]    Cliente creado con phone: ' . $customerPhoneNumber . ', nombre: ' . $customerFirstName);
-		}
-		$objCustomer			= $this->Customer_Model->get_rowBy_PhoneNumberAnd_Email_phoneFixed($customerPhoneNumber);
-		if(!$objCustomer)
-		{
-			log_message('error', '[Wapi2] ERROR CRITICO: Cliente no encontrado despues de crearlo, phone: ' . $customerPhoneNumber);
-			throw new \Exception ("Cliente no encontrado");
-		}
-		log_message('error', '[Wapi2]    Cliente encontrado: entityID=' . $objCustomer[0]->entityID . ', firstName=' . $objCustomer[0]->firstName . ', phoneNumber=' . $objCustomer[0]->phoneNumber);
 		
 		//Obtener la conversacion
 		log_message('error', '[Wapi2] >> Buscando conversación para entityID: ' . $objCustomer[0]->entityID);

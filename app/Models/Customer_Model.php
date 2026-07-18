@@ -476,6 +476,8 @@ class Customer_Model extends Model  {
 		$sql = sprintf("
 			select 
 				c.entityID,
+				c.subCategoryID,
+				c.categoryID,
 				nat.firstName,
 				c.phoneNumber,
 				c.allowWhatsappPromotions,

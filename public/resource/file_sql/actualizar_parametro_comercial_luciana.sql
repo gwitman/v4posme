@@ -5,6 +5,13 @@
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "5226" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_CATEGORY_POSMECONNECT_MESSAGE_PERSON"; 
+##Categoria de clientes que se usa en posme connect para identificar que el cliente es un contacto personal
+##PERSONAL
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
