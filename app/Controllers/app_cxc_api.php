@@ -2873,15 +2873,15 @@ class app_cxc_api extends _BaseController {
 			log_message('error', '[Wapi2] ERROR CRITICO: Cliente no encontrado despues de crearlo, phone: ' . $customerPhoneNumber);
 			throw new \Exception ("Cliente no encontrado");
 		}
-		log_message('error', '[Wapi2]    Cliente encontrado: entityID=' . $objCustomer[0]->entityID . ', firstName=' . $objCustomer[0]->firstName . ', phoneNumber=' . $objCustomer[0]->phoneNumber);
+		log_message('error', '[Wapi2]    Cliente encontrado: entityID=' . $objCustomer[0]->entityID . ', firstName=' . $objCustomer[0]->firstName . ', phoneNumber=' . $objCustomer[0]->phoneNumber.', categoryID=' . $objCustomer[0]->categoryID.', subCategoryID=' . $objCustomer[0]->subCategoryID );
 
 		//Verificar si la categoría del cliente es la de exclusión (CXC_CATEGORY_POSMECONNECT_MESSAGE_PERSON)
 		$paramCategoryPosmeConnect = $this->core_web_parameter->getParameter("CXC_CATEGORY_POSMECONNECT_MESSAGE_PERSON", $companyID);
 		if($paramCategoryPosmeConnect && $paramCategoryPosmeConnect->value)
 		{
-			if($objCustomer[0]->categoryID == $paramCategoryPosmeConnect->value)
+			if($objCustomer[0]->subCategoryID == $paramCategoryPosmeConnect->value)
 			{
-				log_message('error', '[Wapi2] DESCARTADO: Cliente con categoryID=' . $objCustomer[0]->categoryID . ' coincide con CXC_CATEGORY_POSMECONNECT_MESSAGE_PERSON=' . $paramCategoryPosmeConnect->value . '. No se registra.');
+				log_message('error', '[Wapi2] DESCARTADO: Cliente con subCategoryID=' . $objCustomer[0]->subCategoryID . ' coincide con CXC_CATEGORY_POSMECONNECT_MESSAGE_PERSON=' . $paramCategoryPosmeConnect->value . '. No se registra.');
 				return $this->response->setJSON([
 					'success' => false,
 					'message' => 'Cliente excluido por categoría CXC_CATEGORY_POSMECONNECT_MESSAGE_PERSON'
