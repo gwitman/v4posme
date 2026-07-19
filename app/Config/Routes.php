@@ -278,6 +278,15 @@ $routes->match(['get', 'post'], 'app_afx_fixedassent_valorated/add', 'app_afx_fi
 $routes->match(['get', 'post'], 'app_afx_fixedassent_valorated/edit', 'app_afx_fixedassent_valorated::edit');
 $routes->match(['get', 'post'], 'app_afx_fixedassent_valorated/edit/(:any)', 'app_afx_fixedassent_valorated::edit');
 $routes->match(['get', 'post'], 'app_afx_fixedassent_valorated/delete', 'app_afx_fixedassent_valorated::delete');
+$routes->match(['get', 'post'], 'app_afx_fixedassent_transferpiece/index', 'app_afx_fixedassent_transferpiece::index');
+$routes->match(['get', 'post'], 'app_afx_fixedassent_transferpiece/index/(:any)', 'app_afx_fixedassent_transferpiece::index');
+$routes->match(['get', 'post'], 'app_afx_fixedassent_transferpiece/save', 'app_afx_fixedassent_transferpiece::save');
+$routes->match(['get', 'post'], 'app_afx_fixedassent_transferpiece/save/(:any)', 'app_afx_fixedassent_transferpiece::save');
+$routes->match(['get', 'post'], 'app_afx_fixedassent_transferpiece/add', 'app_afx_fixedassent_transferpiece::add');
+$routes->match(['get', 'post'], 'app_afx_fixedassent_transferpiece/edit', 'app_afx_fixedassent_transferpiece::edit');
+$routes->match(['get', 'post'], 'app_afx_fixedassent_transferpiece/edit/(:any)', 'app_afx_fixedassent_transferpiece::edit');
+$routes->match(['get', 'post'], 'app_afx_fixedassent_transferpiece/delete', 'app_afx_fixedassent_transferpiece::delete');
+$routes->match(['get', 'post'], 'app_afx_fixedassent_transferpiece/searchTransactionMaster', 'app_afx_fixedassent_transferpiece::searchTransactionMaster');
 $routes->match(['get', 'post'], 'app_afx_fixedassent_valorated/searchTransactionMaster', 'app_afx_fixedassent_valorated::searchTransactionMaster');
 $routes->match(['get', 'post'], 'app_afx_fixedassent_valorated/viewPrinterFormatoA4/(:any)', 'app_afx_fixedassent_valorated::viewPrinterFormatoA4');
 $routes->match(['get', 'post'], 'app_box_canceldocument/edit', 'app_box_canceldocument::edit');

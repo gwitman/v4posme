@@ -1,1 +1,434 @@
-﻿
+﻿# INSTRUCCIONES: Módulo de Transferencia de Piezas entre Activos Fijos
+
+## Resumen General
+Crear un módulo para transferir, dar de alta y dar de baja piezas (componentes/propiedades) 
+entre activos fijos. Seguir el patrón exacto de `app_afx_fixedassent_input`.
+
+## Componente a Utilizar
+- Nombre del componente: `tb_transaction_master_transferpiece`
+- Este componente debe existir en la tabla `tb_component` para que el sistema lo reconozca.
+
+---
+
+## 1. CONTROLADOR
+
+### Archivo: `app/Controllers/app_afx_fixedassent_transferpiece.php`
+### Clase: `app_afx_fixedassent_transferpiece extends _BaseController`
+
+### Métodos requeridos:
+
+#### 1.1 `index($dataViewID = null)`
+- Autenticación y permisos (patrón estándar)
+- Obtener componente: `$this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_transferpiece")`
+- Renderizar vista con `core_web_view->getViewDefault()` / `renderGreed()`
+- Views: `app_afx_fixedassent_transferpiece/list_head`, `list_footer`, `list_script`
+
+#### 1.2 `add()`
+- Autenticación y permisos
+- Obtener componentes necesarios:
+  - `tb_transaction_master_transferpiece` (componente principal)
+  - `tb_fixed_assent` (para popup de selección de activo origen/destino)
+  - `tb_public_catalog` (para catálogos)
+- Obtener datos para la vista:
+  - `objListWorkflowStage` → `core_web_workflow->getWorkflowInitStage("tb_transaction_master_transferpiece",...)`
+  - `objCausal` → `Transaction_Causal_Model->getCausalByBranch()`
+  - `transactionID` → `core_web_transaction->getTransactionID($companyID, "tb_transaction_master_transferpiece", 0)`
+- Views: `app_afx_fixedassent_transferpiece/news_head`, `news_body`, `news_script`
+
+#### 1.3 `edit()`
+- Parámetros URI: `companyID`, `transactionID`, `transactionMasterID`
+- Obtener registro existente: `Transaction_Master_Model->get_rowByPK()`
+- Obtener detalle: `Transaction_Master_Detail_Model->get_rowByTransactionAndComponent()`
+- Obtener workflow stages: `core_web_workflow->getWorkflowAllStage("tb_transaction_master_transferpiece",...)`
+- Views: `app_afx_fixedassent_transferpiece/edit_head`, `edit_body`, `edit_script`
+
+#### 1.4 `save($mode = "")`
+- Validaciones del formulario:
+  - `txtDate` → Fecha (required)
+  - `txtStatusID` → Estado (required)
+- Si `$mode == "new"` → llamar `insertElement()`
+- Si `$mode == "edit"` → llamar `updateElement()`
+
+#### 1.5 `insertElement($dataSession)`
+- Crear registro en `tb_transaction_master`:
+  ```php
+  $objTM["companyID"]           = $companyID;
+  $objTM["transactionNumber"]   = $this->core_web_counter->goNextNumber($companyID, $branchID, "tb_transaction_master_transferpiece", 0);
+  $objTM["transactionID"]       = $this->core_web_transaction->getTransactionID($companyID, "tb_transaction_master_transferpiece", 0);
+  $objTM["branchID"]            = $branchID;
+  $objTM["transactionOn"]       = POST "txtDate";
+  $objTM["componentID"]         = $objComponent->componentID;
+  $objTM["note"]                = POST "txtComment";
+  $objTM["reference1"]          = POST "txtReference1";
+  $objTM["reference2"]          = POST "txtReference2";
+  $objTM["statusID"]            = POST "txtStatusID";
+  $objTM["sourceWarehouseID"]   = POST "txtSourceFixedAssetID";   // Activo Origen (no obligatorio)
+  $objTM["targetWarehouseID"]   = POST "txtTargetFixedAssetID";   // Activo Destino (no obligatorio)
+  $objTM["isActive"]            = 1;
+  ```
+  - Auditoria: `$this->core_web_auditoria->setAuditCreated($objTM, $dataSession, $this->request);`
+  - Insertar master: `$this->Transaction_Master_Model->insert_app_posme($objTM)`
+  
+- Guardar detalle de piezas en `tb_transaction_master_detail`:
+  ```php
+  // Arrays POST:
+  $arrayPiecePropertyID  = POST "txtPiecePropertyID[]";   // propertyItemID de tb_component_property
+  $arrayPieceName        = POST "txtPieceName[]";          // nombre de la pieza
+  $arrayPieceQuantity    = POST "txtPieceQuantity[]";      // cantidad
+  $arrayPieceAction      = POST "txtPieceAction[]";        // accion: "nueva", "baja", "transferencia"
+  
+  foreach ($arrayPiecePropertyID as $key => $value) {
+      $objTMD["companyID"]              = $companyID;
+      $objTMD["transactionID"]          = $objTM["transactionID"];
+      $objTMD["transactionMasterID"]    = $transactionMasterID;
+      $objTMD["componentID"]            = $objComponent->componentID;
+      $objTMD["componentItemID"]        = $value;           // propertyItemID de la pieza
+      $objTMD["quantity"]               = $arrayPieceQuantity[$key];
+      $objTMD["reference1"]             = $arrayPieceAction[$key];  // "nueva"|"baja"|"transferencia"
+      $objTMD["reference2"]             = $arrayPieceName[$key];
+      $objTMD["isActive"]               = 1;
+      $this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
+  }
+  ```
+
+- **LÓGICA DE APLICACIÓN** (cuando el estado es APLICABLE via workflow):
+  ```
+  Si el workflow valida COMMAND_APLICABLE:
+  
+  Por cada pieza en el detalle:
+      Si accion == "baja":
+          → Dar de baja la pieza en tb_component_property (del activo ORIGEN)
+          → Component_Property_Model->delete_app_posme($propertyItemID)
+          
+      Si accion == "nueva":
+          → Crear nueva pieza en tb_component_property (en el activo DESTINO)
+          → Component_Property_Model->insert_app_posme({
+              componentID: componentID del tb_fixed_assent,
+              componentItemID: fixedAssentID del activo DESTINO,
+              propertyID: catalogDetailID de la pieza,
+              name: nombre de la pieza,
+              value: cantidad,
+              type: tipo,
+              isActive: 1
+            })
+            
+      Si accion == "transferencia":
+          → Dar de baja la pieza del activo ORIGEN
+          → Component_Property_Model->delete_app_posme($propertyItemID_origen)
+          → Crear la pieza en el activo DESTINO
+          → Component_Property_Model->insert_app_posme({...datos de la pieza en destino...})
+  ```
+
+#### 1.6 `updateElement($dataSession)`
+- Obtener TM existente y validar workflow editable
+- Actualizar `tb_transaction_master` con datos POST
+- Manejar detalle existente (`txtCurrentPieceID[]`) y nuevo (`txtNewPiecePropertyID[]`)
+- Eliminar items removidos, actualizar existentes, insertar nuevos
+- Si estado es APLICABLE → ejecutar lógica de alta/baja/transferencia
+
+#### 1.7 `delete()`
+- Validar workflow ELIMINABLE
+- Soft delete: `Transaction_Master_Model->delete_app_posme()`
+- Respuesta JSON
+
+#### 1.8 `searchTransactionMaster()`
+- Buscar por número de transacción
+- Respuesta JSON con companyID, transactionID, transactionMasterID
+
+---
+
+## 2. VISTAS
+
+### Carpeta: `app/Views/app_afx_fixedassent_transferpiece/`
+
+### 2.1 Vistas de Lista (list)
+
+#### `list_head.php`
+```html
+<div id="heading" class="page-header">
+    <h1><i class="icon20 i-storage-2"></i> LISTA DE TRANSFERENCIA DE PIEZAS</h1>
+</div>
+<!-- Barra: search input + botones Vistas/Editar/Delete/Nuevo -->
+```
+
+#### `list_script.php`
+- Eventos: btnView, btnEdit, btnEliminar, btnNuevo, btnSearchTransaction
+- URLs apuntando a `app_afx_fixedassent_transferpiece/...`
+- Patrón idéntico a `app_afx_fixedassent_input/list_script.php`
+
+#### `list_footer.php`
+```html
+</div></div></div></div>
+```
+
+### 2.2 Vistas de Nuevo (new)
+
+#### `news_head.php`
+```html
+<!-- Incluir datepicker CSS/JS, moment, mask, jLinq -->
+<div id="heading" class="page-header">
+    <h1><i class="icon20 i-storage-2"></i> Nueva Transferencia de Piezas</h1>
+</div>
+```
+
+#### `news_body.php`
+Campos del formulario (form id="form-new-transferpiece"):
+
+**Sección Información General (col-lg-6 izquierda):**
+- Fecha (`txtDate`) → datepicker, formato yyyy-mm-dd
+- Estado (`txtStatusID`) → select2 con $objListWorkflowStage
+- Comentario (`txtComment`) → textarea
+- Referencia 1 (`txtReference1`) → input text
+- Referencia 2 (`txtReference2`) → input text
+
+**Sección Activos (col-lg-6 derecha):**
+- Activo Origen (`txtSourceFixedAssetID` + `txtSourceFixedAssetDescription`) 
+  → Input readonly + botón buscar (popup) + botón clear
+  → NO OBLIGATORIO
+  → Popup: `core_view/showviewbyname/{componentFixedAsset}/onCompleteSourceAsset/SELECCIONAR_FIXEDASSENT/true/empty/false/not_redirect_when_empty`
+
+- Activo Destino (`txtTargetFixedAssetID` + `txtTargetFixedAssetDescription`)
+  → Input readonly + botón buscar (popup) + botón clear  
+  → NO OBLIGATORIO
+  → Popup: `core_view/showviewbyname/{componentFixedAsset}/onCompleteTargetAsset/SELECCIONAR_FIXEDASSENT/true/empty/false/not_redirect_when_empty`
+
+**Sección Detalle de Piezas (abajo, full width):**
+- Botones: "Agregar Pieza" + "Eliminar Pieza"
+- Tabla `tb_transaction_master_detail`:
+  ```
+  | checkbox | Nombre Pieza | Cantidad | Estado/Acción        |
+  |----------|-------------|----------|----------------------|
+  |    ☐    | Memoria RAM |    1     | [select: nueva/baja/transferencia] |
+  |    ☐    | CPU         |    1     | [select: nueva/baja/transferencia] |
+  ```
+  
+- Template de fila (`tmpl_row_piece`):
+  ```html
+  <script type="text/template" id="tmpl_row_piece">
+      <tr class="row_razon">
+          <td class="td-checkbox">
+              <input type="checkbox" class="txtCheckedIsActive" name="txtCheckedIsActive[]" value="1" />
+              <input type="hidden" name="txtPiecePropertyID[]" id="txtPiecePropertyID" />
+          </td>
+          <td>
+              <input class="form-control" type="text" name="txtPieceName[]" id="txtPieceName" value="">
+          </td>
+          <td>
+              <input class="form-control" type="number" name="txtPieceQuantity[]" id="txtPieceQuantity" value="1">
+          </td>
+          <td>
+              <select class="form-control" name="txtPieceAction[]" id="txtPieceAction">
+                  <option value="">--Seleccione--</option>
+                  <option value="nueva">Nueva (Alta en Destino)</option>
+                  <option value="baja">Baja (Baja en Origen)</option>
+                  <option value="transferencia">Transferencia (Origen → Destino)</option>
+              </select>
+          </td>
+      </tr>
+  </script>
+  ```
+
+#### `news_script.php`
+```javascript
+// Inicializar datepicker
+// Evento btnAcept → submit form a app_afx_fixedassent_transferpiece/save/new
+// Evento btnSearchSourceAsset → popup selección activo origen
+// Evento btnClearSourceAsset → limpiar activo origen
+// Evento btnSearchTargetAsset → popup selección activo destino
+// Evento btnClearTargetAsset → limpiar activo destino
+// Evento btnNewDetailTransaction → agregar fila de pieza al detalle
+// Evento btnDeleteDetailTransaction → eliminar filas marcadas
+// Callbacks: onCompleteSourceAsset, onCompleteTargetAsset
+// validateForm(): validar fecha, estado, al menos 1 pieza en detalle, acción seleccionada por pieza
+```
+
+### 2.3 Vistas de Edición (edit)
+
+#### `edit_head.php`
+```html
+<!-- Incluir datepicker CSS/JS, moment, mask, jLinq -->
+<div id="heading" class="page-header">
+    <h1><i class="icon20 i-storage-2"></i> Editar Transferencia de Piezas</h1>
+</div>
+```
+
+#### `edit_body.php`
+- Mismo layout que `news_body.php` pero con valores precargados desde `$objTM`:
+  - `$objTM->transactionOn` → txtDate
+  - `$objTM->statusID` → txtStatusID (selected)
+  - `$objTM->note` → txtComment
+  - `$objTM->reference1` → txtReference1
+  - `$objTM->reference2` → txtReference2
+  - `$objTM->sourceWarehouseID` → txtSourceFixedAssetID (cargar nombre del activo origen)
+  - `$objTM->targetWarehouseID` → txtTargetFixedAssetID (cargar nombre del activo destino)
+- Hidden fields: `txtTransactionID`, `txtTransactionMasterID`
+- Detalle precargado desde `$objTMD`:
+  ```php
+  foreach ($objTMD as $detail) {
+      // Mostrar fila con:
+      // txtCurrentPieceID[] = $detail->tmdID
+      // txtPieceName (readonly) = $detail->reference2
+      // txtPieceQuantity = $detail->quantity
+      // txtPieceAction = $detail->reference1 (selected)
+  }
+  ```
+- Template para nuevas filas: usar `txtNewPiecePropertyID[]`, `txtNewPieceName[]`, etc.
+- Botones adicionales: Nuevo, Atrás, Eliminar, Guardar
+
+#### `edit_script.php`
+```javascript
+// Inicializar datepicker con valor existente
+// Evento btnAcept → submit form a app_afx_fixedassent_transferpiece/save/edit
+// Evento btnDelete → AJAX delete con confirmación
+// Eventos de búsqueda de activos (igual que new)
+// Eventos de detalle (agregar/eliminar filas)
+// validateForm()
+// Callbacks popup
+```
+
+---
+
+## 3. RUTAS
+
+### Archivo: `app/Config/Routes.php`
+
+Agregar las siguientes rutas (junto con las demás rutas de afx):
+
+```php
+$routes->match(['get', 'post'], 'app_afx_fixedassent_transferpiece/index', 'app_afx_fixedassent_transferpiece::index');
+$routes->match(['get', 'post'], 'app_afx_fixedassent_transferpiece/index/(:any)', 'app_afx_fixedassent_transferpiece::index');
+$routes->match(['get', 'post'], 'app_afx_fixedassent_transferpiece/save', 'app_afx_fixedassent_transferpiece::save');
+$routes->match(['get', 'post'], 'app_afx_fixedassent_transferpiece/save/(:any)', 'app_afx_fixedassent_transferpiece::save');
+$routes->match(['get', 'post'], 'app_afx_fixedassent_transferpiece/add', 'app_afx_fixedassent_transferpiece::add');
+$routes->match(['get', 'post'], 'app_afx_fixedassent_transferpiece/edit', 'app_afx_fixedassent_transferpiece::edit');
+$routes->match(['get', 'post'], 'app_afx_fixedassent_transferpiece/edit/(:any)', 'app_afx_fixedassent_transferpiece::edit');
+$routes->match(['get', 'post'], 'app_afx_fixedassent_transferpiece/delete', 'app_afx_fixedassent_transferpiece::delete');
+$routes->match(['get', 'post'], 'app_afx_fixedassent_transferpiece/searchTransactionMaster', 'app_afx_fixedassent_transferpiece::searchTransactionMaster');
+```
+
+---
+
+## 4. ESTRUCTURA DE DATOS
+
+### Tabla `tb_transaction_master` (campos utilizados)
+| Campo              | Uso en este módulo                            |
+|--------------------|----------------------------------------------|
+| companyID          | ID de la empresa                              |
+| transactionID      | ID tipo transacción (del componente)          |
+| transactionMasterID| PK auto-generado                              |
+| branchID           | Sucursal                                      |
+| transactionNumber  | Número consecutivo (core_web_counter)         |
+| transactionOn      | Fecha de la transferencia                     |
+| componentID        | componentID de tb_transaction_master_transferpiece |
+| note               | Comentario                                    |
+| reference1         | Referencia 1                                  |
+| reference2         | Referencia 2                                  |
+| statusID           | Estado (workflow)                             |
+| sourceWarehouseID  | fixedAssentID del activo ORIGEN               |
+| targetWarehouseID  | fixedAssentID del activo DESTINO              |
+| isActive           | 1=activo, 0=eliminado                         |
+
+### Tabla `tb_transaction_master_detail` (campos utilizados)
+| Campo                  | Uso en este módulo                        |
+|------------------------|------------------------------------------|
+| companyID              | ID de la empresa                          |
+| transactionID          | ID tipo transacción                       |
+| transactionMasterID    | FK al master                              |
+| componentID            | componentID del componente                |
+| componentItemID        | propertyItemID (de tb_component_property) |
+| quantity               | Cantidad de piezas                        |
+| reference1             | Acción: "nueva" / "baja" / "transferencia"|
+| reference2             | Nombre de la pieza                        |
+| isActive               | 1=activo, 0=eliminado                     |
+
+### Tabla `tb_component_property` (donde se ejecutan altas/bajas)
+| Campo            | Descripción                               |
+|------------------|------------------------------------------|
+| propertyItemID   | PK                                        |
+| componentID      | componentID de "tb_fixed_assent"          |
+| componentItemID  | fixedAssentID (el activo al que pertenece)|
+| propertyID       | catalogDetailID de la pieza/propiedad     |
+| name             | Nombre de la pieza                        |
+| descripcion      | Descripción                               |
+| value            | Valor/cantidad                            |
+| type             | Tipo de propiedad                         |
+| isActive         | 1=activa, 0=dada de baja                  |
+
+---
+
+## 5. LÓGICA DE NEGOCIO (Reglas de Aplicación)
+
+Cuando el estado del documento pasa a APLICABLE (validado por workflow):
+
+### Acción "baja"
+- Se busca la pieza en `tb_component_property` donde:
+  - `componentItemID` = fixedAssentID del activo ORIGEN (`sourceWarehouseID`)
+  - `propertyItemID` = valor almacenado en el detalle (`componentItemID`)
+- Se ejecuta: `Component_Property_Model->delete_app_posme($propertyItemID)` (soft delete, isActive=0)
+
+### Acción "nueva"  
+- Se crea un nuevo registro en `tb_component_property`:
+  - `componentID` = componentID de "tb_fixed_assent"
+  - `componentItemID` = fixedAssentID del activo DESTINO (`targetWarehouseID`)
+  - `propertyID` = ID del catálogo de la pieza
+  - `name` = nombre de la pieza
+  - `value` = cantidad
+  - `isActive` = 1
+
+### Acción "transferencia"
+- Combinación de baja + nueva:
+  1. Dar de baja la pieza del activo ORIGEN (delete_app_posme del propertyItemID)
+  2. Crear la pieza en el activo DESTINO (insert_app_posme con datos nuevos)
+
+---
+
+## 6. VALIDACIONES
+
+### En el formulario (JavaScript):
+- Fecha es obligatoria
+- Estado es obligatorio
+- Al menos 1 pieza en el detalle
+- Cada pieza debe tener seleccionada una acción (nueva/baja/transferencia)
+- Si acción es "baja" o "transferencia" → activo origen debe estar seleccionado
+- Si acción es "nueva" o "transferencia" → activo destino debe estar seleccionado
+
+### En el servidor (PHP):
+- Validación de autenticación y permisos
+- Validación de workflow (editable, eliminable, aplicable)
+- Validar que el activo origen/destino exista
+- Validar que la pieza exista en el activo origen antes de darla de baja
+- Transacciones con `$db->transStart()` y `$db->transCommit()` / `$db->transRollback()`
+
+---
+
+## 7. ARCHIVOS A CREAR
+
+```
+app/Controllers/app_afx_fixedassent_transferpiece.php
+app/Views/app_afx_fixedassent_transferpiece/list_head.php
+app/Views/app_afx_fixedassent_transferpiece/list_script.php
+app/Views/app_afx_fixedassent_transferpiece/list_footer.php
+app/Views/app_afx_fixedassent_transferpiece/news_head.php
+app/Views/app_afx_fixedassent_transferpiece/news_body.php
+app/Views/app_afx_fixedassent_transferpiece/news_script.php
+app/Views/app_afx_fixedassent_transferpiece/edit_head.php
+app/Views/app_afx_fixedassent_transferpiece/edit_body.php
+app/Views/app_afx_fixedassent_transferpiece/edit_script.php
+```
+
+**Modificar:**
+```
+app/Config/Routes.php (agregar rutas)
+```
+
+---
+
+## 8. NOTAS IMPORTANTES
+
+- Seguir exactamente el patrón de `app_afx_fixedassent_input` para la estructura del controlador
+- Los campos `sourceWarehouseID` y `targetWarehouseID` de `tb_transaction_master` se reutilizan para almacenar el activo origen y destino respectivamente
+- El activo origen y destino son NO obligatorios (depende de la acción seleccionada en las piezas)
+- Se pueden agregar múltiples piezas en una sola transacción
+- La aplicación de altas/bajas solo se ejecuta cuando el workflow permite (estado APLICABLE)
+- Usar `$this->core_web_auditoria->setAuditCreated()` al insertar
+- Usar transacciones de base de datos para garantizar integridad
