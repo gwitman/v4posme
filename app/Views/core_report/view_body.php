@@ -75,7 +75,7 @@ use App\Models\Core\Bd_Model;
                                                         <button class="btn btn-danger" type="button" id="btnClear" data-name="<?= $name?>">
                                                             <i class="fa-solid fa-rotate-left"></i> Clear
                                                         </button>
-                                                        <button class="btn btn-primary" type="button" id="btnSearch" data-name="<?= $name?>" data-url="<?= $reportingParameterValue->datasource ?>">
+                                                        <button class="btn btn-primary" type="button" id="btnSearch" data-name="<?= htmlspecialchars($name, ENT_QUOTES, 'UTF-8') ?>" data-url="<?= htmlspecialchars($reportingParameterValue->datasource, ENT_QUOTES, 'UTF-8') ?>">
                                                             <i class="fa-solid fa-magnifying-glass"></i> Buscar
                                                         </button>
                                                     </div>
