@@ -184,7 +184,7 @@
                                                 <tr class="row_razon">
                                                     <td class="td-checkbox">
                                                         <input type="checkbox" style="width: 20px; height:20px; display: block; margin: auto;" class="txtCheckedIsActive" name="txtCheckedIsActive[]" value="1" />
-                                                        <input type="hidden" name="txtCurrentPieceID[]" id="txtCurrentPieceID" value="<?= $detail->tmdID ?>" />
+                                                        <input type="hidden" name="txtCurrentPieceID[]" id="txtCurrentPieceID" value="<?= $detail->transactionMasterDetailID ?>" />
                                                     </td>
                                                     <td>
                                                         <select class="select2 select2-piecename" name="txtCurrentPieceName[]" style="width:100%">
@@ -192,7 +192,7 @@
                                                             <?php
                                                             if (!empty($objListPieceNames))
                                                                 foreach ($objListPieceNames as $pn) {
-                                                                    $selected = ($pn->publicCatalogDetailID == $detail->reference2) ? 'selected' : '';
+                                                                    $selected = ($pn->publicCatalogDetailID == $detail->piezaID) ? 'selected' : '';
                                                                     echo "<option value='" . $pn->publicCatalogDetailID . "' $selected>" . $pn->name . "</option>";
                                                                 }
                                                             ?>
@@ -207,14 +207,14 @@
                                                             <?php
                                                             if (!empty($objListTypeAction))
                                                                 foreach ($objListTypeAction as $ta) {
-                                                                    $selected = ($ta->catalogItemID == $detail->reference1) ? 'selected' : '';
+                                                                    $selected = ($ta->catalogItemID == $detail->typeMovementID) ? 'selected' : '';
                                                                     echo "<option value='" . $ta->catalogItemID . "' $selected>" . $ta->name . "</option>";
                                                                 }
                                                             ?>
                                                         </select>
                                                     </td>
                                                     <td>
-                                                        <input class="form-control" type="text" name="txtCurrentPieceComment[]" id="txtCurrentPieceComment" value="<?= $detail->reference3 ?? '' ?>">
+                                                        <input class="form-control" type="text" name="txtCurrentPieceComment[]" id="txtCurrentPieceComment" value="<?= $detail->comentMovement ?? '' ?>">
                                                     </td>
                                                 </tr>
                                         <?php

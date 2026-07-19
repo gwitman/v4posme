@@ -285,14 +285,15 @@ class app_afx_fixedassent_transferpiece extends _BaseController
                 $this->response->redirect(base_url() . "/" . 'app_afx_fixedassent_transferpiece/add');
             }
 
-            $dataView["company"] = $dataSession["company"];
-            $dataView["objTM"] = $this->Transaction_Master_Model->get_rowByPK($companyID, $transactionID, $transactionMasterID);
-            $dataView["objComponentTransferpiece"] = $objComponentTransferpiece;
-            $dataView["objComponentFixedAsset"] = $objComponentFixedAsset;
-            $dataView["objComponentPublicCatalog"] = $objComponentPublicCatalog;
-            $dataView["objListWorkflowStage"] = $this->core_web_workflow->getWorkflowAllStage("tb_transaction_master_transferpiece", "statusID", $companyID, $branchID, $roleID);
-            $dataView["objCausal"] = $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
-            $dataView["objTMD"] = $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID, $transactionID, $transactionMasterID, $objComponentTransferpiece->componentID);
+            log_message('info', '[app_afx_fixedassent_transferpiece::edit] Inciando a cargar varaibles');
+            $dataView["company"]                    = $dataSession["company"];
+            $dataView["objTM"]                      = $this->Transaction_Master_Model->get_rowByPK($companyID, $transactionID, $transactionMasterID);
+            $dataView["objComponentTransferpiece"]  = $objComponentTransferpiece;
+            $dataView["objComponentFixedAsset"]     = $objComponentFixedAsset;
+            $dataView["objComponentPublicCatalog"]  = $objComponentPublicCatalog;
+            $dataView["objListWorkflowStage"]       = $this->core_web_workflow->getWorkflowAllStage("tb_transaction_master_transferpiece", "statusID", $companyID, $branchID, $roleID);
+            $dataView["objCausal"]                  = $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
+            $dataView["objTMD"]                     = $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID, $transactionID, $transactionMasterID, $objComponentTransferpiece->componentID);
 
             // Cargar catalogo de acciones (typeID) desde tb_catalog/tb_catalog_item
             $dataView["objListTypeAction"] = $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_transferpiece_detail", "typeID", $companyID);
@@ -325,12 +326,12 @@ class app_afx_fixedassent_transferpiece extends _BaseController
             }
 
             //RENDERIZAR RESULTADO
-            $dataSession["notification"] = $this->core_web_error->get_error($dataSession["user"]->userID);
-            $dataSession["message"] = $this->core_web_notification->get_message();
-            $dataSession["head"] = view('app_afx_fixedassent_transferpiece/edit_head', $dataView);
-            $dataSession["body"] = view('app_afx_fixedassent_transferpiece/edit_body', $dataView);
-            $dataSession["script"] = view('app_afx_fixedassent_transferpiece/edit_script', $dataView);
-            $dataSession["footer"] = "";
+            $dataSession["notification"]    = $this->core_web_error->get_error($dataSession["user"]->userID);
+            $dataSession["message"]         = $this->core_web_notification->get_message();
+            $dataSession["head"]            = view('app_afx_fixedassent_transferpiece/edit_head', $dataView);
+            $dataSession["body"]            = view('app_afx_fixedassent_transferpiece/edit_body', $dataView);
+            $dataSession["script"]          = view('app_afx_fixedassent_transferpiece/edit_script', $dataView);
+            $dataSession["footer"]          = "";
             log_message('info', '[app_afx_fixedassent_transferpiece::edit] Vista de edición renderizada exitosamente');
             return view('core_masterpage/default_masterpage', $dataSession);
         } catch (Exception $ex) {
@@ -339,13 +340,12 @@ class app_afx_fixedassent_transferpiece extends _BaseController
                 return redirect()->to(base_url("core_acount/login"));
             }
 
-            $data["session"] = $dataSession;
-            $data["exception"] = $ex;
-            $data["urlLogin"] = base_url();
-            $data["urlIndex"] = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "index";
-            $data["urlBack"] = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-            $resultView = view("core_template/email_error_general", $data);
-
+            $data["session"]    = $dataSession;
+            $data["exception"]  = $ex;
+            $data["urlLogin"]   = base_url();
+            $data["urlIndex"]   = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "index";
+            $data["urlBack"]    = base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+            $resultView         = view("core_template/email_error_general", $data);
             return $resultView;
         }
     }
@@ -590,50 +590,60 @@ class app_afx_fixedassent_transferpiece extends _BaseController
                 if ($objListDetail) {
                     log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] Procesando ' . count($objListDetail) . ' detalles para aplicación');
                     foreach ($objListDetail as $detail) {
-                        $pieceAction = $detail->reference1;
-                        $pieceName = $detail->reference2;
-                        $pieceQuantity = $detail->quantity;
+                        $objActionMovement  = $this->Catalog_Item_Model->get_rowByCatalogItemID($detail->typeMovementID);
+                        if(!$objActionMovement)
+                        {
+                            log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] No se encontro el tipo de movimiento: ' .$detail->typeMovementID);
+                        }
 
-                        if ($pieceAction == "baja" && $sourceFixedAssetID) {
-                            log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] Acción BAJA para pieza: ' . $pieceName . ' del activo origen: ' . $sourceFixedAssetID);
+                        $objPieza  = $this->Public_Catalog_Detail_Model->get_rowByPk($detail->piezaID);
+                        if(!$objPieza)
+                        {
+                            log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] No se encontro la pieza del movimiento: ' .$detail->piezaID);
+                        }
+
+
+                        $pieceQuantity      = $detail->quantity;
+                        if ($objActionMovement->name == "Baja (Baja en origen)" && $sourceFixedAssetID) {
+                            log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] Acción BAJA para pieza: ' . $objPieza->name . ' del activo origen: ' . $sourceFixedAssetID);
                             // Dar de baja la pieza del activo origen
-                            $objProperty = $this->Component_Property_Model->get_rowByItemID($sourceFixedAssetID);
+                            $objProperty = $this->Component_Property_Model->get_rowByItemID_And_propertyID($sourceFixedAssetID,$objPieza->publicCatalogDetailID);
                             if ($objProperty) {
                                 $this->Component_Property_Model->delete_app_posme($objProperty->propertyItemID);
                                 log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] Pieza dada de baja. propertyItemID: ' . $objProperty->propertyItemID);
                             }
-                        } else if ($pieceAction == "nueva" && $targetFixedAssetID) {
-                            log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] Acción NUEVA para pieza: ' . $pieceName . ' en activo destino: ' . $targetFixedAssetID);
+                        } else if ($objActionMovement->name== "Nueva (Alta en destino)" && $targetFixedAssetID) {
+                            log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] Acción NUEVA para pieza: ' . $objPieza->name . ' en activo destino: ' . $targetFixedAssetID);
                             // Crear nueva pieza en activo destino
-                            $dataProp = [];
-                            $dataProp["componentID"] = $objComponentFixedAsset->componentID;
-                            $dataProp["componentItemID"] = $targetFixedAssetID;
-                            $dataProp["propertyID"] = 0;
-                            $dataProp["name"] = $pieceName;
-                            $dataProp["descripcion"] = "";
-                            $dataProp["value"] = $pieceQuantity;
-                            $dataProp["type"] = "transferpiece";
-                            $dataProp["isActive"] = 1;
+                            $dataProp                       = [];
+                            $dataProp["componentID"]        = $objComponentFixedAsset->componentID;
+                            $dataProp["componentItemID"]    = $targetFixedAssetID;
+                            $dataProp["propertyID"]         = $objPieza->publicCatalogDetailID;
+                            $dataProp["name"]               = $objPieza->name;
+                            $dataProp["descripcion"]        = "";
+                            $dataProp["value"]              = $pieceQuantity;
+                            $dataProp["type"]               = "transferpiece";
+                            $dataProp["isActive"]           = 1;
                             $this->Component_Property_Model->insert_app_posme($dataProp);
                             log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] Nueva pieza creada en activo destino');
-                        } else if ($pieceAction == "transferencia" && $sourceFixedAssetID && $targetFixedAssetID) {
-                            log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] Acción TRANSFERENCIA para pieza: ' . $pieceName . ' de origen: ' . $sourceFixedAssetID . ' a destino: ' . $targetFixedAssetID);
+                        } else if ($objActionMovement->name == "Transferencia (Origen -> Destino)" && $sourceFixedAssetID && $targetFixedAssetID) {
+                            log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] Acción TRANSFERENCIA para pieza: ' . $objPieza->name . ' de origen: ' . $sourceFixedAssetID . ' a destino: ' . $targetFixedAssetID);
                             // Baja del origen
-                            $objProperty = $this->Component_Property_Model->get_rowByItemID($sourceFixedAssetID);
+                            $objProperty = $this->Component_Property_Model->get_rowByItemID_And_propertyID($sourceFixedAssetID,$objPieza->publicCatalogDetailID);
                             if ($objProperty) {
                                 $this->Component_Property_Model->delete_app_posme($objProperty->propertyItemID);
                                 log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] Pieza eliminada del origen. propertyItemID: ' . $objProperty->propertyItemID);
                             }
                             // Alta en destino
-                            $dataProp = [];
-                            $dataProp["componentID"] = $objComponentFixedAsset->componentID;
-                            $dataProp["componentItemID"] = $targetFixedAssetID;
-                            $dataProp["propertyID"] = 0;
-                            $dataProp["name"] = $pieceName;
-                            $dataProp["descripcion"] = "";
-                            $dataProp["value"] = $pieceQuantity;
-                            $dataProp["type"] = "transferpiece";
-                            $dataProp["isActive"] = 1;
+                            $dataProp                       = [];
+                            $dataProp["componentID"]        = $objComponentFixedAsset->componentID;
+                            $dataProp["componentItemID"]    = $targetFixedAssetID;
+                            $dataProp["propertyID"]         = $objPieza->publicCatalogDetailID;
+                            $dataProp["name"]               = $objPieza->name;
+                            $dataProp["descripcion"]        = "";
+                            $dataProp["value"]              = $pieceQuantity;
+                            $dataProp["type"]               = "transferpiece";
+                            $dataProp["isActive"]           = 1;
                             $this->Component_Property_Model->insert_app_posme($dataProp);
                             log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] Pieza creada en activo destino');
                         }

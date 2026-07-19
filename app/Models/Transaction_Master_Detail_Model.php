@@ -379,7 +379,32 @@ class Transaction_Master_Detail_Model extends Model  {
 			$sql = $sql.sprintf(" ORDER BY itemDestinationName ASC, itemName ASC");
 
 		}
-		
+		if($componentID == 137 /*Transferencia de piezas entre activos*/)
+		{
+			$sql = sprintf("
+			select 
+				c.transactionID,
+				c.transactionMasterID,
+				c.transactionMasterDetailID,
+				c.quantity,
+				sta.`name` as typeMovementName,
+				c.reference1 as typeMovementID,
+				pub.`name` as piezaName,
+				c.reference2 as piezaID,
+				c.reference3 as comentMovement
+			from 
+				tb_transaction_master_detail c 
+				inner join tb_catalog_item sta on 
+					c.reference1 = sta.catalogItemID 
+				inner join tb_public_catalog_detail pub on 
+					c.reference2 = pub.publicCatalogDetailID 
+			where 
+				c.transactionMasterID = $transactionMasterID and 
+				c.isActive = 1 ; 
+			");
+		}
+
+
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
