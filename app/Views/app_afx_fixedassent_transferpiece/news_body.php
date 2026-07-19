@@ -165,6 +165,7 @@
                                             <th>Nombre Pieza</th>
                                             <th style="width: 120px;">Cantidad</th>
                                             <th style="width: 250px;">Accion</th>
+                                            <th style="width: 200px;">Comentario</th>
                                         </tr>
                                     </thead>
                                     <tbody id="body_tb_transaction_master_detail">
@@ -187,18 +188,32 @@
             <input type="checkbox" style="width: 20px; height:20px; display: block; margin: auto;" class="txtCheckedIsActive" name="txtCheckedIsActive[]" value="1" />
         </td>
         <td>
-            <input class="form-control" type="text" name="txtPieceName[]" id="txtPieceName" value="">
+            <select class="select2 select2-piecename" name="txtPieceName[]" style="width:100%">
+                <option value="">--Seleccione--</option>
+                <?php
+                if (!empty($objListPieceNames))
+                    foreach ($objListPieceNames as $pn) {
+                        echo "<option value='" . $pn->publicCatalogDetailID . "'>" . $pn->name . "</option>";
+                    }
+                ?>
+            </select>
         </td>
         <td>
             <input class="form-control" type="number" name="txtPieceQuantity[]" id="txtPieceQuantity" value="1">
         </td>
         <td>
-            <select class="form-control" name="txtPieceAction[]" id="txtPieceAction">
+            <select class="select2 select2-action" name="txtPieceAction[]" style="width:100%">
                 <option value="">--Seleccione--</option>
-                <option value="nueva">Nueva (Alta en Destino)</option>
-                <option value="baja">Baja (Baja en Origen)</option>
-                <option value="transferencia">Transferencia (Origen → Destino)</option>
+                <?php
+                if (!empty($objListTypeAction))
+                    foreach ($objListTypeAction as $ta) {
+                        echo "<option value='" . $ta->catalogItemID . "'>" . $ta->name . "</option>";
+                    }
+                ?>
             </select>
+        </td>
+        <td>
+            <input class="form-control" type="text" name="txtPieceComment[]" id="txtPieceComment" value="">
         </td>
     </tr>
 </script>

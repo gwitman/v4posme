@@ -194,6 +194,20 @@ class app_afx_fixedassent_transferpiece extends _BaseController
             $dataView["objListWorkflowStage"] = $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_transferpiece", "statusID", $companyID, $branchID, $roleID);
             $dataView["objCausal"] = $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
 
+            // Cargar catalogo de acciones (typeID) desde tb_catalog/tb_catalog_item
+            $dataView["objListTypeAction"] = $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_transferpiece_detail", "typeID", $companyID);
+
+            // Cargar catalogo de nombres de piezas desde tb_public_catalog/tb_public_catalog_detail
+            $objCompany = $this->Company_Model->get_rowByPK($companyID);
+            $objPropertyCatalog = $this->Public_Catalog_Model->getBySystemNameAndFlavorID('tb_catalog_property_fixedassent', $objCompany->flavorID);
+            if (!$objPropertyCatalog) {
+                $objPropertyCatalog = $this->Public_Catalog_Model->getBySystemNameAndFlavorID('tb_catalog_property_fixedassent', 0);
+            }
+            $dataView["objListPieceNames"] = [];
+            if ($objPropertyCatalog && count($objPropertyCatalog) > 0) {
+                $dataView["objListPieceNames"] = $this->Public_Catalog_Detail_Model->getView($objPropertyCatalog[0]->publicCatalogID);
+            }
+
             //Renderizar Resultado
             $dataSession["notification"] = $this->core_web_error->get_error($dataSession["user"]->userID);
             $dataSession["message"] = $this->core_web_notification->get_message();
@@ -279,6 +293,20 @@ class app_afx_fixedassent_transferpiece extends _BaseController
             $dataView["objListWorkflowStage"] = $this->core_web_workflow->getWorkflowAllStage("tb_transaction_master_transferpiece", "statusID", $companyID, $branchID, $roleID);
             $dataView["objCausal"] = $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
             $dataView["objTMD"] = $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID, $transactionID, $transactionMasterID, $objComponentTransferpiece->componentID);
+
+            // Cargar catalogo de acciones (typeID) desde tb_catalog/tb_catalog_item
+            $dataView["objListTypeAction"] = $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_transferpiece_detail", "typeID", $companyID);
+
+            // Cargar catalogo de nombres de piezas desde tb_public_catalog/tb_public_catalog_detail
+            $objCompany = $this->Company_Model->get_rowByPK($companyID);
+            $objPropertyCatalog = $this->Public_Catalog_Model->getBySystemNameAndFlavorID('tb_catalog_property_fixedassent', $objCompany->flavorID);
+            if (!$objPropertyCatalog) {
+                $objPropertyCatalog = $this->Public_Catalog_Model->getBySystemNameAndFlavorID('tb_catalog_property_fixedassent', 0);
+            }
+            $dataView["objListPieceNames"] = [];
+            if ($objPropertyCatalog && count($objPropertyCatalog) > 0) {
+                $dataView["objListPieceNames"] = $this->Public_Catalog_Detail_Model->getView($objPropertyCatalog[0]->publicCatalogID);
+            }
 
             log_message('info', '[app_afx_fixedassent_transferpiece::edit] Transaction Master cargado. statusID: ' . ($dataView["objTM"]->statusID ?? 'null'));
 
@@ -379,6 +407,7 @@ class app_afx_fixedassent_transferpiece extends _BaseController
             $arrayPieceName = $this->request->getPost("txtPieceName");
             $arrayPieceQuantity = $this->request->getPost("txtPieceQuantity");
             $arrayPieceAction = $this->request->getPost("txtPieceAction");
+            $arrayPieceComment = $this->request->getPost("txtPieceComment");
 
             if (!empty($arrayPieceName)) {
                 log_message('info', '[app_afx_fixedassent_transferpiece::insertElement] Insertando detalle de piezas. Total: ' . count($arrayPieceName));
@@ -392,6 +421,7 @@ class app_afx_fixedassent_transferpiece extends _BaseController
                     $objTMD["quantity"] = $arrayPieceQuantity[$key];
                     $objTMD["reference1"] = $arrayPieceAction[$key];
                     $objTMD["reference2"] = $arrayPieceName[$key];
+                    $objTMD["reference3"] = $arrayPieceComment[$key] ?? '';
                     $objTMD["isActive"] = 1;
                     $this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
                 }
@@ -495,10 +525,12 @@ class app_afx_fixedassent_transferpiece extends _BaseController
             $arrayCurrentPieceName = $this->request->getPost("txtCurrentPieceName");
             $arrayCurrentPieceQuantity = $this->request->getPost("txtCurrentPieceQuantity");
             $arrayCurrentPieceAction = $this->request->getPost("txtCurrentPieceAction");
+            $arrayCurrentPieceComment = $this->request->getPost("txtCurrentPieceComment");
 
             $arrayNewPieceName = $this->request->getPost("txtNewPieceName");
             $arrayNewPieceQuantity = $this->request->getPost("txtNewPieceQuantity");
             $arrayNewPieceAction = $this->request->getPost("txtNewPieceAction");
+            $arrayNewPieceComment = $this->request->getPost("txtNewPieceComment");
 
             // Eliminar los detalles existentes si la lista esta completamente vacia
             if ($arrayCurrentPieceID == null && $arrayNewPieceName != null) {
@@ -518,6 +550,7 @@ class app_afx_fixedassent_transferpiece extends _BaseController
                     $objTMDUpdate["quantity"] = $arrayCurrentPieceQuantity[$key];
                     $objTMDUpdate["reference1"] = $arrayCurrentPieceAction[$key];
                     $objTMDUpdate["reference2"] = $arrayCurrentPieceName[$key];
+                    $objTMDUpdate["reference3"] = $arrayCurrentPieceComment[$key] ?? '';
                     $this->Transaction_Master_Detail_Model->update_app_posme($companyID, $transactionID, $transactionMasterID, $value, $objTMDUpdate);
                 }
             }
@@ -535,6 +568,7 @@ class app_afx_fixedassent_transferpiece extends _BaseController
                     $objTMD["quantity"] = $arrayNewPieceQuantity[$key];
                     $objTMD["reference1"] = $arrayNewPieceAction[$key];
                     $objTMD["reference2"] = $value;
+                    $objTMD["reference3"] = $arrayNewPieceComment[$key] ?? '';
                     $objTMD["isActive"] = 1;
                     $this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
                 }

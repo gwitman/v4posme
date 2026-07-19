@@ -53,6 +53,15 @@
         $(document).on("click", "#btnNewDetailTransaction", function() {
             var tmpl = $($("#tmpl_row_piece").html());
             $("#body_tb_transaction_master_detail").append(tmpl);
+            //Inicializar select2 en la nueva fila
+            tmpl.find(".select2-action").select2({
+                placeholder: "--Seleccione--",
+                allowClear: true
+            });
+            tmpl.find(".select2-piecename").select2({
+                placeholder: "--Seleccione--",
+                allowClear: true
+            });
         });
 
         //Eliminar Piezas marcadas
@@ -99,37 +108,19 @@
 
         //Validar que cada pieza tenga nombre
         var nameValid = true;
-        $("input[name='txtPieceName[]']").each(function() {
-            if ($(this).val().trim() === "") {
+        $("select[name='txtPieceName[]']").each(function() {
+            if ($(this).val() === "" || $(this).val() === null) {
                 nameValid = false;
             }
         });
         if (!nameValid) {
-            fnShowNotification("Ingrese el nombre de cada pieza", "error", timerNotification);
+            fnShowNotification("Seleccione el nombre de cada pieza", "error", timerNotification);
             result = false;
         }
 
-        //Validar activo origen si hay piezas con accion baja o transferencia
-        var needSource = false;
-        $("select[name='txtPieceAction[]']").each(function() {
-            if ($(this).val() === "baja" || $(this).val() === "transferencia") {
-                needSource = true;
-            }
-        });
-        if (needSource && $("#txtSourceFixedAssetID").val() === "") {
-            fnShowNotification("Seleccione el Activo Origen para acciones de baja o transferencia", "error", timerNotification);
-            result = false;
-        }
-
-        //Validar activo destino si hay piezas con accion nueva o transferencia
-        var needTarget = false;
-        $("select[name='txtPieceAction[]']").each(function() {
-            if ($(this).val() === "nueva" || $(this).val() === "transferencia") {
-                needTarget = true;
-            }
-        });
-        if (needTarget && $("#txtTargetFixedAssetID").val() === "") {
-            fnShowNotification("Seleccione el Activo Destino para acciones de nueva o transferencia", "error", timerNotification);
+        //Validar activo origen
+        if ($("#txtSourceFixedAssetID").val() === "" && $("#txtTargetFixedAssetID").val() === "") {
+            fnShowNotification("Seleccione al menos un Activo (Origen o Destino)", "error", timerNotification);
             result = false;
         }
 
