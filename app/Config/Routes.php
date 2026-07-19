@@ -1221,6 +1221,7 @@ $routes->match(['get', 'post'], 'app_invoice_billing/edit/(:any)/(:any)/(:any)/(
 $routes->match(['get', 'post'], 'app_invoice_billing/editv2', 'app_invoice_billing::editv2');
 $routes->match(['get', 'post'], 'app_invoice_billing/editv2/(:any)', 'app_invoice_billing::editv2');
 $routes->match(['get', 'post'], 'app_invoice_billing/delete', 'app_invoice_billing::delete');
+$routes->match(['get', 'post'], 'app_invoice_billing/duplicate', 'app_invoice_billing::duplicate');
 $routes->match(['get', 'post'], 'app_invoice_billing/updateElement', 'app_invoice_billing::updateElement');
 $routes->match(['get', 'post'], 'app_invoice_billing/updateElement/(:any)', 'app_invoice_billing::updateElement');
 $routes->match(['get', 'post'], 'app_invoice_billing/insertElement', 'app_invoice_billing::insertElement');
