@@ -230,6 +230,39 @@
 			}
 		});
 		
+		$(document).on("click","#btnDuplicar",function(){
+			if(objRowTableListView != undefined){
+				var data 		= objTableListView.fnGetData(objRowTableListView);				
+				fnShowConfirm("Confirmar..","Desea duplicar esta Factura...",function(){
+					mostrarModal('ModalCargandoDatos');
+					$.ajax({									
+						cache       : false,
+						dataType    : 'json',
+						type        : 'POST',
+						url  		: "<?php echo base_url(); ?>/app_invoice_billing/duplicate",
+						data 		: {companyID : data[0], transactionID :data[1], transactionMasterID : data[2] },
+						success:function(data){
+							cerrarModal('ModalCargandoDatos');
+							if(data.error){
+								fnShowNotification(data.message,"error");
+							}
+							else{				
+								fnShowNotification(data.message,"success");
+								setTimeout(function(){ location.reload(); }, 1500);
+							}
+						},
+						error:function(xhr,data){	
+							cerrarModal('ModalCargandoDatos');
+							fnShowNotification("Error 505","error");
+						}
+					});
+				});
+			}
+			else{
+				fnShowNotification("Seleccionar el Registro...","error");
+			}
+		});
+		
 		$(document).on("click","#btnNuevo",function(){
 			objBoton = "new";
 			if(objEsMesero == "0")

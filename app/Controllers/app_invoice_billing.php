@@ -823,6 +823,244 @@ class app_invoice_billing extends _BaseController {
 		}	
 	}
 	
+	function duplicate(){
+		try{ 
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCTION
+			if(APP_NEED_AUTHENTICATION == true){
+				$permited = false;
+				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				
+				if(!$permited)
+				throw new \Exception(NOT_ACCESS_CONTROL);
+				
+				$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"add",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				if ($resultPermission 	== PERMISSION_NONE)
+				throw new \Exception(NOT_ALL_INSERT);			
+			}	
+			
+			//Obtener parametros
+			$companyID 				= /*inicio get post*/ $this->request->getPost("companyID");
+			$transactionID 			= /*inicio get post*/ $this->request->getPost("transactionID");				
+			$transactionMasterID 	= /*inicio get post*/ $this->request->getPost("transactionMasterID");				
+			
+			if((!$companyID || !$transactionID || !$transactionMasterID)){
+				throw new \Exception(NOT_PARAMETER);								 
+			} 
+			
+			//Obtener el registro original
+			$objTM = $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			if(!$objTM)
+			throw new \Exception("EL DOCUMENTO NO EXISTE");
+			
+			$branchID 	= $dataSession["user"]->branchID;
+			$roleID 	= $dataSession["role"]->roleID;
+			$userID		= $dataSession["user"]->userID;
+			
+			//Obtener estado inicial del workflow
+			$objListWorkflowStage = $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_billing","statusID",$companyID,$branchID,$roleID);
+			if(!$objListWorkflowStage)
+			throw new \Exception("NO SE ENCONTRO EL ESTADO INICIAL DEL WORKFLOW");
+			
+			$db = db_connect();
+			$db->transStart();
+			
+			//1. Duplicar tb_transaction_master
+			$objTMNew = array();
+			$objTMNew["companyID"] 				= $objTM->companyID;
+			$objTMNew["transactionID"] 			= $objTM->transactionID;
+			$objTMNew["branchID"]				= $dataSession["user"]->branchID;
+			$objTMNew["transactionNumber"]		= $this->core_web_counter->goNextNumber($companyID,$branchID,"tb_transaction_master_proforma",0);
+			$objTMNew["transactionCausalID"] 	= $objTM->transactionCausalID;
+			$objTMNew["entityID"] 				= $objTM->entityID;
+			$objTMNew["transactionOn"]			= date("Y-m-d");
+			$objTMNew["transactionOn2"]			= $objTM->transactionOn2;
+			$objTMNew["statusIDChangeOn"]		= date("Y-m-d H:i:s");
+			$objTMNew["componentID"] 			= $objTM->componentID;
+			$objTMNew["note"] 					= $objTM->note;
+			$objTMNew["sign"] 					= $objTM->sign;
+			$objTMNew["currencyID"]				= $objTM->currencyID;
+			$objTMNew["currencyID2"]			= $objTM->currencyID2;
+			$objTMNew["exchangeRate"]			= $objTM->exchangeRate;
+			$objTMNew["reference1"] 			= $objTM->reference1;
+			$objTMNew["reference2"] 			= $objTM->reference2;
+			$objTMNew["reference3"] 			= $objTM->reference3;
+			$objTMNew["reference4"] 			= $objTM->reference4;
+			$objTMNew["descriptionReference"] 	= $objTM->descriptionReference;
+			$objTMNew["statusID"] 				= $objListWorkflowStage[0]->workflowStageID;
+			$objTMNew["amount"] 				= $objTM->amount;
+			$objTMNew["tax1"] 					= $objTM->tax1;
+			$objTMNew["tax2"] 					= $objTM->tax2;
+			$objTMNew["tax3"] 					= $objTM->tax3 ?? 0;
+			$objTMNew["tax4"] 					= $objTM->tax4;
+			$objTMNew["discount"] 				= $objTM->discount;
+			$objTMNew["subAmount"] 				= $objTM->subAmount;
+			$objTMNew["isApplied"] 				= 0;
+			$objTMNew["journalEntryID"] 		= 0;
+			$objTMNew["classID"] 				= $objTM->classID;
+			$objTMNew["areaID"] 				= $objTM->areaID;
+			$objTMNew["sourceWarehouseID"]		= $objTM->sourceWarehouseID;
+			$objTMNew["targetWarehouseID"]		= $objTM->targetWarehouseID;
+			$objTMNew["isActive"]				= 1;
+			$objTMNew["periodPay"]				= $objTM->periodPay;
+			$objTMNew["nextVisit"]				= $objTM->nextVisit;
+			$objTMNew["numberPhone"]			= $objTM->numberPhone;
+			$objTMNew["entityIDSecondary"]		= $objTM->entityIDSecondary;
+			$objTMNew["dayExcluded"]			= $objTM->dayExcluded;
+			$this->core_web_auditoria->setAuditCreated($objTMNew,$dataSession,$this->request);
+			
+			$newTransactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTMNew);
+			
+			//2. Duplicar tb_transaction_master_info
+			$objTMI = $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			if($objTMI){
+				$objTMINew = array();
+				$objTMINew["companyID"]					= $objTMI->companyID;
+				$objTMINew["transactionID"]				= $objTMI->transactionID;
+				$objTMINew["transactionMasterID"]		= $newTransactionMasterID;
+				$objTMINew["zoneID"]					= $objTMI->zoneID;
+				$objTMINew["routeID"]					= $objTMI->routeID;
+				$objTMINew["mesaID"]					= $objTMI->mesaID;
+				$objTMINew["referenceClientName"]		= $objTMI->referenceClientName;
+				$objTMINew["referenceClientIdentifier"]	= $objTMI->referenceClientIdentifier;
+				$objTMINew["receiptAmount"]				= 0;
+				$objTMINew["receiptAmountDol"]			= 0;
+				$objTMINew["receiptAmountPoint"]		= 0;
+				$objTMINew["receiptAmountBank"]			= 0;
+				$objTMINew["receiptAmountBankDol"]		= 0;
+				$objTMINew["receiptAmountCardDol"]		= 0;
+				$objTMINew["receiptAmountCard"]			= 0;
+				$objTMINew["changeAmount"]				= 0;
+				$objTMINew["receiptAmountBankReference"]		= 0;
+				$objTMINew["receiptAmountBankDolReference"]		= 0;
+				$objTMINew["receiptAmountCardBankReference"]	= 0;
+				$objTMINew["receiptAmountCardBankDolReference"]	= 0;
+				$objTMINew["receiptAmountBankID"]				= $objTMI->receiptAmountBankID;
+				$objTMINew["receiptAmountBankDolID"]			= $objTMI->receiptAmountBankDolID;
+				$objTMINew["receiptAmountCardBankID"]			= $objTMI->receiptAmountCardBankID;
+				$objTMINew["receiptAmountCardBankDolID"]		= $objTMI->receiptAmountCardBankDolID;
+				$objTMINew["reference1"]				= $objTMI->reference1;
+				$objTMINew["reference2"]				= $objTMI->reference2;
+				$this->Transaction_Master_Info_Model->insert_app_posme($objTMINew);
+			}
+			
+			//3. Duplicar tb_transaction_master_references
+			$objTMR = $this->Transaction_Master_References_Model->get_rowByTransactionMaster($transactionMasterID);
+			if($objTMR){
+				$objTMRNew = array();
+				$objTMRNew["transactionMasterID"]	= $newTransactionMasterID;
+				$objTMRNew["reference1"]			= $objTMR->reference1;
+				$objTMRNew["reference2"]			= $objTMR->reference2;
+				$objTMRNew["createdOn"]				= date("Y-m-d H:i:s");
+				$objTMRNew["isActive"]				= 1;
+				$this->Transaction_Master_References_Model->insert_app_posme($objTMRNew);
+			}
+			
+			//4. Duplicar tb_transaction_master_detail y tablas relacionadas
+			$objTMDList = $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+			if($objTMDList){
+				foreach($objTMDList as $objTMD){
+					$objTMDNew = array();
+					$objTMDNew["companyID"] 				= $objTMD->companyID;
+					$objTMDNew["transactionID"] 			= $objTMD->transactionID;
+					$objTMDNew["transactionMasterID"] 		= $newTransactionMasterID;
+					$objTMDNew["componentID"]				= $objTMD->componentID;
+					$objTMDNew["componentItemID"] 			= $objTMD->componentItemID;
+					$objTMDNew["quantity"] 					= $objTMD->quantity;
+					$objTMDNew["skuQuantity"] 				= $objTMD->skuQuantity;
+					$objTMDNew["skuQuantityBySku"]			= $objTMD->skuQuantityBySku;
+					$objTMDNew["unitaryCost"]				= $objTMD->unitaryCost;
+					$objTMDNew["cost"] 						= $objTMD->cost;
+					$objTMDNew["unitaryPrice"]				= $objTMD->unitaryPrice;
+					$objTMDNew["unitaryAmount"]				= $objTMD->unitaryAmount;
+					$objTMDNew["tax1"]						= $objTMD->tax1;
+					$objTMDNew["tax2"]						= $objTMD->tax2;
+					$objTMDNew["tax3"]						= $objTMD->tax3;
+					$objTMDNew["amount"] 					= $objTMD->amount;
+					$objTMDNew["discount"]					= $objTMD->discount;
+					$objTMDNew["promotionID"] 				= $objTMD->promotionID;
+					$objTMDNew["reference1"]				= $objTMD->reference1;
+					$objTMDNew["reference2"]				= $objTMD->reference2;
+					$objTMDNew["reference3"]				= $objTMD->reference3;
+					$objTMDNew["itemNameLog"] 				= $objTMD->itemNameLog;
+					$objTMDNew["itemNameDescriptionLog"] 	= $objTMD->itemNameDescriptionLog;
+					$objTMDNew["catalogStatusID"]			= $objTMD->catalogStatusID;
+					$objTMDNew["inventoryStatusID"]		= $objTMD->inventoryStatusID;
+					$objTMDNew["isActive"]					= 1;
+					$objTMDNew["quantityStock"]				= 0;
+					$objTMDNew["quantiryStockInTraffic"]	= 0;
+					$objTMDNew["quantityStockUnaswared"]	= 0;
+					$objTMDNew["remaingStock"]				= 0;
+					$objTMDNew["expirationDate"]			= $objTMD->expirationDate;
+					$objTMDNew["inventoryWarehouseSourceID"]= $objTMD->inventoryWarehouseSourceID;
+					$objTMDNew["inventoryWarehouseTargetID"]= $objTMD->inventoryWarehouseTargetID;
+					$objTMDNew["skuCatalogItemID"] 			= $objTMD->skuCatalogItemID;
+					$objTMDNew["skuFormatoDescription"] 	= $objTMD->skuFormatoDescription;
+					$objTMDNew["typePriceID"]				= $objTMD->typePriceID;
+					
+					$newTransactionMasterDetailID = $this->Transaction_Master_Detail_Model->insert_app_posme($objTMDNew);
+					
+					//4.1 Duplicar tb_transaction_master_detail_credit
+					$objTMDC = $this->Transaction_Master_Detail_Credit_Model->get_rowByPK($objTMD->transactionMasterDetailID);
+					if($objTMDC){
+						$objTMDCNew = array();
+						$objTMDCNew["transactionMasterID"]			= $newTransactionMasterID;
+						$objTMDCNew["transactionMasterDetailID"]	= $newTransactionMasterDetailID;
+						$objTMDCNew["reference1"]					= $objTMDC->reference1;
+						$objTMDCNew["reference2"]					= $objTMDC->reference2;
+						$objTMDCNew["reference3"]					= $objTMDC->reference3;
+						$objTMDCNew["reference4"]					= $objTMDC->reference4;
+						$objTMDCNew["reference5"]					= $objTMDC->reference5;
+						$objTMDCNew["reference9"]					= $objTMDC->reference9;
+						$this->Transaction_Master_Detail_Credit_Model->insert_app_posme($objTMDCNew);
+					}
+					
+					//4.2 Duplicar tb_transaction_master_detail_references
+					$objTMDRList = $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterDetailID($objTMD->transactionMasterDetailID);
+					if($objTMDRList){
+						foreach($objTMDRList as $objTMDR){
+							$objTMDRNew = array();
+							$objTMDRNew["transactionMasterDetailID"]= $newTransactionMasterDetailID;
+							$objTMDRNew["componentID"]				= $objTMDR->componentID;
+							$objTMDRNew["componentItemID"]			= $objTMDR->componentItemID;
+							$objTMDRNew["quantity"]					= $objTMDR->quantity;
+							$objTMDRNew["createdOn"]				= date("Y-m-d H:i:s");
+							$objTMDRNew["reference1"]				= $objTMDR->reference1;
+							$objTMDRNew["reference2"]				= $objTMDR->reference2;
+							$objTMDRNew["isActive"]					= 1;
+							$objTMDRNew["sales"]					= $objTMDR->sales;
+							$this->Transaction_Master_Detail_References_Model->insert_app_posme($objTMDRNew);
+						}
+					}
+				}
+			}
+			
+			if($db->transStatus() !== false){
+				$db->transCommit();
+				return $this->response->setJSON(array(
+					'error'   => false,
+					'message' => 'Factura duplicada exitosamente. Nuevo ID: '.$newTransactionMasterID
+				));
+			}
+			else{
+				$db->transRollback();
+				throw new \Exception("Error al duplicar la factura");
+			}
+			
+		}
+		catch(\Exception $ex){
+			log_message("error",print_r($ex,true));
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));
+		}	
+	}
+	
 	function updateElement($dataSession){
 		try{
 			//PERMISO SOBRE LA FUNCTION
