@@ -606,14 +606,31 @@ class app_afx_fixedassent_transferpiece extends _BaseController
                         $pieceQuantity      = $detail->quantity;
                         if ($objActionMovement->name == "Baja (Baja en origen)" && $sourceFixedAssetID) {
                             log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] Acción BAJA para pieza: ' . $objPieza->name . ' del activo origen: ' . $sourceFixedAssetID);
-                            // Dar de baja la pieza del activo origen
+                            // Validar que el activo origen tenga la pieza antes de darle de baja
                             $objProperty = $this->Component_Property_Model->get_rowByItemID_And_propertyID($sourceFixedAssetID,$objPieza->publicCatalogDetailID);
-                            if ($objProperty) {
-                                $this->Component_Property_Model->delete_app_posme($objProperty->propertyItemID);
-                                log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] Pieza dada de baja. propertyItemID: ' . $objProperty->propertyItemID);
+                            if (!$objProperty) 
+                            {
+                                throw new Exception("No se puede dar de baja la pieza '" . $objPieza->name . "' porque el activo origen no la tiene asignada.");
                             }
+                            if ($objProperty->value == "0" ) 
+                            {
+                                throw new Exception("No se puede dar de baja la pieza '" . $objPieza->name . "' porque el activo origen no la tiene asignada.");
+                            }
+
+                            // Dar de baja la pieza del activo origen
+                            $this->Component_Property_Model->delete_app_posme($objProperty->propertyItemID);
+                            log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] Pieza dada de baja. propertyItemID: ' . $objProperty->propertyItemID);
                         } else if ($objActionMovement->name== "Nueva (Alta en destino)" && $targetFixedAssetID) {
                             log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] Acción NUEVA para pieza: ' . $objPieza->name . ' en activo destino: ' . $targetFixedAssetID);
+                            // Validar que el activo destino NO tenga ya la pieza
+                            $objPropertyExist = $this->Component_Property_Model->get_rowByItemID_And_propertyID($targetFixedAssetID,$objPieza->publicCatalogDetailID);
+                            if ($objPropertyExist) 
+                            {
+                                if($objPropertyExist->value == "1")
+                                {
+                                    throw new Exception("No se puede dar de alta la pieza '" . $objPieza->name . "' porque el activo destino ya la tiene asignada.");
+                                }
+                            }
                             // Crear nueva pieza en activo destino
                             $dataProp                       = [];
                             $dataProp["componentID"]        = $objComponentFixedAsset->componentID;
@@ -628,12 +645,19 @@ class app_afx_fixedassent_transferpiece extends _BaseController
                             log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] Nueva pieza creada en activo destino');
                         } else if ($objActionMovement->name == "Transferencia (Origen -> Destino)" && $sourceFixedAssetID && $targetFixedAssetID) {
                             log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] Acción TRANSFERENCIA para pieza: ' . $objPieza->name . ' de origen: ' . $sourceFixedAssetID . ' a destino: ' . $targetFixedAssetID);
-                            // Baja del origen
+                            // Validar que el activo origen tenga la pieza
                             $objProperty = $this->Component_Property_Model->get_rowByItemID_And_propertyID($sourceFixedAssetID,$objPieza->publicCatalogDetailID);
-                            if ($objProperty) {
-                                $this->Component_Property_Model->delete_app_posme($objProperty->propertyItemID);
-                                log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] Pieza eliminada del origen. propertyItemID: ' . $objProperty->propertyItemID);
+                            if (!$objProperty) {
+                                throw new Exception("No se puede transferir la pieza '" . $objPieza->name . "' porque el activo origen no la tiene asignada.");
                             }
+                            // Validar que el activo destino NO tenga ya la pieza
+                            $objPropertyTarget = $this->Component_Property_Model->get_rowByItemID_And_propertyID($targetFixedAssetID,$objPieza->publicCatalogDetailID);
+                            if ($objPropertyTarget) {
+                                throw new Exception("No se puede transferir la pieza '" . $objPieza->name . "' porque el activo destino ya la tiene asignada.");
+                            }
+                            // Baja del origen
+                            $this->Component_Property_Model->delete_app_posme($objProperty->propertyItemID);
+                            log_message('info', '[app_afx_fixedassent_transferpiece::updateElement] Pieza eliminada del origen. propertyItemID: ' . $objProperty->propertyItemID);
                             // Alta en destino
                             $dataProp                       = [];
                             $dataProp["componentID"]        = $objComponentFixedAsset->componentID;
