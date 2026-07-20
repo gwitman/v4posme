@@ -317,6 +317,8 @@ class app_box_share extends _BaseController {
 	}
 	function updateElement($dataSession){
 		try{
+			log_message('info', '[app_box_share::updateElement] INICIO - userID: ' . $dataSession["user"]->userID . ' companyID: ' . $dataSession["user"]->companyID);
+			
 			//PERMISO SOBRE LA FUNCTION
 			if(APP_NEED_AUTHENTICATION == true){
 				$permited = false;
@@ -357,6 +359,8 @@ class app_box_share extends _BaseController {
 			$objTM	 								= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$oldStatusID 							= $objTM->statusID;
 			
+			log_message('info', '[app_box_share::updateElement] Parametros recibidos - companyID: ' . $companyID . ' transactionID: ' . $transactionID . ' transactionMasterID: ' . $transactionMasterID . ' oldStatusID: ' . $oldStatusID);
+			
 			
 			//Valores de tasa de cambio
 			date_default_timezone_set(APP_TIMEZONE); 
@@ -377,6 +381,8 @@ class app_box_share extends _BaseController {
 			
 			if($this->core_web_accounting->cycleIsCloseByDate($companyID,$objTM->transactionOn))
 			throw new \Exception("EL DOCUMENTO NO PUEDE ACTUALIZARCE, EL CICLO CONTABLE ESTA CERRADO");
+			
+			log_message('info', '[app_box_share::updateElement] Validaciones de permisos y workflow OK');
 			
 			//Actualizar Maestro
 			$objTMNew["entityID"] 						= /*inicio get post*/ $this->request->getPost("txtCustomerID");
@@ -413,15 +419,19 @@ class app_box_share extends _BaseController {
 			$db=db_connect();
 			$db->transStart();
 			
+			log_message('info', '[app_box_share::updateElement] Transaccion iniciada - nuevoStatusID: ' . $objTMNew["statusID"] . ' entityID: ' . $objTMNew["entityID"] . ' currencyID: ' . $objTMNew["currencyID"] . ' exchangeRate: ' . $objTMNew["exchangeRate"]);
+			
 			//El Estado solo permite editar el workflow
 			if($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_share","statusID",$objTM->statusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)){
 				$objTMNew								= array();
 				$objTMNew["statusID"] 					= /*inicio get post*/ $this->request->getPost("txtStatusID");						
 				$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMNew);
+				log_message('info', '[app_box_share::updateElement] Actualizado solo workflow statusID: ' . $objTMNew["statusID"]);
 			}
 			else{
 				$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMNew);
 				$this->Transaction_Master_Info_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMInfoNew);
+				log_message('info', '[app_box_share::updateElement] Actualizado maestro e info completa');
 			}
 			
 			
@@ -436,6 +446,8 @@ class app_box_share extends _BaseController {
 			$amount 									= 0;
 			
 			$this->Transaction_Master_Detail_Model->deleteWhereIDNotIn($companyID,$transactionID,$transactionMasterID,$arrayListTransactionDetailID); 
+			
+			log_message('info', '[app_box_share::updateElement] Detalle recibido - totalItems: ' . (is_array($arrayListTransactionDetailID) ? count($arrayListTransactionDetailID) : 0));
 						
 			//Si este valor esta en true, se tiene que seleccionar una factura a la ves, par ir abonando una a una
 			//Si este valor es false, se puede seleccionar una sola factura, y el sistema va aplicado automaticamente, segun el monto.
@@ -445,6 +457,7 @@ class app_box_share extends _BaseController {
 				== "false"
 			)
 			{
+				log_message('info', '[app_box_share::updateElement] Modo SHARE_INVOICE_BY_INVOICE=false - distribucion automatica de abono');
 				
 				//Sumar abono total.
 				if($arrayListShare)
@@ -639,10 +652,14 @@ class app_box_share extends _BaseController {
 			//Actualizar Transaccion			
 			$objTMNew["amount"] = $amount;			
 			$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMNew);
+			
+			log_message('info', '[app_box_share::updateElement] Monto total actualizado - amount: ' . $amount);
 						
 			
 			//Aplicar el Documento?
 			if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_share","statusID",$objTMNew["statusID"],COMMAND_APLICABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID) &&  $oldStatusID != $objTMNew["statusID"] ){
+				
+				log_message('info', '[app_box_share::updateElement] APLICANDO documento - oldStatusID: ' . $oldStatusID . ' newStatusID: ' . $objTMNew["statusID"]);
 				
 				
 				//Recorrer Facturas para Actualizar Balances
@@ -655,6 +672,7 @@ class app_box_share extends _BaseController {
 					
 					//aplicar
 					$this->core_web_amortization->applyCuote($companyID,$objTMD->componentItemID,$objTMD->amount,$objTMD->reference3,$objTMD->transactionMasterDetailID);
+					log_message('info', '[app_box_share::updateElement] Cuota aplicada - documentID: ' . $objTMD->componentItemID . ' monto: ' . $objTMD->amount . ' amortizationID: ' . $objTMD->reference3);
 					
 					//documento final
 					$objCustomerCreditDocument					= $this->Customer_Credit_Document_Model->get_rowByPK($objTMD->componentItemID);					
@@ -674,6 +692,7 @@ class app_box_share extends _BaseController {
 					$objTMDC["reference3"]						= NULL;
 					$objTMDC["reference4"]						= NULL;
 					$this->Transaction_Master_Detail_Credit_Model->insert_app_posme($objTMDC);
+					log_message('info', '[app_box_share::updateElement] Detalle credito insertado - capital: ' . $objTMDC["capital"] . ' interes: ' . $objTMDC["interest"]);
 					
 					
 					$objCustomer								= $this->Customer_Model->get_rowByEntity($companyID,$objTMNew["entityID"]);
@@ -722,12 +741,14 @@ class app_box_share extends _BaseController {
 				
 				//Crear Conceptos.
 				$this->core_web_concept->share($companyID,$transactionID,$transactionMasterID);
+				log_message('info', '[app_box_share::updateElement] Conceptos contables creados');
 
 				//Restructurar tabla de amortizacion
 				if($this->core_web_parameter->getParameterValue("CXC_RESTRUCTURE_AMORTIZACION_GYM_IN_SHARE",$companyID) == "true"){
 					date_default_timezone_set(APP_TIMEZONE);
 					$fechaActual = date("Y-m-d");
 					$this->core_web_amortization->restructureAmortization($customerCreditDocumentID,$fechaActual);
+					log_message('info', '[app_box_share::updateElement] Amortizacion restructurada - documentID: ' . $customerCreditDocumentID);
 				}
 				
 			}
@@ -737,6 +758,7 @@ class app_box_share extends _BaseController {
 				
 				$db->transCommit();						
 				
+				log_message('info', '[app_box_share::updateElement] COMMIT exitoso - transactionMasterID: ' . $transactionMasterID);
 				$this->core_web_notification->set_message(false,SUCCESS);
 				
 				$this->response->redirect(base_url()."/".'app_box_share/edit/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID);
@@ -744,14 +766,16 @@ class app_box_share extends _BaseController {
 			}
 			else
 			{
-				$db->transRollback();	
+				$db->transRollback();
+				log_message('error', '[app_box_share::updateElement] ROLLBACK - error en transaccion');
 				$this->core_web_notification->set_message(true,$this->db->_error_message());
 				$this->response->redirect(base_url()."/".'app_box_share/add');	
 			}
 			
 			
 		}
-		catch(\Exception $ex){			
+		catch(\Exception $ex){
+			log_message('error', '[app_box_share::updateElement] EXCEPCION - linea: ' . $ex->getLine() . ' mensaje: ' . $ex->getMessage());
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}

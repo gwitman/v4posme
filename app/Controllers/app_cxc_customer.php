@@ -798,7 +798,7 @@ class app_cxc_customer extends _BaseController {
 	
 	function insertElement($dataSession){
 		try{
-			
+			log_message("info","[insertElement] Inicio de inserción de cliente");
 			
 			
 			//PERMISO SOBRE LA FUNCTION
@@ -844,6 +844,7 @@ class app_cxc_customer extends _BaseController {
 			
 			
 			$entityID = $this->Entity_Model->insert_app_posme($objEntity);
+			log_message("info","[insertElement] Entidad creada con entityID: ".$entityID);
 			$callback  					= /*inicio get post*/ $this->request->getPost("txtCallback"); 
 			$objNatural["companyID"]	= $objEntity["companyID"];
 			$objNatural["branchID"] 	= $objEntity["branchID"];
@@ -925,6 +926,7 @@ class app_cxc_customer extends _BaseController {
 				$objCustomerOld					= $this->Customer_Model->get_rowByIdentification($companyID,$objCustomer["identification"]);
 				if($objCustomerOld)
 				{
+					log_message("error","[insertElement] Identificación duplicada: ".$objCustomer["identification"]);
 					throw new \Exception("Error identificacion del cliente ya existe.");
 				}
 			} 
@@ -1178,7 +1180,8 @@ class app_cxc_customer extends _BaseController {
 		
 			
 			if($db->transStatus() !== false){
-				$db->transCommit();						
+				$db->transCommit();
+				log_message("info","[insertElement] Cliente insertado correctamente. entityID: ".$entityID." companyID: ".$companyID);
 				$this->core_web_notification->set_message(false,SUCCESS);
 				
 				if($dataSession["company"]->type=="luciaralstate")
@@ -1187,7 +1190,8 @@ class app_cxc_customer extends _BaseController {
 					$this->response->redirect(base_url()."/".'app_cxc_customer/edit/companyID/'.$companyID."/branchID/".$objEntity["branchID"]."/entityID/".$entityID."/callback/".$callback);
 			}
 			else{
-				$db->transRollback();						
+				$db->transRollback();
+				log_message("error","[insertElement] Error en transacción, se realizó rollback. companyID: ".$companyID);
 				$this->core_web_notification->set_message(true,$this->db->_error_message());
 				$this->response->redirect(base_url()."/".'app_cxc_customer/add');	
 			}
@@ -1195,6 +1199,7 @@ class app_cxc_customer extends _BaseController {
 		}
 		catch(\Exception $ex)
 		{
+			log_message("error","[insertElement] Excepción en línea ".$ex->getLine().": ".$ex->getMessage());
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
