@@ -1214,7 +1214,7 @@ class app_cxc_api extends _BaseController {
 		log_message('error', '[Ultramsg] companyID: ' . $companyID);
 
 		//Validar parametro WebHookWapi2
-		$paramWebHookWapi2 = $this->core_web_parameter->getParameter("WebHookWapi2", $companyID);
+		$paramWebHookWapi2 = $this->core_web_parameter->getParameter("WHATSAPP_WEBHOOK_ULTRAMSG", $companyID);
 		if(!$paramWebHookWapi2 || strtolower($paramWebHookWapi2->value) != "true")
 		{
 			log_message('error', '[Ultramsg] DESCARTADO: Parametro WebHookWapi2 no es true. value=' . ($paramWebHookWapi2->value ?? 'null'));
@@ -1341,7 +1341,7 @@ class app_cxc_api extends _BaseController {
 		log_message('error', '[Wapi2] companyID: ' . $companyID);
 
 		//Validar parametro WebHookWapi2
-		$paramWebHookWapi2 = $this->core_web_parameter->getParameter("WebHookWapi2", $companyID);
+		$paramWebHookWapi2 = $this->core_web_parameter->getParameter("WHATSAPP_WEBHOOK_WAPI2", $companyID);
 		if(!$paramWebHookWapi2 || strtolower($paramWebHookWapi2->value) != "true")
 		{
 			log_message('error', '[Wapi2] DESCARTADO: Parametro WebHookWapi2 no es true. value=' . ($paramWebHookWapi2->value ?? 'null'));

@@ -4,6 +4,20 @@
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAPP_WEBHOOK_WAPI2"; 
+##Activar el webhook de Whatsapp Wapi2
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAPP_WEBHOOK_ULTRAMSG"; 
+##Activar el webhook de Whatsapp Ultra Msg
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "5226" 
