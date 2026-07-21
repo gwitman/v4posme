@@ -19,7 +19,7 @@ class app_purchase_taller extends _BaseController {
 						if(!$permited)
 						throw new \Exception(NOT_ACCESS_CONTROL);
 						
-						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
 						if ($resultPermission 	== PERMISSION_NONE)
 						throw new \Exception(NOT_ALL_EDIT);			
 			
@@ -612,9 +612,8 @@ class app_purchase_taller extends _BaseController {
 		    $data["urlLogin"]  = base_url();
 		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    $resultView        = view("core_template/email_error_general",$data);
-			
-		    return $resultView;
+		    $resultView        = view("core_template/email_error_general",$data);			
+		    echo $resultView;
 		}
 		
 	}
