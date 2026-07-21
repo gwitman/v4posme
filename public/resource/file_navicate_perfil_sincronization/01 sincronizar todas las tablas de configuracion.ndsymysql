@@ -113,18 +113,6 @@
     },
 	{
       "Source": {
-        "Name": "tb_role_autorization",
-        "ObjectType": "Table_MYSQL"
-      },
-      "Target": {
-        "Name": "tb_role_autorization",
-        "ObjectType": "Table_MYSQL"
-      },
-      "Keys": [],
-      "Fields": []
-    },
-	{
-      "Source": {
         "Name": "tb_component_autorization_detail",
         "ObjectType": "Table_MYSQL"
       },
