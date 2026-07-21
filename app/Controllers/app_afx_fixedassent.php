@@ -209,10 +209,10 @@ class app_afx_fixedassent extends _BaseController {
 			
 			
 			//Obtener el Registro			
-			$datView["objFA"]	 				= $this->Fixed_Assent_Model->get_rowByPK($companyID,$branchID,$fixedAssentID);			
-			$datView["objAsignedEmployee"] 		= $this->Employee_Model->get_rowByEntityID($companyID,$datView["objFA"]->asignedEmployeeID); 
-			$datView["objAsignedNatural"]		= $datView["objAsignedEmployee"] == null ? $datView["objAsignedEmployee"] : $this->Natural_Model->get_rowByPK($companyID,$datView["objAsignedEmployee"]->branchID,$datView["objAsignedEmployee"]->entityID);
-			
+			$datView["objFA"]	 					= $this->Fixed_Assent_Model->get_rowByPK($companyID,$branchID,$fixedAssentID);			
+			$datView["objAsignedEmployee"] 			= $this->Employee_Model->get_rowByEntityID($companyID,$datView["objFA"]->asignedEmployeeID); 
+			$datView["objAsignedNatural"]			= $datView["objAsignedEmployee"] == null ? $datView["objAsignedEmployee"] : $this->Natural_Model->get_rowByPK($companyID,$datView["objAsignedEmployee"]->branchID,$datView["objAsignedEmployee"]->entityID);
+			$datView["objListCompanyPageSetting"]	= $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"tb_fixed_assent");
 			
 			
 			$objComponent						= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
@@ -244,7 +244,8 @@ class app_afx_fixedassent extends _BaseController {
 			$datView["objListCurrency"]             = $this->Company_Currency_Model->getByCompany($companyID);
 			$datView["objArea"]						= $datView["objFA"]->areaID 	? $this->Public_Catalog_Detail_Model->get_rowByPk($datView["objFA"]->areaID) 	: "";
 			$datView["objProject"]					= $datView["objFA"]->projectID 	? $this->Public_Catalog_Detail_Model->get_rowByPk($datView["objFA"]->projectID) : "";
-			
+			$datView["company"]						= $dataSession["company"];
+
 			//Obtener Propiedades del Activo Fijo
 			$objCompany = $this->Company_Model->get_rowByPK($companyID);
 			$objPropertyCatalog = $this->Public_Catalog_Model->getBySystemNameAndFlavorID('tb_catalog_property_fixedassent', $objCompany->flavorID);
@@ -583,6 +584,8 @@ class app_afx_fixedassent extends _BaseController {
 			$dataView["objListCountry"]					= $this->core_web_catalog->getCatalogAllItem("tb_employee","countryID",$companyID);
 			$dataView["objListBranch"]					= $this->Branch_Model->getByCompany($companyID);
 			$dataView["objListTypeFixedAssent"]			= $this->core_web_catalog->getCatalogAllItem("tb_fixed_assent","typeFixedAssentID",$companyID);
+			$dataView["objListCompanyPageSetting"]		= $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"tb_fixed_assent");
+			$dataView["company"]						= $dataSession["company"];
 
 			//Obtener Propiedades del Activo Fijo
 			$objCompany 		= $this->Company_Model->get_rowByPK($companyID);
@@ -650,16 +653,23 @@ class app_afx_fixedassent extends _BaseController {
 			
 			
 			//Vista por defecto 
-			if($dataViewID == null){				
-				$targetComponentID			= 0;	
-				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
+			$targetComponentID			= $this->session->get('company')->flavorID;
+			if($dataViewID == null){	
+				$parameter["{companyID}"]	= $this->session->get('user')->companyID;				
 				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
+				
+				
+				if(!$dataViewData){
+					$targetComponentID			= 0;	
+					$parameter["{companyID}"]	= $this->session->get('user')->companyID;					
+					$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);				
+				}				
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			}
 			//Otra vista
 			else{									
-				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
-				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 			
+				$parameter["{companyID}"]	= $this->session->get('user')->companyID;				
+				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 							
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			} 
 			 

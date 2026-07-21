@@ -127,6 +127,8 @@
 								}
 							});
 						});
+
+						<?php echo getBahavioSession($company->type,'tb_fixed_assent','scriptJsReady','',$objListCompanyPageSetting) ?>
 						
 					});
 					function onCompleteEmployee(objResponse){

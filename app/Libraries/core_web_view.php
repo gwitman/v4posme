@@ -299,25 +299,51 @@ class core_web_view {
 		$Company_Data_View_Model = new Company_Data_View_Model();
 		$Bd_Model = new Bd_Model();		
 		
-		
+		log_message('info', '[getViewDefault] Inicio - companyID: {companyID}, componentID: {componentID}, callerID: {callerID}, targetComponentID: {targetComponentID}, permission: {permission}', [
+			'companyID' => $user->companyID,
+			'componentID' => $componentID,
+			'callerID' => $callerID,
+			'targetComponentID' => $targetComponentID,
+			'permission' => $permission
+		]);
 		
 		//Obtener la vista por defecto
 		$objCompanyDefaultDataView	= $Company_Default_Data_View_Model->get_rowBy_CCCT($user->companyID,$componentID,$callerID,$targetComponentID);
-		if(!$objCompanyDefaultDataView)
-		return null;
-	
+		if(!$objCompanyDefaultDataView){
+			log_message('warning', '[getViewDefault] No se encontró vista por defecto para companyID: {companyID}, componentID: {componentID}, callerID: {callerID}, targetComponentID: {targetComponentID}', [
+				'companyID' => $user->companyID,
+				'componentID' => $componentID,
+				'callerID' => $callerID,
+				'targetComponentID' => $targetComponentID
+			]);
+			return null;
+		}
 		
+		log_message('info', '[getViewDefault] Vista por defecto encontrada - dataViewID: {dataViewID}', [
+			'dataViewID' => $objCompanyDefaultDataView->dataViewID
+		]);
 		
 		//Obtener la vista por company segun el flavor
 		$companyDataView			= $Company_Data_View_Model->get_rowBy_companyIDDataViewIDAndFlavor($user->companyID,$objCompanyDefaultDataView->dataViewID,$callerID,$componentID, $targetComponentID );				
 		if(!$companyDataView)
 		{
+			log_message('info', '[getViewDefault] No se encontró vista por flavor, buscando vista general - dataViewID: {dataViewID}', [
+				'dataViewID' => $objCompanyDefaultDataView->dataViewID
+			]);
 			//Obtener la vista por company genral
 			$companyDataView			= $Company_Data_View_Model->get_rowBy_companyIDDataViewID($user->companyID,$objCompanyDefaultDataView->dataViewID,$callerID,$componentID);
-			if(!$companyDataView)
-			return null;
+			if(!$companyDataView){
+				log_message('warning', '[getViewDefault] No se encontró vista general para companyID: {companyID}, dataViewID: {dataViewID}', [
+					'companyID' => $user->companyID,
+					'dataViewID' => $objCompanyDefaultDataView->dataViewID
+				]);
+				return null;
+			}
 		}
 		
+		log_message('info', '[getViewDefault] Vista obtenida correctamente - companyDataViewID: {companyDataViewID}', [
+			'companyDataViewID' => $companyDataView->companyDataViewID ?? 'N/A'
+		]);
 		
 		//EXECUTE 
 		$queryFill					= str_replace(array_keys($parameter), array_values ($parameter), $companyDataView->sqlScript);
@@ -339,9 +365,23 @@ class core_web_view {
 			$filterPermission	= "";
 		}		
 		
+		log_message('info', '[getViewDefault] Filtro de permiso aplicado: {filterPermission}', [
+			'filterPermission' => $filterPermission ?: '(sin filtro)'
+		]);
+		
 		//Ejecutar Vista.		
-		$queryFill	= str_replace("{filterPermission}", $filterPermission, $queryFill);		
+		$queryFill	= str_replace("{filterPermission}", $filterPermission, $queryFill);
+		
+		log_message('debug', '[getViewDefault] SQL a ejecutar: {sql}', [
+			'sql' => $queryFill
+		]);
+		
 		$dataRecordSet				= $Bd_Model->executeRender($queryFill,null);
+		
+		log_message('info', '[getViewDefault] Consulta ejecutada - registros obtenidos: {count}', [
+			'count' => is_array($dataRecordSet) ? count($dataRecordSet) : 0
+		]);
+		
 		$dataResult["view_config"]	= $companyDataView;
 		$dataResult["view_data"]	= $dataRecordSet;
 		return $dataResult;

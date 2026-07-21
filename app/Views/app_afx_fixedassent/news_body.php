@@ -49,7 +49,7 @@
 															</div>
 														</div>
 
-														<div class="form-group">
+														<div class="form-group <?php echo getBahavioSession($company->type,'tb_fixed_assent','divEstado','',$objListCompanyPageSetting) ?>">
 															<label class="col-lg-4 control-label" for="selectFilter">Estado</label>
 															<div class="col-lg-8">
 																<select name="txtStatusID" id="txtStatusID" class="select2">
@@ -75,7 +75,7 @@
 																<input class="form-control" type="text" name="txtModelNumber" id="txtModelNumber" value="">
 															</div>
 														</div>
-														<div class="form-group">
+														<div class="form-group <?php echo getBahavioSession($company->type,'tb_fixed_assent','divCategoria','',$objListCompanyPageSetting) ?>">
 															<label class="col-lg-4 control-label" for="selectFilter">Categoria</label>
 															<div class="col-lg-8">
 																<select name="txtCategoryID" id="txtCategoryID" class="select2">
@@ -94,7 +94,7 @@
 																</select>
 															</div>
 														</div>
-														<div class="form-group">
+														<div class="form-group <?php echo getBahavioSession($company->type,'tb_fixed_assent','divTipo','',$objListCompanyPageSetting) ?>">
 															<label class="col-lg-4 control-label" for="selectFilter">Tipo</label>
 															<div class="col-lg-8">
 																<select name="txtTypeID" id="txtTypeID" class="select2">
@@ -115,7 +115,7 @@
 														</div>
 													</div>
 													<div class="col-lg-6">
-														<div class="form-group">
+														<div class="form-group <?php echo getBahavioSession($company->type,'tb_fixed_assent','divColor','',$objListCompanyPageSetting) ?>">
 															<label class="col-lg-4 control-label" for="selectFilter">Color</label>
 															<div class="col-lg-8">
 																<select name="txtColorID" id="txtColorID" class="select2">
@@ -134,13 +134,13 @@
 																</select>
 															</div>
 														</div>
-														<div class="form-group">
+														<div class="form-group <?php echo getBahavioSession($company->type,'tb_fixed_assent','divChasis','',$objListCompanyPageSetting) ?>">
 															<label class="col-lg-4 control-label" for="normal">Chasis No</label>
 															<div class="col-lg-8">
 																<input class="form-control" type="text" name="txtChasisNumber" id="txtChasisNumber" value="">
 															</div>
 														</div>
-														<div class="form-group">
+														<div class="form-group <?php echo getBahavioSession($company->type,'tb_fixed_assent','divIsForaneo','',$objListCompanyPageSetting) ?>">
 															<label class="col-lg-4 control-label" for="normal">Es Foraneo</label>
 															<div class="col-lg-8">
 																<input type="checkbox" name="txtIsForaneo" id="txtIsForaneo" value="1">
@@ -152,19 +152,23 @@
 																<textarea class="form-control" id="txtDescription" name="txtDescription" rows="6"></textarea>
 															</div>
 														</div>
-														<div class="form-group">
+														<div class="form-group <?php echo getBahavioSession($company->type,'tb_fixed_assent','divReferencia1','',$objListCompanyPageSetting) ?>">
 															<label class="col-lg-4 control-label" for="normal">Referencia1</label>
 															<div class="col-lg-8">
 																<input class="form-control" type="text" name="txtReference1" id="txtReference1" value="">
 															</div>
 														</div>
-														<div class="form-group">
+														<div class="form-group <?php echo getBahavioSession($company->type,'tb_fixed_assent','divReferencia2','',$objListCompanyPageSetting) ?>">
 															<label class="col-lg-4 control-label" for="normal">Referencia2</label>
 															<div class="col-lg-8">
 																<input class="form-control" type="text" name="txtReference2" id="txtReference2" value="">
 															</div>
 														</div>
 													</div>
+												</div>
+
+												<div class="row" id="secundaryRowHome">
+													
 												</div>
 											</div>
 
@@ -430,7 +434,7 @@
 
 											<!-- Tab Propiedades -->
 											<div class="tab-pane fade" id="propiedades">
-												<div class="row">
+												<div class="row" id="firstRowProperty" >
 													<?php if(isset($objListProperties) && $objListProperties): ?>
 														<?php
 															$totalProps = count($objListProperties);
