@@ -232,6 +232,7 @@ class app_afx_fixedassent_transferpiece extends _BaseController
             $objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
 			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
 			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
+            $dataView["objListCompanyPageSetting"]		= $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"tb_afx_transferpiece");
 
             //Renderizar Resultado
             $dataSession["notification"] = $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -358,7 +359,7 @@ class app_afx_fixedassent_transferpiece extends _BaseController
             $dataView["objListTypeAction"] = $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_transferpiece_detail", "typeID", $companyID);
 
             // Cargar catalogo de nombres de piezas desde tb_public_catalog/tb_public_catalog_detail
-            $objCompany = $this->Company_Model->get_rowByPK($companyID);
+            $objCompany = $this->Company_Model->get_rowByPK($companyID);            
             $objPropertyCatalog = $this->Public_Catalog_Model->getBySystemNameAndFlavorID('tb_catalog_property_fixedassent', $objCompany->flavorID);
             if (!$objPropertyCatalog) {
                 $objPropertyCatalog = $this->Public_Catalog_Model->getBySystemNameAndFlavorID('tb_catalog_property_fixedassent', 0);
@@ -387,6 +388,7 @@ class app_afx_fixedassent_transferpiece extends _BaseController
             $objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
 			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
 			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
+            $dataView["objListCompanyPageSetting"]		= $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"tb_afx_transferpiece");
 
             //RENDERIZAR RESULTADO
             $dataSession["notification"]    = $this->core_web_error->get_error($dataSession["user"]->userID);

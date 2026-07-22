@@ -124,7 +124,7 @@
             $("#txtEmployerDescription").val("");
         });
         
-
+        <?php echo getBahavioSession($company->type,'tb_afx_transferpiece','scriptJsReady','',$objListCompanyPageSetting) ?>
     });
 
     function onCompleteEmployee(objResponse)

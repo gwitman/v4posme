@@ -59,6 +59,9 @@
                         <div class="tab-pane fade in active" id="home">
                             <div class="row">
                                 <div class="col-lg-6">
+                                    <input type="hidden" name="txtTransactionID" id="txtTransactionID" value="0">
+                                    <input type="hidden" name="txtTransactionMasterID" id="txtTransactionMasterID" value="0">
+                                    
                                     <div class="form-group">
                                         <label class="col-lg-4 control-label" for="datepicker">Fecha</label>
                                         <div class="col-lg-8">
