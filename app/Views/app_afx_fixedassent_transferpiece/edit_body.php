@@ -60,6 +60,8 @@
                     <div class="tab-content">
                         <input type="hidden" name="txtTransactionID" id="txtTransactionID" value="<?= $objTM->transactionID ?>">
                         <input type="hidden" name="txtTransactionMasterID" id="txtTransactionMasterID" value="<?= $objTM->transactionMasterID ?>">
+                        <input type="hidden" name="txtUserID" id="txtUserID" value="<?php echo $objUser->userID; ?>">
+                        
                         <div class="tab-pane fade in active" id="home">
                             <div class="row">
                                 <div class="col-lg-6">

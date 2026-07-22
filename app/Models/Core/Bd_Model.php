@@ -11,6 +11,7 @@ class Bd_Model extends Model  {
    function executeRender($query,$parameter){
 		$db 				= db_connect(); 
 		$db->query("SET NAMES utf8mb4");
+		$db->query("SET SESSION group_concat_max_len = 1000000;");
 		
 		if($parameter === null)
 		$queryResult 		= $db->query($query);		
