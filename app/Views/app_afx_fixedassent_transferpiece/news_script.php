@@ -70,7 +70,28 @@
                 $(this).parents("tr").first().remove();
             });
         });
+
+        //Buscar Colaborador
+        $(document).on("click","#btnSearchEmployer",function(){
+            var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteEmployee/SELECCIONAR_EMPLOYEE_PAGINATED/true/empty/true/not_redirect_when_empty/1/1/<?= $objParameterCantidadItemPoup; ?>/";
+            window.open(url_request,"MsgWindow","width=900,height=450");
+            window.onCompleteEmployee = onCompleteEmployee; 
+        });
+        //Eliminar Colaborador
+        $(document).on("click","#btnClearEmployer",function(){
+            $("#txtEmployerID").val("0");
+            $("#txtEmployerDescription").val("");
+        });
+        
+
+        
     });
+
+    function onCompleteEmployee(objResponse)
+    {			
+        $("#txtEmployerID").val(objResponse[0][2]);
+        $("#txtEmployerDescription").val(objResponse[0][3] + " / " + objResponse[0][4]);            
+    }
 
     function validateForm() {
         var result = true;

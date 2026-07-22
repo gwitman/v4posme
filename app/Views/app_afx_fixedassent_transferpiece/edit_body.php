@@ -154,6 +154,32 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                     <div class="form-group">
+										<label class="col-lg-4 control-label" for="buttons"><?php echo getBehavio($company->type,"app_afx_transferpiece","labelTecnico","Tecnico");  ?></label>
+										<div class="col-lg-8">
+											<div class="input-group">
+												<input type="hidden" id="txtEmployerID" name="txtEmployerID" value="<?php echo ($objEmployer ?  $objEmployer->entityID : "0");  ?>">
+												<input class="form-control" readonly id="txtEmployerDescription" type="txtEmployerDescription" value="<?php echo ($objEmployer  ? strtoupper($objEmployer->employeNumber . " ". $objEmployerNatural->firstName . " ". $objEmployerNatural->lastName ) : ""); ?>">
+												
+												<span class="input-group-btn">
+													<button class="btn btn-danger" type="button" id="btnClearEmployer">
+														<i aria-hidden="true" class="i-undo-2"></i>
+														clear
+													</button>
+												</span>
+												<span class="input-group-btn">
+													<button class="btn btn-primary" type="button" id="btnSearchEmployer">
+														<i aria-hidden="true" class="i-search-5"></i>
+														buscar
+													</button>
+												</span>											
+											</div>
+										</div>
+									</div>
+									
+
+
                                 </div>
                             </div>
                         </div>

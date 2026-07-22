@@ -172,6 +172,27 @@ class app_afx_fixedassent_transferpiece extends _BaseController
             $branchID = $dataSession["user"]->branchID;
             $roleID = $dataSession["role"]->roleID;
 
+
+             $objComponentCustomer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
+			if(!$objComponentCustomer)
+			throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
+		    $dataView["objComponentCustomer"] = $objComponentCustomer;
+
+			$objComponentEmployer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
+			if(!$objComponentEmployer)
+			throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
+		    $dataView["objComponentEmployer"] = $objComponentEmployer;
+		
+			$objComponentBilling	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_billing");
+			if(!$objComponentBilling)
+			throw new \Exception("EL COMPONENTE 'tb_transaction_master_billing' NO EXISTE...");
+		    $dataView["objComponentBilling"] = $objComponentBilling;
+
+			$objComponentItem		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+            $dataView["objComponentItem"]   = $objComponentItem;
+
             $objComponentTransferpiece = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_transferpiece");
             if (!$objComponentTransferpiece)
                 throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_transferpiece' NO EXISTE...");
@@ -207,6 +228,10 @@ class app_afx_fixedassent_transferpiece extends _BaseController
             if ($objPropertyCatalog && count($objPropertyCatalog) > 0) {
                 $dataView["objListPieceNames"] = $this->Public_Catalog_Detail_Model->getView($objPropertyCatalog[0]->publicCatalogID);
             }
+
+            $objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
 
             //Renderizar Resultado
             $dataSession["notification"] = $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -268,6 +293,28 @@ class app_afx_fixedassent_transferpiece extends _BaseController
 
             log_message('info', '[app_afx_fixedassent_transferpiece::edit] Parámetros: companyID=' . $companyID . ', transactionID=' . $transactionID . ', transactionMasterID=' . $transactionMasterID);
 
+
+            $objComponentCustomer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
+			if(!$objComponentCustomer)
+			throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
+		    $dataView["objComponentCustomer"] = $objComponentCustomer;
+
+			$objComponentEmployer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
+			if(!$objComponentEmployer)
+			throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
+		    $dataView["objComponentEmployer"] = $objComponentEmployer;
+		
+			$objComponentBilling	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_billing");
+			if(!$objComponentBilling)
+			throw new \Exception("EL COMPONENTE 'tb_transaction_master_billing' NO EXISTE...");
+		    $dataView["objComponentBilling"] = $objComponentBilling;
+
+			$objComponentItem		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(!$objComponentItem)
+			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+            $dataView["objComponentItem"]   = $objComponentItem;
+
+
             $objComponentTransferpiece = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_transferpiece");
             if (!$objComponentTransferpiece)
                 throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_transferpiece' NO EXISTE...");
@@ -294,6 +341,18 @@ class app_afx_fixedassent_transferpiece extends _BaseController
             $dataView["objListWorkflowStage"]       = $this->core_web_workflow->getWorkflowAllStage("tb_transaction_master_transferpiece", "statusID", $companyID, $branchID, $roleID);
             $dataView["objCausal"]                  = $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
             $dataView["objTMD"]                     = $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID, $transactionID, $transactionMasterID, $objComponentTransferpiece->componentID);
+
+            //Obtener colaborador            
+            $entityIDSecondary                      = $dataView["objTM"]->entityIDSecondary != null ? $dataView["objTM"]->entityIDSecondary : 0;
+			$dataView["objEmployer"]				= $this->Employee_Model->get_rowByEntityID($companyID,$entityIDSecondary);
+            $dataView["objEmployerNatural"]         = false;
+            $dataView["objEmployerLegal"]           = false;
+            if($dataView["objEmployer"])
+            {
+			    $dataView["objEmployerNatural"]			= $this->Natural_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
+			    $dataView["objEmployerLegal"]			= $this->Legal_Model->get_rowByPK($dataView["objEmployer"]->companyID,$dataView["objEmployer"]->branchID,$dataView["objEmployer"]->entityID);
+            }
+			
 
             // Cargar catalogo de acciones (typeID) desde tb_catalog/tb_catalog_item
             $dataView["objListTypeAction"] = $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_transferpiece_detail", "typeID", $companyID);
@@ -324,6 +383,10 @@ class app_afx_fixedassent_transferpiece extends _BaseController
                 $dataView["objTargetAsset"] = $this->Fixed_Assent_Model->get_rowByPK($companyID, $branchID, $dataView["objTM"]->targetWarehouseID);
                 log_message('info', '[app_afx_fixedassent_transferpiece::edit] Activo destino cargado. targetWarehouseID: ' . $dataView["objTM"]->targetWarehouseID);
             }
+
+            $objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
 
             //RENDERIZAR RESULTADO
             $dataSession["notification"]    = $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -389,6 +452,7 @@ class app_afx_fixedassent_transferpiece extends _BaseController
             $objTM["componentID"] = $objComponentTransferpiece->componentID;
             $objTM["note"] = $this->request->getPost("txtComment");
             $objTM["reference1"] = $this->request->getPost("txtReference1");
+            $objTM["entityIDSecondary"] = $this->request->getPost("txtEmployerID");
             $objTM["reference2"] = $this->request->getPost("txtReference2");
             $objTM["statusID"] = $this->request->getPost("txtStatusID");
             $objTM["sourceWarehouseID"] = $this->request->getPost("txtSourceFixedAssetID");
@@ -515,6 +579,7 @@ class app_afx_fixedassent_transferpiece extends _BaseController
                 $objTMNew["reference1"] = $this->request->getPost("txtReference1");
                 $objTMNew["reference2"] = $this->request->getPost("txtReference2");
                 $objTMNew["statusID"] = $this->request->getPost("txtStatusID");
+                $objTMNew["entityIDSecondary"] = $this->request->getPost("txtEmployerID");
                 $objTMNew["sourceWarehouseID"] = $this->request->getPost("txtSourceFixedAssetID");
                 $objTMNew["targetWarehouseID"] = $this->request->getPost("txtTargetFixedAssetID");
                 $this->Transaction_Master_Model->update_app_posme($companyID, $transactionID, $transactionMasterID, $objTMNew);
