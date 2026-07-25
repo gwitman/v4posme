@@ -11,6 +11,12 @@
 		var urlPrinterOutput = '<?php echo $objParameterUrlPrinterOutput; ?>';
 		var urlPrinterStiker = '<?php echo $objParameterUrlPrinterSticker; ?>';
 		
+		// Validaciones de solo lectura por rol y modo edición
+		var roleID 				= parseInt($('#txtRoleID').val()) || 0;
+		var transactionMasterID = parseInt($('#txtTransactionMasterID').val()) || 0;
+		
+		
+		
 		
 		//Regresar a la lista
 		$(document).on("click","#btnBack",function(){

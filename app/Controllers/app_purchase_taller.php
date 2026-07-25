@@ -151,11 +151,6 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
 
 
-			//Obtener los permiso del rol sobre la pagina en base al estado
-			$dataView["objComponentAurotizationDetailPage"]	= $this->Component_Autorization_Detail_Page_Model->get_rowByWorkflowStageID_And_RoleID_Type(
-					$companyID,$roleID,$dataView["company"]->flavorID,
-					$dataView["objTransactionMaster"]->isTemplate,"edit");
-
 			$dataView["objListCompanyPageSetting"]			= $this->Company_Page_Setting_Model->get_rowByKeyAndController(
 				$dataView["company"]->type,
 				"app_purchase_taller"
@@ -167,7 +162,7 @@ class app_purchase_taller extends _BaseController {
 					"",
 					$dataView["objListCompanyPageSetting"]
 			);
-			$dataView["objReadyPostScript"]					= getBahavioLargeDB($dataView["company"]->type,"app_purchase_taller","readyPostScript","");
+			$dataView["objReadyPostScript"]					= getBahavioDB($dataView["company"]->type,"app_purchase_taller","readyPostScript","");
 
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -1115,7 +1110,7 @@ class app_purchase_taller extends _BaseController {
 					"",
 					$dataView["objListCompanyPageSetting"]
 			);
-			$dataView["objReadyPostScript"]					= getBahavioLargeDB($dataView["company"]->type,"app_purchase_taller","readyPostScript","");
+			$dataView["objReadyPostScript"]					= getBahavioDB($dataView["company"]->type,"app_purchase_taller","readyPostScript","");
 
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
