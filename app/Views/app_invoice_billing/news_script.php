@@ -3061,6 +3061,16 @@
 				$("#txtReceiptAmountTarjetaDol").val("0");
 				$("#txtReceiptAmountBankDol").val("0");
 		}
+
+		// Sincronizar totales con ventana secundaria via localStorage
+		try {
+			localStorage.setItem('posme_billing_totals', JSON.stringify({
+				subTotal: $("#txtSubTotal").val(),
+				discount: $("#txtDescuento").val(),
+				total: $("#txtTotal").val(),
+				timestamp: Date.now()
+			}));
+		} catch(e) {}
 		
 	}
 

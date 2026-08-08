@@ -16103,6 +16103,10 @@ class app_invoice_billing extends _BaseController {
 			return $resultView;
 		}
 	}
+	
+	function screenSecondaryWindow(){
+		return view("app_invoice_billing/screen_secondary_window");
+	}
 
 }
 ?>

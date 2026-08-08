@@ -1234,6 +1234,7 @@ $routes->match(['get', 'post'], 'app_invoice_billing/add/(:any)', 'app_invoice_b
 $routes->match(['get', 'post'], 'app_invoice_billing/index', 'app_invoice_billing::index');
 $routes->match(['get', 'post'], 'app_invoice_billing/index/(:any)', 'app_invoice_billing::index');
 $routes->match(['get', 'post'], 'app_invoice_billing/searchTransactionMaster', 'app_invoice_billing::searchTransactionMaster');
+$routes->match(['get', 'post'], 'app_invoice_billing/screenSecondaryWindow', 'app_invoice_billing::screenSecondaryWindow');
 
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterPrePrinter', 'app_invoice_billing::viewRegisterPrePrinter');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterPrePrinter/(:any)', 'app_invoice_billing::viewRegisterPrePrinter');
