@@ -1,5 +1,5 @@
-/*BD: 	dbf85ekphaxv0o:parametro_001_development*/
-/*SERVIDOR:		siteground*/
+/*BD: 	dbf85ekphaxv0o:parametro_mary_jav*/
+/*SERVIDOR:		siteground .net*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -2046,7 +2046,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Decoraciones Maryjav' , address = 'Bo. Guadalupe Del INO 1c al Norte' ,
-	flavorID = 0 /*usuarioID*/,type='maryJav'  , abreviature='demo'
+	flavorID = 1214 /*usuarioID*/,type='maryJav'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

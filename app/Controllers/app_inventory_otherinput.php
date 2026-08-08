@@ -72,8 +72,19 @@ class app_inventory_otherinput extends _BaseController
 					$datView["objWarehouse"]
 				);
 			} 
-			else {
+			else if ($dataSession["company"]->flavorID == 306 /*global pro*/) {
 				$html = helper_reporteA4TransactionMasterOutherInputGlobalPro(
+					"ENTRADA DE INVENTARIO",
+					$objCompany,
+					$objParameterLogo,
+					$datView["objTM"],
+					$datView["objStage"][0]->display, /*estado*/
+					$datView["objTMD"],
+					$datView["objWarehouse"]
+				);
+			}
+			else {
+				$html = helper_reporte80mmInventoryInputGenerico(
 					"ENTRADA DE INVENTARIO",
 					$objCompany,
 					$objParameterLogo,
@@ -122,6 +133,7 @@ class app_inventory_otherinput extends _BaseController
 			} else {
 				//visualizar				
 				$this->dompdf->stream($fileNamePdf, ['Attachment' => $objParameterShowDownloadPreview]);
+				exit;
 			}
 
 			//descargar

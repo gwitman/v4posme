@@ -2783,7 +2783,7 @@
 													value: 0 , 
 													name: 'txtPorcentajeDescuento' , 
 													id:'txtPorcentajeDescuento', 
-													readOnly:false,
+													readOnly: <?php echo getBahavioSession($company->type, "app_invoice_billing", "soloLecturaCampoPorcentajeDescuento", "false",$objListCompanyPageSetting); ?>,
 													hidden: <?php echo getBahavioSession($company->type, "app_invoice_billing", "ocultarCampoPorcentajeDescuento", "false",$objListCompanyPageSetting); ?>,
 													fieldStyle: 'font-weight:bold; color:#2E7D32; font-size:18px; text-align:right;',
 													listeners: {

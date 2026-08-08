@@ -83,7 +83,7 @@ class app_inventory_otheroutput extends _BaseController
 				);
 			}
 			else {
-				$html = helper_reporteA4TransactionMasterOutherOutputGeneric(
+				$html = helper_reporte80mmInventoryOutputGenerico(
 					"SALIDA DE INVENTARIO",
 					$objCompany,
 					$objParameterLogo,
