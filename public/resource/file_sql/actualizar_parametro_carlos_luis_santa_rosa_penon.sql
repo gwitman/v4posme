@@ -2023,14 +2023,14 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8523-2672" 
+	tb_company_parameter.value = "8523-2672" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8523-2672" 
+	tb_company_parameter.value = "8523-2672" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -2046,7 +2046,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Variedades Santa Rosa del Peñon' , address = 'Del centro de Salud, 1 1/c al oeste.' ,
-	flavorID = 0 /*usuarioID*/,type='default'  , abreviature='demo'
+	flavorID = 1221 /*usuarioID*/,type='carlosLuisPenon'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

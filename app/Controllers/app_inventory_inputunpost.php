@@ -308,6 +308,9 @@ class app_inventory_inputunpost extends _BaseController {
 			if($htmlTemplateCompany == "")
 				$htmlTemplateCompany = $htmlTemplateDemo;
 
+			
+		
+
 			//Obtener imagen de logo
 			$objParameterLogo       = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
 			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID)->value;

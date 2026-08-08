@@ -58,6 +58,17 @@ class app_inventory_otheroutput extends _BaseController
 					$datView["objTMD"],
 					$datView["objWarehouse"]
 				);
+			}
+			else if ($dataSession["company"]->flavorID == 1221 /*carlos luis santa rosa*/) {
+				$html = helper_reporte80mmInventoryOutputPasteleriaBalladares(
+					"SALIDA DE INVENTARIO",
+					$objCompany,
+					$objParameterLogo,
+					$datView["objTM"],
+					$datView["objStage"][0]->display, /*estado*/
+					$datView["objTMD"],
+					$datView["objWarehouse"]
+				);
 			} 
 			else if ( $dataSession["company"]->flavorID ==  306 /*global pro*/)
 			{

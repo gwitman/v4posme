@@ -60,7 +60,19 @@ class app_inventory_otherinput extends _BaseController
 					$datView["objTMD"],
 					$datView["objWarehouse"]
 				);
-			} else {
+			}
+			else if ($dataSession["company"]->flavorID == 1221 /*carlos luis santa rosa*/) {
+				$html = helper_reporte80mmInventoryInputPasteleriaBalladares(
+					"ENTRADA DE INVENTARIO",
+					$objCompany,
+					$objParameterLogo,
+					$datView["objTM"],
+					$datView["objStage"][0]->display, /*estado*/
+					$datView["objTMD"],
+					$datView["objWarehouse"]
+				);
+			} 
+			else {
 				$html = helper_reporteA4TransactionMasterOutherInputGlobalPro(
 					"ENTRADA DE INVENTARIO",
 					$objCompany,

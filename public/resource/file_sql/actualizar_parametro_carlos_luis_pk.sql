@@ -1,6 +1,16 @@
 ﻿/*BD: 	dbimnhv2es7glt:carlos_luis_pk	*/
 /*servidor:		siteground.net */
 
+
+/*--Imprimir de orden de compra*/
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_inventory_inputunpost/viewRegisterFormatoDB" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_URL_PRINTER_INPUTUNPOST";## URL PARA LA IMPRESION DE ORDEN DE COMPRA
+	
+	
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "154" 
 WHERE 
