@@ -1,11 +1,331 @@
-/*BD: 	dbtuhd9y61qroa:chicharrones_carasenos*/
-/*servidor		siteground .nl*/
+/*BD: 	dbmwgnxgt26g07:parametro_magia_barbershop*/
+/*SERVIDOR:		siteground .nl*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAPP_WEBHOOK_WAPI2"; 
+##Activar el webhook de Whatsapp Wapi2
 
 
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAPP_WEBHOOK_ULTRAMSG"; 
+##Activar el webhook de Whatsapp Ultra Msg
+	
+	
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "5226" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_CATEGORY_POSMECONNECT_MESSAGE_PERSON"; 
+##Categoria de clientes que se usa en posme connect para identificar que el cliente es un contacto personal
+##PERSONAL
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "ACTIVATED_SEND_EMAIL"; ##Activar o desactivar el envio de email
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_VALIDATE_COST_IN_PRICE"; ##Validar el costo al momento de meter el precio
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_NEWROW_TO_ADDITEM"; ##Agregar filas nuevos al momento de facturar
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "0" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "TALLER_CUSTOMER_EXTERNAL"; ##Agregar productos repetidos en la facturaion mobile
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "0" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "TALLER_ROLE_EXTERNAL"; ##Agregar productos repetidos en la facturaion mobile
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "0" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "TALLER_EMPLOYER_DEFAULT"; ##Agregar productos repetidos en la facturaion mobile
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_ALLOW_REPEATED_PRODUCTS"; ##Agregar productos repetidos en la facturaion mobile
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "default" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_PRINTER_INVOICE_FISICAL_FORMAT"; ##Formato de impresion fisia mobile
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_IN_INVOICE_MOSTRAR_DESCUENTO"; ##Ocultar el boton de descuento
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_UPLOAD_AFTER_INVOICE"; ##Despues de cada factura mobile, subir los datos si esta en true
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "PRINTER_REFERENCE_INVOICE_MOBILE"; ##Imprimer las referencias, en las facturas mobile android
+
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_RESTRUCTURE_AMORTIZACION_GYM_IN_SHARE"; ##Restructurar la fecha al momento de aplicar el abono , util enlos gym
+	
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "www.google.com" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_PRINTER_QR_IN_INVOICE_URL"; ##Url que escaneara el qr en las facturas mobiles
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_PRINTER_QR_IN_INVOICE"; ##Imprimer el codigo qr en las facturas mobiles	
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION_SECUNDARY"; ##Segunda session_ especial para envio de notificaciones
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "1900-01-01" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_MONTH"; ##Mes de wahtapp
+
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "5125" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CONVERSATION_DEPARTAMENT_EMPLOYER_ASIGNED_NEW_CONVERSATION"; ##Depattamento por defecto para asignar conversaciones  121 es VENTA
+
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_SEND_CARNET_WHATSAPP"; ##Enviar el carent via whatsapp
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CONVERSATION_LIST_CONVERSATION_NOT_PHOTE"; ##No foto en las conversaciones
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CONVERSATION_LIST_CONVERSATION_NOT_BELL"; ##No sonido en las conversaciones
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "BOX_ATTENDANCE_MANUALITY"; ##Marcar Asistencia Manual
+
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_AUTHENTICATE_BY_EMAIL";## Mandar correo de autenticacion al ingrear un usuario
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value 		= "https://api.ultramsg.com/instance41967/messages/image" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION_IMAGEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
+	
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_BILLING_VALID_CASH_OPENING";## Validar que la caja este abierta
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_BACKUP_ENABLE";## Hacer backup diarios
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_ENABLE_SEND_WORKSHOP";## Activar Whatapp en el taller
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_ENABLE_SEND_BILLING";## Activar Whatapp en la facturacion
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "WHATSAP_ENABLE_SEND_COLLECTIONS";## Activar el whatapp en la cobranza
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_ALLOW_DUPLICATE_DETAIL";## Moneda en que se deben de presntar los reportes
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "Cordoba" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT";## Moneda en que se deben de presntar los reportes
+				
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_SEND_SFTP_PEDIDOSYA_DIRECTORY_TARGET"; #Directorio destino del archivo sftp de pedidos ya
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_SEND_SFTP_PEDIDOSYA_IP"; #Ip de pedidos ya para mandar archivo csv, por sftp
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_SEND_SFTP_PEDIDOSYA_USERNAME";  #Username de pedidos ya para mandar archivo csv, por sftp
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_SEND_SFTP_PEDIDOSYA_PASSWORD"; #Password de pedidos ya para mandar archivo csv, por sftp
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_SEND_SFTP_PEDIDOSYA_PORT"; #Puerto de pedidos ya para mandar archivo csv, por sftp
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_SEND_SFTP_PEDIDOSYA_MERCHATID"; #Id del comercio de pedidos ya para mandar archivo csv, por sftp
+
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_EXECUTE_FORMULATED"; 
+## Ejecutar las formulas al facturar
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_INSRT_ALL_WAREHOUSE_IN_NEWITEM"; 
+## Agregar todas las bodegas al momento de crear un nuevo item
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_invoice_billing/add/codigoMesero/none" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_PAYMENT_URL_RESULT"; 
+## Url de resultado pagadito 
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "MOBILE_SHOW_URL_CUSTOMER_PAY"; 
+## Indica la url que se debe de mostrar al momento de ver el estado de cuenta de un cliente	
+## https://posme.net/v4posme/carlos/public/app_cxc_report/pay_by_invoice/viewReport/true/invoiceNumber/{0}
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "Gracias por su compra {firstName}, le recordamos que por cada compra acumula puntos! Su puntos acumulados son {amount}" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_SEND_WHATAPP_BY_POINT_TEMPLATE"; ## Plantilla de envio de whatapp al comprar por puntos
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_SEND_WHATAPP_BY_POINT"; ## Enviar whatapp por puntos
+	
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "1" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_RATIO_OF_POINT_BY_BILLING"; ## Configuracion de los puntos ganados por cada cordoba vendido
+	
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "DEFAULT" 
 WHERE 
@@ -279,6 +599,12 @@ WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CXC_SUBCATEGORY_ID_DEFAULT";## Sub Categoria por defecto
 	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "5116" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CXC_SUBCATEGORY_ID_DEFAULT_POSMECONNECT";## Sub Categoria por defecto para posMe Connect_
+	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "102" 
@@ -496,20 +822,20 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://api.ultramsg.com/instance65915/messages/chat" 
+	tb_company_parameter.value = "https://wapi2.com/chat" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "n5hb8n1wf0r6e27i" 
+	tb_company_parameter.value = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyNTIzLCJ0eXBlIjoiYXBpX2FjY2VzcyIsImlhdCI6MTc2ODk0MDc2MSwiZXhwIjoxODAwNDc2NzYxfQ.3BjU5L0xVl-qMfiHuwJFnK6ad2pVmd8CK2zwb5Ohn78" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://api.whaticket.com/api/v1/whatsapps" 
+	tb_company_parameter.value = "fd78784d-98c9-4897-a533-4e3f7fdbe892" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
@@ -687,7 +1013,7 @@ WHERE
 	tb_parameter.name = "CXC_PLAZO_DEFAULT";## Plazo predeterminado
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "SHARE_INVOICE_BY_INVOICE";## Si este valor esta en true, se tiene que seleccionar una factura a la ves, par ir abonando una a una
@@ -1265,7 +1591,10 @@ UPDATE  tb_company_parameter,tb_parameter SET
 	tb_company_parameter.value = "ULTIMO COSTO" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
-	tb_parameter.name = "INVENTORY_TYPE_COST";## Tipos de Costo: ULTIMO COSTO; PROMEDIO 
+	tb_parameter.name = "INVENTORY_TYPE_COST";## Tipos de Costo: 
+#PONDERADO COSTO
+#ULTIMO COSTO
+#PROMEDIO COSTO
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
@@ -1343,7 +1672,7 @@ WHERE
 
 /*--Imprimir de orden de compra*/
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_inventory_inputunpost/viewRegisterFormato80mm" 
+	tb_company_parameter.value = "app_inventory_inputunpost/viewRegisterFormatoDB" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVENTORY_URL_PRINTER_INPUTUNPOST";## URL PARA LA IMPRESION DE ORDEN DE COMPRA
@@ -1520,13 +1849,19 @@ WHERE
 
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1Caracenos" 
+	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1DB" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER";## URLs PARA LA IMPRESION DE FACTURA 	
-	
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormalA4Opcion1" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVOICE_URL_PRINTER_OPCION3";## URLs PARA LA IMPRESION DE FACTURA 	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaNormalA4Opcion1DB" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER_OPCION2";## URLs PARA LA IMPRESION DE FACTURA 	
@@ -1565,7 +1900,7 @@ WHERE
 	tb_parameter.name = "INVOICE_BILLING_PRINTER_DIRECT_NAME_DEFAULT_COCINA";## Imprimie Directamente la Cocina
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaCocina58mm" 
+	tb_company_parameter.value = "app_invoice_billing/viewRegisterFormatoPaginaCocina1DB" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_URL_PRINTER_COCINA";## Símbolo de la Moneda Funcional 
@@ -1674,28 +2009,28 @@ WHERE
 
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "042-230476-0000T" 
+	tb_company_parameter.value = "XXXXXXXXXX" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ID";## CEDULA DEL PROPIETARIO 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "042-230476-0000T" 
+	tb_company_parameter.value = "241-070693-0001R" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_COMPANY_IDENTIFIER";## RUC 
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8505-7109" 
+	tb_company_parameter.value = "8402-9010" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8505-7109" 
+	tb_company_parameter.value = "8402-9010" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -1703,15 +2038,15 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Estadio nuevo de León 200 metros al sur sobre carretera a mano isquierda casa blanca" 
+	tb_company_parameter.value = "Esquina opuesta al banco LAFISE / JINOTEGA" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Chicharrones Caraceños' , address = 'Estadio nuevo de León 200 metros al sur sobre carretera a mano isquierda casa blanca' ,
-	flavorID = 784 /*usuarioID*/,type='default'  , abreviature='chicharrones'
+	NAME = 'Magia BarberShop' , address = 'Esquina opuesta al banco LAFISE / JINOTEGA' ,
+	flavorID = 0 /*usuarioID*/,type='magiBarbershop'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
@@ -1724,25 +2059,27 @@ Eliminar o desactivar usuarios
 update tb_user set isActive = 0;
 update tb_user set isActive = 1 WHERE userID in (
  2, 	
- 778,  
- 779, 
- 780,
- 781,  
- 782, 
- 783, 
- 784
+ 1228,  
+ 1229, 
+ 1230,
+ 1231,  
+ 1232, 
+ 1233, 
+ 1234
 );
 
 update tb_role set isActive = 0; 
 update tb_role set isActive = 1 where roleID in (
 	3,
-	713,
-	714,
-	715,
-	716,
-	717,
-	718,
-	719	
+	1179,
+	1180,
+	1181,
+	1182,
+	1183,
+	1184,
+	1185,
+	1186,
+	1187
 );
 */
 
@@ -1764,7 +2101,8 @@ where
 	currencyID = 1
 	and targetCurrencyID = 2; 
 	
-	
+
+
 update tb_item set realStateEmployerAgentID = ifnull(realStateEmployerAgentID,0);
 update tb_item set realStateCityID = ifnull(realStateCityID,0);
 update tb_item set realStateCountryID = ifnull(realStateCountryID,0);
