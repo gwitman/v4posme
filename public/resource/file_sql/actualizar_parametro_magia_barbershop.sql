@@ -2046,7 +2046,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Magia BarberShop' , address = 'Esquina opuesta al banco LAFISE / JINOTEGA' ,
-	flavorID = 0 /*usuarioID*/,type='magiBarbershop'  , abreviature='demo'
+	flavorID = 1228 /*usuarioID*/,type='magiBarbershop'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

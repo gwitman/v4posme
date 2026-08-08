@@ -25,6 +25,10 @@ class core_acount extends _BaseController {
 					{
 						$this->response->redirect($dataSession["lastUrl"]);
 					}
+					if($dataSession["company"]->type == "magiBarbershop")
+					{
+						$this->response->redirect(base_url()."/app_invoice_billing/add/codigoMesero/none");
+					}
 					else
 					{
 					
