@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang='en'>
+<head>
+  <meta charset='UTF-8' />
+  <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+  <style>
+	@page {       
+	  size: 2.7in 55in;                  
+	  margin-top:0px;
+	  margin-left:10px;
+	  margin-right:0px;
+	}
+	table{
+	  font-size: x-small;
+	  font-weight: bold;
+	  font-family: Consolas, monaco, monospace;
+	}
+  </style>
+</head>
+<body>
+  <table style='width:100%'>
+	<tr>
+	  <td colspan='3' style='text-align:center'>
+		<img src='{imageBase64}' width='110' >
+	  </td>
+	</tr>			
+	<tr>
+	  <td colspan='3' style='text-align:center'>
+		{companyName}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='3' style='text-align:center'>
+		{address}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='3' style='text-align:center'>
+		TEL: {phoneNumber}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='3' style='text-align:center'>
+		RUC: {companyRuc}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='3' style='text-align:center'>
+		&nbsp;
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='3' style='text-align:center'>
+		RECIBO DE ABONO
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='3' style='text-align:center'>
+		# {transactionNumber}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='3' style='text-align:center'>
+		FECHA: {transactionDate}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='3' style='text-align:center'>
+		HORA: {transactionTime}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='3' style='text-align:center'>
+		&nbsp;
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='1'>
+		Cliente:
+	  </td>
+	  <td colspan='2'>
+		{customerName}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='1'>
+		Codigo:
+	  </td>
+	  <td colspan='2'>
+		{customerNumber}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='1'>
+		Moneda:
+	  </td>
+	  <td colspan='2'>
+		{currencySimbol}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='1'>
+		Tipo Pago:
+	  </td>
+	  <td colspan='2'>
+		{paymentTypeName}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='3' style='text-align:center'>
+		&nbsp;
+	  </td>
+	</tr>
+	<tr>
+	  <td style="text-align:left;" colspan="1">DOC</td>
+	  <td style="text-align:right;" colspan="1">ABONO</td>
+	  <td style="text-align:right;" colspan="1">SALDO</td>
+	</tr>
+
+	{transactionMasterDetail}
+	<tr>
+	  <td style="text-align:left;" colspan="3">{itemName}</td>
+	</tr>
+	<tr>
+	  <td colspan="1" style="text-align:left;">{itemDocumentNumber}</td>
+	  <td colspan="1" style="text-align:right;">{itemAmountPayment}</td>
+	  <td colspan="1" style="text-align:right;">{itemAmountBalance}</td>
+	</tr>
+	{/transactionMasterDetail}
+
+	<tr>
+	  <td colspan='3' style='text-align:center'>
+		&nbsp;
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='2'>
+		SALDO INICIAL
+	  </td>
+	  <td style='text-align:right'>
+		{currencySimbol} {amount_initial_balance}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='2'>
+		TOTAL ABONO
+	  </td>
+	  <td style='text-align:right'>
+		{currencySimbol} {amount_total_payment}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='2'>
+		SALDO FINAL
+	  </td>
+	  <td style='text-align:right'>
+		{currencySimbol} {amount_final_balance}
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='3' style='text-align:center'>
+		&nbsp;
+	  </td>
+	</tr>
+	<tr>
+	  <td colspan='3' style='text-align:center'>
+		posMe PRO Premium 3.1
+	  </td>
+	</tr>
+  </table>					  
+</body>			
+</html>

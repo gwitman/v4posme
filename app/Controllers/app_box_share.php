@@ -2450,6 +2450,218 @@ class app_box_share extends _BaseController {
 		    return $resultView;
 		}
 	}
+
+	function viewRegisterFormatoPaginaTicketDb(){
+		try{ 
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);
+						
+							
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						if ($resultPermission 	== PERMISSION_NONE)
+						throw new \Exception(NOT_ALL_EDIT);		
+			}	 
+			
+			
+			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri			
+			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri				
+			$saldos						= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"saldos");//--finuri	
+			$companyID 					= $dataSession["user"]->companyID;		
+			$branchID 					= $dataSession["user"]->branchID;		
+			$roleID 					= $dataSession["role"]->roleID;		
+			
+			//Get Component
+			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			//Get Logo
+			$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+			//Get Company
+			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);			
+			//Get Documento				
+
+			$objParameterLogo       = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$objParameterTelefono	= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+			$objParameterRuc	    = $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+			$objParameterRuc        = $objParameterRuc->value;
+			$objCompany 			= $this->Company_Model->get_rowByPK($companyID);	
+
+			
+			//Get Documento
+			$datViewArray							= array();
+			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
+			$datView["objUser"] 					= $this->User_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+			$datView["objBranch"]					= $this->Branch_Model->get_rowByPK($datView["objTM"]->companyID,$datView["objTM"]->branchID);
+			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
+			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
+			$datView["objCurrency"]                 = $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_share","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
+			
+			$dataView["objListCompanyPageSetting"]	= $this->Company_Page_Setting_Model->get_rowByKeyAndController(
+				$objCompany->type,
+				"app_invoice_billing"
+			);
+
+			$datView["viewRegisterFormatoPaginaNormal80mmOpcion1_LabelAfterDateTime"] 
+													= ""; 
+
+			$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_box_share","templateShareDocument","");
+			$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_box_share","templateShareDocument","");
+			if($htmlTemplateCompany == "")
+				$htmlTemplateCompany = $htmlTemplateDemo;
+
+			
+			//Obtener imagen de logo
+			$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;    
+			$type    = pathinfo($path, PATHINFO_EXTENSION);
+			$data    = file_get_contents($path);
+			$base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
+			$datViewArray["imageBase64"]						= $base64;
+			$datViewArray["companyName"]						= $objCompany->name;
+			$datViewArray["address"]							= $objCompany->address;
+			$datViewArray["phoneNumber"]						= $objParameterTelefono->value;
+			$datViewArray["companyRuc"]							= $objParameterRuc;
+			$datViewArray["transactionNumber"]					= $datView["objTM"]->transactionNumber;
+			$datViewArray["transactionDate"]					= $datView["objTM"]->createdOn;
+			$datViewArray["transactionYear"]					= date('Y',strtotime($datView["objTM"]->createdOn));
+			$datViewArray["transactionMonth"]					= date('m',strtotime($datView["objTM"]->createdOn));
+			$datViewArray["transactionDay"]						= date('d',strtotime($datView["objTM"]->createdOn));
+			$datViewArray["transactionTime"]					= date('h:i:s A',strtotime($datView["objTM"]->createdOn));
+			$datViewArray["customerName"]						= $datView["objNatural"]->firstName." ".$datView["objNatural"]->lastName;
+			$datViewArray["customerNumber"]						= $datView["objCustumer"]->customerNumber;
+			$datViewArray["customerPhone"]						= $datView["objCustumer"]->phoneNumber;
+			$datViewArray["currencySimbol"]						= $datView["objCurrency"]->simbol;
+			$datViewArray["paymentTypeName"]					= "";
+			$datViewArray["amount_initial_balance"]				= 0;
+			$datViewArray["amount_total_payment"]				= 0;
+			$datViewArray["amount_final_balance"]				= 0;
+			$datViewArray["transactionMasterDetail"] 			= array();
+
+			//Obtener imagen de logo marca de agua
+			$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-marca-'.$objParameterLogo->value;   
+			if (file_exists($path)) {
+				$type    					 		= pathinfo($path, PATHINFO_EXTENSION);
+				$data    					 		= file_get_contents($path);
+				$base64  					 		= 'data:image/' . $type . ';base64,' . base64_encode($data);
+				$datViewArray["imageBase64Marca"] 	= $base64;
+			} 
+			
+
+			
+			//Inicializar Detalle
+			$saldoInicial = array_sum(array_column($datView["objTMD"], 'reference2'));
+			$saldoFinal   = array_sum(array_column($datView["objTMD"], 'reference4'));
+			$saldoAbonado = array_sum(array_column($datView["objTMD"], 'amount'));
+			
+			/*Calculo de saldos generales*/
+			$saldoInicialGeneral = round($datView["objTMI"]->reference1,0);
+			$saldoFinalGeneral   = round($datView["objTMI"]->reference2,0);
+			
+			$saldoInicial 	= $saldos == "Individuales"? $saldoInicial: $saldoInicialGeneral ;
+			$saldoFinal 	= $saldos == "Individuales"? $saldoFinal: $saldoFinalGeneral ;
+			
+			$detalle = array();
+			$datViewArray["amount_initial_balance"]				= sprintf("%01.2f",round($saldoInicial,2));
+			$datViewArray["amount_total_payment"]				= sprintf("%01.2f",round($datView["objTM"]->amount,2));
+			$datViewArray["amount_final_balance"]				= sprintf("%01.2f",round($saldoFinal,2));
+
+
+			
+			//agregar item
+			foreach($datView["objTMD"] as $detail_)
+			{
+
+				$objCustomerCreditDocument 				= $this->Customer_Credit_Document_Model->get_rowByDocument(
+						$datView["objTM"]->companyID,$datView["objTM"]->entityID, $detail_->reference1
+				);
+				$objCustomerCreditDocumentAmortization 	= $this->Customer_Credit_Amortization_Model->get_rowByPK(
+						$detail_->reference3
+				);
+
+				$row = array(
+					"itemName"							=>"",
+					"itemDocumentNumber"				=>$detail_->reference1,
+					"itemAmountPayment"					=>sprintf("%01.2f",round($detail_->amount,2)),
+					"itemAmountBalanceStart"			=>sprintf("%01.2f",round($detail_->reference2,2)),
+					"itemAmountBalance"					=>sprintf("%01.2f",round($detail_->reference4,2)),
+					"itemAmountReference5"				=>$detail_->reference5,
+					"itemAmountReference6"				=>$detail_->reference6,
+					"itemAmountReference7"				=>$detail_->reference7,
+					"itemReference8" 					=>$detail_->reference3, /*customer credit amortizacion id */
+					"itemReference9" 					=>$objCustomerCreditDocument->periodName,
+					"itemReference10" 					=>$objCustomerCreditDocumentAmortization->dateApply,
+					"itemReference11" 					=>$objCustomerCreditDocumentAmortization->dayDelay
+				);
+				array_push($datViewArray["transactionMasterDetail"],$row);		
+			}
+
+
+			//Generar Reporte
+			$titleAbono 	= getBahavioDB($dataSession["company"]->type, 'app_box_share', 'titleShare', "ABONO");
+			$parser 		= \Config\Services::parser();			
+			$html 			= $parser->setData($datViewArray)->renderString($htmlTemplateCompany);
+			$this->dompdf->loadHTML($html);
+			
+			//1cm = 29.34666puntos
+			//a4: 210 ancho x 297
+			//a4: 21cm x 29.7cm
+			//a4: 595.28puntos x 841.59puntos
+			
+			//$this->dompdf->setPaper('A4','portrait');
+			//$this->dompdf->setPaper(array(0,0,234.76,6000));
+			
+			$this->dompdf->render();
+			
+			$objParameterShowLinkDownload	= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID);
+			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
+			$nameFileDownload				= date("YmdHis").".pdf";
+			
+			//visualizar
+			$this->response->setContentType('application/pdf');
+			$objParameterShowLinkDownload 	= $objParameterShowLinkDownload == "false" ? true : false;
+			$this->dompdf->stream($nameFileDownload	, ['Attachment' => $objParameterShowLinkDownload]);
+			exit;
+			//descargar
+			//$this->dompdf->stream();
+			
+		}
+		catch(\Exception $ex){
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+		
+		    $data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+		    
+		    $this->email->setFrom(EMAIL_APP);
+		    $this->email->setTo(EMAIL_APP_COPY);
+		    $this->email->setSubject("Error");
+		    $this->email->setMessage($resultView);
+		    
+		    $resultSend01 = $this->email->send();
+		    $resultSend02 = $this->email->printDebugger();
+		    
+		    
+		    return $resultView;
+		}
+	}
 	
 	function viewRegisterFormatoPaginaTicketPasteleriaLizzette(){
 		try{ 
