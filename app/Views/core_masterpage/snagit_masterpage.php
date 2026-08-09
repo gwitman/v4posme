@@ -15,8 +15,8 @@
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
     />
 
-	<!-- Manifest -->
-	<link rel="manifest" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/mobile_instaler/manifest.json">
+	<!-- Manifest (dinámico para resolver rutas con PHP) -->
+	<link rel="manifest" href="<?php echo base_url(); ?>/core_dashboards_mobile/manifest">
 
 	<!-- Color de la barra superior -->
 	<meta name="theme-color" content="#1e88e5">
@@ -26,8 +26,11 @@
 	<meta name="apple-mobile-web-app-status-bar-style" content="default">
 	<meta name="apple-mobile-web-app-title" content="posMe Live">
 
-	<!-- Icono iOS -->
-	<link rel="apple-touch-icon" href="/icons/icon-192.png">
+	<!-- Iconos iOS -->
+	<link rel="apple-touch-icon" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/img/icons/ios/180.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/img/icons/ios/152.png">
+	<link rel="apple-touch-icon" sizes="167x167" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/img/icons/ios/167.png">
+	<link rel="apple-touch-icon" sizes="180x180" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/img/icons/ios/180.png">
 
 	<!-- Responsive -->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">

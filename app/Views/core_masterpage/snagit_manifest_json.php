@@ -1,0 +1,73 @@
+<?php
+header('Content-Type: application/json');
+$baseUrl = APP_URL_RESOURCE_CSS_JS;
+?>
+{
+  "name": "posMe Live",
+  "short_name": "posMe Live",
+  "description": "posMe Live - Plataforma en tiempo real",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#ffffff",
+  "theme_color": "#1e88e5",
+  "icons": [
+    {
+      "src": "<?php echo $baseUrl; ?>/resource/img/icons/android/launchericon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "<?php echo $baseUrl; ?>/resource/img/icons/android/launchericon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
+    },
+    {
+      "src": "<?php echo $baseUrl; ?>/resource/img/icons/ios/128.png",
+      "sizes": "128x128",
+      "type": "image/png"
+    },
+    {
+      "src": "<?php echo $baseUrl; ?>/resource/img/icons/android/launchericon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png"
+    },
+    {
+      "src": "<?php echo $baseUrl; ?>/resource/img/icons/ios/152.png",
+      "sizes": "152x152",
+      "type": "image/png"
+    },
+    {
+      "src": "<?php echo $baseUrl; ?>/resource/img/icons/ios/167.png",
+      "sizes": "167x167",
+      "type": "image/png"
+    },
+    {
+      "src": "<?php echo $baseUrl; ?>/resource/img/icons/ios/180.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "<?php echo $baseUrl; ?>/resource/img/icons/android/launchericon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "<?php echo $baseUrl; ?>/resource/img/icons/icon-384.png",
+      "sizes": "384x384",
+      "type": "image/png"
+    },
+    {
+      "src": "<?php echo $baseUrl; ?>/resource/img/icons/android/launchericon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
+      "src": "<?php echo $baseUrl; ?>/resource/img/icons/android/launchericon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}
