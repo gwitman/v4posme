@@ -150,6 +150,9 @@
                             <p class="small fw-semibold mb-1" style="color: #2e7d32;">
                               <i class="bx bx-user me-1"></i>Cliente: <span class="fw-bold">{{ grupo.Cliente }}</span>
                             </p>
+                            <p class="small fw-semibold mb-2" style="color: #2e7d32;">
+                              <i class="bx bx-calendar me-1"></i>Fecha: <span class="fw-bold">{{ formatFecha(grupo.Fecha) }}</span>
+                            </p>
                             <p class="small fw-semibold mb-2" style="color: #2e7d32;"><i class="bx bx-package me-1"></i>Productos vendidos:</p>
                             <table class="table table-sm table-bordered mb-0" style="background-color: #ffffff;">
                               <thead>
