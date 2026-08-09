@@ -5,20 +5,20 @@ const { createApp } = Vue;
 createApp({
     data() {
         return {
-            mensaje: 'Seleccione los filtros y presione Consultar para ver los datos.',
-            mostrarAlerta: true,
-            loading: false,
-            objListData: [],
+            mensaje:        'Seleccione los filtros y presione Consultar para ver los datos.',
+            mostrarAlerta:  true,
+            loading:        false,
+            objListData:    [],
             detalleAbierto: null,
-            startOn: '<?php echo date("Y-m-01"); ?>',
-            endOn: '<?php echo date("Y-m-d"); ?>',
+            startOn:        '<?php echo date("Y-m-01"); ?>',
+            endOn:          '<?php echo date("Y-m-d"); ?>',
             filterTransaction: '19',
             filterCustomer: '',
-            filterItem: '',
-            userName: '<?php echo $userName; ?>',
-            password: '<?php echo $password; ?>',
-            companyID: '<?php echo $companyID; ?>',
-            userID: '<?php echo $userID; ?>'
+            filterItem:     '',
+            userName:       '<?php echo $userName; ?>',
+            password:       '<?php echo $password; ?>',
+            companyID:      '<?php echo $companyID; ?>',
+            userID:         '<?php echo $userID; ?>'
         }
     },
     computed: {
@@ -29,19 +29,19 @@ createApp({
                 const key = item.transactionMasterID;
                 if (!map[key]) {
                     map[key] = {
-                        transactionMasterID: item.transactionMasterID,
-                        Documento: item.Documento,
-                        Fecha: item.Fecha,
-                        Cliente: item.Cliente,
-                        Monto: parseFloat(item.Monto || 0),
+                        transactionMasterID:    item.transactionMasterID,
+                        Documento:              item.Documento,
+                        Fecha:                  item.Fecha,
+                        Cliente:                item.Cliente,
+                        Monto:                  parseFloat(item.Monto || 0),
                         detalle: []
                     };
                 }
                 map[key].detalle.push({
-                    Codigo: item.Codigo,
-                    Producto: item.Producto,
-                    Cantidad: item.Cantidad,
-                    SubMonto: item.SubMonto
+                    Codigo:     item.Codigo,
+                    Producto:   item.Producto,
+                    Cantidad:   item.Cantidad,
+                    SubMonto:   item.SubMonto
                 });
             });
             return Object.values(map);
@@ -74,7 +74,20 @@ createApp({
             return 0;
         }
     },
+    watch: {
+        startOn() { this.limpiarResultados(); },
+        endOn() { this.limpiarResultados(); },
+        filterTransaction() { this.limpiarResultados(); },
+        filterCustomer() { this.limpiarResultados(); },
+        filterItem() { this.limpiarResultados(); }
+    },
     methods: {
+        limpiarResultados() {
+            this.objListData    = [];
+            this.detalleAbierto = null;
+            this.mensaje        = 'Los filtros han cambiado. Presione Consultar para actualizar.';
+            this.mostrarAlerta  = true;
+        },
         formatMoney(value) {
             return parseFloat(value || 0).toLocaleString('es-NI', { style: 'currency', currency: 'NIO', minimumFractionDigits: 2 });
         },
@@ -111,16 +124,16 @@ createApp({
                 const json = await res.json();
 
                 if (json.success === false) {
-                    this.objListData = [];
-                    this.mensaje = json.message || 'Error al cargar datos';
-                    this.mostrarAlerta = true;
+                    this.objListData    = [];
+                    this.mensaje        = json.message || 'Error al cargar datos';
+                    this.mostrarAlerta  = true;
                     return;
                 }
 
                 if (json.success === true && (!json.data || json.data.length === 0)) {
-                    this.objListData = [];
-                    this.mensaje = 'No hay datos para el rango seleccionado.';
-                    this.mostrarAlerta = true;
+                    this.objListData    = [];
+                    this.mensaje        = 'No hay datos para el rango seleccionado.';
+                    this.mostrarAlerta  = true;
                     return;
                 }
 
@@ -128,9 +141,9 @@ createApp({
 
             } catch (error) {
                 console.error(error);
-                this.mensaje = 'Error de conexión al servidor.';
-                this.mostrarAlerta = true;
-                this.objListData = [];
+                this.mensaje        = 'Error de conexión al servidor.';
+                this.mostrarAlerta  = true;
+                this.objListData    = [];
             } finally {
                 this.loading = false;
             }
