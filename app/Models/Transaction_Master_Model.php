@@ -602,6 +602,98 @@ class Transaction_Master_Model extends Model  {
 		//Ejecutar Consulta		
 		return $db->query($sql)->getRow();
     } 
+
+	function getRowAll_DashboardMobile_Facturas(
+			$transactionID,
+			$startOn,
+			$endOn,
+			$custonerName,
+			$itemName
+	)
+	{
+		$db = db_connect();
+		$sql = "";
+		$sql = $sql.sprintf("
+			select 
+				t.transactionID as TransactionID,
+				t.`name` as Transaccion, 
+				c.transactionMasterID,
+				c.transactionNumber as Documento,
+				c.createdOn as Fecha,
+				concat(nat.firstName,' ',nat.lastName) as Cliente,
+				c.amount as Monto,
+				i.itemNumber as Codigo,
+				i.`name` as Producto ,
+				tmd.quantity as Cantidad,
+				tmd.amount as SubMonto  
+			from 
+				tb_transaction_master c 
+				inner join tb_workflow_stage ws on 
+					ws.workflowStageID = c.statusID 
+				inner join tb_naturales nat on 
+					nat.entityID = c.entityID 
+				inner join tb_transaction t on 
+					t.transactionID = c.transactionID 
+				inner join tb_transaction_master_detail tmd on 
+					tmd.transactionMasterID = c.transactionMasterID 
+				inner join tb_item i on 
+					i.itemID = tmd.componentItemID 
+			where 
+				c.isActive = 1 and 
+				ws.aplicable = 1 and 
+				c.transactionID = $transactionID and 
+				c.createdOn between '$startOn' and '$endOn' and 
+				tmd.isActive = 1 and 
+				nat.firstName like '%$custonerName%' and 
+				i.`name` like '%$itemName%'
+				
+		");
+
+		return $db->query($sql)->getResult();
+	}
+
+	function getRowAll_DashboardMobile_Abonos(
+			$transactionID,
+			$startOn,
+			$endOn,
+			$custonerName
+	)
+	{
+		$db = db_connect();
+		$sql = "";
+		$sql = $sql.sprintf("
+			select
+				t.transactionID as TransactionID,
+				t.`name` as Transaccion,
+				c.transactionMasterID,
+				c.transactionNumber as Documento,
+				c.createdOn as Fecha,
+				concat(nat.firstName,' ',nat.lastName) as Cliente,
+				c.amount as Monto,
+				c.reference1 as Referencia,
+				c.note as Nota
+			from
+				tb_transaction_master c
+				inner join tb_workflow_stage ws on
+					ws.workflowStageID = c.statusID
+				inner join tb_naturales nat on
+					nat.entityID = c.entityID
+				inner join tb_transaction t on
+					t.transactionID = c.transactionID
+			where
+				c.isActive = 1 and
+				ws.aplicable = 1 and
+				c.transactionID = $transactionID and
+				c.createdOn between '$startOn' and '$endOn' and
+				nat.firstName like '%$custonerName%'
+
+		");
+
+		return $db->query($sql)->getResult();
+	}
+
+
+
 	
 
 

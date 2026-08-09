@@ -1887,6 +1887,12 @@ $routes->match(['get', 'post'], 'app_transaction_master_api/create_TransactionMa
 $routes->match(['get', 'post'], 'app_transaction_master_api/update_TransactionMaster_Task/(:any)', 'app_transaction_master_api::update_TransactionMaster_Task');
 $routes->match(['get', 'post'], 'app_transaction_master_api/updateOrden_TransactionMaster_Task/(:any)', 'app_transaction_master_api::updateOrden_TransactionMaster_Task');
 
+// Dashboard Mobile (sin autenticación de sesión)
+$routes->match(['get', 'post'], 'core_dashboards_mobile/index', 'core_dashboards_mobile::index');
+$routes->match(['get', 'post'], 'core_dashboards_mobile/index/(:any)', 'core_dashboards_mobile::index');
+$routes->match(['get', 'post'], 'core_dashboards_mobile/getReportData', 'core_dashboards_mobile::getReportData');
+$routes->match(['get', 'post'], 'core_dashboards_mobile/getReportData/(:any)', 'core_dashboards_mobile::getReportData');
+
 
 /*
  * --------------------------------------------------------------------
