@@ -128,9 +128,9 @@
                     <tr>
                       <th class="small" style="width:30px;"></th>
                       <th class="small">Documento</th>
-                      <th class="small">Cliente</th>
+                      <th class="small d-none d-md-table-cell">Cliente</th>
                       <th class="small text-end">Monto</th>
-                      <th class="small">Fecha</th>
+                      <th class="small d-none d-md-table-cell">Fecha</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -140,13 +140,16 @@
                           <i class="bx" :class="detalleAbierto === idx ? 'bx-chevron-down text-primary' : 'bx-chevron-right'"></i>
                         </td>
                         <td class="small fw-semibold text-primary">{{ grupo.Documento }}</td>
-                        <td class="small">{{ grupo.Cliente }}</td>
+                        <td class="small d-none d-md-table-cell">{{ grupo.Cliente }}</td>
                         <td class="small text-end fw-bold">{{ formatMoney(grupo.Monto) }}</td>
-                        <td class="small">{{ formatFecha(grupo.Fecha) }}</td>
+                        <td class="small d-none d-md-table-cell">{{ formatFecha(grupo.Fecha) }}</td>
                       </tr>
                       <tr v-if="detalleAbierto === idx">
-                        <td colspan="5" class="p-0">
+                        <td :colspan="isMobile ? 3 : 5" class="p-0">
                           <div class="p-2" style="background-color: #e8f5e9; border-left: 4px solid #4caf50;">
+                            <p class="small fw-semibold mb-1" style="color: #2e7d32;">
+                              <i class="bx bx-user me-1"></i>Cliente: <span class="fw-bold">{{ grupo.Cliente }}</span>
+                            </p>
                             <p class="small fw-semibold mb-2" style="color: #2e7d32;"><i class="bx bx-package me-1"></i>Productos vendidos:</p>
                             <table class="table table-sm table-bordered mb-0" style="background-color: #ffffff;">
                               <thead>
@@ -191,23 +194,34 @@
                 <table class="table table-sm table-hover mb-0">
                   <thead class="table-light">
                     <tr>
-                      <th class="small">#</th>
+                      <th class="small d-none d-md-table-cell">#</th>
                       <th class="small">Documento</th>
-                      <th class="small">Cliente</th>
+                      <th class="small d-none d-md-table-cell">Cliente</th>
                       <th class="small text-end">Monto</th>
-                      <th class="small">Fecha</th>
-                      <th class="small">Referencia</th>
+                      <th class="small d-none d-md-table-cell">Fecha</th>
+                      <th class="small d-none d-md-table-cell">Referencia</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item, idx) in objListData" :key="idx">
-                      <td class="small">{{ idx + 1 }}</td>
-                      <td class="small fw-semibold text-success">{{ item.Documento }}</td>
-                      <td class="small">{{ item.Cliente }}</td>
-                      <td class="small text-end fw-bold">{{ formatMoney(item.Monto) }}</td>
-                      <td class="small">{{ formatFecha(item.Fecha) }}</td>
-                      <td class="small"><span class="badge bg-label-info">{{ item.Referencia || '-' }}</span></td>
-                    </tr>
+                    <template v-for="(item, idx) in objListData" :key="idx">
+                      <tr @click="toggleDetalleAbono(idx)" style="cursor:pointer;">
+                        <td class="small d-none d-md-table-cell">{{ idx + 1 }}</td>
+                        <td class="small fw-semibold text-success">{{ item.Documento }}</td>
+                        <td class="small d-none d-md-table-cell">{{ item.Cliente }}</td>
+                        <td class="small text-end fw-bold">{{ formatMoney(item.Monto) }}</td>
+                        <td class="small d-none d-md-table-cell">{{ formatFecha(item.Fecha) }}</td>
+                        <td class="small d-none d-md-table-cell"><span class="badge bg-label-info">{{ item.Referencia || '-' }}</span></td>
+                      </tr>
+                      <tr v-if="detalleAbonoAbierto === idx" class="d-md-none">
+                        <td colspan="2" class="p-0">
+                          <div class="p-2" style="background-color: #e3f2fd; border-left: 4px solid #1976d2;">
+                            <p class="small mb-1"><i class="bx bx-user me-1"></i><strong>Cliente:</strong> {{ item.Cliente }}</p>
+                            <p class="small mb-1"><i class="bx bx-calendar me-1"></i><strong>Fecha:</strong> {{ formatFecha(item.Fecha) }}</p>
+                            <p class="small mb-0"><i class="bx bx-link me-1"></i><strong>Referencia:</strong> <span class="badge bg-label-info">{{ item.Referencia || '-' }}</span></p>
+                          </div>
+                        </td>
+                      </tr>
+                    </template>
                   </tbody>
                 </table>
               </div>

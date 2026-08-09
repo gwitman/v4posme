@@ -10,6 +10,7 @@ createApp({
             loading:        false,
             objListData:    [],
             detalleAbierto: null,
+            detalleAbonoAbierto: null,
             startOn:        '<?php echo date("Y-m-01"); ?>',
             endOn:          '<?php echo date("Y-m-d"); ?>',
             filterTransaction: '19',
@@ -22,6 +23,9 @@ createApp({
         }
     },
     computed: {
+        isMobile() {
+            return window.innerWidth < 768;
+        },
         groupedData() {
             if (this.filterTransaction != '19') return [];
             const map = {};
@@ -85,6 +89,7 @@ createApp({
         limpiarResultados() {
             this.objListData    = [];
             this.detalleAbierto = null;
+            this.detalleAbonoAbierto = null;
             this.mensaje        = 'Los filtros han cambiado. Presione Consultar para actualizar.';
             this.mostrarAlerta  = true;
         },
@@ -99,6 +104,9 @@ createApp({
         },
         toggleDetalle(idx) {
             this.detalleAbierto = this.detalleAbierto === idx ? null : idx;
+        },
+        toggleDetalleAbono(idx) {
+            this.detalleAbonoAbierto = this.detalleAbonoAbierto === idx ? null : idx;
         },
         async cargarListado() {
             try {

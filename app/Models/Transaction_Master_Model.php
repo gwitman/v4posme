@@ -690,7 +690,7 @@ class Transaction_Master_Model extends Model  {
 				c.isActive = 1 and
 				ws.aplicable = 1 and
 				c.transactionID = $transactionID and
-				c.createdOn between '$startOn' and '$endOn' and 
+				c.createdOn between '$startOn' and '$endOn'  
 				AND (
 					'$custonerName' = ''
 					OR CONCAT(nat.firstName, ' ', nat.lastName) LIKE '%%$custonerName%%'
