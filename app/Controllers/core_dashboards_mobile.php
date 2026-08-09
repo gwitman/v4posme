@@ -46,7 +46,8 @@ class core_dashboards_mobile extends _BaseController {
 			$dataSession["head"]    = /*--inicio view*/ view('core_dashboards_mobile/' . $viewType . 'index_head', $dataView);//--finview
 			$dataSession["footer"]  = /*--inicio view*/ view('core_dashboards_mobile/' . $viewType . 'index_footer', $dataView);//--finview
 			$dataSession["script"]  = /*--inicio view*/ view('core_dashboards_mobile/' . $viewType . 'index_script', $dataView);//--finview
-			$dataSession["body"]    = /*--inicio view*/ view('core_dashboards_mobile/' . $viewType . 'index_body', $dataView);//--finview
+			$dataSession["body"]    = /*--inicio view*/ view('core_dashboards_mobile/' . $viewType . 'index_body', $dataView)
+									. /*--inicio view*/ view('core_dashboards_mobile/' . $viewType . 'index_pwa_install', $dataView);//--finview
 
 			return view("core_masterpage/" . $masterPage, $dataSession);//--finview-r
 
@@ -56,6 +57,15 @@ class core_dashboards_mobile extends _BaseController {
 			$resultView         = view("core_template/email_error_general", $data);
 			return $resultView;
 		}
+	}
+
+	/**
+	 * Manifest dinámico para PWA (usa variables PHP para rutas)
+	 */
+	function manifest()
+	{
+		$this->response->setContentType('application/json');
+		return view('core_masterpage/snagit_manifest_json');
 	}
 
 	/**

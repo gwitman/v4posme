@@ -1892,6 +1892,7 @@ $routes->match(['get', 'post'], 'core_dashboards_mobile/index', 'core_dashboards
 $routes->match(['get', 'post'], 'core_dashboards_mobile/index/(:any)', 'core_dashboards_mobile::index');
 $routes->match(['get', 'post'], 'core_dashboards_mobile/getReportData', 'core_dashboards_mobile::getReportData');
 $routes->match(['get', 'post'], 'core_dashboards_mobile/getReportData/(:any)', 'core_dashboards_mobile::getReportData');
+$routes->get('core_dashboards_mobile/manifest', 'core_dashboards_mobile::manifest');
 
 
 /*
