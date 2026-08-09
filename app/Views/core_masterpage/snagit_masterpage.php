@@ -760,9 +760,23 @@
                   , made with ❤️ by
                   <a href="https://themeselection.com" target="_blank" class="footer-link fw-bolder">posMe</a>
                 </div>
-                
+                <div class="mb-2 mb-md-0">
+                  <small class="text-muted" id="footer-device-info"></small>
+                </div>
               </div>
             </footer>
+            <script>
+            (function() {
+              function updateDeviceInfo() {
+                var w = window.innerWidth;
+                var h = window.innerHeight;
+                var tipo = w <= 768 ? 'Mobile' : (w <= 1024 ? 'Tablet' : 'Desktop');
+                document.getElementById('footer-device-info').textContent = tipo + ' | ' + w + 'x' + h + 'px';
+              }
+              updateDeviceInfo();
+              window.addEventListener('resize', updateDeviceInfo);
+            })();
+            </script>
             <!-- / Footer -->
 
             <div class="content-backdrop fade"></div>
