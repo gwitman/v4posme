@@ -47,6 +47,8 @@ class app_inventory_otheroutput extends _BaseController
 			$datView["objTM"]->transactionOn 		= date_format(date_create($datView["objTM"]->transactionOn), "Y-m-d");
 			$datView["objWarehouse"]				= $this->Warehouse_Model->get_rowByPK($companyID, $datView["objTM"]->sourceWarehouseID);
 			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_otheroutput", "statusID", $datView["objTM"]->statusID, $companyID, $branchID, $roleID);
+	     	$objListComanyParameter					= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+            
 
 			if ($dataSession["company"]->flavorID == 728 /*pasteleria balladares*/) {
 				$html = helper_reporte80mmInventoryOutputPasteleriaBalladares(
@@ -80,6 +82,19 @@ class app_inventory_otheroutput extends _BaseController
 					$datView["objStage"][0]->display, /*estado*/
 					$datView["objTMD"],
 					$datView["objWarehouse"]
+				);
+			}		
+			else if ( $dataSession["company"]->flavorID ==  1214 /*mary Jav*/)
+			{
+				$html = helper_reporteA4TransactionMasterOutherOutputA4Generic(
+					"SALIDA DE INVENTARIO",
+					$objCompany,
+					$objParameterLogo,
+					$datView["objTM"],
+					$datView["objStage"][0]->display, /*estado*/
+					$datView["objTMD"],
+					$datView["objWarehouse"],
+					$objListComanyParameter
 				);
 			}
 			else {
