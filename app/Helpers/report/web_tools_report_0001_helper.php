@@ -3767,21 +3767,22 @@ function helper_reporteA4TransactionMasterOutherOutputA4Generic(
 			";
 		
 	$cantidad 		= 0;	
+	$subTotal		= 0;
 	for($i = 0 ; $i < 22 ; $i++)
 	{
 		$count = count($objDetail);
 		if($i < $count)
 		{
 			$cantidad++;
-			
-			$f_html = $f_html."			
+			$subTotal		= $subTotal + ($objDetail[$i]->unitaryCost  * $objDetail[$i]->quantity);
+			$f_html 		= $f_html."			
 				<tr>
 					<td style='text-align:left;width:70px' >".$objDetail[$i]->itemNumber."</td>
 					<td style='text-align:left;' >".$objDetail[$i]->itemName."</td>
-					<td style='text-align:center;width:70px' >".number_format(round(0,2),2,".",",")."</td>
+					<td style='text-align:center;width:70px' >".number_format(round($objDetail[$i]->unitaryCost,2),2,".",",")."</td>
 					<td style='text-align:center;width:70px' >".number_format(round($objDetail[$i]->quantity,2),2,".",",")."</td>
 					<td style='text-align:center;width:70px' >"." 0.00</td>
-					<td style='text-align:center;width:70px' >".number_format(round(0,2)  * round($objDetail[$i]->quantity,2)   ,2,".",",")."</td>
+					<td style='text-align:center;width:70px' >".number_format(round($objDetail[$i]->unitaryCost,2)  * round($objDetail[$i]->quantity,2)   ,2,".",",")."</td>
 				<tr>
 			";
 		}
@@ -3849,8 +3850,8 @@ function helper_reporteA4TransactionMasterOutherOutputA4Generic(
 							<td  style='text-align:left;vertical-align:top;widht:100px;' >
 								<table style='width:100%;'>
 									<tr>										
-										<td style='width:70px'>Cantidad</td>
-										<td style='text-align:right;width:70px'>".number_format ( round($cantidad,2) , 2 , ".","," ) ."</td>
+										<td style='width:70px'>TOTAL</td>
+										<td style='text-align:right;width:70px'>".number_format ( round($subTotal,2) , 2 , ".","," ) ."</td>
 									</tr>
 									<tr>
 										<td><!--Descuentos--></td>
