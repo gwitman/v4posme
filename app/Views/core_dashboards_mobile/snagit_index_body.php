@@ -78,13 +78,14 @@
             </div>
           </div>
         </div>
-        <div class="col-6 col-md-3 mb-3">
+        <div class="col-12 col-md-3 mb-3 order-first order-md-0">
           <div class="card border-0 shadow-sm h-100">
             <div class="card-body text-center p-3">
               <div class="avatar avatar-sm bg-label-success rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
                 <i class="bx bx-dollar-circle"></i>
               </div>
-              <h4 class="mb-0">{{ formatMoney(totalMonto) }}</h4>
+              <h2 class="mb-0 d-md-none">{{ formatMoney(totalMonto) }}</h2>
+              <h4 class="mb-0 d-none d-md-block">{{ formatMoney(totalMonto) }}</h4>
               <small class="text-muted">Total Monto</small>
             </div>
           </div>

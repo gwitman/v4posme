@@ -13,7 +13,7 @@ createApp({
             detalleAbonoAbierto: null,
             startOn:        '<?php echo date("Y-m-01"); ?>',
             endOn:          '<?php echo date("Y-m-d"); ?>',
-            filterTransaction: '19',
+            filterTransaction: '<?php echo (isset($company) && $company->type == "gymJalapa") ? "23" : "19"; ?>',
             filterCustomer: '',
             filterItem:     '',
             userName:       '<?php echo $userName; ?>',
