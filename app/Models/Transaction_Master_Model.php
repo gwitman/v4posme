@@ -654,7 +654,7 @@ class Transaction_Master_Model extends Model  {
 			ORDER BY c.createdOn DESC
 		");
 
-
+		log_message("error",print_r($sql,true));
 		return $db->query($sql)->getResult();
 	}
 
@@ -699,6 +699,7 @@ class Transaction_Master_Model extends Model  {
 				c.createdOn DESC 
 		");
 
+		log_message("error",print_r($sql,true));
 		return $db->query($sql)->getResult();
 	}
 
