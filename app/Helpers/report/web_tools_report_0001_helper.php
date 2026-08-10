@@ -3604,6 +3604,7 @@ function helper_reporteA4TransactionMasterOutherOutputA4Generic(
     $core_web_parameter = new \App\Libraries\core_web_parameter();    
     $path    			= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
     $address			= $core_web_parameter->getParameterFiltered($companyParameter,"CORE_PROPIETARY_ADDRESS")->value;
+	$ruc				= $core_web_parameter->getParameterFiltered($companyParameter,"CORE_COMPANY_IDENTIFIER")->value;
 	$font_size1   		= "18px";
 	$border_left 	= "border-left: 1px solid black;";
 	$border_right 	= "border-right: 1px solid black;";
@@ -3690,7 +3691,7 @@ function helper_reporteA4TransactionMasterOutherOutputA4Generic(
 										</tr>
 										<tr>
 										  <td style='text-align:center'>
-											Edificio Delta RUC: 888-080396-0001K
+											Edificio Delta RUC: ".$ruc."
 										  </td>
 										</tr>
 										<tr>
@@ -3898,7 +3899,7 @@ function helper_reporteA4TransactionMasterOutherOutputA4Generic(
 				  <table style='width:98%' >
 						<tr>
 							<td style='text-align:center;text-decoration:underline;font-weight: bold;font-size:14px'>
-								Al comprar tu equipo en GLOBAL PRO,puedes cambiarlo por uno superior cuando gustes!
+								".getBehavio($objCompany->type,"app_inventory_otheroutput","lblRptOutherOutputPhraseDocument","Al comprar tu equipo en GLOBAL PRO,puedes cambiarlo por uno superior cuando gustes!")."
 							</td>
 						</tr>
 				   </table>";
@@ -21914,7 +21915,7 @@ function helper_reporteA4TransactionMasterExamenLab(
 							</tr>
 							<tr>
 								<td style='font-size:". $size1."; color: ". $color1.";'>
-									Firma Autorizada: Lic. Heysell Morales
+									".getBehavio($objCompany->type,"app_lab_examen","lblReportFirmaAutorizada","Firma Autorizada: Lic. Heysell Morales")."
 								</td>
 							</tr>
 						</table>
@@ -22215,7 +22216,7 @@ function helper_reporteA4TransactionMasterExamenLabV1(
 							</tr>
 							<tr>
 								<td style='font-size:". $size1."; color: ". $color1.";'>
-									Firma Autorizada: Lic. Heysell Morales
+									".getBehavio($objCompany->type,"app_lab_examen","lblReportFirmaAutorizada","Firma Autorizada: Lic. Heysell Morales")."
 								</td>
 							</tr>
 						</table>
