@@ -7,6 +7,7 @@
 				<a href="<?php echo base_url(); ?>/app_purchase_request/add" class="btn btn-success" id="btnNuevo"><i class="icon16 i-checkmark-4"></i>Nuevo</a>						
 				<a href="<?php echo base_url(); ?>/app_purchase_request/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>                                    
 				<a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>									
+				<a href="#" class="btn btn-info" id="btnAudit"><i class="icon16 i-pen-3"></i> Auditoria</a>
 				<a href="#" class="btn btn-primary <?php echo getBehavio($company->type,"app_purchase_request","classBtnTaller","");  ?>" id="btnPrinter"><i class="icon16 i-print"></i> Imprimir E.</a>
 				<a href="#" class="btn btn-primary <?php echo getBehavio($company->type,"app_purchase_request","classBtnTaller","");  ?>" id="btnPrinterOutput"><i class="icon16 i-print"></i> Imprimir S.</a>				
 				<a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>

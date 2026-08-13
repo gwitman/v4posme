@@ -306,6 +306,7 @@ class app_purchase_request extends _BaseController {
 			$transactionID 							= /*inicio get post*/ $this->request->getPost("txtTransactionID");
 			$transactionMasterID					= /*inicio get post*/ $this->request->getPost("txtTransactionMasterID");
 			$objTM	 								= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$objTMOld								= $objTM;
 			$oldStatusID 							= $objTM->statusID;
 			
 			
@@ -493,7 +494,9 @@ class app_purchase_request extends _BaseController {
 			}
 			
 			
-			
+			//AUDITORIA			
+			$objTMNew	 = $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$this->core_web_auditoria->setAudit("tb_transaction_master_taller_zone_customer",$objTMOld,$objTMNew,$dataSession,$this->request);
 			
 			//Obtener plantilla de whatsapp
 			$warrning = false;
@@ -527,7 +530,7 @@ class app_purchase_request extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 			
-		    return $resultView;
+		    echo $resultView;
 		}
 		
 	}
@@ -1703,7 +1706,64 @@ class app_purchase_request extends _BaseController {
 		    return $resultView;
 		}
 	}
-	
+	function viewAudit(){
+		try{ 
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+			
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);
+						
+							
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						if ($resultPermission 	== PERMISSION_NONE)
+						throw new \Exception(NOT_ALL_EDIT);		
+			}	 
+			
+								
+			$companyID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"companyID");//--finuri
+			$transactionID			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri	
+			$transactionMasterID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri	
+			$companyID 			= $dataSession["user"]->companyID;		
+			$branchID 			= $dataSession["user"]->branchID;		
+			$roleID 			= $dataSession["role"]->roleID;		
+				
+			
+			
+			//Get Component
+			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
+			//Get Logo
+			$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			//Get Company
+			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);			
+			//Get Journal
+			$datView["objTM"]		 			= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);	
+			$dataView["objDataAudit"]			= $this->core_web_auditoria->getAuditDetail($companyID,$transactionMasterID,"tb_transaction_master_taller_zone_customer");
+			
+			
+		}
+		catch(\Exception $ex){
+			if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+			
+			$data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+			
+		    return $resultView;
+		}
+	}
 	
 	
 }

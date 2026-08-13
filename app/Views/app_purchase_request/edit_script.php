@@ -47,6 +47,12 @@
 		});
 		
 		
+		$(document).on("click","#btnAudit",function(){
+					fnWaitOpen();
+					window.open("<?php echo base_url(); ?>/app_purchase_request/viewAudit/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>", '_blank');
+					fnWaitClose();
+		});
+
 		$(document).on("click","#btnPrinter",function(){
 					fnWaitOpen();
 					window.open("<?php echo base_url(); ?>"+"/"+urlPrinterInput+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>", '_blank');

@@ -519,6 +519,8 @@ $routes->match(['get', 'post'], 'app_purchase_request/viewPrinterFormatoA4Output
 $routes->match(['get', 'post'], 'app_purchase_request/viewPrinterFormatoA4Output/(:any)', 'app_purchase_request::viewPrinterFormatoA4Output');
 $routes->match(['get', 'post'], 'app_purchase_request/viewPrinterFormatoA4Stiker', 'app_purchase_request::viewPrinterFormatoA4Stiker');
 $routes->match(['get', 'post'], 'app_purchase_request/viewPrinterFormatoA4Stiker/(:any)', 'app_purchase_request::viewPrinterFormatoA4Stiker');
+$routes->match(['get', 'post'], 'app_purchase_request/viewAudit', 'app_purchase_request::viewAudit');
+$routes->match(['get', 'post'], 'app_purchase_request/viewAudit/(:any)', 'app_purchase_request::viewAudit');
 $routes->match(['get', 'post'], 'app_cxc_leads/save', 'app_cxc_leads::save');
 $routes->match(['get', 'post'], 'app_cxc_leads/save/(:any)', 'app_cxc_leads::save');
 $routes->match(['get', 'post'], 'app_cxc_leads/insertElement', 'app_cxc_leads::insertElement');
