@@ -10,7 +10,7 @@
 		var urlPrinterInput  = '<?php echo $objParameterUrlPrinterInput; ?>';
 		var urlPrinterOutput = '<?php echo $objParameterUrlPrinterOutput; ?>';
 		
-		
+		//ready objComponent_Autorization_Detail_Page_Model_EditJavaReady
 		<?php 
 		if($objComponent_Autorization_Detail_Page_Model_EditJavaReady)
 		{
@@ -150,9 +150,12 @@
 			fnAgregarFila();
 		});
 		
+		//objReadyPostScript
 		<?php 
 		echo $objReadyPostScript;
 		?>
+
+		//fin rady
 	});
 	
 	function onCompleteBilling(objResponse)
@@ -205,8 +208,10 @@
 			result = false;
 		}
 		
+		//app_purchase_request-scriptValidateForm
 		<?php echo getBehavio($company->type,"app_purchase_request","scriptValidateForm","") ?>
 
+		//objComponent_Autorization_Detail_Page_Model_ValidateForm
 		<?php 
 		if($objComponent_Autorization_Detail_Page_Model_ValidateForm)
 		{
@@ -217,6 +222,8 @@
 			}
 		}
 		?>
+
+		//result
 		return result;
 	}
 	
