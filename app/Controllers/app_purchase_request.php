@@ -1743,10 +1743,19 @@ class app_purchase_request extends _BaseController {
 			$objParameter	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
 			//Get Company
 			$objCompany 	= $this->Company_Model->get_rowByPK($companyID);			
-			//Get Journal
-			$datView["objTM"]		 			= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);	
+			//Get Documento
+			$dataView["objTM"]		 			= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);	
 			$dataView["objDataAudit"]			= $this->core_web_auditoria->getAuditDetail($companyID,$transactionMasterID,"tb_transaction_master_taller_zone_customer");
+			$dataView["transactionMasterID"]	= $transactionMasterID;
 			
+			//Renderizar Vista
+			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
+			$dataSession["message"]			= $this->core_web_notification->get_message();
+			$dataSession["head"]	= view('app_purchase_request/audit_head',$dataView);
+			$dataSession["body"]	= view('app_purchase_request/audit_body',$dataView);
+			$dataSession["script"]	= view('app_purchase_request/audit_script',$dataView);
+			$dataSession["footer"]	= "";
+			return view("core_masterpage/default_masterpage",$dataSession);
 			
 		}
 		catch(\Exception $ex){
