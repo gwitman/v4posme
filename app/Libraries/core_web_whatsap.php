@@ -200,7 +200,6 @@ class core_web_whatsap {
 	   if($typeCompany == "posme")
 	   {
 		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino,$esperarRespuesta,$instanciaName);
-		   //return $this->sendMessageZAPIioText( $companyID, $message, $phoneDestino);		   
 	   }
 	   else if ($typeCompany == "gymJalapa")
 	   {   
@@ -654,76 +653,7 @@ class core_web_whatsap {
         return "";
     }
 	
-   function sendMessageByEvolutionApiPosMe ($companyID, $message, $phoneDestino)
-   {
-	    //2024-06-30
-		//https://waapi.app/account/
-		//tocken  qMAsXGyf0jIswU6xttfuZvORRhCRJnlrLClmlBgMe31db7ac
-		//tocken  S0EEmlFcUcvlDRdW3cIE8WQedbtdk2GVRKypXWJu8649891a
-		//api     https://waapi.app/api/v1/instances/12905/client/action/send-message
-
-		//gabriel.ley@grupogasani.com
-		//Sistema123.
-
-
-		$Parameter_Model 			= new Parameter_Model();
-		$Company_Parameter_Model 	= new Company_Parameter_Model();
-
-
-		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
-		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
-		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-
-		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
-		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
-		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-
-		$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
-		$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
-		$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
-
-		//https://api.ultramsg.com/instance65915/messages/chat
-		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
-		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
-		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-
-
-
-		$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
-		$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
-		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
-		
-		
-		$payload = [
-            'number' => $phoneDestino,
-            'text'   => $message
-        ];
-        $ch 	 = curl_init($objCP_WhatsapUrlSendMessage->value);
-        curl_setopt_array($ch, [
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST           => true,
-            CURLOPT_HTTPHEADER     => [
-                'Content-Type: application/json',
-                'apikey: ' . $objCP_WhatsapToken->value
-            ],
-            CURLOPT_POSTFIELDS     => json_encode($payload)
-        ]);
-
-        $response = curl_exec($ch);
-        $error    = curl_error($ch);
-
-        curl_close($ch);
-
-        if ($error) {
-            return [
-                'success' => false,
-                'error'   => $error
-            ];
-        }
-
-        return json_decode($response, true);
-
-   }
+   
    function sendMessageBy_VanageApiTextPosMe (
 		$companyID, 
 		$message, 
@@ -2251,6 +2181,342 @@ class core_web_whatsap {
 		log_message('info', '[sendMessageWapi2OnlyTextMasive] Fin - Total enviados: ' . count($results) . ' | Resultados: ' . json_encode(array_column($results, 'status')));
 		echo "</br>fin del proceso de envio</br>";		
 		return $results;
+	}
+
+	/**
+	 * Enviar mensaje de texto por Evolution API
+	 * @param int $companyID ID de la empresa
+	 * @param string $message Mensaje de texto a enviar
+	 * @param string $phoneDestino Numero de telefono destino
+	 * @param string $instanciaName Nombre de la instancia de Evolution API
+	 * @return array Respuesta de la API
+	 */
+	function sendMessageByEvolutionApiText($companyID, $message, $phoneDestino, $instanciaName)
+	{
+		$Parameter_Model 			= new Parameter_Model();
+		$Company_Parameter_Model 	= new Company_Parameter_Model();
+
+		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
+		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
+		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
+
+		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
+		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
+
+		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
+
+		$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
+		$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
+		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
+
+		// Evolution API: POST {url}/message/sendText/{instancia}
+		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendText/' . $instanciaName;
+		$payload 	= [
+			'number' => $phoneDestino,
+			'text'   => $message
+		];
+
+		log_message('info', '[sendMessageByEvolutionApiText] URL: ' . $url . ' | phone: ' . $phoneDestino);
+
+		$ch = curl_init($url);
+		curl_setopt_array($ch, [
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_POST           => true,
+			CURLOPT_HTTPHEADER     => [
+				'Content-Type: application/json',
+				'apikey: ' . $objCP_WhatsapToken->value
+			],
+			CURLOPT_POSTFIELDS     => json_encode($payload),
+			CURLOPT_SSL_VERIFYPEER => false,
+			CURLOPT_SSL_VERIFYHOST => false
+		]);
+
+		$response = curl_exec($ch);
+		$error    = curl_error($ch);
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+
+		log_message('info', '[sendMessageByEvolutionApiText] HTTP: ' . $httpCode . ' | response: ' . $response);
+
+		if ($error) {
+			return ['success' => false, 'error' => $error];
+		}
+
+		return json_decode($response, true);
+	}
+
+	/**
+	 * Enviar mensaje con imagen por Evolution API
+	 * @param int $companyID ID de la empresa
+	 * @param string $urlImagen URL publica de la imagen
+	 * @param string $message Caption de la imagen
+	 * @param string $phoneDestino Numero de telefono destino
+	 * @param string $instanciaName Nombre de la instancia de Evolution API
+	 * @return array Respuesta de la API
+	 */
+	function sendMessageByEvolutionApiImage($companyID, $urlImagen, $message, $phoneDestino, $instanciaName)
+	{
+		$Parameter_Model 			= new Parameter_Model();
+		$Company_Parameter_Model 	= new Company_Parameter_Model();
+
+		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
+		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
+		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
+
+		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
+		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
+
+		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
+
+		$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
+		$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
+		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
+
+		// Evolution API: POST {url}/message/sendMedia/{instancia}
+		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $instanciaName;
+		$payload 	= [
+			'number'    => $phoneDestino,
+			'mediatype' => 'image',
+			'media'     => $urlImagen,
+			'caption'   => $message
+		];
+
+		log_message('info', '[sendMessageByEvolutionApiImage] URL: ' . $url . ' | phone: ' . $phoneDestino . ' | image: ' . $urlImagen);
+
+		$ch = curl_init($url);
+		curl_setopt_array($ch, [
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_POST           => true,
+			CURLOPT_HTTPHEADER     => [
+				'Content-Type: application/json',
+				'apikey: ' . $objCP_WhatsapToken->value
+			],
+			CURLOPT_POSTFIELDS     => json_encode($payload),
+			CURLOPT_SSL_VERIFYPEER => false,
+			CURLOPT_SSL_VERIFYHOST => false
+		]);
+
+		$response = curl_exec($ch);
+		$error    = curl_error($ch);
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+
+		log_message('info', '[sendMessageByEvolutionApiImage] HTTP: ' . $httpCode . ' | response: ' . $response);
+
+		if ($error) {
+			return ['success' => false, 'error' => $error];
+		}
+
+		return json_decode($response, true);
+	}
+
+	/**
+	 * Enviar mensaje con PDF/documento por Evolution API
+	 * @param int $companyID ID de la empresa
+	 * @param string $urlPdf URL publica del PDF
+	 * @param string $fileName Nombre del archivo PDF
+	 * @param string $message Caption del documento
+	 * @param string $phoneDestino Numero de telefono destino
+	 * @param string $instanciaName Nombre de la instancia de Evolution API
+	 * @return array Respuesta de la API
+	 */
+	function sendMessageByEvolutionApiPdf($companyID, $urlPdf, $fileName, $message, $phoneDestino, $instanciaName)
+	{
+		$Parameter_Model 			= new Parameter_Model();
+		$Company_Parameter_Model 	= new Company_Parameter_Model();
+
+		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
+		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
+		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
+
+		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
+		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
+
+		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
+
+		$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
+		$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
+		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
+
+		// Evolution API: POST {url}/message/sendMedia/{instancia}
+		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $instanciaName;
+		$payload 	= [
+			'number'    => $phoneDestino,
+			'mediatype' => 'document',
+			'media'     => $urlPdf,
+			'fileName'  => $fileName,
+			'caption'   => $message
+		];
+
+		log_message('info', '[sendMessageByEvolutionApiPdf] URL: ' . $url . ' | phone: ' . $phoneDestino . ' | pdf: ' . $urlPdf);
+
+		$ch = curl_init($url);
+		curl_setopt_array($ch, [
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_POST           => true,
+			CURLOPT_HTTPHEADER     => [
+				'Content-Type: application/json',
+				'apikey: ' . $objCP_WhatsapToken->value
+			],
+			CURLOPT_POSTFIELDS     => json_encode($payload),
+			CURLOPT_SSL_VERIFYPEER => false,
+			CURLOPT_SSL_VERIFYHOST => false
+		]);
+
+		$response = curl_exec($ch);
+		$error    = curl_error($ch);
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+
+		log_message('info', '[sendMessageByEvolutionApiPdf] HTTP: ' . $httpCode . ' | response: ' . $response);
+
+		if ($error) {
+			return ['success' => false, 'error' => $error];
+		}
+
+		return json_decode($response, true);
+	}
+
+	/**
+	 * Enviar mensaje con video por Evolution API
+	 * @param int $companyID ID de la empresa
+	 * @param string $urlVideo URL publica del video
+	 * @param string $message Caption del video
+	 * @param string $phoneDestino Numero de telefono destino
+	 * @param string $instanciaName Nombre de la instancia de Evolution API
+	 * @return array Respuesta de la API
+	 */
+	function sendMessageByEvolutionApiVideo($companyID, $urlVideo, $message, $phoneDestino, $instanciaName)
+	{
+		$Parameter_Model 			= new Parameter_Model();
+		$Company_Parameter_Model 	= new Company_Parameter_Model();
+
+		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
+		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
+		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
+
+		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
+		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
+
+		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
+
+		$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
+		$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
+		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
+
+		// Evolution API: POST {url}/message/sendMedia/{instancia}
+		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $instanciaName;
+		$payload 	= [
+			'number'    => $phoneDestino,
+			'mediatype' => 'video',
+			'media'     => $urlVideo,
+			'caption'   => $message
+		];
+
+		log_message('info', '[sendMessageByEvolutionApiVideo] URL: ' . $url . ' | phone: ' . $phoneDestino . ' | video: ' . $urlVideo);
+
+		$ch = curl_init($url);
+		curl_setopt_array($ch, [
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_POST           => true,
+			CURLOPT_HTTPHEADER     => [
+				'Content-Type: application/json',
+				'apikey: ' . $objCP_WhatsapToken->value
+			],
+			CURLOPT_POSTFIELDS     => json_encode($payload),
+			CURLOPT_SSL_VERIFYPEER => false,
+			CURLOPT_SSL_VERIFYHOST => false
+		]);
+
+		$response = curl_exec($ch);
+		$error    = curl_error($ch);
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+
+		log_message('info', '[sendMessageByEvolutionApiVideo] HTTP: ' . $httpCode . ' | response: ' . $response);
+
+		if ($error) {
+			return ['success' => false, 'error' => $error];
+		}
+
+		return json_decode($response, true);
+	}
+
+	/**
+	 * Enviar mensaje de audio por Evolution API
+	 * @param int $companyID ID de la empresa
+	 * @param string $urlAudio URL publica del audio
+	 * @param string $phoneDestino Numero de telefono destino
+	 * @param string $instanciaName Nombre de la instancia de Evolution API
+	 * @return array Respuesta de la API
+	 */
+	function sendMessageByEvolutionApiAudio($companyID, $urlAudio, $phoneDestino, $instanciaName)
+	{
+		$Parameter_Model 			= new Parameter_Model();
+		$Company_Parameter_Model 	= new Company_Parameter_Model();
+
+		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
+		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
+		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
+
+		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
+		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
+
+		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
+
+		$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
+		$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
+		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
+
+		// Evolution API: POST {url}/message/sendWhatsAppAudio/{instancia}
+		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendWhatsAppAudio/' . $instanciaName;
+		$payload 	= [
+			'number' => $phoneDestino,
+			'audio'  => $urlAudio
+		];
+
+		log_message('info', '[sendMessageByEvolutionApiAudio] URL: ' . $url . ' | phone: ' . $phoneDestino . ' | audio: ' . $urlAudio);
+
+		$ch = curl_init($url);
+		curl_setopt_array($ch, [
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_POST           => true,
+			CURLOPT_HTTPHEADER     => [
+				'Content-Type: application/json',
+				'apikey: ' . $objCP_WhatsapToken->value
+			],
+			CURLOPT_POSTFIELDS     => json_encode($payload),
+			CURLOPT_SSL_VERIFYPEER => false,
+			CURLOPT_SSL_VERIFYHOST => false
+		]);
+
+		$response = curl_exec($ch);
+		$error    = curl_error($ch);
+		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+
+		log_message('info', '[sendMessageByEvolutionApiAudio] HTTP: ' . $httpCode . ' | response: ' . $response);
+
+		if ($error) {
+			return ['success' => false, 'error' => $error];
+		}
+
+		return json_decode($response, true);
 	}
 }
 ?>
