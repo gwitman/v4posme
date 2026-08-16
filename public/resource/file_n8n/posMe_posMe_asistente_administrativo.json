@@ -1,0 +1,381 @@
+{
+  "name": "posMe_posMe_asistente_administrativo",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.mensaje_usuario }}",
+        "options": {
+          "systemMessage": "Eres un asistente inteligente de cobranzas para WhatsApp.\n\nINFORMACIÓN DEL USUARIO ACTUAL:\n- Remitente actual: {{ $('recibir whatsapp').item.json.body.data.key.remoteJid }}\n\nREGLAS DE AUTORIZACIÓN:\n1. Si el \"Remitente actual\" es EXACTAMENTE \"50584766457@s.whatsapp.net\" ó \"50587164984@s.whatsapp.net\", el usuario ES EL ADMINISTRADOR DE COBRANZA.\n2. Cualquier otro número distinto es un CLIENTE regular.\n\nCOMPORTAMIENTO SEGÚN ROL:\n- SI ES ADMINISTRADOR:\n  Tiene acceso total a reportes globales. Si pide la lista de cobros de hoy, clientes en mora o registros con comentarios, usa la herramienta \"cartera de crédito\", analiza los registros, filtra los que apliquen según su consulta y entrega el resumen consolidado con los nombres, saldos y notas.\n\n- SI ES CLIENTE:\n  SOLO puede consultar su propia información personal. Usa la herramienta \"cartera de crédito\" y busca ÚNICAMENTE el registro que coincida con su número de teléfono o nombre. NUNCA le reveles la lista general de otros clientes ni datos globales de la cartera.\n\nFORMATO Y ESTILO DE RESPUESTA (WHATSAPP):\n- Usa emojis adecuados de WhatsApp para organizar la información y hacer los mensajes dinámicos y legibles:\n  * Saludos/Despedidas: 👋🏼, 😊\n  * Datos de usuario/Cliente: 👤, 📱\n  * Montos, saldos o cobros: 💵, 💰, 💳\n  * Alertas o estados en mora: ⚠️, 🚨, 📅\n  * Confirmaciones, notas o listas: ✅, 📝, 📌, 📊\n- Aplica formato de texto de WhatsApp utilizando asteriscos para *negritas* en nombres, fechas y montos clave.\n- Mantiene respuestas estructuradas, breves y con saltos de línea claros entre cada dato para evitar párrafos densos."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -320,
+        -176
+      ],
+      "id": "29192d3e-8aec-40e9-8aac-4c0c4337245c",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -560,
+        32
+      ],
+      "id": "a71feb7d-5211-404a-8a62-ff30367ed02c",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "cqLvAHshzsuFXvci",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('recibir whatsapp').item.json.body.data.key.remoteJid }}",
+        "contextWindowLength": 2
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        -336,
+        48
+      ],
+      "id": "1d5024c9-8823-45ee-b331-d4bdac772130",
+      "name": "Simple Memory",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "toolDescription": "Obtiene el listado completo en JSON de la cartera de clientes, incluyendo estados de mora, fechas de cobro, montos pendientes y comentarios guardados. Utilízala tanto para consultar el estado de un cliente individual como para generar reportes consolidados de cobro para el Administrador.",
+        "url": "https://posme.net/v4posme/posme/public/app_cxc_report/customer_credit/generateJson/1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        -80,
+        64
+      ],
+      "id": "de4b5848-a710-42ee-aff8-16f782a0e8b8",
+      "name": "cartera de credito"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://evolution-api-5vhg.srv1907129.hstgr.cloud/message/sendText/posMe_posMe_asistente_administrativo",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "kC5a9HA6UcUsn96RjnZLwDTL7I4BVkpW"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"{{ $('recibir whatsapp').item.json.body.data.key.remoteJid.replace('@s.whatsapp.net', '') }}\",\n  \"text\": {{ JSON.stringify($json.output) }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        32,
+        -176
+      ],
+      "id": "161d8cd6-3951-4ec8-b0d0-5c4b13157987",
+      "name": "enviar whatsapp"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-incoming",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1552,
+        -176
+      ],
+      "id": "1b08f8b2-a02f-4b43-8fc1-978b96cf0298",
+      "name": "recibir whatsapp",
+      "webhookId": "3829b9a4-8b7f-4b51-b2c5-07c3e5a05c55"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.data.messageType }}",
+                    "rightValue": "audioMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "0e343ab0-a167-482e-8874-f837eb0211ae"
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -1312,
+        -176
+      ],
+      "id": "b579de73-b1fa-46d8-9c27-f8684134b48c",
+      "name": "Switch"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://evolution-api-5vhg.srv1907129.hstgr.cloud/chat/getBase64FromMediaMessage/posMe_posMe_asistente_administrativo",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "kC5a9HA6UcUsn96RjnZLwDTL7I4BVkpW"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": {{ JSON.stringify($('Switch').item.json.body.data) }},\n  \"convertToMp3\": true\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1120,
+        -368
+      ],
+      "id": "768e5bc5-a4e5-4d18-b382-0e66c4e188d7",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        -784,
+        -368
+      ],
+      "id": "c8069cff-e296-4c00-8225-f23b9742c18c",
+      "name": "Transcribe a recording",
+      "credentials": {
+        "openAiApi": {
+          "id": "cqLvAHshzsuFXvci",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Extraer el string en base64 de la respuesta de Evolution API\nconst base64String = $json.base64;\n\n// Convertirlo a Buffer binario\nconst binaryData = Buffer.from(base64String, 'base64');\n\n// Generar el archivo binario en la propiedad 'data'\nreturn {\n  json: $json,\n  binary: {\n    data: await this.helpers.prepareBinaryData(binaryData, 'audio.ogg', 'audio/ogg')\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -960,
+        -368
+      ],
+      "id": "42e7754c-7446-4e30-bc08-4773b6c53379",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f85eaa88-c861-4672-8134-0ffda996d066",
+              "name": "mensaje_usuario",
+              "value": "={{ $json.text || $('recibir whatsapp').item.json.body.data.message.conversation || $('recibir whatsapp').item.json.body.data.message.extendedTextMessage.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -640,
+        -176
+      ],
+      "id": "5ee3d815-d4ec-44bf-8a0f-491a320b2cb9",
+      "name": "Edit Fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "enviar whatsapp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cartera de credito": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "recibir whatsapp": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "timezone": "America/Managua",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "7295baab-7dc2-4ea4-97ed-53dabdc3bd83",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8903022835d2096f8f12d55353ebe2e0aece13728681f611cb5a161359afe1cd"
+  },
+  "nodeGroups": [],
+  "id": "tFDokuSosM65DTjB",
+  "tags": []
+}

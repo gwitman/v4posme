@@ -639,40 +639,44 @@ class app_cxc_report extends _BaseController {
 	function customer_credit(){
 		try{ 
 		
-			//AUTENTICADO
-			if(!$this->core_web_authentication->isAuthenticated())
-			throw new \Exception(USER_NOT_AUTENTICATED);
-			$dataSession		= $this->session->get();
-		
-			//PERMISOS SOBRE LAS FUNCIONES
-			if(APP_NEED_AUTHENTICATION == true){				
-				
-				$permited = false;
-				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-				
-				if(!$permited)
-				throw new \Exception(NOT_ACCESS_CONTROL);
-				
-				$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-				if ($resultPermission 	== PERMISSION_NONE)
-				throw new \Exception(NOT_ACCESS_FUNCTION);			
-			}	
+			$generateJson		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"generateJson");//--finuri			
+			if($generateJson)
+			{
+				//MODO JSON: Sin autenticación, sin permisos, sin sesión
+				$companyID		= APP_COMPANY;
+				$branchID		= APP_BRANCH;
+				$userID			= APP_USERADMIN;
+			}
+			else
+			{
+				//AUTENTICADO
+				if(!$this->core_web_authentication->isAuthenticated())
+				throw new \Exception(USER_NOT_AUTENTICATED);
+				$dataSession		= $this->session->get();
 			
+				//PERMISOS SOBRE LAS FUNCIONES
+				if(APP_NEED_AUTHENTICATION == true){				
+					
+					$permited = false;
+					$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+					
+					if(!$permited)
+					throw new \Exception(NOT_ACCESS_CONTROL);
+					
+					$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"index",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+					if ($resultPermission 	== PERMISSION_NONE)
+					throw new \Exception(NOT_ACCESS_FUNCTION);			
+				}	
+				
+				$companyID		= $dataSession["user"]->companyID;
+				$branchID		= $dataSession["user"]->branchID;
+				$userID			= $dataSession["user"]->userID;
+			}
 								
 			$viewReport			= false;
-			$companyID			= $dataSession["user"]->companyID;
-			$branchID			= $dataSession["user"]->branchID;
-			$userID				= $dataSession["user"]->userID;
 			$tocken				= '';
 			 
 			
-			//Cargar Libreria
-				
-			
-				
-				
-			//Obtener el tipo de Comprobante
-			$companyID 		= $dataSession["user"]->companyID;
 			//Get Component
 			$objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_company");
 			//Get Logo
@@ -700,9 +704,18 @@ class app_cxc_report extends _BaseController {
 			
 			
 			
-			$objDataResult["objFirma"] 					= "{companyID:" . $dataSession["user"]->companyID . ",branchID:" . $dataSession["user"]->branchID . ",userID:" . $dataSession["user"]->userID . ",fechaID:" . date('Y-m-d H:i:s') . ",reportID:" . "pr_cxc_get_report_customer_credit" . ",ip:". $this->request->getIPAddress() . ",sessionID:" . session_id() .",agenteID:". $this->request->getUserAgent()->getAgentString() .",lastActivity:".  /*inicio last_activity */ "activity" /*fin last_activity*/ . "}"  ;
+			$objDataResult["objFirma"] 					= "{companyID:}";
 			$objDataResult["objFirmaEncription"] 		= md5 ($objDataResult["objFirma"]);
 			
+			
+			//MODO JSON: Retornar solo datos en JSON
+			if($generateJson){
+				return $this->response->setJSON(array(
+					'error' 	=> false,
+					'message' 	=> SUCCESS,
+					'data'		=> $objDataResult
+				));
+			}
 			
 			if($objCompany->type == "globalpro")
 			return view("app_cxc_report/customer_credit/view_a_disemp_globalpro",$objDataResult);//--finview-r

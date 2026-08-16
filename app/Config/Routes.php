@@ -740,6 +740,7 @@ $routes->match(['get', 'post'], 'app_cxc_report/customer_status/(:any)', 'app_cx
 $routes->match(['get', 'post'], 'app_cxc_report/customer_detail_invoice_printer', 'app_cxc_report::customer_detail_invoice_printer');
 $routes->match(['get', 'post'], 'app_cxc_report/customer_detail_invoice_printer/(:any)', 'app_cxc_report::customer_detail_invoice_printer');
 $routes->match(['get', 'post'], 'app_cxc_report/customer_credit', 'app_cxc_report::customer_credit');
+$routes->match(['get', 'post'], 'app_cxc_report/customer_credit/(:any)', 'app_cxc_report::customer_credit');
 $routes->match(['get', 'post'], 'app_cxc_report/consulta_sin_riesgo_list', 'app_cxc_report::consulta_sin_riesgo_list');
 $routes->match(['get', 'post'], 'app_cxc_report/consulta_sin_riesgo_list/(:any)', 'app_cxc_report::consulta_sin_riesgo_list');
 $routes->match(['get', 'post'], 'app_cxc_report/customer_list_real_estate', 'app_cxc_report::customer_list_real_estate');
