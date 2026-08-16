@@ -485,7 +485,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Obtiene el Base64 que devolvió Evolution API\nconst mediaResponse = $input.first().json;\n\n// Recupera el JSON original que llegó al inicio en 'recibir whatsapp'\nconst originalPayload = $('recibir whatsapp').first().json;\n\n// Fusiona ambos en un solo objeto\nreturn [\n  {\n    json: {\n      ...originalPayload,\n      base64: mediaResponse.base64 || mediaResponse.data?.base64 || \"\"\n    }\n  }\n];"
+        "jsCode": "// Obtiene el Base64 y metadatos del nodo anterior (obtener multi media base64)\nconst mediaResponse = $input.first().json;\n\n// Recupera el JSON completo que llegó al webhook inicial \"recibir whatsapp\"\nconst originalPayload = $('recibir whatsapp').first().json;\n\n// Retorna el payload inicial intacto sumándole la propiedad base64\nreturn [\n  {\n    json: {\n      ...originalPayload,\n      base64: mediaResponse.base64 || mediaResponse.data?.base64 || \"\"\n    }\n  }\n];"
       },
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
@@ -495,6 +495,19 @@
       ],
       "id": "2fe6de49-7dad-4526-b667-7ac42491e616",
       "name": "obtener string base 64"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Recupera todo el JSON original recibido en el nodo del webhook\nreturn $('recibir whatsapp').first().json;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -192,
+        272
+      ],
+      "id": "b9f722de-e1b3-4d8b-ae18-b69798b30182",
+      "name": "obtener datos iniciales"
     }
   ],
   "pinData": {},
@@ -666,7 +679,7 @@
         ],
         [
           {
-            "node": "reenviar webhook posMe connect",
+            "node": "obtener datos iniciales",
             "type": "main",
             "index": 0
           }
@@ -694,6 +707,17 @@
           }
         ]
       ]
+    },
+    "obtener datos iniciales": {
+      "main": [
+        [
+          {
+            "node": "reenviar webhook posMe connect",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -705,7 +729,7 @@
     "timezone": "America/Managua",
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "cb5b36a5-8747-44b2-8bf7-1d1d48379d96",
+  "versionId": "b76ac640-69ce-477b-a428-47b2f0b4fd1a",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8903022835d2096f8f12d55353ebe2e0aece13728681f611cb5a161359afe1cd"

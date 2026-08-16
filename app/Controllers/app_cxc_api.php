@@ -1288,6 +1288,19 @@ class app_cxc_api extends _BaseController {
 		$input	 	= $this->request->getJSON(true); // true = array
 		log_message('error', '[EvolutionApi] INPUT RAW: ' . print_r($input, true));
 
+		//Normalizar estructura: n8n envia el payload de Evolution dentro de "body"
+		//mientras que base64, webhookUrl, executionMode quedan en la raiz
+		$base64Root = $input["base64"] ?? '';
+		if(isset($input["body"]) && is_array($input["body"]) && isset($input["body"]["event"]))
+		{
+			$input = $input["body"];
+		}
+		//Preservar el base64 que venia en la raiz del payload de n8n
+		if(!empty($base64Root))
+		{
+			$input["base64"] = $base64Root;
+		}
+
 		//Solo se permiten mensajes tipo messages.upsert
 		if(($input["event"] ?? '') != "messages.upsert")
 		{
