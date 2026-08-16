@@ -1178,11 +1178,7 @@ class app_cxc_api extends _BaseController {
 	{
 		
 	}
-	public function WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe()
-	{
-		
-		
-	}
+	
 	public function WebHookReceiptMessage_Whatsapp_VonageApi_posMe()
 	{
 		
@@ -1285,6 +1281,143 @@ class app_cxc_api extends _BaseController {
 		return $this->WebHookReceiptMessage_Whatsapp_Generic_posMe($genericData);
 	}
 
+	//https://posme.nl/v4posme/comercial_luciana/public/app_cxc_api/WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe
+	public function WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe()
+	{
+		log_message('error', '[EvolutionApi] ====== INICIO WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe ======');
+		$input	 	= $this->request->getJSON(true); // true = array
+		log_message('error', '[EvolutionApi] INPUT RAW: ' . print_r($input, true));
+
+		//Solo se permiten mensajes tipo messages.upsert
+		if(($input["event"] ?? '') != "messages.upsert")
+		{
+			log_message('error', '[EvolutionApi] DESCARTADO: event=' . ($input["event"] ?? 'null') . ' (no es messages.upsert)');
+			return;
+		}
+
+		//No se permiten mensajes enviados por nosotros (fromMe)
+		if(!empty($input["data"]["key"]["fromMe"]))
+		{
+			log_message('error', '[EvolutionApi] DESCARTADO: fromMe=true');
+			return;
+		}
+
+		//Autenticar sesion por defecto para obtener companyID
+		$dataSession = $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
+		$companyID   = $dataSession["user"]->companyID;
+		log_message('error', '[EvolutionApi] companyID: ' . $companyID);
+
+		//Validar parametro WHATSAPP_WEBHOOK_EVOLUTIONAPI
+		$paramWebHook = $this->core_web_parameter->getParameter("WHATSAPP_WEBHOOK_EVOLUTIONAPI", $companyID);
+		if(!$paramWebHook || strtolower($paramWebHook->value) != "true")
+		{
+			log_message('error', '[EvolutionApi] DESCARTADO: Parametro WHATSAPP_WEBHOOK_EVOLUTIONAPI no es true. value=' . ($paramWebHook->value ?? 'null'));
+			return;
+		}
+		log_message('error', '[EvolutionApi] Parametro WHATSAPP_WEBHOOK_EVOLUTIONAPI=true, continuando...');
+
+		//Extraer remoteJid y limpiar formato (quitar @s.whatsapp.net)
+		$remoteJid = $input["data"]["key"]["remoteJid"] ?? '';
+
+		//Determinar tipo de mensaje y cuerpo
+		$messageType = $input["data"]["messageType"] ?? 'conversation';
+		$body = '';
+		$type = 'chat';
+
+		if($messageType == "conversation")
+		{
+			$body = $input["data"]["message"]["conversation"] ?? '';
+			$type = 'chat';
+		}
+		elseif($messageType == "extendedTextMessage")
+		{
+			$body = $input["data"]["message"]["extendedTextMessage"]["text"] ?? '';
+			$type = 'chat';
+		}
+		elseif($messageType == "imageMessage")
+		{
+			$body = $input["data"]["message"]["imageMessage"]["caption"] ?? '';
+			$type = 'image';
+		}
+		elseif($messageType == "documentMessage")
+		{
+			$body = $input["data"]["message"]["documentMessage"]["caption"] ?? '';
+			$type = 'document';
+		}
+		elseif($messageType == "audioMessage")
+		{
+			$type = 'ptt';
+		}
+
+		//Mapear datos de EvolutionApi al formato generico
+		$genericData = [];
+		$genericData["event"]                        = "message";
+		$genericData["data"]["from"]                 = $remoteJid;
+		$genericData["data"]["body"]                 = $body;
+		$genericData["data"]["type"]                 = $type;
+		$genericData["data"]["contact"]["pushname"]  = $input["data"]["pushName"] ?? '';
+		$genericData["data"]["quotedMsg"]["body"]    = $input["data"]["message"]["extendedTextMessage"]["contextInfo"]["quotedMessage"]["conversation"] ?? '';
+
+		//Media: si el mensaje tiene media, intentar obtenerla via base64 del campo base64 de Evolution
+		if($type == "image" || $type == "document" || $type == "ptt")
+		{
+			$mimetype = '';
+			$filename = '';
+			$base64Media = '';
+
+			if($type == "image")
+			{
+				$mimetype = $input["data"]["message"]["imageMessage"]["mimetype"] ?? 'image/jpeg';
+				$filename = 'image_' . uniqid() . '.jpg';
+			}
+			elseif($type == "document")
+			{
+				$mimetype = $input["data"]["message"]["documentMessage"]["mimetype"] ?? 'application/pdf';
+				$filename = $input["data"]["message"]["documentMessage"]["fileName"] ?? ('document_' . uniqid() . '.pdf');
+			}
+			elseif($type == "ptt")
+			{
+				$mimetype = $input["data"]["message"]["audioMessage"]["mimetype"] ?? 'audio/ogg';
+				$filename = 'audio_' . uniqid() . '.ogg';
+			}
+
+			//Evolution API puede enviar media como base64 directamente o como URL
+			$mediaBase64 = $input["data"]["message"][$messageType]["base64"] ?? '';
+			$mediaUrl    = $input["data"]["message"][$messageType]["mediaUrl"] ?? '';
+
+			if(!empty($mediaBase64))
+			{
+				$base64Media = $mediaBase64;
+			}
+			elseif(!empty($mediaUrl))
+			{
+				$mediaContent = @file_get_contents($mediaUrl);
+				if($mediaContent !== false)
+				{
+					$base64Media = base64_encode($mediaContent);
+				}
+				else
+				{
+					log_message('error', '[EvolutionApi] ERROR: No se pudo descargar media desde URL: ' . $mediaUrl);
+				}
+			}
+
+			if(!empty($base64Media))
+			{
+				$genericData["data"]["media"] = [
+					"mimetype" => $mimetype,
+					"data"     => $base64Media,
+					"filename" => $filename
+				];
+				log_message('error', '[EvolutionApi] Media procesada, mimetype=' . $mimetype . ', filename=' . $filename);
+			}
+		}
+
+		log_message('error', '[EvolutionApi] genericData mapeado: ' . print_r($genericData, true));
+
+		//Llamar a la funcion generica
+		return $this->WebHookReceiptMessage_Whatsapp_Generic_posMe($genericData);
+	}
 
 	//https://posme.nl/v4posme/comercial_luciana/public/app_cxc_api/WebHookReceiptMessage_Whatsapp_Wapi2_posMe
 	//example: webhook wapi2
