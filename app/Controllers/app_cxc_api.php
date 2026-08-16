@@ -1302,9 +1302,8 @@ class app_cxc_api extends _BaseController {
 			return;
 		}
 
-		//Autenticar sesion por defecto para obtener companyID
-		$dataSession = $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
-		$companyID   = $dataSession["user"]->companyID;
+		//Autenticar sesion por defecto para obtener companyID		
+		$companyID   = APP_COMPANY;
 		log_message('error', '[EvolutionApi] companyID: ' . $companyID);
 
 		//Validar parametro WHATSAPP_WEBHOOK_EVOLUTIONAPI
@@ -1320,9 +1319,9 @@ class app_cxc_api extends _BaseController {
 		$remoteJid = $input["data"]["key"]["remoteJid"] ?? '';
 
 		//Determinar tipo de mensaje y cuerpo
-		$messageType = $input["data"]["messageType"] ?? 'conversation';
-		$body = '';
-		$type = 'chat';
+		$messageType 	= $input["data"]["messageType"] ?? 'conversation';
+		$body 			= '';
+		$type 			= 'chat';
 
 		if($messageType == "conversation")
 		{
@@ -1350,7 +1349,7 @@ class app_cxc_api extends _BaseController {
 		}
 
 		//Mapear datos de EvolutionApi al formato generico
-		$genericData = [];
+		$genericData 								 = [];
 		$genericData["event"]                        = "message";
 		$genericData["data"]["from"]                 = $remoteJid;
 		$genericData["data"]["body"]                 = $body;
@@ -1361,9 +1360,9 @@ class app_cxc_api extends _BaseController {
 		//Media: si el mensaje tiene media, intentar obtenerla via base64 del campo base64 de Evolution
 		if($type == "image" || $type == "document" || $type == "ptt")
 		{
-			$mimetype = '';
-			$filename = '';
-			$base64Media = '';
+			$mimetype 		= '';
+			$filename 		= '';
+			$base64Media 	= '';
 
 			if($type == "image")
 			{
@@ -1382,8 +1381,9 @@ class app_cxc_api extends _BaseController {
 			}
 
 			//Evolution API puede enviar media como base64 directamente o como URL
+			//En los payloads reales el campo es "url" (no "mediaUrl")
 			$mediaBase64 = $input["data"]["message"][$messageType]["base64"] ?? '';
-			$mediaUrl    = $input["data"]["message"][$messageType]["mediaUrl"] ?? '';
+			$mediaUrl    = $input["data"]["message"][$messageType]["url"] ?? ($input["data"]["message"][$messageType]["mediaUrl"] ?? '');
 
 			if(!empty($mediaBase64))
 			{
