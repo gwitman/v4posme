@@ -12,8 +12,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        -320,
-        -176
+        -304,
+        -416
       ],
       "id": "29192d3e-8aec-40e9-8aac-4c0c4337245c",
       "name": "AI Agent"
@@ -32,8 +32,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        -560,
-        32
+        -288,
+        -176
       ],
       "id": "a71feb7d-5211-404a-8a62-ff30367ed02c",
       "name": "OpenAI Chat Model",
@@ -53,8 +53,8 @@
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.4,
       "position": [
-        -336,
-        48
+        -96,
+        -176
       ],
       "id": "1d5024c9-8823-45ee-b331-d4bdac772130",
       "name": "Simple Memory",
@@ -69,8 +69,8 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.4,
       "position": [
-        -80,
-        64
+        112,
+        -176
       ],
       "id": "de4b5848-a710-42ee-aff8-16f782a0e8b8",
       "name": "cartera de credito"
@@ -96,8 +96,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        32,
-        -176
+        240,
+        -416
       ],
       "id": "161d8cd6-3951-4ec8-b0d0-5c4b13157987",
       "name": "enviar whatsapp"
@@ -111,8 +111,8 @@
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2.1,
       "position": [
-        -1552,
-        -176
+        -1568,
+        -192
       ],
       "id": "1b08f8b2-a02f-4b43-8fc1-978b96cf0298",
       "name": "recibir whatsapp",
@@ -143,6 +143,28 @@
                 ],
                 "combinator": "and"
               }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "d516be3a-6a99-4f54-a03d-8369512e7207",
+                    "leftValue": "={{ $json.body.data.messageType }}",
+                    "rightValue": "audioMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEquals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
             }
           ]
         },
@@ -152,7 +174,7 @@
       "typeVersion": 3.4,
       "position": [
         -1312,
-        -176
+        -192
       ],
       "id": "b579de73-b1fa-46d8-9c27-f8684134b48c",
       "name": "Switch"
@@ -241,6 +263,66 @@
       ],
       "id": "5ee3d815-d4ec-44bf-8a0f-491a320b2cb9",
       "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "db1e2d01-2c0d-4700-a1a6-76310af67fe6",
+              "leftValue": "={{ $json.mensaje_usuario }}",
+              "rightValue": "=cobro",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "7cc8c8cc-cccb-43c6-ae61-8590be1e2d41",
+              "leftValue": "={{ $json.mensaje_usuario }}",
+              "rightValue": "deuda",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -496,
+        -160
+      ],
+      "id": "f2708201-f97e-45b8-89bf-a27cbcacd23e",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://posme.net/v4posme/posme/public/app_cxc_api/WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ $('recibir whatsapp').item.json.body }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -288,
+        16
+      ],
+      "id": "d9115f4f-9664-4049-937c-30a5e6fd2ed9",
+      "name": "reenviar webhook posMe connect"
     }
   ],
   "pinData": {},
@@ -307,7 +389,9 @@
             "node": "HTTP Request",
             "type": "main",
             "index": 0
-          },
+          }
+        ],
+        [
           {
             "node": "Edit Fields",
             "type": "main",
@@ -342,7 +426,7 @@
       "main": [
         [
           {
-            "node": "AI Agent",
+            "node": "If",
             "type": "main",
             "index": 0
           }
@@ -359,6 +443,24 @@
           }
         ]
       ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "reenviar webhook posMe connect",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -370,7 +472,7 @@
     "timezone": "America/Managua",
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "7295baab-7dc2-4ea4-97ed-53dabdc3bd83",
+  "versionId": "05648f1c-eaca-428c-8219-1dc4e3c3c0a1",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8903022835d2096f8f12d55353ebe2e0aece13728681f611cb5a161359afe1cd"

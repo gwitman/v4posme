@@ -1,0 +1,942 @@
+{
+  "name": "posMe_MiMercadito_asistente_administrativo",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $('buffer final').item.json.mensaje_consolidado_buffer }}",
+        "options": {
+          "systemMessage": "Eres un asistente virtual de ventas para WhatsApp. Presentate siempre como *Jordania*. Tu objetivo es atender a los clientes de forma rápida y concisa.\n\nINFORMACIÓN DEL USUARIO ACTUAL:\n- Remitente actual: {{ $('recibir whatsapp').item.json.body.data.key.remoteJid }}\n\nFILTRO OBLIGATORIO DE RELEVANCIA (LEER PRIMERO):\n1. Antes de responder o ejecutar herramientas, analiza si el mensaje del usuario está relacionado con:\n   - Compra, consulta o pedidos de frutas, verduras, jugos verdes, plan detox, leche agria.\n   - Consultas administrativas de ventas e inventario (si es administrador).\n2. Si el mensaje es una conversación personal, fuera de tema, spam o algo que NADA TIENE QUE VER con el catálogo o pedidos:\n   - NO proceses el pedido.\n   - NO ejecutes ninguna herramienta (NO llames a \"pedidos\", \"enviar_whatsapp_admin\", ni \"catalogo_de_productos\").\n   - NO envíes ningún mensaje de respuesta al usuario. Detén inmediatamente tu ejecución.\n   - Si llegas a responder, responde ÚNICAMENTE con la palabra exacta: OMITIR\n\nREGLAS DE AUTORIZACIÓN:\n1. Si el \"Remitente actual\" es EXACTAMENTE \"50584766457@s.whatsapp.net\" ó \"50587164984@s.whatsapp.net\", el usuario ES EL ADMINISTRADOR / SUPERVISOR DE VENTAS.\n2. Cualquier otro número distinto es un CLIENTE regular.\n\nCOMPORTAMIENTO SEGÚN ROL:\n- SI ES ADMINISTRADOR:\n  Tiene acceso total a reportes globales. Si pide resúmenes de existencias, productos más vendidos, precios al por mayor o inventario completo, usa la herramienta \"catalogo_de_productos\", analiza los registros y entrega un informe consolidado.\n\n- SI ES CLIENTE:\n  1. Disponibilidad Incondicional: Sin importar si hay o no stock en la herramienta \"catalogo_de_productos\", NUNCA digas que no hay o que está agotado. SIEMPRE responde confirmando que SÍ tenemos disponible.\n  2. Preguntar Cantidad: Responde únicamente diciendo que sí hay disponible y pregunta directamente la cantidad (ej: \"¡Hola! Soy *Jordania* 👋🏼 Sí, tenemos disponible. ¿Qué cantidad necesitas? 📦\").\n  3. Precios: NUNCA menciones el precio a menos que el cliente te lo pregunte explícitamente.\n  4. Estado del pedido: Una vez que el cliente indique la cantidad deseada, infórmale de manera breve que su solicitud está en proceso (ej: \"Perfecto, estamos en proceso con tu solicitud 📝\"), pero NO pidas confirmaciones ni cierres el pedido en ese momento.\n  5. NUNCA le digas el total en dinero al cliente, ni cuánto va a pagar en total.\n\nINSTRUCCIONES PARA NOTIFICAR AL ADMINISTRADOR:\n1. Ejecuta la herramienta \"enviar_whatsapp_admin\" ÚNICAMENTE cuando el cliente haya dado las cantidades o la instrucción de compra.\n2. En la herramienta, pasa los productos solicitados y el monto estimado. (La fecha y hora son calculadas automáticamente por el sistema en zona horaria UTC-6 Managua).\n2. En el parámetro 'resumen_pedido', genera el reporte con el siguiente formato exacto:\n   🚨 *NUEVO PEDIDO CONFIRMADO* 🚨\n   📅 Fecha: [Fecha y hora calculada] \n   👤 Cliente: [Número de WhatsApp del cliente]\n   📦 Productos: [Lista detallada de productos y cantidades]\n   💵 Total a cobrar: [Monto total estimado]\n\nREGLAS DE MEMORIA Y SEGUIMIENTO DE PEDIDOS:\n1. Mantén un borrador del pedido actual en tu memoria de conversación.\n2. Si el cliente indica productos sin cantidad, guarda el producto y pregunta cuántos necesita.\n3. Al recibir la cantidad, une los datos en tu memoria, notifica que está en proceso y queda a la espera de sus instrucciones.\n\nFORMATO Y ESTILO DE RESPUESTA (WHATSAPP):\n- Usa emojis adecuados de WhatsApp: 👋🏼, 😊, 🛒, 📦, 🏷️, 💵, ✅, 📝.\n- Aplica formato de texto utilizando asteriscos para *negritas* en nombres de productos y cantidades clave.\n- Mantén respuestas muy breves, directas y con saltos de línea claros.\n\n¡ATENCIÓN! Tienes disponible la herramienta \"enviar_whatsapp_admin\". ES OBLIGATORIO ejecutarla en cuanto el cliente indique cantidades válidas para un pedido. NO devuelvas únicamente texto sin haber llamado primero a esta herramienta.\n\nINSTRUCCIONES PARA REGISTRAR EN GOOGLE SHEETS:\n1. En el instante en que el cliente te proporcione las cantidades de su pedido:\n   - Ejecuta la herramienta \"pedidos\" para guardar la fila del pedido.\n   - Ejecuta al mismo tiempo la herramienta \"enviar_whatsapp_admin\" para notificar al administrador.\n   - En el parámetro 'send_admin_googlesheet_fecha_pedido', la fecha se genera automáticamente por sistema mediante la función {{ $now.setZone('America/Managua').toFormat('yyyy-MM-dd HH:mm') }}.\n   - En el parámetro 'send_admin_google_sheet_codigo_productos', usa el código 'itemBarCode' de la herramienta 'catalogo_de_productos'.\n   - En el parámetro 'send_admin_google_sheet_precio_productos', usa el precio 'price' de la herramienta 'catalogo_de_productos'.\n\nREGLA OBLIGATORIA PARA CÓDIGOS Y PRECIOS DEL CATÁLOGO:\n1. ANTES de registrar el pedido en la herramienta Google Sheets, debes consultar SIEMPRE la herramienta \"catalogo_de_productos\".\n2. Extrae los valores exactos devueltos por el catálogo para el producto solicitado:\n   - Código de producto: Usa exactamente el campo 'itemBarCode'.\n   - Precio unitario: Usa exactamente el campo 'price'.\n3. QUEDA TOTALMENTE PROHIBIDO inventar, suponer o calcular precios o códigos alfanuméricos falsos (como B001, $2.00, etc.).\n4. Utiliza únicamente los valores reales devueltos por 'catalogo_de_productos' al completar los campos en la herramienta de Google Sheets."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        304,
+        -160
+      ],
+      "id": "dbd2d20e-aaf3-4fa1-b490-bdc42ff80816",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        48,
+        96
+      ],
+      "id": "eb947f22-9e20-430f-8880-cca02d7eb3aa",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "cqLvAHshzsuFXvci",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $('recibir whatsapp').item.json.body.data.key.remoteJid }}",
+        "contextWindowLength": 2
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.4,
+      "position": [
+        288,
+        112
+      ],
+      "id": "c9913b32-cb44-479b-99ed-d8e6c133ea71",
+      "name": "Simple Memory",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://evolution-api-5vhg.srv1907129.hstgr.cloud/message/sendText/posMe_Mi_Mercadito",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "kC5a9HA6UcUsn96RjnZLwDTL7I4BVkpW"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"number\": \"{{ $('recibir whatsapp').item.json.body.data.key.remoteJid.replace('@s.whatsapp.net', '') }}\",\n  \"text\": {{ JSON.stringify($json.output) }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        848,
+        -304
+      ],
+      "id": "46726eb9-8a61-481b-bd7f-55b626252fda",
+      "name": "enviar whatsapp"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-incoming-mi-mercadito",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -2128,
+        -368
+      ],
+      "id": "4405e625-f9de-40f8-985e-32edf57f1140",
+      "name": "recibir whatsapp",
+      "webhookId": "599edbbb-cc56-40b8-8215-8932b49316d0"
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.body.data.messageType }}",
+                    "rightValue": "audioMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "id": "0e343ab0-a167-482e-8874-f837eb0211ae"
+                  }
+                ],
+                "combinator": "and"
+              }
+            },
+            {
+              "conditions": {
+                "options": {
+                  "caseSensitive": true,
+                  "leftValue": "",
+                  "typeValidation": "strict",
+                  "version": 3
+                },
+                "conditions": [
+                  {
+                    "id": "a3809e35-52f2-47c4-afaf-9071fac3cfe9",
+                    "leftValue": "={{ $json.body.data.messageType }}",
+                    "rightValue": "audioMessage",
+                    "operator": {
+                      "type": "string",
+                      "operation": "notEquals"
+                    }
+                  }
+                ],
+                "combinator": "and"
+              }
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.4,
+      "position": [
+        -1376,
+        -176
+      ],
+      "id": "cb34bf65-19da-4534-8538-331cd5835c7d",
+      "name": "Switch",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "resource": "audio",
+        "operation": "transcribe",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 2.3,
+      "position": [
+        -672,
+        -448
+      ],
+      "id": "7e39714b-b747-4fcf-a969-733f3c5698ac",
+      "name": "Transcribe a recording",
+      "credentials": {
+        "openAiApi": {
+          "id": "cqLvAHshzsuFXvci",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Obtiene el listado completo en JSON del catalogo de productos que tenemos para vender, cantidad, nombre, costo, precio, codigo publico, codigo interno, ",
+        "url": "https://posme.net/v4posme/mi_mercadito/public/app_inventory_api/n8n_getAllProductos",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        544,
+        96
+      ],
+      "id": "9e7415f5-83bd-4285-ac7e-3d580c18db21",
+      "name": "catalogo_de_productos"
+    },
+    {
+      "parameters": {
+        "amount": 8
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -416,
+        -160
+      ],
+      "id": "546eb832-01e3-43a1-8ce4-c7b8794f117f",
+      "name": "Wait",
+      "webhookId": "870ade30-7865-4d58-8321-e646b215166f"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://evolution-api-5vhg.srv1907129.hstgr.cloud/chat/getBase64FromMediaMessage/posMe_posMe_asistente_administrativo",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "kC5a9HA6UcUsn96RjnZLwDTL7I4BVkpW"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": {{ JSON.stringify($('Switch').item.json.body.data) }},\n  \"convertToMp3\": true\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1184,
+        -448
+      ],
+      "id": "5696428c-ab71-4bb5-80a8-5ac12c065f93",
+      "name": "obtener audio"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Extraer el string en base64 de la respuesta de Evolution API\nconst base64String = $json.base64;\n\n// Convertirlo a Buffer binario\nconst binaryData = Buffer.from(base64String, 'base64');\n\n// Generar el archivo binario en la propiedad 'data'\nreturn {\n  json: $json,\n  binary: {\n    data: await this.helpers.prepareBinaryData(binaryData, 'audio.ogg', 'audio/ogg')\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -912,
+        -448
+      ],
+      "id": "6d9a5dcd-8507-469b-9922-e75f4b0826d9",
+      "name": "base64"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "f85eaa88-c861-4672-8134-0ffda996d066",
+              "name": "mensaje_usuario",
+              "value": "={{ $json.text || $('recibir whatsapp').item.json.body.data.message.conversation || $('recibir whatsapp').item.json.body.data.message.extendedTextMessage.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -944,
+        -160
+      ],
+      "id": "cfebc811-7122-4d80-a3b4-f28323541e82",
+      "name": "unificar campos"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Obtener todas las filas traídas desde la Data Table\nconst items = $input.all();\nif (items.length === 0) return [];\n\nconst remoteJid = $('recibir whatsapp').item.json.body.data.key.remoteJid;\n\n// Obtener el timestamp del mensaje de ESTA ejecución\nconst myTimestamp = Number($('Insert row').item.json.timestamp);\n\n// Encontrar el timestamp más reciente guardado en la Data Table para este usuario\nconst maxTimestamp = Math.max(...items.map(item => Number(item.json.timestamp)));\n\n// Si entró un mensaje posterior a este, CANCELAMOS esta ejecución para evitar duplicados\nif (maxTimestamp > myTimestamp) {\n  return []; \n}\n\n// Si esta es la ejecución más reciente, unificamos todos los textos acumulados\nconst textoConsolidado = items.map(item => item.json.mensaje).join(\"\\n\");\n\nreturn [{\n  json: {\n    mensaje_consolidado_buffer: textoConsolidado,\n    buffer_remoteJid: remoteJid\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        -160
+      ],
+      "id": "085fae4b-78c5-438d-b64c-4ac86ce2e6fe",
+      "name": "buffer final",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "IqYGz5VOtqzmbf7k",
+          "mode": "list",
+          "cachedResultName": "mi_mercadito_buffer_mensajes",
+          "cachedResultUrl": "/projects/ptwc9jIdH17gdjrx/datatables/IqYGz5VOtqzmbf7k"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "remoteJid": "={{ $('recibir whatsapp').item.json.body.data.key.remoteJid }}",
+            "mensaje": "={{ $json.mensaje_usuario }}",
+            "timestamp": "={{ Date.now() }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "remoteJid",
+              "displayName": "remoteJid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "mensaje",
+              "displayName": "mensaje",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "timestamp",
+              "displayName": "timestamp",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -640,
+        -160
+      ],
+      "id": "2069b7ac-14bb-474a-9095-9c62f4f26fad",
+      "name": "Insert row"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "IqYGz5VOtqzmbf7k",
+          "mode": "list",
+          "cachedResultName": "mi_mercadito_buffer_mensajes",
+          "cachedResultUrl": "/projects/ptwc9jIdH17gdjrx/datatables/IqYGz5VOtqzmbf7k"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "remoteJid",
+              "keyValue": "={{ $('recibir whatsapp').item.json.body.data.key.remoteJid }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        -208,
+        -160
+      ],
+      "id": "95cea16e-e7df-470b-88d3-014ef422a854",
+      "name": "Get row(s)"
+    },
+    {
+      "parameters": {
+        "toolDescription": "OBLIGATORIO:  Utiliza esta herramienta ÚNICAMENTE cuando el cliente haya confirmado formalmente un pedido. Sirve para enviar la notificación y resumen del pedido al administrador por WhatsApp.",
+        "method": "POST",
+        "url": "https://evolution-api-5vhg.srv1907129.hstgr.cloud/message/sendText/posMe_Mi_Mercadito",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "kC5a9HA6UcUsn96RjnZLwDTL7I4BVkpW"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "50587125827"
+            },
+            {
+              "name": "text",
+              "value": "={{ $fromAI('send_admin_whatsapp_resumen_pedido', 'Genera un resumen del pedido con la lista de productos, cantidades pedidas y datos de contacto del cliente', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        768,
+        96
+      ],
+      "id": "0f395c88-d479-4726-95b9-a55718b5c27b",
+      "name": "enviar_whatsapp_admin"
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1pLcZk17AKsj7R65vK0Vhh9_jX_HzxOBV7wQ_2qv5Dw4",
+          "mode": "list",
+          "cachedResultName": "MiMercadito_Pedidos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pLcZk17AKsj7R65vK0Vhh9_jX_HzxOBV7wQ_2qv5Dw4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Pedidos",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1pLcZk17AKsj7R65vK0Vhh9_jX_HzxOBV7wQ_2qv5Dw4/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Fecha": "={{ $now.setZone('America/Managua').toFormat('yyyy-MM-dd HH:mm') }}",
+            "Cliente": "={{ $('recibir whatsapp').item.json.body.data.key.remoteJid.replace('@s.whatsapp.net', '') }}",
+            "Codigo Producto": "={{ $fromAI('send_admin_google_sheet_codigo_productos', 'Código de barras itemBarCode de UN SOLO producto del pedido. Llama a la herramienta una vez por cada producto.', 'string') }}",
+            "Precio": "={{ $fromAI('send_admin_google_sheet_precio_productos', 'Precio unitario exacto (campo price) obtenido directamente tras consultar la herramienta catalogo_de_productos precio por cada producto, llamar a la herramienta por cada producto', 'string') }}",
+            "Producto": "={{ $fromAI('send_admin_google_sheet_nombre_productos', 'Nombre de UN SOLO producto del pedido.', 'string') }}",
+            "Cantidad": "={{ $fromAI('send_admin_google_sheet_cantidad_productos', 'Cantidad de UN SOLO producto del pedido llamar a la herramienta por cada producto ', 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Estado",
+              "displayName": "Estado",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Cliente",
+              "displayName": "Cliente",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Fecha",
+              "displayName": "Fecha",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Codigo Producto",
+              "displayName": "Codigo Producto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Producto",
+              "displayName": "Producto",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Cantidad",
+              "displayName": "Cantidad",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Precio",
+              "displayName": "Precio",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        976,
+        96
+      ],
+      "id": "2cc15d10-0f3b-4a4f-a557-f8ee7f142d81",
+      "name": "pedidos",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Jg8R95PIGiQc6VXl",
+          "name": "Google Sheets account"
+        }
+      },
+      "notes": "OBLIGATORIO:  Utiliza esta herramienta ÚNICAMENTE cuando el cliente haya confirmado formalmente un pedido. Sirve para enviar el pedido a una hoja de google y llevar registro en un excel "
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "92a97876-67c7-4686-85c5-3665a493e0c1",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "OMITIR",
+              "operator": {
+                "type": "string",
+                "operation": "notContains"
+              }
+            },
+            {
+              "id": "1b3ebbbe-3c99-4482-9acc-ec41677f83f8",
+              "leftValue": "={{ $json.output }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        608,
+        -288
+      ],
+      "id": "ed98ce79-9992-46d1-9dd9-3c00a20d2de3",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "operation": "deleteRows",
+        "dataTableId": {
+          "__rl": true,
+          "value": "IqYGz5VOtqzmbf7k",
+          "mode": "list",
+          "cachedResultName": "mi_mercadito_buffer_mensajes",
+          "cachedResultUrl": "/projects/ptwc9jIdH17gdjrx/datatables/IqYGz5VOtqzmbf7k"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "remoteJid",
+              "keyValue": "={{ $('recibir whatsapp').item.json.body.data.key.remoteJid }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1072,
+        -304
+      ],
+      "id": "4b7a26a4-bceb-4e64-bb61-79aba2580e9b",
+      "name": "eliminar filas"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://evolution-api-5vhg.srv1907129.hstgr.cloud/chat/fetchProfile/posMe_Mi_Mercadito",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "kC5a9HA6UcUsn96RjnZLwDTL7I4BVkpW"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"where\": {\n    \"id\": \"{{ $('recibir whatsapp').item.json.body.data.key.remoteJid }}\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1856,
+        -304
+      ],
+      "id": "397fff41-d282-4649-abc2-428227046943",
+      "name": "HTTP Request",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "84bf7c43-efe0-44be-a863-c9102fb98d3e",
+              "leftValue": "={{ JSON.stringify($json.tags || $json.labels || []) }}",
+              "rightValue": "Humano",
+              "operator": {
+                "type": "string",
+                "operation": "contains"
+              }
+            },
+            {
+              "id": "643a2a22-e4cf-4d51-95d7-6fc0b87d02c6",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        -1648,
+        -304
+      ],
+      "id": "de3fff03-3be0-432a-b57b-1e0fce807509",
+      "name": "If1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "recibir whatsapp": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "obtener audio",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "unificar campos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Transcribe a recording": {
+      "main": [
+        [
+          {
+            "node": "unificar campos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "catalogo_de_productos": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Get row(s)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "obtener audio": {
+      "main": [
+        [
+          {
+            "node": "base64",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "base64": {
+      "main": [
+        [
+          {
+            "node": "Transcribe a recording",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "unificar campos": {
+      "main": [
+        [
+          {
+            "node": "Insert row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "buffer final": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Insert row": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s)": {
+      "main": [
+        [
+          {
+            "node": "buffer final",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "enviar whatsapp": {
+      "main": [
+        [
+          {
+            "node": "eliminar filas",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "enviar_whatsapp_admin": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "pedidos": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "enviar whatsapp",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "eliminar filas": {
+      "main": [
+        []
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "timezone": "America/Managua",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "b3f36be2-2ad2-4f50-a1b7-edb1c6468621",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8903022835d2096f8f12d55353ebe2e0aece13728681f611cb5a161359afe1cd"
+  },
+  "nodeGroups": [],
+  "id": "pvwqPxHkZ11D6KwZ",
+  "tags": []
+}
