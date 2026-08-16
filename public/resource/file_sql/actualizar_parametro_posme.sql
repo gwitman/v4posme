@@ -43,7 +43,7 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "fd78784d-98c9-4897-a533-4e3f7fdbe891" 
+	tb_company_parameter.value = "posMe_posMe_asistente_administrativo" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
@@ -73,13 +73,13 @@ WHERE
 	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION_IMAGEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value 		= "https://wapi2.com/chat" 
+	tb_company_parameter.value 		= "https://evolution-api-5vhg.srv1907129.hstgr.cloud" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyNTIzLCJ0eXBlIjoiYXBpX2FjY2VzcyIsImlhdCI6MTc2ODk0MDc2MSwiZXhwIjoxODAwNDc2NzYxfQ.3BjU5L0xVl-qMfiHuwJFnK6ad2pVmd8CK2zwb5Ohn78" 
+	tb_company_parameter.value = "kC5a9HA6UcUsn96RjnZLwDTL7I4BVkpW" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
