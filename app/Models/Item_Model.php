@@ -482,6 +482,17 @@ class Item_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
+   function n8n_getAllProductos($companyID){
+		$db = db_connect();
+		$sql = "";
+		$sql = $sql.sprintf("SELECT i.itemID, i.itemNumber AS itemCode, i.name, i.quantity, i.cost, ");
+		$sql = $sql.sprintf("(SELECT p.price FROM tb_price p WHERE p.itemID = i.itemID LIMIT 1) AS price ");
+		$sql = $sql.sprintf("FROM tb_item i ");
+		$sql = $sql.sprintf("WHERE i.companyID = %d ", $companyID);
+		$sql = $sql.sprintf("AND i.isActive = 1");
+		
+		return $db->query($sql)->getResult();
+   }
    
 }
 ?>

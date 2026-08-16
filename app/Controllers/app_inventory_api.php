@@ -446,5 +446,28 @@ class app_inventory_api extends _BaseController {
 			));//--finjson			
 		}
 	}
+	
+	function n8n_getAllProductos(){
+		try{
+			//Obtener Parametros
+			$companyID = APP_COMPANY;
+			
+			//Obtener Resultados
+			$dataViewData = $this->Item_Model->n8n_getAllProductos($companyID);
+			
+			return $this->response->setJSON(array(
+				'error'   => false,
+				'message' => SUCCESS,			
+				'objListProducts' => $dataViewData
+			));//--finjson			
+			
+		}
+		catch(\Exception $ex){
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));//--finjson			
+		}
+	}
 }
 ?>
