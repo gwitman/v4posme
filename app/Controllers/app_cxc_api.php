@@ -1338,6 +1338,11 @@ class app_cxc_api extends _BaseController {
 			$body = $input["data"]["message"]["imageMessage"]["caption"] ?? '';
 			$type = 'image';
 		}
+		elseif($messageType == "videoMessage")
+		{
+			$body = $input["data"]["message"]["videoMessage"]["caption"] ?? '';
+			$type = 'video';
+		}
 		elseif($messageType == "documentMessage")
 		{
 			$body = $input["data"]["message"]["documentMessage"]["caption"] ?? '';
@@ -1358,7 +1363,7 @@ class app_cxc_api extends _BaseController {
 		$genericData["data"]["quotedMsg"]["body"]    = $input["data"]["message"]["extendedTextMessage"]["contextInfo"]["quotedMessage"]["conversation"] ?? '';
 
 		//Media: si el mensaje tiene media, intentar obtenerla via base64 del campo base64 de Evolution
-		if($type == "image" || $type == "document" || $type == "ptt")
+		if($type == "image" || $type == "document" || $type == "ptt" || $type == "video")
 		{
 			$mimetype 		= '';
 			$filename 		= '';
@@ -1368,6 +1373,11 @@ class app_cxc_api extends _BaseController {
 			{
 				$mimetype = $input["data"]["message"]["imageMessage"]["mimetype"] ?? 'image/jpeg';
 				$filename = 'image_' . uniqid() . '.jpg';
+			}
+			elseif($type == "video")
+			{
+				$mimetype = $input["data"]["message"]["videoMessage"]["mimetype"] ?? 'video/mp4';
+				$filename = 'video_' . uniqid() . '.mp4';
 			}
 			elseif($type == "document")
 			{
@@ -1380,14 +1390,23 @@ class app_cxc_api extends _BaseController {
 				$filename = 'audio_' . uniqid() . '.ogg';
 			}
 
-			//Evolution API puede enviar media como base64 directamente o como URL
-			//En los payloads reales el campo es "url" (no "mediaUrl")
-			$mediaBase64 = $input["data"]["message"][$messageType]["base64"] ?? '';
-			$mediaUrl    = $input["data"]["message"][$messageType]["url"] ?? ($input["data"]["message"][$messageType]["mediaUrl"] ?? '');
+			//Evolution API envia el base64 en el root del payload (no dentro de data.message)
+			//Tambien puede estar dentro de data.message[messageType].base64 o como URL
+			$mediaBase64 = $input["base64"] ?? '';
+
+			//Si no esta en el root, buscar dentro de data.message[messageType]
+			if(empty($mediaBase64))
+			{
+				$mediaBase64 = $input["data"]["message"][$messageType]["base64"] ?? '';
+			}
+
+			//Si aun no hay base64, intentar descargar desde URL
+			$mediaUrl = $input["data"]["message"][$messageType]["url"] ?? ($input["data"]["message"][$messageType]["mediaUrl"] ?? '');
 
 			if(!empty($mediaBase64))
 			{
 				$base64Media = $mediaBase64;
+				log_message('error', '[EvolutionApi] Media obtenida desde base64, length=' . strlen($base64Media));
 			}
 			elseif(!empty($mediaUrl))
 			{
@@ -1395,6 +1414,7 @@ class app_cxc_api extends _BaseController {
 				if($mediaContent !== false)
 				{
 					$base64Media = base64_encode($mediaContent);
+					log_message('error', '[EvolutionApi] Media descargada desde URL: ' . $mediaUrl);
 				}
 				else
 				{
@@ -1404,12 +1424,62 @@ class app_cxc_api extends _BaseController {
 
 			if(!empty($base64Media))
 			{
-				$genericData["data"]["media"] = [
-					"mimetype" => $mimetype,
-					"data"     => $base64Media,
-					"filename" => $filename
-				];
-				log_message('error', '[EvolutionApi] Media procesada, mimetype=' . $mimetype . ', filename=' . $filename);
+				//Guardar el archivo en el servidor y generar URL publica
+				$extension = explode('/', $mimetype)[1] ?? 'bin';
+				//Limpiar extensiones con parametros (ej: "ogg; codecs=opus" -> "ogg")
+				$extension = explode(';', $extension)[0];
+				$extension = trim($extension);
+				$filename  = uniqid('file_') . '.' . $extension;
+
+				//Quitar encabezado Base64 si existe (data:image/jpeg;base64,...)
+				$base64Clean = $base64Media;
+				if(str_contains($base64Clean, ','))
+				{
+					$base64Clean = explode(',', $base64Clean)[1];
+				}
+
+				//Decodificar
+				$fileBinary = base64_decode($base64Clean);
+				if($fileBinary !== false && strlen($fileBinary) > 0)
+				{
+					//Obtener el componente para la ruta de almacenamiento
+					$objComponentConversation = $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_conversation");
+					if($objComponentConversation)
+					{
+						$phoneCustomer = str_replace('@s.whatsapp.net', '', $input["data"]["key"]["remoteJid"] ?? '');
+						$phoneCustomer = str_replace('@c.us', '', $phoneCustomer);
+						$documentoPath = PATH_FILE_OF_APP . "/company_" . APP_COMPANY . "/component_" . $objComponentConversation->componentID . "/component_item_" . $phoneCustomer;
+
+						if(!file_exists($documentoPath))
+						{
+							mkdir($documentoPath, 0777, true);
+						}
+
+						file_put_contents($documentoPath . "/" . $filename, $fileBinary);
+						$fileUrl = base_url() . "/resource/file_company/company_" . APP_COMPANY . "/component_" . $objComponentConversation->componentID . "/component_item_" . $phoneCustomer . "/" . $filename;
+
+						$genericData["data"]["media"] = [
+							"mimetype" => $mimetype,
+							"data"     => $base64Media,
+							"filename" => $filename
+						];
+						$genericData["data"]["mediaUrl"] = $fileUrl;
+						log_message('error', '[EvolutionApi] Media guardada: ' . $documentoPath . '/' . $filename);
+						log_message('error', '[EvolutionApi] Media URL publica: ' . $fileUrl);
+					}
+					else
+					{
+						log_message('error', '[EvolutionApi] ERROR: Componente tb_customer_conversation no encontrado');
+					}
+				}
+				else
+				{
+					log_message('error', '[EvolutionApi] ERROR: No se pudo decodificar base64 media');
+				}
+			}
+			else
+			{
+				log_message('error', '[EvolutionApi] AVISO: No se encontro base64 ni URL para media tipo=' . $type);
 			}
 		}
 
@@ -1541,6 +1611,12 @@ class app_cxc_api extends _BaseController {
 			$data["customerMessageType"] = "image";
 			log_message('error', '[Generic] Tipo mensaje: image');
 		}
+
+		if($data["customerMessageType"] == "video")
+		{
+			$data["customerMessageType"] = "video";
+			log_message('error', '[Generic] Tipo mensaje: video');
+		}
 		
 		if($data["customerMessageType"] == "ptt")
 		{
@@ -1601,6 +1677,7 @@ class app_cxc_api extends _BaseController {
 			$data["customerMessageType"] == "image" || 
 			$data["customerMessageType"] == "pdf"   || 
 			$data["customerMessageType"] == "audio" ||
+			$data["customerMessageType"] == "video" ||
 			$data["customerMessageType"] == "document" 
 		)
 		{
