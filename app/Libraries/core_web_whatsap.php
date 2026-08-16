@@ -199,11 +199,11 @@ class core_web_whatsap {
    {
 	   if($typeCompany == "posme")
 	   {
-		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino,$esperarRespuesta,$instanciaName);
+		   return $this->sendMessageByEvolutionApiText( $companyID, $message, $phoneDestino, $instanciaName);
 	   }
 	   else if ($typeCompany == "gymJalapa")
 	   {   
-		   return $this->sendMessageWapi2Text( $companyID,$message, $phoneDestino,$esperarRespuesta ,$instanciaName);
+		   return $this->sendMessageByEvolutionApiText( $companyID, $message, $phoneDestino, $instanciaName);
 	   }
 	   else if ($typeCompany == "arteDigital")
 	   {
@@ -227,13 +227,11 @@ class core_web_whatsap {
 	   }
 	   else if ($typeCompany == "posme")
 	   {   
-		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino,$esperarRespuesta ,$instanciaName);
-		   //return $this->sendMessageZAPIioImage( $companyID, $urlImagen,$message, $phoneDestino );
-		   
+		   return $this->sendMessageByEvolutionApiImage( $companyID, $urlImagen, $message, $phoneDestino, $instanciaName);
 	   }
 	   else if ($typeCompany == "gymJalapa")
 	   {   
-		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino ,$esperarRespuesta,$instanciaName);
+		   return $this->sendMessageByEvolutionApiImage( $companyID, $urlImagen, $message, $phoneDestino, $instanciaName);
 	   }
 	   else if ($typeCompany == "arteDigital")
 	   {
@@ -247,9 +245,13 @@ class core_web_whatsap {
    function sendMessageTypePdfGeneric( $typeCompany,$companyID, $urlPdf,$fileName,$message, $phoneDestino,$esperarRespuesta ,$instanciaName)
    {
 	   
-	   if($typeCompany == "gymJalapa")
+	   if($typeCompany == "posme")
 	   {
-		  return $this->sendMessageWapi2Pdf( $companyID, $urlPdf,$fileName,$message, $phoneDestino,$esperarRespuesta,$instanciaName );
+		  return $this->sendMessageByEvolutionApiPdf( $companyID, $urlPdf, $fileName, $message, $phoneDestino, $instanciaName);
+	   }
+	   else if($typeCompany == "gymJalapa")
+	   {
+		  return $this->sendMessageByEvolutionApiPdf( $companyID, $urlPdf, $fileName, $message, $phoneDestino, $instanciaName);
 	   }
 	   else
 	   {
@@ -258,9 +260,18 @@ class core_web_whatsap {
    }
    function sendMessageTypeVideoAudioGeneric( $typeCompany,$companyID, $urlPdf,$fileName,$message, $phoneDestino,$esperarRespuesta ,$instanciaName)
    {
-	   
-		return $this->sendMessageWapi2VideoAudio( $companyID, $urlPdf,$fileName,$message, $phoneDestino,$esperarRespuesta,$instanciaName );
-	  
+	   if($typeCompany == "posme")
+	   {
+		   return $this->sendMessageByEvolutionApiAudio( $companyID, $urlPdf, $phoneDestino, $instanciaName);
+	   }
+	   else if($typeCompany == "gymJalapa")
+	   {
+		   return $this->sendMessageByEvolutionApiAudio( $companyID, $urlPdf, $phoneDestino, $instanciaName);
+	   }
+	   else
+	   {
+		   return $this->sendMessageWapi2VideoAudio( $companyID, $urlPdf,$fileName,$message, $phoneDestino,$esperarRespuesta,$instanciaName );
+	   }
    }
 
    
