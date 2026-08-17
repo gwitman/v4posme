@@ -2416,12 +2416,24 @@ Le recordamos que tiene un saldo pendiente:
 		if(!$objListCollections)
 		{
 			log_message('info', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] No se encontraron cobros pendientes');
-			return;
+			return $this->response->setJSON(array(
+				'error'			=> false,
+				'message'		=> 'No se encontraron cobros pendientes',
+				'totalCobros'	=> 0,
+				'totalMensajes'	=> 0,
+				'data'			=> []
+			));
 		}
 		if(count($objListCollections) <= 0)
 		{
 			log_message('info', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] Lista de cobros vacia');
-			return;
+			return $this->response->setJSON(array(
+				'error'			=> false,
+				'message'		=> 'Lista de cobros vacia',
+				'totalCobros'	=> 0,
+				'totalMensajes'	=> 0,
+				'data'			=> []
+			));
 		}
 		
 		log_message('info', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] Total cobros encontrados: ' . count($objListCollections));
@@ -2467,12 +2479,15 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 		}
 		
 		log_message('info', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] Total mensajes a enviar: ' . count($chatSend));
-		log_message('info', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] Llamando sendMessageWapi2OnlyTextMasive...');
-		
-		$this->core_web_whatsap->sendMessageWapi2OnlyTextMasive(APP_COMPANY,$chatSend,$pathRemember,"Gym Jalapa Cobros");
-		
 		log_message('info', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] Fin del proceso');
-		return;
+		
+		return $this->response->setJSON(array(
+			'error'			=> false,
+			'message'		=> SUCCESS,
+			'totalCobros'	=> count($objListCollections),
+			'totalMensajes'	=> count($chatSend),
+			'data'			=> $chatSend
+		));
 		
 		
 	}
