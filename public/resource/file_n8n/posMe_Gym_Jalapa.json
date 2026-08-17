@@ -1,0 +1,272 @@
+{
+  "name": "posMe_Gym_Jalapa",
+  "nodes": [
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -2192,
+        -288
+      ],
+      "id": "b1cf6da0-2afe-4697-95e0-cb7bd7053bb7",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "cqLvAHshzsuFXvci",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://evolution-api-5vhg.srv1907129.hstgr.cloud/message/sendText/posMe_Gym_Jalapa",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "kC5a9HA6UcUsn96RjnZLwDTL7I4BVkpW"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "=50584766457"
+            },
+            {
+              "name": "text",
+              "value": "={{ $fromAI('send_mensaje_cobro', `Este paramertro es el mensaje de cobro que se le enviara al cliente el mensaje debe ser individual por cada persona`, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        -1984,
+        -304
+      ],
+      "id": "c87c6eff-8eab-4c1a-b776-8724cb4ae14f",
+      "name": "envia whatapp de cobros"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -3152,
+        -432
+      ],
+      "id": "01453421-04b5-4d41-9e4c-64997f6ad7ad",
+      "name": "triger de cobro"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Procesa la información del siguiente cliente en mora y envía su mensaje de cobro individual usando la herramienta:\n\n- Nombre: {{ $json.nombre }}\n- Teléfono: {{ $json.telefono }}\n- Detalle de la cuenta: {{ $json.mensaje_original }}  \n\nIMPORTANTE:\nQue la redaccinon del mensaje no sea la misma que varie para que no me clasifique como span.  pero si debe de mantener el nombre de cada cliente ",
+        "options": {
+          "systemMessage": "Eres un ejecutivo de cobranza profesional, educado, empático y firme que trabaja para una empresa de Servicios e Infraestructura de Informática / Gimnasio. Tu única tarea en esta ejecución es generar y enviar el mensaje de cobro individual para el cliente proporcionado.\n\nINSTRUCCIONES DE EJECUCIÓN:\n1. Revisa los datos del cliente entregados en el mensaje del usuario (Nombre, Teléfono y Detalle de la cuenta).\n2. Redacta un mensaje de cobro personalizado, claro y respetuoso basado en el detalle de su cuenta.\n3. Ejecuta la herramienta de envío de WhatsApp EXACTAMENTE UNA VEZ para este cliente.\n\nREGLAS DE REDACCIÓN DEL MENSAJE:\n- Mantén un tono profesional, amable pero formal.\n- Saluda al cliente por su nombre.\n- Explica el motivo del cobro y los detalles pendientes de forma clara.\n- Agrega un llamado a la acción para coordinar el pago o reportar su comprobante.\n- Utiliza emojis acordes (ej. 💻, 📲, ⚠️, 💳, 📌) para facilitar la lectura.\n\nPARÁMETROS OBLIGATORIOS PARA LA HERRAMIENTA:\nDebes llamar a la herramienta enviando los siguientes parámetros:\n- telefono: El número de teléfono del destinatario (extraído de los datos del usuario).\n- send_mensaje_cobro: El texto completo del mensaje de cobro que has redactado para el cliente.\n\nEJEMPLO DEL MENSAJE EN send_mensaje_cobro:\n\"Hola [Nombre] 👋, esperamos que te encuentres bien. Te escribimos para recordarte que presentas un saldo pendiente correspondiente a tu cuenta 💻. Te pedimos por favor realizar tu pago o compartirnos tu comprobante si ya lo realizaste 💳. Si tienes alguna duda, estamos para ayudarte. ¡Gracias!\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -2032,
+        -560
+      ],
+      "id": "07edd9b6-9a4e-4ae7-8f9e-bf64c8e8ebd3",
+      "name": "ia"
+    },
+    {
+      "parameters": {
+        "url": "https://posme.net/v4posme/gym_jalapa/public/app_notification/sendWhatsappDiarioMasiveWapi2CobranzaNjGym",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -2960,
+        -432
+      ],
+      "id": "90b5d1c1-b3bf-4f93-84b4-d03b246b6bb7",
+      "name": "cartera de credito"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Obtener la respuesta del nodo 'cartera de credito'\nconst response = $input.first().json;\n\n// 2. Extraer el arreglo 'data' que contiene la lista de clientes\nconst clientes = response.data || [];\n\nconst outputItems = [];\n\n// 3. Recorrer cada registro de la cartera\nfor (const cliente of clientes) {\n  const numeroTelefono = cliente.phoneNumber ? cliente.phoneNumber.toString().trim() : \"\";\n  \n  // Limpiar el nombre (si está vacío o tiene solo espacios, usar un valor por defecto)\n  let nombreCliente = cliente.firstName ? cliente.firstName.trim() : \"\";\n  if (!nombreCliente) {\n    nombreCliente = \"Cliente\";\n  }\n\n  // Filtrar que exista un número de teléfono válido\n  if (numeroTelefono) {\n    outputItems.push({\n      json: {\n        nombre: nombreCliente,\n        telefono: numeroTelefono,\n        mensaje_original: cliente.mensaje || \"\",\n        url_imagen: cliente.urlImage || \"\"\n      }\n    });\n  }\n}\n\n// 4. Retornar los elementos preparados para el Loop Over Items\n// Nota: Usa .slice(0, 2) mientras haces pruebas para que solo procese los primeros 2 registros\nreturn outputItems.slice(0, 2);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -2768,
+        -432
+      ],
+      "id": "7fac19a1-cc3a-4103-b1e2-9f3b8c6fc4c5",
+      "name": "limpiar datos"
+    },
+    {
+      "parameters": {
+        "batchSize": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -2544,
+        -528
+      ],
+      "id": "8181f28c-5ad0-4ce8-9e18-de9c944aad9d",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "amount": 10
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        -1696,
+        -256
+      ],
+      "id": "de5352ea-165c-4b4d-b3e7-f4adbde11552",
+      "name": "Wait",
+      "webhookId": "ab329899-a1cf-4af0-98e2-b2680b74eacf"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "ia",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "envia whatapp de cobros": {
+      "ai_tool": [
+        [
+          {
+            "node": "ia",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "triger de cobro": {
+      "main": [
+        [
+          {
+            "node": "cartera de credito",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cartera de credito": {
+      "main": [
+        [
+          {
+            "node": "limpiar datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "limpiar datos": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "ia",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ia": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "timezone": "America/Managua",
+    "callerPolicy": "workflowsFromSameOwner"
+  },
+  "versionId": "a9470aab-f525-4c76-83e2-1fef42c2cf6e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "8903022835d2096f8f12d55353ebe2e0aece13728681f611cb5a161359afe1cd"
+  },
+  "nodeGroups": [],
+  "id": "IhBOgAqgnU8HBbFE",
+  "tags": []
+}
