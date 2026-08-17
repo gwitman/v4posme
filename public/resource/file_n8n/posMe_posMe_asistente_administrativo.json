@@ -499,6 +499,300 @@
       ],
       "id": "b9f722de-e1b3-4d8b-ae18-b69798b30182",
       "name": "obtener datos iniciales"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -1568,
+        512
+      ],
+      "id": "5a481158-c764-4999-b260-aaa834a2748c",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=1. Llama a 'cartera de credito1'. 2. Filtra los clientes en mora. 3. Para cada cliente en mora, genera el mensaje de cobro y ejecútalo llamando a 'envia whatapp de cobros'.",
+        "options": {
+          "systemMessage": "Eres un gestor de cobranza profesional, educado, persuasivo y empático que trabaja para una empresa de Servicios de Informática y Tecnología. Tu objetivo es revisar la cartera de clientes, identificar cuáles están en mora y generar su mensaje de cobro correspondiente.\n\nREGLAS DE EVALUACIÓN:\n1. Revisa la lista de clientes obtenida mediante la herramienta \"cartera de credito1\".\n2. ÚNICAMENTE debes cobrar a las personas que cumplan las dos condiciones:\n   - Les corresponde pagar (tienen fecha de vencimiento cumplida o pendiente).\n   - Tienen estado en MORA o días de retraso mayores a 0.\n3. Si una persona está al día, pago reflejado o sin saldo pendiente, IGNOA a esa persona y NO le generes mensaje de cobro.\n\nREGLAS DE REDACCIÓN Y FORMATO:\n1. Mantén un tono respetuoso, claro, profesional y servicial (recordando que el servicio es de Informática/Sistemas/Soporte).\n2. Utiliza emojis para hacer la lectura amigable y visible en WhatsApp (ej. 💻, 📲, ⚠️, 📌, 💳).\n3. Construye el mensaje final de cobro y asígnalo/guárdalo estrictamente en una variable llamada `send_mensaje_cobro`.\n\nESTRUCTURA DEL MENSAJE (para la variable send_mensaje_cobro):\n- Saludo personalizado con el nombre del cliente.\n- Recordatorio amable sobre el servicio de informática prestado.\n- Detalle del saldo pendiente y/o días de mora.\n- Llamado a la acción (invitación a reportar su pago o coordinar una fecha de cancelación para evitar la suspensión del servicio).\n- Despedida cordial.\n\nEJEMPLO DEL MENSAJE EN send_mensaje_cobro:\n\"Hola [Nombre del Cliente] 👋, espero que te encuentres muy bien.\n\nTe saludamos del equipo de Soporte y Servicios Informáticos 💻. Nos comunicamos contigo para recordarte que presentas un saldo pendiente de [Monto] relativo a tus servicios tecnológicos ⚙️, el cual se encuentra vencido desde el [Fecha/Días de mora].\n\nPara nosotros es fundamental que tu plataforma y servicios sigan funcionando sin interrupciones 🚀. Te pedimos por favor realizar tu pago o compartirnos tu comprobante si ya lo realizaste.\n\nSi tienes alguna duda con tu factura o necesitas apoyo, estamos a tu disposición 📲. ¡Agradecemos tu atención!\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -1184,
+        496
+      ],
+      "id": "c81b6a27-bc33-478b-9d21-a9e2c1d33558",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -1248,
+        736
+      ],
+      "id": "63164305-bd5f-40eb-9478-f85620e4e613",
+      "name": "OpenAI Chat Model1",
+      "credentials": {
+        "openAiApi": {
+          "id": "cqLvAHshzsuFXvci",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "toolDescription": "Obtiene el listado completo en JSON de la cartera de clientes, incluyendo estados de mora, fechas de cobro, montos pendientes y comentarios guardados. Utilízala tanto para consultar el estado de un cliente individual como para generar reportes consolidados de cobro para el Administrador.",
+        "url": "https://posme.net/v4posme/posme/public/app_cxc_report/customer_credit/generateJson/1",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        -896,
+        736
+      ],
+      "id": "947d45be-4c35-47bd-9103-e30e089ef68b",
+      "name": "cartera de credito1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://evolution-api-5vhg.srv1907129.hstgr.cloud/message/sendText/posMe_posMe_asistente_administrativo",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "kC5a9HA6UcUsn96RjnZLwDTL7I4BVkpW"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "=50584766457"
+            },
+            {
+              "name": "text",
+              "value": "={{ $fromAI('send_mensaje_cobro', `Este paramertro es el mensaje de cobro que se le enviara al cliente el mensaje debe ser individual por cada persona`, 'string') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        -576,
+        736
+      ],
+      "id": "b47cfc29-026c-4546-98ab-1c40357741ac",
+      "name": "envia whatapp de cobros"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -1568,
+        1024
+      ],
+      "id": "cb3fc4fb-e6ea-40ab-9b08-4439f5e951ed",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://evolution-api-5vhg.srv1907129.hstgr.cloud/chat/findContacts/posMe_posMe_asistente_administrativo",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "kC5a9HA6UcUsn96RjnZLwDTL7I4BVkpW"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -1360,
+        1024
+      ],
+      "id": "5f27b7e9-3470-4829-b0f2-6bec3391351f",
+      "name": "lista de contactos"
+    },
+    {
+      "parameters": {
+        "jsCode": "// 1. Obtener todos los contactos devueltos por la API\nconst rawItems = $input.all();\nconst outputItems = [];\n\n// 2. Recorrer la lista devuelta por Evolution API\nfor (const item of rawItems) {\n  const datos = item.json;\n\n  // Extraer el JID/Teléfono y limpiar sufijos de WhatsApp (@s.whatsapp.net, @c.us)\n  const rawJid = datos.id || datos.jid || \"\";\n  const numeroTelefono = rawJid.replace(\"@s.whatsapp.net\", \"\").replace(\"@c.us\", \"\").trim();\n\n  // Obtener el nombre del contacto\n  const nombreContacto = datos.pushName || datos.name || datos.verifiedName || \"Amigo/a\";\n\n  // Filtrar: Excluir grupos (@g.us) y registros sin número válido\n  if (numeroTelefono && !rawJid.includes(\"@g.us\")) {\n    outputItems.push({\n      json: {\n        nombre: nombreContacto,\n        telefono: numeroTelefono\n      }\n    });\n  }\n}\n\n// 3. Retornar cada contacto como un elemento independiente para el Loop\nreturn outputItems.slice(0, 2);"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -1152,
+        1024
+      ],
+      "id": "aec5c942-065c-44a9-8c8e-68d9078048c3",
+      "name": "limpiar datos"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Genera y envía el mensaje motivacional con imagen para el siguiente contacto:\nNombre: {{ $json.nombre }}\nTeléfono: {{ $json.telefono }}",
+        "options": {
+          "systemMessage": "Eres un asistente virtual amable, positivo y altamente organizado. Tu tarea en esta ejecución es procesar a UN SOLO contacto enviado en el mensaje del usuario y enviarle su mensaje motivacional del día junto con una imagen inspiradora.\n\nINSTRUCCIONES DE EJECUCIÓN:\n1. Lee los datos del contacto proporcionado (Nombre y Teléfono).\n2. Genera una frase motivacional sobre SALUD y ORDEN/DISCIPLINA personalizada para esa persona.\n3. Selecciona una URL de imagen dinámica válida.\n4. Llama a la herramienta \"enviar mensaje diario\" EXACTAMENTE UNA VEZ para este contacto.\n\nREGLAS DE CONTENIDO Y REDACCIÓN:\n- El tema central del mensaje debe ser sobre LA SALUD y EL ORDEN/DISCIPLINA.\n- Genera una frase motivacional fresca, inspiradora y personalizada utilizando su nombre.\n- Usa un tono amigable, positivo y profesional.\n- Incluye emojis acordes al tema (ej. 🌿, 🍏, 📋, ✨, 🧠, ☀️, 🏋️‍♂️).\n\nREGLAS PARA LA IMAGEN (url_imagen):\nSelecciona de forma aleatoria UNA de estas URLs dinámicas fiables para el parámetro 'url_imagen':\n1. https://source.unsplash.com/featured/?health,wellness\n2. https://source.unsplash.com/featured/?fitness,workout\n3. https://source.unsplash.com/featured/?healthy-food,nutrition\n4. https://source.unsplash.com/featured/?organization,minimalism\n5. https://source.unsplash.com/featured/?nature,positive\n\nPARÁMETROS PARA LA HERRAMIENTA \"enviar mensaje diario\":\nDebes enviar los siguientes 3 parámetros a la herramienta:\n1. telefono: El número de WhatsApp del destinatario.\n2. send_mensaje_diario: La frase motivacional redactada.\n3. url_imagen: La URL de la imagen seleccionada.\n\nEJEMPLO DE MENSAJE:\n\"¡Hola [Nombre]! ☀️ Recuerda que cuidar de tu salud física y mantener el orden en tus hábitos diarios es la clave principal para alcanzar cualquier meta. ¡Que tengas un día extraordinario! 🌿📋\""
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        -464,
+        992
+      ],
+      "id": "4c61557b-6811-46cd-9b7e-c4a4b5324771",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "gpt-4o-mini",
+          "mode": "list",
+          "cachedResultName": "gpt-4o-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        -640,
+        1344
+      ],
+      "id": "1c90a155-f223-4af5-a152-5c12cc17ce05",
+      "name": "OpenAI Chat Model2",
+      "credentials": {
+        "openAiApi": {
+          "id": "cqLvAHshzsuFXvci",
+          "name": "OpenAI account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://evolution-api-5vhg.srv1907129.hstgr.cloud/message/sendMedia/posMe_posMe_asistente_administrativo",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "kC5a9HA6UcUsn96RjnZLwDTL7I4BVkpW"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "number",
+              "value": "=50584766457"
+            },
+            {
+              "name": "media",
+              "value": "={{ $fromAI('url_imagen') }}"
+            },
+            {
+              "name": "mediatype",
+              "value": "image"
+            },
+            {
+              "name": "caption",
+              "value": "={{ $fromAI('send_mensaje_diario') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [
+        -256,
+        1328
+      ],
+      "id": "36054adb-f004-4878-bcc3-4fffe59aab27",
+      "name": "enviar mensaje diario"
+    },
+    {
+      "parameters": {
+        "batchSize": 10,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -928,
+        1120
+      ],
+      "id": "7a429304-5f6d-497f-bbee-fd5eb036785e",
+      "name": "Loop Over Items",
+      "executeOnce": false,
+      "retryOnFail": false,
+      "maxTries": 2
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        112,
+        1424
+      ],
+      "id": "6831b388-c814-4fbb-97ec-80bcf2427dcc",
+      "name": "Wait",
+      "webhookId": "eb91369e-0fe6-429c-a2c7-f67151333a54"
     }
   ],
   "pinData": {},
@@ -709,6 +1003,139 @@
           }
         ]
       ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "cartera de credito1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "envia whatapp de cobros": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "lista de contactos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "lista de contactos": {
+      "main": [
+        [
+          {
+            "node": "limpiar datos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "limpiar datos": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "enviar mensaje diario": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -720,7 +1147,7 @@
     "timezone": "America/Managua",
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "aaba5385-ac0c-4017-aa09-802de049d425",
+  "versionId": "5b6f7e8b-a4d5-4ffb-8601-a5ad73904372",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8903022835d2096f8f12d55353ebe2e0aece13728681f611cb5a161359afe1cd"
