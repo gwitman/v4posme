@@ -502,25 +502,6 @@
     },
     {
       "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "triggerAtHour": 9
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.3,
-      "position": [
-        -1568,
-        512
-      ],
-      "id": "5a481158-c764-4999-b260-aaa834a2748c",
-      "name": "Schedule Trigger"
-    },
-    {
-      "parameters": {
         "promptType": "define",
         "text": "=1. Llama a 'cartera de credito1'. 2. Filtra los clientes en mora. 3. Para cada cliente en mora, genera el mensaje de cobro y ejecútalo llamando a 'envia whatapp de cobros'.",
         "options": {
@@ -530,8 +511,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        -1184,
-        496
+        -2768,
+        -448
       ],
       "id": "c81b6a27-bc33-478b-9d21-a9e2c1d33558",
       "name": "AI Agent1"
@@ -550,8 +531,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        -1248,
-        736
+        -2832,
+        -208
       ],
       "id": "63164305-bd5f-40eb-9478-f85620e4e613",
       "name": "OpenAI Chat Model1",
@@ -571,8 +552,8 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.4,
       "position": [
-        -896,
-        736
+        -2480,
+        -208
       ],
       "id": "947d45be-4c35-47bd-9103-e30e089ef68b",
       "name": "cartera de credito1"
@@ -608,30 +589,11 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.4,
       "position": [
-        -576,
-        736
+        -2160,
+        -208
       ],
       "id": "b47cfc29-026c-4546-98ab-1c40357741ac",
       "name": "envia whatapp de cobros"
-    },
-    {
-      "parameters": {
-        "rule": {
-          "interval": [
-            {
-              "triggerAtHour": 10
-            }
-          ]
-        }
-      },
-      "type": "n8n-nodes-base.scheduleTrigger",
-      "typeVersion": 1.3,
-      "position": [
-        -1568,
-        1024
-      ],
-      "id": "cb3fc4fb-e6ea-40ab-9b08-4439f5e951ed",
-      "name": "Schedule Trigger1"
     },
     {
       "parameters": {
@@ -658,8 +620,8 @@
       "type": "n8n-nodes-base.httpRequest",
       "typeVersion": 4.4,
       "position": [
-        -1360,
-        1024
+        -3472,
+        224
       ],
       "id": "5f27b7e9-3470-4829-b0f2-6bec3391351f",
       "name": "lista de contactos"
@@ -671,8 +633,8 @@
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
       "position": [
-        -1152,
-        1024
+        -3264,
+        224
       ],
       "id": "aec5c942-065c-44a9-8c8e-68d9078048c3",
       "name": "limpiar datos"
@@ -688,8 +650,8 @@
       "type": "@n8n/n8n-nodes-langchain.agent",
       "typeVersion": 3.1,
       "position": [
-        -464,
-        992
+        -2576,
+        192
       ],
       "id": "4c61557b-6811-46cd-9b7e-c4a4b5324771",
       "name": "AI Agent2"
@@ -708,8 +670,8 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
       "typeVersion": 1.3,
       "position": [
-        -640,
-        1344
+        -2752,
+        544
       ],
       "id": "1c90a155-f223-4af5-a152-5c12cc17ce05",
       "name": "OpenAI Chat Model2",
@@ -759,8 +721,8 @@
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.4,
       "position": [
-        -256,
-        1328
+        -2368,
+        528
       ],
       "id": "36054adb-f004-4878-bcc3-4fffe59aab27",
       "name": "enviar mensaje diario"
@@ -773,8 +735,8 @@
       "type": "n8n-nodes-base.splitInBatches",
       "typeVersion": 3,
       "position": [
-        -928,
-        1120
+        -3040,
+        320
       ],
       "id": "7a429304-5f6d-497f-bbee-fd5eb036785e",
       "name": "Loop Over Items",
@@ -787,12 +749,50 @@
       "type": "n8n-nodes-base.wait",
       "typeVersion": 1.1,
       "position": [
-        112,
-        1424
+        -2000,
+        624
       ],
       "id": "6831b388-c814-4fbb-97ec-80bcf2427dcc",
       "name": "Wait",
       "webhookId": "eb91369e-0fe6-429c-a2c7-f67151333a54"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 10
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -3680,
+        224
+      ],
+      "id": "cb3fc4fb-e6ea-40ab-9b08-4439f5e951ed",
+      "name": "triger motivacional"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -3152,
+        -432
+      ],
+      "id": "5a481158-c764-4999-b260-aaa834a2748c",
+      "name": "triger de cobro"
     }
   ],
   "pinData": {},
@@ -1004,17 +1004,6 @@
         ]
       ]
     },
-    "Schedule Trigger": {
-      "main": [
-        [
-          {
-            "node": "AI Agent1",
-            "type": "main",
-            "index": 0
-          }
-        ]
-      ]
-    },
     "OpenAI Chat Model1": {
       "ai_languageModel": [
         [
@@ -1043,17 +1032,6 @@
           {
             "node": "AI Agent1",
             "type": "ai_tool",
-            "index": 0
-          }
-        ]
-      ]
-    },
-    "Schedule Trigger1": {
-      "main": [
-        [
-          {
-            "node": "lista de contactos",
-            "type": "main",
             "index": 0
           }
         ]
@@ -1136,6 +1114,28 @@
           }
         ]
       ]
+    },
+    "triger motivacional": {
+      "main": [
+        [
+          {
+            "node": "lista de contactos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "triger de cobro": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -1147,7 +1147,7 @@
     "timezone": "America/Managua",
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "5b6f7e8b-a4d5-4ffb-8601-a5ad73904372",
+  "versionId": "fb78414a-5a8a-4985-83c4-13a8120b1519",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8903022835d2096f8f12d55353ebe2e0aece13728681f611cb5a161359afe1cd"

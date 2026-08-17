@@ -2285,6 +2285,10 @@ class core_web_whatsap {
 		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
 		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
 
+		$objPWhatsappInstanciName 			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
+		$objPWhatsappInstanciName 			= $objPWhatsappInstanciName->parameterID;
+		$objPWhatsappInstanciName			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsappInstanciName);
+
 		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
 		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
 		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
@@ -2294,7 +2298,7 @@ class core_web_whatsap {
 		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
 
 		// Evolution API: POST {url}/message/sendMedia/{instancia}
-		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $instanciaName;
+		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $objPWhatsappInstanciName->value;
 		$payload 	= [
 			'number'    => $phoneDestino,
 			'mediatype' => 'image',
@@ -2354,6 +2358,10 @@ class core_web_whatsap {
 		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
 		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
 
+		$objPWhatsappInstanciName 			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
+		$objPWhatsappInstanciName 			= $objPWhatsappInstanciName->parameterID;
+		$objPWhatsappInstanciName			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsappInstanciName);
+
 		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
 		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
 		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
@@ -2363,7 +2371,7 @@ class core_web_whatsap {
 		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
 
 		// Evolution API: POST {url}/message/sendMedia/{instancia}
-		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $instanciaName;
+		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $objPWhatsappInstanciName->value;
 		$payload 	= [
 			'number'    => $phoneDestino,
 			'mediatype' => 'document',
@@ -2423,6 +2431,10 @@ class core_web_whatsap {
 		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
 		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
 
+		$objPWhatsappInstanciName 			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
+		$objPWhatsappInstanciName 			= $objPWhatsappInstanciName->parameterID;
+		$objPWhatsappInstanciName			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsappInstanciName);
+
 		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
 		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
 		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
@@ -2432,7 +2444,7 @@ class core_web_whatsap {
 		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
 
 		// Evolution API: POST {url}/message/sendMedia/{instancia}
-		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $instanciaName;
+		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $objPWhatsappInstanciName->value;
 		$payload 	= [
 			'number'    => $phoneDestino,
 			'mediatype' => 'video',
@@ -2490,6 +2502,10 @@ class core_web_whatsap {
 		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
 		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
 
+		$objPWhatsappInstanciName 			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
+		$objPWhatsappInstanciName 			= $objPWhatsappInstanciName->parameterID;
+		$objPWhatsappInstanciName			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsappInstanciName);
+
 		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
 		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
 		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
@@ -2499,7 +2515,7 @@ class core_web_whatsap {
 		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
 
 		// Evolution API: POST {url}/message/sendWhatsAppAudio/{instancia}
-		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendWhatsAppAudio/' . $instanciaName;
+		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendWhatsAppAudio/' . $objPWhatsappInstanciName->value;
 		$payload 	= [
 			'number' => $phoneDestino,
 			'audio'  => $urlAudio
