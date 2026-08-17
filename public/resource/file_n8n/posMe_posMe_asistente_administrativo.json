@@ -276,20 +276,11 @@
           "conditions": [
             {
               "id": "db1e2d01-2c0d-4700-a1a6-76310af67fe6",
-              "leftValue": "={{ $json.mensaje_usuario }}",
-              "rightValue": "=cobro",
+              "leftValue": "={{ $json.mensaje_usuario.toUpperCase() }}",
+              "rightValue": "=COBRAR|COBRANZA|COBRO",
               "operator": {
                 "type": "string",
-                "operation": "contains"
-              }
-            },
-            {
-              "id": "7cc8c8cc-cccb-43c6-ae61-8590be1e2d41",
-              "leftValue": "={{ $json.mensaje_usuario }}",
-              "rightValue": "deuda",
-              "operator": {
-                "type": "string",
-                "operation": "contains"
+                "operation": "regex"
               }
             }
           ],
@@ -729,7 +720,7 @@
     "timezone": "America/Managua",
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "b76ac640-69ce-477b-a428-47b2f0b4fd1a",
+  "versionId": "aaba5385-ac0c-4017-aa09-802de049d425",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8903022835d2096f8f12d55353ebe2e0aece13728681f611cb5a161359afe1cd"
