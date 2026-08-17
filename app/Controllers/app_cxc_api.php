@@ -1908,9 +1908,8 @@ class app_cxc_api extends _BaseController {
 			{			
 				log_message("error","[Generic] >> Enviando notificación a colaboradores asignados...");
 				$urlSend		= base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID;
-				$whatsappLink 	= urlencode($urlSend);
 				log_message('error', '[Generic]    urlSend: ' . $urlSend);				
-				$short 			= $whatsappLink;
+				$short 			= $urlSend;
 				log_message('error', '[Generic]    shortUrl: ' . $short);
 
 				$messagePreview = mb_strlen($message) > 80 ? mb_substr($message, 0, 80) . '...' : $message;
