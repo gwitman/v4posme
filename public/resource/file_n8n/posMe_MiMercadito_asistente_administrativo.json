@@ -117,7 +117,7 @@
                 },
                 "conditions": [
                   {
-                    "leftValue": "={{ $json.body.data.messageType }}",
+                    "leftValue": "={{ $('recibir whatsapp').item.json.body.data.messageType }}",
                     "rightValue": "audioMessage",
                     "operator": {
                       "type": "string",
@@ -230,7 +230,7 @@
         },
         "sendBody": true,
         "specifyBody": "json",
-        "jsonBody": "={\n  \"message\": {{ JSON.stringify($('Switch').item.json.body.data) }},\n  \"convertToMp3\": true\n}",
+        "jsonBody": "={{\n  {\n    \"message\": $('recibir whatsapp').item.json.body.data,\n    \"convertToMp3\": true\n  }\n}}",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequest",
@@ -674,7 +674,7 @@
       "typeVersion": 2.3,
       "position": [
         -1648,
-        -304
+        -368
       ],
       "id": "de3fff03-3be0-432a-b57b-1e0fce807509",
       "name": "If1"
@@ -931,7 +931,7 @@
     "timezone": "America/Managua",
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "b3f36be2-2ad2-4f50-a1b7-edb1c6468621",
+  "versionId": "e39f12e2-0a77-4d2e-9b43-06a66300f5f8",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8903022835d2096f8f12d55353ebe2e0aece13728681f611cb5a161359afe1cd"
