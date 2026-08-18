@@ -2549,5 +2549,139 @@ class core_web_whatsap {
 
 		return json_decode($response, true);
 	}
+	/**
+	 * Enviar mensajes de texto masivos por Evolution API
+	 * Usa curl_multi para envio en paralelo, similar a sendMessageWapi2OnlyTextMasive
+	 * pero conectandose a Evolution API como sendMessageByEvolutionApiText
+	 * @param int $companyID ID de la empresa
+	 * @param array $chatSend Array de mensajes con keys: phoneNumber, mensaje
+	 * @param string $pathRemember Path de referencia (para compatibilidad)
+	 * @param string $instanceName Nombre de la instancia de Evolution API
+	 * @return array Resultados de cada envio
+	 */
+	function sendMessageEvolutionApiOnlyTextMsive($companyID, $chatSend, $pathRemember, $instanceName)
+	{
+		log_message('info', '[sendMessageEvolutionApiOnlyTextMsive] Inicio - companyID: ' . $companyID . ' | instanceName: ' . $instanceName . ' | Total mensajes: ' . count($chatSend));
+
+		$Parameter_Model 			= new Parameter_Model();
+		$Company_Parameter_Model 	= new Company_Parameter_Model();
+
+		// Token (apikey para Evolution API)
+		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
+		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
+
+		// URL base de Evolution API
+		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
+		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
+
+		// Nombre de instancia de Evolution API
+		$objPWhatsappInstanciName 			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
+		$objPWhatsappInstanciNameId 		= $objPWhatsappInstanciName->parameterID;
+		$objCP_WhatsappInstanciName			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsappInstanciNameId);
+
+		// Numero propietario (fallback)
+		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
+		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
+		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
+
+		// Resolver instancia: si $instanceName viene con valor, buscar en el formato 'key':guid
+		$instanciaValue = $objCP_WhatsappInstanciName->value;
+		if($instanceName !== "")
+		{
+			$pairs = explode(",", $instanciaValue);
+			foreach($pairs as $pair)
+			{
+				$pair = trim($pair);
+				$parts = explode(":", $pair, 2);
+				if(count($parts) == 2)
+				{
+					$key = trim($parts[0], " '\"");
+					$val = trim($parts[1], " '\"");
+					if($key === $instanceName)
+					{
+						$instanciaValue = $val;
+						break;
+					}
+				}
+			}
+		}
+
+		// Construir URL de Evolution API: {url}/message/sendText/{instancia}
+		$baseUrl = rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendText/' . $instanciaValue;
+
+		log_message('info', '[sendMessageEvolutionApiOnlyTextMsive] Config - baseUrl: ' . $baseUrl . ' | instanciaValue: ' . $instanciaValue);
+
+		// Inicializar curl_multi para envio en paralelo
+		$multiHandle = curl_multi_init();
+		$curlHandles = [];
+
+		foreach ($chatSend as $customer) {
+
+			$phone = clearNumero($customer["phoneNumber"]);
+			$payload = [
+				'number' => $phone,
+				'text'   => $customer["mensaje"]
+			];
+
+			log_message('info', '[sendMessageEvolutionApiOnlyTextMsive] Preparando envio a phone: ' . $phone . ' | mensaje length: ' . strlen($customer["mensaje"]));
+			echo "enviar mensaje a " . $phone . "</br>";
+
+			$ch = curl_init($baseUrl);
+			curl_setopt_array($ch, [
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_POST           => true,
+				CURLOPT_HTTPHEADER     => [
+					'Content-Type: application/json',
+					'apikey: ' . $objCP_WhatsapToken->value
+				],
+				CURLOPT_POSTFIELDS     => json_encode($payload),
+				CURLOPT_SSL_VERIFYPEER => false,
+				CURLOPT_SSL_VERIFYHOST => false
+			]);
+
+			curl_multi_add_handle($multiHandle, $ch);
+			$curlHandles[] = $ch;
+		}
+
+		// Ejecutar todas las requests en paralelo
+		log_message('info', '[sendMessageEvolutionApiOnlyTextMsive] Ejecutando ' . count($curlHandles) . ' requests en paralelo...');
+		$running = null;
+		do {
+			$mrc = curl_multi_exec($multiHandle, $running);
+			if ($mrc == CURLM_CALL_MULTI_PERFORM)
+			{
+				continue;
+			}
+			curl_multi_select($multiHandle);
+			echo "esperando repuestas</br>";
+		} while ($running > 0);
+
+		echo "</br>mensajes enviados</br>";
+		log_message('info', '[sendMessageEvolutionApiOnlyTextMsive] Todas las requests completadas');
+
+		// Recoger resultados
+		$results = [];
+		foreach ($curlHandles as $ch) {
+			$response 	= curl_multi_getcontent($ch);
+			$status   	= curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			log_message('info', '[sendMessageEvolutionApiOnlyTextMsive] Respuesta - HTTP status: ' . $status . ' | response: ' . $response);
+			echo "resultado de cada envio</br>";
+			$results[] = [
+				"status"   => $status,
+				"response" => json_decode($response, true)
+			];
+			curl_multi_remove_handle($multiHandle, $ch);
+			echo "</br></br>";
+			echo print_r($results, true);
+			curl_close($ch);
+		}
+
+		curl_multi_close($multiHandle);
+		log_message('info', '[sendMessageEvolutionApiOnlyTextMsive] Fin - Total enviados: ' . count($results) . ' | Resultados: ' . json_encode(array_column($results, 'status')));
+		echo "</br>fin del proceso de envio</br>";
+		return $results;
+	}
 }
 ?>

@@ -2401,7 +2401,7 @@ Le recordamos que tiene un saldo pendiente:
 		}
 		
 		
-		$this->core_web_whatsap->sendMessageWapi2OnlyTextMasive(APP_COMPANY,$chatSend,$pathRemember,"");
+		$this->core_web_whatsap->sendMessageEvolutionApiOnlyTextMsive(APP_COMPANY,$chatSend,$pathRemember,"");
 		return;
 		
 		
