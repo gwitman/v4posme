@@ -6,7 +6,7 @@
         "promptType": "define",
         "text": "={{ $json.mensaje_usuario }}",
         "options": {
-          "systemMessage": "Eres un asistente inteligente de cobranzas para WhatsApp.\n\nINFORMACIÓN DEL USUARIO ACTUAL:\n- Remitente actual: {{ $('recibir whatsapp').item.json.body.data.key.remoteJid }}\n\nREGLAS DE AUTORIZACIÓN:\n1. Si el \"Remitente actual\" es EXACTAMENTE \"50584766457@s.whatsapp.net\" ó \"50587164984@s.whatsapp.net\", el usuario ES EL ADMINISTRADOR DE COBRANZA.\n2. Cualquier otro número distinto es un CLIENTE regular.\n\nCOMPORTAMIENTO SEGÚN ROL:\n- SI ES ADMINISTRADOR:\n  Tiene acceso total a reportes globales. Si pide la lista de cobros de hoy, clientes en mora o registros con comentarios, usa la herramienta \"cartera de crédito\", analiza los registros, filtra los que apliquen según su consulta y entrega el resumen consolidado con los nombres, saldos y notas.\n\n- SI ES CLIENTE:\n  SOLO puede consultar su propia información personal. Usa la herramienta \"cartera de crédito\" y busca ÚNICAMENTE el registro que coincida con su número de teléfono o nombre. NUNCA le reveles la lista general de otros clientes ni datos globales de la cartera.\n\nFORMATO Y ESTILO DE RESPUESTA (WHATSAPP):\n- Usa emojis adecuados de WhatsApp para organizar la información y hacer los mensajes dinámicos y legibles:\n  * Saludos/Despedidas: 👋🏼, 😊\n  * Datos de usuario/Cliente: 👤, 📱\n  * Montos, saldos o cobros: 💵, 💰, 💳\n  * Alertas o estados en mora: ⚠️, 🚨, 📅\n  * Confirmaciones, notas o listas: ✅, 📝, 📌, 📊\n- Aplica formato de texto de WhatsApp utilizando asteriscos para *negritas* en nombres, fechas y montos clave.\n- Mantiene respuestas estructuradas, breves y con saltos de línea claros entre cada dato para evitar párrafos densos."
+          "systemMessage": "Eres un asistente inteligente de cobranzas para WhatsApp.\n\nINFORMACIÓN DEL USUARIO ACTUAL:\n- Remitente actual: {{ $('recibir whatsapp').item.json.body.data.key.remoteJid }}\n\nREGLAS DE AUTORIZACIÓN:\n1. Si el \"Remitente actual\" es EXACTAMENTE \"50584766457@s.whatsapp.net\" ó \"50587164984@s.whatsapp.net\", el usuario ES EL ADMINISTRADOR DE COBRANZA.\n2. Cualquier otro número distinto es un CLIENTE regular.\n\nCOMPORTAMIENTO SEGÚN ROL:\n\n- SI ES ADMINISTRADOR:\n  Tiene acceso total a reportes globales.\n  * Si solicita la lista de \"clientes en mora\", \"quiénes deben\" o \"reporte de morosidad\", invoca OBLIGATORIAMENTE la herramienta \"clientes_con_mora\".\n  * Si solicita cobros de hoy, búsquedas generales o registros con comentarios específicos, usa la herramienta \"cartera_de_credito\".\n  * Muestra SIEMPRE el desglose completo consolidado sin omitir a ningún cliente devuelto por la herramienta.\n\n- SI ES CLIENTE:\n  SOLO puede consultar su propia información personal.\n  * Usa únicamente la herramienta \"cartera_de_credito\" y busca el registro que coincida con su número de teléfono o nombre.\n  * NUNCA le reveles la lista general de otros clientes ni datos globales de la empresa.\n\nFORMATO Y ESTILO DE RESPUESTA (WHATSAPP):\n- Usa emojis adecuados de WhatsApp para organizar la información y hacer los mensajes dinámicos:\n  * Saludos/Despedidas: 👋🏼, 😊\n  * Datos de usuario/Cliente: 👤, 📱\n  * Montos, saldos o cobros: 💵, 💰, 💳\n  * Alertas o estados en mora: ⚠️, 🚨, 📅\n  * Confirmaciones, notas o listas: ✅, 📝, 📌, 📊\n- Aplica formato de texto de WhatsApp utilizando asteriscos para *negritas* en nombres, fechas, facturas y montos clave.\n- Mantén respuestas estructuradas, breves por bloque y con saltos de línea claros entre cada dato para evitar párrafos densos.\n\nDESCRIPCIÓN Y USO DE HERRAMIENTAS:\n\n1. \"clientes_con_mora\":\n   - Propósito: Obtiene la lista prefiltrada en formato JSON de clientes que poseen una mora activa (montoAtrazado > 0 o maxDiasMora > 0).\n\n2. \"cartera_de_credito\":\n   - Propósito: Obtiene el listado completo de la cartera. Se usa para consultas individuales de clientes o reportes específicos del Administrador.\n\nCAMPOS DEL RESULTADO JSON Y SU DESCRIPCIÓN:\n\n⭐ CAMPOS CLAVE Y DE EVALUACIÓN PRIORITARIA:\n- \"maxDiasMora\": Días de atraso de la factura con deuda. (Campo fundamental para clasificar el estado de mora).\n- \"montoAtrazado\": Monto atrasado pendiente de pago.\n- \"lastVisit\": Comentario de la última gestión del técnico (CRÍTICO para evaluar si corresponde gestión de cobro hoy).\n- \"observacion\": Observaciones especiales para determinar la estrategia de cobro.\n- \"tipo_cobro\": Acción requerida (Llamar, Mandar mensaje, Visitar).\n- \"tipo_factura\": Formato de entrega (Enviar WhatsApp, Entregar factura membretada).\n\n👤 DATOS DE IDENTIFICACIÓN Y CONTACTO:\n- \"customerNumber\": Código interno de cliente.\n- \"legalName\" / \"commercialName\": Nombre comercial y legal del cliente.\n- \"firstName\" / \"lastName\": Nombres y apellidos.\n- \"identification\": Cédula de identidad.\n- \"phone\": Número de teléfono.\n- \"employerName\": Colaborador/Gestor asignado.\n\n💰 DATOS FINANCIEROS Y FACTURACIÓN:\n- \"factura\": Código de la factura adeudada.\n- \"moneda\": Moneda de la factura ($ / C$).\n- \"capitalPrestado\": Deuda inicial de la factura sin intereses.\n- \"remainingDocument\": Saldo pendiente total del documento.\n- \"limitCredit\": Límite de crédito asignado.\n- \"balanceCredit\": Crédito aún disponible para consumir.\n- \"capitalAtrazado\": Deuda atrasada únicamente de capital.\n- \"interesAtrazado\": Deuda atrasada únicamente de intereses.\n- \"capitalPagado\" / \"interesPagado\": Montos acumulados pagados hasta la fecha.\n- \"tipoCambioCompra\" / \"tipoCambioVenta\": Tipo de cambio oficial respecto al dólar.\n\n📅 FECHAS Y ABONOS:\n- \"proximoPago\": Fecha del próximo pago (si es '1900-01-01', indica que la factura ya venció).\n- \"montoProximoPago\": Monto programado para la siguiente cuota.\n- \"ultimoPagoFecha\": Fecha en que realizó su último pago.\n- \"lastShareNumber\": Código del último recibo/abono.\n- \"dateLastShareNumber\": Fecha del último abono.\n- \"amountLastShareNumber\": Monto del último abono registrado.\n\n📍 UBICACIÓN GEOGRÁFICA:\n- \"direccion\" / \"domicilio\": Dirección domiciliar o comercial.\n- \"departamento\" / \"municipio\" / \"pais\": Datos territoriales.\n- \"gps\": Enlace directo de ubicación en Google Maps.\n\nREGLA OBLIGATORIA DE PROCESAMIENTO DE RESPUESTAS (ANTI-OMISIÓN):\n1. Al recibir la respuesta de \"clientes_con_mora\" o \"cartera_de_credito\", procesarás CADA UNO de los objetos JSON devueltos.\n2. NUNCA omitas registros, NUNCA resumas y NUNCA uses frases de recorte como:\n   - \"entre otros...\"\n   - \"aquí hay algunos ejemplos...\"\n   - \"y X clientes más...\"\n3. Tu único trabajo al recibir la lista es formatear y enumerar TODOS los registros entregados por la herramienta, desde el primero hasta el último. Si recibes 12 registros, muestra los 12 registros completos en el mensaje."
         }
       },
       "type": "@n8n/n8n-nodes-langchain.agent",
@@ -47,8 +47,7 @@
     {
       "parameters": {
         "sessionIdType": "customKey",
-        "sessionKey": "={{ $('recibir whatsapp').item.json.body.data.key.remoteJid }}",
-        "contextWindowLength": 2
+        "sessionKey": "={{ $('recibir whatsapp').item.json.body.data.key.remoteJid }}"
       },
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.4,
@@ -62,15 +61,15 @@
     },
     {
       "parameters": {
-        "toolDescription": "Obtiene el listado completo en JSON de la cartera de clientes, incluyendo estados de mora, fechas de cobro, montos pendientes y comentarios guardados. Utilízala tanto para consultar el estado de un cliente individual como para generar reportes consolidados de cobro para el Administrador.",
+        "toolDescription": "Obtiene el registro completo de la cartera sin filtrar. Úsala solo para buscar datos individuales de un cliente específico por su nombre o teléfono.",
         "url": "https://posme.net/v4posme/posme/public/app_cxc_report/customer_credit/generateJson/1",
         "options": {}
       },
       "type": "n8n-nodes-base.httpRequestTool",
       "typeVersion": 4.4,
       "position": [
-        832,
-        -192
+        1136,
+        -208
       ],
       "id": "de4b5848-a710-42ee-aff8-16f782a0e8b8",
       "name": "cartera de credito"
@@ -774,6 +773,20 @@
       ],
       "id": "bbdbcc68-b06c-42dd-9c4c-c27d7450e9f9",
       "name": "If1"
+    },
+    {
+      "parameters": {
+        "description": "Consulta y filtra la cartera para obtener únicamente los clientes que tienen deudas pendientes o mora activa (montoAtrazado > 0). Usa esta herramienta SIEMPRE que el usuario pregunte por \"clientes en mora\", \"quiénes deben\" o \"lista de cobros\".",
+        "jsCode": "// 1. Configuración de la petición a la API de posMe\nconst options = {\n  method: 'GET',\n  url: 'https://posme.net/v4posme/posme/public/app_cxc_report/customer_credit/generateJson/1', // <-- REEMPLAZA CON TU URL EXACTA\n  json: true\n};\n\n// 2. Realizar la petición a la API\nconst respuestaApi = await this.helpers.httpRequest(options);\n\n// 3. Extraer el arreglo de clientes desde data.objDetail\nlet listaClientes = [];\n\nif (respuestaApi && respuestaApi.data && Array.isArray(respuestaApi.data.objDetail)) {\n  listaClientes = respuestaApi.data.objDetail;\n} else if (Array.isArray(respuestaApi)) {\n  listaClientes = respuestaApi;\n} else if (typeof respuestaApi === 'string') {\n  try {\n    const parsed = JSON.parse(respuestaApi);\n    listaClientes = parsed.data?.objDetail || [];\n  } catch (e) {\n    listaClientes = [];\n  }\n}\n\n// 4. Filtrar clientes que tengan mora (montoAtrazado > 0 o maxDiasMora > 0)\nconst clientesEnMora = listaClientes.filter(cliente => {\n  if (!cliente) return false;\n  \n  const monto = parseFloat(cliente.montoAtrazado || cliente.capitalAtrazado || 0);\n  const dias = parseInt(cliente.maxDiasMora || 0);\n  \n  return monto > 0 || dias > 0;\n});\n\n// 5. Devolver el arreglo filtrado formateado en JSON para la IA\nreturn JSON.stringify(clientesEnMora);"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolCode",
+      "typeVersion": 1.3,
+      "position": [
+        880,
+        -192
+      ],
+      "id": "bd3d16df-4e84-49f0-af3d-0ea6209b6853",
+      "name": "clientes_con_mora"
     }
   ],
   "pinData": {},
@@ -1095,6 +1108,17 @@
           }
         ]
       ]
+    },
+    "clientes_con_mora": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "active": true,
@@ -1106,7 +1130,7 @@
     "timezone": "America/Managua",
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "479c10d6-6b75-4d86-af50-63c7072295d7",
+  "versionId": "b7cba934-18f7-46c4-9c7e-a8fc2fbc958c",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8903022835d2096f8f12d55353ebe2e0aece13728681f611cb5a161359afe1cd"
