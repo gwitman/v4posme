@@ -121,7 +121,7 @@ class app_purchase_request extends _BaseController {
 			$dataView["branchName"]				= $dataSession["branch"]->name;
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
 			$dataView["objComponentShare"]		= $objComponentTransactionShare;					
-			$dataView["objListWorkflowStage"]			= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_taller_zone_customer","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);			
+			$dataView["objListWorkflowStage"]			= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_taller_zone_customer","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);						
 			$dataView["objListWorkflowStageCurrent"]	= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($dataView["objTransactionMaster"]->statusID);			
 			$dataView["objListEstadosEquipo"]			= $this->core_web_catalog->getCatalogAllItemIncludeId("tb_transaction_master_taller_zone_customer","areaID",$companyID,$dataView["objTransactionMaster"]->areaID);
 			$dataView["objListAccesorios"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_taller_zone_customer","priorityID",$companyID);
