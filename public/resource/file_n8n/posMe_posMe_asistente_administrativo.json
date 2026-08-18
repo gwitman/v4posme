@@ -755,7 +755,7 @@
             {
               "id": "178ab990-d034-4f8b-b35d-29fa71a3f5df",
               "leftValue": "={{ $json.mensaje_usuario.toUpperCase() }}",
-              "rightValue": "ASISTENTE|IA|COBRAR|COBRANZA|COBRO|COBROS|COBRARLES",
+              "rightValue": "ASISTENTE|IA|COBRAR|COBRANZA|COBRO|COBROS|COBRARLES|COBRARA",
               "operator": {
                 "type": "string",
                 "operation": "regex"
@@ -1106,7 +1106,7 @@
     "timezone": "America/Managua",
     "callerPolicy": "workflowsFromSameOwner"
   },
-  "versionId": "36580e13-1077-4cc7-83dd-828cb262ee09",
+  "versionId": "479c10d6-6b75-4d86-af50-63c7072295d7",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "8903022835d2096f8f12d55353ebe2e0aece13728681f611cb5a161359afe1cd"
