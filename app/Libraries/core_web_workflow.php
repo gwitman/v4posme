@@ -634,6 +634,38 @@ class core_web_workflow {
 		
    }  
    
+   //Obtener todos los estados destinos apartir de un estado origen incluyendo el estado actual
+   function getWorkflowStageByStageInitIncludeCurrent($table,$field,$startStageID,$companyID,$branchID,$roleID){
+		$Workflow_Stage_Model = new Workflow_Stage_Model();
+		
+		//Obtener la lista de estados destino
+		$objListWorkflowStage = $this->getWorkflowStageByStageInit($table,$field,$startStageID,$companyID,$branchID,$roleID);
+		
+		//Obtener el estado actual
+		$objListWorkflowStageCurrent = $Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($startStageID);
+		
+		//Validar que el estado actual exista en la lista, si no, agregarlo
+		if($objListWorkflowStageCurrent && count($objListWorkflowStageCurrent) > 0){
+			$currentStageObj = $objListWorkflowStageCurrent[0];
+			if(is_array($objListWorkflowStage)){
+				$existsInList = false;
+				foreach($objListWorkflowStage as $stage){
+					if($stage->workflowStageID == $currentStageObj->workflowStageID){
+						$existsInList = true;
+						break;
+					}
+				}
+				if(!$existsInList){
+					array_unshift($objListWorkflowStage, $currentStageObj);
+				}
+			} else {
+				$objListWorkflowStage = [$currentStageObj];
+			}
+		}
+		
+		return $objListWorkflowStage;
+   }
+
    //Validar el Estado
    function validateWorkflowStage($table,$field,$stageID,$cmd,$companyID,$branchID,$roleID){
 		$Component_Model = new Component_Model();
