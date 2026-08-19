@@ -675,20 +675,20 @@ class core_web_workflow {
 		$Workflow_Model = new Workflow_Model();
 		$Workflow_Stage_Model = new Workflow_Stage_Model();
 		$Workflow_Stage_Relation_Model = new Workflow_Stage_Relation_Model();
-		$Role_Model = new Role_Model();
-		$Role_Autorization_Model = new Role_Autorization_Model();
-		$Company_Model = new Company_Model();
+		$Role_Model 				= new Role_Model();
+		$Role_Autorization_Model 	= new Role_Autorization_Model();
+		$Company_Model 				= new Company_Model();
 		
 		//Obtener la compania
-		$objCompany 	= $Company_Model->get_rowByPK($companyID);
+		$objCompany 		= $Company_Model->get_rowByPK($companyID);
 
-		//obtener el workflow
-		$objWorkflowStage	= $this->getWorkflowStage($table,$field,$stageID,$companyID,$branchID,$roleID);
+		//obtener el workflow stage directamente por ID sin filtrar por rol
+		$objWorkflowStage	= $Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($stageID);
 		if(!$objWorkflowStage)
 		throw new \Exception("NO EXISTE EL WORKFLOW STAGE TABLE: $table , FIELD:$field , COMPANY: $companyID, WORKFLOWSTAGEID: $stageID ");
 		
 		
-			
+		
 		if($cmd == COMMAND_VINCULATE){
 			return $objWorkflowStage[0]->vinculable;
 		}
