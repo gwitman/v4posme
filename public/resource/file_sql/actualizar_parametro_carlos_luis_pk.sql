@@ -1,5 +1,6 @@
-﻿/*BD: 	dbimnhv2es7glt:carlos_luis_pk	*/
-/*servidor:		siteground.net */
+﻿/*BD: 	posme:carlos_luis_pk	*/
+/*servidor:		localhost:posme*/
+/*servidor:		siteground.net:dbimnhv2es7glt */
 
 
 /*--Imprimir de orden de compra*/
