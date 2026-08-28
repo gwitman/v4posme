@@ -2995,7 +2995,13 @@ class Transaction_Master_Detail_Model extends Model  {
 		$sql = "";
 		$sql = sprintf("
 				select 
-					tmi.reference1 as tm_transactionMasterMobileID,
+					/*si la factura fue creada desde la web el transactionMasterMobile = transactionMasterID*/
+					CASE 
+						WHEN tmi.reference1 IS NULL OR tmi.reference1 = '' THEN 
+							tmi.transactionMasterID
+						ELSE 
+							tmi.reference1
+					END AS tm_transactionMasterMobileID,
 					tmi.reference2 as tm_transactionMasterMobileNumber,
 					c.transactionID as tm_transactionID,
 					c.transactionMasterID as tm_transactionMasterID,
