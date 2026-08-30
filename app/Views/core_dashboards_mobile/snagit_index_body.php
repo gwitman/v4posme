@@ -346,22 +346,33 @@
                 <table class="table table-sm table-hover mb-0">
                   <thead class="table-light">
                     <tr>
-                      <th class="small">#</th>
-                      <th class="small">Código</th>
+                      <th class="small" style="width:30px;" v-if="isMobile && isProductSalesView"></th>
                       <th class="small">Nombre</th>
                       <th class="small text-end">{{ productValueLabel }}</th>
+                      <th class="small d-none d-md-table-cell">Código</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item, idx) in objListData" :key="idx">
-                      <td class="small">{{ idx + 1 }}</td>
-                      <td class="small"><span class="badge bg-label-primary">{{ item.Codigo }}</span></td>
-                      <td class="small">{{ item.Nombre }}</td>
-                      <td class="small text-end fw-bold">
-                        <span v-if="filterTransaction === 'productSalesAmount'">{{ formatMoney(item.Monto) }}</span>
-                        <span v-else>{{ parseFloat(item.Cantidad || 0) }}</span>
-                      </td>
-                    </tr>
+                    <template v-for="(item, idx) in objListData" :key="idx">
+                      <tr @click="isProductSalesView ? toggleDetalleProducto(idx) : null" :style="isMobile && isProductSalesView ? 'cursor:pointer;' : ''">
+                        <td class="small text-center" v-if="isMobile && isProductSalesView">
+                          <i class="bx" :class="detalleProductoAbierto === idx ? 'bx-chevron-down text-primary' : 'bx-chevron-right'"></i>
+                        </td>
+                        <td class="small">{{ item.Nombre }}</td>
+                        <td class="small text-end fw-bold">
+                          <span v-if="filterTransaction === 'productSalesAmount'">{{ formatMoney(item.Monto) }}</span>
+                          <span v-else>{{ parseFloat(item.Cantidad || 0) }}</span>
+                        </td>
+                        <td class="small d-none d-md-table-cell"><span class="badge bg-label-primary">{{ item.Codigo }}</span></td>
+                      </tr>
+                      <tr v-if="isMobile && isProductSalesView && detalleProductoAbierto === idx">
+                        <td colspan="3" class="p-0">
+                          <div class="p-2" style="background-color: #e3f2fd; border-left: 4px solid #1976d2;">
+                            <p class="small mb-0"><i class="bx bx-barcode me-1"></i><strong>Código:</strong> <span class="badge bg-label-primary">{{ item.Codigo }}</span></p>
+                          </div>
+                        </td>
+                      </tr>
+                    </template>
                   </tbody>
                 </table>
               </div>

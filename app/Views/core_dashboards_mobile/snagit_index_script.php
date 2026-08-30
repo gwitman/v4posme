@@ -16,6 +16,7 @@ createApp({
             detalleAbonoAbierto: null,
             detalleCashOutAbierto: null,
             detalleGastoAbierto: null,
+            detalleProductoAbierto: null,
             startOn:        '<?php echo date("Y-m-01"); ?>',
             endOn:          '<?php echo date("Y-m-d"); ?>',
             filterTransaction: '<?php echo (isset($company) && $company->type == "gymJalapa") ? "23" : "19"; ?>',
@@ -33,6 +34,9 @@ createApp({
         },
         isProductView() {
             return ['productSalesAmount', 'productSalesQuantity', 'productInventoryQuantity', 'productInventoryZero'].includes(this.filterTransaction);
+        },
+        isProductSalesView() {
+            return ['productSalesAmount', 'productSalesQuantity'].includes(this.filterTransaction);
         },
         isCashOutView() {
             return ['30', '38'].includes(this.filterTransaction);
@@ -159,6 +163,7 @@ createApp({
             this.detalleAbonoAbierto = null;
             this.detalleCashOutAbierto = null;
             this.detalleGastoAbierto = null;
+            this.detalleProductoAbierto = null;
             this.mensaje        = 'Los filtros han cambiado. Presione Consultar para actualizar.';
             this.mostrarAlerta  = true;
         },
@@ -183,6 +188,9 @@ createApp({
         toggleDetalleGasto(idx) {
             this.detalleGastoAbierto = this.detalleGastoAbierto === idx ? null : idx;
         },
+        toggleDetalleProducto(idx) {
+            this.detalleProductoAbierto = this.detalleProductoAbierto === idx ? null : idx;
+        },
         async cargarListado() {
             try {
                 this.loading = true;
@@ -191,6 +199,7 @@ createApp({
                 this.detalleAbierto = null;
                 this.detalleCashOutAbierto = null;
                 this.detalleGastoAbierto = null;
+                this.detalleProductoAbierto = null;
 
                 const formData = new FormData();
                 formData.append('userName', this.userName);

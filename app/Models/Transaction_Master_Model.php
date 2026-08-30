@@ -704,7 +704,7 @@ class Transaction_Master_Model extends Model  {
 				i.itemNumber,
 				i.name
 			ORDER BY 
-				4 ASC 
+				4 ASC ,3 ASC 
 		");
 
 		log_message("error",print_r($sql,true));
@@ -757,7 +757,7 @@ class Transaction_Master_Model extends Model  {
 				i.itemNumber,
 				i.name
 			ORDER BY 
-				4 ASC 
+				4 ASC , 3 ASC 
 		");
 
 		log_message("error",print_r($sql,true));
