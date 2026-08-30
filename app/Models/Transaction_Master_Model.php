@@ -658,6 +658,114 @@ class Transaction_Master_Model extends Model  {
 		return $db->query($sql)->getResult();
 	}
 
+	function getRowAll_DashboardMobile_FacturasProductosAmount(
+			$transactionID,
+			$startOn,
+			$endOn,
+			$custonerName,
+			$itemName
+	)
+	{
+		$db = db_connect();
+		$sql = "";
+		$sql = $sql . sprintf("
+			SELECT
+				i.itemID,
+				i.itemNumber as Codigo,
+				i.name as Nombre,
+				sum(tmd.amount) as Monto   
+			FROM tb_transaction_master c
+			INNER JOIN tb_workflow_stage ws
+				ON ws.workflowStageID = c.statusID
+			INNER JOIN tb_naturales nat
+				ON nat.entityID = c.entityID
+			INNER JOIN tb_transaction t
+				ON t.transactionID = c.transactionID
+			INNER JOIN tb_transaction_master_detail tmd
+				ON tmd.transactionMasterID = c.transactionMasterID
+			INNER JOIN tb_item i
+				ON i.itemID = tmd.componentItemID
+			WHERE
+				c.isActive = 1
+				AND ws.aplicable = 1
+				AND c.transactionID = 19 
+				AND c.createdOn BETWEEN '$startOn' AND '$endOn'
+				AND tmd.isActive = 1
+				AND (
+					'$custonerName' = ''
+					OR CONCAT(nat.firstName, ' ', nat.lastName) LIKE '%%$custonerName%%'
+				)
+				AND (
+					'$itemName' = ''
+					OR i.`name` LIKE '%%$itemName%%'
+				)
+			GROUP BY 
+				i.itemID,
+				i.itemNumber,
+				i.name
+			ORDER BY 
+				4 ASC 
+		");
+
+		log_message("error",print_r($sql,true));
+		return $db->query($sql)->getResult();
+	}
+
+	function getRowAll_DashboardMobile_FacturasProductosQuantity(
+			$transactionID,
+			$startOn,
+			$endOn,
+			$custonerName,
+			$itemName
+	)
+	{
+		$db = db_connect();
+		$sql = "";
+		$sql = $sql . sprintf("
+			SELECT
+				i.itemID,
+				i.itemNumber as Codigo,
+				i.name as Nombre,
+				sum(tmd.quantity) as Cantidad  
+			FROM tb_transaction_master c
+			INNER JOIN tb_workflow_stage ws
+				ON ws.workflowStageID = c.statusID
+			INNER JOIN tb_naturales nat
+				ON nat.entityID = c.entityID
+			INNER JOIN tb_transaction t
+				ON t.transactionID = c.transactionID
+			INNER JOIN tb_transaction_master_detail tmd
+				ON tmd.transactionMasterID = c.transactionMasterID
+			INNER JOIN tb_item i
+				ON i.itemID = tmd.componentItemID
+			WHERE
+				c.isActive = 1
+				AND ws.aplicable = 1
+				AND c.transactionID = 19 
+				AND c.createdOn BETWEEN '$startOn' AND '$endOn'
+				AND tmd.isActive = 1
+				AND (
+					'$custonerName' = ''
+					OR CONCAT(nat.firstName, ' ', nat.lastName) LIKE '%%$custonerName%%'
+				)
+				AND (
+					'$itemName' = ''
+					OR i.`name` LIKE '%%$itemName%%'
+				)
+			GROUP BY 
+				i.itemID,
+				i.itemNumber,
+				i.name
+			ORDER BY 
+				4 ASC 
+		");
+
+		log_message("error",print_r($sql,true));
+		return $db->query($sql)->getResult();
+	}
+
+	
+
 	function getRowAll_DashboardMobile_Abonos(
 			$transactionID,
 			$startOn,

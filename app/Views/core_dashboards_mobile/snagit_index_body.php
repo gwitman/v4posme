@@ -22,6 +22,9 @@
                   <select class="form-select form-select-sm" v-model="filterTransaction">
                     <option value="19">FACTURAS</option>
                     <option value="23">ABONOS</option>
+                    <option value="productSalesAmount">PRODUCTOS VENDIDOS MONTOS</option>
+                    <option value="productSalesQuantity">PRODUCTOS VENDIDOS CANTIDAD</option>
+                    <option value="productInventoryQuantity">PRODUCTOS CANTIDADES</option>
                   </select>
                 </div>
                 <div class="col-6 col-md-3">

@@ -112,6 +112,36 @@ class core_dashboards_mobile extends _BaseController {
                         $itemName
                 );
             }
+			else if($transactionID == "productSalesAmount" /* PRODUCTOS VENDIDOS MONTOS */)
+            {
+                $objData    = $this->Transaction_Master_Model->getRowAll_DashboardMobile_FacturasProductosAmount(
+                        $transactionID,
+                        $startOn,
+                        $endOn,
+                        $customerName,
+                        $itemName
+                );
+            }
+			else if($transactionID == "productSalesQuantity" /* PRODUCTOS VENDIDOS CANTIDAD */)
+            {
+                $objData    = $this->Transaction_Master_Model->getRowAll_DashboardMobile_FacturasProductosQuantity(
+                        $transactionID,
+                        $startOn,
+                        $endOn,
+                        $customerName,
+                        $itemName
+                );
+            }
+			else if($transactionID == "productInventoryQuantity" /* PRODUCTOS EN CANTIDAD  0 */)
+            {
+                $objData    = $this->Item_Model->getRowAll_DashboardMobile_InventoryQuantity(
+                        $transactionID,
+                        $startOn,
+                        $endOn,
+                        $customerName,
+                        $itemName
+                );
+            }
             else if($transactionID == 23 /* ABONOS */)
             {
                 $objData    = $this->Transaction_Master_Model->getRowAll_DashboardMobile_Abonos(
