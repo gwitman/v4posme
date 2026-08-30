@@ -177,6 +177,9 @@ class app_box_report extends _BaseController {
 				log_message("error",print_r($endOn,true));
 				log_message("error",print_r($userIDFilter,true));
 				
+				//TIMING: Inicio total de share()
+				$_shareStartTotal = microtime(true);
+				log_message("error","[TIMING share()] ========== INICIO EJECUCION REPORTE ==========");
 				
 				//Obtener el tipo de Comprobante
 				$companyID 		= $dataSession["user"]->companyID;
@@ -190,42 +193,67 @@ class app_box_report extends _BaseController {
 				
 				//Get Datos
 				$query			= "CALL pr_box_get_report_abonos(?,?,?,?,?,?,?,?);";
+				log_message("error",print_r($query,true));
+				$_t1 = microtime(true);
 				$objData		= $this->Bd_Model->executeRender(
 					$query,
 					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,0]
-				);			
+				);
+				$_t2 = microtime(true);
+				log_message("error","[TIMING share()] pr_box_get_report_abonos => " . round(($_t2 - $_t1) * 1000, 2) . " ms");
+
 				//Get Datos de Facturacion				
 				$query			= "CALL pr_sales_get_report_sales_summary(?,?,?,?,?,?,?,?,?,?,?);";
+				log_message("error",print_r($query,true));
+				$_t1 = microtime(true);
 				$objDataSales	= $this->Bd_Model->executeRender(
 					$query,
 					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem,0,0,0,0]
-				);	
+				);
+				$_t2 = microtime(true);
+				log_message("error","[TIMING share()] pr_sales_get_report_sales_summary => " . round(($_t2 - $_t1) * 1000, 2) . " ms");
 				
 				//Get Datos de Formas de pago		
-				$query						= "CALL pr_sales_get_report_sales_by_payment(?,?,?,?,?);";
+				$query						= "CALL pr_sales_get_report_sales_by_payment_v2(?,?,?,?,?);";
+				log_message("error",print_r($query,true));
+				$_t1 = microtime(true);
 				$objDataSalesPaymentMethod	= $this->Bd_Model->executeRender(
 					$query,
 					[$companyID,$tocken,$userID,$startOn,$endOn]
-				);	
+				);
+				$_t2 = microtime(true);
+				log_message("error","[TIMING share()] pr_sales_get_report_sales_by_payment_v2 => " . round(($_t2 - $_t1) * 1000, 2) . " ms");
 
 				$query					= "CALL pr_sales_get_report_sales_summary_credit(?,?,?,?,?,?,?,?);";
+				log_message("error",print_r($query,true));
+				$_t1 = microtime(true);
 				$objDataSalesCredito	= $this->Bd_Model->executeRender(
 					$query,
 					[$companyID,$tocken,$userID,$startOn,$endOn,$userIDFilter,$categoryItem,0]
-				);					
+				);
+				$_t2 = microtime(true);
+				log_message("error","[TIMING share()] pr_sales_get_report_sales_summary_credit => " . round(($_t2 - $_t1) * 1000, 2) . " ms");
 				
 				//Get Datos de Entrada de Efectivo y Salida				
 				$query			= "CALL pr_box_get_report_input_cash(?,?,?,?,?,?,?,?,?);";
+				log_message("error",print_r($query,true));
+				$_t1 = microtime(true);
 				$objDataCash	= $this->Bd_Model->executeRender(
 					$query,
 					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,$conceptoFilter,0]
-				);			
+				);
+				$_t2 = microtime(true);
+				log_message("error","[TIMING share()] pr_box_get_report_input_cash => " . round(($_t2 - $_t1) * 1000, 2) . " ms");
 				
 				$query			= "CALL pr_box_get_report_output_cash(?,?,?,?,?,?,?,?,?);";
+				log_message("error",print_r($query,true));
+				$_t1 = microtime(true);
 				$objDataCashOut	= $this->Bd_Model->executeRender(
 					$query,
 					[$userID,$tocken,$companyID,$authorization,$startOn,$endOn,$userIDFilter,$conceptoFilter,0]
-				);			
+				);
+				$_t2 = microtime(true);
+				log_message("error","[TIMING share()] pr_box_get_report_output_cash => " . round(($_t2 - $_t1) * 1000, 2) . " ms");			
 				
 				if(isset($objData))
 				$objDataResult["objDetail"]					= $objData;
@@ -261,6 +289,10 @@ class app_box_report extends _BaseController {
 				
 				
 				
+				
+				//TIMING: Fin total de share()
+				$_shareEndTotal = microtime(true);
+				log_message("error","[TIMING share()] ========== TIEMPO TOTAL PROCEDIMIENTOS: " . round(($_shareEndTotal - $_shareStartTotal) * 1000, 2) . " ms ==========");
 				
 				$objDataResult["objCompany"] 				= $objCompany;
 				$objDataResult["objLogo"] 					= $objParameter;

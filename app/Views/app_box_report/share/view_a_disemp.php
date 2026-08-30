@@ -1134,8 +1134,8 @@
 		$configColumnMetodosPagoDolar["4"]["Titulo"] 		= "Tarjeta $";		
 		 
 		$configColumnMetodosPagoDolar["0"]["FiledSouce"] 		= "Banco";				
-		$configColumnMetodosPagoDolar["2"]["FiledSouce"] 		= "Transferencia Dólar";		
-		$configColumnMetodosPagoDolar["4"]["FiledSouce"] 		= "Tarjeta Dólar";	
+		$configColumnMetodosPagoDolar["2"]["FiledSouce"] 		= "Transferencia Dolar";		
+		$configColumnMetodosPagoDolar["4"]["FiledSouce"] 		= "Tarjeta Dolar";	
 		 
 		$configColumnMetodosPagoDolar["0"]["Formato"] 		= "";				
 		$configColumnMetodosPagoDolar["2"]["Formato"] 		= "Number";	
@@ -1167,8 +1167,8 @@
 				if($fila['Banco'] == "")
 					continue;
 
-				$totalTarjet_totalBanco_Dolar 		+= (float)$fila['Transferencia Dólar'];
-				$totalTarjet_totalBanco_Dolar   	+= (float)$fila['Tarjeta Dólar'];
+				$totalTarjet_totalBanco_Dolar 		+= (float)$fila['Transferencia Dolar'];
+				$totalTarjet_totalBanco_Dolar   	+= (float)$fila['Tarjeta Dolar'];
 			}
 			$totalDolares					= $totalDolares - $totalTarjet_totalBanco_Dolar; 	
 
