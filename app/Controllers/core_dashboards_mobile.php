@@ -205,6 +205,18 @@ class core_dashboards_mobile extends _BaseController {
                         $customerName,
                         $itemName
                 );
+
+				return $this->response->setJSON(array(
+					'success'   => true,
+					'objDataFacturas'      	=> $objDataFacturas,
+					'objDataAbonos'      	=> $objDataAbonos,
+					'objDataSalidaCaja'     => $objDataSalidaCaja,
+					'objDataGasto'      	=> $objDataGasto,
+					'company'   => $objCompany->name,
+					'startOn'   => $startOn,
+					'endOn'     => $endOn
+				));//--finjson
+				
             }
             else if($transactionID == 23 /* ABONOS */)
             {
