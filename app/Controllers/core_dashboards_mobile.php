@@ -152,6 +152,60 @@ class core_dashboards_mobile extends _BaseController {
                         $itemName
                 );
             }
+			else if($transactionID == "30" /* SALIDA DE CAJA */)
+            {
+                $objData    = $this->Transaction_Master_Model->getRowAll_DashboardMobile_SalidaDeCaja(
+                        $transactionID,
+                        $startOn,
+                        $endOn,
+                        $customerName,
+                        $itemName
+                );
+            }
+			else if($transactionID == "38" /* GASTOS */)
+            {
+                $objData    = $this->Transaction_Master_Model->getRowAll_DashboardMobile_Gastos(
+                        $transactionID,
+                        $startOn,
+                        $endOn,
+                        $customerName,
+                        $itemName
+                );
+            }
+			else if($transactionID == "utility" /* UTILIDAD */)
+            {
+				 $objDataFacturas    = $this->Transaction_Master_Model->getRowAll_DashboardMobile_Facturas(
+                        $transactionID,
+                        $startOn,
+                        $endOn,
+                        $customerName,
+                        $itemName
+                );
+
+				$objDataAbonos    	= $this->Transaction_Master_Model->getRowAll_DashboardMobile_FacturasProductosAmount(
+                        $transactionID,
+                        $startOn,
+                        $endOn,
+                        $customerName,
+                        $itemName
+                );
+
+				$objDataSalidaCaja    = $this->Transaction_Master_Model->getRowAll_DashboardMobile_SalidaDeCaja(
+                        $transactionID,
+                        $startOn,
+                        $endOn,
+                        $customerName,
+                        $itemName
+                );
+
+                 $objDataGasto    	 = $this->Transaction_Master_Model->getRowAll_DashboardMobile_Gastos(
+                        $transactionID,
+                        $startOn,
+                        $endOn,
+                        $customerName,
+                        $itemName
+                );
+            }
             else if($transactionID == 23 /* ABONOS */)
             {
                 $objData    = $this->Transaction_Master_Model->getRowAll_DashboardMobile_Abonos(

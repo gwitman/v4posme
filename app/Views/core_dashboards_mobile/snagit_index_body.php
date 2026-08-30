@@ -26,6 +26,9 @@
                     <option value="productSalesQuantity">PRO. VENDIDOS QYT.</option>
                     <option value="productInventoryQuantity">INVENTARIO QYT.</option>
                     <option value="productInventoryZero">INVENTARIO 0.</option>
+                    <option value="30">SALIDA DE CAJA.</option>
+                    <option value="38">GASTO.</option>
+                    <option value="utility">UTILIDAD.</option>
                   </select>
                 </div>
                 <div class="col-6 col-md-3" v-if="filterTransaction !== 'productInventoryQuantity' && filterTransaction !== 'productInventoryZero'">
