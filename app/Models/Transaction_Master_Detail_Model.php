@@ -1206,6 +1206,74 @@ class Transaction_Master_Detail_Model extends Model  {
 			
    }
    
+   function GlobalPro_get_Notification_Compra_1HoraDespues()
+   {
+	   $db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master_detail");
+	   		
+		$sql = "";
+		$sql = "
+			select				
+				tx.phoneNumber as Destino,				
+				CONCAT(
+				tx.transactionNumber,
+				'-',
+				tx.transactionMasterDetailID,
+				'-sendWhatsappGlobalProCompraFrecuency1HorasDespues'
+				) as CodigoMensaje,			
+				CONCAT(
+					'¡Hola, ', 
+					tx.firstName, 
+					'! [simbol-mano-saludo][simbol-computadora][simbol-enter][simbol-enter]',
+
+					'Ya ha pasado aproximadamente un mes desde que compraste tu computadora con nosotros y nos gustaría conocer *cómo ha sido tu experiencia con tu equipo y con nuestro servicio*. [simbol-carita-feliz][simbol-enter][simbol-enter]',
+
+					'Tu opinión es muy importante para nosotros y nos ayuda a seguir mejorando cada día.[simbol-enter][simbol-enter]',
+
+					'[simbol-mano-derecha] Te invitamos a responder una breve encuesta. *Solo te tomará 1 minuto:*[simbol-enter]',
+
+					'https://docs.google.com/forms/d/e/1FAIpQLSclIpC7y-ZV9bxOXOGGizxT3UBOxXzKVdiioxCNGZckp-m1PQ/viewform?usp=header[simbol-enter][simbol-enter]',
+
+					'¡Muchas gracias por tu tiempo y por confiar en *Global Pro*! [simbol-corazon][simbol-corazon]'
+				) AS Mensaje 
+			from 
+					(
+						select 
+							tmd.transactionMasterDetailID,
+							tm.transactionNumber,
+							nat.firstName,
+							REPLACE(cus.identification, '[^a-zA-Z0-9]', '') as identification,
+							REPLACE(cus.phoneNumber, '[^a-zA-Z0-9]', '') as phoneNumber,
+							tm.createdOn,
+							tmd.itemNameLog,
+							tmd.itemNameDescriptionLog
+						from 
+							tb_transaction_master tm 
+							inner join tb_transaction_master_detail tmd on 
+								tm.transactionMasterID = tmd.transactionMasterID 
+							inner join tb_item i on 
+								tmd.componentItemID = i.itemID 
+							inner join tb_item_category cat on 
+								i.inventoryCategoryID = cat.inventoryCategoryID 
+							inner join tb_naturales nat on 
+								nat.entityID = tm.entityID 
+							inner join tb_customer cus on 
+								nat.entityID = cus.entityID 
+						where 
+							tm.transactionID = 19 and 
+							tm.isActive = 1 and 
+							tmd.isActive = 1 and
+							LENGTH(REPLACE(cus.identification, '[^a-zA-Z0-9]', '')) = 14 and 
+							LENGTH(REPLACE(cus.phoneNumber, '[^a-zA-Z0-9]', '')) = 8 and  
+							DATE_ADD(tm.createdOn, INTERVAL 1 DAY) = CURDATE() 
+							
+					) tx 
+			";
+	
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+
    function GlobalPro_get_Notification_Compra_1Meses()
    {
 	   $db 	= db_connect();

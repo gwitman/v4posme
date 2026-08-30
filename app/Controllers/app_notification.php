@@ -2038,7 +2038,23 @@ class app_notification extends _BaseController
 	/********************************************/
 	/********************************************/
 	/********************************************/
-	
+	function sendWhatsappGlobalProCompraFrecuency1HorasDespues()
+	{
+
+		$objNotificar = $this->Transaction_Master_Detail_Model->GlobalPro_get_Notification_Compra_1HoraDespues();
+		if ($objNotificar)
+			foreach ($objNotificar as $i) {
+				echo clearNumero($i->Destino) . "---" . $i->Mensaje . "</br></br>";
+				
+				$this->core_web_whatsap->sendMessageByLiveconnect(
+					APP_COMPANY,
+					replaceSimbol($i->Mensaje),
+					getNumberPhone(clearNumero($i->Destino))
+				);
+			}
+
+		echo "SUCCESS";
+	}
 	function sendWhatsappGlobalProCompraFrecuency1Meses()
 	{
 
@@ -2109,6 +2125,7 @@ class app_notification extends _BaseController
 					"feliz_cumple",
 					"jpeg"
 				);
+				
 				
 				$this->core_web_whatsap->sendMessageByLiveconnect(
 					APP_COMPANY,

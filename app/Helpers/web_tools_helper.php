@@ -1164,7 +1164,15 @@ function helper_getHtmlOfStylePageListReportJS()
 
 function replaceSimbol($string)
 {
-	$string = nl2br(htmlspecialchars(mb_convert_encoding($string, "UTF-8", "Windows-1252")));
+	$string = nl2br(
+        htmlspecialchars(
+            $string,
+            ENT_QUOTES | ENT_SUBSTITUTE,
+            'UTF-8'
+        )
+    );
+
+    
 	$string = str_replace("[simbol-enter]", 
 "
 ", $string);
