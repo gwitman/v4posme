@@ -26,6 +26,9 @@ createApp({
         isMobile() {
             return window.innerWidth < 768;
         },
+        isProductView() {
+            return ['productSalesAmount', 'productSalesQuantity', 'productInventoryQuantity'].includes(this.filterTransaction);
+        },
         groupedData() {
             if (this.filterTransaction != '19') return [];
             const map = {};
@@ -50,6 +53,20 @@ createApp({
             });
             return Object.values(map);
         },
+        productGridTitle() {
+            const titles = {
+                productSalesAmount: 'Productos Vendidos (Montos)',
+                productSalesQuantity: 'Productos Vendidos (Cantidad)',
+                productInventoryQuantity: 'Productos en Inventario (Cantidad)'
+            };
+            return titles[this.filterTransaction] || '';
+        },
+        productValueLabel() {
+            return this.filterTransaction === 'productSalesAmount' ? 'Monto' : 'Cantidad';
+        },
+        productValueField() {
+            return this.filterTransaction === 'productSalesAmount' ? 'Monto' : 'Cantidad';
+        },
         totalDocumentos() {
             if (this.filterTransaction == '19') {
                 return this.groupedData.length;
@@ -60,6 +77,12 @@ createApp({
             if (this.filterTransaction == '19') {
                 return this.groupedData.reduce((sum, g) => sum + g.Monto, 0);
             }
+            if (this.isProductView) {
+                if (this.filterTransaction === 'productSalesAmount') {
+                    return this.objListData.reduce((sum, item) => sum + parseFloat(item.Monto || 0), 0);
+                }
+                return this.objListData.reduce((sum, item) => sum + parseFloat(item.Cantidad || 0), 0);
+            }
             return this.objListData.reduce((sum, item) => sum + parseFloat(item.Monto || 0), 0);
         },
         totalClientes() {
@@ -67,6 +90,7 @@ createApp({
                 const customers = [...new Set(this.groupedData.map(g => g.Cliente).filter(c => c))];
                 return customers.length;
             }
+            if (this.isProductView) return 0;
             const customers = [...new Set(this.objListData.map(item => item.Cliente || '').filter(c => c))];
             return customers.length;
         },
@@ -74,6 +98,9 @@ createApp({
             if (this.filterTransaction == '19') {
                 const productos = [...new Set(this.objListData.map(item => item.Producto || '').filter(p => p))];
                 return productos.length;
+            }
+            if (this.isProductView) {
+                return this.objListData.length;
             }
             return 0;
         }

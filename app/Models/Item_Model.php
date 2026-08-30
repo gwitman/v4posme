@@ -525,6 +525,40 @@ class Item_Model extends Model  {
 		log_message("error",print_r($sql,true));
 		return $db->query($sql)->getResult();
 	}
+
+	function getRowAll_DashboardMobile_InventoryZero(
+			$transactionID,
+			$startOn,
+			$endOn,
+			$custonerName,
+			$itemName
+	)
+	{
+		$db = db_connect();
+		$sql = "";
+		$sql = $sql . sprintf("
+			SELECT
+				i.itemID as itemID,
+				i.itemNumber as Codigo,
+				i.name as Nombre,
+				i.quantity as Cantidad 
+			FROM 
+				tb_item i 
+			WHERE
+				i.isActive = 1 AND 
+				i.quantity = 0 AND 
+				AND (
+					'$itemName' = ''
+					OR i.`name` LIKE '%%$itemName%%'
+				) 
+			ORDER BY 
+				i.name DESC 
+		");
+
+		log_message("error",print_r($sql,true));
+		return $db->query($sql)->getResult();
+	}
+
    
 }
 ?>

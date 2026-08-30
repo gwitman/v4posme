@@ -25,13 +25,14 @@
                     <option value="productSalesAmount">PRODUCTOS VENDIDOS MONTOS</option>
                     <option value="productSalesQuantity">PRODUCTOS VENDIDOS CANTIDAD</option>
                     <option value="productInventoryQuantity">PRODUCTOS CANTIDADES</option>
+                    <option value="productInventoryZero">PRODUCTOS EN 0</option>
                   </select>
                 </div>
-                <div class="col-6 col-md-3">
+                <div class="col-6 col-md-3" v-if="filterTransaction !== 'productInventoryQuantity'">
                   <label class="form-label small"><i class="bx bx-user me-1"></i>Cliente</label>
                   <input type="text" class="form-control form-control-sm" v-model="filterCustomer" placeholder="Buscar cliente...">
                 </div>
-                <div class="col-12 col-md-4" v-if="filterTransaction == '19'">
+                <div class="col-12 col-md-4" v-if="filterTransaction == '19' || isProductView">
                   <label class="form-label small"><i class="bx bx-package me-1"></i>Producto</label>
                   <input type="text" class="form-control form-control-sm" v-model="filterItem" placeholder="Buscar producto...">
                 </div>
@@ -70,7 +71,33 @@
 
       <!-- Cards Resumen -->
       <div class="row mb-4" v-if="!loading && objListData.length > 0">
-        <div class="col-6 col-md-3 mb-3">
+        <!-- Productos (para vistas de producto) -->
+        <div class="col-6 col-md-3 mb-3" v-if="isProductView">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center p-3">
+              <div class="avatar avatar-sm bg-label-info rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                <i class="bx bx-package"></i>
+              </div>
+              <h4 class="mb-0">{{ totalProductos }}</h4>
+              <small class="text-muted">Productos</small>
+            </div>
+          </div>
+        </div>
+        <!-- Total Monto/Cantidad (para vistas de producto) -->
+        <div class="col-12 col-md-3 mb-3 order-first order-md-0" v-if="isProductView">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center p-3">
+              <div class="avatar avatar-sm bg-label-success rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                <i class="bx" :class="filterTransaction === 'productSalesAmount' ? 'bx-dollar-circle' : 'bx-cube'"></i>
+              </div>
+              <h2 class="mb-0 d-md-none">{{ filterTransaction === 'productSalesAmount' ? formatMoney(totalMonto) : totalMonto }}</h2>
+              <h4 class="mb-0 d-none d-md-block">{{ filterTransaction === 'productSalesAmount' ? formatMoney(totalMonto) : totalMonto }}</h4>
+              <small class="text-muted">{{ filterTransaction === 'productSalesAmount' ? 'Total Monto' : 'Total Cantidad' }}</small>
+            </div>
+          </div>
+        </div>
+        <!-- Documentos (facturas/abonos) -->
+        <div class="col-6 col-md-3 mb-3" v-if="!isProductView">
           <div class="card border-0 shadow-sm h-100">
             <div class="card-body text-center p-3">
               <div class="avatar avatar-sm bg-label-primary rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
@@ -81,7 +108,8 @@
             </div>
           </div>
         </div>
-        <div class="col-12 col-md-3 mb-3 order-first order-md-0">
+        <!-- Total Monto (facturas/abonos) -->
+        <div class="col-12 col-md-3 mb-3 order-first order-md-0" v-if="!isProductView">
           <div class="card border-0 shadow-sm h-100">
             <div class="card-body text-center p-3">
               <div class="avatar avatar-sm bg-label-success rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
@@ -93,7 +121,8 @@
             </div>
           </div>
         </div>
-        <div class="col-6 col-md-3 mb-3">
+        <!-- Clientes (facturas/abonos) -->
+        <div class="col-6 col-md-3 mb-3" v-if="!isProductView">
           <div class="card border-0 shadow-sm h-100">
             <div class="card-body text-center p-3">
               <div class="avatar avatar-sm bg-label-warning rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
@@ -104,6 +133,7 @@
             </div>
           </div>
         </div>
+        <!-- Productos (solo facturas) -->
         <div class="col-6 col-md-3 mb-3" v-if="filterTransaction == '19'">
           <div class="card border-0 shadow-sm h-100">
             <div class="card-body text-center p-3">
@@ -229,6 +259,43 @@
                         </td>
                       </tr>
                     </template>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla PRODUCTOS (productSalesAmount, productSalesQuantity, productInventoryQuantity) -->
+      <div class="row" v-if="!loading && objListData.length > 0 && isProductView">
+        <div class="col-12">
+          <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center py-2">
+              <h6 class="mb-0"><i class="bx bx-package me-1"></i>{{ productGridTitle }}</h6>
+              <span class="badge bg-info">{{ objListData.length }} productos</span>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-sm table-hover mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th class="small">#</th>
+                      <th class="small">Código</th>
+                      <th class="small">Nombre</th>
+                      <th class="small text-end">{{ productValueLabel }}</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(item, idx) in objListData" :key="idx">
+                      <td class="small">{{ idx + 1 }}</td>
+                      <td class="small"><span class="badge bg-label-primary">{{ item.Codigo }}</span></td>
+                      <td class="small">{{ item.Nombre }}</td>
+                      <td class="small text-end fw-bold">
+                        <span v-if="filterTransaction === 'productSalesAmount'">{{ formatMoney(item.Monto) }}</span>
+                        <span v-else>{{ parseFloat(item.Cantidad || 0) }}</span>
+                      </td>
+                    </tr>
                   </tbody>
                 </table>
               </div>

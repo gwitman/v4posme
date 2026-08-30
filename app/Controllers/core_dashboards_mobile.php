@@ -132,9 +132,19 @@ class core_dashboards_mobile extends _BaseController {
                         $itemName
                 );
             }
-			else if($transactionID == "productInventoryQuantity" /* PRODUCTOS EN CANTIDAD  0 */)
+			else if($transactionID == "productInventoryQuantity" /* PRODUCTOS EN CANTIDAD  */)
             {
                 $objData    = $this->Item_Model->getRowAll_DashboardMobile_InventoryQuantity(
+                        $transactionID,
+                        $startOn,
+                        $endOn,
+                        $customerName,
+                        $itemName
+                );
+            }
+			else if($transactionID == "productInventoryZero" /* PRODUCTOS EN CANTIDAD  0 */)
+            {
+                $objData    = $this->Item_Model->getRowAll_DashboardMobile_InventoryZero(
                         $transactionID,
                         $startOn,
                         $endOn,
