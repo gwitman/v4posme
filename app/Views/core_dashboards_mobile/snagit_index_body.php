@@ -22,10 +22,10 @@
                   <select class="form-select form-select-sm" v-model="filterTransaction">
                     <option value="19">FACTURAS</option>
                     <option value="23">ABONOS</option>
-                    <option value="productSalesAmount">PRODUCTOS VENDIDOS MONTOS</option>
-                    <option value="productSalesQuantity">PRODUCTOS VENDIDOS CANTIDAD</option>
-                    <option value="productInventoryQuantity">PRODUCTOS CANTIDADES</option>
-                    <option value="productInventoryZero">PRODUCTOS EN 0</option>
+                    <option value="productSalesAmount">PRO.  VENDIDOS C$/$</option>
+                    <option value="productSalesQuantity">PRO. VENDIDOS QYT.</option>
+                    <option value="productInventoryQuantity">INVENTARIO QYT.</option>
+                    <option value="productInventoryZero">INVENTARIO 0.</option>
                   </select>
                 </div>
                 <div class="col-6 col-md-3" v-if="filterTransaction !== 'productInventoryQuantity' && filterTransaction !== 'productInventoryZero'">
