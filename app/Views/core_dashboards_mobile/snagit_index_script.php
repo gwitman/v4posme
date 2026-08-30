@@ -27,7 +27,7 @@ createApp({
             return window.innerWidth < 768;
         },
         isProductView() {
-            return ['productSalesAmount', 'productSalesQuantity', 'productInventoryQuantity'].includes(this.filterTransaction);
+            return ['productSalesAmount', 'productSalesQuantity', 'productInventoryQuantity', 'productInventoryZero'].includes(this.filterTransaction);
         },
         groupedData() {
             if (this.filterTransaction != '19') return [];
@@ -57,7 +57,8 @@ createApp({
             const titles = {
                 productSalesAmount: 'Productos Vendidos (Montos)',
                 productSalesQuantity: 'Productos Vendidos (Cantidad)',
-                productInventoryQuantity: 'Productos en Inventario (Cantidad)'
+                productInventoryQuantity: 'Productos en Inventario (Cantidad)',
+                productInventoryZero: 'Productos en 0'
             };
             return titles[this.filterTransaction] || '';
         },

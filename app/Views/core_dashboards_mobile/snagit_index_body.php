@@ -28,7 +28,7 @@
                     <option value="productInventoryZero">PRODUCTOS EN 0</option>
                   </select>
                 </div>
-                <div class="col-6 col-md-3" v-if="filterTransaction !== 'productInventoryQuantity'">
+                <div class="col-6 col-md-3" v-if="filterTransaction !== 'productInventoryQuantity' && filterTransaction !== 'productInventoryZero'">
                   <label class="form-label small"><i class="bx bx-user me-1"></i>Cliente</label>
                   <input type="text" class="form-control form-control-sm" v-model="filterCustomer" placeholder="Buscar cliente...">
                 </div>

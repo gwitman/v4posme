@@ -545,8 +545,8 @@ class Item_Model extends Model  {
 			FROM 
 				tb_item i 
 			WHERE
-				i.isActive = 1 AND 
-				i.quantity = 0 AND 
+				i.isActive = 1
+				AND i.quantity <= 0
 				AND (
 					'$itemName' = ''
 					OR i.`name` LIKE '%%$itemName%%'
