@@ -175,7 +175,7 @@ class core_dashboards_mobile extends _BaseController {
 			else if($transactionID == "utility" /* UTILIDAD */)
             {
 				 $objDataFacturas    = $this->Transaction_Master_Model->getRowAll_DashboardMobile_Facturas(
-                        $transactionID,
+                        19,
                         $startOn,
                         $endOn,
                         $customerName,
@@ -183,7 +183,7 @@ class core_dashboards_mobile extends _BaseController {
                 );
 
 				$objDataAbonos    	= $this->Transaction_Master_Model->getRowAll_DashboardMobile_FacturasProductosAmount(
-                        $transactionID,
+                        23,
                         $startOn,
                         $endOn,
                         $customerName,
@@ -191,7 +191,7 @@ class core_dashboards_mobile extends _BaseController {
                 );
 
 				$objDataSalidaCaja    = $this->Transaction_Master_Model->getRowAll_DashboardMobile_SalidaDeCaja(
-                        $transactionID,
+                        30,
                         $startOn,
                         $endOn,
                         $customerName,
@@ -199,7 +199,7 @@ class core_dashboards_mobile extends _BaseController {
                 );
 
                  $objDataGasto    	 = $this->Transaction_Master_Model->getRowAll_DashboardMobile_Gastos(
-                        $transactionID,
+                        38,
                         $startOn,
                         $endOn,
                         $customerName,

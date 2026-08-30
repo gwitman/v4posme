@@ -9,8 +9,13 @@ createApp({
             mostrarAlerta:  true,
             loading:        false,
             objListData:    [],
+            objUtilityFacturas:   [],
+            objUtilitySalidaCaja: [],
+            objUtilityGastos:     [],
             detalleAbierto: null,
             detalleAbonoAbierto: null,
+            detalleCashOutAbierto: null,
+            detalleGastoAbierto: null,
             startOn:        '<?php echo date("Y-m-01"); ?>',
             endOn:          '<?php echo date("Y-m-d"); ?>',
             filterTransaction: '<?php echo (isset($company) && $company->type == "gymJalapa") ? "23" : "19"; ?>',
@@ -28,6 +33,22 @@ createApp({
         },
         isProductView() {
             return ['productSalesAmount', 'productSalesQuantity', 'productInventoryQuantity', 'productInventoryZero'].includes(this.filterTransaction);
+        },
+        isCashOutView() {
+            return ['30', '38'].includes(this.filterTransaction);
+        },
+        isUtilityView() {
+            return this.filterTransaction === 'utility';
+        },
+        isDocumentView() {
+            return ['19', '23'].includes(this.filterTransaction);
+        },
+        hasData() {
+            if (this.isUtilityView) return this.utilityHasData;
+            return this.objListData.length > 0;
+        },
+        utilityHasData() {
+            return this.objUtilityFacturas.length > 0 || this.objUtilitySalidaCaja.length > 0 || this.objUtilityGastos.length > 0;
         },
         groupedData() {
             if (this.filterTransaction != '19') return [];
@@ -104,6 +125,21 @@ createApp({
                 return this.objListData.length;
             }
             return 0;
+        },
+        utilityTotalFacturas() {
+            return this.objUtilityFacturas.reduce((sum, item) => sum + parseFloat(item.Monto || 0), 0);
+        },
+        utilityTotalSalidaCaja() {
+            return this.objUtilitySalidaCaja.reduce((sum, item) => sum + parseFloat(item.Monto || 0), 0);
+        },
+        utilityTotalGastos() {
+            return this.objUtilityGastos.reduce((sum, item) => sum + parseFloat(item.Monto || 0), 0);
+        },
+        utilityTotalEgresos() {
+            return this.utilityTotalSalidaCaja + this.utilityTotalGastos;
+        },
+        utilityNeta() {
+            return this.utilityTotalFacturas - this.utilityTotalEgresos;
         }
     },
     watch: {
@@ -116,8 +152,13 @@ createApp({
     methods: {
         limpiarResultados() {
             this.objListData    = [];
+            this.objUtilityFacturas   = [];
+            this.objUtilitySalidaCaja = [];
+            this.objUtilityGastos     = [];
             this.detalleAbierto = null;
             this.detalleAbonoAbierto = null;
+            this.detalleCashOutAbierto = null;
+            this.detalleGastoAbierto = null;
             this.mensaje        = 'Los filtros han cambiado. Presione Consultar para actualizar.';
             this.mostrarAlerta  = true;
         },
@@ -136,12 +177,20 @@ createApp({
         toggleDetalleAbono(idx) {
             this.detalleAbonoAbierto = this.detalleAbonoAbierto === idx ? null : idx;
         },
+        toggleDetalleCashOut(idx) {
+            this.detalleCashOutAbierto = this.detalleCashOutAbierto === idx ? null : idx;
+        },
+        toggleDetalleGasto(idx) {
+            this.detalleGastoAbierto = this.detalleGastoAbierto === idx ? null : idx;
+        },
         async cargarListado() {
             try {
                 this.loading = true;
                 this.mostrarAlerta = false;
                 this.mensaje = '';
                 this.detalleAbierto = null;
+                this.detalleCashOutAbierto = null;
+                this.detalleGastoAbierto = null;
 
                 const formData = new FormData();
                 formData.append('userName', this.userName);
@@ -161,10 +210,32 @@ createApp({
 
                 if (json.success === false) {
                     this.objListData    = [];
+                    this.objUtilityFacturas   = [];
+                    this.objUtilitySalidaCaja = [];
+                    this.objUtilityGastos     = [];
                     this.mensaje        = json.message || 'Error al cargar datos';
                     this.mostrarAlerta  = true;
                     return;
                 }
+
+                // Utilidad retorna estructura diferente
+                if (this.filterTransaction === 'utility') {
+                    this.objUtilityFacturas   = json.objDataAbonos || [];
+                    this.objUtilitySalidaCaja = json.objDataSalidaCaja || [];
+                    this.objUtilityGastos     = json.objDataGasto || [];
+                    this.objListData          = [];
+
+                    if (this.objUtilityFacturas.length === 0 && this.objUtilitySalidaCaja.length === 0 && this.objUtilityGastos.length === 0) {
+                        this.mensaje        = 'No hay datos para el rango seleccionado.';
+                        this.mostrarAlerta  = true;
+                    }
+                    return;
+                }
+
+                // Resto de transacciones usan json.data
+                this.objUtilityFacturas   = [];
+                this.objUtilitySalidaCaja = [];
+                this.objUtilityGastos     = [];
 
                 if (json.success === true && (!json.data || json.data.length === 0)) {
                     this.objListData    = [];
@@ -180,6 +251,9 @@ createApp({
                 this.mensaje        = 'Error de conexión al servidor.';
                 this.mostrarAlerta  = true;
                 this.objListData    = [];
+                this.objUtilityFacturas   = [];
+                this.objUtilitySalidaCaja = [];
+                this.objUtilityGastos     = [];
             } finally {
                 this.loading = false;
             }

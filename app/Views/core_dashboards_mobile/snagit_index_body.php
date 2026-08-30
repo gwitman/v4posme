@@ -73,7 +73,7 @@
       </div>
 
       <!-- Cards Resumen -->
-      <div class="row mb-4" v-if="!loading && objListData.length > 0">
+      <div class="row mb-4" v-if="!loading && hasData">
         <!-- Productos (para vistas de producto) -->
         <div class="col-6 col-md-3 mb-3" v-if="isProductView">
           <div class="card border-0 shadow-sm h-100">
@@ -100,7 +100,7 @@
           </div>
         </div>
         <!-- Documentos (facturas/abonos) -->
-        <div class="col-6 col-md-3 mb-3" v-if="!isProductView">
+        <div class="col-6 col-md-3 mb-3" v-if="isDocumentView">
           <div class="card border-0 shadow-sm h-100">
             <div class="card-body text-center p-3">
               <div class="avatar avatar-sm bg-label-primary rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
@@ -112,7 +112,7 @@
           </div>
         </div>
         <!-- Total Monto (facturas/abonos) -->
-        <div class="col-12 col-md-3 mb-3 order-first order-md-0" v-if="!isProductView">
+        <div class="col-12 col-md-3 mb-3 order-first order-md-0" v-if="isDocumentView">
           <div class="card border-0 shadow-sm h-100">
             <div class="card-body text-center p-3">
               <div class="avatar avatar-sm bg-label-success rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
@@ -125,7 +125,7 @@
           </div>
         </div>
         <!-- Clientes (facturas/abonos) -->
-        <div class="col-6 col-md-3 mb-3" v-if="!isProductView">
+        <div class="col-6 col-md-3 mb-3" v-if="isDocumentView">
           <div class="card border-0 shadow-sm h-100">
             <div class="card-body text-center p-3">
               <div class="avatar avatar-sm bg-label-warning rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
@@ -148,6 +148,69 @@
             </div>
           </div>
         </div>
+        <!-- Cards Salida de Caja / Gastos -->
+        <template v-if="isCashOutView">
+          <div class="col-6 col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body text-center p-3">
+                <div class="avatar avatar-sm bg-label-danger rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                  <i class="bx bx-log-out"></i>
+                </div>
+                <h4 class="mb-0">{{ objListData.length }}</h4>
+                <small class="text-muted">Registros</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-3 mb-3 order-first order-md-0">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body text-center p-3">
+                <div class="avatar avatar-sm bg-label-success rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                  <i class="bx bx-dollar-circle"></i>
+                </div>
+                <h2 class="mb-0 d-md-none">{{ formatMoney(totalMonto) }}</h2>
+                <h4 class="mb-0 d-none d-md-block">{{ formatMoney(totalMonto) }}</h4>
+                <small class="text-muted">Total Monto</small>
+              </div>
+            </div>
+          </div>
+        </template>
+        <!-- Cards Utilidad -->
+        <template v-if="isUtilityView">
+          <div class="col-6 col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body text-center p-3">
+                <div class="avatar avatar-sm bg-label-success rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                  <i class="bx bx-dollar-circle"></i>
+                </div>
+                <h4 class="mb-0">{{ formatMoney(utilityTotalFacturas) }}</h4>
+                <small class="text-muted">Ventas</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body text-center p-3">
+                <div class="avatar avatar-sm bg-label-danger rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                  <i class="bx bx-minus-circle"></i>
+                </div>
+                <h4 class="mb-0">{{ formatMoney(utilityTotalEgresos) }}</h4>
+                <small class="text-muted">Egresos</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-3 mb-3 order-first order-md-0">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body text-center p-3">
+                <div class="avatar avatar-sm rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" :class="utilityNeta >= 0 ? 'bg-label-success' : 'bg-label-danger'" style="width:40px;height:40px;">
+                  <i class="bx" :class="utilityNeta >= 0 ? 'bx-trending-up' : 'bx-trending-down'"></i>
+                </div>
+                <h2 class="mb-0 d-md-none" :class="utilityNeta >= 0 ? 'text-success' : 'text-danger'">{{ formatMoney(utilityNeta) }}</h2>
+                <h4 class="mb-0 d-none d-md-block" :class="utilityNeta >= 0 ? 'text-success' : 'text-danger'">{{ formatMoney(utilityNeta) }}</h4>
+                <small class="text-muted">Utilidad Neta</small>
+              </div>
+            </div>
+          </div>
+        </template>
       </div>
 
       <!-- Tabla FACTURAS (maestro-detalle) -->
@@ -298,6 +361,200 @@
                         <span v-if="filterTransaction === 'productSalesAmount'">{{ formatMoney(item.Monto) }}</span>
                         <span v-else>{{ parseFloat(item.Cantidad || 0) }}</span>
                       </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla SALIDA DE CAJA -->
+      <div class="row" v-if="!loading && objListData.length > 0 && filterTransaction == '30'">
+        <div class="col-12">
+          <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center py-2">
+              <h6 class="mb-0"><i class="bx bx-log-out me-1"></i>Salida de Caja</h6>
+              <span class="badge bg-danger">{{ objListData.length }} registros</span>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-sm table-hover mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th class="small" style="width:30px;"></th>
+                      <th class="small">Código</th>
+                      <th class="small d-none d-md-table-cell">Tipo</th>
+                      <th class="small text-end">Monto</th>
+                      <th class="small d-none d-md-table-cell">Fecha</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <template v-for="(item, idx) in objListData" :key="idx">
+                      <tr @click="toggleDetalleCashOut(idx)" style="cursor:pointer;">
+                        <td class="small text-center">
+                          <i class="bx" :class="detalleCashOutAbierto === idx ? 'bx-chevron-down text-primary' : 'bx-chevron-right'"></i>
+                        </td>
+                        <td class="small fw-semibold text-danger">{{ item.Codigo }}</td>
+                        <td class="small d-none d-md-table-cell">{{ item.Tipo }}</td>
+                        <td class="small text-end fw-bold">{{ formatMoney(item.Monto) }}</td>
+                        <td class="small d-none d-md-table-cell">{{ formatFecha(item.Fecha) }}</td>
+                      </tr>
+                      <tr v-if="detalleCashOutAbierto === idx">
+                        <td :colspan="isMobile ? 3 : 5" class="p-0">
+                          <div class="p-2" style="background-color: #fce4ec; border-left: 4px solid #e53935;">
+                            <p class="small mb-1"><i class="bx bx-category me-1"></i><strong>Tipo:</strong> {{ item.Tipo }}</p>
+                            <p class="small mb-1"><i class="bx bx-folder me-1"></i><strong>Categoría:</strong> {{ item.Categoria }}</p>
+                            <p class="small mb-1"><i class="bx bx-calendar me-1"></i><strong>Fecha:</strong> {{ formatFecha(item.Fecha) }}</p>
+                            <p class="small mb-0"><i class="bx bx-note me-1"></i><strong>Descripción:</strong> {{ item.Descripcion || '-' }}</p>
+                          </div>
+                        </td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla GASTOS -->
+      <div class="row" v-if="!loading && objListData.length > 0 && filterTransaction == '38'">
+        <div class="col-12">
+          <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center py-2">
+              <h6 class="mb-0"><i class="bx bx-wallet me-1"></i>Gastos</h6>
+              <span class="badge bg-warning">{{ objListData.length }} registros</span>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-sm table-hover mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th class="small" style="width:30px;"></th>
+                      <th class="small">Código</th>
+                      <th class="small d-none d-md-table-cell">Tipo</th>
+                      <th class="small text-end">Monto</th>
+                      <th class="small d-none d-md-table-cell">Fecha</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <template v-for="(item, idx) in objListData" :key="idx">
+                      <tr @click="toggleDetalleGasto(idx)" style="cursor:pointer;">
+                        <td class="small text-center">
+                          <i class="bx" :class="detalleGastoAbierto === idx ? 'bx-chevron-down text-primary' : 'bx-chevron-right'"></i>
+                        </td>
+                        <td class="small fw-semibold text-warning">{{ item.Codigo }}</td>
+                        <td class="small d-none d-md-table-cell">{{ item.Tipo }}</td>
+                        <td class="small text-end fw-bold">{{ formatMoney(item.Monto) }}</td>
+                        <td class="small d-none d-md-table-cell">{{ formatFecha(item.Fecha) }}</td>
+                      </tr>
+                      <tr v-if="detalleGastoAbierto === idx">
+                        <td :colspan="isMobile ? 3 : 5" class="p-0">
+                          <div class="p-2" style="background-color: #fff8e1; border-left: 4px solid #ffc107;">
+                            <p class="small mb-1"><i class="bx bx-category me-1"></i><strong>Tipo:</strong> {{ item.Tipo }}</p>
+                            <p class="small mb-1"><i class="bx bx-folder me-1"></i><strong>Categoría:</strong> {{ item.Categoria }}</p>
+                            <p class="small mb-1"><i class="bx bx-calendar me-1"></i><strong>Fecha:</strong> {{ formatFecha(item.Fecha) }}</p>
+                            <p class="small mb-0"><i class="bx bx-note me-1"></i><strong>Descripción:</strong> {{ item.Descripcion || '-' }}</p>
+                          </div>
+                        </td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla UTILIDAD -->
+      <div class="row" v-if="!loading && isUtilityView && utilityHasData">
+        <div class="col-12 mb-3" v-if="objUtilityFacturas.length > 0">
+          <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center py-2">
+              <h6 class="mb-0"><i class="bx bx-receipt me-1 text-success"></i>Ventas (Facturas)</h6>
+              <span class="badge bg-success">{{ formatMoney(utilityTotalFacturas) }}</span>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-sm table-hover mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th class="small">#</th>
+                      <th class="small">Código</th>
+                      <th class="small">Nombre</th>
+                      <th class="small text-end">Monto</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(item, idx) in objUtilityFacturas" :key="idx">
+                      <td class="small">{{ idx + 1 }}</td>
+                      <td class="small"><span class="badge bg-label-success">{{ item.Codigo }}</span></td>
+                      <td class="small">{{ item.Nombre }}</td>
+                      <td class="small text-end fw-bold">{{ formatMoney(item.Monto) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 mb-3" v-if="objUtilitySalidaCaja.length > 0">
+          <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center py-2">
+              <h6 class="mb-0"><i class="bx bx-log-out me-1 text-danger"></i>Salidas de Caja</h6>
+              <span class="badge bg-danger">{{ formatMoney(utilityTotalSalidaCaja) }}</span>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-sm table-hover mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th class="small">#</th>
+                      <th class="small">Código</th>
+                      <th class="small">Tipo</th>
+                      <th class="small text-end">Monto</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(item, idx) in objUtilitySalidaCaja" :key="idx">
+                      <td class="small">{{ idx + 1 }}</td>
+                      <td class="small"><span class="badge bg-label-danger">{{ item.Codigo }}</span></td>
+                      <td class="small">{{ item.Tipo }}</td>
+                      <td class="small text-end fw-bold">{{ formatMoney(item.Monto) }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-12 mb-3" v-if="objUtilityGastos.length > 0">
+          <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center py-2">
+              <h6 class="mb-0"><i class="bx bx-wallet me-1 text-warning"></i>Gastos</h6>
+              <span class="badge bg-warning">{{ formatMoney(utilityTotalGastos) }}</span>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-sm table-hover mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th class="small">#</th>
+                      <th class="small">Código</th>
+                      <th class="small">Tipo</th>
+                      <th class="small text-end">Monto</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="(item, idx) in objUtilityGastos" :key="idx">
+                      <td class="small">{{ idx + 1 }}</td>
+                      <td class="small"><span class="badge bg-label-warning">{{ item.Codigo }}</span></td>
+                      <td class="small">{{ item.Tipo }}</td>
+                      <td class="small text-end fw-bold">{{ formatMoney(item.Monto) }}</td>
                     </tr>
                   </tbody>
                 </table>
