@@ -59,6 +59,7 @@
 	var varPermisosEsPermitidoSeleccionarPrecioPormayor	= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_SELECCIONAR_PRECIO_PORMAYOR"}).select().length > 0 ? true:	false;
 	var varPermisosEsPermitidoSeleccionarPrecioCredito 	= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_SELECCIONAR_PRECIO_CREDITO"}).select().length > 0 ? true:	false;
 	var varPermisosNoPermitirEliminarProductosFactura 	= jLinq.from(varPermisos).where(function(obj){ return obj.display == "NO_PERMITIR_ELIMINAR_PRODUCTOS_DE_FACTURA"}).select().length > 0 ? true:	false;
+	var varPermisosNoPermitirModificarDetalleFactura 	= jLinq.from(varPermisos).where(function(obj){ return obj.display == "NO_PERMITIR_MODIFICAR_DETALLE_DE_FACTURA"}).select().length > 0 ? true:	false;
 
 	var PriceStatus = varPermisosEsPermitidoModificarPrecio == true ? "":"readonly";
 	var NameStatus  = varPermisosEsPermitidoModificarNombre == true ? "":"readonly";
@@ -344,6 +345,7 @@
 	});
 
 	$(document).on("click",".btnAddSelectedItem",function(){
+		if(varPermisosNoPermitirModificarDetalleFactura && isAdmin !== "1" && loadEdicion) return;
 		fnAddRowSelected();
 	});
 
@@ -385,6 +387,7 @@
 	
 	
 	$(document).on("click",".btnPlus",function(){
+		if(varPermisosNoPermitirModificarDetalleFactura && isAdmin !== "1" && loadEdicion) return;
 		let trSelected 	=  $(this).parent().parent().parent();
 		var quantity 	= trSelected.find(".txtQuantity").val();
 		quantity 	 	= parseFloat(quantity);
@@ -396,6 +399,7 @@
 	});
 
 	$(document).on("click",".btnMenus",function(){
+		if(varPermisosNoPermitirModificarDetalleFactura && isAdmin !== "1" && loadEdicion) return;
 		let trSelected 	=  $(this).parent().parent().parent();
 		var quantity 	= $(this).parent().parent().parent().find(".txtQuantity").val();
 		quantity 	 	= parseFloat(quantity);
@@ -597,6 +601,13 @@
 		 if(code != 13) {
 			 return;
 		 }
+
+		if(varPermisosNoPermitirModificarDetalleFactura && isAdmin !== "1" && loadEdicion){
+			e.preventDefault();
+			$("#txtScanerCodigo").val("");
+			Toast.fire({ icon: "error", title: "No tiene permiso para agregar productos" });
+			return;
+		}
 
 		e.preventDefault();
 		var currencyID 		= $("#txtCurrencyID").val();
@@ -955,6 +966,10 @@
 
 
 	$(document).on("click","#btnDeleteItem",function(){
+			if(varPermisosNoPermitirModificarDetalleFactura && isAdmin !== "1" && loadEdicion){
+				Toast.fire({ icon: "error", title: "No tiene permiso para eliminar productos" });
+				return;
+			}
 			var listRow = objTableDetail.fnGetData();
 			var length 	= listRow.length;
 			var i 		= 0;
@@ -1622,6 +1637,10 @@
 	}
 
 	function onCompleteNewItem(objResponse,suma){
+		if(varPermisosNoPermitirModificarDetalleFactura && isAdmin !== "1" && loadEdicion){
+			Toast.fire({ icon: "error", title: "No tiene permiso para agregar productos" });
+			return;
+		}
 		
 		console.info("CALL onCompleteNewItem");
 		console.info(objResponse);
@@ -2383,6 +2402,15 @@
             $('.btnMenus').addClass('hidden');
             $('#btnDelete').addClass('hidden');
             $('#btnDeleteItem').addClass('hidden');
+        }
+        if(varPermisosNoPermitirModificarDetalleFactura && isAdmin !== "1" && loadEdicion){
+            $('.btnMenus').addClass('hidden');
+            $('.btnPlus').addClass('hidden');
+            $('.btnAddSelectedItem').addClass('hidden');
+            $('#btnDelete').addClass('hidden');
+            $('#btnDeleteItem').addClass('hidden');
+            $('.txtQuantity').attr('readonly', true);
+            $('#txtScanerCodigo').attr('readonly', true);
         }
 
 		if(data.objParameterInvoiceButtomPrinterFidLocalPaymentAndAmortization === "true"){
@@ -4164,7 +4192,7 @@
 							"mRender"		: function ( data, type, full ) 
 							{
 								var ocultarBoton	=	"";
-								if(varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
+								if((varPermisosNoPermitirEliminarProductosFactura || (varPermisosNoPermitirModificarDetalleFactura && loadEdicion)) && isAdmin !== "1"){
 									ocultarBoton	=	"hidden";
 								}
 
@@ -4264,7 +4292,7 @@
 							"sWidth"		: objParameterINVOICE_SHOW_FIELD_PESO == "true" ? "150px" : "250px",
 							"mRender"		: function ( data, type, full ) {
 								let str = "";
-								if (varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
+								if ((varPermisosNoPermitirEliminarProductosFactura || (varPermisosNoPermitirModificarDetalleFactura && loadEdicion)) && isAdmin !== "1"){
 									str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right; <?php echo $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" readonly />';
 								}else{
 									str = '<input type="text" class="col-lg-12 txtQuantity txt-numeric" id="txtQuantityRow'+full[2]+'"  value="'+data+'" name="txtQuantity[]" style="text-align:right; <?php echo $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" />';
@@ -4353,13 +4381,18 @@
 
 									var str = "<div "+styleButtom+" >";
 
+									var ocultarBtnAgregar = "";
+									if(varPermisosNoPermitirModificarDetalleFactura && isAdmin !== "1" && loadEdicion){
+										ocultarBtnAgregar = "hidden";
+									}
+
 									if(varParameterINVOICE_BILLING_SELECTITEM == "true")
 									{
 										str    	= str + '' +
-										'<button type="button" class="btn btn-warning btnAddSelectedItem"><span class="icon16 i-archive"></span> </button>';
+										'<button type="button" class="btn btn-warning btnAddSelectedItem '+ocultarBtnAgregar+'"><span class="icon16 i-archive"></span> </button>';
 									}
 									var ocultarBoton="";
-									if(varPermisosNoPermitirEliminarProductosFactura && isAdmin !== "1"){
+									if((varPermisosNoPermitirEliminarProductosFactura || (varPermisosNoPermitirModificarDetalleFactura && loadEdicion)) && isAdmin !== "1"){
 										ocultarBoton="hidden";
 									}
 
@@ -4367,7 +4400,7 @@
 									'<button type="button" class="btn btn-primary btnMenus '+ ocultarBoton +'"><span class="icon16 i-minus"></span> </button>';
 
 									str    	= str + '' +
-									'<button type="button" class="btn btn-primary btnPlus"><span class="icon16 i-plus"></span> </button>';
+									'<button type="button" class="btn btn-primary btnPlus '+ ocultarBoton +'"><span class="icon16 i-plus"></span> </button>';
 
 
 
@@ -4548,6 +4581,15 @@
 			$('.btnMenus').addClass('hidden');
 			$('#btnDelete').addClass('hidden');
 			$('#btnDeleteItem').addClass('hidden');
+		}
+		if(varPermisosNoPermitirModificarDetalleFactura && isAdmin !== "1" && loadEdicion){
+			$('.btnMenus').addClass('hidden');
+			$('.btnPlus').addClass('hidden');
+			$('.btnAddSelectedItem').addClass('hidden');
+			$('#btnDelete').addClass('hidden');
+			$('#btnDeleteItem').addClass('hidden');
+			$('.txtQuantity').attr('readonly', true);
+			$('#txtScanerCodigo').attr('readonly', true);
 		}
 
         if( $('#txtCheckApplyExoneracionValue').val() === "1"  )
