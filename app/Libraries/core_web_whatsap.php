@@ -213,6 +213,10 @@ class core_web_whatsap {
 	   {
 		   return $this->sendMessageByLiveconnect( $companyID, $message, $phoneDestino );
 	   }
+	   else if($typeCompany == "alphaDblMotor")
+	   {
+			return $this->sendMessageByEvolutionApiText( $companyID, $message, $phoneDestino, $instanciaName);
+	   }
 	   else
 	   {
 		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino,$esperarRespuesta,$instanciaName);

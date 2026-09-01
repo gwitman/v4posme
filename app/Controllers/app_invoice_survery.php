@@ -83,6 +83,18 @@ class app_invoice_survery extends _BaseController {
 			$listPrice					= $this->request->getPost("price");
 			$listComboReference			= $this->request->getPost("combo_reference");
 			$listCommentReference		= $this->request->getPost("comment_reference");
+
+			//LOG: Variables de entrada
+			log_message('debug', '[app_invoice_survery::insertElement] INICIO - Variables de entrada:');
+			log_message('debug', '[app_invoice_survery::insertElement] key: ' . json_encode($key));
+			log_message('debug', '[app_invoice_survery::insertElement] name: ' . json_encode($name));
+			log_message('debug', '[app_invoice_survery::insertElement] phone: ' . json_encode($phone));
+			log_message('debug', '[app_invoice_survery::insertElement] address: ' . json_encode($direccion));
+			log_message('debug', '[app_invoice_survery::insertElement] itemID (listItem): ' . json_encode($listItem));
+			log_message('debug', '[app_invoice_survery::insertElement] quantity (listQuantity): ' . json_encode($listQuantity));
+			log_message('debug', '[app_invoice_survery::insertElement] price (listPrice): ' . json_encode($listPrice));
+			log_message('debug', '[app_invoice_survery::insertElement] combo_reference (listComboReference): ' . json_encode($listComboReference));
+			log_message('debug', '[app_invoice_survery::insertElement] comment_reference (listCommentReference): ' . json_encode($listCommentReference));
 			
 			
 			//Buscar el colaborador
@@ -175,9 +187,15 @@ class app_invoice_survery extends _BaseController {
             $objTM["isActive"]          = 1;
             $this->core_web_auditoria->setAuditCreated($objTM, $dataSession, $this->request);
 
+            //LOG: Antes de insertar el transaction master
+            log_message('debug', '[app_invoice_survery::insertElement] objTM a insertar: ' . json_encode($objTM));
+
             $db = db_connect();
             $db->transException(true)->transStart();
             $transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
+
+            //LOG: Resultado del insert master
+            log_message('debug', '[app_invoice_survery::insertElement] transactionMasterID generado: ' . json_encode($transactionMasterID));
 			
 			
 			//Crear la Carpeta para almacenar los Archivos del Documento
@@ -197,11 +215,27 @@ class app_invoice_survery extends _BaseController {
 					$itemID				 	= $listItem[$key];
 					$quantity			 	= $listQuantity[$key];
 					$price			 	 	= $listPrice[$key];
-					$combo_reference  		= $listCommentReference[$itemID];
-					$coment_reference 		= $listComboReference[$itemID];
+
+					//LOG: Detalle iteracion foreach
+					log_message('debug', '[app_invoice_survery::insertElement] --- Detalle iteracion key=' . json_encode($key) . ' ---');
+					log_message('debug', '[app_invoice_survery::insertElement] itemID=' . json_encode($itemID) . ' quantity=' . json_encode($quantity) . ' price=' . json_encode($price));
+
+					//Validar existencia de indices para evitar "Undefined array key"
+					$combo_reference  		= isset($listCommentReference[$itemID]) ? $listCommentReference[$itemID] : "";
+					$coment_reference 		= isset($listComboReference[$itemID]) ? $listComboReference[$itemID] : "";
+
+					if(!isset($listCommentReference[$itemID]))
+						log_message('warning', '[app_invoice_survery::insertElement] listCommentReference no tiene el indice itemID=' . json_encode($itemID));
+					if(!isset($listComboReference[$itemID]))
+						log_message('warning', '[app_invoice_survery::insertElement] listComboReference no tiene el indice itemID=' . json_encode($itemID));
+
+					log_message('debug', '[app_invoice_survery::insertElement] combo_reference=' . json_encode($combo_reference) . ' coment_reference=' . json_encode($coment_reference));
 
 					if($quantity <= 0)
+					{
+						log_message('debug', '[app_invoice_survery::insertElement] Se omite item itemID=' . json_encode($itemID) . ' por quantity <= 0');
 						continue;
+					}
 					
 					$objTMD                        = null;
 					$objTMD["companyID"]           = $objTM["companyID"];
@@ -233,7 +267,11 @@ class app_invoice_survery extends _BaseController {
 					$objTMD["inventoryWarehouseSourceID"] = null;
 					$objTMD["inventoryWarehouseTargetID"] = null;
 					$total 								  = $total + ($price * $quantity);
+
+					//LOG: Detalle a insertar
+					log_message('debug', '[app_invoice_survery::insertElement] objTMD a insertar: ' . json_encode($objTMD));
 					$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
+					log_message('debug', '[app_invoice_survery::insertElement] Detalle insertado. total acumulado=' . json_encode($total));
 					
 					
 				}
@@ -293,7 +331,10 @@ class app_invoice_survery extends _BaseController {
 		}
 		catch(\Exception $ex)
 		{	
-			
+			//LOG: Error capturado con detalle de linea y archivo
+			log_message('error', '[app_invoice_survery::insertElement] EXCEPCION: ' . $ex->getMessage() . ' | Linea: ' . $ex->getLine() . ' | Archivo: ' . $ex->getFile());
+			log_message('error', '[app_invoice_survery::insertElement] TRACE: ' . $ex->getTraceAsString());
+
 			$data["session"]   = null;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
