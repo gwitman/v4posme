@@ -161,6 +161,62 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
     /* Resumen */
     .summary-screen { display: none; }
     .table > :not(caption) > * > * { vertical-align: middle; }
+
+    /* Resumen responsive: en mobile la tabla se convierte en tarjetas apiladas */
+    @media (max-width: 576px) {
+      #summaryTable thead {
+        display: none;
+      }
+      #summaryTable,
+      #summaryTable tbody,
+      #summaryTable tfoot,
+      #summaryTable tr,
+      #summaryTable td,
+      #summaryTable th {
+        display: block;
+        width: 100%;
+      }
+      #summaryTable tbody tr {
+        border: 1.5px solid #eee;
+        border-radius: 12px;
+        margin-bottom: 12px;
+        padding: 8px 12px;
+        background: #fafafa;
+      }
+      #summaryTable tbody td {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 12px;
+        border: none;
+        border-bottom: 1px dashed #eee;
+        padding: 8px 0;
+        text-align: right;
+      }
+      #summaryTable tbody td:last-child {
+        border-bottom: none;
+      }
+      /* Etiqueta del campo a la izquierda */
+      #summaryTable tbody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #e63946;
+        text-align: left;
+        flex-shrink: 0;
+      }
+      #summaryTable tfoot tr {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-top: 2px solid #e63946;
+        padding-top: 10px;
+        margin-top: 4px;
+      }
+      #summaryTable tfoot th {
+        border: none;
+        padding: 4px 0;
+      }
+    }
     /* Modal de producto */
     .modal-product-img {
       width: 100%;
@@ -235,6 +291,47 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
       font-size: 0.9rem;
       padding: 20px 0;
       display: none;
+    }
+    /* Botón flotante de verificar selección */
+    .btn-float-verify {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      z-index: 1050;
+      background: #e63946;
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      padding: 12px 24px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      box-shadow: 0 6px 20px rgba(230,57,70,0.4);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.25s, transform 0.25s, visibility 0.25s;
+      max-width: calc(100% - 32px);
+      white-space: nowrap;
+    }
+    .btn-float-verify.show {
+      opacity: 1;
+      visibility: visible;
+      transform: translateX(-50%) translateY(0);
+    }
+    .btn-float-verify:hover {
+      background: #d62839;
+    }
+    .btn-float-verify .float-count {
+      background: #fff;
+      color: #e63946;
+      border-radius: 20px;
+      padding: 1px 9px;
+      font-size: 0.82rem;
+      font-weight: 700;
     }
     /* Responsive */
     @media (max-width: 576px) {
@@ -463,7 +560,7 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
       <p><strong>Dirección:</strong> <span id="summaryAddress"></span></p>
       <p><strong>Teléfono:</strong> <span id="summaryPhone"></span></p>
 
-      <table class="table table-bordered mt-3">
+      <table id="summaryTable" class="table table-bordered mt-3">
         <thead class="table-danger">
           <tr>
             <th>Producto</th>
@@ -488,6 +585,12 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
       </div>
     </div>
   </div>
+
+  <!-- Botón flotante: mismo acceso que Verificar Selección -->
+  <button type="button" class="btn-float-verify" id="floatVerifyBtn">
+    🛒 <?= getBahavioDB($key, 'app_invoice_survery', 'boton_verificar', 'Verificar Selección')?>
+    <span class="float-count" id="floatVerifyCount" style="display:none">0</span>
+  </button>
 
   <div id="modalValidSurvery" style="display:none">
     <h3>FALTAN DATOS</h3>
@@ -570,11 +673,11 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
           let commentCell = o.comment ? `<small>${o.comment}</small>` : '<span class="text-muted">—</span>';
           $('#summaryOptions').append(
             `<tr>
-              <td><strong>${o.name}</strong></td>
-              <td>${comboCell}</td>
-              <td>${o.quantity}</td>
-              <td>${commentCell}</td>
-              <td class="trSubtotal">C$ ${o.subtotal.toFixed(2)}</td>
+              <td data-label="Producto"><strong>${o.name}</strong></td>
+              <td data-label="Variante">${comboCell}</td>
+              <td data-label="Cant.">${o.quantity}</td>
+              <td data-label="Comentario">${commentCell}</td>
+              <td class="trSubtotal" data-label="Subtotal">C$ ${o.subtotal.toFixed(2)}</td>
             </tr>`
           );
         });
@@ -585,16 +688,54 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
         $('#summaryTotal').text('C$ ' + total.toFixed(2));
         $('#orderForm').slideUp();
         $('.summary-screen').slideDown();
+        $('#floatVerifyBtn').removeClass('show');
       });
 
       $('#editOrderBtn').click(function() {
         $('.summary-screen').slideUp();
-        $('#orderForm').slideDown();
+        $('#orderForm').slideDown(400, function() {
+          toggleFloatBtn();
+        });
       });
 
       $('#confirmOrderBtn').click(function() {
         $('#orderForm').submit();
       });
+
+      // --- Botón flotante de verificar selección ---
+      let $floatBtn   = $('#floatVerifyBtn');
+      let $floatCount = $('#floatVerifyCount');
+
+      // Reusar la misma accion del boton original
+      $floatBtn.click(function() {
+        $('#verifyBtn').click();
+      });
+
+      // Actualizar contador de productos seleccionados
+      function updateFloatCount() {
+        let count = $('.option:checked').length;
+        if (count > 0) {
+          $floatCount.text(count).show();
+        } else {
+          $floatCount.hide();
+        }
+      }
+      $(document).on('change', '.option', updateFloatCount);
+
+      // Mostrar el flotante solo si el boton original no esta visible y el form esta activo
+      function toggleFloatBtn() {
+        if (!$('#orderForm').is(':visible')) {
+          $floatBtn.removeClass('show');
+          return;
+        }
+        let btn = document.getElementById('verifyBtn');
+        if (!btn) return;
+        let rect = btn.getBoundingClientRect();
+        let originalVisible = rect.top < window.innerHeight && rect.bottom > 0;
+        $floatBtn.toggleClass('show', !originalVisible);
+      }
+      $(window).on('scroll resize', toggleFloatBtn);
+      toggleFloatBtn();
 
       // --- Buscador y filtro por categoría ---
       let activeCat = '';
