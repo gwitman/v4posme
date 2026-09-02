@@ -76,6 +76,7 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
       border-radius: 12px;
       border: 2px solid #e63946;
       flex-shrink: 0;
+      background: #f0f0f0;
     }
     .product-info {
       flex-grow: 1;
@@ -326,7 +327,7 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
 
         <?php if($objListItem): foreach($objListItem as $item):
           //$itemImg    = !empty($item->urlImage) ? $item->urlImage : base_url().'/resource/img/'.getBahavioDB($key, 'app_invoice_survery', 'img_item', 'cow.png');
-          $itemImg    = base_url()."/resource/file_company/company_2/component_33/component_item_".$item->itemID."/default_public.jpg";
+          $itemImg    = base_url()."/resource/file_company/company_2/component_33/component_item_".$item->itemID."/".$item->itemNumber."_default_public.jpg";
           $itemDesc   = !empty($item->description) ? $item->description : '';
           $condoRaw   = !empty($item->realStateReferenceCondominio) ? $item->realStateReferenceCondominio : '';
           $condoOpts  = array_filter(array_map('trim', explode("\n", $condoRaw)));
@@ -342,10 +343,13 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
               data-item-id="<?php echo $item->itemID; ?>"
               id="product<?php echo $item->itemID; ?>">
 
-            <!-- Imagen -->
+            <!-- Imagen (carga paulatina / lazy) -->
             <img class="product-image"
               src="<?php echo $itemImg; ?>"
-              alt="<?php echo htmlspecialchars($item->name); ?>">
+              alt="<?php echo htmlspecialchars($item->name); ?>"
+              loading="lazy"
+              decoding="async"
+              onerror="this.onerror=null;this.src='<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_item', 'cow.png')?>';">
 
             <!-- Info -->
             <div class="product-info">
@@ -411,8 +415,12 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
               </div>
               <div class="modal-body text-center">
                 <img class="modal-product-img"
-                  src="<?php echo $itemImg; ?>"
-                  alt="<?php echo htmlspecialchars($item->name); ?>">
+                  src="<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_item', 'cow.png')?>"
+                  data-src="<?php echo $itemImg; ?>"
+                  alt="<?php echo htmlspecialchars($item->name); ?>"
+                  loading="lazy"
+                  decoding="async"
+                  onerror="this.onerror=null;this.src='<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_item', 'cow.png')?>';">
 
                 <?php if($showPrice == 'true'): ?>
                 <p class="fw-bold" style="color:#e63946; font-size:1.2rem;">
@@ -492,6 +500,15 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
   <script src="<?= base_url()?>/resource/js/bootstrap5/bootstrap.bundle.min.js"></script>
   <script>
     $(document).ready(function() {
+
+      // Cargar imagen del modal solo cuando se abre (diferida)
+      $('.modal').on('show.bs.modal', function() {
+        let img = $(this).find('.modal-product-img');
+        let realSrc = img.data('src');
+        if (realSrc && img.attr('src') !== realSrc) {
+          img.attr('src', realSrc);
+        }
+      });
 
       // Mostrar/ocultar opciones al marcar checkbox
       $('.option').change(function() {
