@@ -365,10 +365,10 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
 <body>
   <div class="container">
     <div class="logo">
-      <img class="img-fluid" src="<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_logo', 'cow.png')?>" alt="Logo">
+      <img class="img-fluid" src="<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_logo', 'logos/AlphaDblMotor_logo-micro-finanza.png')?>" alt="Logo">
     </div>
     <h1>
-      <?= getBahavioDB($key, 'app_invoice_survery', 'img_titulo', '<img width="36px" class="img-fluid" src="/resource/img/cow.png" alt="">')?>
+      <?= getBahavioDB($key, 'app_invoice_survery', 'img_titulo', '<img width="36px" class="img-fluid" src="/resource/img/logos/AlphaDblMotor_logo-micro-finanza.png" alt="">')?>
       <?= getBahavioDB($key, 'app_invoice_survery', 'titulo', '¡Vota u Ordena!')?>
     </h1>
     <p class="tagline"><?= getBahavioDB($key, 'app_invoice_survery', 'subtitulo', '¡Elige tus productos favoritos y confirma tu pedido!')?></p>
@@ -422,8 +422,7 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
 
         <div id="noResults" class="no-results">No se encontraron productos.</div>
 
-        <?php if($objListItem): foreach($objListItem as $item):
-          //$itemImg    = !empty($item->urlImage) ? $item->urlImage : base_url().'/resource/img/'.getBahavioDB($key, 'app_invoice_survery', 'img_item', 'cow.png');
+        <?php if($objListItem): foreach($objListItem as $item):          
           $itemImg    = base_url()."/resource/file_company/company_2/component_33/component_item_".$item->itemID."/".$item->itemNumber."_default_public.jpg";
           $itemDesc   = !empty($item->description) ? $item->description : '';
           $condoRaw   = !empty($item->realStateReferenceCondominio) ? $item->realStateReferenceCondominio : '';
@@ -446,7 +445,7 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
               alt="<?php echo htmlspecialchars($item->name); ?>"
               loading="lazy"
               decoding="async"
-              onerror="this.onerror=null;this.src='<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_item', 'cow.png')?>';">
+              onerror="this.onerror=null;this.src='<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_item', 'logos/AlphaDblMotor_logo-micro-finanza.png')?>';">
 
             <!-- Info -->
             <div class="product-info">
@@ -512,12 +511,12 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
               </div>
               <div class="modal-body text-center">
                 <img class="modal-product-img"
-                  src="<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_item', 'cow.png')?>"
+                  src="<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_item', 'logos/AlphaDblMotor_logo-micro-finanza.png')?>"
                   data-src="<?php echo $itemImg; ?>"
                   alt="<?php echo htmlspecialchars($item->name); ?>"
                   loading="lazy"
                   decoding="async"
-                  onerror="this.onerror=null;this.src='<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_item', 'cow.png')?>';">
+                  onerror="this.onerror=null;this.src='<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_item', 'logos/AlphaDblMotor_logo-micro-finanza.png')?>';">
 
                 <?php if($showPrice == 'true'): ?>
                 <p class="fw-bold" style="color:#e63946; font-size:1.2rem;">
