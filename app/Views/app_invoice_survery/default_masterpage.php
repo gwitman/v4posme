@@ -445,6 +445,7 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
               alt="<?php echo htmlspecialchars($item->name); ?>"
               loading="lazy"
               decoding="async"
+              srcorigen="<?php echo $itemImg; ?>" 
               onerror="this.onerror=null;this.src='<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_item', 'logos/AlphaDblMotor_logo-micro-finanza.png')?>';">
 
             <!-- Info -->
