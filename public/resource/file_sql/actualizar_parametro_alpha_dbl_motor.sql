@@ -759,20 +759,20 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://api.ultramsg.com/instance65915/messages/chat" 
+	tb_company_parameter.value = "https://evolution-api-5vhg.srv1907129.hstgr.cloud" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyNTIzLCJ0eXBlIjoiYXBpX2FjY2VzcyIsImlhdCI6MTc3NzkwNDkwMiwiZXhwIjoxODA5NDQwOTAyfQ.vb23H13rxMN9ApDX7Fzz3WTJ9zflEsLZyAYV3MZUOLE" 
+	tb_company_parameter.value = "kC5a9HA6UcUsn96RjnZLwDTL7I4BVkpW" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "8e44528a-e939-4700-ac57-e6857e91d0c9" 
+	tb_company_parameter.value = "Ariel" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
