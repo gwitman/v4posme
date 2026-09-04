@@ -1315,6 +1315,47 @@ class app_cxc_api extends _BaseController {
 			return;
 		}
 
+		//Evitar duplicados: Evolution API reenvia el mismo messages.upsert varias veces
+		//(por cada cambio de status DELIVERY_ACK/READ/etc) SIEMPRE con el mismo data.key.id.
+		//Se procesa solo la primera vez que se ve un id y se descartan los reenvios usando
+		//un archivo de control con los ultimos ids procesados.
+		$messageId = (string)($input["data"]["key"]["id"] ?? '');
+		if($messageId !== '')
+		{
+			$dedupDir  = WRITEPATH . 'evolution_dedup';
+			$dedupFile = $dedupDir . '/processed_ids.json';
+			if(!is_dir($dedupDir))
+			{
+				mkdir($dedupDir, 0777, true);
+			}
+
+			$processedIds = [];
+			if(file_exists($dedupFile))
+			{
+				$decoded = json_decode((string)@file_get_contents($dedupFile), true);
+				if(is_array($decoded))
+				{
+					$processedIds = $decoded;
+				}
+			}
+
+			if(isset($processedIds[$messageId]))
+			{
+				log_message('error', '[EvolutionApi] DESCARTADO: id=' . $messageId . ' ya procesado (reenvio/ack duplicado)');
+				return;
+			}
+
+			//Registrar el id como procesado y conservar solo los ultimos 500 para no crecer indefinidamente
+			$processedIds[$messageId] = time();
+			if(count($processedIds) > 500)
+			{
+				asort($processedIds);
+				$processedIds = array_slice($processedIds, -500, null, true);
+			}
+			file_put_contents($dedupFile, json_encode($processedIds), LOCK_EX);
+			log_message('error', '[EvolutionApi] id=' . $messageId . ' registrado como procesado, continuando...');
+		}
+
 		//Autenticar sesion por defecto para obtener companyID		
 		$companyID   = APP_COMPANY;
 		log_message('error', '[EvolutionApi] companyID: ' . $companyID);
@@ -1331,10 +1372,13 @@ class app_cxc_api extends _BaseController {
 		//Extraer remoteJid y limpiar formato (quitar @s.whatsapp.net)
 		$remoteJid = $input["data"]["key"]["remoteJid"] ?? '';
 
-		//Determinar tipo de mensaje y cuerpo
+		//Determinar tipo de mensaje y cuerpo segun la estructura real de Evolution API.
+		//$messageNode apunta al nodo del contenido (imageMessage, documentMessage, etc.)
+		//para leer luego caption, mimetype, fileName y url del lugar correcto.
 		$messageType 	= $input["data"]["messageType"] ?? 'conversation';
 		$body 			= '';
 		$type 			= 'chat';
+		$messageNode 	= [];
 
 		if($messageType == "conversation")
 		{
@@ -1348,22 +1392,45 @@ class app_cxc_api extends _BaseController {
 		}
 		elseif($messageType == "imageMessage")
 		{
-			$body = $input["data"]["message"]["imageMessage"]["caption"] ?? '';
+			$messageNode = $input["data"]["message"]["imageMessage"] ?? [];
+			$body = $messageNode["caption"] ?? '';
 			$type = 'image';
 		}
 		elseif($messageType == "videoMessage")
 		{
-			$body = $input["data"]["message"]["videoMessage"]["caption"] ?? '';
+			$messageNode = $input["data"]["message"]["videoMessage"] ?? [];
+			$body = $messageNode["caption"] ?? '';
 			$type = 'video';
 		}
 		elseif($messageType == "documentMessage")
 		{
-			$body = $input["data"]["message"]["documentMessage"]["caption"] ?? '';
+			$messageNode = $input["data"]["message"]["documentMessage"] ?? [];
+			$body = $messageNode["caption"] ?? '';
+			$type = 'document';
+		}
+		elseif($messageType == "documentWithCaptionMessage")
+		{
+			//Documento enviado con texto: el documento real esta anidado
+			$messageNode = $input["data"]["message"]["documentWithCaptionMessage"]["message"]["documentMessage"] ?? [];
+			$body = $messageNode["caption"] ?? '';
 			$type = 'document';
 		}
 		elseif($messageType == "audioMessage")
 		{
+			$messageNode = $input["data"]["message"]["audioMessage"] ?? [];
+			//ptt=true es nota de voz; de cualquier forma se trata como audio
 			$type = 'ptt';
+		}
+		elseif($messageType == "stickerMessage")
+		{
+			$messageNode = $input["data"]["message"]["stickerMessage"] ?? [];
+			$type = 'image';
+		}
+		else
+		{
+			//Tipo no soportado (reaction, location, contact, etc.): descartar
+			log_message('error', '[EvolutionApi] DESCARTADO: messageType no soportado=' . $messageType);
+			return;
 		}
 
 		//Mapear datos de EvolutionApi al formato generico
@@ -1382,39 +1449,56 @@ class app_cxc_api extends _BaseController {
 			$filename 		= '';
 			$base64Media 	= '';
 
+			//mimetype y filename se leen del nodo del contenido ($messageNode)
 			if($type == "image")
 			{
-				$mimetype = $input["data"]["message"]["imageMessage"]["mimetype"] ?? 'image/jpeg';
+				$mimetype = $messageNode["mimetype"] ?? 'image/jpeg';
 				$filename = 'image_' . uniqid() . '.jpg';
 			}
 			elseif($type == "video")
 			{
-				$mimetype = $input["data"]["message"]["videoMessage"]["mimetype"] ?? 'video/mp4';
+				$mimetype = $messageNode["mimetype"] ?? 'video/mp4';
 				$filename = 'video_' . uniqid() . '.mp4';
 			}
 			elseif($type == "document")
 			{
-				$mimetype = $input["data"]["message"]["documentMessage"]["mimetype"] ?? 'application/pdf';
-				$filename = $input["data"]["message"]["documentMessage"]["fileName"] ?? ('document_' . uniqid() . '.pdf');
+				$mimetype = $messageNode["mimetype"] ?? 'application/pdf';
+				$filename = $messageNode["fileName"] ?? ('document_' . uniqid() . '.pdf');
 			}
 			elseif($type == "ptt")
 			{
-				$mimetype = $input["data"]["message"]["audioMessage"]["mimetype"] ?? 'audio/ogg';
+				//Evolution suele enviar audio/ogg; codecs=opus para notas de voz
+				$mimetype = $messageNode["mimetype"] ?? 'audio/ogg';
 				$filename = 'audio_' . uniqid() . '.ogg';
 			}
 
-			//Evolution API envia el base64 en el root del payload (no dentro de data.message)
-			//Tambien puede estar dentro de data.message[messageType].base64 o como URL
-			$mediaBase64 = $input["base64"] ?? '';
+			//Evolution API entrega el base64 en distintas ubicaciones segun la version/instancia:
+			//1) data.message.base64 (hermano de imageMessage/documentMessage/etc)
+			//2) data.base64
+			//3) base64 en la raiz del payload (formato n8n)
+			//4) dentro del propio nodo del contenido ($messageNode["base64"])
+			//5) data.message[messageType].base64 (anidado dentro del tipo)
+			$mediaBase64 = $input["data"]["message"]["base64"] ?? '';
 
-			//Si no esta en el root, buscar dentro de data.message[messageType]
+			if(empty($mediaBase64))
+			{
+				$mediaBase64 = $input["data"]["base64"] ?? '';
+			}
+			if(empty($mediaBase64))
+			{
+				$mediaBase64 = $input["base64"] ?? '';
+			}
+			if(empty($mediaBase64))
+			{
+				$mediaBase64 = $messageNode["base64"] ?? '';
+			}
 			if(empty($mediaBase64))
 			{
 				$mediaBase64 = $input["data"]["message"][$messageType]["base64"] ?? '';
 			}
 
-			//Si aun no hay base64, intentar descargar desde URL
-			$mediaUrl = $input["data"]["message"][$messageType]["url"] ?? ($input["data"]["message"][$messageType]["mediaUrl"] ?? '');
+			//Si aun no hay base64, intentar descargar desde la URL del nodo del contenido
+			$mediaUrl = $messageNode["url"] ?? ($messageNode["mediaUrl"] ?? '');
 
 			if(!empty($mediaBase64))
 			{
@@ -1437,58 +1521,14 @@ class app_cxc_api extends _BaseController {
 
 			if(!empty($base64Media))
 			{
-				//Guardar el archivo en el servidor y generar URL publica
-				$extension = explode('/', $mimetype)[1] ?? 'bin';
-				//Limpiar extensiones con parametros (ej: "ogg; codecs=opus" -> "ogg")
-				$extension = explode(';', $extension)[0];
-				$extension = trim($extension);
-				$filename  = uniqid('file_') . '.' . $extension;
-
-				//Quitar encabezado Base64 si existe (data:image/jpeg;base64,...)
-				$base64Clean = $base64Media;
-				if(str_contains($base64Clean, ','))
-				{
-					$base64Clean = explode(',', $base64Clean)[1];
-				}
-
-				//Decodificar
-				$fileBinary = base64_decode($base64Clean);
-				if($fileBinary !== false && strlen($fileBinary) > 0)
-				{
-					//Obtener el componente para la ruta de almacenamiento
-					$objComponentConversation = $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_conversation");
-					if($objComponentConversation)
-					{
-						$phoneCustomer = str_replace('@s.whatsapp.net', '', $input["data"]["key"]["remoteJid"] ?? '');
-						$phoneCustomer = str_replace('@c.us', '', $phoneCustomer);
-						$documentoPath = PATH_FILE_OF_APP . "/company_" . APP_COMPANY . "/component_" . $objComponentConversation->componentID . "/component_item_" . $phoneCustomer;
-
-						if(!file_exists($documentoPath))
-						{
-							mkdir($documentoPath, 0777, true);
-						}
-
-						file_put_contents($documentoPath . "/" . $filename, $fileBinary);
-						$fileUrl = base_url() . "/resource/file_company/company_" . APP_COMPANY . "/component_" . $objComponentConversation->componentID . "/component_item_" . $phoneCustomer . "/" . $filename;
-
-						$genericData["data"]["media"] = [
-							"mimetype" => $mimetype,
-							"data"     => $base64Media,
-							"filename" => $filename
-						];
-						$genericData["data"]["mediaUrl"] = $fileUrl;
-						log_message('error', '[EvolutionApi] Media guardada: ' . $documentoPath . '/' . $filename);
-						log_message('error', '[EvolutionApi] Media URL publica: ' . $fileUrl);
-					}
-					else
-					{
-						log_message('error', '[EvolutionApi] ERROR: Componente tb_customer_conversation no encontrado');
-					}
-				}
-				else
-				{
-					log_message('error', '[EvolutionApi] ERROR: No se pudo decodificar base64 media');
-				}
+				//Solo mapear al formato generico; la funcion generica se encarga de
+				//decodificar, guardar el archivo y generar la URL publica
+				$genericData["data"]["media"] = [
+					"mimetype" => $mimetype,
+					"data"     => $base64Media,
+					"filename" => $filename
+				];
+				log_message('error', '[EvolutionApi] Media mapeada al formato generico. mimetype=' . $mimetype . ', filename=' . $filename . ', base64 length=' . strlen($base64Media));
 			}
 			else
 			{

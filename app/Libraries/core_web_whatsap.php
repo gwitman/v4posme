@@ -241,6 +241,10 @@ class core_web_whatsap {
 	   {
 		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino,$esperarRespuesta ,$instanciaName);
 	   }
+	   else if($typeCompany == "alphaDblMotor")
+	   {
+			return $this->sendMessageByEvolutionApiImage( $companyID, $urlImagen, $message, $phoneDestino,$instanciaName);
+	   }
 	   else
 	   {
 		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino ,$esperarRespuesta,$instanciaName);
@@ -257,6 +261,10 @@ class core_web_whatsap {
 	   {
 		  return $this->sendMessageByEvolutionApiPdf( $companyID, $urlPdf, $fileName, $message, $phoneDestino, $instanciaName);
 	   }
+	   else if($typeCompany == "alphaDblMotor")
+	   {
+			return $this->sendMessageByEvolutionApiPdf( $companyID, $urlPdf,$fileName, $message, $phoneDestino,$instanciaName);
+	   }
 	   else
 	   {
 		  return $this->sendMessageWapi2Pdf( $companyID, $urlPdf,$fileName,$message, $phoneDestino,$esperarRespuesta,$instanciaName );
@@ -271,6 +279,10 @@ class core_web_whatsap {
 	   else if($typeCompany == "gymJalapa")
 	   {
 		   return $this->sendMessageByEvolutionApiAudio( $companyID, $urlPdf, $phoneDestino, $instanciaName);
+	   }
+	   else if($typeCompany == "alphaDblMotor")
+	   {
+			return $this->sendMessageByEvolutionApiAudio( $companyID, $urlPdf, $phoneDestino,$instanciaName);
 	   }
 	   else
 	   {
