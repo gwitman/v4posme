@@ -2751,7 +2751,7 @@ class app_invoice_billing extends _BaseController {
 			//Si esta configurado como auto aplicado
 			//y es al credito. cambiar el estado por el estado inicial, que es registrada			
 			$statusID 								= $this->core_web_workflow->getWorkflowStageApplyFirst("tb_transaction_master_billing","statusID",$companyID,$branchID,$roleID);			
-			$customer 								= $this->Customer_Model->get_rowByIdentification($companyID, $transactionMaster->CustomerIdentification);
+			$customer 								= $this->Customer_Model->get_rowByEntity($companyID, $transactionMaster->EntityId);
 			$objParameterWarehouseDefault			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter, "INVENTORY_ITEM_WAREHOUSE_DEFAULT");			
 			$warehouseDefault 						= $objParameterWarehouseDefault->value;
 			$objListWarehouseTipoDespacho			= $this->Userwarehouse_Model->getRowByUserIDAndFacturable($companyID,$dataSession["user"]->userID);
