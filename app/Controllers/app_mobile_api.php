@@ -678,14 +678,14 @@ class app_mobile_api extends _BaseController
             }
 
             //Se guarda siempre como default_imagen_android.jpg, sobrescribiendo la anterior
-            $destino = $pathFileFolder . "/default_imagen_android.jpg";
+            $destino = $pathFileFolder . "/default_imagen_android.jpeg";
             log_message("error", print_r("[SET_IMAGE] 0009 - destino: " . $destino, true));
             if (file_exists($destino)) {
                 unlink($destino);
                 log_message("error", print_r("[SET_IMAGE] 0010 - imagen anterior eliminada", true));
             }
 
-            $file->move($pathFileFolder, "default_imagen_android.jpg", true);
+            $file->move($pathFileFolder, "default_imagen_android.jpeg", true);
             log_message("error", print_r("[SET_IMAGE] 0011 - imagen guardada correctamente", true));
 
             return $this->response->setJSON(array(
@@ -713,41 +713,37 @@ class app_mobile_api extends _BaseController
     public function getDataUploadImageItem()
     {
         try {
-			log_message("error", print_r("[GET_IMAGE] 0001 - INICIO getDataUploadImageItem", true));
-
-			$companyID = /*inicio get post*/ $this->request->getPostGet('txtCompanyID');
+			$companyID = $this->request->getPostGet('txtCompanyID');
 			$companyID = empty($companyID) ? APP_COMPANY : $companyID;
-			$itemID    = (int) /*inicio get post*/ $this->request->getPostGet('txtItemID');
-
-			log_message("error", print_r("[GET_IMAGE] 0002 - companyID: " . $companyID . " - itemID: " . $itemID, true));
+			$itemID    = (int) $this->request->getPostGet('txtItemID');
 
 			if ($itemID <= 0) {
 				throw new \Exception("itemID invalido");
 			}
-			log_message("error", print_r("[GET_IMAGE] 0003 - itemID valido", true));
 
-			// Obtener el componente tb_item
 			$objComponent = $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
 			if (! $objComponent) {
 				throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 			}
-			log_message("error", print_r("[GET_IMAGE] 0004 - componentID: " . $objComponent->componentID, true));
 
-			// Construir la ruta de la imagen (misma ruta que app_inventory_item)
 			$ruta = PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponent->componentID . "/component_item_" . $itemID . "/default_imagen_android.jpg";
-			log_message("error", print_r("[GET_IMAGE] 0005 - ruta: " . $ruta, true));
 
 			if (! file_exists($ruta)) {
 				throw new \Exception("Imagen no encontrada");
 			}
-			log_message("error", print_r("[GET_IMAGE] 0006 - imagen encontrada, leyendo contenido", true));
 
 			$contenido = file_get_contents($ruta);
-			log_message("error", print_r("[GET_IMAGE] 0007 - imagen leida, devolviendo binario", true));
 
-			// Devolver el binario directamente
+			// IMPORTANTE: descartar CUALQUIER salida previa (espacios, BOM, warnings, logs)
+			// para que el binario empiece exactamente en FF D8 FF.
+			while (ob_get_level() > 0) {
+				ob_end_clean();
+			}
+
 			return $this->response
 				->setHeader('Content-Type', 'image/jpeg')
+				->setHeader('Content-Length', (string) strlen($contenido))
+				->setHeader('Cache-Control', 'no-store')
 				->setBody($contenido);
 		} catch (\Exception $ex) {
 			log_message("error", print_r("[GET_IMAGE] ERROR - Linea: " . $ex->getLine() . " - " . $ex->getMessage(), true));
