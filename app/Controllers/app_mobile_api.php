@@ -678,14 +678,14 @@ class app_mobile_api extends _BaseController
             }
 
             //Se guarda siempre como default_imagen_android.jpg, sobrescribiendo la anterior
-            $destino = $pathFileFolder . "/default_imagen_android.jpeg";
+            $destino = $pathFileFolder . "/default_imagen_android.jpg";
             log_message("error", print_r("[SET_IMAGE] 0009 - destino: " . $destino, true));
             if (file_exists($destino)) {
                 unlink($destino);
                 log_message("error", print_r("[SET_IMAGE] 0010 - imagen anterior eliminada", true));
             }
 
-            $file->move($pathFileFolder, "default_imagen_android.jpeg", true);
+            $file->move($pathFileFolder, "default_imagen_android.jpg", true);
             log_message("error", print_r("[SET_IMAGE] 0011 - imagen guardada correctamente", true));
 
             return $this->response->setJSON(array(
