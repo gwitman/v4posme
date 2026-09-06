@@ -1209,6 +1209,10 @@ $routes->match(['get', 'post'], 'app_mobile_api/getDataDownload', 'app_mobile_ap
 $routes->match(['get', 'post'], 'app_mobile_api/getDataDownload/(:any)', 'app_mobile_api::getDataDownload');
 $routes->match(['get', 'post'], 'app_mobile_api/setDataUpload', 'app_mobile_api::setDataUpload');
 $routes->match(['get', 'post'], 'app_mobile_api/setDataUpload/(:any)', 'app_mobile_api::setDataUpload');
+$routes->match(['get', 'post'], 'app_mobile_api/setDataUploadImageItem', 'app_mobile_api::setDataUploadImageItem');
+$routes->match(['get', 'post'], 'app_mobile_api/setDataUploadImageItem/(:any)', 'app_mobile_api::setDataUploadImageItem');
+$routes->match(['get', 'post'], 'app_mobile_api/getDataUploadImageItem', 'app_mobile_api::getDataUploadImageItem');
+$routes->match(['get', 'post'], 'app_mobile_api/getDataUploadImageItem/(:any)', 'app_mobile_api::getDataUploadImageItem');
 $routes->match(['get', 'post'], 'app_mobile_api/setPositionGps', 'app_mobile_api::setPositionGps');
 $routes->match(['get', 'post'], 'app_mobile_api/setPositionGps/(:any)', 'app_mobile_api::setPositionGps');
 $routes->match(['get', 'post'], 'app_mobile_api/getPositionGps', 'app_mobile_api::getPositionGps');
