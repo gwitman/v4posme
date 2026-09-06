@@ -620,6 +620,143 @@ class app_mobile_api extends _BaseController
 		}
 	}
 	
+	/**
+     * Sube / reemplaza la imagen de un producto.
+     * Entrada (multipart/form-data): txtNickname, txtPassword, txtItemID, txtImage (archivo)
+     * Salida (JSON): { "error": bool, "message": string }
+     *
+     * La imagen se almacena usando la misma ruta de trabajo que app_inventory_item:
+     * PATH_FILE_OF_APP/company_{companyID}/component_{componentID}/component_item_{itemID}/image.jpg
+     */
+    public function setDataUploadImageItem()
+    {
+        try {
+
+            log_message("error", print_r("[SET_IMAGE] 0001 - INICIO setDataUploadImageItem", true));
+
+            $companyID = /*inicio get post*/ $this->request->getPost('txtCompanyID');
+            $companyID = empty($companyID) ? APP_COMPANY : $companyID;
+            $itemID    = (int) /*inicio get post*/ $this->request->getPost('txtItemID');
+
+            log_message("error", print_r("[SET_IMAGE] 0002 - companyID: " . $companyID . " - itemID: " . $itemID, true));
+
+            if ($itemID <= 0) {
+                throw new \Exception("itemID invalido");
+            }
+
+            log_message("error", print_r("[SET_IMAGE] 0003 - itemID valido", true));
+
+            //Obtener el componente tb_item
+            $objComponent = $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+            if (! $objComponent) {
+                throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+            }
+
+            log_message("error", print_r("[SET_IMAGE] 0004 - componentID: " . $objComponent->componentID, true));
+
+            //Validar el archivo recibido
+            $file = $this->request->getFile('txtImage');
+            if ($file === null || ! $file->isValid()) {
+                throw new \Exception("Archivo no valido");
+            }
+
+            log_message("error", print_r("[SET_IMAGE] 0005 - archivo recibido valido", true));
+
+            //Validar que sea imagen
+            $mime = $file->getMimeType();
+            log_message("error", print_r("[SET_IMAGE] 0006 - mime: " . $mime, true));
+            if (strpos($mime, 'image/') !== 0) {
+                throw new \Exception("El archivo no es una imagen");
+            }
+
+            //Construir la carpeta del item (misma ruta que app_inventory_item)
+            $pathFileFolder = PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponent->componentID . "/component_item_" . $itemID;
+            log_message("error", print_r("[SET_IMAGE] 0007 - pathFileFolder: " . $pathFileFolder, true));
+            if (! is_dir($pathFileFolder)) {
+                mkdir($pathFileFolder, 0700, true);
+                log_message("error", print_r("[SET_IMAGE] 0008 - carpeta creada", true));
+            }
+
+            //Se guarda siempre como default_imagen_android.jpg, sobrescribiendo la anterior
+            $destino = $pathFileFolder . "/default_imagen_android.jpg";
+            log_message("error", print_r("[SET_IMAGE] 0009 - destino: " . $destino, true));
+            if (file_exists($destino)) {
+                unlink($destino);
+                log_message("error", print_r("[SET_IMAGE] 0010 - imagen anterior eliminada", true));
+            }
+
+            $file->move($pathFileFolder, "default_imagen_android.jpg", true);
+            log_message("error", print_r("[SET_IMAGE] 0011 - imagen guardada correctamente", true));
+
+            return $this->response->setJSON(array(
+                'error'   => false,
+                'message' => SUCCESS
+            ));//--finjson
+
+        } catch (\Exception $ex) {
+            log_message("error", print_r("[SET_IMAGE] ERROR - Linea: " . $ex->getLine() . " - " . $ex->getMessage(), true));
+            return $this->response->setJSON(array(
+                'error'   => true,
+                'message' => $ex->getLine() . " " . $ex->getMessage()
+            ));//--finjson
+        }
+    }
+
+    /**
+     * Obtiene la imagen de un producto.
+     * Entrada (get/post): txtNickname, txtPassword, txtItemID
+     * Salida: binario JPEG, o JSON con error si no existe.
+     *
+     * Usa la misma ruta de trabajo que app_inventory_item:
+     * PATH_FILE_OF_APP/company_{companyID}/component_{componentID}/component_item_{itemID}/image.jpg
+     */
+    public function getDataUploadImageItem()
+    {
+        try {
+			log_message("error", print_r("[GET_IMAGE] 0001 - INICIO getDataUploadImageItem", true));
+
+			$companyID = /*inicio get post*/ $this->request->getPostGet('txtCompanyID');
+			$companyID = empty($companyID) ? APP_COMPANY : $companyID;
+			$itemID    = (int) /*inicio get post*/ $this->request->getPostGet('txtItemID');
+
+			log_message("error", print_r("[GET_IMAGE] 0002 - companyID: " . $companyID . " - itemID: " . $itemID, true));
+
+			if ($itemID <= 0) {
+				throw new \Exception("itemID invalido");
+			}
+			log_message("error", print_r("[GET_IMAGE] 0003 - itemID valido", true));
+
+			// Obtener el componente tb_item
+			$objComponent = $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if (! $objComponent) {
+				throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+			}
+			log_message("error", print_r("[GET_IMAGE] 0004 - componentID: " . $objComponent->componentID, true));
+
+			// Construir la ruta de la imagen (misma ruta que app_inventory_item)
+			$ruta = PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponent->componentID . "/component_item_" . $itemID . "/default_imagen_android.jpg";
+			log_message("error", print_r("[GET_IMAGE] 0005 - ruta: " . $ruta, true));
+
+			if (! file_exists($ruta)) {
+				throw new \Exception("Imagen no encontrada");
+			}
+			log_message("error", print_r("[GET_IMAGE] 0006 - imagen encontrada, leyendo contenido", true));
+
+			$contenido = file_get_contents($ruta);
+			log_message("error", print_r("[GET_IMAGE] 0007 - imagen leida, devolviendo binario", true));
+
+			// Devolver el binario directamente
+			return $this->response
+				->setHeader('Content-Type', 'image/jpeg')
+				->setBody($contenido);
+		} catch (\Exception $ex) {
+			log_message("error", print_r("[GET_IMAGE] ERROR - Linea: " . $ex->getLine() . " - " . $ex->getMessage(), true));
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine() . " " . $ex->getMessage(),
+			)); //--finjson
+		}
+    }
 	
 }
 
