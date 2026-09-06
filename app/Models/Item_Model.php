@@ -357,7 +357,8 @@ class Item_Model extends Model  {
 						(select pp.price from tb_price pp where pp.itemID = i.itemID and pp.typePriceID = 154 /*precio publico*/)
 						,
 						0
-					) as PrecioPublico	
+					) as PrecioPublico	,
+					i.cost as Cost 
 				from 
 					tb_item i 
 				where 

@@ -308,6 +308,19 @@ class app_mobile_api extends _BaseController
 						$objTm->customerCreditLineID 	= $objCustomerFilt->customerCreditLineID;
 						log_message("error",print_r("0008.004.0002",true));
 					}
+					else
+					{
+						log_message("error",print_r("0008.004.0003",true));
+						//no se encontro en el mapa, buscar el customer por el entityID en el modelo
+						$objCustomerModel 	= $this->Customer_Model->get_rowByEntity($companyID, $objTm->EntityId);
+						if($objCustomerModel)
+						{
+							$objCustomerCreditLineModel 	= $this->Customer_Credit_Line_Model->get_rowByEntity($objCustomerModel->companyID, $objCustomerModel->branchID, $objCustomerModel->entityID);
+							$objTm->entityID 				= $objCustomerModel->entityID;
+							$objTm->customerCreditLineID 	= (is_array($objCustomerCreditLineModel) && count($objCustomerCreditLineModel) > 0) ? $objCustomerCreditLineModel[0]->customerCreditLineID : null;
+							log_message("error",print_r("0008.004.0004",true));
+						}
+					}
 						
 					//buscar el detalle
                     $resultado = array_filter($transactionMasterDetails, function($tm) use ($transactionMasterId) { return $tm->TransactionMasterId == $transactionMasterId; });					
@@ -321,9 +334,9 @@ class app_mobile_api extends _BaseController
 						$this->Transaction_Master_Model->delete_app_posme($objTmOld->companyID,$objTmOld->transactionID,$objTmOld->transactionMasterID);						
 					}
 					
-					log_message("error","transactionMasterNumberOriginal".print_r($transactionMasterNumberOriginal,true));
-					log_message("error","objTm".print_r($objTm,true));
-					log_message("error","resultado".print_r($resultado,true));
+					log_message("error","transactionMasterNumberOriginal ".print_r($transactionMasterNumberOriginal,true));
+					log_message("error","objTm ".print_r($objTm,true));
+					log_message("error","resultado - ".print_r($resultado,true));
                     $billingController->insertElementMobil($dataSession,$transactionMasterNumberOriginal,$objTm, $resultado);
 					log_message("error",print_r("0008.005",true));
 					$idexCount++;

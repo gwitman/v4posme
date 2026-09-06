@@ -1566,7 +1566,8 @@ class app_inventory_inputunpost extends _BaseController {
 					$subAmount=0;
 					foreach($objItems as $key => $value)
 					{	
-						$cantidadFinal = $value->cantidadEntradas-$value->cantidadSalidas;
+						$cantidadFinal 	= $value->cantidadEntradas-$value->cantidadSalidas;
+						$cost 			= $value->cost;
 						if($cantidadFinal<=0){//entrada - salidas > 0
 							continue;
 						}
@@ -1574,7 +1575,7 @@ class app_inventory_inputunpost extends _BaseController {
 						$objItem 								= $this->Item_Model->get_rowByCodeBarra($companyID, $value->barCode); //buscar por codigo de barra
 						$itemID 								= $objItem->itemID;
 						$quantity 								= $cantidadFinal;
-						$cost 									= $objItem->cost;
+						$cost 									= $cost;
 						$barCodeExtende 						= "";
 						
 						$lote 									= "";
