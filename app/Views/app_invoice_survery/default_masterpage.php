@@ -64,6 +64,62 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
       box-shadow: 0 4px 16px rgba(230,57,70,0.15);
       background: #fff5f5;
     }
+    /* ---- Producto no disponible (sin stock) ---- */
+    .product-card.out-of-stock {
+      opacity: 0.75;
+      background: #f5f5f5;
+      border-color: #e0e0e0;
+    }
+    .product-card.out-of-stock .product-image {
+      filter: grayscale(100%);
+      border-color: #bbb;
+    }
+    .product-card.out-of-stock .product-name {
+      color: #888;
+    }
+    .badge-unavailable {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #6c757d;
+      color: #fff;
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-top: 4px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    .badge-unavailable::before {
+      content: '⛔';
+      font-size: 0.8rem;
+    }
+    .badge-available {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: #2a9d4a;
+      color: #fff;
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-top: 4px;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
+    .badge-available::before {
+      content: '✓';
+      font-size: 0.8rem;
+    }
+    @media (max-width: 576px) {
+      .badge-unavailable,
+      .badge-available {
+        font-size: 0.7rem;
+        padding: 3px 10px;
+      }
+    }
     .product-header {
       display: flex;
       align-items: center;
@@ -388,6 +444,10 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
         <label for="phone" class="form-label">Teléfono:</label>
         <input type="tel" class="form-control" id="phone" name="phone" placeholder="Ingresa tu teléfono" required>
       </div>
+      <div class="mb-3">
+        <label for="cedula" class="form-label">Cédula:</label>
+        <input type="text" class="form-control" id="cedula" name="cedula" placeholder="Ingresa tu cédula" required>
+      </div>
 
       <div class="mb-3">
         <label class="form-label">Selecciona tus productos:</label>
@@ -427,8 +487,9 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
           $itemDesc   = !empty($item->description) ? $item->description : '';
           $condoRaw   = !empty($item->realStateReferenceCondominio) ? $item->realStateReferenceCondominio : '';
           $condoOpts  = array_filter(array_map('trim', explode("\n", $condoRaw)));
+          $isOutOfStock = (isset($item->quantity) && $item->quantity <= 0);
         ?>
-        <div class="product-card" id="card<?php echo $item->itemID; ?>"
+        <div class="product-card<?php echo $isOutOfStock ? ' out-of-stock' : ''; ?>" id="card<?php echo $item->itemID; ?>"
           data-name="<?php echo strtolower(htmlspecialchars($item->name)); ?>"
           data-category="<?php echo strtolower(htmlspecialchars(trim($item->categoryName ?? ''))); ?>">
           <div class="product-header">
@@ -453,6 +514,11 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
               <div class="product-name"><?php echo htmlspecialchars($item->name); ?></div>
               <?php if($showPrice == 'true'): ?>
               <div class="product-price">C$ <?php echo number_format(round($item->price1,2),2); ?></div>
+              <?php endif; ?>
+              <?php if($isOutOfStock): ?>
+              <span class="badge-unavailable">No disponible</span>
+              <?php else: ?>
+              <span class="badge-available">Disponible</span>
               <?php endif; ?>
             </div>
 
@@ -487,7 +553,7 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
                 <input name="quantity[]" type="number" class="form-control form-control-sm quantity"
                   style="max-width:90px"
                   min="<?= getBahavioDB($key, 'app_invoice_survery','cantidad_default','0')?>"
-                  max="10"
+                  max="10000"
                   value="<?= getBahavioDB($key, 'app_invoice_survery','cantidad_default','0')?>"/>
               </div>
             </div>
@@ -631,7 +697,7 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
       $(document).on('input', '.quantity', function() {
         let val = parseInt($(this).val());
         if (isNaN(val) || val < 1) $(this).val(1);
-        else if (val > 10) $(this).val(10);
+        else if (val > 10000) $(this).val(10000);
       });
 
       // Verificar selección
@@ -648,7 +714,7 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
           let price       = parseFloat($(this).data('price'));
           let optsDiv     = $('#opts' + itemId);
           let qty         = parseInt(optsDiv.find('.quantity').val()) || 1;
-          qty = Math.min(Math.max(qty, 1), 10);
+          qty = Math.min(Math.max(qty, 1), 10000);
           let subtotal    = qty * price;
           total += subtotal;
 

@@ -77,6 +77,7 @@ class app_invoice_survery extends _BaseController {
 			//Obtener datos
 			$name						= $this->request->getPost("name");
 			$phone						= $this->request->getPost("phone");
+			$cedula						= $this->request->getPost("cedula");
 			$direccion 					= $this->request->getPost("address");
 			$listItem					= $this->request->getPost("itemID");
 			$listQuantity				= $this->request->getPost("quantity");
@@ -89,6 +90,7 @@ class app_invoice_survery extends _BaseController {
 			log_message('debug', '[app_invoice_survery::insertElement] key: ' . json_encode($key));
 			log_message('debug', '[app_invoice_survery::insertElement] name: ' . json_encode($name));
 			log_message('debug', '[app_invoice_survery::insertElement] phone: ' . json_encode($phone));
+			log_message('debug', '[app_invoice_survery::insertElement] cedula: ' . json_encode($cedula));
 			log_message('debug', '[app_invoice_survery::insertElement] address: ' . json_encode($direccion));
 			log_message('debug', '[app_invoice_survery::insertElement] itemID (listItem): ' . json_encode($listItem));
 			log_message('debug', '[app_invoice_survery::insertElement] quantity (listQuantity): ' . json_encode($listQuantity));
@@ -131,7 +133,7 @@ class app_invoice_survery extends _BaseController {
 				$cus->phone		 		= $phone; 
 				$cus->firstName 		= $name; 
 				$cus->lastName 			= $name; 
-				$cus->identification 	= $phone;
+				$cus->identification 	= $cedula;
 				$cus->reference1 		= $key;
 				$cus->statusID 			= $this->core_web_workflow->getWorkflowInitStage("tb_customer","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;				
 				$controller 			= new app_cxc_customer();

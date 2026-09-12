@@ -10228,7 +10228,16 @@ function helper_reporte80mmTransactionMasterSurvery(
 						  <td colspan='2'>
                             ".$objEntidadCustomer->customerNumber."
                           </td>
-                        </tr>";
+                        </tr>
+						<tr>
+                          <td colspan=''>
+                            Cedula:
+                          </td>
+						  <td colspan='2'>
+                            ".$objEntidadCustomer->identification."
+                          </td>
+                        </tr>
+						";
 			
 			
 		 
