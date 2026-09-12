@@ -625,6 +625,7 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
       <p><strong>Nombre:</strong> <span id="summaryName"></span></p>
       <p><strong>Dirección:</strong> <span id="summaryAddress"></span></p>
       <p><strong>Teléfono:</strong> <span id="summaryPhone"></span></p>
+      <p><strong>Cédula:</strong> <span id="summaryCedula"></span></p>
 
       <table id="summaryTable" class="table table-bordered mt-3">
         <thead class="table-danger">
@@ -705,6 +706,7 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
         let name    = $('#name').val().trim();
         let address = $('#address').val().trim();
         let phone   = $('#phone').val().trim();
+        let cedula  = $('#cedula').val().trim();
         let options = [];
         let total   = 0;
 
@@ -724,7 +726,7 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
           options.push({ name: productName, quantity: qty, price: price, subtotal: subtotal, combo: comboVal, comment: commentVal });
         });
 
-        if (!name || !address || !phone || options.length === 0) {
+        if (!name || !address || !phone || !cedula || options.length === 0) {
           mostrarModal('ModalValidSurvery');
           return;
         }
@@ -732,6 +734,7 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
         $('#summaryName').text(name);
         $('#summaryAddress').text(address);
         $('#summaryPhone').text(phone);
+        $('#summaryCedula').text(cedula);
 
         $('#summaryOptions').empty();
         $.each(options, function(i, o) {
