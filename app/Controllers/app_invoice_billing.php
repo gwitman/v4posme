@@ -8213,7 +8213,7 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["amount_total_description"]			= helper_GetLetras($datView["objTM"]->amount,$datViewArray["currencySimbol"],"CENTAVOS.");
 			$datViewArray["amount_receipt"]						= sprintf("%.2f",$datView["objTMI"]->receiptAmount);
 			$datViewArray["amount_change"]						= sprintf("%.2f",$datView["objTMI"]->changeAmount);
-			
+			$datViewArray["urlDomain"]							= rtrim(preg_replace('#^(https?://[^/]+).*$#i', '$1', base_url()), '/');
 			
 			
 			//agregar item
