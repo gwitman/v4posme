@@ -8133,6 +8133,7 @@ class app_invoice_billing extends _BaseController {
 			$datView["objUserEmployer"]				= $this->Employee_Model->get_rowByPK($datView["objUser"]->companyID,$datView["objUser"]->branchID,$datView["objUser"]->employeeID);
 			$datView["objWorkflowStage"]			= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($datView["objTM"]->statusID);
 			$datView["objMesa"]						= $this->core_web_catalog->getCatalogItem("tb_transaction_master_info_billing","mesaID",$companyID,$datView["objTMI"]->mesaID);
+			$datView["objNaturalEmployer"]			= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objTM"]->entityIDSecondary);
 			
 			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 			
 			$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_invoice_billing","templateInvoice","");
@@ -8153,6 +8154,8 @@ class app_invoice_billing extends _BaseController {
 			
 			$datViewArray["transactionNumber"] 					= $datView["objTM"]->transactionNumber;
 			$datViewArray["transactionMasterReference3"] 		= $datView["objTM"]->reference3;
+			$datViewArray["transactionMasterNextVisit"] 		= is_null($datView["objTM"]->nextVisit) ? "" : $datView["objTM"]->nextVisit;
+			$datViewArray["employerFullName"] 					= $datView["objNaturalEmployer"] ? trim($datView["objNaturalEmployer"]->firstName." ".$datView["objNaturalEmployer"]->lastName) : "";
 			$datViewArray["transactionOn"] 						= $datView["objTM"]->createdOn;
 			$createdOn 											= new \DateTime($datViewArray["transactionOn"]);
 			$datViewArray["transactionOn"] 						= $createdOn->modify(APP_HOUR_DIFERENCE_PHP)->format('Y-m-d h:i A'); // 12 horas con AM/PM  se resta hora segun la configuracion del sistema
@@ -8180,6 +8183,7 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["creditAmount"]								= 0;
 			$datViewArray["creditAmountAndInteres"]						= 0;
 			$datViewArray["creditAmountInteres"]						= 0;
+			$datViewArray["creditPeriodPay"]							= "";
 			if($datView["objCCD"])
 			{
 				$objCCDAmortizacion 										= $this->Customer_Credit_Amortization_Model->get_rowByDocument($datView["objCCD"]->customerCreditDocumentID);
@@ -8192,6 +8196,8 @@ class app_invoice_billing extends _BaseController {
 				$datViewArray["creditAmount"]								= round($datView["objCCD"]->amount,2);
 				$datViewArray["creditAmountAndInteres"]						= round($amountAndInterest,2);
 				$datViewArray["creditAmountInteres"]						= round($amountInterest,2);
+				$objCatalogItemPeriodPay									= $this->Catalog_Item_Model->get_rowByCatalogItemID($datView["objCCD"]->periodPay);
+				$datViewArray["creditPeriodPay"]							= $objCatalogItemPeriodPay ? $objCatalogItemPeriodPay->name : "";
 			}
 			else
 			{
@@ -8703,7 +8709,7 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["amount_sumary_interes_y_capital"]	= "0.00";
 			$datViewArray["minShareDate"]						= "0000-00-00";
 			$datViewArray["maxShareDate"]						= "0000-00-00";
-			$datViewArray["sharePeriod"]						= "";
+			$datViewArray["sharePeriod"]						= "-";
 			
 			$datView["objCCD"]						= $this->Customer_Credit_Document_Model->get_rowByDocument($companyID,$datView["objTM"]->entityID,$datView["objTM"]->transactionNumber);						
 			if($datView["objCCD"])
