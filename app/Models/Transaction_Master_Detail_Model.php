@@ -1265,7 +1265,8 @@ class Transaction_Master_Detail_Model extends Model  {
 							tmd.isActive = 1 and
 							LENGTH(REPLACE(cus.identification, '[^a-zA-Z0-9]', '')) = 14 and 
 							LENGTH(REPLACE(cus.phoneNumber, '[^a-zA-Z0-9]', '')) = 8 and  
-							DATE_ADD(tm.createdOn, INTERVAL 1 DAY) = CURDATE() 
+							tm.createdOn >= DATE_SUB(NOW(), INTERVAL 1 HOUR) and 
+							tm.createdOn <= NOW() 
 							
 					) tx 
 			";
