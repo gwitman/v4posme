@@ -12,7 +12,14 @@ class Bd_Model extends Model  {
 		$db 				= db_connect(); 
 		$db->query("SET NAMES utf8mb4");
 		$db->query("SET SESSION group_concat_max_len = 1000000;");
+		$db->query("SET SESSION sql_mode = REPLACE(REPLACE(REPLACE(@@SESSION.sql_mode, 'ONLY_FULL_GROUP_BY,', ''), ',ONLY_FULL_GROUP_BY', ''), 'ONLY_FULL_GROUP_BY', '')");
+		$db->query("SET SESSION sql_mode = REPLACE(REPLACE(REPLACE(@@SESSION.sql_mode, 'STRICT_TRANS_TABLES,', ''), ',STRICT_TRANS_TABLES', ''), 'STRICT_TRANS_TABLES', '')");
 		
+		//DEBUG: imprimir el sql_mode actual de la sesion (eliminar luego)
+		//$sqlModeResult = $db->query("SELECT @@SESSION.sql_mode AS sql_mode")->getResult("array");
+		//var_dump($sqlModeResult);
+		//die();
+
 		if($parameter === null)
 		$queryResult 		= $db->query($query);		
 		else 
