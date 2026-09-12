@@ -8135,6 +8135,7 @@ class app_invoice_billing extends _BaseController {
 			$datView["objMesa"]						= $this->core_web_catalog->getCatalogItem("tb_transaction_master_info_billing","mesaID",$companyID,$datView["objTMI"]->mesaID);
 			$datView["objNaturalEmployer"]			= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objTM"]->entityIDSecondary);
 			
+			$objParameterEmail						= $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL",$companyID);
 			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 			
 			$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_invoice_billing","templateInvoice","");
 			$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_invoice_billing","templateInvoice","");
@@ -8166,6 +8167,7 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["userNaturalNameLastName"]			= $datView["objUserNaturales"]->lastName;
 			$datViewArray["currencySimbol"]						= $datView["objCurrency"]->simbol;
 			$datViewArray["phoneNumber"]						= $objParameterTelefono->value;
+			$datViewArray["emalProperty"]						= $objParameterEmail->value;
 			$datViewArray["address"]							= $objCompany->address;
 			$datViewArray["note"]								= $datView["objTM"]->note;
 			$datViewArray["mesaName"] 							= $datView["objMesa"]->name;			
@@ -8257,6 +8259,29 @@ class app_invoice_billing extends _BaseController {
 				$base64  					 		= 'data:image/' . $type . ';base64,' . base64_encode($data);
 				$datViewArray["imageBase64Marca"] 	= $base64;
 			} 
+			
+			//Generar codigo QR para las compañias de tipo alphaDblMotor
+			$datViewArray["qrCodeBase64"] = "";
+			if($objCompany->type == "alphaDblMotor")
+			{
+				$objComponentBillingQr	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_billing");
+				if(!$objComponentBillingQr)
+				throw new \Exception("EL COMPONENTE 'tb_transaction_master_billing' NO EXISTE...");
+				
+				$documentoPathQr = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentBillingQr->componentID."/component_item_".$transactionMasterID;
+				if (!file_exists($documentoPathQr)) {
+					mkdir($documentoPathQr, 0777, true);
+				}
+				
+				$urlQr 		= base_url()."/app_invoice_billing/viewInvoicePublic/inm/".$datView["objTM"]->transactionNumber."/unm/".$datView["objUser"]->nickname;
+				$this->core_web_qr->generate($urlQr,$documentoPathQr."/qrcode.png","M","10");
+				$qrImage 	= $documentoPathQr."/qrcode.png";
+				if (file_exists($qrImage)) {
+					$dataQr    						= file_get_contents($qrImage);
+					$typeQr    						= pathinfo($qrImage, PATHINFO_EXTENSION);
+					$datViewArray["qrCodeBase64"]	= 'data:image/' . $typeQr . ';base64,' . base64_encode($dataQr);
+				}
+			}
 			
 			
 			
