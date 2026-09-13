@@ -2006,14 +2006,14 @@ WHERE
 	
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "Donde fue aserrio santa fe, 2c abajo 15v.sur" 
+	tb_company_parameter.value = "Visitanos en : Malpaisillo, Alcaldia 4c al este, media al norte mano derecha  ---------- ó ----------  En : Contiguo al restaurante El Campestre." 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S  
 							
 
 UPDATE tb_company SET 
-	NAME = 'Mi Mercadito' , address = 'Visitanos en : Alcaldia 4c al este, media al norte mano derecha  ---------- ó ----------  En : Contiguo al restaurante El Campestre.' ,
+	NAME = 'Mi Mercadito' , address = 'Visitanos en : Malpaisillo, Alcaldia 4c al este, media al norte mano derecha  ---------- ó ----------  En : Contiguo al restaurante El Campestre.' ,
 	flavorID = 1192 /*usuarioID*/,type='miMercadito'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
