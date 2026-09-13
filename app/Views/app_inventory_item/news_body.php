@@ -192,7 +192,7 @@
 												?>																	
 												<label class="col-lg-4 control-label text-primary " for="normal">Costo</label>
 												<div class="col-lg-8">
-													<input class="form-control"  type="text"  name="txtCost" id="txtCost" value="">												
+													<input class="form-control"  type="text"  name="txtCost" id="txtCost" value="0">												
 												</div>
 												<?php 
 											}
@@ -202,7 +202,7 @@
 												<label class="col-lg-4 control-label" for="normal">Costo</label>
 												<div class="col-lg-8">
 													<?php $allowUpdateCost = (isset($objParameterAll["INVENTORY_ALLOW_UPDATE_COST_IN_ITEM"]) && strtoupper($objParameterAll["INVENTORY_ALLOW_UPDATE_COST_IN_ITEM"]) == "TRUE"); ?>
-													<input class="form-control" <?php echo $allowUpdateCost ? "" : "readonly"; ?> type="text"  name="txtCost" id="txtCost" value="">												
+													<input class="form-control" <?php echo $allowUpdateCost ? "" : "readonly"; ?> type="text"  name="txtCost" id="txtCost" value="0">												
 												</div>
 												<?php 
 											}
