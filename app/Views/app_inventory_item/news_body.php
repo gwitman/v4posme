@@ -150,7 +150,8 @@
 												?>
 												<label class="col-lg-4 control-label" for="normal">Cantidad</label>
 												<div class="col-lg-8">
-													<input class="form-control" disabled  type="text"  name="txtQuantity" id="txtQuantity" value="">												
+													<?php $allowUpdateQuantity = (isset($objParameterAll["INVENTORY_ALLOW_UPDATE_QUANTITY_IN_ITEM"]) && strtoupper($objParameterAll["INVENTORY_ALLOW_UPDATE_QUANTITY_IN_ITEM"]) == "TRUE"); ?>
+													<input class="form-control" <?php echo $allowUpdateQuantity ? "" : "readonly"; ?>  type="text"  name="txtQuantity" id="txtQuantity" value="">												
 												</div>
 												<?php 
 											}
@@ -200,7 +201,8 @@
 												?>
 												<label class="col-lg-4 control-label" for="normal">Costo</label>
 												<div class="col-lg-8">
-													<input class="form-control" disabled type="text"  name="txtCost" id="txtCost" value="">												
+													<?php $allowUpdateCost = (isset($objParameterAll["INVENTORY_ALLOW_UPDATE_COST_IN_ITEM"]) && strtoupper($objParameterAll["INVENTORY_ALLOW_UPDATE_COST_IN_ITEM"]) == "TRUE"); ?>
+													<input class="form-control" <?php echo $allowUpdateCost ? "" : "readonly"; ?> type="text"  name="txtCost" id="txtCost" value="">												
 												</div>
 												<?php 
 											}

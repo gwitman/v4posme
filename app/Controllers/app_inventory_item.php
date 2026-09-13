@@ -116,6 +116,7 @@ class app_inventory_item extends _BaseController
             $dataView["objParameterListPreiceDefault"] = $objParameterListPreiceDefault;
             $dataView["callback"]                      = $callback;
             $dataView["comando"]                       = $comando;
+            $dataView["objParameterAll"]               = $objParameterAll;
             $dataView["objListPriceItem"]              = $this->Price_Model->get_rowByItemID($companyID, $dataView["objParameterListPreiceDefault"], $itemID);
             $dataView["objListPriceItemFirst"]         = 0;
 			$dataView["objListCompanyPageSetting"]	   = $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"app_inventory_item");
@@ -726,6 +727,23 @@ class app_inventory_item extends _BaseController
                 if ($db->transStatus() !== false && $comando == "false") {
                     $db->transCommit();
                     $this->core_web_notification->set_message(false, SUCCESS);
+
+                    //Si el parametro permite actualizar el costo en el item y se ingreso un costo,
+                    //generar un ajuste de costo (insertElement de app_inventory_cost_adjustment)
+                    $allowUpdateCostInItem = $this->core_web_parameter->getParameterValue("INVENTORY_ALLOW_UPDATE_COST_IN_ITEM", $companyID);
+                    log_message("debug", "[ITEM_NEW] Evaluando ajuste de costo - itemID=" . $itemID . ", INVENTORY_ALLOW_UPDATE_COST_IN_ITEM=" . $allowUpdateCostInItem);
+                    if (strtoupper($allowUpdateCostInItem) == "TRUE") {
+                        $newCost = helper_StringToNumber( /*inicio get post*/$this->request->getPost("txtCost"));
+                        log_message("debug", "[ITEM_NEW] Costo ingresado - itemID=" . $itemID . ", newCost=" . $newCost);
+                        if ((float) $newCost != (float) 0) {
+                            $newQuantity = helper_StringToNumber( /*inicio get post*/$this->request->getPost("txtQuantity"));
+                            log_message("debug", "[ITEM_NEW] Generando ajuste de costo para itemID=" . $itemID . ", quantity=" . $newQuantity);
+                            $this->generateCostAdjustmentByItem($dataSession, $companyID, $itemID, $objItem["itemNumber"], $objItem["currencyID"], $objItem["defaultWarehouseID"], $newQuantity, $newCost);
+                        } else {
+                            log_message("debug", "[ITEM_NEW] Costo en 0, no se genera ajuste para itemID=" . $itemID);
+                        }
+                    }
+
                     $this->response->redirect(base_url() . "/" . 'app_inventory_item/edit/companyID/' . $companyID . "/itemID/" . $itemID . "/callback/" . $callback . "/comando/" . $comando);
                 } else if ($db->transStatus() !== false && $comando == "pantalla_abierta_desde_la_compra") {
                     $db->transCommit();
@@ -1345,6 +1363,22 @@ class app_inventory_item extends _BaseController
                 if ($db->transStatus() !== false) {
                     $db->transCommit();
                     $this->core_web_notification->set_message(false, SUCCESS . " " . $messageTmp);
+
+                    //Si el parametro permite actualizar el costo en el item y el costo cambio,
+                    //generar un ajuste de costo (insertElement de app_inventory_cost_adjustment)
+                    $allowUpdateCostInItem = $this->core_web_parameter->getParameterValue("INVENTORY_ALLOW_UPDATE_COST_IN_ITEM", $companyID);
+                    log_message("debug", "[ITEM_EDIT] Evaluando ajuste de costo - itemID=" . $itemID . ", INVENTORY_ALLOW_UPDATE_COST_IN_ITEM=" . $allowUpdateCostInItem);
+                    if (strtoupper($allowUpdateCostInItem) == "TRUE") {
+                        $newCost = helper_StringToNumber( /*inicio get post*/$this->request->getPost("txtCost"));
+                        $oldCost = helper_StringToNumber($objOldItem->cost);
+                        log_message("debug", "[ITEM_EDIT] Comparando costos - itemID=" . $itemID . ", oldCost=" . $oldCost . ", newCost=" . $newCost);
+                        if ((float) $newCost != (float) $oldCost) {
+                            log_message("debug", "[ITEM_EDIT] Costo cambio, generando ajuste de costo para itemID=" . $itemID);
+                            $this->generateCostAdjustmentByItem($dataSession, $companyID, $objOldItem->itemID, $objOldItem->itemNumber, $objOldItem->currencyID, $objOldItem->defaultWarehouseID, $objOldItem->quantity, $newCost);
+                        } else {
+                            log_message("debug", "[ITEM_EDIT] Costo sin cambios, no se genera ajuste para itemID=" . $itemID);
+                        }
+                    }
                 } else {
                     $db->transRollback();
                     $this->core_web_notification->set_message(true, $this->db->_error_message());
@@ -1530,6 +1564,22 @@ class app_inventory_item extends _BaseController
                 //Fin
                 if ($db->transStatus() !== false) {
                     $db->transCommit();
+
+                    //Si el parametro permite actualizar el costo en el item y viene un costo,
+                    //generar un ajuste de costo (insertElement de app_inventory_cost_adjustment)
+                    $allowUpdateCostInItem = $this->core_web_parameter->getParameterValue("INVENTORY_ALLOW_UPDATE_COST_IN_ITEM", $companyID);
+                    log_message("debug", "[ITEM_NEW_MOBILE] Evaluando ajuste de costo - itemID=" . $itemID . ", INVENTORY_ALLOW_UPDATE_COST_IN_ITEM=" . $allowUpdateCostInItem);
+                    if (strtoupper($allowUpdateCostInItem) == "TRUE") {
+                        $newCost = helper_StringToNumber(helper_RequestGetValueObjet($item, "cost", 0));
+                        log_message("debug", "[ITEM_NEW_MOBILE] Costo recibido - itemID=" . $itemID . ", newCost=" . $newCost);
+                        if ((float) $newCost != (float) 0) {
+                            $newQuantity = helper_StringToNumber(helper_RequestGetValueObjet($item, "quantity", 0));
+                            log_message("debug", "[ITEM_NEW_MOBILE] Generando ajuste de costo para itemID=" . $itemID . ", quantity=" . $newQuantity);
+                            $this->generateCostAdjustmentByItem($dataSession, $companyID, $itemID, $objItem["itemNumber"], $objItem["currencyID"], $objItem["defaultWarehouseID"], $newQuantity, $newCost);
+                        } else {
+                            log_message("debug", "[ITEM_NEW_MOBILE] Costo en 0 o ausente, no se genera ajuste para itemID=" . $itemID);
+                        }
+                    }
                 } else {
                     $db->transRollback();
                 }
@@ -1577,6 +1627,23 @@ class app_inventory_item extends _BaseController
                 //Fin
                 if ($db->transStatus() !== false) {
                     $db->transCommit();
+
+                    //Si el parametro permite actualizar el costo en el item y el costo cambio,
+                    //generar un ajuste de costo (insertElement de app_inventory_cost_adjustment)
+                    $allowUpdateCostInItem = $this->core_web_parameter->getParameterValue("INVENTORY_ALLOW_UPDATE_COST_IN_ITEM", $companyID);
+                    log_message("debug", "[ITEM_EDIT_MOBILE] Evaluando ajuste de costo - itemID=" . $itemID . ", INVENTORY_ALLOW_UPDATE_COST_IN_ITEM=" . $allowUpdateCostInItem);
+                    if (strtoupper($allowUpdateCostInItem) == "TRUE") {
+                        $newCost     = helper_StringToNumber(helper_RequestGetValueObjet($item, "cost", 0));
+                        $objItemCost = $this->Item_Model->get_rowByPK($companyID, $itemID);
+                        $oldCost     = helper_StringToNumber(helper_RequestGetValueObjet($objItemCost, "cost", 0));
+                        log_message("debug", "[ITEM_EDIT_MOBILE] Comparando costos - itemID=" . $itemID . ", oldCost=" . $oldCost . ", newCost=" . $newCost . ", itemEncontrado=" . ($objItemCost ? "si" : "no"));
+                        if ($objItemCost && (float) $newCost != (float) $oldCost) {
+                            log_message("debug", "[ITEM_EDIT_MOBILE] Costo cambio, generando ajuste de costo para itemID=" . $itemID);
+                            $this->generateCostAdjustmentByItem($dataSession, $companyID, $itemID, $objItemCost->itemNumber, $objItemCost->currencyID, $objItemCost->defaultWarehouseID, $objItemCost->quantity, $newCost);
+                        } else {
+                            log_message("debug", "[ITEM_EDIT_MOBILE] Costo sin cambios o item no encontrado, no se genera ajuste para itemID=" . $itemID);
+                        }
+                    }
                 } else {
                     $db->transRollback();
                 }
@@ -2027,6 +2094,84 @@ class app_inventory_item extends _BaseController
         header('Content-Length: ' . filesize($pathFileCodeBarra));
         readfile($pathFileCodeBarra);
         exit;
+    }
+
+    /**
+     * Genera un ajuste de costo (insertElement de app_inventory_cost_adjustment) para un item.
+     * Arma un POST sintetico con los valores por defecto (causal, proveedor, bodega y moneda)
+     * y el detalle con el item, su cantidad y el nuevo costo.
+     * Reutilizable desde la creacion/edicion web y desde los flujos mobile.
+     */
+    private function generateCostAdjustmentByItem($dataSession, $companyID, $itemID, $itemNumber, $currencyID, $defaultWarehouseID, $quantity, $newCost)
+    {
+        $logTag = "[COST_ADJUSTMENT_BY_ITEM]";
+        try {
+            $branchID = $dataSession["user"]->branchID;
+            log_message("debug", $logTag . " INICIO - companyID=" . $companyID . ", itemID=" . $itemID . ", itemNumber=" . $itemNumber . ", currencyID=" . $currencyID . ", defaultWarehouseID=" . $defaultWarehouseID . ", quantity=" . $quantity . ", newCost=" . $newCost);
+
+            //Valores por defecto para el documento de ajuste de costo
+            $transactionID   = $this->core_web_transaction->getTransactionID($companyID, "tb_transaction_master_cost_adjustment", 0);
+            $causalDefault   = $this->core_web_transaction->getDefaultCausalID($companyID, $transactionID);
+            $providerNumber  = $this->core_web_parameter->getParameterValue("CXP_PROVIDER_DEFAULT", $companyID);
+            $providerDefault = $this->Provider_Model->get_rowByProviderNumber($companyID, $providerNumber);
+            $warehouseID     = empty($defaultWarehouseID) ? $this->core_web_parameter->getParameterValue("INVENTORY_ITEM_WAREHOUSE_DEFAULT", $companyID) : $defaultWarehouseID;
+            $statusID        = $this->core_web_workflow->getWorkflowStageApplyFirst("tb_transaction_master_cost_adjustment", "statusID", $companyID, $branchID, $dataSession["role"]->roleID)[0]->workflowStageID;
+
+            log_message("debug", $logTag . " DEFAULTS - transactionID=" . $transactionID . ", causalID=" . $causalDefault . ", providerNumber=" . $providerNumber . ", providerEntityID=" . ($providerDefault ? $providerDefault->entityID : "null") . ", warehouseID=" . $warehouseID . ", statusID=" . $statusID);
+
+            if (! $providerDefault) {
+                log_message("error", $logTag . " ADVERTENCIA - No se encontro proveedor por defecto (CXP_PROVIDER_DEFAULT=" . $providerNumber . ") para companyID=" . $companyID);
+            }
+
+            //Construir el POST sintetico que espera insertElement de app_inventory_cost_adjustment
+            $post = [
+                "txtCausalID"                        => $causalDefault,
+                "txtProviderID"                      => $providerDefault ? $providerDefault->entityID : null,
+                "txtTransactionOn"                   => date("Y-m-d H:i:s"),
+                "txtDescription"                     => "Ajuste de costo generado automaticamente desde el producto " . $itemNumber,
+                "txtCurrencyID"                      => $currencyID,
+                "txtReference1"                      => "",
+                "txtReference2"                      => "",
+                "txtReference3"                      => "",
+                "txtTransactionMasterIDOrdenCompra"  => 0,
+                "txtStatusID"                        => $statusID,
+                "txtWarehouseID"                     => $warehouseID,
+                "txtIva"                             => 0,
+                "txtIsc"                             => 0,
+                "txtCreditLineID"                    => 0,
+                "txtSubTotal"                        => 0,
+                "txtDiscount"                        => 0,
+                "txtTotal"                           => 0,
+                "txtIsTemplate"                      => 0,
+                "txtDetailItemID"                    => [$itemID],
+                "txtDetailQuantity"                  => [$quantity],
+                "txtDetailCost"                      => [$newCost],
+                "txtDetailLote"                      => [""],
+                "txtDetailVencimiento"               => [""],
+                "txtDetailPrice"                     => [0],
+                "txtDetailPrice2"                    => [0],
+                "txtDetailPrice3"                    => [0],
+                "txtReference4TransactionMasterDetail" => [""],
+                "txtDetailIva"                       => [0],
+                "txtDetailIsc"                       => [0],
+            ];
+
+            $this->request->setGlobal("post", $post);
+            log_message("debug", $logTag . " POST_SINTETICO - " . json_encode($post));
+
+            //Invocar el controlador de ajuste de costo.
+            //El archivo del controlador tiene un espacio en su nombre y la clase se llama
+            //tb_transaction_master_cost_adjustment, por lo que se incluye manualmente.
+            log_message("debug", $logTag . " Invocando insertElement de app_inventory_cost_adjustment");
+            $controller = new app_inventory_cost_adjustment();
+            $controller->initController($this->request, $this->response, $this->logger);
+            $controller->insertElement($dataSession);
+            log_message("debug", $logTag . " FIN - insertElement ejecutado para itemID=" . $itemID);
+
+        } catch (\Exception $ex) {
+            log_message("error", $logTag . " ERROR - linea=" . $ex->getLine() . ", mensaje=" . $ex->getMessage() . ", trace=" . $ex->getTraceAsString());
+            $this->core_web_notification->set_message(true, $ex->getLine() . " " . $ex->getMessage());
+        }
     }
 
 }

@@ -915,7 +915,6 @@ $routes->match(['get', 'post'], 'app_inventory_inputunpost/viewRegisterFormatoA4
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/viewRegisterFormatoA4/(:any)', 'app_inventory_inputunpost::viewRegisterFormatoA4');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/viewRegisterFormatoA4Globalpro', 'app_inventory_inputunpost::viewRegisterFormatoA4Globalpro');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/viewRegisterFormatoA4Globalpro/(:any)', 'app_inventory_inputunpost::viewRegisterFormatoA4Globalpro');
-$routes->match(['get', 'post'], 'app_inventory_inputunpost/searchTransactionMaster', 'app_inventory_inputunpost::searchTransactionMaster');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/viewPrinterDirectCompra58mm', 'app_inventory_inputunpost::viewPrinterDirectCompra58mm');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/viewPrinterDirectCompra58mm/(:any)', 'app_inventory_inputunpost::viewPrinterDirectCompra58mm');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/viewRegisterFormatoA4GlobalproOnlyQuantity', 'app_inventory_inputunpost::viewRegisterFormatoA4GlobalproOnlyQuantity');
@@ -926,6 +925,7 @@ $routes->match(['get', 'post'], 'app_inventory_inputunpost/viewRegisterFormato80
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/viewRegisterFormato80mmFarmaLeyOnlyQuantity/(:any)', 'app_inventory_inputunpost::viewRegisterFormato80mmFarmaLeyOnlyQuantity');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/viewRegisterFormatoDB', 'app_inventory_inputunpost::viewRegisterFormatoDB');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/viewRegisterFormatoDB/(:any)', 'app_inventory_inputunpost::viewRegisterFormatoDB');
+$routes->match(['get', 'post'], 'app_inventory_inputunpost/searchTransactionMaster', 'app_inventory_inputunpost::searchTransactionMaster');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/delete', 'app_inventory_inputunpost::delete');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/insertElement', 'app_inventory_inputunpost::insertElement');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/insertElement/(:any)', 'app_inventory_inputunpost::insertElement');
@@ -940,6 +940,21 @@ $routes->match(['get', 'post'], 'app_inventory_inputunpost/index', 'app_inventor
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/index/(:any)', 'app_inventory_inputunpost::index');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/add_masinformacion', 'app_inventory_inputunpost::add_masinformacion');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/add_masinformacion/(:any)', 'app_inventory_inputunpost::add_masinformacion');
+$routes->match(['get', 'post'], 'app_inventory_cost_adjustment/viewRegisterFormatoDB', 'app_inventory_cost_adjustment::viewRegisterFormatoDB');
+$routes->match(['get', 'post'], 'app_inventory_cost_adjustment/viewRegisterFormatoDB/(:any)', 'app_inventory_cost_adjustment::viewRegisterFormatoDB');
+$routes->match(['get', 'post'], 'app_inventory_cost_adjustment/searchTransactionMaster', 'app_inventory_cost_adjustment::searchTransactionMaster');
+$routes->match(['get', 'post'], 'app_inventory_cost_adjustment/delete', 'app_inventory_cost_adjustment::delete');
+$routes->match(['get', 'post'], 'app_inventory_cost_adjustment/insertElement', 'app_inventory_cost_adjustment::insertElement');
+$routes->match(['get', 'post'], 'app_inventory_cost_adjustment/insertElement/(:any)', 'app_inventory_cost_adjustment::insertElement');
+$routes->match(['get', 'post'], 'app_inventory_cost_adjustment/updateElement', 'app_inventory_cost_adjustment::updateElement');
+$routes->match(['get', 'post'], 'app_inventory_cost_adjustment/updateElement/(:any)', 'app_inventory_cost_adjustment::updateElement');
+$routes->match(['get', 'post'], 'app_inventory_cost_adjustment/save', 'app_inventory_cost_adjustment::save');
+$routes->match(['get', 'post'], 'app_inventory_cost_adjustment/save/(:any)', 'app_inventory_cost_adjustment::save');
+$routes->match(['get', 'post'], 'app_inventory_cost_adjustment/edit', 'app_inventory_cost_adjustment::edit');
+$routes->match(['get', 'post'], 'app_inventory_cost_adjustment/edit/(:any)', 'app_inventory_cost_adjustment::edit');
+$routes->match(['get', 'post'], 'app_inventory_cost_adjustment/add', 'app_inventory_cost_adjustment::add');
+$routes->match(['get', 'post'], 'app_inventory_cost_adjustment/index', 'app_inventory_cost_adjustment::index');
+$routes->match(['get', 'post'], 'app_inventory_cost_adjustment/index/(:any)', 'app_inventory_cost_adjustment::index');
 $routes->match(['get', 'post'], 'app_inventory_ajuste/searchTransactionMaster', 'app_inventory_ajuste::searchTransactionMaster');
 $routes->match(['get', 'post'], 'app_inventory_ajuste/delete', 'app_inventory_ajuste::delete');
 $routes->match(['get', 'post'], 'app_inventory_ajuste/insertElement', 'app_inventory_ajuste::insertElement');

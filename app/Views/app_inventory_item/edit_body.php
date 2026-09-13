@@ -150,7 +150,8 @@
 								<div class="form-group								                       <?php echo getBehavio($company->type, "app_inventory_item", "divTxtCantidad", ""); ?> ">
 										<label class="col-lg-4 control-label" for="normal">Cantidad</label>
 										<div class="col-lg-8">
-											<input class="form-control" disabled  type="text"  name="txtQuantity" id="txtQuantity" value="<?php echo $objItem->quantity; ?>">
+											<?php $allowUpdateQuantity = (isset($objParameterAll["INVENTORY_ALLOW_UPDATE_QUANTITY_IN_ITEM"]) && strtoupper($objParameterAll["INVENTORY_ALLOW_UPDATE_QUANTITY_IN_ITEM"]) == "TRUE"); ?>
+											<input class="form-control" <?php echo $allowUpdateQuantity ? "" : "readonly"; ?>  type="text"  name="txtQuantity" id="txtQuantity" value="<?php echo $objItem->quantity; ?>">
 										</div>
 								</div>
 
@@ -173,7 +174,8 @@
 								<div class="form-group	<?php echo getBehavio($company->type, "app_inventory_item", "divTxtCosto", ""); ?> ">
 										<label class="col-lg-4 control-label" for="normal">Costo</label>
 										<div class="col-lg-8">
-											<input class="form-control" disabled type="text"  name="txtCost" id="txtCost" value="<?php echo $objItem->cost; ?>">
+											<?php $allowUpdateCost = (isset($objParameterAll["INVENTORY_ALLOW_UPDATE_COST_IN_ITEM"]) && strtoupper($objParameterAll["INVENTORY_ALLOW_UPDATE_COST_IN_ITEM"]) == "TRUE"); ?>
+											<input class="form-control" <?php echo $allowUpdateCost ? "" : "readonly"; ?> type="text"  name="txtCost" id="txtCost" value="<?php echo $objItem->cost; ?>">
 										</div>
 								</div>
 
