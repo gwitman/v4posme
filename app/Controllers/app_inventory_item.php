@@ -738,7 +738,7 @@ class app_inventory_item extends _BaseController
                         if ((float) $newCost != (float) 0) {
                             $newQuantity = helper_StringToNumber( /*inicio get post*/$this->request->getPost("txtQuantity"));
                             log_message("debug", "[ITEM_NEW] Generando ajuste de costo para itemID=" . $itemID . ", quantity=" . $newQuantity);
-                            $this->generateCostAdjustmentByItem($dataSession, $companyID, $itemID, $objItem["itemNumber"], $objItem["currencyID"], $objItem["defaultWarehouseID"], $newQuantity, $newCost);
+                            $this->generateCostAdjustmentByItem($dataSession, $companyID, $itemID, $objItem["itemNumber"], $objItem["currencyID"], $objItem["defaultWarehouseID"], 0, $newCost);
                         } else {
                             log_message("debug", "[ITEM_NEW] Costo en 0, no se genera ajuste para itemID=" . $itemID);
                         }
@@ -1117,7 +1117,7 @@ class app_inventory_item extends _BaseController
                             //apinew no tiene sesion de usuario, se construye la sesion del usuario por defecto
                             $dataSessionAdjustment = $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
                             log_message("debug", "[APINEW] Generando ajuste de costo para itemID=" . $itemID . ", quantity=" . $newQuantity);
-                            $this->generateCostAdjustmentByItem($dataSessionAdjustment, $companyID, $itemID, $objItem["itemNumber"], $objItem["currencyID"], $objItem["defaultWarehouseID"], $newQuantity, $newCost);
+                            $this->generateCostAdjustmentByItem($dataSessionAdjustment, $companyID, $itemID, $objItem["itemNumber"], $objItem["currencyID"], $objItem["defaultWarehouseID"], 0, $newCost);
                         } else {
                             log_message("debug", "[APINEW] Costo en 0 o ausente, no se genera ajuste para itemID=" . $itemID);
                         }
@@ -1392,7 +1392,7 @@ class app_inventory_item extends _BaseController
                         log_message("debug", "[ITEM_EDIT] Comparando costos - itemID=" . $itemID . ", oldCost=" . $oldCost . ", newCost=" . $newCost);
                         if ((float) $newCost != (float) $oldCost) {
                             log_message("debug", "[ITEM_EDIT] Costo cambio, generando ajuste de costo para itemID=" . $itemID);
-                            $this->generateCostAdjustmentByItem($dataSession, $companyID, $objOldItem->itemID, $objOldItem->itemNumber, $objOldItem->currencyID, $objOldItem->defaultWarehouseID, $objOldItem->quantity, $newCost);
+                            $this->generateCostAdjustmentByItem($dataSession, $companyID, $objOldItem->itemID, $objOldItem->itemNumber, $objOldItem->currencyID, $objOldItem->defaultWarehouseID, 0, $newCost);
                         } else {
                             log_message("debug", "[ITEM_EDIT] Costo sin cambios, no se genera ajuste para itemID=" . $itemID);
                         }
@@ -1593,7 +1593,7 @@ class app_inventory_item extends _BaseController
                         if ((float) $newCost != (float) 0) {
                             $newQuantity = helper_StringToNumber(helper_RequestGetValueObjet($item, "quantity", 0));
                             log_message("debug", "[ITEM_NEW_MOBILE] Generando ajuste de costo para itemID=" . $itemID . ", quantity=" . $newQuantity);
-                            $this->generateCostAdjustmentByItem($dataSession, $companyID, $itemID, $objItem["itemNumber"], $objItem["currencyID"], $objItem["defaultWarehouseID"], $newQuantity, $newCost);
+                            $this->generateCostAdjustmentByItem($dataSession, $companyID, $itemID, $objItem["itemNumber"], $objItem["currencyID"], $objItem["defaultWarehouseID"], 0, $newCost);
                         } else {
                             log_message("debug", "[ITEM_NEW_MOBILE] Costo en 0 o ausente, no se genera ajuste para itemID=" . $itemID);
                         }
@@ -1657,7 +1657,7 @@ class app_inventory_item extends _BaseController
                         log_message("debug", "[ITEM_EDIT_MOBILE] Comparando costos - itemID=" . $itemID . ", oldCost=" . $oldCost . ", newCost=" . $newCost . ", itemEncontrado=" . ($objItemCost ? "si" : "no"));
                         if ($objItemCost && (float) $newCost != (float) $oldCost) {
                             log_message("debug", "[ITEM_EDIT_MOBILE] Costo cambio, generando ajuste de costo para itemID=" . $itemID);
-                            $this->generateCostAdjustmentByItem($dataSession, $companyID, $itemID, $objItemCost->itemNumber, $objItemCost->currencyID, $objItemCost->defaultWarehouseID, $objItemCost->quantity, $newCost);
+                            $this->generateCostAdjustmentByItem($dataSession, $companyID, $itemID, $objItemCost->itemNumber, $objItemCost->currencyID, $objItemCost->defaultWarehouseID, 0, $newCost);
                         } else {
                             log_message("debug", "[ITEM_EDIT_MOBILE] Costo sin cambios o item no encontrado, no se genera ajuste para itemID=" . $itemID);
                         }
@@ -1687,7 +1687,7 @@ class app_inventory_item extends _BaseController
 					log_message("debug", "[ITEM_EDIT_PUBLIC] Comparando costos - itemID=" . $itemID . ", oldCost=" . $oldCost . ", newCost=" . $newCost);
 					if ((float) $newCost != (float) $oldCost) {
 						log_message("debug", "[ITEM_EDIT_PUBLIC] Costo cambio, generando ajuste de costo para itemID=" . $itemID);
-						$this->generateCostAdjustmentByItem($dataSession, $companyID, $objOldItemPublic->itemID, $objOldItemPublic->itemNumber, $objOldItemPublic->currencyID, $objOldItemPublic->defaultWarehouseID, $objOldItemPublic->quantity, $newCost);
+						$this->generateCostAdjustmentByItem($dataSession, $companyID, $objOldItemPublic->itemID, $objOldItemPublic->itemNumber, $objOldItemPublic->currencyID, $objOldItemPublic->defaultWarehouseID, 0, $newCost);
 					} else {
 						log_message("debug", "[ITEM_EDIT_PUBLIC] Costo sin cambios, no se genera ajuste para itemID=" . $itemID);
 					}
@@ -2180,7 +2180,7 @@ class app_inventory_item extends _BaseController
                 "txtTotal"                           => 0,
                 "txtIsTemplate"                      => 0,
                 "txtDetailItemID"                    => [$itemID],
-                "txtDetailQuantity"                  => [0],
+                "txtDetailQuantity"                  => [$quantity],
                 "txtDetailCost"                      => [$newCost],
                 "txtDetailLote"                      => [""],
                 "txtDetailVencimiento"               => [""],
