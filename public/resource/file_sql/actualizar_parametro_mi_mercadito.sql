@@ -1991,14 +1991,14 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 5756-9044" 
+	tb_company_parameter.value = "5756-9044" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 5756-9044" 
+	tb_company_parameter.value = "5756-9044" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -2013,7 +2013,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Mi Mercadito' , address = 'Sucursal #01 : Alcaldia 3c al este, media al norte mano izquierda  ---------- Y/O ----------  Sucursal #02 : Contiguo al restaurante El Campestre.' ,
+	NAME = 'Mi Mercadito' , address = 'Visitanos en : Alcaldia 4c al este, media al norte mano derecha  ---------- ó ----------  En : Contiguo al restaurante El Campestre.' ,
 	flavorID = 1192 /*usuarioID*/,type='miMercadito'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
