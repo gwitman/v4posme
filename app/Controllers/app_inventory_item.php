@@ -1104,6 +1104,24 @@ class app_inventory_item extends _BaseController
 
                 if ($db->transStatus() !== false) {
                     $db->transCommit();
+
+                    //Si el parametro permite actualizar el costo en el item y viene un costo,
+                    //generar un ajuste de costo (insertElement de app_inventory_cost_adjustment)
+                    $allowUpdateCostInItem = $this->core_web_parameter->getParameterValue("INVENTORY_ALLOW_UPDATE_COST_IN_ITEM", $companyID);
+                    log_message("debug", "[APINEW] Evaluando ajuste de costo - itemID=" . $itemID . ", INVENTORY_ALLOW_UPDATE_COST_IN_ITEM=" . $allowUpdateCostInItem);
+                    if (strtoupper($allowUpdateCostInItem) == "TRUE") {
+                        $newCost = helper_StringToNumber(array_key_exists("txtCost", $item) ? $item["txtCost"] : 0);
+                        log_message("debug", "[APINEW] Costo recibido - itemID=" . $itemID . ", newCost=" . $newCost);
+                        if ((float) $newCost != (float) 0) {
+                            $newQuantity = helper_StringToNumber(array_key_exists("txtQuantity", $item) ? $item["txtQuantity"] : 0);
+                            //apinew no tiene sesion de usuario, se construye la sesion del usuario por defecto
+                            $dataSessionAdjustment = $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
+                            log_message("debug", "[APINEW] Generando ajuste de costo para itemID=" . $itemID . ", quantity=" . $newQuantity);
+                            $this->generateCostAdjustmentByItem($dataSessionAdjustment, $companyID, $itemID, $objItem["itemNumber"], $objItem["currencyID"], $objItem["defaultWarehouseID"], $newQuantity, $newCost);
+                        } else {
+                            log_message("debug", "[APINEW] Costo en 0 o ausente, no se genera ajuste para itemID=" . $itemID);
+                        }
+                    }
                 } else {
                     $db->transRollback();
                 }
@@ -1656,7 +1674,25 @@ class app_inventory_item extends _BaseController
 				$dataSession							= $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
 				$objNewItem["realStateDateExpired"]   	= /*inicio get post*/$this->request->getPost("txtRealStateDateExpired");
 				
+				$objOldItemPublic				= $this->Item_Model->get_rowByPK($companyID, $itemID);
 				$row_affected 					= $this->Item_Model->update_app_posme($companyID, $itemID, $objNewItem);
+
+				//Si el parametro permite actualizar el costo en el item y el costo cambio,
+				//generar un ajuste de costo (insertElement de app_inventory_cost_adjustment)
+				$allowUpdateCostInItem = $this->core_web_parameter->getParameterValue("INVENTORY_ALLOW_UPDATE_COST_IN_ITEM", $companyID);
+				log_message("debug", "[ITEM_EDIT_PUBLIC] Evaluando ajuste de costo - itemID=" . $itemID . ", INVENTORY_ALLOW_UPDATE_COST_IN_ITEM=" . $allowUpdateCostInItem);
+				if (strtoupper($allowUpdateCostInItem) == "TRUE" && $objOldItemPublic) {
+					$newCost = helper_StringToNumber( /*inicio get post*/$this->request->getPost("txtCost"));
+					$oldCost = helper_StringToNumber($objOldItemPublic->cost);
+					log_message("debug", "[ITEM_EDIT_PUBLIC] Comparando costos - itemID=" . $itemID . ", oldCost=" . $oldCost . ", newCost=" . $newCost);
+					if ((float) $newCost != (float) $oldCost) {
+						log_message("debug", "[ITEM_EDIT_PUBLIC] Costo cambio, generando ajuste de costo para itemID=" . $itemID);
+						$this->generateCostAdjustmentByItem($dataSession, $companyID, $objOldItemPublic->itemID, $objOldItemPublic->itemNumber, $objOldItemPublic->currencyID, $objOldItemPublic->defaultWarehouseID, $objOldItemPublic->quantity, $newCost);
+					} else {
+						log_message("debug", "[ITEM_EDIT_PUBLIC] Costo sin cambios, no se genera ajuste para itemID=" . $itemID);
+					}
+				}
+
 				$objLog["companyID"]			= APP_COMPANY;
 				$objLog["branchID"]				= $dataSession["user"]->branchID;
 				$objLog["loginID"]				= $dataSession["user"]->userID;
