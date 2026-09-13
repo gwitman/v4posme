@@ -8275,7 +8275,14 @@ class app_invoice_billing extends _BaseController {
 					mkdir($documentoPathQr, 0777, true);
 				}
 				
-				$urlQr 		= base_url();
+				$urlQr 		= getBahavioDB(
+						$objCompany->type,
+						"app_invoice_billing",
+						"urlQrInPrinterInvoice",
+							base_url()."/app_invoice_billing/viewInvoicePublic/inm/".
+							$datView["objTM"]->transactionNumber."/unm/".$datView["objUser"]->nickname
+				);
+				
 				$this->core_web_qr->generate($urlQr,$documentoPathQr."/qrcode.png","M","10");
 				$qrImage 	= $documentoPathQr."/qrcode.png";
 				if (file_exists($qrImage)) {
