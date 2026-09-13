@@ -2144,7 +2144,7 @@ class app_inventory_item extends _BaseController
                 "txtTotal"                           => 0,
                 "txtIsTemplate"                      => 0,
                 "txtDetailItemID"                    => [$itemID],
-                "txtDetailQuantity"                  => [$quantity],
+                "txtDetailQuantity"                  => [0],
                 "txtDetailCost"                      => [$newCost],
                 "txtDetailLote"                      => [""],
                 "txtDetailVencimiento"               => [""],
