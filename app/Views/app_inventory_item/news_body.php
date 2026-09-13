@@ -141,7 +141,7 @@
 												?>
 												<label class="col-lg-4 control-label text-primary" for="normal">Cantidad</label>
 												<div class="col-lg-8">
-													<input class="form-control"   type="text"  name="txtQuantity" id="txtQuantity" value="">												
+													<input class="form-control"   type="text"  name="txtQuantity" id="txtQuantity" value="0">												
 												</div>
 												<?php 
 											}
@@ -151,7 +151,7 @@
 												<label class="col-lg-4 control-label" for="normal">Cantidad</label>
 												<div class="col-lg-8">
 													<?php $allowUpdateQuantity = (isset($objParameterAll["INVENTORY_ALLOW_UPDATE_QUANTITY_IN_ITEM"]) && strtoupper($objParameterAll["INVENTORY_ALLOW_UPDATE_QUANTITY_IN_ITEM"]) == "TRUE"); ?>
-													<input class="form-control" <?php echo $allowUpdateQuantity ? "" : "readonly"; ?>  type="text"  name="txtQuantity" id="txtQuantity" value="">												
+													<input class="form-control" <?php echo $allowUpdateQuantity ? "" : "readonly"; ?>  type="text"  name="txtQuantity" id="txtQuantity" value="0">												
 												</div>
 												<?php 
 											}
