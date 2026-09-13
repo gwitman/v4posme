@@ -2156,7 +2156,15 @@ class app_inventory_item extends _BaseController
             $providerNumber  = $this->core_web_parameter->getParameterValue("CXP_PROVIDER_DEFAULT", $companyID);
             $providerDefault = $this->Provider_Model->get_rowByProviderNumber($companyID, $providerNumber);
             $warehouseID     = empty($defaultWarehouseID) ? $this->core_web_parameter->getParameterValue("INVENTORY_ITEM_WAREHOUSE_DEFAULT", $companyID) : $defaultWarehouseID;
-            $statusID        = $this->core_web_workflow->getWorkflowStageApplyFirst("tb_transaction_master_cost_adjustment", "statusID", $companyID, $branchID, $dataSession["role"]->roleID)[0]->workflowStageID;
+
+            //El workflow puede no devolver etapas (usuario sin autorizacion de rol, sin etapas configuradas
+            //o sin permiso sobre la primera etapa). En esos casos retorna null/array vacio, por lo que se
+            //valida antes de acceder al indice [0] para evitar "Trying to access array offset on value of type null".
+            $workflowStages = $this->core_web_workflow->getWorkflowStageApplyFirst("tb_transaction_master_cost_adjustment", "statusID", $companyID, $branchID, $dataSession["role"]->roleID);
+            if (empty($workflowStages) || ! isset($workflowStages[0])) {
+                throw new \Exception("No existe una etapa de workflow configurada/autorizada para 'tb_transaction_master_cost_adjustment' (statusID) para el rol del usuario (roleID=" . $dataSession["role"]->roleID . ", branchID=" . $branchID . ", companyID=" . $companyID . ")");
+            }
+            $statusID        = $workflowStages[0]->workflowStageID;
 
             log_message("debug", $logTag . " DEFAULTS - transactionID=" . $transactionID . ", causalID=" . $causalDefault . ", providerNumber=" . $providerNumber . ", providerEntityID=" . ($providerDefault ? $providerDefault->entityID : "null") . ", warehouseID=" . $warehouseID . ", statusID=" . $statusID);
 
