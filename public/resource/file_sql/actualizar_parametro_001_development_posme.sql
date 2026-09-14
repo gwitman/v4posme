@@ -5,6 +5,31 @@
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "123" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "EXPENSE_STATUS_DEFAULT";## Estado aplicado por defecto  para los gastos mobiles
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "521" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "EXPENSE_AREA_DEFAULT";## Area por defecto para los gastos mobiles
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "2060" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "EXPENSE_CLASS_DEFAULT";## Clase por defecto para los gastos mobiles
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "520" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "EXPENSE_PRIORITY_DEFAULT";## Prioridad por defecto para los gastos mobiles
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 

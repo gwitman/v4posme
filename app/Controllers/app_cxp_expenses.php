@@ -678,6 +678,130 @@ class app_cxp_expenses extends _BaseController {
 		    echo $resultView;		
 		}	
 	}
+	function insertElementMobile($dataSession, $transactionMaster){
+		try{
+			//LOG INICIO
+			log_message("error", print_r("[EXPENSE_MOBILE] 0001 - INICIO insertElementMobile", true));
+			log_message("error", print_r($transactionMaster, true));
+
+			
+			$companyID 					= $dataSession["user"]->companyID;
+			$branchID 					= $dataSession["user"]->branchID;
+			
+
+			//Obtener el Componente de Transacciones de Gastos
+			$objComponentShare			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_accounting_expenses");
+			if(!$objComponentShare)
+			throw new \Exception("EL COMPONENTE 'tb_transaction_master_accounting_expenses' NO EXISTE...");
+
+			//Obtener el Componente del Documento de Credito (para el detalle)
+			$objCustomerCreditDocument	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_credit_document");
+			if(!$objCustomerCreditDocument)
+			throw new \Exception("EL COMPONENTE 'tb_customer_credit_document' NO EXISTE...");
+
+			log_message("error", print_r("[EXPENSE_MOBILE] 0002 - componentes OK", true));
+
+			
+			//Obtener transaccion
+			$transactionID 				= $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_accounting_expenses",0);
+			$objT 						= $this->Transaction_Model->getByCompanyAndTransaction($companyID,$transactionID);
+
+			//Proveedor por defecto (los gastos moviles no traen proveedor)
+			$providerDefault			= $this->core_web_parameter->getParameter("CXP_PROVIDER_DEFAULT",$companyID);
+			$providerDefault 			= $this->Provider_Model->get_rowByProviderNumber($companyID,$providerDefault->value);
+			$entityIDDefault			= $providerDefault ? $providerDefault->entityID : 0;
+
+			//Monto
+			$subAmount					= isset($transactionMaster->SubAmount) ? helper_StringToNumber($transactionMaster->SubAmount) : 0;
+			$amount						= isset($transactionMaster->Amount) ? helper_StringToNumber($transactionMaster->Amount) : $subAmount;
+			$discount					= isset($transactionMaster->Discount) ? helper_StringToNumber($transactionMaster->Discount) : 0;
+
+			$objTM["companyID"] 					= $companyID;
+			$objTM["transactionID"] 				= $transactionID;
+			$objTM["branchID"]						= $branchID;
+			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($companyID,$branchID,"tb_transaction_master_accounting_expenses",0);
+			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($companyID,$transactionID);
+			$objTM["entityID"]						= 0;
+			$objTM["transactionOn"]					= $transactionMaster->TransactionOn;
+			$objTM["statusIDChangeOn"]				= date("Y-m-d H:i:s");
+			$objTM["componentID"] 					= $objComponentShare->componentID;
+			$objTM["note"] 							= isset($transactionMaster->Comment) ? $transactionMaster->Comment : "";
+			$objTM["sign"] 							= $objT->signInventory;
+			$objTM["currencyID"]					= isset($transactionMaster->CurrencyId) ? $transactionMaster->CurrencyId : $this->core_web_currency->getCurrencyDefault($companyID)->currencyID;
+			$objTM["currencyID2"]					= $this->core_web_currency->getCurrencyExternal($companyID)->currencyID;
+			$objTM["exchangeRate"]					= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$objTM["currencyID2"],$objTM["currencyID"]);
+			$objTM["reference1"] 					= isset($transactionMaster->Reference1) ? $transactionMaster->Reference1 : "";
+			$objTM["reference2"] 					= isset($transactionMaster->Reference2) ? $transactionMaster->Reference2 : "";
+			$objTM["reference3"] 					= "";
+			$objTM["reference4"] 					= "";
+			$objTM["statusID"] 						= $this->core_web_parameter->getParameter("EXPENSE_STATUS_DEFAULT",$companyID)->value;
+			$objTM["amount"] 						= $transactionMaster->Amount;
+			$objTM["tax1"] 						    = 0;
+			$objTM["tax2"] 						    = $transactionMaster->Amount;
+			$objTM["tax4"] 						    = 0;
+			$objTM["discount"]						= NULL;
+			$objTM["isApplied"] 					= 0;
+			$objTM["journalEntryID"] 				= 0;
+			$objTM["classID"] 						= $this->core_web_parameter->getParameter("EXPENSE_CLASS_DEFAULT",$companyID)->value;
+			$objTM["areaID"] 						= $this->core_web_parameter->getParameter("EXPENSE_AREA_DEFAULT",$companyID)->value;
+			$objTM["priorityID"] 					= $this->core_web_parameter->getParameter("EXPENSE_PRIORITY_DEFAULT",$companyID)->value;
+			$objTM["sourceWarehouseID"]				= NULL;
+			$objTM["targetWarehouseID"]				= NULL;
+			$objTM["isActive"]						= 1;
+			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);
+
+			log_message("error", print_r("[EXPENSE_MOBILE] 0003 - objTM listo: ".$objTM["transactionNumber"], true));
+
+			$db=db_connect();
+			$db->transStart();
+			$transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
+
+			log_message("error", print_r("[EXPENSE_MOBILE] 0004 - maestro insertado ID: ".$transactionMasterID, true));
+
+			//Insertar el Detalle (igual que insertElement)
+			//El gasto movil es un gasto simple en efectivo, sin documento de credito asociado,
+			//por lo que las referencias van con valores por defecto.
+			$objTMD["companyID"]					= $companyID;
+			$objTMD["transactionID"]				= $objTM["transactionID"];
+			$objTMD["transactionMasterID"]			= $transactionMasterID;
+			$objTMD["componentID"]					= $objCustomerCreditDocument->componentID;
+			$objTMD["componentItemID"]				= 0;
+			$objTMD["amount"]						= $objTM["tax2"];
+			$objTMD["reference3"]					= "";
+			$objTMD["reference1"]					= "";
+			$objTMD["isActive"]						= 1;
+			$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
+
+			log_message("error", print_r("[EXPENSE_MOBILE] 0004.001 - detalle insertado", true));
+
+			//Crear la Carpeta para almacenar los Archivos del Documento
+			$pathDocument = PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponentShare->componentID."/component_item_".$transactionMasterID;
+			if(!file_exists($pathDocument))
+			{
+				mkdir($pathDocument,0700,true);
+			}
+
+			if($db->transStatus() !== false)
+			{
+				$db->transCommit();
+				log_message("error", print_r("[EXPENSE_MOBILE] 0005 - commit OK", true));
+				return array(
+					"transactionID"			=> $transactionID,
+					"transactionMasterID"	=> $transactionMasterID,
+					"transactionNumber"		=> $objTM["transactionNumber"]
+				);
+			}
+			else
+			{
+				$db->transRollback();
+				throw new \Exception($this->db->_error_message());
+			}
+		}
+		catch(\Exception $ex){
+			log_message("error", print_r("[EXPENSE_MOBILE] ERROR - Linea: ".$ex->getLine()." - ".$ex->getMessage(), true));
+			throw new \Exception("Linea: ".$ex->getLine()." - ".$ex->getMessage());
+		}
+	}
 	function save($mode=""){
 		$mode = helper_SegmentsByIndex($this->uri->getSegments(),1,$mode);	
 		 try{ 

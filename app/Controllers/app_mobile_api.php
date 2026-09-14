@@ -359,6 +359,26 @@ class app_mobile_api extends _BaseController
             }
 			log_message("error",print_r("0010",true));
 
+			//SINCRONIZACION GASTOS
+			if(count($transactionMasters)>0)
+			{
+				$expensesController = new app_cxp_expenses();
+				$expensesController->initController($this->request, $this->response, $this->logger);
+				$typeTransaction 	= $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_accounting_expenses",0);
+				$gastos 			= array_filter($transactionMasters, function($tm) use ($typeTransaction) {
+					return $tm->TransactionId == $typeTransaction;
+				});
+				log_message("error",print_r("0010.001 - gastos: ".count($gastos),true));
+				foreach($gastos as $objTm)
+				{
+					log_message("error",print_r("0010.002",true));
+					log_message("error",print_r($objTm,true));
+					$expensesController->insertElementMobile($dataSession,$objTm);
+					log_message("error",print_r("0010.003",true));
+				}
+			}
+			log_message("error",print_r("0010.004",true));
+
 			//SINCRONIZAR VISITAS O CONSULTAS MEDICAS
 			if(count($transactionMasters)>0){
                 $medQueryController = new app_med_query();
