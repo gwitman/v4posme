@@ -1982,7 +1982,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Alpha Dbl Motor' , address = 'De los semáforos del mayoreo 7 cuadras abajo costado norte frente al populoso sol y luna' ,
+	NAME = 'Alpha DBL Motor' , address = 'De los semáforos del mayoreo 7 cuadras abajo costado norte frente al populoso sol y luna' ,
 	flavorID = 1165 /*usuarioID*/,type='alphaDblMotor'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

@@ -8133,6 +8133,7 @@ class app_invoice_billing extends _BaseController {
 			$datView["objUserEmployer"]				= $this->Employee_Model->get_rowByPK($datView["objUser"]->companyID,$datView["objUser"]->branchID,$datView["objUser"]->employeeID);
 			$datView["objWorkflowStage"]			= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($datView["objTM"]->statusID);
 			$datView["objMesa"]						= $this->core_web_catalog->getCatalogItem("tb_transaction_master_info_billing","mesaID",$companyID,$datView["objTMI"]->mesaID);
+			$datView["objZone"]						= $this->core_web_catalog->getCatalogItem("tb_transaction_master_info_billing","zoneID",$companyID,$datView["objTMI"]->zoneID);
 			$datView["objNaturalEmployer"]			= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objTM"]->entityIDSecondary);
 			
 			$objParameterEmail						= $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL",$companyID);
@@ -8171,6 +8172,8 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["address"]							= $objCompany->address;
 			$datViewArray["note"]								= $datView["objTM"]->note;
 			$datViewArray["mesaName"] 							= $datView["objMesa"]->name;			
+			$datViewArray["zoneID"] 							= $datView["objTMI"]->zoneID;
+			$datViewArray["zoneName"] 							= $datView["objZone"] ? $datView["objZone"]->name : "";
 			$datViewArray["customerName"]						= $datView["objTMI"]->referenceClientName == "" ? 
 																		$datView["objNatural"]->firstName :
 																		$datView["objTMI"]->referenceClientName ;
@@ -8224,7 +8227,9 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["amount_receipt"]						= sprintf("%.2f",$datView["objTMI"]->receiptAmount);
 			$datViewArray["amount_change"]						= sprintf("%.2f",$datView["objTMI"]->changeAmount);
 			$datViewArray["urlDomain"]							= rtrim(preg_replace('#^(https?://[^/]+).*$#i', '$1', base_url()), '/');
-			
+			$discount_percnetage 								= $datView["objTM"]->subAmount + $datView["objTM"]->discount;
+			$discount_percnetage								= ($datView["objTM"]->discount / $discount_percnetage)* 100;
+			$datViewArray["amount_discount_percentage"]			= sprintf("%.2f",$discount_percnetage);
 			
 			//agregar item
 			foreach($datView["objTMD"] as $detail_)
