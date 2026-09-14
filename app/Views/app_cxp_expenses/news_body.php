@@ -308,19 +308,19 @@
 													</div>
 												</div>
 											</div>
-										</div>
-										<div class="tab-pane fade" id="dropdown">
+											<div class="tab-pane fade" id="dropdown">
 
-											<div class="form-group">
-												<label class="col-lg-2 control-label" for="normal">Descripcion</label>
-												<div class="col-lg-6">
-													<textarea class="form-control" id="txtNote" name="txtNote" rows="6"></textarea>
+												<div class="form-group">
+													<label class="col-lg-2 control-label" for="normal">Descripcion</label>
+													<div class="col-lg-6">
+														<textarea class="form-control" id="txtNote" name="txtNote" rows="6"></textarea>
+													</div>
 												</div>
+
 											</div>
+											<div class="tab-pane fade" id="dropdown-file">
 
-										</div>
-										<div class="tab-pane fade" id="dropdown-file">
-
+											</div>
 										</div>
 									</div>
 
