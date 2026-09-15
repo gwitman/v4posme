@@ -1017,6 +1017,7 @@ class app_cxc_customer extends _BaseController {
 			
 			
 			//Asociar el cliente al colaborador
+			$objListEmployerID 				= array();
 			$objUserAdmin					=  $this->User_Model->get_rowByRoleAdmin($dataSession["user"]->companyID);			
 			if($objUserAdmin)
 			{
@@ -1033,6 +1034,31 @@ class app_cxc_customer extends _BaseController {
 					$dataRelationShip["startOn"]	= date("Y-m-d");
 					$dataRelationShip["endOn"]		= date("Y-m-d");
 					$this->Relationship_Model->insert_app_posme($dataRelationShip);					
+				}
+			}
+			
+			//Asociar el cliente a todos los colaboradores (no admin) si el parametro esta activo
+			$associateEmployer				= $this->core_web_parameter->getParameterValue("CUSTOMER_ASSOCIATE_EMPLOYER",$companyID);
+			if(strcmp($associateEmployer,"true") == 0)
+			{
+				$objListUserNotAdmin		= $this->User_Model->get_rowByRoleNotAdmin($dataSession["user"]->companyID);
+				if($objListUserNotAdmin)
+				{
+					foreach ($objListUserNotAdmin as $objUserNotAdmin)
+					{
+						//Excluir los colaboradores admin que ya se agregaron al inicio
+						if(in_array($objUserNotAdmin->employeeID,$objListEmployerID))
+							continue;
+						
+						$objListEmployerID[]			= $objUserNotAdmin->employeeID;
+						$dataRelationShip				= NULL;
+						$dataRelationShip["employeeID"]	= $objUserNotAdmin->employeeID;
+						$dataRelationShip["customerID"]	= $entityID;
+						$dataRelationShip["isActive"]	= 1;
+						$dataRelationShip["startOn"]	= date("Y-m-d");
+						$dataRelationShip["endOn"]		= date("Y-m-d");
+						$this->Relationship_Model->insert_app_posme($dataRelationShip);
+					}
 				}
 			}
 			
@@ -1490,6 +1516,7 @@ class app_cxc_customer extends _BaseController {
 			
 			
 			//Asociar el cliente al colaborador
+			$objListEmployerID 				= array();
 			$objUserAdmin					=  $this->User_Model->get_rowByRoleAdmin($dataSession["user"]->companyID);			
 			if($objUserAdmin)
 			{
@@ -1506,6 +1533,31 @@ class app_cxc_customer extends _BaseController {
 					$dataRelationShip["startOn"]	= date("Y-m-d");
 					$dataRelationShip["endOn"]		= date("Y-m-d");
 					$this->Relationship_Model->insert_app_posme($dataRelationShip);					
+				}
+			}
+			
+			//Asociar el cliente a todos los colaboradores (no admin) si el parametro esta activo
+			$associateEmployer				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CUSTOMER_ASSOCIATE_EMPLOYER");
+			if($associateEmployer && strcmp($associateEmployer->value,"true") == 0)
+			{
+				$objListUserNotAdmin		= $this->User_Model->get_rowByRoleNotAdmin($dataSession["user"]->companyID);
+				if($objListUserNotAdmin)
+				{
+					foreach ($objListUserNotAdmin as $objUserNotAdmin)
+					{
+						//Excluir los colaboradores admin que ya se agregaron al inicio
+						if(in_array($objUserNotAdmin->employeeID,$objListEmployerID))
+							continue;
+						
+						$objListEmployerID[]			= $objUserNotAdmin->employeeID;
+						$dataRelationShip				= NULL;
+						$dataRelationShip["employeeID"]	= $objUserNotAdmin->employeeID;
+						$dataRelationShip["customerID"]	= $entityID;
+						$dataRelationShip["isActive"]	= 1;
+						$dataRelationShip["startOn"]	= date("Y-m-d");
+						$dataRelationShip["endOn"]		= date("Y-m-d");
+						$this->Relationship_Model->insert_app_posme($dataRelationShip);
+					}
 				}
 			}
 			

@@ -5,6 +5,12 @@
 /*****Personalizar pantalla**********/
 /******************************************************************/	
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "true" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CUSTOMER_ASSOCIATE_EMPLOYER";## Asociar todos los clientes nuevos a todos los colaboradores
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "123" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
