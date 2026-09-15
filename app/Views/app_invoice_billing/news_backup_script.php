@@ -1473,7 +1473,7 @@
 												},												
 												{
 													xtype: 'textfield',
-													fieldLabel: 'Comentario',
+													fieldLabel: '<?php echo getBahavioDB($company->type, "app_invoice_billing", "labelCommentInvoiceV2Ext", "Comentario"); ?>',
 													labelWidth: 100,
 													width: 300,
 													name: 'txtNote',
