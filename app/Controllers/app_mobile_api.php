@@ -69,20 +69,19 @@ class app_mobile_api extends _BaseController
         try {
 
 
-			log_message("error",print_r("0001",true));
-			log_message("error",print_r("datos cargados----->",true));
-            //$nickname 						= "adminweb";
+			log_message("error","[SET_DATA_UPLOAD] ===== INICIO setDataUpload =====");
+			//$nickname 						= "adminweb";
             //$password 						= "abeadm";
 			$nickname 					= /*inicio get post*/ $this->request->getPost("txtNickname");
             $password 					= /*inicio get post*/ $this->request->getPost("txtPassword");
-			log_message("error",print_r("usuario: ".$nickname,true));
-			log_message("error",print_r("password: ".$password,true));
+			log_message("error","[SET_DATA_UPLOAD] Autenticando usuario -> nickname: ".$nickname);
 			
             $objUser 					= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
 			$objListCustomerMap			= [];
             $companyID 					= $objUser["user"]->companyID;
             Services::session()->set("user", $objUser["user"]);
             $objCompany 				= $objUser["company"];
+			log_message("error","[SET_DATA_UPLOAD] Usuario autenticado -> userID: ".$objUser["user"]->userID." | employeeID: ".$objUser["user"]->employeeID." | companyID: ".$companyID." | companyType: ".$objCompany->type);
 			
             
 			//Validar permiso si se limpiara el inventario
@@ -93,6 +92,7 @@ class app_mobile_api extends _BaseController
 			if ($permited) {
 				$limpiarInventory 	= "true";
 			}
+			log_message("error","[SET_DATA_UPLOAD] Permiso limpiar inventario -> limpiarInventory: ".$limpiarInventory);
 			
 			
 			//$objItemsJson 			= '{"ObjCustomers":[],"ObjItems":[],"ObjTransactionMaster":[{"TransactionId":19,"TypePaymentId":3,"TransactionMasterId":7,"TransactionNumber":"FAC-0011","EntityId":13,"TransactionOn":"2026-03-19T09:28:32.237701","TransactionOn2":"0001-01-01T00:00:00","NextVisit":"2026-03-19T00:00:00","Plazo":1,"FixedExpenses":0.0,"PeriodPay":190,"EntitySecondaryId":"1123","SubAmount":220.0,"Discount":22.0,"Taxi1":0.0,"Amount":220.0,"CustomerCreditLineId":359,"TransactionCausalId":21,"ExchangeRate":0.0,"CurrencyId":1,"Comment":"Jfjd","Reference1":"","Reference2":"","Reference3":"","CustomerIdentification":"000-000000-0000A","ReferenceClientName":"","MesaID":0,"MesaName":"Seleccione","StatusID":67,"Reference4":null,"CuotasPendientes":0}],"ObjTransactionMasterDetail":[{"TransactionMasterDetailId":13,"TransactionMasterId":7,"Componentid":33,"ComponentItemId":29144,"Quantity":10.0,"UnitaryCost":0.0,"UnitaryPrice":20.0,"SubAmount":200.0,"Discount":20.0,"Tax1":0.0,"Amount":200.0,"ItemBarCode":"777700001111","Reference1":"","Reference2":"","PorcentajeDescuento":0.0,"MontoDescuento":0.0,"ReferenciaProducto":"pez flaco"},{"TransactionMasterDetailId":14,"TransactionMasterId":7,"Componentid":33,"ComponentItemId":29142,"Quantity":4.0,"UnitaryCost":0.0,"UnitaryPrice":5.0,"SubAmount":20.0,"Discount":2.0,"Tax1":0.0,"Amount":20.0,"ItemBarCode":"777700001109","Reference1":"","Reference2":"","PorcentajeDescuento":0.0,"MontoDescuento":0.0,"ReferenciaProducto":"pes gordo"}]}';
@@ -101,9 +101,9 @@ class app_mobile_api extends _BaseController
             $data 						= json_decode($objItemsJson, false);
 
 
-			log_message("error",print_r($objItemsJson,true));
-			log_message("error",print_r("0002",true));
+			log_message("error","[SET_DATA_UPLOAD] JSON recibido (txtData): ".$objItemsJson);
             if(!isset($data)) {
+				log_message("error","[SET_DATA_UPLOAD] Sin datos a ingresar, finalizando.");
                 return $this->response->setJSON(array(
                     'error' => false,
                     'message' => 'No hay datos a ingresar'
@@ -117,13 +117,15 @@ class app_mobile_api extends _BaseController
             $dataSession['company'] 	= $objCompany;
             $dataSession['role'] 		= $objUser["role"];
             $this->core_web_permission->getValueLicense($companyID,get_class($this)."/"."index");
-			log_message("error",print_r("0003",true));
+			log_message("error","[SET_DATA_UPLOAD] Resumen de datos -> items: ".count($items)." | customers: ".count($customers)." | transactionMasters: ".count($transactionMasters)." | transactionMasterDetails: ".count($transactionMasterDetails));
 			
 			// APLICAR VALIDACIONES
 			// 001 validar employer del usuario
+			log_message("error","[SET_DATA_UPLOAD] Validando colaborador asignado -> employeeID: ".$dataSession["user"]->employeeID);
 			$employee		= $this->Employee_Model->get_rowByEntityID($companyID,$dataSession["user"]->employeeID );
 			if(!$employee)
 			{
+				log_message("error","[SET_DATA_UPLOAD] ERROR: El usuario no tiene un colaborador asignado -> employeeID: ".$dataSession["user"]->employeeID);
 				throw new \Exception("El usuario no tiene un colaborador asignado");
 			}
 			
@@ -131,49 +133,49 @@ class app_mobile_api extends _BaseController
 			$objListWarehouseTipoDespacho	= $this->Userwarehouse_Model->getRowByUserIDAndFacturable($companyID,$objUser["user"]->userID);
 			if(!$objListWarehouseTipoDespacho)
 			{
+				log_message("error","[SET_DATA_UPLOAD] ERROR: El usuario no tiene bodega tipo despacho -> userID: ".$objUser["user"]->userID);
 				throw new \Exception("El usuario no tiene una bodega tipo despacho configurada");
 			}
+			log_message("error","[SET_DATA_UPLOAD] Validaciones OK -> bodegas despacho: ".count($objListWarehouseTipoDespacho));
 			
 			
 			
-			log_message("error",print_r("0004",true));
             // INICIO DE CARGA DE ITEMS
+			log_message("error","[SET_DATA_UPLOAD] --- INICIO carga de ITEMS (total: ".count($items).") ---");
             if (count($items) > 0) {
 				
                 $controller 				= new app_inventory_item();
-				log_message("error",print_r("0004.001",true));
                 $controller->initController($this->request, $this->response, $this->logger);
                 foreach ($items as $va)
                 {
 					
                     $objOldItem = $this->Item_Model->get_rowByCodeBarra($companyID, $va->barCode);
-					log_message("error",print_r("0004.002",true));
                     if (!is_null($objOldItem))
                     {					
                         $method = "edit_customer_mobile";
                         $va->itemID= $objOldItem->itemID;
-						log_message("error",print_r("0004.003",true));
+						log_message("error","[SET_DATA_UPLOAD] Item EXISTENTE -> barCode: ".$va->barCode." | itemID: ".$va->itemID." | metodo: ".$method);
                     }
                     else
                     {					
                         $method = "new_customer_mobile";
-						log_message("error",print_r("0004.004",true));
+						log_message("error","[SET_DATA_UPLOAD] Item NUEVO -> barCode: ".$va->barCode." | metodo: ".$method);
                     }
 					
                     $controller->save($method, $va, $dataSession);
 					
                 }
             }
-			log_message("error",print_r("0005",true));
+			log_message("error","[SET_DATA_UPLOAD] --- FIN carga de ITEMS ---");
 
             //INICIO DE CARGA DE CUSTOMERS
 			$idexCount = 0;
+			log_message("error","[SET_DATA_UPLOAD] --- INICIO carga de CUSTOMERS (total: ".count($customers).") ---");
             if (count($customers) > 0) 
 			{
 				
                 $controller = new app_cxc_customer();
                 $controller->initController($this->request, $this->response, $this->logger);
-				log_message("error",print_r("0005.001",true));
                 foreach ($customers as $cus)
                 {
                     $companyID	= $cus->companyID;
@@ -181,7 +183,7 @@ class app_mobile_api extends _BaseController
                     $entityID	= $cus->entityID;
 					$location   = $cus->location;
 					$phone		= $cus->phone;
-					log_message("error",print_r("0005.006",true));
+					log_message("error","[SET_DATA_UPLOAD] Procesando customer [".$idexCount."] -> entityID: ".$entityID." | identification: ".$cus->identification." | nombre: ".$cus->firstName." ".$cus->lastName);
                     //si entityid es null o 0, es nuevo, sino un update
                     $objCustomer				= $this->Customer_Model->get_rowByPK($companyID,$branchID,$entityID);
 					$objCustomerByIdentifier 	= $this->Customer_Model->get_rowByIdentification($companyID,$cus->identification);
@@ -193,16 +195,16 @@ class app_mobile_api extends _BaseController
 						!$objCustomer
 					)
 					{
-						
+						log_message("error","[SET_DATA_UPLOAD] Customer NUEVO, insertando -> identification: ".$cus->identification);
                         $objDataSet 									= $controller->insertElementMobile($dataSession,$cus);
 						$entityIDOld 									= $customers[$idexCount]->entityID;
 						$customerCreditLineIDOld 						= $customers[$idexCount]->customerCreditLineID;
-						log_message("error",print_r("0005.007",true));
-						log_message("error",print_r($objDataSet,true));
+						log_message("error","[SET_DATA_UPLOAD] Resultado insertElementMobile: ".print_r($objDataSet,true));
 						
 						//Validar si se ingreso bien el customer
 						if (!is_array($objDataSet)) 
 						{
+							log_message("error","[SET_DATA_UPLOAD] ERROR: insertElementMobile no retorno array -> respuesta: ".print_r($objDataSet,true));
 							if (preg_match('/Linea:.*?\.php/', $objDataSet, $coincidencias)) 
 							{
 								throw new \Exception($coincidencias[0]);								
@@ -217,7 +219,7 @@ class app_mobile_api extends _BaseController
 						$customers[$idexCount]->entityID 				= $objDataSet["entityID"];
 						$customers[$idexCount]->customerNumber 			= $objDataSet["customerNumber"];
 						$customers[$idexCount]->customerCreditLineID 	= $objDataSet["customerCreditLineID"];
-						log_message("error",print_r("0005.008",true));
+						log_message("error","[SET_DATA_UPLOAD] Customer insertado -> entityIDOld: ".$entityIDOld." => entityIDNew: ".$customers[$idexCount]->entityID." | customerNumber: ".$customers[$idexCount]->customerNumber." | customerCreditLineID: ".$customers[$idexCount]->customerCreditLineID);
 						$objCustomerMaps = (object)[
 								'entityIDOld' 				=> $entityIDOld,
 								'customerCreditLineIDOld' 	=> $customerCreditLineIDOld,
@@ -225,22 +227,21 @@ class app_mobile_api extends _BaseController
 								'customerCreditLineID' 		=> $customers[$idexCount]->customerCreditLineID 
 						];
 						$objListCustomerMap[] 							= $objCustomerMaps;
-						log_message("error",print_r("0005.009",true));
                     }
 					else
 					{
                         $objCustomer			=json_decode(json_encode($objCustomer));
 						$objCustomerCreditLine 	=$this->Customer_Credit_Line_Model->get_rowByEntity($objCustomer->companyID,$objCustomer->branchID,$objCustomer->entityID);
-						log_message("error",print_r("0005.010",true));
+						log_message("error","[SET_DATA_UPLOAD] Customer EXISTENTE, actualizando -> entityID: ".$objCustomer->entityID." | identification: ".$cus->identification);
                         $objCustomer->firstName 	= $cus->firstName;
                         $objCustomer->lastName		= $cus->lastName;
 						$objCustomer->location		= $cus->location;
 						$objCustomer->phoneNumber	= $cus->phone;
                         $controller->updateElementMobile($dataSession, $objCustomer);
-						log_message("error",print_r("0005.011",true));
 						
 						$entityIDOld 						= $customers[$idexCount]->entityID;
 						$customerCreditLineIDOld 			= $customers[$idexCount]->customerCreditLineID;
+						log_message("error","[SET_DATA_UPLOAD] Customer actualizado -> entityID: ".$objCustomer->entityID." | customerCreditLineID: ".$objCustomerCreditLine[0]->customerCreditLineID);
 						$objCustomerMaps = (object)[
 								'entityIDOld' 				=> $entityIDOld,
 								'customerCreditLineIDOld' 	=> $customerCreditLineIDOld,
@@ -254,25 +255,27 @@ class app_mobile_api extends _BaseController
 				
                 }
             }
+			log_message("error","[SET_DATA_UPLOAD] --- FIN carga de CUSTOMERS (mapa clientes: ".count($objListCustomerMap).") ---");
 			
 			
 			
-			log_message("error",print_r("0006",true));
             // SINCRONIZACION DE COMPRAS
+			log_message("error","[SET_DATA_UPLOAD] --- INICIO sincronizacion COMPRAS/ENTRADAS (items: ".count($items).") ---");
             if (count($items) > 0) {
                 $inventoryController  =new app_inventory_inputunpost();
                 $inventoryController->initController($this->request, $this->response, $this->logger);
                 $inventoryController->insertElementMobile($dataSession, $items);
             }
-            log_message("error",print_r("0007",true));
+            log_message("error","[SET_DATA_UPLOAD] --- FIN sincronizacion COMPRAS/ENTRADAS ---");
             //las entradas - salidas < 0
             // SINCRONIZACION DE SALIDAS
+			log_message("error","[SET_DATA_UPLOAD] --- INICIO sincronizacion SALIDAS (items: ".count($items).") ---");
             if(count($items)>0){
                 $inventoryOutController = new app_inventory_otheroutput();
                 $inventoryOutController->initController($this->request, $this->response, $this->logger);
                 $inventoryOutController->insertElementMobile($dataSession, $items);     
             }
-			log_message("error",print_r("0008",true));
+			log_message("error","[SET_DATA_UPLOAD] --- FIN sincronizacion SALIDAS ---");
             //SINCRONIZACION FACTURAS
 			$idexCount = 0;
             if(count($transactionMasters)>0)
@@ -281,36 +284,35 @@ class app_mobile_api extends _BaseController
                 $billingController->initController($this->request, $this->response, $this->logger);
                 $typeTransaction 	= $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_billing",0);
                 $facturas 			= array_filter($transactionMasters, function($tm) use ($typeTransaction) { return $tm->TransactionId == $typeTransaction; });
-				log_message("error",print_r("0008.001",true));
+				log_message("error","[SET_DATA_UPLOAD] --- INICIO sincronizacion FACTURAS (typeTransaction: ".$typeTransaction." | total facturas: ".count($facturas).") ---");
                 foreach($facturas as $objTm)
 				{
 					
                     // Filtrar los objetos por TransactionMasterId
                     $transactionMasterId=$objTm->TransactionMasterId;
 					$entityID 			=$objTm->EntityId;
-					log_message("error",print_r("0008.002",true));
+					log_message("error","[SET_DATA_UPLOAD] Procesando factura -> transactionNumber: ".$objTm->TransactionNumber." | transactionMasterID: ".$transactionMasterId." | entityID(original): ".$entityID);
 					
 					//buscar el entityID si es un entityID Nuevo					
 					$objCustomerFilt 	= array_filter($objListCustomerMap, function($e) use ($entityID) { return $e->entityIDOld == $entityID; });
 					
 					
-					log_message("error",print_r("0008.003",true));
 					if($objCustomerFilt)
 					{
 						
-						log_message("error",print_r("0008.004.0001",true));
-						log_message("error",print_r($objTm,true));
-						log_message("error",print_r($objCustomerFilt,true));
-						log_message("error",print_r($entityID,true));
+						log_message("error","[SET_DATA_UPLOAD] Buscando remapeo de entityID en mapa clientes -> entityID(original): ".$entityID);
 						
 						$objCustomerFilt 				= is_array($objCustomerFilt) ? reset($objCustomerFilt) : $$objCustomerFilt; 
 						$objTm->entityID 				= $objCustomerFilt->entityID;
 						$objTm->customerCreditLineID 	= $objCustomerFilt->customerCreditLineID;
-						log_message("error",print_r("0008.004.0002",true));
+
+						$objTm->EntityId 				= $objCustomerFilt->entityID;
+						$objTm->CustomerCreditLineId 	= $objCustomerFilt->customerCreditLineID;
+						log_message("error","[SET_DATA_UPLOAD] EntityID remapeado desde mapa clientes -> entityIDOld: ".$entityID." => entityIDNew: ".$objTm->EntityId." | customerCreditLineID: ".$objTm->CustomerCreditLineId);
 					}
 					else
 					{
-						log_message("error",print_r("0008.004.0003",true));
+						log_message("error","[SET_DATA_UPLOAD] EntityID no esta en el mapa, buscando en modelo -> entityID: ".$objTm->EntityId);
 						//no se encontro en el mapa, buscar el customer por el entityID en el modelo
 						$objCustomerModel 	= $this->Customer_Model->get_rowByEntity($companyID, $objTm->EntityId);
 						if($objCustomerModel)
@@ -318,7 +320,14 @@ class app_mobile_api extends _BaseController
 							$objCustomerCreditLineModel 	= $this->Customer_Credit_Line_Model->get_rowByEntity($objCustomerModel->companyID, $objCustomerModel->branchID, $objCustomerModel->entityID);
 							$objTm->entityID 				= $objCustomerModel->entityID;
 							$objTm->customerCreditLineID 	= (is_array($objCustomerCreditLineModel) && count($objCustomerCreditLineModel) > 0) ? $objCustomerCreditLineModel[0]->customerCreditLineID : null;
-							log_message("error",print_r("0008.004.0004",true));
+
+							$objTm->EntityId 				= $objTm->entityID;
+							$objTm->CustomerCreditLineId 	= $objTm->customerCreditLineID;
+							log_message("error","[SET_DATA_UPLOAD] EntityID resuelto desde modelo -> entityID: ".$objTm->EntityId." | customerCreditLineID: ".$objTm->CustomerCreditLineId);
+						}
+						else
+						{
+							log_message("error","[SET_DATA_UPLOAD] ADVERTENCIA: No se encontro customer para entityID: ".$objTm->EntityId);
 						}
 					}
 						
@@ -334,15 +343,13 @@ class app_mobile_api extends _BaseController
 						$this->Transaction_Master_Model->delete_app_posme($objTmOld->companyID,$objTmOld->transactionID,$objTmOld->transactionMasterID);						
 					}
 					
-					log_message("error","transactionMasterNumberOriginal ".print_r($transactionMasterNumberOriginal,true));
-					log_message("error","objTm ".print_r($objTm,true));
-					log_message("error","resultado - ".print_r($resultado,true));
+					log_message("error","[SET_DATA_UPLOAD] Insertando factura -> transactionNumber: ".$objTm->TransactionNumber." | numeroOriginal: ".$transactionMasterNumberOriginal." | detalles: ".count($resultado)." | monto: ".$objTm->Amount);
                     $billingController->insertElementMobil($dataSession,$transactionMasterNumberOriginal,$objTm, $resultado);
-					log_message("error",print_r("0008.005",true));
+					log_message("error","[SET_DATA_UPLOAD] Factura procesada -> transactionNumber: ".$objTm->TransactionNumber);
 					$idexCount++;
                 }
             }
-			log_message("error",print_r("0009",true));
+			log_message("error","[SET_DATA_UPLOAD] --- FIN sincronizacion FACTURAS (procesadas: ".$idexCount.") ---");
 			
 			
             //SINCRONIZACION ABONOS
@@ -353,11 +360,13 @@ class app_mobile_api extends _BaseController
                 $abonos = array_filter($transactionMasters, function($tm) use ($typeTransaction) {
                     return $tm->TransactionId == $typeTransaction;
                 });
+				log_message("error","[SET_DATA_UPLOAD] --- INICIO sincronizacion ABONOS (typeTransaction: ".$typeTransaction." | total abonos: ".count($abonos).") ---");
                 foreach($abonos as $objTm){
+					log_message("error","[SET_DATA_UPLOAD] Procesando abono -> transactionNumber: ".$objTm->TransactionNumber." | entityID: ".$objTm->EntityId." | monto: ".$objTm->Amount);
                     $shareController->insertElementMobil($dataSession,$objTm);
                 }
             }
-			log_message("error",print_r("0010",true));
+			log_message("error","[SET_DATA_UPLOAD] --- FIN sincronizacion ABONOS ---");
 
 			//SINCRONIZACION GASTOS
 			if(count($transactionMasters)>0)
@@ -368,16 +377,15 @@ class app_mobile_api extends _BaseController
 				$gastos 			= array_filter($transactionMasters, function($tm) use ($typeTransaction) {
 					return $tm->TransactionId == $typeTransaction;
 				});
-				log_message("error",print_r("0010.001 - gastos: ".count($gastos),true));
+				log_message("error","[SET_DATA_UPLOAD] --- INICIO sincronizacion GASTOS (typeTransaction: ".$typeTransaction." | total gastos: ".count($gastos).") ---");
 				foreach($gastos as $objTm)
 				{
-					log_message("error",print_r("0010.002",true));
-					log_message("error",print_r($objTm,true));
+					log_message("error","[SET_DATA_UPLOAD] Procesando gasto -> transactionNumber: ".$objTm->TransactionNumber." | entityID: ".$objTm->EntityId." | monto: ".$objTm->Amount);
 					$expensesController->insertElementMobile($dataSession,$objTm);
-					log_message("error",print_r("0010.003",true));
+					log_message("error","[SET_DATA_UPLOAD] Gasto procesado -> transactionNumber: ".$objTm->TransactionNumber);
 				}
 			}
-			log_message("error",print_r("0010.004",true));
+			log_message("error","[SET_DATA_UPLOAD] --- FIN sincronizacion GASTOS ---");
 
 			//SINCRONIZAR VISITAS O CONSULTAS MEDICAS
 			if(count($transactionMasters)>0){
@@ -387,17 +395,19 @@ class app_mobile_api extends _BaseController
                 $medQuery = array_filter($transactionMasters, function($tm) use ($typeTransaction) {
                     return $tm->TransactionId == $typeTransaction;
                 });
+				log_message("error","[SET_DATA_UPLOAD] --- INICIO sincronizacion VISITAS/CONSULTAS MEDICAS (typeTransaction: ".$typeTransaction." | total: ".count($medQuery).") ---");
                 foreach($medQuery as $objTm){
+					log_message("error","[SET_DATA_UPLOAD] Procesando consulta medica -> transactionNumber: ".$objTm->TransactionNumber." | entityID: ".$objTm->EntityId);
                     $medQueryController->insertElementMobil($dataSession,$objTm);
                 }
             }
-			
-			log_message("error",print_r("0011",true));
+			log_message("error","[SET_DATA_UPLOAD] --- FIN sincronizacion VISITAS/CONSULTAS MEDICAS ---");
 			
 			
 			
             // DEJAR EN 0  LA CANTIDAD DE PRODCUTOS EN BODEGAS
 			// SEGUN CONFIGURACION
+			log_message("error","[SET_DATA_UPLOAD] --- INICIO limpieza de inventario (limpiarInventory: ".$limpiarInventory.") ---");
 			if($limpiarInventory == "true")
 			{
 				//Obtener los productos con existencia 
@@ -435,7 +445,7 @@ class app_mobile_api extends _BaseController
 							}
 						}
 						
-						log_message("error",print_r($itemsProccessSalidas,true));
+						log_message("error","[SET_DATA_UPLOAD] Limpieza inventario -> items SALIDA a procesar: ".count($itemsProccessSalidas)." | items ENTRADA a procesar: ".count($itemsProccessEntradas));
 						if($itemsProccessSalidas)
 						{
 							if(count($itemsProccessSalidas) > 0)
@@ -445,7 +455,6 @@ class app_mobile_api extends _BaseController
 								$inventoryOutController->insertElementMobile($dataSession, $itemsProccessSalidas);     
 							}
 						}
-						log_message("error",print_r($itemsProccessEntradas,true));
 						if($itemsProccessEntradas)
 						{
 							if(count($itemsProccessEntradas) > 0)
@@ -459,7 +468,8 @@ class app_mobile_api extends _BaseController
 					}
 				}
 			}
-			log_message("error",print_r("0012",true));
+			log_message("error","[SET_DATA_UPLOAD] --- FIN limpieza de inventario ---");
+			log_message("error","[SET_DATA_UPLOAD] ===== FIN setDataUpload OK =====");
 			
 			
             return $this->response->setJSON(array(
@@ -469,7 +479,8 @@ class app_mobile_api extends _BaseController
 
         } catch (\Exception $ex) {
 			
-			log_message("error",print_r($ex,true));
+			log_message("error","[SET_DATA_UPLOAD] ===== ERROR setDataUpload -> Linea: ".$ex->getLine()." | Mensaje: ".$ex->getMessage()." =====");
+			log_message("error","[SET_DATA_UPLOAD] Traza: ".$ex->getTraceAsString());
             return $this->response->setJSON(array(
                 'error' => true,
                 'message' => 'Linea: ' . $ex->getLine() . " - Error:" . $ex->getMessage()
