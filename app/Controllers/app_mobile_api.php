@@ -259,21 +259,40 @@ class app_mobile_api extends _BaseController
 			
 			
 			
-            // SINCRONIZACION DE COMPRAS
-			log_message("error","[SET_DATA_UPLOAD] --- INICIO sincronizacion COMPRAS/ENTRADAS (items: ".count($items).") ---");
-            if (count($items) > 0) {
-                $inventoryController  =new app_inventory_inputunpost();
+            // SINCRONIZACION DE COMPRAS / ENTRADAS
+			// Las entradas ahora vienen como transacciones (tb_transaction_master_inputunpost) con su detalle
+            if(count($transactionMasters)>0)
+			{
+                $inventoryController  = new app_inventory_inputunpost();
                 $inventoryController->initController($this->request, $this->response, $this->logger);
-                $inventoryController->insertElementMobile($dataSession, $items);
+                $typeTransactionEntrada = $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_inputunpost",0);
+                $entradas = array_filter($transactionMasters, function($tm) use ($typeTransactionEntrada) { return $tm->TransactionId == $typeTransactionEntrada; });
+				log_message("error","[SET_DATA_UPLOAD] --- INICIO sincronizacion COMPRAS/ENTRADAS (typeTransaction: ".$typeTransactionEntrada." | total entradas: ".count($entradas).") ---");
+                foreach($entradas as $objTm)
+				{
+                    $transactionMasterId 	= $objTm->TransactionMasterId;
+                    $detalleEntrada 		= array_filter($transactionMasterDetails, function($tmd) use ($transactionMasterId) { return $tmd->TransactionMasterId == $transactionMasterId; });
+					log_message("error","[SET_DATA_UPLOAD] Procesando entrada -> transactionNumber: ".$objTm->TransactionNumber." | transactionMasterID: ".$transactionMasterId." | detalles: ".count($detalleEntrada));
+                    $inventoryController->insertElementMobile($dataSession, $objTm, $detalleEntrada);
+                }
             }
             log_message("error","[SET_DATA_UPLOAD] --- FIN sincronizacion COMPRAS/ENTRADAS ---");
-            //las entradas - salidas < 0
+
             // SINCRONIZACION DE SALIDAS
-			log_message("error","[SET_DATA_UPLOAD] --- INICIO sincronizacion SALIDAS (items: ".count($items).") ---");
-            if(count($items)>0){
+			// Las salidas ahora vienen como transacciones (tb_transaction_master_otheroutput) con su detalle
+            if(count($transactionMasters)>0){
                 $inventoryOutController = new app_inventory_otheroutput();
                 $inventoryOutController->initController($this->request, $this->response, $this->logger);
-                $inventoryOutController->insertElementMobile($dataSession, $items);     
+                $typeTransactionSalida = $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_otheroutput",0);
+                $salidas = array_filter($transactionMasters, function($tm) use ($typeTransactionSalida) { return $tm->TransactionId == $typeTransactionSalida; });
+				log_message("error","[SET_DATA_UPLOAD] --- INICIO sincronizacion SALIDAS (typeTransaction: ".$typeTransactionSalida." | total salidas: ".count($salidas).") ---");
+                foreach($salidas as $objTm)
+				{
+                    $transactionMasterId 	= $objTm->TransactionMasterId;
+                    $detalleSalida 			= array_filter($transactionMasterDetails, function($tmd) use ($transactionMasterId) { return $tmd->TransactionMasterId == $transactionMasterId; });
+					log_message("error","[SET_DATA_UPLOAD] Procesando salida -> transactionNumber: ".$objTm->TransactionNumber." | transactionMasterID: ".$transactionMasterId." | detalles: ".count($detalleSalida));
+                    $inventoryOutController->insertElementMobile($dataSession, $objTm, $detalleSalida);
+                }
             }
 			log_message("error","[SET_DATA_UPLOAD] --- FIN sincronizacion SALIDAS ---");
             //SINCRONIZACION FACTURAS
@@ -452,7 +471,7 @@ class app_mobile_api extends _BaseController
 							{
 								$inventoryOutController = new app_inventory_otheroutput();
 								$inventoryOutController->initController($this->request, $this->response, $this->logger);
-								$inventoryOutController->insertElementMobile($dataSession, $itemsProccessSalidas);     
+								$inventoryOutController->insertElementMobileByItems($dataSession, $itemsProccessSalidas);     
 							}
 						}
 						if($itemsProccessEntradas)
@@ -461,7 +480,7 @@ class app_mobile_api extends _BaseController
 							{
 								$inventoryController  =new app_inventory_inputunpost();
 								$inventoryController->initController($this->request, $this->response, $this->logger);
-								$inventoryController->insertElementMobile($dataSession, $itemsProccessEntradas);
+								$inventoryController->insertElementMobileByItems($dataSession, $itemsProccessEntradas);
 								
 							}
 						}

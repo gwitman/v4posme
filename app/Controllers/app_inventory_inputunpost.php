@@ -1468,7 +1468,195 @@ class app_inventory_inputunpost extends _BaseController {
 		}			
 	}
 
-	function insertElementMobile($dataSession, $objItems){
+	function insertElementMobile($dataSession, $transactionMaster, $transactionMasterDetails){
+		try{
+			//Validar que exista detalle
+			if(empty($transactionMasterDetails) || count($transactionMasterDetails) == 0){
+				return;
+			}
+
+			$companyID 						= $dataSession["user"]->companyID;
+			$branchID 						= $dataSession["user"]->branchID;
+			$roleID 						= $dataSession["role"]->roleID;
+			$objListComanyParameter			= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+
+			//Obtener el Componente de Transacciones Input to Inventory
+			$objComponent							= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_inputunpost");
+			if(is_null($objComponent))
+				throw new \Exception("EL COMPONENTE 'tb_transaction_master_inputunpost' NO EXISTE...");
+
+			$objComponentItem						= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+			if(is_null($objComponentItem))
+				throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+
+			//Obtener la bodega tipo despacho del usuario
+			$objParameterWarehouseDefault		= $this->core_web_parameter->getParameter("INVENTORY_ITEM_WAREHOUSE_DEFAULT",$companyID);
+			$warehouseDefault 					= $objParameterWarehouseDefault->value;
+			$warehouseID 						= $this->Warehouse_Model->getByCode($companyID, $warehouseDefault)->warehouseID;
+			$objListWarehouseTipoDespacho		= $this->Userwarehouse_Model->getRowByUserIDAndFacturable($companyID,$dataSession["user"]->userID);
+			if(!$objListWarehouseTipoDespacho)
+			{
+				log_message("error","El usuario no tiene una bodega tipo despacho configurada");
+				throw new \Exception("El usuario no tiene una bodega tipo despacho configurada");
+			}
+			$warehouseID						= $objListWarehouseTipoDespacho[0]->warehouseID;
+
+			//Proveedor por defecto
+			$objParameterProviderDefault		= $this->core_web_parameter->getParameter("CXP_PROVIDER_DEFAULT",$companyID);
+			$objParameterProviderDefault 		= $objParameterProviderDefault->value;
+			$providerDefault	 				= $this->Provider_Model->get_rowByProviderNumber($companyID,$objParameterProviderDefault);
+
+			//Obtener transaccion
+			$transactionID 							= $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_inputunpost",0);
+			$objT 									= $this->Transaction_Model->getByCompanyAndTransaction($companyID,$transactionID);
+
+			$objTM["companyID"] 					= $companyID;
+			$objTM["transactionID"] 				= $transactionID;
+			$objTM["branchID"]						= $branchID;
+			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($companyID,$branchID,"tb_transaction_master_inputunpost",0);
+			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($objTM["companyID"],$objTM["transactionID"]);
+			$objTM["entityID"]						= $providerDefault->entityID;
+			$objTM["transactionOn"]					= date('Y-m-d H:i:s');
+			$objTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
+			$objTM["componentID"] 					= $objComponent->componentID;
+			$objTM["note"] 							= $transactionMaster->Comment;
+			$objTM["sign"] 							= $objT->signInventory;
+			$objTM["currencyID"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVENTORY_CURRENCY_ID_DEFAULT")->value;
+			$objTM["currencyID2"]					= $this->core_web_currency->getTarget($companyID,$objTM["currencyID"]);
+			$objTM["exchangeRate"]					= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$objTM["currencyID2"],$objTM["currencyID"]);
+			$objTM["reference1"] 					= "";
+			$objTM["reference2"] 					= "";
+			$objTM["reference3"] 					= "";
+			$objTM["reference4"] 					= "";
+			$objTM["statusID"] 						= $this->core_web_workflow->getWorkflowStageApplyFirst("tb_transaction_master_inputunpost","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID;
+			$objTM["amount"] 						= 0;
+			$objTM["isApplied"] 					= 0;
+			$objTM["journalEntryID"] 				= 0;
+			$objTM["classID"] 						= NULL;
+			$objTM["areaID"] 						= NULL;
+			$objTM["sourceWarehouseID"]				= NULL;
+			$objTM["targetWarehouseID"]				= $warehouseID;
+			$objTM["tax1"]							= 0;
+			$objTM["tax2"]							= 0;
+			$objTM["tax3"]							= 0;
+			$objTM["tax4"]							= 0;
+			$objTM["subAmount"]						= 0;
+			$objTM["discount"]						= 0;
+			$objTM["amount"]						= 0;
+			$objTM["isActive"]						= 1;
+			$objTM["isTemplate"] 					= 0;
+			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);
+
+			$db=db_connect();
+			$db->transStart();
+			$transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
+
+			//Crear la Carpeta para almacenar los Archivos del Documento
+			$path_ = PATH_FILE_OF_APP."/company_".$companyID."/component_56/component_item_".$transactionMasterID;
+			if(!file_exists ($path_)){
+				mkdir($path_, 0755,true);
+				chmod($path_, 0755);
+			}
+
+			//Obtener lista de precio por defecto
+			$objParameterPriceDefault				= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID);
+			$listPriceID 							= $objParameterPriceDefault->value;
+
+			$amount		= 0;
+			$subAmount	= 0;
+			foreach($transactionMasterDetails as $value)
+			{
+				$objItem 								= $this->Item_Model->get_rowByCodeBarra($companyID, $value->ItemBarCode); //buscar por codigo de barra
+				if(!isset($objItem)){
+					continue;
+				}
+				$itemID 								= $objItem->itemID;
+				$quantity 								= $value->Quantity;
+				$cost 									= $value->UnitaryCost;
+				$unitaryPrice 							= $value->UnitaryPrice;
+				$unitaryPrice2 							= 0;
+				$unitaryPrice3 							= 0;
+				$lote 									= "";
+				$vencimiento							= "";
+				$barCodeExtende 						= "";
+
+				$objTMD 								= array();
+				$objTMD["companyID"] 					= $companyID;
+				$objTMD["transactionID"] 				= $transactionID;
+				$objTMD["transactionMasterID"] 			= $transactionMasterID;
+				$objTMD["componentID"]					= $objComponentItem->componentID;
+				$objTMD["componentItemID"] 				= $itemID;
+				$objTMD["promotionID"] 					= 0;
+				$objTMD["catalogStatusID"]				= 0;
+				$objTMD["inventoryStatusID"]			= 0;
+				$objTMD["isActive"]						= 1;
+				$objTMD["quantityStock"]				= 0;
+				$objTMD["quantiryStockInTraffic"]		= 0;
+				$objTMD["quantityStockUnaswared"]		= 0;
+				$objTMD["remaingStock"]					= 0;
+				$objTMD["tax1"]							= 0;
+				$objTMD["tax2"]							= 0;
+
+				//Actualizar tipo de precio 154 ----> PUBLICO
+				if($unitaryPrice > 0){
+					$typePriceID					= 154;
+					$dataUpdatePrice["price"] 		= $unitaryPrice;
+					$dataUpdatePrice["percentage"] 	=
+													$objItem->cost == 0 ?
+														($unitaryPrice / 100) :
+														(((100 * $unitaryPrice) / $objItem->cost) - 100);
+					$objPrice = $this->Price_Model->update_app_posme($companyID,$listPriceID,$itemID,$typePriceID,$dataUpdatePrice);
+				}
+
+				$objTMD["discount"]						= 0;
+				$objTMD["quantity"] 					= $quantity;
+				$objTMD["unitaryCost"]					= $cost;
+				$objTMD["unitaryPrice"]					= $unitaryPrice;
+				$objTMD["amount"] 						= $cost * $quantity;
+				$objTMD["reference3"]					= $unitaryPrice2."|".$unitaryPrice3;
+				$objTMD["reference4"]					= str_replace(",,",",", str_replace(PHP_EOL,",",  ltrim(rtrim($barCodeExtende)) ));
+				$objTMD["unitaryAmount"]				= $unitaryPrice;
+				$objTMD["cost"] 						= $quantity * $cost;
+				$objTMD["lote"]							= $lote;
+				$objTMD["expirationDate"]				= $vencimiento == "" ? '1900-01-01':  $vencimiento;
+				$objTMD["inventoryWarehouseSourceID"]	= $objTM["sourceWarehouseID"];
+				$objTMD["inventoryWarehouseTargetID"]	= $objTM["targetWarehouseID"];
+				$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
+
+				$amount 								+= $objTMD["cost"];
+				$subAmount								= $amount;
+			}
+
+			$objTM["amount"]	= $amount;
+			$objTM["subAmount"]	= $subAmount;
+			$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTM);
+
+			//Aplicar el Documento?
+			if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_inputunpost","statusID",$objTM["statusID"],COMMAND_APLICABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID) ){
+				//Ingresar en Kardex.
+				$this->core_web_inventory->calculateKardexNewInput($companyID,$transactionID,$transactionMasterID);
+
+				//Crear Conceptos.
+				$this->core_web_concept->inputunpost($companyID,$transactionID,$transactionMasterID);
+			}
+
+			if($db->transStatus() !== false){
+				$db->transCommit();
+			}
+			else{
+				$db->transRollback();
+			}
+		}
+		catch(\Exception $ex){
+			log_message("error",print_r($ex->getMessage(),true));
+			return $this->response->setJSON(array(
+				'error' => true,
+				'message' => 'Linea: ' . $ex->getLine() . " - Error:" . $ex->getMessage()
+			));//--finjson
+		}
+	}
+
+	function insertElementMobileByItems($dataSession, $objItems){
 		$validate = false;
 		foreach($objItems as $key => $value)
 		{	
