@@ -936,7 +936,48 @@
 	});
 
 	$('#btnDelete').click(function(){
-		mostrarModal('ModalDeleteInvoice');
+		// Abrir modal de comentario obligatorio antes de anular
+		$('#txtDeleteCommentNews').val('');
+		$('#txtDeleteCommentNews').removeClass('is-invalid');
+		$('#modalDeleteCommentNews').modal('show');
+	});
+
+	// Modal comentario eliminar (news)
+	$('body').append(`
+	<div class="modal fade" id="modalDeleteCommentNews" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered" style="max-width:420px">
+			<div class="modal-content">
+				<div class="modal-header bg-danger text-white py-2">
+					<h6 class="modal-title mb-0"><i class="ti ti-alert-triangle me-1"></i>Motivo de anulación</h6>
+					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+				</div>
+				<div class="modal-body">
+					<label class="form-label fw-semibold">Comentario <span class="text-danger">*</span></label>
+					<textarea id="txtDeleteCommentNews" class="form-control" rows="3" placeholder="Escriba el motivo de la anulación..."></textarea>
+					<div class="invalid-feedback">El comentario es obligatorio.</div>
+				</div>
+				<div class="modal-footer py-2">
+					<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn btn-danger btn-sm" id="btnConfirmDeleteNews"><i class="ti ti-trash me-1"></i>Confirmar anulación</button>
+				</div>
+			</div>
+		</div>
+	</div>`);
+
+	$('#modalDeleteCommentNews').on('shown.bs.modal', function(){
+		$('#txtDeleteCommentNews').focus();
+	});
+	$(document).on('input', '#txtDeleteCommentNews', function(){
+		if($(this).val().trim() !== '') $(this).removeClass('is-invalid');
+	});
+	$(document).on('click', '#btnConfirmDeleteNews', function(){
+		var comments = $('#txtDeleteCommentNews').val().trim();
+		if(comments === ''){
+			$('#txtDeleteCommentNews').addClass('is-invalid').focus();
+			return;
+		}
+		$('#modalDeleteCommentNews').modal('hide');
+		fnAceptarModalDeleteInvoice(comments);
 	});
 	$(document).on("click","#btnNewItem",function(){
 
@@ -3840,7 +3881,8 @@
 		window.location.href = '<?php echo base_url(); ?>/app_invoice_billing/index';
 	}
 
-	function fnAceptarModalDeleteInvoice(){
+	function fnAceptarModalDeleteInvoice(comments){
+		comments = (typeof comments === 'undefined') ? '' : comments;
 		cerrarModal('ModalDeleteInvoice');
 		if(objTransactionMaster && objTransactionMaster.transactionMasterID > 0){
 			mostarModalPersonalizado('Anulando factura, por favor espere...');
@@ -3852,7 +3894,8 @@
 				data 		: {
 					companyID 			: objTransactionMaster.companyID,
 					transactionID 		: objTransactionMaster.transactionID,
-					transactionMasterID : objTransactionMaster.transactionMasterID
+					transactionMasterID : objTransactionMaster.transactionMasterID,
+					comments 			: comments
 				},
 				success:function(data){
 					console.info("complete delete " + data.error);

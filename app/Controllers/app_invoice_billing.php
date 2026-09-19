@@ -691,7 +691,8 @@ class app_invoice_billing extends _BaseController {
 			//Nuevo Registro
 			$companyID 				= /*inicio get post*/ $this->request->getPost("companyID");
 			$transactionID 			= /*inicio get post*/ $this->request->getPost("transactionID");				
-			$transactionMasterID 	= /*inicio get post*/ $this->request->getPost("transactionMasterID");				
+			$transactionMasterID 	= /*inicio get post*/ $this->request->getPost("transactionMasterID");
+			$comments 				= /*inicio get post*/ $this->request->getPost("comments");
 			
 			
 			if((!$companyID && !$transactionID && !$transactionMasterID)){
@@ -744,9 +745,11 @@ class app_invoice_billing extends _BaseController {
 			if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_billing","statusID",$objTM->statusID,COMMAND_APLICABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
 			{
 				log_message("error",print_r("prueba crear contra documento",true));
-				//Actualizar fecha en la transacciones oroginal
+				//Actualizar fecha en la transacciones original y concatenar comentario si viene
 				$dataNewTM 										= array();
 				$dataNewTM["statusIDChangeOn"]					= date("Y-m-d H:i:s");
+				if(!is_null($comments) && $comments !== '')
+					$dataNewTM["note"] = trim($objTM->note . ' ' . $comments);
 				$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$dataNewTM);
 				
 				$transactionIDRevert 							= $this->core_web_parameter->getParameter("INVOICE_TRANSACTION_REVERSION_TO_BILLING",$companyID);
@@ -799,6 +802,12 @@ class app_invoice_billing extends _BaseController {
 			}
 			else 
 			{	
+				//Actualizar comentario si viene antes de eliminar
+				if(!is_null($comments) && $comments !== '') {
+					$dataNewTM 				= array();
+					$dataNewTM["note"] 		= trim($objTM->note . ' ' . $comments);
+					$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$dataNewTM);
+				}
 				//Eliminar el Registro			
 				$this->Transaction_Master_Model->delete_app_posme($companyID,$transactionID,$transactionMasterID);
 				$this->Transaction_Master_Detail_Model->deleteWhereTM($companyID,$transactionID,$transactionMasterID);	
