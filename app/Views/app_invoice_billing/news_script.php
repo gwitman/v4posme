@@ -937,43 +937,61 @@
 
 	$('#btnDelete').click(function(){
 		// Abrir modal de comentario obligatorio antes de anular
-		$('#txtDeleteCommentNews').val('');
-		$('#txtDeleteCommentNews').removeClass('is-invalid');
+		$('#txtDeleteCommentNews').val('').css({'border-color':'#dfe6e9','box-shadow':'none'});
+		$('#errDeleteCommentNews').hide();
 		$('#modalDeleteCommentNews').modal('show');
 	});
 
 	// Modal comentario eliminar (news)
-	$('body').append(`
-	<div class="modal fade" id="modalDeleteCommentNews" tabindex="-1" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered" style="max-width:420px">
-			<div class="modal-content">
-				<div class="modal-header bg-danger text-white py-2">
-					<h6 class="modal-title mb-0"><i class="ti ti-alert-triangle me-1"></i>Motivo de anulación</h6>
-					<button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-				</div>
-				<div class="modal-body">
-					<label class="form-label fw-semibold">Comentario <span class="text-danger">*</span></label>
-					<textarea id="txtDeleteCommentNews" class="form-control" rows="3" placeholder="Escriba el motivo de la anulación..."></textarea>
-					<div class="invalid-feedback">El comentario es obligatorio.</div>
-				</div>
-				<div class="modal-footer py-2">
-					<button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
-					<button type="button" class="btn btn-danger btn-sm" id="btnConfirmDeleteNews"><i class="ti ti-trash me-1"></i>Confirmar anulación</button>
+	if($('#modalDeleteCommentNews').length === 0){
+		$('body').append(`
+		<div class="modal fade" id="modalDeleteCommentNews" tabindex="-1" role="dialog" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered" role="document" style="max-width:440px;margin-top:12vh;">
+				<div class="modal-content" style="border:none;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);">
+					<div style="background:linear-gradient(135deg,#ff5f6d 0%,#d63031 100%);padding:22px 24px;color:#fff;position:relative;">
+						<div style="display:flex;align-items:center;gap:12px;">
+							<div style="width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:22px;">&#9888;</div>
+							<div>
+								<div style="font-size:17px;font-weight:700;line-height:1.2;">Anular factura</div>
+								<div style="font-size:12.5px;opacity:.9;">Esta acción requiere justificación</div>
+							</div>
+						</div>
+						<button type="button" class="close" data-dismiss="modal" aria-label="Close" style="position:absolute;top:14px;right:16px;color:#fff;opacity:.85;font-size:26px;font-weight:400;text-shadow:none;background:none;border:none;cursor:pointer;">&times;</button>
+					</div>
+					<div style="padding:24px;background:#fff;">
+						<label style="display:block;font-size:13.5px;font-weight:600;color:#2d3436;margin-bottom:8px;">Motivo de la anulación <span style="color:#d63031;">*</span></label>
+						<textarea id="txtDeleteCommentNews" rows="3" placeholder="Escriba el motivo por el cual anula esta factura..." style="width:100%;border:1.5px solid #dfe6e9;border-radius:10px;padding:12px 14px;font-size:14px;resize:none;outline:none;transition:border-color .2s,box-shadow .2s;box-sizing:border-box;"></textarea>
+						<div id="errDeleteCommentNews" style="display:none;color:#d63031;font-size:12.5px;margin-top:6px;">El comentario es obligatorio para continuar.</div>
+					</div>
+					<div style="padding:16px 24px;background:#f8f9fa;display:flex;justify-content:flex-end;gap:10px;">
+						<button type="button" data-dismiss="modal" id="btnCancelDeleteNews" style="border:none;background:#e9ecef;color:#495057;padding:10px 20px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;transition:background .2s;">Cancelar</button>
+						<button type="button" id="btnConfirmDeleteNews" style="border:none;background:linear-gradient(135deg,#ff5f6d 0%,#d63031 100%);color:#fff;padding:10px 22px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(214,48,49,.3);">Confirmar anulación</button>
+					</div>
 				</div>
 			</div>
-		</div>
-	</div>`);
+		</div>`);
+	}
 
 	$('#modalDeleteCommentNews').on('shown.bs.modal', function(){
 		$('#txtDeleteCommentNews').focus();
 	});
+	$(document).on('focus', '#txtDeleteCommentNews', function(){
+		$(this).css({'border-color':'#d63031','box-shadow':'0 0 0 3px rgba(214,48,49,.12)'});
+	});
 	$(document).on('input', '#txtDeleteCommentNews', function(){
-		if($(this).val().trim() !== '') $(this).removeClass('is-invalid');
+		if($(this).val().trim() !== ''){
+			$(this).css('border-color','#dfe6e9');
+			$('#errDeleteCommentNews').hide();
+		}
+	});
+	$(document).on('click', '#btnCancelDeleteNews', function(){
+		$('#modalDeleteCommentNews').modal('hide');
 	});
 	$(document).on('click', '#btnConfirmDeleteNews', function(){
 		var comments = $('#txtDeleteCommentNews').val().trim();
 		if(comments === ''){
-			$('#txtDeleteCommentNews').addClass('is-invalid').focus();
+			$('#txtDeleteCommentNews').css({'border-color':'#d63031','box-shadow':'0 0 0 3px rgba(214,48,49,.12)'}).focus();
+			$('#errDeleteCommentNews').show();
 			return;
 		}
 		$('#modalDeleteCommentNews').modal('hide');
