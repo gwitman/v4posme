@@ -180,6 +180,13 @@
 							result = false;
 						}
 						
+						//Validar Nota
+						if($.trim($("#txtNote").val()) == ""){
+							fnShowNotification("La Descripcion/Nota es obligatoria","error",timerNotification);
+							$('a[href="#dropdown"]').tab('show');
+							result = false;
+						}
+						
 						return result;
 					}
 					

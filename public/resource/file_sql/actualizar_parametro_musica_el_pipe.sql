@@ -1,4 +1,5 @@
 /*BD: 	dbgldsqe81ntwv:musica_el_pipe*/
+/*servidor:  siteground .net*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
@@ -1107,7 +1108,7 @@ Eliminar o desactivar usuarios
 
 /*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
-	ratio = 36.71
+	ratio = 36.6243
 where 
 	currencyID = 2
 	and targetCurrencyID = 1; 
@@ -1115,7 +1116,7 @@ where
 	
 /*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
-	ratio = 0.0272405339144647
+	ratio = 0.02730390336602
 where 
 	currencyID = 1
 	and targetCurrencyID = 2; 
