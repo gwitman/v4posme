@@ -535,13 +535,17 @@ class app_mobile_api extends _BaseController
     {
         try {
 
+			log_message("error","[GET_DATA_DOWNLOAD] ===== INICIO getDataDownload =====");
+
             $nickname 	= /*inicio get post*/ $this->request->getPostGet("txtNickname");
             $password 	= /*inicio get post*/ $this->request->getPostGet("txtPassword");
+			log_message("error","[GET_DATA_DOWNLOAD] Autenticando usuario -> nickname: ".$nickname);
             $objUser 	= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
             $companyID 	= $objUser["user"]->companyID;
             $userID 	= $objUser["user"]->userID;
 			$flavorID	= $objUser["company"]->flavorID;
             $objCompany = $objUser["company"];
+			log_message("error","[GET_DATA_DOWNLOAD] Usuario autenticado -> userID: ".$userID." | companyID: ".$companyID." | flavorID: ".$flavorID." | companyType: ".$objCompany->type);
 
 			//Obtener listado de menu
 			$objListMenuElement  = $this->Menu_Element_Model->get_rowByUserID(
@@ -549,29 +553,50 @@ class app_mobile_api extends _BaseController
 				$userID,
 				$objUser["role"]->typeApp
 			);
+			log_message("error","[GET_DATA_DOWNLOAD] Menu obtenido -> elementos: ".count($objListMenuElement));
 			
 			
             //Obtener listado de productos
             $objWarehouse 	= $this->Userwarehouse_Model->getRowByUserIDAndFacturable($companyID, $userID);			
             $objWarehouseID = array_map(fn($warehouseItem) => $warehouseItem->warehouseID, $objWarehouse);
+			log_message("error","[GET_DATA_DOWNLOAD] Bodegas facturables -> total: ".count($objWarehouseID)." | warehouseIDs: ".implode(",",$objWarehouseID));
             $objListItem 	= $this->Item_Model->get_rowByCompanyIDToMobile($objWarehouseID);
+			log_message("error","[GET_DATA_DOWNLOAD] Productos obtenidos -> total: ".count($objListItem));
 
 			//Aplicar un ordenamiento a los productos
 			if($objCompany->type == "farmaciaMils")
 			{
 				usort($objListItem, fn($a, $b) => $a->itemID <=> $b->itemID);
+				log_message("error","[GET_DATA_DOWNLOAD] Productos ordenados por itemID (companyType: farmaciaMils)");
 			}
 
 
             //Obtener lista de clients
 			$objListCustomer = $this->Customer_Model->get_rowByCompanyIDToMobile($companyID, $userID );
+			log_message("error","[GET_DATA_DOWNLOAD] Clientes obtenidos -> total: ".count($objListCustomer));
 			
 			
             //Obtener lisa de paramtros
             $objListParameter = $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
-			
+			log_message("error","[GET_DATA_DOWNLOAD] Parametros de compania obtenidos -> total: ".count($objListParameter));
+
+			//Sobrescribir el value con el parametro personalizado por usuario (si existe)
+			$parametrosSobrescritos = 0;
+			foreach($objListParameter as $objParameter)
+			{
+				$objParameterUser = $this->Company_Parameter_User_Model->get_rowByParameterID($objParameter->parameterID, $userID);
+				if($objParameterUser)
+				{
+					log_message("error","[GET_DATA_DOWNLOAD] Parametro personalizado -> parameterID: ".$objParameter->parameterID." | name: ".($objParameter->name ?? "")." | valueOriginal: ".$objParameter->value." => valueUsuario: ".$objParameterUser->value);
+					$objParameter->value = $objParameterUser->value;
+					$parametrosSobrescritos++;
+				}
+			}
+			log_message("error","[GET_DATA_DOWNLOAD] Parametros sobrescritos por usuario -> total: ".$parametrosSobrescritos);
+
 			//Obtener lista de catalogos
 			$ListCatalogItem  = $this->Catalog_Item_Model->get_rowByFlavorID($flavorID);
+			log_message("error","[GET_DATA_DOWNLOAD] Catalogos obtenidos -> total: ".count($ListCatalogItem));
 
             
 			if($objCompany->type == "tu_futuro")
@@ -592,6 +617,7 @@ class app_mobile_api extends _BaseController
 				//Obtener solo los asignados
 				$objListDocumentCredit 	= $this->Customer_Credit_Document_Model->get_rowByBalancePendingByCompanyToMobile($companyID, $userID );
 			}
+			log_message("error","[GET_DATA_DOWNLOAD] Documentos de credito pendientes obtenidos (companyType: ".$objCompany->type.") -> total: ".count($objListDocumentCredit));
 			
             //Obtener lista de amortizaciones
 			if( $objCompany->type == "tu_futuro" )
@@ -615,13 +641,18 @@ class app_mobile_api extends _BaseController
 				//Filtrando los datos solo asociados al usuario
 				$objListAmortization 	= $this->Customer_Credit_Amortization_Model->get_rowShareLateByCompanyToMobile($companyID, $userID );
 			}
+			log_message("error","[GET_DATA_DOWNLOAD] Amortizaciones obtenidas (companyType: ".$objCompany->type.") -> total: ".count($objListAmortization));
 			
 			//Obtener lista de transacciones arribas 
 			$objListServerTransactionMaster = $this->Transaction_Master_Model->get_rowByCreatedBy_AndCurrentDate($companyID, $userID);
+			log_message("error","[GET_DATA_DOWNLOAD] Transacciones del servidor (fecha actual) obtenidas -> total: ".count($objListServerTransactionMaster));
 			
 			
 			/*Obtener lista de facturas registradas del usuario*/
 			$objListTransactionMasterRegister = $this->Transaction_Master_Detail_Model->get_rowByUserToMobile($companyID, $userID);
+			log_message("error","[GET_DATA_DOWNLOAD] Facturas registradas del usuario obtenidas -> total: ".count($objListTransactionMasterRegister));
+
+			log_message("error","[GET_DATA_DOWNLOAD] ===== FIN getDataDownload OK =====");
  
             return $this->response->setJSON(array(
                 'error' => false,
@@ -640,6 +671,8 @@ class app_mobile_api extends _BaseController
 
         } catch (\Exception $ex) {
 
+			log_message("error","[GET_DATA_DOWNLOAD] ===== ERROR getDataDownload -> Linea: ".$ex->getLine()." | Mensaje: ".$ex->getMessage()." =====");
+			log_message("error","[GET_DATA_DOWNLOAD] Traza: ".$ex->getTraceAsString());
             return $this->response->setJSON(array(
                 'error' => true,
                 'message' => $ex->getLine() . " " . $ex->getMessage()
