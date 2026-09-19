@@ -333,6 +333,11 @@ class app_box_report extends _BaseController {
 				else if( $objCompany->flavorID == 852 ) 
 				{
 					return view("app_box_report/share/view_a_disemp_tu_futuro",$objDataResult);//--finview-r
+				}
+				//audio el pipe 
+				else if( $objCompany->flavorID == 303 ) 
+				{
+					return view("app_box_report/share/view_a_disemp_audio_el_pipe",$objDataResult);//--finview-r
 				}				
 				else 
 				{
