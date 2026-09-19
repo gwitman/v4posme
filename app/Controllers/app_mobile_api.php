@@ -406,6 +406,28 @@ class app_mobile_api extends _BaseController
 			}
 			log_message("error","[SET_DATA_UPLOAD] --- FIN sincronizacion GASTOS ---");
 
+			//SINCRONIZACION INGRESOS A CAJA (tb_transaction_master_inputcash)
+			//La transaccion 29 corresponde al componente tb_transaction_master_inputcash.
+			//El JSON del movil NO trae caja/tipo/subtipo/estado, por eso insertElementMobile
+			//del controlador app_box_inputcash los resuelve como parametros configurables.
+			if(count($transactionMasters)>0)
+			{
+				$inputCashController = new app_box_inputcash();
+				$inputCashController->initController($this->request, $this->response, $this->logger);
+				$typeTransaction 	= $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_inputcash",0);
+				$ingresos 			= array_filter($transactionMasters, function($tm) use ($typeTransaction) {
+					return $tm->TransactionId == $typeTransaction;
+				});
+				log_message("error","[SET_DATA_UPLOAD] --- INICIO sincronizacion INGRESOS A CAJA (typeTransaction: ".$typeTransaction." | total ingresos: ".count($ingresos).") ---");
+				foreach($ingresos as $objTm)
+				{
+					log_message("error","[SET_DATA_UPLOAD] Procesando ingreso a caja -> transactionNumber: ".$objTm->TransactionNumber." | entityID: ".$objTm->EntityId." | monto: ".$objTm->Amount);
+					$inputCashController->insertElementMobile($dataSession,$objTm);
+					log_message("error","[SET_DATA_UPLOAD] Ingreso a caja procesado -> transactionNumber: ".$objTm->TransactionNumber);
+				}
+			}
+			log_message("error","[SET_DATA_UPLOAD] --- FIN sincronizacion INGRESOS A CAJA ---");
+
 			//SINCRONIZAR VISITAS O CONSULTAS MEDICAS
 			if(count($transactionMasters)>0){
                 $medQueryController = new app_med_query();

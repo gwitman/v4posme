@@ -597,6 +597,7 @@ class app_box_inputcash extends _BaseController
             return $resultView;
         }
     }
+
     public function save($mode = "")
     {
         $mode = helper_SegmentsByIndex($this->uri->getSegments(), 1, $mode);
@@ -1429,6 +1430,186 @@ class app_box_inputcash extends _BaseController
             $resultView        = view("core_template/email_error_general", $data);
 
             return $resultView;
+        }
+    }
+
+    /**
+     * Inserta un ingreso a caja (tb_transaction_master_inputcash) proveniente del movil.
+     *
+     * El JSON del movil NO trae todos los campos que requiere un ingreso a caja
+     * (caja/classID, tipo de movimiento/areaID, subtipo/priorityID, estado/statusID y denominaciones).
+     * Por eso esos valores se resuelven desde la tabla tb_company_parameter usando la
+     * libreria core_web_parameter (igual que en insertElement/updateElement y en los
+     * gastos moviles), leyendo los parametros de la compania:
+     *   - BOX_INPUTCASH_CLASS_DEFAULT    -> caja (classID)
+     *   - BOX_INPUTCASH_AREA_DEFAULT     -> tipo de movimiento (areaID)
+     *   - BOX_INPUTCASH_PRIORITY_DEFAULT -> subtipo de movimiento (priorityID)
+     *   - BOX_INPUTCASH_STATUS_DEFAULT   -> estado inicial (statusID)
+     *
+     * @param array  $dataSession        Sesion armada en app_mobile_api (user, company, role)
+     * @param object $transactionMaster  Objeto de ObjTransactionMaster (transaccion 29)
+     */
+    public function insertElementMobile($dataSession, $transactionMaster)
+    {
+        try {
+            //LOG INICIO
+            log_message("error", print_r("[INPUTCASH_MOBILE] 0001 - INICIO insertElementMobile", true));
+            log_message("error", print_r($transactionMaster, true));
+
+            $companyID = $dataSession["user"]->companyID;
+            $branchID  = $dataSession["user"]->branchID;
+
+            $roleID = $dataSession["role"]->roleID;
+            $userID = $dataSession["user"]->userID;
+
+            //Obtener el Componente de Transacciones de Ingreso a Caja
+            $objComponentShare = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_inputcash");
+            if (! $objComponentShare) {
+                throw new \Exception("EL COMPONENTE 'tb_transaction_master_inputcash' NO EXISTE...");
+            }
+
+            //Obtener el Componente de Denominacion (para el detalle de moneda)
+            $objComponentDenomination = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_denomination");
+            if (! $objComponentDenomination) {
+                throw new \Exception("EL COMPONENTE 'tb_transaction_master_denomination' NO EXISTE...");
+            }
+
+            log_message("error", print_r("[INPUTCASH_MOBILE] 0002 - componentes OK -> inputcash: " . $objComponentShare->componentID . " | denominacion: " . $objComponentDenomination->componentID, true));
+
+            //PARAMETROS QUE NO VIENEN EN EL JSON DEL MOVIL
+            //Se leen desde tb_company_parameter (via core_web_parameter) igual que en otras ocasiones.
+            $objListCompanyParameter = $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+
+            $objParamClass       = $this->core_web_parameter->getParameterFiltered($objListCompanyParameter, "BOX_INPUTCASH_CLASS_DEFAULT");
+            $objParamArea        = $this->core_web_parameter->getParameterFiltered($objListCompanyParameter, "BOX_INPUTCASH_AREA_DEFAULT");            
+            $objParamStatus      = $this->core_web_parameter->getParameterFiltered($objListCompanyParameter, "BOX_INPUTCASH_STATUS_DEFAULT");
+            $objParamDenoCatalog = $this->core_web_parameter->getParameterFiltered($objListCompanyParameter, "BOX_INPUTCASH_DENOMINATION_CATALOGITEM_DEFAULT");
+            $objParamBranch      = $this->core_web_parameter->getParameterFiltered($objListCompanyParameter, "BOX_INPUTCASH_BRANCH_DEFAULT");
+
+            if (! $objParamClass) {
+                throw new \Exception("FALTA CONFIGURAR EL PARAMETRO 'BOX_INPUTCASH_CLASS_DEFAULT' EN tb_company_parameter");
+            }
+            if (! $objParamArea) {
+                throw new \Exception("FALTA CONFIGURAR EL PARAMETRO 'BOX_INPUTCASH_AREA_DEFAULT' EN tb_company_parameter");
+            }
+          
+            if (! $objParamStatus) {
+                throw new \Exception("FALTA CONFIGURAR EL PARAMETRO 'BOX_INPUTCASH_STATUS_DEFAULT' EN tb_company_parameter");
+            }
+            if (! $objParamDenoCatalog) {
+                throw new \Exception("FALTA CONFIGURAR EL PARAMETRO 'BOX_INPUTCASH_DENOMINATION_CATALOGITEM_DEFAULT' EN tb_company_parameter");
+            }
+            if (! $objParamBranch) {
+                throw new \Exception("FALTA CONFIGURAR EL PARAMETRO 'BOX_INPUTCASH_BRANCH_DEFAULT' EN tb_company_parameter");
+            }
+            
+
+            $classID               = $objParamClass->value;
+            $areaID                = $objParamArea->value;            
+            $statusID              = $objParamStatus->value;
+            $denominationCatalogID = $objParamDenoCatalog->value;
+            $branchID              = $objParamBranch->value;
+
+            log_message("error", print_r("[INPUTCASH_MOBILE] 0003 - parametros -> classID: " . $classID . " | areaID: " . $areaID . " | statusID: " . $statusID . " | denominationCatalogID: " . $denominationCatalogID. " | branchID: ". $branchID, true));
+
+            //Obtener transaccion
+            $transactionID = $this->core_web_transaction->getTransactionID($companyID, "tb_transaction_master_inputcash", 0);
+            $objT          = $this->Transaction_Model->getByCompanyAndTransaction($companyID, $transactionID);
+
+            //Monto (viene en el JSON del movil)
+            $amount = isset($transactionMaster->Amount) ? helper_StringToNumber($transactionMaster->Amount) : 0;
+
+            $objTM["companyID"]           = $companyID;
+            $objTM["transactionID"]       = $transactionID;
+            $objTM["branchID"]            = $branchID;
+            $objTM["transactionNumber"]   = $this->core_web_counter->goNextNumber($companyID, $branchID, "tb_transaction_master_inputcash", 0);
+            $objTM["transactionCausalID"] = $this->core_web_transaction->getDefaultCausalID($companyID, $transactionID);
+            $objTM["entityID"]            = 0;
+            $objTM["transactionOn"]       = $transactionMaster->TransactionOn;
+            $objTM["statusIDChangeOn"]    = date("Y-m-d H:i:s");
+            $objTM["componentID"]         = $objComponentShare->componentID;
+            $objTM["note"]                = isset($transactionMaster->Comment) ? $transactionMaster->Comment : "";
+            $objTM["sign"]                = $objT->signInventory;
+            $objTM["currencyID"]          = isset($transactionMaster->CurrencyId) ? $transactionMaster->CurrencyId : $this->core_web_currency->getCurrencyDefault($companyID)->currencyID;
+            $objTM["currencyID2"]         = $this->core_web_currency->getCurrencyExternal($companyID)->currencyID;
+            $objTM["exchangeRate"]        = $this->core_web_currency->getRatio($companyID, date("Y-m-d"), 1, $objTM["currencyID2"], $objTM["currencyID"]);
+            $objTM["reference1"]          = isset($transactionMaster->Reference1) ? $transactionMaster->Reference1 : "";
+            $objTM["reference2"]          = isset($transactionMaster->Reference2) ? $transactionMaster->Reference2 : "";
+            $objTM["reference3"]          = isset($transactionMaster->Reference3) ? $transactionMaster->Reference3 : "";
+            $objTM["reference4"]          = "";
+            $objTM["statusID"]            = $statusID;
+            $objTM["amount"]              = $amount;
+            $objTM["isApplied"]           = 0;
+            $objTM["journalEntryID"]      = 0;
+            $objTM["classID"]             = $classID;
+            $objTM["areaID"]              = $areaID;
+            $objTM["priorityID"]          = NULL;
+            $objTM["sourceWarehouseID"]   = null;
+            $objTM["targetWarehouseID"]   = null;
+            $objTM["isActive"]            = 1;
+            $this->core_web_auditoria->setAuditCreated($objTM, $dataSession, $this->request);
+
+            log_message("error", print_r("[INPUTCASH_MOBILE] 0004 - objTM listo -> transactionNumber: " . $objTM["transactionNumber"] . " | amount: " . $amount, true));
+
+            $db = db_connect();
+            $db->transStart();
+            $transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
+
+            log_message("error", print_r("[INPUTCASH_MOBILE] 0005 - maestro insertado ID: " . $transactionMasterID, true));
+
+            //Insertar el Detalle (mismo esquema que insertElement)
+            $objTMD                               = null;
+            $objTMD["companyID"]                  = $objTM["companyID"];
+            $objTMD["transactionID"]              = $objTM["transactionID"];
+            $objTMD["transactionMasterID"]        = $transactionMasterID;
+            $objTMD["componentID"]                = 0;
+            $objTMD["componentItemID"]            = 0;
+            $objTMD["quantity"]                   = 0;
+            $objTMD["unitaryCost"]                = 0;
+            $objTMD["cost"]                       = 0;
+            $objTMD["unitaryPrice"]               = 0;
+            $objTMD["unitaryAmount"]              = 0;
+            $objTMD["amount"]                     = $amount;
+            $objTMD["discount"]                   = 0;
+            $objTMD["promotionID"]                = 0;
+            $objTMD["reference1"]                 = 0;
+            $objTMD["reference2"]                 = 0;
+            $objTMD["reference3"]                 = 0;
+            $objTMD["catalogStatusID"]            = 0;
+            $objTMD["inventoryStatusID"]          = 0;
+            $objTMD["isActive"]                   = 1;
+            $objTMD["quantityStock"]              = 0;
+            $objTMD["quantiryStockInTraffic"]     = 0;
+            $objTMD["quantityStockUnaswared"]     = 0;
+            $objTMD["remaingStock"]               = 0;
+            $objTMD["expirationDate"]             = null;
+            $objTMD["exchangeRateReference"]      = 0;
+            $objTMD["inventoryWarehouseSourceID"] = null;
+            $objTMD["inventoryWarehouseTargetID"] = null;
+            $this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
+
+            log_message("error", print_r("[INPUTCASH_MOBILE] 0006 - detalle insertado", true));            
+            //Crear la Carpeta para almacenar los Archivos del Documento
+            $pathDocument = PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponentShare->componentID . "/component_item_" . $transactionMasterID;
+            if (! file_exists($pathDocument)) {
+                mkdir($pathDocument, 0700, true);
+            }
+
+            if ($db->transStatus() !== false) {
+                $db->transCommit();
+                log_message("error", print_r("[INPUTCASH_MOBILE] 0007 - commit OK -> transactionMasterID: " . $transactionMasterID, true));
+                return array(
+                    "transactionID"       => $transactionID,
+                    "transactionMasterID" => $transactionMasterID,
+                    "transactionNumber"   => $objTM["transactionNumber"],
+                );
+            } else {
+                $db->transRollback();
+                throw new \Exception($this->db->_error_message());
+            }
+        } catch (\Exception $ex) {
+            log_message("error", print_r("[INPUTCASH_MOBILE] ERROR - Linea: " . $ex->getLine() . " - " . $ex->getMessage(), true));
+            throw new \Exception("Linea: " . $ex->getLine() . " - " . $ex->getMessage());
         }
     }
 

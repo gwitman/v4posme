@@ -4,6 +4,41 @@
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "13" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "BOX_INPUTCASH_BRANCH_DEFAULT";## Branch por defecto del ingreso de caja
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "1" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "BOX_INPUTCASH_CLASS_DEFAULT";## Clase por defecto del ingreso de caja
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "520" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "BOX_INPUTCASH_AREA_DEFAULT";## Area por defecto del ingreso de caja
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "105" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "BOX_INPUTCASH_STATUS_DEFAULT";## Estado por defecto del ingreso de caja 
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "0" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "BOX_INPUTCASH_DENOMINATION_CATALOGITEM_DEFAULT";## Denominacion por defecto en ingreso de caja 
+
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
 WHERE 
