@@ -2,6 +2,11 @@
 $showPrice      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_precio', 'true');
 $showSubTotal   = getBahavioDB($key, 'app_invoice_survery', 'mostrar_subtotal', 'true');
 $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'true');
+
+// Tipo de comprador (mayorista / detalle) solo para companias alphaDblMotor
+$companyType        = (isset($objCompany) && isset($objCompany->type)) ? $objCompany->type : '';
+$isBuyerTypeGate    = ($companyType === 'alphaDblMotor');
+$wholesaleKey       = getBahavioDB($key, 'app_invoice_survery', 'clave_mayorista', 'mayorista2024');
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -416,9 +421,118 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
         text-align: center;
       }
     }
+
+    /* ---- Modal de tipo de comprador (mayorista / detalle) ---- */
+    #buyerTypeModal .modal-content {
+      border: none;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+    }
+    #buyerTypeModal .modal-header {
+      background: linear-gradient(135deg, #e63946, #d62839);
+      color: #fff;
+      border: none;
+      padding: 20px 24px;
+    }
+    #buyerTypeModal .modal-title {
+      font-weight: 700;
+      font-size: 1.15rem;
+    }
+    #buyerTypeModal .modal-body {
+      padding: 24px;
+    }
+    #buyerTypeModal .form-label {
+      color: #e63946;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+    #buyerTypeModal .form-select,
+    #buyerTypeModal .form-control {
+      border-radius: 12px;
+      border: 1.5px solid #ddd;
+      padding: 12px 14px;
+      font-size: 0.95rem;
+    }
+    #buyerTypeModal .form-select:focus,
+    #buyerTypeModal .form-control:focus {
+      border-color: #e63946;
+      box-shadow: 0 0 0 0.15rem rgba(230,57,70,0.15);
+    }
+    #buyerTypeModal .btn-buyer-confirm {
+      background: #e63946;
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 12px;
+      font-weight: 700;
+      width: 100%;
+      transition: background 0.2s;
+    }
+    #buyerTypeModal .btn-buyer-confirm:hover {
+      background: #d62839;
+    }
+    #buyerKeyError {
+      color: #e63946;
+      font-size: 0.85rem;
+      font-weight: 600;
+      margin-top: 6px;
+      display: none;
+    }
+    .buyer-key-wrap { display: none; }
+
+    /* Ocultar precios cuando el comprador es de detalle */
+    body.hide-prices .product-price,
+    body.hide-prices .modal-product-price,
+    body.hide-prices .trSubtotal,
+    body.hide-prices #trTotal {
+      display: none !important;
+    }
+
+    @media (max-width: 576px) {
+      #buyerTypeModal .modal-dialog {
+        margin: 12px;
+      }
+      #buyerTypeModal .modal-body {
+        padding: 18px;
+      }
+    }
   </style>
 </head>
-<body>
+<body<?php echo $isBuyerTypeGate ? ' class="buyer-gate-pending"' : ''; ?>>
+
+  <?php if($isBuyerTypeGate): ?>
+  <!-- Modal de tipo de comprador (solo alphaDblMotor) -->
+  <div class="modal fade" id="buyerTypeModal" tabindex="-1" aria-hidden="true"
+       data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">👋 Bienvenido</h5>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label" for="buyerTypeSelect">¿Qué tipo de comprador eres?</label>
+            <select class="form-select" id="buyerTypeSelect">
+              <option value="">-- Selecciona una opción --</option>
+              <option value="wholesale">Soy mayorista</option>
+              <option value="retail">Soy detallista</option>
+            </select>
+          </div>
+
+          <div class="buyer-key-wrap" id="buyerKeyWrap">
+            <label class="form-label" for="buyerKeyInput">Ingresa tu clave de mayorista:</label>
+            <input type="password" class="form-control" id="buyerKeyInput" placeholder="Clave de mayorista" autocomplete="off">
+            <div id="buyerKeyError">Clave incorrecta. Verifica e intenta de nuevo.</div>
+          </div>
+
+          <button type="button" class="btn-buyer-confirm mt-3" id="buyerTypeConfirm">Continuar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <?php endif; ?>
+
   <div class="container">
     <div class="logo">
       <img class="img-fluid" src="<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_logo', 'logos/AlphaDblMotor_logo-micro-finanza.png')?>" alt="Logo">
@@ -431,6 +545,7 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
 
     <form id="orderForm" method="POST" action="<?php echo base_url()."/app_invoice_survery/insertElement"; ?>">
       <input type="hidden" name="key" id="key" value="<?php echo $key; ?>">
+      <input type="hidden" name="buyer_type" id="buyerType" value="">
 
       <div class="mb-3">
         <label for="name" class="form-label">Nombre:</label>
@@ -586,7 +701,7 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
                   onerror="this.onerror=null;this.src='<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_item', 'logos/AlphaDblMotor_logo-micro-finanza.png')?>';">
 
                 <?php if($showPrice == 'true'): ?>
-                <p class="fw-bold" style="color:#e63946; font-size:1.2rem;">
+                <p class="fw-bold modal-product-price" style="color:#e63946; font-size:1.2rem;">
                   C$ <?php echo number_format(round($item->price1,2),2); ?>
                 </p>
                 <?php endif; ?>
@@ -670,6 +785,58 @@ $showTotal      = getBahavioDB($key, 'app_invoice_survery', 'mostrar_total', 'tr
   <script src="<?= base_url()?>/resource/js/bootstrap5/bootstrap.bundle.min.js"></script>
   <script>
     $(document).ready(function() {
+
+      <?php if($isBuyerTypeGate): ?>
+      // --- Gate de tipo de comprador (mayorista / detalle) para alphaDblMotor ---
+      var WHOLESALE_KEY = <?php echo json_encode($wholesaleKey); ?>;
+      var buyerModal = new bootstrap.Modal(document.getElementById('buyerTypeModal'));
+      buyerModal.show();
+
+      // Mostrar/ocultar input de clave segun la opcion elegida
+      $('#buyerTypeSelect').on('change', function() {
+        var val = $(this).val();
+        $('#buyerKeyError').hide();
+        if (val === 'wholesale') {
+          $('#buyerKeyWrap').slideDown(150);
+        } else {
+          $('#buyerKeyWrap').slideUp(150);
+          $('#buyerKeyInput').val('');
+        }
+      });
+
+      // Aplicar modo detalle: ocultar precios en pantalla (la info se sigue enviando)
+      function applyRetailMode() {
+        $('body').addClass('hide-prices');
+        $('#buyerType').val('retail');
+      }
+
+      // Aplicar modo mayorista: todo tal cual
+      function applyWholesaleMode() {
+        $('body').removeClass('hide-prices');
+        $('#buyerType').val('wholesale');
+      }
+
+      $('#buyerTypeConfirm').on('click', function() {
+        var val = $('#buyerTypeSelect').val();
+        if (!val) {
+          $('#buyerTypeSelect').focus();
+          return;
+        }
+        if (val === 'wholesale') {
+          var claveIngresada = $('#buyerKeyInput').val().trim();
+          if (claveIngresada !== WHOLESALE_KEY) {
+            $('#buyerKeyError').show();
+            $('#buyerKeyInput').focus();
+            return;
+          }
+          applyWholesaleMode();
+        } else {
+          applyRetailMode();
+        }
+        buyerModal.hide();
+        $('body').removeClass('buyer-gate-pending');
+      });
+      <?php endif; ?>
 
       // Cargar imagen del modal solo cuando se abre (diferida)
       $('.modal').on('show.bs.modal', function() {

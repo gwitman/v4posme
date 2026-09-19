@@ -10141,7 +10141,8 @@ function helper_reporte80mmTransactionMasterSurvery(
     $confiDetalle, /**/
     $arrayDetalle, /**/
     $objParameterTelefono, /*telefono*/
-    $rucCompany = "" /*ruc*/
+    $rucCompany = "", /*ruc*/
+    $showAmount = true /*mostrar total: false para comprador de detalle*/
 )
 {
     $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;
@@ -10316,14 +10317,7 @@ function helper_reporte80mmTransactionMasterSurvery(
                             &nbsp;
                           </td>
                         </tr>                                                     
-                        <tr>
-                          <td colspan='2'>
-                            TOTAL
-                          </td>
-                          <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount)."
-                          </td>
-                        </tr>
+                        [[TOTAL]]
    
                        
 
@@ -10450,6 +10444,21 @@ function helper_reporte80mmTransactionMasterSurvery(
     
 	
     
+    //Bloque TOTAL: se oculta para el comprador de detalle
+    $totalHtml = "";
+    if($showAmount)
+    {
+        $totalHtml = "<tr>
+                          <td colspan='2'>
+                            TOTAL
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount)."
+                          </td>
+                        </tr>";
+    }
+
+    $html = str_replace("[[TOTAL]]", $totalHtml, $html);
     $html = str_replace("[[DETALLE]]", $cuerpo, $html);
     return $html;
 }

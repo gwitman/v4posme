@@ -44,6 +44,9 @@ class app_invoice_survery extends _BaseController {
 			$objColaborador				= $this->Employee_Model->get_rowByItemReference1($key);
 			$dataView["objEmployeer"]	= $objColaborador;
 			
+			//Pasar la compania a la vista masterpage (para el tipo de comprador)
+			$dataSession["objCompany"]							= $objCompany;
+
 			//Obtener todos los prodcutos con el key
 			$dataSession["head"]								= /*--inicio view*/ view('app_invoice_survery/index_head',$dataview);//--finview
 			$dataSession["footer"]								= /*--inicio view*/ view('app_invoice_survery/index_footer',$dataview);//--finview
@@ -79,6 +82,7 @@ class app_invoice_survery extends _BaseController {
 			$phone						= $this->request->getPost("phone");
 			$cedula						= $this->request->getPost("cedula");
 			$direccion 					= $this->request->getPost("address");
+			$buyerType					= $this->request->getPost("buyer_type"); //wholesale | retail | ""
 			$listItem					= $this->request->getPost("itemID");
 			$listQuantity				= $this->request->getPost("quantity");
 			$listPrice					= $this->request->getPost("price");
@@ -173,7 +177,7 @@ class app_invoice_survery extends _BaseController {
             $objTM["currencyID"]        = $this->core_web_currency->getCurrencyDefault($companyID)->currencyID;	
             $objTM["currencyID2"]       = $this->core_web_currency->getCurrencyExternal($dataSession["user"]->companyID)->currencyID;
             $objTM["exchangeRate"]      = $this->core_web_currency->getRatio($dataSession["user"]->companyID, date("Y-m-d"), 1, $objTM["currencyID2"], $objTM["currencyID"]);
-            $objTM["reference1"]        = "";
+            $objTM["reference1"]        = ($buyerType === "retail" || $buyerType === "wholesale") ? $buyerType : "";
             $objTM["reference2"]        = "";
             $objTM["reference3"]        = "";
             $objTM["reference4"]        = '';
@@ -382,6 +386,8 @@ class app_invoice_survery extends _BaseController {
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);			
 			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 
 			
+			//Tipo de comprador (guardado en reference1). En modo detalle no se muestran precios.
+			$isRetailBuyer							= (isset($datView["objTM"]->reference1) && $datView["objTM"]->reference1 === "retail");
 			
 		
 			//Configurar Detalle Header
@@ -427,7 +433,15 @@ class app_invoice_survery extends _BaseController {
 			
 		    
 		    $detalle = array();		    
-		    $row = array("CANT", 'PREC', "TOTAL");
+		    if($isRetailBuyer)
+		    {
+		    	//Comprador de detalle: solo se muestra la cantidad, sin precios
+		    	$row = array("CANT", '', "");
+		    }
+		    else
+		    {
+		    	$row = array("CANT", 'PREC', "TOTAL");
+		    }
 		    array_push($detalle,$row);
 		    
 		    
@@ -439,11 +453,23 @@ class app_invoice_survery extends _BaseController {
 				);
 			    array_push($detalle,$row);
 				
-			    $row = array(					
-					sprintf("%01.2f",round($detail_->quantity,2)), 					
-					sprintf("%01.2f",round($detail_->unitaryPrice,2)),
-					"C$ ".sprintf("%01.2f",round($detail_->amount,2))					
-				);
+				if($isRetailBuyer)
+				{
+					//Solo cantidad, ocultamos precio y total (la informacion se guarda igual en BD)
+				    $row = array(					
+						sprintf("%01.2f",round($detail_->quantity,2)), 					
+						"",
+						""					
+					);
+				}
+				else
+				{
+				    $row = array(					
+						sprintf("%01.2f",round($detail_->quantity,2)), 					
+						sprintf("%01.2f",round($detail_->unitaryPrice,2)),
+						"C$ ".sprintf("%01.2f",round($detail_->amount,2))					
+					);
+				}
 			    array_push($detalle,$row);
 			}
 			
@@ -462,7 +488,8 @@ class app_invoice_survery extends _BaseController {
 			    $confiDetalleHeader,
 			    $detalle,
 			    $objParameterTelefono, /*telefono*/
-			    $objParameterRuc /*ruc*/
+			    $objParameterRuc, /*ruc*/
+			    !$isRetailBuyer /*mostrar total: false para comprador de detalle*/
 			);
 			
 			$this->dompdf->loadHTML($html);
