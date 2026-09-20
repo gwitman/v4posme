@@ -324,27 +324,22 @@ $wholesaleKey       = getBahavioDB($key, 'app_invoice_survery', 'clave_mayorista
       font-size: 0.9rem;
       pointer-events: none;
     }
-    .category-pills {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px;
+    .category-select-wrap {
       margin-top: 10px;
     }
-    .pill {
-      padding: 4px 14px;
+    .category-select-wrap select {
       border-radius: 20px;
       border: 1.5px solid #e63946;
       color: #e63946;
-      background: transparent;
-      font-size: 0.78rem;
+      font-size: 0.85rem;
       font-weight: 600;
+      padding: 6px 14px;
       cursor: pointer;
-      transition: background 0.2s, color 0.2s;
-      white-space: nowrap;
     }
-    .pill.active, .pill:hover {
-      background: #e63946;
-      color: #fff;
+    .category-select-wrap select:focus {
+      border-color: #e63946;
+      box-shadow: 0 0 0 0.15rem rgba(230,57,70,0.15);
+      outline: none;
     }
     .no-results {
       text-align: center;
@@ -535,10 +530,10 @@ $wholesaleKey       = getBahavioDB($key, 'app_invoice_survery', 'clave_mayorista
 
   <div class="container">
     <div class="logo">
-      <img class="img-fluid" src="<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_logo', 'logos/AlphaDblMotor_logo-micro-finanza.png')?>" alt="Logo">
+      <img class="img-fluid" src="<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_logo', 'logos/logo-micro-finanza.png')?>" alt="Logo">
     </div>
     <h1>
-      <?= getBahavioDB($key, 'app_invoice_survery', 'img_titulo', '<img width="36px" class="img-fluid" src="/resource/img/logos/AlphaDblMotor_logo-micro-finanza.png" alt="">')?>
+      <?= getBahavioDB($key, 'app_invoice_survery', 'img_titulo', '<img width="36px" class="img-fluid" src="/resource/img/logos/logo-micro-finanza.png" alt="">')?>
       <?= getBahavioDB($key, 'app_invoice_survery', 'titulo', '¡Vota u Ordena!')?>
     </h1>
     <p class="tagline"><?= getBahavioDB($key, 'app_invoice_survery', 'subtitulo', '¡Elige tus productos favoritos y confirma tu pedido!')?></p>
@@ -584,13 +579,17 @@ $wholesaleKey       = getBahavioDB($key, 'app_invoice_survery', 'clave_mayorista
                 }
               }
             }
+            // Ordenar categorías ascendentemente
+            sort($categories, SORT_NATURAL | SORT_FLAG_CASE);
           ?>
           <?php if(!empty($categories)): ?>
-          <div class="category-pills" id="categoryPills">
-            <button type="button" class="pill active" data-cat="">Todos</button>
-            <?php foreach($categories as $cat): ?>
-            <button type="button" class="pill" data-cat="<?= htmlspecialchars($cat) ?>"><?= htmlspecialchars($cat) ?></button>
-            <?php endforeach; ?>
+          <div class="category-select-wrap" id="categorySelectWrap">
+            <select class="form-select" id="categorySelect">
+              <option value="">TODAS</option>
+              <?php foreach($categories as $cat): ?>
+              <option value="<?= htmlspecialchars($cat) ?>"><?= htmlspecialchars($cat) ?></option>
+              <?php endforeach; ?>
+            </select>
           </div>
           <?php endif; ?>
         </div>
@@ -622,7 +621,7 @@ $wholesaleKey       = getBahavioDB($key, 'app_invoice_survery', 'clave_mayorista
               loading="lazy"
               decoding="async"
               srcorigen="<?php echo $itemImg; ?>" 
-              onerror="this.onerror=null;this.src='<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_item', 'logos/AlphaDblMotor_logo-micro-finanza.png')?>';">
+              onerror="this.onerror=null;this.src='<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_item', 'logos/logo-micro-finanza.png')?>';">
 
             <!-- Info -->
             <div class="product-info">
@@ -693,12 +692,12 @@ $wholesaleKey       = getBahavioDB($key, 'app_invoice_survery', 'clave_mayorista
               </div>
               <div class="modal-body text-center">
                 <img class="modal-product-img"
-                  src="<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_item', 'logos/AlphaDblMotor_logo-micro-finanza.png')?>"
+                  src="<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_item', 'logos/logo-micro-finanza.png')?>"
                   data-src="<?php echo $itemImg; ?>"
                   alt="<?php echo htmlspecialchars($item->name); ?>"
                   loading="lazy"
                   decoding="async"
-                  onerror="this.onerror=null;this.src='<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_item', 'logos/AlphaDblMotor_logo-micro-finanza.png')?>';">
+                  onerror="this.onerror=null;this.src='<?=base_url()?>/resource/img/<?= getBahavioDB($key, 'app_invoice_survery', 'img_item', 'logos/logo-micro-finanza.png')?>';">
 
                 <?php if($showPrice == 'true'): ?>
                 <p class="fw-bold modal-product-price" style="color:#e63946; font-size:1.2rem;">
@@ -996,10 +995,8 @@ $wholesaleKey       = getBahavioDB($key, 'app_invoice_survery', 'clave_mayorista
 
       $('#searchInput').on('input', filterProducts);
 
-      $(document).on('click', '#categoryPills .pill', function() {
-        $('#categoryPills .pill').removeClass('active');
-        $(this).addClass('active');
-        activeCat = $(this).data('cat').toLowerCase();
+      $('#categorySelect').on('change', function() {
+        activeCat = ($(this).val() || '').toLowerCase();
         filterProducts();
       });
     });
