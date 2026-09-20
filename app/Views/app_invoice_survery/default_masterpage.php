@@ -499,7 +499,7 @@ $wholesaleKey       = getBahavioDB($key, 'app_invoice_survery', 'clave_mayorista
     }
   </style>
 </head>
-<body<?php echo $isBuyerTypeGate ? ' class="buyer-gate-pending"' : ''; ?>>
+<body<?php echo $isBuyerTypeGate ? ' class="buyer-gate-pending hide-prices"' : ''; ?>>
 
   <?php if($isBuyerTypeGate): ?>
   <!-- Modal de tipo de comprador (solo alphaDblMotor) -->
