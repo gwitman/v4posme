@@ -1062,13 +1062,156 @@
 					closeAction: 'hide',
 					listeners: {
 						afterrender: function(win) {
-							// Agregar doble clic al grid interno para seleccionar producto directamente
 							var grid = win.down('grid');
-							if (grid) {
-								grid.on('itemdblclick', function(view, record) {
+							if (!grid) {
+								return;
+							}
+
+							// Doble clic sobre una fila = Aceptar
+							grid.on('itemdblclick', function(view, record) {
+								fnBtnSeleccionProducto();
+							});
+
+							// Navegacion con flechas manejada completamente por nosotros usando un
+							// indice propio (grid._navIndex). Prevenimos el comportamiento nativo para
+							// evitar que el NavigationModel pelee con nuestra seleccion.
+							grid._navIndex = -1;
+
+							var seleccionarIndice = function(idx) {
+								var storeGrid = grid.getStore();
+								if (idx < 0 || idx >= storeGrid.getCount()) {
+									return;
+								}
+								grid._navIndex = idx;
+								var selModel = grid.getSelectionModel();
+								selModel.deselectAll();
+								selModel.select(idx);
+								grid.getView().focusRow(idx);
+							};
+
+							// Mantener el indice sincronizado cuando el usuario da clic con el mouse
+							grid.on('itemclick', function(view, record, item, index) {
+								grid._navIndex = index;
+							});
+
+							// Exponer helper para que el Tab desde el input seleccione la primera fila
+							grid._seleccionarIndice = seleccionarIndice;
+
+							// Enter = Aceptar. Flechas mueven la seleccion y cambian de pagina en los bordes.
+							grid.on('itemkeydown', function(view, record, item, index, e) {
+								var key = e.getKey();
+
+								if (key === Ext.event.Event.ENTER) {
+									e.preventDefault();
+									e.stopEvent();
 									fnBtnSeleccionProducto();
+									return;
+								}
+
+								if (key !== Ext.event.Event.DOWN && key !== Ext.event.Event.UP) {
+									return;
+								}
+
+								// Prevenir el movimiento nativo para tomar control total
+								e.preventDefault();
+								e.stopEvent();
+
+								var storeGrid  = grid.getStore();
+								var selModel   = grid.getSelectionModel();
+								var total      = storeGrid.getCount();
+								var totalPages = Math.ceil(storeGrid.getTotalCount() / storeGrid.pageSize);
+
+								// Punto de partida: nuestro indice, o el de la fila del evento
+								var actual = (grid._navIndex >= 0) ? grid._navIndex : index;
+
+								if (key === Ext.event.Event.DOWN) {
+									if (actual < total - 1) {
+										seleccionarIndice(actual + 1);
+									} else if (storeGrid.currentPage < totalPages) {
+										storeGrid.nextPage({
+											callback: function() {
+												seleccionarIndice(0);
+											}
+										});
+									}
+								}
+
+								if (key === Ext.event.Event.UP) {
+									if (actual > 0) {
+										seleccionarIndice(actual - 1);
+									} else if (storeGrid.currentPage > 1) {
+										storeGrid.previousPage({
+											callback: function() {
+												seleccionarIndice(storeGrid.getCount() - 1);
+											}
+										});
+									}
+								}
+							});
+						},
+						show: function(win) {
+							var grid = win.down('grid');
+							var campoBusqueda = win.down('textfield') || win.down('field[isSearchField]');
+
+							// Deseleccionar cualquier fila previa para que no robe el foco al reabrir
+							if (grid) {
+								grid.getSelectionModel().deselectAll();
+							}
+
+							if (!campoBusqueda) {
+								return;
+							}
+
+							// Limpiar el texto de busqueda y enfocar el input al abrir
+							campoBusqueda.setValue('');
+							Ext.defer(function() {
+								campoBusqueda.focus(true, 100);
+							}, 300);
+
+							// Tab desde el input cae en la primera fila del grid ya seleccionada.
+							// El input recarga el grid en cada keyup (store.loadPage(1)), asi que
+							// esperamos al evento 'load' para seleccionar tras la recarga.
+							if (!campoBusqueda._tabToGridBound) {
+								campoBusqueda._tabToGridBound = true;
+								campoBusqueda.inputEl.on('keydown', function(e) {
+									if (e.getKey() !== Ext.event.Event.TAB || e.shiftKey) {
+										return;
+									}
+									e.preventDefault();
+									e.stopEvent();
+
+									if (!grid) {
+										return;
+									}
+
+									var storeGrid = grid.getStore();
+
+									var seleccionarPrimera = function() {
+										if (storeGrid.getCount() > 0) {
+											// Quitar el foco del input y pasarlo a la primera fila del grid
+											campoBusqueda.inputEl.blur();
+											grid.getView().focus();
+											if (grid._seleccionarIndice) {
+												grid._seleccionarIndice(0);
+											}
+										}
+									};
+
+									// Quitar el foco del input de inmediato (dispara/no bloquea recarga)
+									campoBusqueda.inputEl.blur();
+
+									// Enganchar al proximo 'load' (por si hay recarga pendiente del keyup)
+									storeGrid.on('load', seleccionarPrimera, null, { single: true });
+
+									// Si no hay recarga en curso ni pendiente, seleccionar directamente
+									Ext.defer(function() {
+										if (!storeGrid.isLoading()) {
+											storeGrid.un('load', seleccionarPrimera, null);
+											seleccionarPrimera();
+										}
+									}, 300);
 								});
-							} 
+							}
 						}
 					},
 					items: [<?php echo $objCompanyDataView_BuscarProductos["view_config"]->jsonConfiguration; ?> ],
