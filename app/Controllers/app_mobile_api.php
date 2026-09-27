@@ -84,15 +84,35 @@ class app_mobile_api extends _BaseController
 			log_message("error","[SET_DATA_UPLOAD] Usuario autenticado -> userID: ".$objUser["user"]->userID." | employeeID: ".$objUser["user"]->employeeID." | companyID: ".$companyID." | companyType: ".$objCompany->type);
 			
             
-			//Validar permiso si se limpiara el inventario
-			$permited 			= false;
-            $permited 			= $this->core_web_permission->urlPermited("core_inventory", "clear_item_on_upload_data", URL_SUFFIX, $objUser["menuTop"], $objUser["menuLeft"], $objUser["menuBodyReport"], $objUser["menuBodyTop"], $objUser["menuHiddenPopup"]);
+			//Validar si se limpiara el inventario segun el parametro configurado
+			//El valor se toma de tb_company_parameter (por compania) y, si existe,
+			//se sobrescribe con el valor personalizado por usuario en tb_company_parameter_user.
+			$permited 				= false;
+			$valueClearInventory 	= "";
+
+			$objListParameterUpload = $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterUpload 	= helper_getParameterFiltered($objListParameterUpload, "INVENTORY_CLEAR_IN_UPLOADA_DATA_MOBILE");
+			if($objParameterUpload)
+			{
+				$valueClearInventory = $objParameterUpload->value;
+
+				//Sobrescribir con el valor personalizado por usuario (si existe)
+				$objParameterUserUpload = $this->Company_Parameter_User_Model->get_rowByParameterID($objParameterUpload->parameterID, $objUser["user"]->userID);
+				if($objParameterUserUpload)
+				{
+					log_message("error","[SET_DATA_UPLOAD] Parametro INVENTORY_CLEAR_IN_UPLOADA_DATA_MOBILE personalizado -> parameterID: ".$objParameterUpload->parameterID." | valueOriginal: ".$objParameterUpload->value." => valueUsuario: ".$objParameterUserUpload->value);
+					$valueClearInventory = $objParameterUserUpload->value;
+				}
+			}
+
+			//Interpretar el valor configurado como booleano
+			$valueClearInventoryNormalized 	= strtolower(trim((string)$valueClearInventory));
+			$permited 						= in_array($valueClearInventoryNormalized, array("1", "true", "si", "yes"), true);
 			$limpiarInventory 	= "false";
-			
 			if ($permited) {
 				$limpiarInventory 	= "true";
 			}
-			log_message("error","[SET_DATA_UPLOAD] Permiso limpiar inventario -> limpiarInventory: ".$limpiarInventory);
+			log_message("error","[SET_DATA_UPLOAD] Permiso limpiar inventario -> valueConfigurado: ".$valueClearInventory." | limpiarInventory: ".$limpiarInventory);
 			
 			
 			//$objItemsJson 			= '{"ObjCustomers":[],"ObjItems":[],"ObjTransactionMaster":[{"TransactionId":19,"TypePaymentId":3,"TransactionMasterId":7,"TransactionNumber":"FAC-0011","EntityId":13,"TransactionOn":"2026-03-19T09:28:32.237701","TransactionOn2":"0001-01-01T00:00:00","NextVisit":"2026-03-19T00:00:00","Plazo":1,"FixedExpenses":0.0,"PeriodPay":190,"EntitySecondaryId":"1123","SubAmount":220.0,"Discount":22.0,"Taxi1":0.0,"Amount":220.0,"CustomerCreditLineId":359,"TransactionCausalId":21,"ExchangeRate":0.0,"CurrencyId":1,"Comment":"Jfjd","Reference1":"","Reference2":"","Reference3":"","CustomerIdentification":"000-000000-0000A","ReferenceClientName":"","MesaID":0,"MesaName":"Seleccione","StatusID":67,"Reference4":null,"CuotasPendientes":0}],"ObjTransactionMasterDetail":[{"TransactionMasterDetailId":13,"TransactionMasterId":7,"Componentid":33,"ComponentItemId":29144,"Quantity":10.0,"UnitaryCost":0.0,"UnitaryPrice":20.0,"SubAmount":200.0,"Discount":20.0,"Tax1":0.0,"Amount":200.0,"ItemBarCode":"777700001111","Reference1":"","Reference2":"","PorcentajeDescuento":0.0,"MontoDescuento":0.0,"ReferenciaProducto":"pez flaco"},{"TransactionMasterDetailId":14,"TransactionMasterId":7,"Componentid":33,"ComponentItemId":29142,"Quantity":4.0,"UnitaryCost":0.0,"UnitaryPrice":5.0,"SubAmount":20.0,"Discount":2.0,"Tax1":0.0,"Amount":20.0,"ItemBarCode":"777700001109","Reference1":"","Reference2":"","PorcentajeDescuento":0.0,"MontoDescuento":0.0,"ReferenciaProducto":"pes gordo"}]}';

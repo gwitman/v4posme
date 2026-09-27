@@ -9,6 +9,13 @@ UPDATE  tb_company_parameter,tb_parameter SET
 	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "INVENTORY_CLEAR_IN_UPLOADA_DATA_MOBILE";## Limpiar inventario al cargar el sistema
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "MOBILE_URL_VIEW_REPORT_REMOTE";## Url para ver los reportes remotos en el mobile	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
