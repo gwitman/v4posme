@@ -5,6 +5,43 @@
 /*****Personalizar pantalla**********/
 /******************************************************************/
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "816" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "BOX_OUTPUTCASH_PRIORITY_DEFAULT"; ##Prioridad por defecto para la salida de efectivo mobile
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "13" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "BOX_OUTPUTCASH_BRANCH_DEFAULT"; ##Sucursal por defecto para la salida de efectivo mobile
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "0" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "BOX_OUTPUTCASH_DENOMINATION_CATALOGITEM_DEFAULT"; ##Denomination por defecto para la salida de efectivo mobile
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "107" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "BOX_OUTPUTCASH_STATUS_DEFAULT"; ##Status por defecto para la salida de efectivo mobile
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "521" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "BOX_OUTPUTCASH_AREA_DEFAULT"; ##Area por defecto para la salida de efectivo mobile
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "1" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "BOX_OUTPUTCASH_CLASS_DEFAULT"; ##Clase por defecto para la salida de efectivo mobile
+
+
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
