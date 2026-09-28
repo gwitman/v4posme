@@ -1870,6 +1870,7 @@ class app_notification extends _BaseController
 				$query			= "CALL pr_box_get_report_closed_distrito4199(?,?,?,?,?,?,?);";
 
 
+			
 			$objData		= $this->Bd_Model->executeRender(
 				$query,
 				[$userID, $tocken, $companyID, $authorization, $fechaNow, $fechaBefore, $userIDFilter]
@@ -1901,7 +1902,6 @@ class app_notification extends _BaseController
 			if ($format != "pdf") {
 
 				echo $html;
-
 				//enviar correo
 				$this->email->setFrom(EMAIL_APP);
 				$this->email->setTo($parameterEmail);

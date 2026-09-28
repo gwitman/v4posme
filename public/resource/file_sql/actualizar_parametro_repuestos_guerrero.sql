@@ -1,5 +1,16 @@
-/*BD: 	posme:guerrero*/
-		
+/*BD: 	dbs5g3sljngcwf:parametro_agencia_freddy	*/
+/*SERVIDOR  siteground .net*/
+
+/*BD: 	posme:guerrero*/		
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "false" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "CORE_TRAKING_GPS";## Valida si es neceasrio llevar el seguimiento del gps
+	
+
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "true" 
 WHERE 
@@ -765,6 +776,15 @@ UPDATE tb_company SET
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
+
+/*
+update tb_user set isActive = 0;
+update tb_user set isActive = 1 WHERE userID in (
+ 2, 	
+ 162
+);
+
+*/
 
 
 /*tipo de cambio de dolares a cordoba*/
