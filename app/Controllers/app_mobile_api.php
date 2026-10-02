@@ -298,6 +298,44 @@ class app_mobile_api extends _BaseController
             }
             log_message("error","[SET_DATA_UPLOAD] --- FIN sincronizacion COMPRAS/ENTRADAS ---");
 
+            // SINCRONIZACION DE OTRAS ENTRADAS DE MERCADERIA
+			// Las otras entradas vienen como transacciones (tb_transaction_master_otherinput) con su detalle
+			if(count($transactionMasters)>0)
+			{
+				$otherInputController  = new app_inventory_otherinput();
+				$otherInputController->initController($this->request, $this->response, $this->logger);
+				$typeTransactionOtherInput = $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_otherinput",0);
+				$otrasEntradas = array_filter($transactionMasters, function($tm) use ($typeTransactionOtherInput) { return $tm->TransactionId == $typeTransactionOtherInput; });
+				log_message("error","[SET_DATA_UPLOAD] --- INICIO sincronizacion OTRAS ENTRADAS (typeTransaction: ".$typeTransactionOtherInput." | total: ".count($otrasEntradas).") ---");
+				foreach($otrasEntradas as $objTm)
+				{
+					$transactionMasterId 	= $objTm->TransactionMasterId;
+					$detalleOtraEntrada 	= array_filter($transactionMasterDetails, function($tmd) use ($transactionMasterId) { return $tmd->TransactionMasterId == $transactionMasterId; });
+					log_message("error","[SET_DATA_UPLOAD] Procesando otra entrada -> transactionNumber: ".$objTm->TransactionNumber." | transactionMasterID: ".$transactionMasterId." | detalles: ".count($detalleOtraEntrada));
+					$otherInputController->insertElementMobile($dataSession, $objTm, $detalleOtraEntrada);
+				}
+			}
+			log_message("error","[SET_DATA_UPLOAD] --- FIN sincronizacion OTRAS ENTRADAS ---");
+
+			// SINCRONIZACION DE AJUSTES DE ENTRADA DE INVENTARIO
+			// Los ajustes de entrada vienen como transacciones (tb_transaction_master_inventory_ajust) con su detalle
+			if(count($transactionMasters)>0)
+			{
+				$ajusteController  = new app_inventory_ajuste();
+				$ajusteController->initController($this->request, $this->response, $this->logger);
+				$typeTransactionAjuste = $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_inventory_ajust",0);
+				$ajustes = array_filter($transactionMasters, function($tm) use ($typeTransactionAjuste) { return $tm->TransactionId == $typeTransactionAjuste; });
+				log_message("error","[SET_DATA_UPLOAD] --- INICIO sincronizacion AJUSTES DE ENTRADA (typeTransaction: ".$typeTransactionAjuste." | total: ".count($ajustes).") ---");
+				foreach($ajustes as $objTm)
+				{
+					$transactionMasterId 	= $objTm->TransactionMasterId;
+					$detalleAjuste 			= array_filter($transactionMasterDetails, function($tmd) use ($transactionMasterId) { return $tmd->TransactionMasterId == $transactionMasterId; });
+					log_message("error","[SET_DATA_UPLOAD] Procesando ajuste de entrada -> transactionNumber: ".$objTm->TransactionNumber." | transactionMasterID: ".$transactionMasterId." | detalles: ".count($detalleAjuste));
+					$ajusteController->insertElementMobile($dataSession, $objTm, $detalleAjuste);
+				}
+			}
+			log_message("error","[SET_DATA_UPLOAD] --- FIN sincronizacion AJUSTES DE ENTRADA ---");
+
             // SINCRONIZACION DE SALIDAS
 			// Las salidas ahora vienen como transacciones (tb_transaction_master_otheroutput) con su detalle
             if(count($transactionMasters)>0){
