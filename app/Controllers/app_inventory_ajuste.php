@@ -1235,7 +1235,7 @@ class app_inventory_ajuste extends _BaseController
 				$objTMD["unitaryCost"]					= $cost;
 				$objTMD["cost"] 						= $objTMD["quantity"] * $objTMD["unitaryCost"];
 				$objTMD["unitaryAmount"]				= $unitaryPrice;
-				$objTMD["amount"] 						= 0;
+				$objTMD["amount"] 						= $objTMD["quantity"] * $objTMD["unitaryCost"];
 				$objTMD["discount"]						= 0;
 				$objTMD["unitaryPrice"]					= $unitaryPrice;
 				$objTMD["promotionID"] 					= 0;
