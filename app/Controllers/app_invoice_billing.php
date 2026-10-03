@@ -13364,15 +13364,21 @@ class app_invoice_billing extends _BaseController {
 			$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview->value;
 			$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
 			
-			$fileNamePut = "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
-			$path        = "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".$fileNamePut;
-				
+			$fileNamePut 	= "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
+			$documentoPath 	= "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID;
+			$path        	= $documentoPath."/".$fileNamePut;
+
+			//Crear la Carpeta para almacenar los Archivos del Documento si no existe
+			if (!file_exists($documentoPath))
+			{
+				mkdir($documentoPath, 0755, true);
+			}
+
 			file_put_contents(
 				$path,
 				$this->dompdf->output()					
 			);						
 			
-			chmod($path, 0644);
 			
 			if($objParameterShowLinkDownload == "true")
 			{			
