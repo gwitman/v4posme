@@ -2171,7 +2171,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = '--Mi Mercadito--' , address = 'Malpaisillo, Contiguo al restaurante el Campestre.' ,
+	NAME = 'Mi Mercadito Campestre' , address = 'Malpaisillo, Contiguo al restaurante el Campestre.' ,
 	flavorID = 1242 /*usuarioID*/,type='miMercaditoLosJardines'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
