@@ -2246,6 +2246,7 @@
 											itemId: 'gridDetailTransactionMaster',
 											title: 'Detalle de Productos',
 											margin: '0 10 0 0',		
+											sortableColumns: false, 	// desactiva el ordenamiento al dar clic en el titulo de las columnas
 											selModel: 'rowmodel', 		// permite seleccionar filas para eliminar	
 											maxHeight: Ext.Element.getViewportHeight() * 0.8,
 											scrollable: true,     		// permite scroll interno al grid
