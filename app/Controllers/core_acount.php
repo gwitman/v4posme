@@ -78,8 +78,8 @@ class core_acount extends _BaseController {
 						$this->email->setSubject($subject);			
 						$this->email->setMessage($body); 
 						
-						$resultSend01 = $this->email->send();
-						$resultSend02 = $this->email->printDebugger();
+						//$resultSend01 = $this->email->send();
+						//$resultSend02 = $this->email->printDebugger();
 						$this->response->redirect($dataSession["lastUrl"]);
 					}
 				}
@@ -319,8 +319,8 @@ class core_acount extends _BaseController {
 				$this->email->setSubject($subject);			
 				$this->email->setMessage($body); 
 				
-				$resultSend01 = $this->email->send();
-				$resultSend02 = $this->email->printDebugger();		
+				//$resultSend01 = $this->email->send();
+				//$resultSend02 = $this->email->printDebugger();		
 
 				//Guardar Log		
 				$this->Log_Session_Model->delete_app_posme("userID",$dataSession["user"]->userID);					
@@ -355,8 +355,8 @@ class core_acount extends _BaseController {
 				$this->email->setSubject($subject);			
 				$this->email->setMessage($body); 
 				
-				$resultSend01 = $this->email->send();
-				$resultSend02 = $this->email->printDebugger();
+				//$resultSend01 = $this->email->send();
+				//$resultSend02 = $this->email->printDebugger();
 				
 				
 				//Guardar Log		
@@ -460,8 +460,8 @@ class core_acount extends _BaseController {
 			$this->email->setSubject($subject);			
 			$this->email->setMessage($body); 
 			
-			$resultSend01 = $this->email->send();
-			$resultSend02 = $this->email->printDebugger();
+			//$resultSend01 = $this->email->send();
+			//$resultSend02 = $this->email->printDebugger();
 			
 			
 			//Guardar Log			
