@@ -252,7 +252,8 @@ class Transaction_Master_Model extends Model  {
 							tci.reference2,
 							tci.reference3,
 							tci.reference4")	
-		->whereIn("tci.catalogItemID",$catalogItemId);
+		->whereIn("tci.catalogItemID",$catalogItemId)
+		->orderBy("tci.name", "ASC");
 		return $builder->get()->getResultObject();
 	}
 
