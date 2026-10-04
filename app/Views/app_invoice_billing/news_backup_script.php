@@ -1791,7 +1791,7 @@
 											items: [
 												{
 													xtype: 'combobox',
-													fieldLabel: 'Zona',
+													fieldLabel: '<?php echo getBahavioDB($company->type, "app_invoice_billing", "labelZoneInvoiceV2Ext", "Zona"); ?>',
 													labelWidth: 100,
 													width: 300,													
 													store: Ext.create('Ext.data.Store', {
