@@ -181,6 +181,9 @@ createApp({
         utilityTotalEgresos() {
             return this.utilityTotalCostOfSales + this.utilityTotalGastos;
         },
+        utilityBruta() {
+            return this.utilityTotalFacturas - this.utilityTotalCostOfSales;
+        },
         utilityNeta() {
             return this.utilityTotalFacturas - this.utilityTotalEgresos;
         },

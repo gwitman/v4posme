@@ -20,12 +20,12 @@
                 <div class="col-6 col-md-3">
                   <label class="form-label small"><i class="bx bx-transfer me-1"></i>Transacción</label>
                   <select class="form-select form-select-sm" v-model="filterTransaction">
-                    <option value="19">FACTURAS</option>
+                    <option value="19">FAC. CONTADO Y CREDITO</option>
                     <option value="23">ABONOS</option>
                     <option value="productSalesAmount">PRO.  VENDIDOS C$/$</option>
                     <option value="productSalesQuantity">PRO. VENDIDOS QYT.</option>
                     <option value="productInventoryQuantity">INVENTARIO QYT.</option>
-                    <option value="productInventoryZero">INVENTARIO 0.</option>
+                    <option value="productInventoryZero">INVENTARIO C$.</option>
                     <option value="30">SALIDA DE CAJA.</option>
                     <option value="38">GASTO.</option>
                     <option value="interest">INTERESES.</option>
@@ -667,95 +667,36 @@
         </div>
       </div>
 
-      <!-- Tabla UTILIDAD -->
+      <!-- Estado de Resultado (UTILIDAD) -->
       <div class="row" v-if="!loading && isUtilityView && utilityHasData">
-        <div class="col-12 mb-3" v-if="objUtilityFacturas.length > 0">
+        <div class="col-12">
           <div class="card shadow-sm">
             <div class="card-header d-flex justify-content-between align-items-center py-2">
-              <h6 class="mb-0"><i class="bx bx-receipt me-1 text-success"></i>Ventas (Facturas)</h6>
-              <span class="badge bg-success">{{ formatMoney(utilityTotalFacturas) }}</span>
+              <h6 class="mb-0"><i class="bx bx-bar-chart-alt-2 me-1"></i>Estado de Resultado</h6>
             </div>
             <div class="card-body p-0">
               <div class="table-responsive">
-                <table class="table table-sm table-hover mb-0">
-                  <thead class="table-light">
-                    <tr>
-                      <th class="small">#</th>
-                      <th class="small">Código</th>
-                      <th class="small">Producto</th>
-                      <th class="small text-center">Cant.</th>
-                      <th class="small text-end">Monto</th>
-                    </tr>
-                  </thead>
+                <table class="table table-sm mb-0">
                   <tbody>
-                    <tr v-for="(item, idx) in objUtilityFacturas" :key="idx">
-                      <td class="small">{{ idx + 1 }}</td>
-                      <td class="small"><span class="badge bg-label-success">{{ item.Codigo }}</span></td>
-                      <td class="small">{{ item.Producto }}</td>
-                      <td class="small text-center">{{ item.Cantidad }}</td>
-                      <td class="small text-end fw-bold">{{ formatMoney(item.SubMonto) }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 mb-3" v-if="objUtilityCostOfSales.length > 0">
-          <div class="card shadow-sm">
-            <div class="card-header d-flex justify-content-between align-items-center py-2">
-              <h6 class="mb-0"><i class="bx bx-dollar me-1 text-danger"></i>Costo de Venta</h6>
-              <span class="badge bg-danger">{{ formatMoney(utilityTotalCostOfSales) }}</span>
-            </div>
-            <div class="card-body p-0">
-              <div class="table-responsive">
-                <table class="table table-sm table-hover mb-0">
-                  <thead class="table-light">
                     <tr>
-                      <th class="small">#</th>
-                      <th class="small">Código</th>
-                      <th class="small">Producto</th>
-                      <th class="small text-center">Cant.</th>
-                      <th class="small text-end">Costo</th>
+                      <td class="small fw-semibold"><i class="bx bx-receipt me-1 text-success"></i>Ventas</td>
+                      <td class="small text-end fw-bold text-success">{{ formatMoney(utilityTotalFacturas) }}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(item, idx) in objUtilityCostOfSales" :key="idx">
-                      <td class="small">{{ idx + 1 }}</td>
-                      <td class="small"><span class="badge bg-label-danger">{{ item.Codigo }}</span></td>
-                      <td class="small">{{ item.Producto }}</td>
-                      <td class="small text-center">{{ item.Cantidad }}</td>
-                      <td class="small text-end fw-bold">{{ formatMoney(item.SubMonto) }}</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="col-12 mb-3" v-if="objUtilityGastos.length > 0">
-          <div class="card shadow-sm">
-            <div class="card-header d-flex justify-content-between align-items-center py-2">
-              <h6 class="mb-0"><i class="bx bx-wallet me-1 text-warning"></i>Gastos</h6>
-              <span class="badge bg-warning">{{ formatMoney(utilityTotalGastos) }}</span>
-            </div>
-            <div class="card-body p-0">
-              <div class="table-responsive">
-                <table class="table table-sm table-hover mb-0">
-                  <thead class="table-light">
                     <tr>
-                      <th class="small">#</th>
-                      <th class="small">Código</th>
-                      <th class="small">Tipo</th>
-                      <th class="small text-end">Monto</th>
+                      <td class="small fw-semibold"><i class="bx bx-dollar me-1 text-danger"></i>(-) Costo de Venta</td>
+                      <td class="small text-end fw-bold text-danger">{{ formatMoney(utilityTotalCostOfSales) }}</td>
                     </tr>
-                  </thead>
-                  <tbody>
-                    <tr v-for="(item, idx) in objUtilityGastos" :key="idx">
-                      <td class="small">{{ idx + 1 }}</td>
-                      <td class="small"><span class="badge bg-label-warning">{{ item.Codigo }}</span></td>
-                      <td class="small">{{ item.Tipo }}</td>
-                      <td class="small text-end fw-bold">{{ formatMoney(item.Monto) }}</td>
+                    <tr class="table-light">
+                      <td class="small fw-semibold">= Utilidad Bruta</td>
+                      <td class="small text-end fw-bold" :class="utilityBruta >= 0 ? 'text-success' : 'text-danger'">{{ formatMoney(utilityBruta) }}</td>
+                    </tr>
+                    <tr>
+                      <td class="small fw-semibold"><i class="bx bx-wallet me-1 text-warning"></i>(-) Gastos</td>
+                      <td class="small text-end fw-bold text-warning">{{ formatMoney(utilityTotalGastos) }}</td>
+                    </tr>
+                    <tr style="border-top: 2px solid #666;">
+                      <td class="fw-bold">= Utilidad Neta</td>
+                      <td class="text-end fw-bold" :class="utilityNeta >= 0 ? 'text-success' : 'text-danger'">{{ formatMoney(utilityNeta) }}</td>
                     </tr>
                   </tbody>
                 </table>
