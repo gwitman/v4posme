@@ -29,6 +29,7 @@
                     <option value="30">SALIDA DE CAJA.</option>
                     <option value="38">GASTO.</option>
                     <option value="interest">INTERESES.</option>
+                    <option value="capital">CAPITAL.</option>
                     <option value="cost">COSTO DE VENTA.</option>
                     <option value="utility">UTILIDAD.</option>
                   </select>
@@ -172,6 +173,69 @@
                 <h2 class="mb-0 d-md-none">{{ formatMoney(totalMonto) }}</h2>
                 <h4 class="mb-0 d-none d-md-block">{{ formatMoney(totalMonto) }}</h4>
                 <small class="text-muted">Total Monto</small>
+              </div>
+            </div>
+          </div>
+        </template>
+        <!-- Cards Intereses / Capital -->
+        <template v-if="isCreditView">
+          <div class="col-6 col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body text-center p-3">
+                <div class="avatar avatar-sm bg-label-primary rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                  <i class="bx bx-receipt"></i>
+                </div>
+                <h4 class="mb-0">{{ objListData.length }}</h4>
+                <small class="text-muted">Documentos</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-3 mb-3 order-first order-md-0">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body text-center p-3">
+                <div class="avatar avatar-sm bg-label-success rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                  <i class="bx bx-dollar-circle"></i>
+                </div>
+                <h2 class="mb-0 d-md-none">{{ formatMoney(creditTotalMonto) }}</h2>
+                <h4 class="mb-0 d-none d-md-block">{{ formatMoney(creditTotalMonto) }}</h4>
+                <small class="text-muted">Total {{ creditTitle }}</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body text-center p-3">
+                <div class="avatar avatar-sm bg-label-warning rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                  <i class="bx bx-user"></i>
+                </div>
+                <h4 class="mb-0">{{ creditTotalClientes }}</h4>
+                <small class="text-muted">Clientes</small>
+              </div>
+            </div>
+          </div>
+        </template>
+        <!-- Cards Costo de Venta -->
+        <template v-if="isCostView">
+          <div class="col-6 col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body text-center p-3">
+                <div class="avatar avatar-sm bg-label-primary rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                  <i class="bx bx-receipt"></i>
+                </div>
+                <h4 class="mb-0">{{ costTotalDocumentos }}</h4>
+                <small class="text-muted">Documentos</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-3 mb-3 order-first order-md-0">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body text-center p-3">
+                <div class="avatar avatar-sm bg-label-danger rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                  <i class="bx bx-dollar-circle"></i>
+                </div>
+                <h2 class="mb-0 d-md-none">{{ formatMoney(costTotalMonto) }}</h2>
+                <h4 class="mb-0 d-none d-md-block">{{ formatMoney(costTotalMonto) }}</h4>
+                <small class="text-muted">Total Costo</small>
               </div>
             </div>
           </div>
@@ -483,6 +547,126 @@
         </div>
       </div>
 
+      <!-- Tabla INTERESES / CAPITAL -->
+      <div class="row" v-if="!loading && objListData.length > 0 && isCreditView">
+        <div class="col-12">
+          <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center py-2">
+              <h6 class="mb-0"><i class="bx bx-trending-up me-1"></i>{{ creditTitle }}</h6>
+              <span class="badge bg-primary">{{ objListData.length }} registros</span>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-sm table-hover mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th class="small d-none d-md-table-cell">#</th>
+                      <th class="small">Documento</th>
+                      <th class="small d-none d-md-table-cell">Cliente</th>
+                      <th class="small text-end">Monto</th>
+                      <th class="small d-none d-md-table-cell">Fecha</th>
+                      <th class="small d-none d-md-table-cell">Referencia</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <template v-for="(item, idx) in objListData" :key="idx">
+                      <tr @click="toggleDetalleCredito(idx)" style="cursor:pointer;">
+                        <td class="small d-none d-md-table-cell">{{ idx + 1 }}</td>
+                        <td class="small fw-semibold text-primary">{{ item.Documento }}</td>
+                        <td class="small d-none d-md-table-cell">{{ item.Cliente }}</td>
+                        <td class="small text-end fw-bold">{{ formatMoney(item.Monto) }}</td>
+                        <td class="small d-none d-md-table-cell">{{ formatFecha(item.Fecha) }}</td>
+                        <td class="small d-none d-md-table-cell"><span class="badge bg-label-info">{{ item.Referencia || '-' }}</span></td>
+                      </tr>
+                      <tr v-if="detalleCreditoAbierto === idx" class="d-md-none">
+                        <td colspan="2" class="p-0">
+                          <div class="p-2" style="background-color: #e8eaf6; border-left: 4px solid #3f51b5;">
+                            <p class="small mb-1"><i class="bx bx-user me-1"></i><strong>Cliente:</strong> {{ item.Cliente }}</p>
+                            <p class="small mb-1"><i class="bx bx-calendar me-1"></i><strong>Fecha:</strong> {{ formatFecha(item.Fecha) }}</p>
+                            <p class="small mb-0"><i class="bx bx-link me-1"></i><strong>Referencia:</strong> <span class="badge bg-label-info">{{ item.Referencia || '-' }}</span></p>
+                          </div>
+                        </td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla COSTO DE VENTA (maestro-detalle) -->
+      <div class="row" v-if="!loading && costGroupedData.length > 0 && isCostView">
+        <div class="col-12">
+          <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center py-2">
+              <h6 class="mb-0"><i class="bx bx-dollar me-1"></i>Costo de Venta</h6>
+              <span class="badge bg-danger">{{ costGroupedData.length }} documentos</span>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-sm table-hover mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th class="small" style="width:30px;"></th>
+                      <th class="small">Documento</th>
+                      <th class="small d-none d-md-table-cell">Cliente</th>
+                      <th class="small text-end">Costo</th>
+                      <th class="small d-none d-md-table-cell">Fecha</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <template v-for="(grupo, idx) in costGroupedData" :key="idx">
+                      <tr @click="toggleDetalleCosto(idx)" style="cursor:pointer;" class="table-row-master">
+                        <td class="small text-center">
+                          <i class="bx" :class="detalleCostoAbierto === idx ? 'bx-chevron-down text-primary' : 'bx-chevron-right'"></i>
+                        </td>
+                        <td class="small fw-semibold text-danger">{{ grupo.Documento }}</td>
+                        <td class="small d-none d-md-table-cell">{{ grupo.Cliente }}</td>
+                        <td class="small text-end fw-bold">{{ formatMoney(grupo.Monto) }}</td>
+                        <td class="small d-none d-md-table-cell">{{ formatFecha(grupo.Fecha) }}</td>
+                      </tr>
+                      <tr v-if="detalleCostoAbierto === idx">
+                        <td :colspan="isMobile ? 3 : 5" class="p-0">
+                          <div class="p-2" style="background-color: #fce4ec; border-left: 4px solid #e53935;">
+                            <p class="small fw-semibold mb-1" style="color: #c62828;">
+                              <i class="bx bx-user me-1"></i>Cliente: <span class="fw-bold">{{ grupo.Cliente }}</span>
+                            </p>
+                            <p class="small fw-semibold mb-2" style="color: #c62828;">
+                              <i class="bx bx-calendar me-1"></i>Fecha: <span class="fw-bold">{{ formatFecha(grupo.Fecha) }}</span>
+                            </p>
+                            <p class="small fw-semibold mb-2" style="color: #c62828;"><i class="bx bx-package me-1"></i>Detalle de costos:</p>
+                            <table class="table table-sm table-bordered mb-0" style="background-color: #ffffff;">
+                              <thead>
+                                <tr style="background-color: #f8bbd0;">
+                                  <th class="small">Código</th>
+                                  <th class="small">Producto</th>
+                                  <th class="small text-center">Cant.</th>
+                                  <th class="small text-end">Costo</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr v-for="(det, dIdx) in grupo.detalle" :key="dIdx" style="background-color: #fce4ec;">
+                                  <td class="small"><span class="badge bg-danger">{{ det.Codigo }}</span></td>
+                                  <td class="small">{{ det.Producto }}</td>
+                                  <td class="small text-center">{{ det.Cantidad }}</td>
+                                  <td class="small text-end">{{ formatMoney(det.SubMonto) }}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- Tabla UTILIDAD -->
       <div class="row" v-if="!loading && isUtilityView && utilityHasData">
         <div class="col-12 mb-3" v-if="objUtilityFacturas.length > 0">
@@ -498,7 +682,8 @@
                     <tr>
                       <th class="small">#</th>
                       <th class="small">Código</th>
-                      <th class="small">Nombre</th>
+                      <th class="small">Producto</th>
+                      <th class="small text-center">Cant.</th>
                       <th class="small text-end">Monto</th>
                     </tr>
                   </thead>
@@ -506,8 +691,9 @@
                     <tr v-for="(item, idx) in objUtilityFacturas" :key="idx">
                       <td class="small">{{ idx + 1 }}</td>
                       <td class="small"><span class="badge bg-label-success">{{ item.Codigo }}</span></td>
-                      <td class="small">{{ item.Nombre }}</td>
-                      <td class="small text-end fw-bold">{{ formatMoney(item.Monto) }}</td>
+                      <td class="small">{{ item.Producto }}</td>
+                      <td class="small text-center">{{ item.Cantidad }}</td>
+                      <td class="small text-end fw-bold">{{ formatMoney(item.SubMonto) }}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -515,11 +701,11 @@
             </div>
           </div>
         </div>
-        <div class="col-12 mb-3" v-if="objUtilitySalidaCaja.length > 0">
+        <div class="col-12 mb-3" v-if="objUtilityCostOfSales.length > 0">
           <div class="card shadow-sm">
             <div class="card-header d-flex justify-content-between align-items-center py-2">
-              <h6 class="mb-0"><i class="bx bx-log-out me-1 text-danger"></i>Salidas de Caja</h6>
-              <span class="badge bg-danger">{{ formatMoney(utilityTotalSalidaCaja) }}</span>
+              <h6 class="mb-0"><i class="bx bx-dollar me-1 text-danger"></i>Costo de Venta</h6>
+              <span class="badge bg-danger">{{ formatMoney(utilityTotalCostOfSales) }}</span>
             </div>
             <div class="card-body p-0">
               <div class="table-responsive">
@@ -528,16 +714,18 @@
                     <tr>
                       <th class="small">#</th>
                       <th class="small">Código</th>
-                      <th class="small">Tipo</th>
-                      <th class="small text-end">Monto</th>
+                      <th class="small">Producto</th>
+                      <th class="small text-center">Cant.</th>
+                      <th class="small text-end">Costo</th>
                     </tr>
                   </thead>
                   <tbody>
-                    <tr v-for="(item, idx) in objUtilitySalidaCaja" :key="idx">
+                    <tr v-for="(item, idx) in objUtilityCostOfSales" :key="idx">
                       <td class="small">{{ idx + 1 }}</td>
                       <td class="small"><span class="badge bg-label-danger">{{ item.Codigo }}</span></td>
-                      <td class="small">{{ item.Tipo }}</td>
-                      <td class="small text-end fw-bold">{{ formatMoney(item.Monto) }}</td>
+                      <td class="small">{{ item.Producto }}</td>
+                      <td class="small text-center">{{ item.Cantidad }}</td>
+                      <td class="small text-end fw-bold">{{ formatMoney(item.SubMonto) }}</td>
                     </tr>
                   </tbody>
                 </table>

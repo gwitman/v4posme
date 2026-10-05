@@ -172,14 +172,23 @@ class core_dashboards_mobile extends _BaseController {
                         $itemName
                 );
             }
-            else if($transactionID == "interest" /* intereses */)
+            else if($transactionID == "interest" /* INTERESES */)
             {
 				 $objData    = $this->Transaction_Master_Model->getRowAll_DashboardMobile_Intereses(
-                        19,
+                        23,
                         $startOn,
                         $endOn,
-                        $customerName,
-                        $itemName
+                        $customerName
+                );
+				
+            }
+            else if($transactionID == "capital" /* CAPITAL */)
+            {
+				 $objData    = $this->Transaction_Master_Model->getRowAll_DashboardMobile_Capital(
+                        23,
+                        $startOn,
+                        $endOn,
+                        $customerName
                 );
 				
             }
@@ -213,16 +222,8 @@ class core_dashboards_mobile extends _BaseController {
                         $itemName
                 );
 
-				$objDataAbonos    	= $this->Transaction_Master_Model->getRowAll_DashboardMobile_FacturasProductosAmount(
-                        23,
-                        $startOn,
-                        $endOn,
-                        $customerName,
-                        $itemName
-                );
-
-				$objDataSalidaCaja    = $this->Transaction_Master_Model->getRowAll_DashboardMobile_SalidaDeCaja(
-                        30,
+                 $objDataCostOfSales = $this->Transaction_Master_Model->getRowAll_DashboardMobile_CostOfSales(
+                        19,
                         $startOn,
                         $endOn,
                         $customerName,
@@ -238,14 +239,13 @@ class core_dashboards_mobile extends _BaseController {
                 );
 
 				return $this->response->setJSON(array(
-					'success'   => true,
+					'success'   			=> true,
 					'objDataFacturas'      	=> $objDataFacturas,
-					'objDataAbonos'      	=> $objDataAbonos,
-					'objDataSalidaCaja'     => $objDataSalidaCaja,
+					'objDataCostOfSales'    => $objDataCostOfSales,
 					'objDataGasto'      	=> $objDataGasto,
-					'company'   => $objCompany->name,
-					'startOn'   => $startOn,
-					'endOn'     => $endOn
+					'company'   			=> $objCompany->name,
+					'startOn'   			=> $startOn,
+					'endOn'     			=> $endOn
 				));//--finjson
 				
             }            

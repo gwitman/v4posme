@@ -10,13 +10,15 @@ createApp({
             loading:        false,
             objListData:    [],
             objUtilityFacturas:   [],
-            objUtilitySalidaCaja: [],
+            objUtilityCostOfSales: [],
             objUtilityGastos:     [],
             detalleAbierto: null,
             detalleAbonoAbierto: null,
             detalleCashOutAbierto: null,
             detalleGastoAbierto: null,
             detalleProductoAbierto: null,
+            detalleCreditoAbierto: null,
+            detalleCostoAbierto: null,
             startOn:        '<?php echo date("Y-m-01"); ?>',
             endOn:          '<?php echo date("Y-m-d"); ?>',
             filterTransaction: '<?php echo (isset($company) && $company->type == "gymJalapa") ? "23" : "19"; ?>',
@@ -47,12 +49,49 @@ createApp({
         isDocumentView() {
             return ['19', '23'].includes(this.filterTransaction);
         },
+        // Vista de crédito: Intereses y Capital (comparten estructura Documento/Cliente/Monto/Referencia)
+        isCreditView() {
+            return ['interest', 'capital'].includes(this.filterTransaction);
+        },
+        // Vista de costo de venta (maestro-detalle por producto)
+        isCostView() {
+            return this.filterTransaction === 'cost';
+        },
         hasData() {
             if (this.isUtilityView) return this.utilityHasData;
+            if (this.isCostView) return this.costGroupedData.length > 0;
             return this.objListData.length > 0;
         },
         utilityHasData() {
-            return this.objUtilityFacturas.length > 0 || this.objUtilitySalidaCaja.length > 0 || this.objUtilityGastos.length > 0;
+            return this.objUtilityFacturas.length > 0 || this.objUtilityCostOfSales.length > 0 || this.objUtilityGastos.length > 0;
+        },
+        creditTitle() {
+            return this.filterTransaction === 'interest' ? 'Intereses' : 'Capital';
+        },
+        costGroupedData() {
+            if (this.filterTransaction !== 'cost') return [];
+            const map = {};
+            this.objListData.forEach(item => {
+                const key = item.transactionMasterID;
+                if (!map[key]) {
+                    map[key] = {
+                        transactionMasterID: item.transactionMasterID,
+                        Documento:           item.Documento,
+                        Fecha:               item.Fecha,
+                        Cliente:             item.Cliente,
+                        Monto:               0,
+                        detalle: []
+                    };
+                }
+                map[key].Monto += parseFloat(item.SubMonto || 0);
+                map[key].detalle.push({
+                    Codigo:   item.Codigo,
+                    Producto: item.Producto,
+                    Cantidad: item.Cantidad,
+                    SubMonto: item.SubMonto
+                });
+            });
+            return Object.values(map);
         },
         groupedData() {
             if (this.filterTransaction != '19') return [];
@@ -131,19 +170,34 @@ createApp({
             return 0;
         },
         utilityTotalFacturas() {
-            return this.objUtilityFacturas.reduce((sum, item) => sum + parseFloat(item.Monto || 0), 0);
+            return this.objUtilityFacturas.reduce((sum, item) => sum + parseFloat(item.SubMonto || 0), 0);
         },
-        utilityTotalSalidaCaja() {
-            return this.objUtilitySalidaCaja.reduce((sum, item) => sum + parseFloat(item.Monto || 0), 0);
+        utilityTotalCostOfSales() {
+            return this.objUtilityCostOfSales.reduce((sum, item) => sum + parseFloat(item.SubMonto || 0), 0);
         },
         utilityTotalGastos() {
             return this.objUtilityGastos.reduce((sum, item) => sum + parseFloat(item.Monto || 0), 0);
         },
         utilityTotalEgresos() {
-            return this.utilityTotalSalidaCaja + this.utilityTotalGastos;
+            return this.utilityTotalCostOfSales + this.utilityTotalGastos;
         },
         utilityNeta() {
             return this.utilityTotalFacturas - this.utilityTotalEgresos;
+        },
+        // Totales para Intereses / Capital
+        creditTotalMonto() {
+            return this.objListData.reduce((sum, item) => sum + parseFloat(item.Monto || 0), 0);
+        },
+        creditTotalClientes() {
+            const customers = [...new Set(this.objListData.map(item => item.Cliente || '').filter(c => c))];
+            return customers.length;
+        },
+        // Totales para Costo de Venta
+        costTotalMonto() {
+            return this.objListData.reduce((sum, item) => sum + parseFloat(item.SubMonto || 0), 0);
+        },
+        costTotalDocumentos() {
+            return this.costGroupedData.length;
         }
     },
     watch: {
@@ -157,13 +211,15 @@ createApp({
         limpiarResultados() {
             this.objListData    = [];
             this.objUtilityFacturas   = [];
-            this.objUtilitySalidaCaja = [];
+            this.objUtilityCostOfSales = [];
             this.objUtilityGastos     = [];
             this.detalleAbierto = null;
             this.detalleAbonoAbierto = null;
             this.detalleCashOutAbierto = null;
             this.detalleGastoAbierto = null;
             this.detalleProductoAbierto = null;
+            this.detalleCreditoAbierto = null;
+            this.detalleCostoAbierto = null;
             this.mensaje        = 'Los filtros han cambiado. Presione Consultar para actualizar.';
             this.mostrarAlerta  = true;
         },
@@ -191,6 +247,12 @@ createApp({
         toggleDetalleProducto(idx) {
             this.detalleProductoAbierto = this.detalleProductoAbierto === idx ? null : idx;
         },
+        toggleDetalleCredito(idx) {
+            this.detalleCreditoAbierto = this.detalleCreditoAbierto === idx ? null : idx;
+        },
+        toggleDetalleCosto(idx) {
+            this.detalleCostoAbierto = this.detalleCostoAbierto === idx ? null : idx;
+        },
         async cargarListado() {
             try {
                 this.loading = true;
@@ -200,6 +262,8 @@ createApp({
                 this.detalleCashOutAbierto = null;
                 this.detalleGastoAbierto = null;
                 this.detalleProductoAbierto = null;
+                this.detalleCreditoAbierto = null;
+                this.detalleCostoAbierto = null;
 
                 const formData = new FormData();
                 formData.append('userName', this.userName);
@@ -219,9 +283,9 @@ createApp({
 
                 if (json.success === false) {
                     this.objListData    = [];
-                    this.objUtilityFacturas   = [];
-                    this.objUtilitySalidaCaja = [];
-                    this.objUtilityGastos     = [];
+                    this.objUtilityFacturas    = [];
+                    this.objUtilityCostOfSales = [];
+                    this.objUtilityGastos      = [];
                     this.mensaje        = json.message || 'Error al cargar datos';
                     this.mostrarAlerta  = true;
                     return;
@@ -229,12 +293,12 @@ createApp({
 
                 // Utilidad retorna estructura diferente
                 if (this.filterTransaction === 'utility') {
-                    this.objUtilityFacturas   = json.objDataAbonos || [];
-                    this.objUtilitySalidaCaja = json.objDataSalidaCaja || [];
-                    this.objUtilityGastos     = json.objDataGasto || [];
-                    this.objListData          = [];
+                    this.objUtilityFacturas    = json.objDataFacturas || [];
+                    this.objUtilityCostOfSales = json.objDataCostOfSales || [];
+                    this.objUtilityGastos      = json.objDataGasto || [];
+                    this.objListData           = [];
 
-                    if (this.objUtilityFacturas.length === 0 && this.objUtilitySalidaCaja.length === 0 && this.objUtilityGastos.length === 0) {
+                    if (this.objUtilityFacturas.length === 0 && this.objUtilityCostOfSales.length === 0 && this.objUtilityGastos.length === 0) {
                         this.mensaje        = 'No hay datos para el rango seleccionado.';
                         this.mostrarAlerta  = true;
                     }
@@ -242,9 +306,9 @@ createApp({
                 }
 
                 // Resto de transacciones usan json.data
-                this.objUtilityFacturas   = [];
-                this.objUtilitySalidaCaja = [];
-                this.objUtilityGastos     = [];
+                this.objUtilityFacturas    = [];
+                this.objUtilityCostOfSales = [];
+                this.objUtilityGastos      = [];
 
                 if (json.success === true && (!json.data || json.data.length === 0)) {
                     this.objListData    = [];
@@ -260,9 +324,9 @@ createApp({
                 this.mensaje        = 'Error de conexión al servidor.';
                 this.mostrarAlerta  = true;
                 this.objListData    = [];
-                this.objUtilityFacturas   = [];
-                this.objUtilitySalidaCaja = [];
-                this.objUtilityGastos     = [];
+                this.objUtilityFacturas    = [];
+                this.objUtilityCostOfSales = [];
+                this.objUtilityGastos      = [];
             } finally {
                 this.loading = false;
             }

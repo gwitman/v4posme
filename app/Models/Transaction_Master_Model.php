@@ -883,7 +883,7 @@ class Transaction_Master_Model extends Model  {
 				c.transactionNumber as Documento,
 				c.createdOn as Fecha,
 				concat(nat.firstName,' ',nat.lastName) as Cliente,
-				c.amount as Monto,
+				tmdc.interest as Monto,
 				c.reference1 as Referencia,
 				c.note as Nota
 			from
@@ -893,7 +893,56 @@ class Transaction_Master_Model extends Model  {
 				inner join tb_naturales nat on
 					nat.entityID = c.entityID
 				inner join tb_transaction t on
-					t.transactionID = c.transactionID
+					t.transactionID = c.transactionID 
+				inner join tb_transaction_master_detail_credit tmdc on 
+					tmdc.transactionMasterID = c.transactionMasterID 
+			where
+				c.isActive = 1 and
+				ws.aplicable = 1 and
+				c.transactionID = $transactionID and
+				c.createdOn between '$startOn' and '$endOn'  
+				AND (
+					'$custonerName' = ''
+					OR CONCAT(nat.firstName, ' ', nat.lastName) LIKE '%%$custonerName%%'
+				)
+			ORDER BY 
+				c.createdOn DESC 
+		");
+
+		log_message("error",print_r($sql,true));
+		return $db->query($sql)->getResult();
+	}
+
+	function getRowAll_DashboardMobile_Capital(
+			$transactionID,
+			$startOn,
+			$endOn,
+			$custonerName
+	)
+	{
+		$db = db_connect();
+		$sql = "";
+		$sql = $sql.sprintf("
+			select
+				t.transactionID as TransactionID,
+				t.`name` as Transaccion,
+				c.transactionMasterID,
+				c.transactionNumber as Documento,
+				c.createdOn as Fecha,
+				concat(nat.firstName,' ',nat.lastName) as Cliente,
+				tmdc.capital as Monto,
+				c.reference1 as Referencia,
+				c.note as Nota
+			from
+				tb_transaction_master c
+				inner join tb_workflow_stage ws on
+					ws.workflowStageID = c.statusID
+				inner join tb_naturales nat on
+					nat.entityID = c.entityID
+				inner join tb_transaction t on
+					t.transactionID = c.transactionID 
+				inner join tb_transaction_master_detail_credit tmdc on 
+					tmdc.transactionMasterID = c.transactionMasterID 
 			where
 				c.isActive = 1 and
 				ws.aplicable = 1 and
