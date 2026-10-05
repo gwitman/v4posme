@@ -172,6 +172,37 @@ class core_dashboards_mobile extends _BaseController {
                         $itemName
                 );
             }
+            else if($transactionID == "interest" /* intereses */)
+            {
+				 $objData    = $this->Transaction_Master_Model->getRowAll_DashboardMobile_Intereses(
+                        19,
+                        $startOn,
+                        $endOn,
+                        $customerName,
+                        $itemName
+                );
+				
+            }
+            else if($transactionID == "cost" /* costs de venta*/)
+            {
+				 $objData    = $this->Transaction_Master_Model->getRowAll_DashboardMobile_CostOfSales(
+                        19,
+                        $startOn,
+                        $endOn,
+                        $customerName,
+                        $itemName
+                );
+				
+            }
+            else if($transactionID == 23 /* ABONOS */)
+            {
+                $objData    = $this->Transaction_Master_Model->getRowAll_DashboardMobile_Abonos(
+                        $transactionID,
+                        $startOn,
+                        $endOn,
+                        $customerName
+                );
+            }
 			else if($transactionID == "utility" /* UTILIDAD */)
             {
 				 $objDataFacturas    = $this->Transaction_Master_Model->getRowAll_DashboardMobile_Facturas(
@@ -217,16 +248,7 @@ class core_dashboards_mobile extends _BaseController {
 					'endOn'     => $endOn
 				));//--finjson
 				
-            }
-            else if($transactionID == 23 /* ABONOS */)
-            {
-                $objData    = $this->Transaction_Master_Model->getRowAll_DashboardMobile_Abonos(
-                        $transactionID,
-                        $startOn,
-                        $endOn,
-                        $customerName
-                );
-            }
+            }            
             else
             {
                 $objData = [];

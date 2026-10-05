@@ -28,6 +28,8 @@
                     <option value="productInventoryZero">INVENTARIO 0.</option>
                     <option value="30">SALIDA DE CAJA.</option>
                     <option value="38">GASTO.</option>
+                    <option value="interest">INTERESES.</option>
+                    <option value="cost">COSTO DE VENTA.</option>
                     <option value="utility">UTILIDAD.</option>
                   </select>
                 </div>

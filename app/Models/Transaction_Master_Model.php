@@ -659,6 +659,61 @@ class Transaction_Master_Model extends Model  {
 		return $db->query($sql)->getResult();
 	}
 
+	function getRowAll_DashboardMobile_CostOfSales(
+			$transactionID,
+			$startOn,
+			$endOn,
+			$custonerName,
+			$itemName
+	)
+	{
+		$db = db_connect();
+		$sql = "";
+		$sql = $sql . sprintf("
+			SELECT
+				t.transactionID AS TransactionID,
+				t.`name` AS Transaccion,
+				c.transactionMasterID,
+				c.transactionNumber AS Documento,
+				c.createdOn AS Fecha,
+				CONCAT(nat.firstName, ' ', nat.lastName) AS Cliente,
+				c.amount AS Monto,
+				i.itemNumber AS Codigo,
+				i.`name` AS Producto,
+				tmd.quantity AS Cantidad,
+				tmd.cost AS SubMonto
+			FROM tb_transaction_master c
+			INNER JOIN tb_workflow_stage ws
+				ON ws.workflowStageID = c.statusID
+			INNER JOIN tb_naturales nat
+				ON nat.entityID = c.entityID
+			INNER JOIN tb_transaction t
+				ON t.transactionID = c.transactionID
+			INNER JOIN tb_transaction_master_detail tmd
+				ON tmd.transactionMasterID = c.transactionMasterID
+			INNER JOIN tb_item i
+				ON i.itemID = tmd.componentItemID
+			WHERE
+				c.isActive = 1
+				AND ws.aplicable = 1
+				AND c.transactionID = $transactionID
+				AND c.createdOn BETWEEN '$startOn' AND '$endOn'
+				AND tmd.isActive = 1
+				AND (
+					'$custonerName' = ''
+					OR CONCAT(nat.firstName, ' ', nat.lastName) LIKE '%%$custonerName%%'
+				)
+				AND (
+					'$itemName' = ''
+					OR i.`name` LIKE '%%$itemName%%'
+				)
+			ORDER BY c.createdOn DESC
+		");
+
+		log_message("error",print_r($sql,true));
+		return $db->query($sql)->getResult();
+	}
+
 	function getRowAll_DashboardMobile_FacturasProductosAmount(
 			$transactionID,
 			$startOn,
@@ -768,6 +823,50 @@ class Transaction_Master_Model extends Model  {
 	
 
 	function getRowAll_DashboardMobile_Abonos(
+			$transactionID,
+			$startOn,
+			$endOn,
+			$custonerName
+	)
+	{
+		$db = db_connect();
+		$sql = "";
+		$sql = $sql.sprintf("
+			select
+				t.transactionID as TransactionID,
+				t.`name` as Transaccion,
+				c.transactionMasterID,
+				c.transactionNumber as Documento,
+				c.createdOn as Fecha,
+				concat(nat.firstName,' ',nat.lastName) as Cliente,
+				c.amount as Monto,
+				c.reference1 as Referencia,
+				c.note as Nota
+			from
+				tb_transaction_master c
+				inner join tb_workflow_stage ws on
+					ws.workflowStageID = c.statusID
+				inner join tb_naturales nat on
+					nat.entityID = c.entityID
+				inner join tb_transaction t on
+					t.transactionID = c.transactionID
+			where
+				c.isActive = 1 and
+				ws.aplicable = 1 and
+				c.transactionID = $transactionID and
+				c.createdOn between '$startOn' and '$endOn'  
+				AND (
+					'$custonerName' = ''
+					OR CONCAT(nat.firstName, ' ', nat.lastName) LIKE '%%$custonerName%%'
+				)
+			ORDER BY 
+				c.createdOn DESC 
+		");
+
+		log_message("error",print_r($sql,true));
+		return $db->query($sql)->getResult();
+	}
+	function getRowAll_DashboardMobile_Intereses(
 			$transactionID,
 			$startOn,
 			$endOn,
