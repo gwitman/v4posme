@@ -19,7 +19,7 @@ createApp({
             detalleProductoAbierto: null,
             detalleCreditoAbierto: null,
             detalleCostoAbierto: null,
-            startOn:        '<?php echo date("Y-m-01"); ?>',
+            startOn:        '<?php echo date("Y-m-d"); ?>',
             endOn:          '<?php echo date("Y-m-d"); ?>',
             filterTransaction: '<?php echo (isset($company) && $company->type == "gymJalapa") ? "23" : "19"; ?>',
             filterCustomer: '',
