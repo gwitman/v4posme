@@ -79,8 +79,10 @@ class app_mobile_api extends _BaseController
             $objUser 					= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
 			$objListCustomerMap			= [];
             $companyID 					= $objUser["user"]->companyID;
+            $objCompany 				= $objUser["company"];            
             Services::session()->set("user", $objUser["user"]);
-            $objCompany 				= $objUser["company"];
+            Services::session()->set("company", $objCompany);
+            Services::session()->set("role", $objUser["role"]);
 			log_message("error","[SET_DATA_UPLOAD] Usuario autenticado -> userID: ".$objUser["user"]->userID." | employeeID: ".$objUser["user"]->employeeID." | companyID: ".$companyID." | companyType: ".$objCompany->type);
 			
             

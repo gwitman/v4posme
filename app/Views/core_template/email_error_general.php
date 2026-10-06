@@ -63,7 +63,7 @@
 	  <div class="card overflow-hidden">
 		<!-- Help Center Header -->
 		<div class="help-center-header d-flex flex-column justify-content-center align-items-center">
-		  <h3 class="text-center">Error : <?php echo ($session == null ? ""  : $session["user"]->nickname." --> Compania : ".$session["company"]->name ); ?></h3>
+		  <h3 class="text-center">Error : <?php echo ($session == null ? "" : ((isset($session["user"]) ? $session["user"]->nickname : "")." --> Compania : ".(isset($session["company"]) ? $session["company"]->name : "")) ); ?></h3>
 		  <div class="input-wrapper my-3 input-group input-group-merge">
 		   
 		  

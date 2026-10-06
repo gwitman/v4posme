@@ -1604,16 +1604,17 @@ class app_inventory_item extends _BaseController
                     $db->transCommit();
 
                     //Si el parametro permite actualizar el costo en el item y viene un costo,
-                    //generar un ajuste de costo (insertElement de app_inventory_cost_adjustment)
+                    //generar un ajuste de inventario mediante insertElementMobile de app_inventory_ajuste
                     $allowUpdateCostInItem = $this->core_web_parameter->getParameterValue("INVENTORY_ALLOW_UPDATE_COST_IN_ITEM", $companyID);
                     log_message("debug", "[ITEM_NEW_MOBILE] Evaluando ajuste de costo - itemID=" . $itemID . ", INVENTORY_ALLOW_UPDATE_COST_IN_ITEM=" . $allowUpdateCostInItem);
                     if (strtoupper($allowUpdateCostInItem) == "TRUE") {
                         $newCost = helper_StringToNumber(helper_RequestGetValueObjet($item, "cost", 0));
                         log_message("debug", "[ITEM_NEW_MOBILE] Costo recibido - itemID=" . $itemID . ", newCost=" . $newCost);
                         if ((float) $newCost != (float) 0) {
-                            $newQuantity = helper_StringToNumber(helper_RequestGetValueObjet($item, "quantity", 0));
-                            log_message("debug", "[ITEM_NEW_MOBILE] Generando ajuste de costo para itemID=" . $itemID . ", quantity=" . $newQuantity);
-                            $this->generateCostAdjustmentByItem($dataSession, $companyID, $itemID, $objItem["itemNumber"], $objItem["currencyID"], $objItem["defaultWarehouseID"], 0, $newCost);
+                            $newQuantity   = helper_StringToNumber(helper_RequestGetValueObjet($item, "quantity", 0));
+                            $newPrice      = helper_StringToNumber(helper_RequestGetValueObjet($item, "precioPublico", 0));
+                            log_message("debug", "[ITEM_NEW_MOBILE] Generando ajuste de inventario para itemID=" . $itemID . ", quantity=" . $newQuantity . ", barCode=" . $objItem["barCode"]);
+                            $this->generateInventoryAdjustmentByItemMobile($dataSession, $objItem["barCode"], $newQuantity, $newCost, $newPrice);
                         } else {
                             log_message("debug", "[ITEM_NEW_MOBILE] Costo en 0 o ausente, no se genera ajuste para itemID=" . $itemID);
                         }
@@ -1667,7 +1668,7 @@ class app_inventory_item extends _BaseController
                     $db->transCommit();
 
                     //Si el parametro permite actualizar el costo en el item y el costo cambio,
-                    //generar un ajuste de costo (insertElement de app_inventory_cost_adjustment)
+                    //generar un ajuste de inventario mediante insertElementMobile de app_inventory_ajuste
                     $allowUpdateCostInItem = $this->core_web_parameter->getParameterValue("INVENTORY_ALLOW_UPDATE_COST_IN_ITEM", $companyID);
                     log_message("debug", "[ITEM_EDIT_MOBILE] Evaluando ajuste de costo - itemID=" . $itemID . ", INVENTORY_ALLOW_UPDATE_COST_IN_ITEM=" . $allowUpdateCostInItem);
                     if (strtoupper($allowUpdateCostInItem) == "TRUE") {
@@ -1676,8 +1677,10 @@ class app_inventory_item extends _BaseController
                         $oldCost     = helper_StringToNumber(helper_RequestGetValueObjet($objItemCost, "cost", 0));
                         log_message("debug", "[ITEM_EDIT_MOBILE] Comparando costos - itemID=" . $itemID . ", oldCost=" . $oldCost . ", newCost=" . $newCost . ", itemEncontrado=" . ($objItemCost ? "si" : "no"));
                         if ($objItemCost && (float) $newCost != (float) $oldCost) {
-                            log_message("debug", "[ITEM_EDIT_MOBILE] Costo cambio, generando ajuste de costo para itemID=" . $itemID);
-                            $this->generateCostAdjustmentByItem($dataSession, $companyID, $itemID, $objItemCost->itemNumber, $objItemCost->currencyID, $objItemCost->defaultWarehouseID, 0, $newCost);
+                            $newQuantity = helper_StringToNumber(helper_RequestGetValueObjet($item, "quantity", 0));
+                            $newPrice    = helper_StringToNumber(helper_RequestGetValueObjet($item, "precioPublico", 0));
+                            log_message("debug", "[ITEM_EDIT_MOBILE] Costo cambio, generando ajuste de inventario para itemID=" . $itemID . ", barCode=" . $objItemCost->barCode);
+                            $this->generateInventoryAdjustmentByItemMobile($dataSession, $objItemCost->barCode, $newQuantity, $newCost, $newPrice);
                         } else {
                             log_message("debug", "[ITEM_EDIT_MOBILE] Costo sin cambios o item no encontrado, no se genera ajuste para itemID=" . $itemID);
                         }
@@ -2216,6 +2219,44 @@ class app_inventory_item extends _BaseController
             $controller->initController($this->request, $this->response, $this->logger);
             $controller->insertElement($dataSession);
             log_message("debug", $logTag . " FIN - insertElement ejecutado para itemID=" . $itemID);
+
+        } catch (\Exception $ex) {
+            log_message("error", $logTag . " ERROR - linea=" . $ex->getLine() . ", mensaje=" . $ex->getMessage() . ", trace=" . $ex->getTraceAsString());
+            $this->core_web_notification->set_message(true, $ex->getLine() . " " . $ex->getMessage());
+        }
+    }
+
+    /**
+     * Genera un ajuste de inventario para un item reutilizando insertElementMobile
+     * del controlador app_inventory_ajuste (el mismo flujo que usa app_mobile_api).
+     * Arma el transactionMaster (con Comment) y el detalle con el item buscado por
+     * codigo de barra, su cantidad, costo unitario y precio unitario.
+     * insertElementMobile resuelve internamente bodega, proveedor, causal y estado.
+     */
+    private function generateInventoryAdjustmentByItemMobile($dataSession, $barCode, $quantity, $cost, $price)
+    {
+        $logTag = "[INVENTORY_ADJUSTMENT_BY_ITEM_MOBILE]";
+        try {
+            log_message("debug", $logTag . " INICIO - barCode=" . $barCode . ", quantity=" . $quantity . ", cost=" . $cost . ", price=" . $price);
+
+            //TransactionMaster: insertElementMobile solo usa la propiedad Comment
+            $transactionMaster          = new \stdClass();
+            $transactionMaster->Comment = "Ajuste de inventario generado automaticamente desde el producto (barCode=" . $barCode . ")";
+
+            //Detalle: insertElementMobile busca el item por ItemBarCode y usa Quantity, UnitaryCost y UnitaryPrice
+            $detail                = new \stdClass();
+            $detail->ItemBarCode   = $barCode;
+            $detail->Quantity      = $quantity;
+            $detail->UnitaryCost   = $cost;
+            $detail->UnitaryPrice  = $price;
+
+            $transactionMasterDetails = [$detail];
+
+            log_message("debug", $logTag . " Invocando insertElementMobile de app_inventory_ajuste");
+            $controller = new app_inventory_ajuste();
+            $controller->initController($this->request, $this->response, $this->logger);
+            $controller->insertElementMobile($dataSession, $transactionMaster, $transactionMasterDetails);
+            log_message("debug", $logTag . " FIN - insertElementMobile ejecutado para barCode=" . $barCode);
 
         } catch (\Exception $ex) {
             log_message("error", $logTag . " ERROR - linea=" . $ex->getLine() . ", mensaje=" . $ex->getMessage() . ", trace=" . $ex->getTraceAsString());
