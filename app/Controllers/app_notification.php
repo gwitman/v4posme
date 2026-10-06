@@ -1902,20 +1902,42 @@ class app_notification extends _BaseController
 			if ($format != "pdf") {
 
 				echo $html;
+
+				//Ruta del logo para adjuntarlo como imagen embebida (CID)
+				$logoPath = PATH_FILE_OF_APP_ROOT . '/img/logos/' . $params_["objLogo"]->value;
+
 				//enviar correo
+				$this->email->clear(true);
 				$this->email->setFrom(EMAIL_APP);
 				$this->email->setTo($parameterEmail);
 				$this->email->setSubject($subject);
-				$this->email->setMessage($html);
+				$this->email->setMailType('html');
+				$this->email->wordWrap = false;
+				$params_["logoCID"] = '';
+				if (file_exists($logoPath)) {
+					$this->email->attach($logoPath);
+					$params_["logoCID"] = $this->email->setAttachmentCID($logoPath);
+				}
+				$htmlEmail = /*--inicio view*/ view('app_box_report/share_summary_80mm_general/view_a_disemp', $params_); //--finview
+				$this->email->setMessage($htmlEmail);
 				$resultSend01 = $this->email->send();
 				$resultSend02 = $this->email->printDebugger();
 
 
 				//enviar correo
+				$this->email->clear(true);
 				$this->email->setFrom(EMAIL_APP);
 				$this->email->setTo(EMAIL_APP_COPY);
 				$this->email->setSubject($subject);
-				$this->email->setMessage($html);
+				$this->email->setMailType('html');
+				$this->email->wordWrap = false;
+				$params_["logoCID"] = '';
+				if (file_exists($logoPath)) {
+					$this->email->attach($logoPath);
+					$params_["logoCID"] = $this->email->setAttachmentCID($logoPath);
+				}
+				$htmlEmail = /*--inicio view*/ view('app_box_report/share_summary_80mm_general/view_a_disemp', $params_); //--finview
+				$this->email->setMessage($htmlEmail);
 				$resultSend01 = $this->email->send();
 				$resultSend02 = $this->email->printDebugger();
 			} 

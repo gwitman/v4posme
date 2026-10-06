@@ -31,16 +31,20 @@
 		
 		<?php
 		$path    = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objLogo->value;
-    
+
 		$type    = pathinfo($path, PATHINFO_EXTENSION);
 		$data    = file_get_contents($path);
-		$base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);	
+		$base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
+
+		// Para correo se usa una imagen embebida (CID) en lugar de base64 inline,
+		// esto evita que Gmail recorte el mensaje ("ver mensaje completo").
+		$logoSrc = (isset($logoCID) && $logoCID !== '') ? ('cid:' . $logoCID) : $base64;
 		?>
 		
 		<table style='width:100%'>
 			<tr>
 			  <td colspan='3' style='text-align:center'>
-				<img  src='<?php echo $base64; ?>' width='110'  >
+				<img  src='<?php echo $logoSrc; ?>' width='110'  >
 			  </td>
 			</tr>
 			<tr>
