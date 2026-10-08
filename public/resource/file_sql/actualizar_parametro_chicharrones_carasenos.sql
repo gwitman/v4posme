@@ -1,5 +1,5 @@
-/*BD: 	dbtuhd9y61qroa:chicharrones_carasenos*/
-/*servidor		siteground .nl*/
+/*BD: 	dbun7eqfklzdig:chicharrones_carasenos*/
+/*servidor		siteground .net*/
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
