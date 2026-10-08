@@ -2775,7 +2775,11 @@ class app_invoice_billing extends _BaseController {
 			$objTM["companyID"] 					= $companyID;
 			$objTM["transactionID"] 				= $transactionID;			
 			$objTM["branchID"]						= $branchID;			
-			$objTM["transactionNumber"]				= $transactionNumber == "" ? $this->core_web_counter->goNextNumber($companyID,$branchID,"tb_transaction_master_billing",0) : $transactionNumber;
+			//Determinar el componente del contador segun el estado de la factura que viene del movil.
+			//Estado 66 = REGISTRADA (proforma) -> contador tb_transaction_master_proforma
+			//Estado 67 = APLICADA (facturada)  -> contador tb_transaction_master_billing
+			$componentCounter						= ($transactionMaster->StatusID == 66) ? "tb_transaction_master_proforma" : "tb_transaction_master_billing";
+			$objTM["transactionNumber"]				= $transactionNumber == "" ? $this->core_web_counter->goNextNumber($companyID,$branchID,$componentCounter,0) : $transactionNumber;
 			$objTM["transactionCausalID"] 			= $transactionMaster->TransactionCausalId;
 			$objTM["entityID"] 						= $customer->entityID;
 			$objTM["transactionOn"]					= $transactionMaster->TransactionOn;
