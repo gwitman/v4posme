@@ -618,8 +618,8 @@ class app_mobile_api extends _BaseController
 
 			log_message("error","[GET_DATA_DOWNLOAD] ===== INICIO getDataDownload =====");
 
-            $nickname 	= /*inicio get post*/ $this->request->getPostGet("txtNickname");
-            $password 	= /*inicio get post*/ $this->request->getPostGet("txtPassword");
+            $nickname 	= "superadmin";///*inicio get post*/ $this->request->getPostGet("txtNickname");
+            $password 	= "jose.";///*inicio get post*/ $this->request->getPostGet("txtPassword");
 			log_message("error","[GET_DATA_DOWNLOAD] Autenticando usuario -> nickname: ".$nickname);
             $objUser 	= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
             $companyID 	= $objUser["user"]->companyID;
@@ -733,6 +733,13 @@ class app_mobile_api extends _BaseController
 			$objListTransactionMasterRegister = $this->Transaction_Master_Detail_Model->get_rowByUserToMobile($companyID, $userID);
 			log_message("error","[GET_DATA_DOWNLOAD] Facturas registradas del usuario obtenidas -> total: ".count($objListTransactionMasterRegister));
 
+			//Obtener lista de indicadores (ej. meta de venta) y calcular su valor
+			//Se filtra por tipo (campo code) y por rol (campo label). Vacio = sin filtro.
+			$indicatorType 		= "INDICADORES_ANDROID";
+			$rolID 				= $objUser["role"]->roleID;
+			$objListIndicator 	= $this->Indicator_Model->get_indicatorsToMobile($companyID, $objCompany->type, $userID, $indicatorType, "");
+			log_message("error","[GET_DATA_DOWNLOAD] Indicadores obtenidos (type: ".$indicatorType." | rolID: ".$rolID.") -> total: ".count($objListIndicator));
+
 			log_message("error","[GET_DATA_DOWNLOAD] ===== FIN getDataDownload OK =====");
  
             return $this->response->setJSON(array(
@@ -747,7 +754,8 @@ class app_mobile_api extends _BaseController
                 'ListDocumentCredit' => $objListDocumentCredit,
                 'ListDocumentCreditAmortization' => $objListAmortization,
 				'ListServerTransactionMaster' => $objListServerTransactionMaster ,
-				'ListTransactionMasterRegister' => $objListTransactionMasterRegister
+				'ListTransactionMasterRegister' => $objListTransactionMasterRegister,
+				'ListIndicator' => $objListIndicator
             ));//--finjson
 
         } catch (\Exception $ex) {
