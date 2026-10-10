@@ -618,8 +618,8 @@ class app_mobile_api extends _BaseController
 
 			log_message("error","[GET_DATA_DOWNLOAD] ===== INICIO getDataDownload =====");
 
-            $nickname 	= "superadmin";///*inicio get post*/ $this->request->getPostGet("txtNickname");
-            $password 	= "jose.";///*inicio get post*/ $this->request->getPostGet("txtPassword");
+            $nickname 	= /*inicio get post*/ $this->request->getPostGet("txtNickname");
+            $password 	= /*inicio get post*/ $this->request->getPostGet("txtPassword");
 			log_message("error","[GET_DATA_DOWNLOAD] Autenticando usuario -> nickname: ".$nickname);
             $objUser 	= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
             $companyID 	= $objUser["user"]->companyID;
