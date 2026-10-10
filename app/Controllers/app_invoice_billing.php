@@ -13330,7 +13330,7 @@ class app_invoice_billing extends _BaseController {
 			
 			
 			//Generar Reporte
-			$html = helper_reporte80mmTransactionMasterBranch(
+			$htmlCopia = helper_reporte80mmTransactionMasterBranch(
 			    "FACTURA",
 			    $objCompany,
 			    $objParameter,
@@ -13350,6 +13350,16 @@ class app_invoice_billing extends _BaseController {
 				$datView["objBranchUser"]->name,
 				array() 
 			);
+
+			//Generar 3 copias de la factura, separadas por salto de pagina
+			$html = "";
+			for($copia = 0; $copia < 3; $copia++)
+			{
+				$html .= $htmlCopia;
+				if($copia < 2)
+					$html .= '<div style="page-break-after:always;"></div>';
+			}
+
 			$this->dompdf->loadHTML($html);
 			
 			//1cm = 29.34666puntos
@@ -13421,7 +13431,7 @@ class app_invoice_billing extends _BaseController {
 		    $resultSend02 = $this->email->printDebugger();
 		    
 		    
-		    return $resultView;
+		    echo $resultView;
 		}
 	}
 	
