@@ -3094,6 +3094,129 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 		}
 	}
 
-	
+	/*ejecutar 1 ves al dia a las 0 horas en utc*/
+	//Notifica por correo las ordenes de taller proximas (3,2,1 y 0 dias antes del nextVisit)
+	//curl "https://posme.net/v4posme/chic/public/app_notification/sendEmailOrdenTallerProximaVisita"
+	//0 0 * * *
+	function sendEmailOrdenTallerProximaVisita()
+	{
+		try {
+			ini_set('max_execution_time', 0);
+
+			$companyID      = APP_COMPANY;
+			$objCompany     = $this->Company_Model->get_rowByPK($companyID);
+
+			//Correo del propietario
+			$emailProperty  = $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL", $companyID);
+			$emailProperty  = $emailProperty->value;
+
+			//Logo de la empresa
+			$objLogo        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO", $companyID);
+
+			//Obtener las ordenes de taller a notificar (0,1,2,3 dias)
+			$objNotificar   = $this->Transaction_Master_Model->getProgrammingOrdenTallerToNotify($companyID);
+
+			if (!$objNotificar || count($objNotificar) <= 0) {
+				echo "SUCCESS (sin ordenes por notificar)";
+				return;
+			}
+
+			//Agrupar por dias de anticipacion
+			$grupos = [3 => [], 2 => [], 1 => [], 0 => []];
+			foreach ($objNotificar as $i) {
+				$dias = (int) $i->diasRestantes;
+				if (array_key_exists($dias, $grupos)) {
+					$grupos[$dias][] = $i;
+				}
+			}
+
+			$titulosGrupo = [
+				3 => "Ordenes de taller en 3 dias",
+				2 => "Ordenes de taller en 2 dias",
+				1 => "Ordenes de taller manana (1 dia)",
+				0 => "Ordenes de taller para hoy"
+			];
+
+			//Construir el cuerpo con tablas estilizadas
+			$mensaje = "";
+			foreach ([3, 2, 1, 0] as $dias) {
+				if (count($grupos[$dias]) <= 0) {
+					continue;
+				}
+
+				$mensaje .= "<h3 style='font-family:Arial,sans-serif; color:#333; margin:18px 0 8px 0;'>" . $titulosGrupo[$dias] . "</h3>";
+				$mensaje .= "<table style='border-collapse:collapse; width:100%; font-family:Arial,sans-serif; font-size:12px; margin-bottom:20px;'>";
+				$mensaje .= "<thead>";
+				$mensaje .= "<tr style='background:#4e73df; color:#ffffff;'>";
+				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Orden</th>";
+				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Siguiente Visita</th>";
+				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Estado</th>";
+				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Cliente</th>";
+				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Telefono</th>";
+				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Activo Fijo</th>";
+				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Direccion</th>";
+				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Nota</th>";
+				$mensaje .= "</tr>";
+				$mensaje .= "</thead>";
+				$mensaje .= "<tbody>";
+
+				$fila = 0;
+				foreach ($grupos[$dias] as $i) {
+					$bg         = ($fila % 2 == 0) ? "#ffffff" : "#f8f9fc";
+					$fila++;
+
+					$activoFijo = trim($i->activoNombre . " " . $i->activoMarca . " " . $i->activoModelo);
+					$activoFijo = $i->activoCodigo != "" ? ($i->activoCodigo . " - " . $activoFijo) : $activoFijo;
+
+					$mensaje .= "<tr style='background:" . $bg . ";'>";
+					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars($i->transactionNumber) . "</td>";
+					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars($i->nextVisit) . "</td>";
+					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars($i->estado) . "</td>";
+					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars(trim($i->clienteCodigo . " " . $i->clienteNombre)) . "</td>";
+					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars($i->clienteTelefono) . "</td>";
+					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars($activoFijo) . "</td>";
+					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars($i->activoDireccion) . "</td>";
+					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars($i->note ?? "") . "</td>";
+					$mensaje .= "</tr>";
+				}
+
+				$mensaje .= "</tbody>";
+				$mensaje .= "</table>";
+			}
+
+			//Parametros para la vista del correo (incluye logo)
+			$params_["objCompany"]  = $objCompany;
+			$params_["objLogo"]     = $objLogo;
+			$params_["mensaje"]     = $mensaje;
+
+			$subject = "Ordenes de taller - Proximas visitas (" . date("Y-m-d") . ")";
+
+			//Enviar correo con logo embebido (CID)
+			$logoPath = PATH_FILE_OF_APP_ROOT . '/img/logos/' . $objLogo->value;
+
+			$this->email->clear(true);
+			$this->email->setFrom(EMAIL_APP);
+			$this->email->setTo($emailProperty);
+			$this->email->setSubject($subject);
+			$this->email->setMailType('html');
+			$this->email->wordWrap = false;
+
+			$params_["logoCID"] = '';
+			if (file_exists($logoPath)) {
+				$this->email->attach($logoPath);
+				$params_["logoCID"] = $this->email->setAttachmentCID($logoPath);
+			}
+
+			$body = /*--inicio view*/ view('app_notification/orden_taller/email_proxima_visita', $params_); //--finview
+			$this->email->setMessage($body);
+			$this->email->send();
+
+			echo "SUCCESS";
+
+		} catch (\Exception $ex) {
+			log_message('error', '[sendEmailOrdenTallerProximaVisita] Error: ' . $ex->getLine() . " " . $ex->getMessage());
+			echo "ERROR: " . $ex->getMessage();
+		}
+	}
 
 }

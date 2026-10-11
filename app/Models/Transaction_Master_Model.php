@@ -1227,6 +1227,51 @@ class Transaction_Master_Model extends Model  {
 		return $db->query($sql, [$date])->getResult();
 	}
 
+	//Para notificar por correo las ordenes de taller proximas a su siguiente visita (nextVisit)
+	//Trae ordenes cuya nextVisit sea hoy (0), manana (1), en 2 o en 3 dias
+	function getProgrammingOrdenTallerToNotify($companyID)
+	{
+		$db 	= db_connect();
+		$sql = "
+		select
+			DATEDIFF(DATE(tm.nextVisit), CURDATE()) as diasRestantes,
+			tm.transactionMasterID,
+			tm.transactionNumber,
+			tm.nextVisit,
+			tm.note,
+			IFNULL(ws.name,'') as estado,
+			IFNULL(fa.fixedAssentCode,'') as activoCodigo,
+			IFNULL(fa.name,'') as activoNombre,
+			IFNULL(fa.marca,'') as activoMarca,
+			IFNULL(fa.modelNumber,'') as activoModelo,
+			IFNULL(fa.address, IFNULL(cus.address,'')) as activoDireccion,
+			IFNULL(cus.customerNumber,'') as clienteCodigo,
+			IFNULL(CONCAT(nat.firstName,' ',IFNULL(nat.lastName,'')),'') as clienteNombre,
+			IFNULL(cus.phoneNumber,'') as clienteTelefono
+		from
+			tb_transaction_master tm
+			inner join tb_workflow_stage ws on
+				tm.statusID = ws.workflowStageID
+			left join tb_fixed_assent fa on
+				fa.fixedAssentID = tm.priorityID
+			left join tb_customer cus on
+				cus.customerID = fa.asignedCustomerID
+			left join tb_naturales nat on
+				nat.entityID = cus.entityID
+		where
+			tm.isActive = 1 and
+			tm.companyID = $companyID and
+			tm.transactionID = 40 /*ORDEN DE TALLER*/ and
+			tm.nextVisit is not null and
+			DATEDIFF(DATE(tm.nextVisit), CURDATE()) in (0,1,2,3)
+		order by
+			tm.nextVisit asc
+		";
+
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+	}
+
 }
 
 ?>
