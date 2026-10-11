@@ -5277,6 +5277,315 @@ $f_html = $f_html."
   return $html;
 }
 
+function helper_reporteA4mmTransactionMasterTallerFrioTec(
+  $titulo,
+  $objCompany,
+  $objParameterLogo,
+  $objTransactionMastser,
+  $tipoCambio,
+  $objCurrency,
+  $objTransactionMasterInfo,
+  $objParameterTelefono, /*telefono*/
+  $objData,
+  $statusName = "", /*estado*/
+  $causalName = "",
+  $datView = ""
+)
+{
+	$path    		= PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
+
+	$font_size1   	= "18px";
+	$border_left 	= "border-left: 1px solid black;";
+	$border_right 	= "border-right: 1px solid black;";
+	$border_top 	= "border-top: 1px solid black;";
+	$border_bottom 	= "border-bottom: 1px solid black;";
+	$border_radius	= "border-radius: 10px;";
+	$border_colapse = "border-collapse:separate;";
+
+	$type    		= pathinfo($path, PATHINFO_EXTENSION);
+	$data    		= file_get_contents($path);
+	$base64  		= 'data:image/' . $type . ';base64,' . base64_encode($data);
+	$numberDocument = str_replace("IAT"," No ", $objTransactionMastser->transactionNumber);
+
+	//Datos del cliente
+	$customerName			= helper_RequestGetValueObjet($objData["objCustomerNatural"],"firstName","");
+	$customerLastName		= helper_RequestGetValueObjet($objData["objCustomerNatural"],"lastName","");
+	$customerFullName		= trim($customerName." ".$customerLastName);
+	$customerIdentification	= helper_RequestGetValueObjet($objData["objCustomer"],"identification","");
+	$customerPhone			= helper_RequestGetValueObjet($objData["objCustomer"],"phoneNumber","");
+	$customerAddress		= helper_RequestGetValueObjet($objData["objCustomer"],"address","");
+
+	//Datos del activo fijo
+	$objFixedAsset			= isset($objData["objFixedAsset"]) ? $objData["objFixedAsset"] : false;
+	$faCode					= $objFixedAsset ? helper_RequestGetValueObjet($objFixedAsset,"fixedAssentCode","") : "";
+	$faName					= $objFixedAsset ? helper_RequestGetValueObjet($objFixedAsset,"name","") : "";
+	$faDescription			= $objFixedAsset ? helper_RequestGetValueObjet($objFixedAsset,"description","") : "";
+	$faModelNumber			= $objFixedAsset ? helper_RequestGetValueObjet($objFixedAsset,"modelNumber","") : "";
+	$faMarca				= $objFixedAsset ? helper_RequestGetValueObjet($objFixedAsset,"marca","") : "";
+	$faChasisNumber			= $objFixedAsset ? helper_RequestGetValueObjet($objFixedAsset,"chasisNumber","") : "";
+	$faYear					= $objFixedAsset ? helper_RequestGetValueObjet($objFixedAsset,"year","") : "";
+
+	//Datos del taller
+	$tallerMarca			= helper_RequestGetValueObjet($objData["objItemMarca"],"name","");
+	$tallerArticulo			= helper_RequestGetValueObjet($objData["objItemArticulo"],"name","");
+	$tallerAccesorios		= helper_RequestGetValueObjet($objData["objItemAccesorios"],"name","");
+	$tallerModelo			= helper_RequestGetValueObjet($objData["objTransactionMasterInfo"],"reference2","");
+	$tallerSerie			= helper_RequestGetValueObjet($objData["objTransactionMaster"],"reference4","");
+	$tallerTecnico			= helper_RequestGetValueObjet($objData["objEmployerNatural"],"firstName","");
+	$tallerFecha			= helper_RequestGetValueObjet($objData["objTransactionMaster"],"transactionOn","");
+	$tallerNumero			= helper_RequestGetValueObjet($objData["objTransactionMaster"],"transactionNumber","");
+	$tallerProblema			= helper_RequestGetValueObjet($objData["objTransactionMaster"],"reference2","");
+	$tallerNota				= helper_RequestGetValueObjet($objData["objTransactionMaster"],"reference1","");
+
+	$html    = "
+                  <!DOCTYPE html>
+                  <html lang='en'>
+                  <head>
+                    <meta charset='UTF-8' />
+                    <meta name='viewport' content='width=device-width, initial-scale=1.0' />
+                    <style>
+                      @page {
+                        size: Legal;
+                        margin-top:25px;
+                        margin-left:25px;
+                        margin-right:20px;
+						margin-bottom: 25px;
+						padding-top: 0px;
+						padding-right: 0px;
+						padding-bottom: 0px;
+						padding-left: 0px;
+                      }
+                      table{
+                        font-size: xx-small;
+                        font-family: sans-serif, monaco, monospace;
+						border-collapse: collapse;
+                      }
+						td{
+                        font-size: xx-small;
+                        font-family: sans-serif, monaco, monospace;
+						border-collapse: collapse;
+                      }
+                    </style>
+                  </head>
+                  <body>
+        ";
+
+	//Encabezado con logo
+	$f_html = "
+                    <table style='width:98%'>
+                      <tr>
+						<td  style='vertical-align:top;text-align:center;width:33%;text-align:left'>
+                          <img  src='".$base64."' width='200px' height='100px'  >
+                        </td>
+						<td style='vertical-align:middle;text-align:center;width:33%;text-align:center; font-weight: bold;font-size:".$font_size1."'>
+							HOJA DE INGRESO - TALLER
+						</td>
+                        <td  style='vertical-align:top;text-align:center;width:33%'>
+							<table style='width:100%'>
+							  <tr>
+								<td  style='text-align:center;font-size:".$font_size1."; font-weight: bold;'>
+								". $numberDocument ."
+								</td>
+							  </tr>
+							  <tr>
+								<td style='text-align:center'>
+								  ". $datView["objBranch"]->address."
+								</td>
+							  </tr>
+							  <tr>
+								<td style='text-align:center'>
+								".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptPhone","Servicio Tecnico") ."
+								</td>
+							  </tr>
+							  <tr>
+								<td style='text-align:center'>&nbsp;</td>
+							  </tr>
+							  <tr>
+								<td style='text-align:center'>
+								".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptRed","FrioTec") ."
+								</td>
+							  </tr>
+							</table>
+                        </td>
+                      </tr>
+        </table>
+          ";
+
+	$f_html = $f_html."
+		  <table style='width:98%' ><tr><td>&nbsp;</td></tr></table>
+		";
+
+	//Datos del Cliente (completos)
+	$f_html = $f_html."
+        <table style='width:98%;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >
+          <tr>
+            <td colspan='4' style='text-align:center;vertical-align:top;font-weight: bold;' >
+				DATOS DEL CLIENTE
+            </td>
+          </tr>
+          <tr>
+            <td  style='width:80px;text-align:left;vertical-align:top;font-weight: bold;' >Nombre:</td>
+            <td style='width:250px;vertical-align:top;' >".$customerFullName."</td>
+			<td style='width:80px;vertical-align:top;font-weight: bold;' >Identificación:</td>
+			<td style='width:200px;vertical-align:top;' >".$customerIdentification."</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Teléfono:</td>
+            <td style='vertical-align:top;' >".$customerPhone."</td>
+			<td style='vertical-align:top;font-weight: bold;' >Dirección:</td>
+			<td style='vertical-align:top;' >".$customerAddress."</td>
+          </tr>
+         </table>";
+
+	$f_html = $f_html."
+      <table style='width:98%' ><tr><td>&nbsp;</td></tr></table>
+    ";
+
+	//Datos del Activo Fijo (completos)
+	$f_html = $f_html."
+        <table style='width:98%;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >
+          <tr>
+            <td colspan='4' style='text-align:center;vertical-align:top;font-weight: bold;' >
+				DATOS DEL ACTIVO FIJO
+            </td>
+          </tr>
+          <tr>
+            <td  style='width:80px;text-align:left;vertical-align:top;font-weight: bold;' >Código:</td>
+            <td style='width:250px;vertical-align:top;' >".$faCode."</td>
+			<td style='width:80px;vertical-align:top;font-weight: bold;' >Nombre:</td>
+			<td style='width:200px;vertical-align:top;' >".$faName."</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Marca:</td>
+            <td style='vertical-align:top;' >".$faMarca."</td>
+			<td style='vertical-align:top;font-weight: bold;' >Modelo:</td>
+			<td style='vertical-align:top;' >".$faModelNumber."</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >No. Chasis/Serie:</td>
+            <td style='vertical-align:top;' >".$faChasisNumber."</td>
+			<td style='vertical-align:top;font-weight: bold;' >Año:</td>
+			<td style='vertical-align:top;' >".$faYear."</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Descripción:</td>
+            <td colspan='3' style='vertical-align:top;' >".$faDescription."</td>
+          </tr>
+         </table>";
+
+	$f_html = $f_html."
+      <table style='width:98%' ><tr><td>&nbsp;</td></tr></table>
+    ";
+
+	//Datos del Taller (completos)
+	$f_html = $f_html."
+        <table style='width:98%;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >
+          <tr>
+            <td colspan='4' style='text-align:center;vertical-align:top;font-weight: bold;' >
+				DATOS DEL TALLER
+            </td>
+          </tr>
+          <tr>
+            <td  style='width:80px;text-align:left;vertical-align:top;font-weight: bold;' >No. Orden:</td>
+            <td style='width:250px;vertical-align:top;' >".$tallerNumero."</td>
+			<td style='width:80px;vertical-align:top;font-weight: bold;' >Fecha:</td>
+			<td style='width:200px;vertical-align:top;' >".$tallerFecha."</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Marca:</td>
+            <td style='vertical-align:top;' >".$tallerMarca."</td>
+			<td style='vertical-align:top;font-weight: bold;' >Modelo:</td>
+			<td style='vertical-align:top;' >".$tallerModelo."</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Artículo:</td>
+            <td style='vertical-align:top;' >".$tallerArticulo."</td>
+			<td style='vertical-align:top;font-weight: bold;' >Serie:</td>
+			<td style='vertical-align:top;' >".$tallerSerie."</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Técnico:</td>
+            <td style='vertical-align:top;' >".$tallerTecnico."</td>
+			<td style='vertical-align:top;font-weight: bold;' >Estado:</td>
+			<td style='vertical-align:top;' >".$statusName."</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Accesorios:</td>
+            <td colspan='3' style='vertical-align:top;' >".$tallerAccesorios."</td>
+          </tr>
+         </table>";
+
+	$f_html = $f_html."
+      <table style='width:98%' ><tr><td>&nbsp;</td></tr></table>
+    ";
+
+	//Problema reportado y nota
+	$f_html = $f_html."
+        <table style='width:98%;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >
+          <tr>
+            <td  style='text-align:center;vertical-align:top;font-weight: bold;' >Problema reportado</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;' >".$tallerProblema."</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:center;vertical-align:top;font-weight: bold;' >Nota</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;' >".$tallerNota."</td>
+          </tr>
+         </table>";
+
+	$f_html = $f_html."
+      <table style='width:98%' ><tr><td>&nbsp;</td></tr></table>
+      <table style='width:98%' ><tr><td>&nbsp;</td></tr></table>
+    ";
+
+	//Condiciones
+	$f_html = $f_html."
+        <table style='width:98%' >
+          <tr>
+            <td style='text-align:justify;font-weight: bold;font-size:12px'>
+			".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptCondicion1","FrioTec no se hace responsable de pérdidas de información.") ."
+            </td>
+          </tr>
+		  <tr>
+            <td style='text-align:justify;font-weight: bold;font-size:12px'>
+			  ".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptCondicion2","Toda reparación cuenta con garantía según condiciones del taller.") ."
+            </td>
+          </tr>
+        </table>";
+
+	$f_html = $f_html."
+      <table style='width:98%' ><tr><td>&nbsp;</td></tr></table>
+      <table style='width:98%' ><tr><td>&nbsp;</td></tr></table>
+      <table style='width:98%' ><tr><td>&nbsp;</td></tr></table>
+    ";
+
+	//Firma del cliente
+	$f_html = $f_html."
+        <table style='width:98%' >
+          <tr>
+            <td style='text-align:center;font-weight: bold'></td>
+			<td style='text-align:center;font-weight: bold'>---------------------------------</td>
+			<td style='text-align:center;font-weight: bold'></td>
+          </tr>
+		  <tr>
+            <td style='text-align:center;font-weight: bold'></td>
+			<td style='text-align:center;font-weight: bold'>".$customerFullName."</td>
+			<td style='text-align:center;font-weight: bold'></td>
+          </tr>
+		  <tr>
+            <td style='text-align:center;font-weight: bold;'></td>
+			<td style='text-align:center;font-weight: bold'>".$customerIdentification."</td>
+			<td style='text-align:center;font-weight: bold'></td>
+          </tr>
+        </table>";
+
+	$html 				= $html.$f_html."</body></html>";
+	return $html;
+}
+
 function helper_reporteA4mmTransactionMasterTallerCompuMatt(
   $titulo,
   $objCompany,

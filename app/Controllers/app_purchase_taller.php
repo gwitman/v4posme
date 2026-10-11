@@ -1408,6 +1408,9 @@ class app_purchase_taller extends _BaseController {
 			
 			//Obtener Factura
 			$dataView["objBilling"]					= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$dataView["objTransactionMaster"]->note);
+
+			//Obtener Activo Fijo seleccionado (guardado en periodPay)
+			$dataView["objFixedAsset"]				= $dataView["objTransactionMaster"]->periodPay ? $this->Fixed_Assent_Model->get_rowByPK($companyID,$branchID,$dataView["objTransactionMaster"]->periodPay) : false;
 			
 			
 			$dataView["objListCurrency"]		= $objListCurrency;
@@ -1450,6 +1453,24 @@ class app_purchase_taller extends _BaseController {
 					$datView["objStage"][0]->display, /*estado*/
 					$datView["objTC"]->name /*causal*/
 					
+				);
+
+			}
+			else if($dataSession["company"]->type == "frioTec" )
+			{
+				$html = helper_reporteA4mmTransactionMasterTallerFrioTec(
+					"TALLER",
+					$objCompany,
+					$objParameter,
+					$datView["objTM"],
+					$datView["tipoCambio"],
+					$datView["objCurrency"],
+					$datView["objTMI"],				
+					$objParameterTelefono,				
+					$dataView ,
+					$datView["objStage"][0]->display, /*estado*/
+					$datView["objTC"]->name /*causal*/ , 
+					$datView
 				);
 
 			}
