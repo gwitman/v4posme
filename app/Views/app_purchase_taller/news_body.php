@@ -207,7 +207,7 @@
 										</div>
 									</div>
 									
-									<div class="form-group">
+									<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","classTxtRouteID","");  ?>">
 										<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_purchase_taller","labelArticulo","Articulo");  ?></label>
 										<div class="col-lg-8">
 											<select name="txtRouteID" id="txtRouteID" class="select2">																									
@@ -235,7 +235,7 @@
 										</div>
 									</div>
 
-									<div class="form-group">
+									<div class="form-group <?php echo getBehavio($company->type,"app_purchase_taller","classTxtZoneID","");  ?>">
 										<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBehavio($company->type,"app_purchase_taller","labelMarca","Marca");  ?></label>
 										<div class="col-lg-8">
 											<select name="txtZoneID" id="txtZoneID" class="select2">																									
