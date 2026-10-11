@@ -319,6 +319,29 @@
 																</div>
 															</div>
 														</div>
+														<div class="form-group">
+															<label class="col-lg-4 control-label" for="buttons">Cliente</label>
+															<div class="col-lg-8">
+																<div class="input-group">
+																	<input type="hidden" id="txtAsignedCustomerID" name="txtAsignedCustomerID" value="<?php echo isset($objFA->asignedCustomerID) ? $objFA->asignedCustomerID : 0; ?>">
+																	<input class="form-control" readonly id="txtAsignedCustomerDescripcion" type="text" value="<?php echo $objAsignedCustomer == null ? "" : ($objAsignedCustomerNatural != null ? strtoupper($objAsignedCustomer->customerNumber . " " . $objAsignedCustomerNatural->firstName . " " . $objAsignedCustomerNatural->lastName) : strtoupper($objAsignedCustomer->customerNumber . " " . $objAsignedCustomerLegal->comercialName)); ?>">
+
+																	<span class="input-group-btn">
+																		<button class="btn btn-danger" type="button" id="btnClearCustomer">
+																			<i aria-hidden="true" class="i-undo-2"></i>
+																			clear
+																		</button>
+																	</span>
+																	<span class="input-group-btn">
+																		<button class="btn btn-primary" type="button" id="btnSearchCustomer">
+																			<i aria-hidden="true" class="i-search-5"></i>
+																			buscar
+																		</button>
+																	</span>
+
+																</div>
+															</div>
+														</div>
 														<div class="form-group ">
 															<label class="col-lg-4 control-label" for="selectFilter">Sucursal</label>
 															<div class="col-lg-8">

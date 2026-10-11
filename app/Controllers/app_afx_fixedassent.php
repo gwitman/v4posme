@@ -69,6 +69,7 @@ class app_afx_fixedassent extends _BaseController {
 				$objFA["reference2"]				= /*inicio get post*/ $this->request->getPost('txtReference2');//--fin peticion get o post
 				$objFA["year"]						= /*inicio get post*/ $this->request->getPost('txtYear');//--fin peticion get o post
 				$objFA["asignedEmployeeID"]			= /*inicio get post*/ $this->request->getPost('txtAsignedEmployeeID');//--fin peticion get o post
+				$objFA["asignedCustomerID"]			= /*inicio get post*/ ($this->request->getPost('txtAsignedCustomerID') == "" ? 0 : $this->request->getPost('txtAsignedCustomerID'));//--fin peticion get o post
 				$objFA["categoryID"]				= /*inicio get post*/ $this->request->getPost('txtCategoryID');//--fin peticion get o post
 				$objFA["typeID"]					= /*inicio get post*/ $this->request->getPost('txtTypeID');//--fin peticion get o post
 				$objFA["typeDepresiationID"]		= /*inicio get post*/ $this->request->getPost('txtTypeDepresiationID');//--fin peticion get o post
@@ -212,12 +213,20 @@ class app_afx_fixedassent extends _BaseController {
 			$datView["objFA"]	 					= $this->Fixed_Assent_Model->get_rowByPK($companyID,$branchID,$fixedAssentID);			
 			$datView["objAsignedEmployee"] 			= $this->Employee_Model->get_rowByEntityID($companyID,$datView["objFA"]->asignedEmployeeID); 
 			$datView["objAsignedNatural"]			= $datView["objAsignedEmployee"] == null ? $datView["objAsignedEmployee"] : $this->Natural_Model->get_rowByPK($companyID,$datView["objAsignedEmployee"]->branchID,$datView["objAsignedEmployee"]->entityID);
+			$asignedCustomerID						= isset($datView["objFA"]->asignedCustomerID) ? $datView["objFA"]->asignedCustomerID : 0;
+			$datView["objAsignedCustomer"]			= ($asignedCustomerID > 0) ? $this->Customer_Model->get_rowByEntity($companyID,$asignedCustomerID) : null;
+			$datView["objAsignedCustomerNatural"]	= $datView["objAsignedCustomer"] == null ? null : $this->Natural_Model->get_rowByPK($companyID,$datView["objAsignedCustomer"]->branchID,$datView["objAsignedCustomer"]->entityID);
+			$datView["objAsignedCustomerLegal"]		= $datView["objAsignedCustomer"] == null ? null : $this->Legal_Model->get_rowByPK($companyID,$datView["objAsignedCustomer"]->branchID,$datView["objAsignedCustomer"]->entityID);
 			$datView["objListCompanyPageSetting"]	= $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"tb_fixed_assent");
 			
 			
 			$objComponent						= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
 			if(!$objComponent)
 			throw new \Exception("00409 EL COMPONENTE 'tb_employee' NO EXISTE...");
+			
+			$objComponentCustomer				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
+			if(!$objComponentCustomer)
+			throw new \Exception("00409 EL COMPONENTE 'tb_customer' NO EXISTE...");
 			
 			$objComponentFA						= $this->core_web_tools->getComponentIDBy_ComponentName("tb_fixed_assent");
 			if(!$objComponentFA)
@@ -231,6 +240,7 @@ class app_afx_fixedassent extends _BaseController {
 			$datView["objComponentCatalog"]			= $objComponentCatalog;
 			$datView["objListWorkflowStage"]		= $this->core_web_workflow->getWorkflowStageByStageInit("tb_fixed_assent","statusID",$datView["objFA"]->statusID,$companyID,$branchIDUser,$roleID);
 			$datView["componentEmployeeID"] 		= $objComponent->componentID;
+			$datView["componentCustomerID"] 		= $objComponentCustomer->componentID;
 			$datView["objComponentFA"] 				= $objComponentFA;
 			$datView["objListColor"]				= $this->core_web_catalog->getCatalogAllItem("tb_fixed_assent","colorID",$companyID);			
 			$datView["objListCategory"]				= $this->core_web_catalog->getCatalogAllItem("tb_fixed_assent","categoryID",$companyID);						
@@ -332,6 +342,7 @@ class app_afx_fixedassent extends _BaseController {
 			$objFA["reference2"]				= /*inicio get post*/ $this->request->getPost('txtReference2');//--fin peticion get o post
 			$objFA["year"]						= /*inicio get post*/ $this->request->getPost('txtYear');//--fin peticion get o post
 			$objFA["asignedEmployeeID"]			= /*inicio get post*/ $this->request->getPost('txtAsignedEmployeeID');//--fin peticion get o post
+			$objFA["asignedCustomerID"]			= /*inicio get post*/ ($this->request->getPost('txtAsignedCustomerID') == "" ? 0 : $this->request->getPost('txtAsignedCustomerID'));//--fin peticion get o post
 			$objFA["categoryID"]				= /*inicio get post*/ $this->request->getPost('txtCategoryID');//--fin peticion get o post
 			$objFA["typeID"]					= /*inicio get post*/ $this->request->getPost('txtTypeID');//--fin peticion get o post
 			$objFA["typeDepresiationID"]		= /*inicio get post*/ $this->request->getPost('txtTypeDepresiationID');//--fin peticion get o post
@@ -569,11 +580,16 @@ class app_afx_fixedassent extends _BaseController {
 			if(!$objComponent)
 			throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
 			
+			$objComponentCustomer				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
+			if(!$objComponentCustomer)
+			throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
+			
 			$objComponentCatalog					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_public_catalog");
 			if(!$objComponentCatalog)
 			throw new \Exception("EL COMPONENTE 'tb_public_catalog' NO EXISTE...");
 			
 			$dataView["componentEmployeeID"] 			= $objComponent->componentID;			
+			$dataView["componentCustomerID"] 			= $objComponentCustomer->componentID;			
 			$dataView["objComponentCatalog"]			= $objComponentCatalog;
 			$dataView["objListWorkflowStage"]			= $this->core_web_workflow->getWorkflowInitStage("tb_fixed_assent","statusID",$companyID,$branchID,$roleID);
 			$dataView["objListColor"]					= $this->core_web_catalog->getCatalogAllItem("tb_fixed_assent","colorID",$companyID);			

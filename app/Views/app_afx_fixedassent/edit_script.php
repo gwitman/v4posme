@@ -71,6 +71,20 @@
 									$("#txtAsignedEmployeeDescripcion").val("");
 						});
 
+						//Buscar Cliente
+						$(document).on("click","#btnSearchCustomer",function(){
+							var url_redirect	= "__app_cxc_customer__add__callback__onCompleteCustomer__comando__pantalla_abierta_desde_fixedassent";
+							url_redirect 		= encodeURIComponent(url_redirect);
+							var url_request 	= "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/33/onCompleteCustomer/SELECCIONAR_CLIENTES_BILLING_PAGINATED/true/empty/false/"+url_redirect+"/1/1/10/";
+							window.open(url_request,"MsgWindow","width=900,height=450");
+							window.onCompleteCustomer = onCompleteCustomer; 
+						});
+						//Eliminar Cliente
+						$(document).on("click","#btnClearCustomer",function(){
+									$("#txtAsignedCustomerID").val("");
+									$("#txtAsignedCustomerDescripcion").val("");
+						});
+
 						//Buscar area
 						$(document).on("click","#btnSearchArea",function(){
 							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCatalog->componentID; ?>/onCompleteArea/SELECCIONAR_ACTIVOFIJO_AREA/true/empty/false/not_redirect_when_empty";
@@ -166,6 +180,15 @@
 						$("#txtAsignedEmployeeID").val(objResponse[0][2]);
 						$("#txtAsignedEmployeeDescripcion").val(objResponse[0][3] + " / " + objResponse[0][4]);
 						
+					}
+
+					function onCompleteCustomer(objResponse){
+						console.info("CALL onCompleteCustomer");
+						if(objResponse != undefined)
+						{
+							$("#txtAsignedCustomerID").val(objResponse[0][1]);
+							$("#txtAsignedCustomerDescripcion").val(objResponse[0][2] + " " + objResponse[0][3] + " / " + objResponse[0][4]);
+						}
 					}
 
 					function onCompleteArea(objResponse)
