@@ -26726,8 +26726,10 @@ function helper_reporte80mmInventoryOutputGenerico(
 						";
 						
 			
+			$total = 0;
 			foreach($objTMD as $item)
 			{
+				$total = $total + $item->cost;
 				$html = $html."
 					<tr>
 					  <td colspan='3' style='text-align:left' >
@@ -26735,8 +26737,14 @@ function helper_reporte80mmInventoryOutputGenerico(
 					  </td>
 					</tr>
 					<tr>
-					  <td colspan='3' style='text-align:left' >
-						unidades # ".round($item->quantity,2)."
+					  <td colspan='1' style='text-align:left' >
+						".number_format($item->quantity,2)." qyt.
+					  </td>
+					  <td colspan='1' style='text-align:left' >
+						$ ".number_format($item->unitaryCost,2)."
+					  </td>
+					  <td colspan='1' style='text-align:left' >
+						$ ".number_format($item->cost,2)."
 					  </td>
 					</tr>
 				";
@@ -26746,6 +26754,14 @@ function helper_reporte80mmInventoryOutputGenerico(
 						<tr>
                           <td colspan='3' style='text-align:center' >
                             &nbsp;
+                          </td>
+                        </tr>
+						<tr>
+                          <td colspan='2' style='text-align:left' >
+                            Total
+                          </td>
+                          <td colspan='1' style='text-align:left' >
+                            $ ".number_format($total,2)."
                           </td>
                         </tr>
 						
