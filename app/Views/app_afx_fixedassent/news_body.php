@@ -76,7 +76,7 @@
 															</div>
 														</div>
 														<div class="form-group <?php echo getBahavioSession($company->type,'tb_fixed_assent','divCategoria','',$objListCompanyPageSetting) ?>">
-															<label class="col-lg-4 control-label" for="selectFilter">Categoria</label>
+															<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBahavioSession($company->type,'tb_fixed_assent','lblCategoria','Categoria',$objListCompanyPageSetting) ?></label>
 															<div class="col-lg-8">
 																<select name="txtCategoryID" id="txtCategoryID" class="select2">
 																	<option></option>
@@ -116,7 +116,7 @@
 													</div>
 													<div class="col-lg-6">
 														<div class="form-group <?php echo getBahavioSession($company->type,'tb_fixed_assent','divColor','',$objListCompanyPageSetting) ?>">
-															<label class="col-lg-4 control-label" for="selectFilter">Color</label>
+															<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBahavioSession($company->type,'tb_fixed_assent','lblColor','Color',$objListCompanyPageSetting) ?></label>
 															<div class="col-lg-8">
 																<select name="txtColorID" id="txtColorID" class="select2">
 																	<option></option>
@@ -153,7 +153,7 @@
 															</div>
 														</div>
 														<div class="form-group <?php echo getBahavioSession($company->type,'tb_fixed_assent','divReferencia1','',$objListCompanyPageSetting) ?>">
-															<label class="col-lg-4 control-label" for="normal">Referencia1</label>
+															<label class="col-lg-4 control-label" for="normal"><?php echo getBahavioSession($company->type,'tb_fixed_assent','lblReferencia1','Referencia1',$objListCompanyPageSetting) ?></label>
 															<div class="col-lg-8">
 																<input class="form-control" type="text" name="txtReference1" id="txtReference1" value="">
 															</div>
