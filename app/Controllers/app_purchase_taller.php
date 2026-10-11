@@ -83,10 +83,15 @@ class app_purchase_taller extends _BaseController {
 			if(!$objComponentItem)
 			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 		
+			$objComponentFixedAsset	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_fixed_assent");
+			if(!$objComponentFixedAsset)
+			throw new \Exception("EL COMPONENTE 'tb_fixed_assent' NO EXISTE...");
+		
 			//Tipo de Factura			
 			$dataView["objComponentBilling"]					= $objComponentBilling;
 			$dataView["objComponentCustomer"]					= $objComponentCustomer;
 			$dataView["objComponentEmployer"]					= $objComponentEmployer;
+			$dataView["objComponentFixedAsset"]					= $objComponentFixedAsset;
 			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);									
 			$dataView["objTransactionMaster"]->transactionOn 	= date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");
 			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
@@ -108,6 +113,9 @@ class app_purchase_taller extends _BaseController {
 			//Obtener Factura
 			$dataView["objBilling"]					= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$dataView["objTransactionMaster"]->note);
 			$dataView["objListBranch"]				= $this->Branch_Model->getByCompany($companyID);
+
+			//Obtener Activo Fijo seleccionado (guardado en periodPay)
+			$dataView["objFixedAsset"]				= $dataView["objTransactionMaster"]->periodPay ? $this->Fixed_Assent_Model->get_rowByPK($companyID,$branchID,$dataView["objTransactionMaster"]->periodPay) : false;
 			
 			$dataView["company"]				= $dataSession["company"];
 			$dataView["objListCurrency"]		= $objListCurrency;
@@ -347,6 +355,7 @@ class app_purchase_taller extends _BaseController {
 			$objTMNew["entityIDSecondary"]				= /*inicio get post*/ $this->request->getPost("txtEmployerID");
 			$objTMNew["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");
 			$objTMNew["nextVisit"] 						= /*inicio get post*/ $this->request->getPost("txtNextVisit") ? $this->request->getPost("txtNextVisit") : NULL;
+			$objTMNew["periodPay"] 						= /*inicio get post*/ $this->request->getPost("txtFixedAssetID") ? $this->request->getPost("txtFixedAssetID") : NULL;
 			
 			$db=db_connect();
 			$db->transStart();
@@ -685,6 +694,7 @@ class app_purchase_taller extends _BaseController {
 			$objTM["entityIDSecondary"]				= /*inicio get post*/ $this->request->getPost("txtEmployerID");
 			$objTM["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");
 			$objTM["nextVisit"] 					= /*inicio get post*/ $this->request->getPost("txtNextVisit") ? $this->request->getPost("txtNextVisit") : NULL;
+			$objTM["periodPay"] 					= /*inicio get post*/ $this->request->getPost("txtFixedAssetID") ? $this->request->getPost("txtFixedAssetID") : NULL;
 			
 			
 			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);			
@@ -1065,10 +1075,15 @@ class app_purchase_taller extends _BaseController {
 			if(!$objComponentItem)
 			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 			
+			$objComponentFixedAsset	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_fixed_assent");
+			if(!$objComponentFixedAsset)
+			throw new \Exception("EL COMPONENTE 'tb_fixed_assent' NO EXISTE...");
+			
 			//Tipo de Factura
 			$dataView["objComponentBilling"]	= $objComponentBilling;
 			$dataView["objComponentCustomer"]	= $objComponentCustomer;
 			$dataView["objComponentEmployer"]	= $objComponentEmployer;
+			$dataView["objComponentFixedAsset"]	= $objComponentFixedAsset;
 			$dataView["objListCurrency"]		= $objListCurrency;
 			$dataView["company"]				= $dataSession["company"];
 			$dataView["companyID"]				= $dataSession["user"]->companyID;

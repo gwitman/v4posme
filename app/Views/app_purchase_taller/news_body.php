@@ -422,6 +422,29 @@
 										</div>
 									</div>
 								</div>
+
+								<div class="form-group">
+									<label class="col-lg-4 control-label" for="buttons">Activo Fijo</label>
+									<div class="col-lg-8">
+										<div class="input-group">
+											<input type="hidden" id="txtFixedAssetID" name="txtFixedAssetID" value="">
+											<input class="form-control" readonly id="txtFixedAssetDescription" type="text" value="">
+
+											<span class="input-group-btn">
+												<button class="btn btn-danger" type="button" id="btnClearFixedAsset">
+													<i aria-hidden="true" class="i-undo-2"></i>
+													clear
+												</button>
+											</span>
+											<span class="input-group-btn">
+												<button class="btn btn-primary" type="button" id="btnSearchFixedAsset">
+													<i aria-hidden="true" class="i-search-5"></i>
+													buscar
+												</button>
+											</span>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 					</div>

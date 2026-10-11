@@ -80,6 +80,18 @@ $(document).ready(function(){
 		$("#txtNote").val("");
 		$("#txtNoteDescription").val("");
 	});
+
+	//Buscar Activo Fijo
+	$(document).on("click","#btnSearchFixedAsset",function(){
+		var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentFixedAsset->componentID; ?>/onCompleteFixedAsset/SELECCIONAR_FIXEDASSENT/true/empty/false/not_redirect_when_empty";
+		window.open(url_request,"MsgWindow","width=900,height=450");
+		window.onCompleteFixedAsset = onCompleteFixedAsset;
+	});
+	//Eliminar Activo Fijo
+	$(document).on("click","#btnClearFixedAsset",function(){
+		$("#txtFixedAssetID").val("");
+		$("#txtFixedAssetDescription").val("");
+	});
 	
 	$('#errorLabel').hide();
 
@@ -119,6 +131,15 @@ function onCompleteCustomer(objResponse)
 		$("#txtCustomerDescription").val(objResponse[0][2] + " " + objResponse[0][3] + " / " + objResponse[0][4]);								
 	}
 	
+}
+
+function onCompleteFixedAsset(objResponse)
+{
+	if(objResponse != undefined)
+	{
+		$("#txtFixedAssetID").val(objResponse[0][0]);
+		$("#txtFixedAssetDescription").val(objResponse[0][1] + " " + objResponse[0][2]);
+	}
 }
 
 function validateForm(){
