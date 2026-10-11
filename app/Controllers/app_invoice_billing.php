@@ -16185,5 +16185,83 @@ class app_invoice_billing extends _BaseController {
 		return view("app_invoice_billing/screen_secondary_window");
 	}
 
+	/**
+	 * Obtener los datos de una orden/solicitud (tb_transaction_master_survery)
+	 * por su numero de transaccion para cargar sus items y datos del cliente
+	 * dentro de la factura.
+	 */
+	function loadOrder(){
+		try
+		{
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+				throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+
+			$companyID			= $dataSession["user"]->companyID;
+
+			//Numero de la orden/solicitud
+			$orderNumber		= /*inicio get post*/ $this->request->getPost("orderNumber");
+			if(!$orderNumber || trim($orderNumber) === "")
+				throw new \Exception("Debe indicar el numero de la orden");
+
+			//Buscar la orden por su numero de transaccion
+			$objOrder			= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,trim($orderNumber));
+			if(!$objOrder)
+				throw new \Exception("No se encontro la orden: ".$orderNumber);
+
+			//Obtener el detalle (items) de la orden
+			$objOrderDetail		= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$objOrder->transactionID,$objOrder->transactionMasterID);
+
+			//Armar la lista de items (itemID + cantidad + precio)
+			$items				= array();
+			if($objOrderDetail)
+			{
+				foreach($objOrderDetail as $detail)
+				{
+					$items[] = array(
+						"itemID"	=> $detail->componentItemID,
+						"quantity"	=> $detail->quantity,
+						"price"		=> $detail->unitaryPrice
+					);
+				}
+			}
+
+			//Obtener los datos del cliente de la orden
+			$objCustomer		= $this->Customer_Model->get_rowByEntity($companyID,$objOrder->entityID);
+
+			$referenceClientName		= "";
+			$referenceClientIdentifier	= "";
+			$numberPhone				= "";
+			if($objCustomer)
+			{
+				$referenceClientName		= trim($objCustomer->firstName." ".$objCustomer->lastName);
+				$referenceClientIdentifier	= $objCustomer->identification;
+				$numberPhone				= $objCustomer->phoneNumber;
+			}
+
+			return $this->response->setJSON(array(
+				"error"		=> false,
+				"message"	=> SUCCESS,
+				"data"		=> array(
+					"orderNumber"					=> $objOrder->transactionNumber,
+					"transactionMasterID"			=> $objOrder->transactionMasterID,
+					"referenceClientName"			=> $referenceClientName,
+					"referenceClientIdentifier"		=> $referenceClientIdentifier,
+					"numberPhone"					=> $numberPhone,
+					"items"							=> $items
+				)
+			));
+		}
+		catch(\Exception $ex)
+		{
+			return $this->response->setJSON(array(
+				"error"		=> true,
+				"message"	=> $ex->getLine()." ".$ex->getMessage(),
+				"data"		=> array()
+			));
+		}
+	}
+
 }
 ?>

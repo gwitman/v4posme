@@ -1451,6 +1451,13 @@
 								cls: 'btn-nuevo texto-blanco btn-fa-menu',	
 								menu: [   // 🔽 DROPDOWN BUTTON
 									{
+										text: 'Cargar solicitud',
+										iconCls: 'fa fa-download',
+										id: 'btnCargarSolicitud',
+										hidden: <?php echo getBehavio($company->type, "app_invoice_billing", "btnCargarSolicitudHidden", "false"); ?>,
+										handler: fnBtnCargarSolicitud
+									},
+									{
 										text: 'Actualizar',
 										iconCls: 'fa fa-database',
 										id: 'btnActualizarPantalla',
@@ -3390,6 +3397,128 @@
 		function fnBtnSeleccionarFactura()
 		{
 			miVentanaSeleccionFactura.show();
+		}
+
+		function fnBtnCargarSolicitud()
+		{
+			Ext.Msg.prompt(
+				'<span style="color:white;font-weight:bold;">Cargar solicitud</span>',
+				'Ingrese el número de la orden:',
+				function(btn, texto){
+					if(btn !== 'ok')
+						return;
+
+					var orderNumber = Ext.String.trim(texto || "");
+					if(orderNumber === "")
+					{
+						Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">Debe indicar el número de la orden.</span>');
+						return;
+					}
+
+					fnCargarSolicitudAjax(orderNumber);
+				}
+			);
+		}
+
+		function fnCargarSolicitudAjax(orderNumber)
+		{
+			miVentanaEsperando.show();
+
+			Ext.Ajax.request({
+				url: '<?php echo base_url(); ?>/app_invoice_billing/loadOrder',
+				method: 'POST',
+				params: { orderNumber: orderNumber },
+				success: function(response){
+					miVentanaEsperando.hide();
+
+					var json = {};
+					try{
+						json = Ext.decode(response.responseText);
+					}catch(e){
+						Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">Respuesta inválida del servidor.</span>');
+						return;
+					}
+
+					if(json.error === true)
+					{
+						Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">' + json.message + '</span>');
+						return;
+					}
+
+					var data = json.data || {};
+
+					//Cargar datos del cliente de la orden
+					var viewport = Ext.getCmp('miVentanaPrincipal');
+					if(viewport)
+					{
+						var campoNombre = viewport.down('#txtReferenceClientName');
+						if(campoNombre) campoNombre.setValue(data.referenceClientName || "");
+
+						var campoCedula = viewport.down('#txtReferenceClientIdentifier');
+						if(campoCedula) campoCedula.setValue(data.referenceClientIdentifier || "");
+
+						var campoTelefono = viewport.down('#txtNumberPhone');
+						if(campoTelefono) campoTelefono.setValue(data.numberPhone || "");
+					}
+
+					//Cargar los items de la orden a la factura
+					var items = data.items || [];
+					if(items.length === 0)
+					{
+						Ext.Msg.alert('<span style="color:white;font-weight:bold;">Aviso</span>', '<span style="color:orange;font-weight:bold;">La orden no tiene productos.</span>');
+						return;
+					}
+
+					items.forEach(function(item){
+						fnCargarItemSolicitud(item.itemID, item.quantity);
+					});
+				},
+				failure: function(){
+					miVentanaEsperando.hide();
+					Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>', '<span style="color:red;font-weight:bold;">Error de conexión al cargar la orden.</span>');
+				}
+			});
+		}
+
+		function fnCargarItemSolicitud(itemID, cantidad)
+		{
+			varGlobalNumber = cantidad;
+			indexDBGetLocalProductoByItemID(itemID, function(resultado)
+			{
+				var viewport = Ext.getCmp('miVentanaPrincipal');
+				if(!viewport){
+					return;
+				}
+
+				var currencyID 		= viewport.down("#txtCurrencyID").getValue();
+				var warehouseID		= viewport.down("#txtWarehouseID").getValue();
+				if(resultado.productos.length > 0)
+				{
+					resultado.productos = Ext.Array.filter(resultado.productos, function (obj) {
+						return (
+							obj.currencyID === currencyID &&
+							obj.warehouseID === warehouseID
+						);
+					});
+
+					if(resultado.productos.length > 0)
+						resultado.productos = resultado.productos[0];
+					else
+						return;
+
+					var sumar = true;
+					//Logica de precio
+					if(viewport.down("#txtTypePriceID").getValue() == "154" /*precio1*/)
+						resultado.productos.Precio = resultado.productos.Precio;
+					else if(viewport.down("#txtTypePriceID").getValue() == "155" /*precio2*/)
+						resultado.productos.Precio = resultado.productos.Precio2;
+					else /*precio3*/
+						resultado.productos.Precio = resultado.productos.Precio3;
+
+					resultado.productos.QuantityInput = cantidad;
+					onCompleteNewItem(resultado.productos, sumar, resultado.conceptos, resultado.skus);
+				}
+			});
 		}
 		
 		function fnSeleccionarProductoPorIcono()
