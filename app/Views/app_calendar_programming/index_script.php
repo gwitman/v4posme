@@ -62,6 +62,7 @@
                     method: 	'GET',
                     dataType: 	'json',
                     success: 	function(data) {
+                        debugger;
                         successCallback(data); // Pasa los eventos a FullCalendar
                         fnWaitClose();
                     },
@@ -237,6 +238,19 @@
                 if (info.event.url) {
                     $('#eventPrintId').val(event.id);
                     $('#eventUrl').val(event.url);
+                    $('#eventOpcionTitle').text(event.title || "");
+
+                    let props = event.extendedProps || {};
+                    let infoHtml = "";
+                    if (props.nombre || props.telefono || props.entregado || props.entidad) {
+                        if (props.entidad)   { infoHtml += "<div><strong>Codigo:</strong> " + $('<div>').text(props.entidad).html() + "</div>"; }
+                        if (props.nombre)    { infoHtml += "<div><strong>Cliente:</strong> " + $('<div>').text(props.nombre).html() + "</div>"; }
+                        if (props.telefono)  { infoHtml += "<div><strong>Telefono:</strong> " + $('<div>').text(props.telefono).html() + "</div>"; }
+                        if (props.entregado) { infoHtml += "<div><strong>Activo Fijo:</strong> " + $('<div>').text(props.entregado).html() + "</div>"; }
+                    } else if (props.description) {
+                        infoHtml = props.description.replace(/\n/g, "<br>");
+                    }
+                    $('#eventOpcionInfo').html(infoHtml);
                     $('#eventOpcionModal').modal('show');
                     return;
                 }

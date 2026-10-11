@@ -448,10 +448,21 @@
 								<div class="form-group">
 									<label class="col-lg-4 control-label" for="datepickerNextVisit">Fecha de siguiente orden</label>
 									<div class="col-lg-8">
-										<div id="datepickerNextVisit" class="input-group date" data-date-format="yyyy-mm-dd">
-											<input size="16" class="form-control" type="text" name="txtNextVisit" id="txtNextVisit" value="<?php echo ($objTransactionMaster->nextVisit && $objTransactionMaster->nextVisit != '0000-00-00 00:00:00') ? date_format(date_create($objTransactionMaster->nextVisit),'Y-m-d') : ''; ?>">
-											<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+										<div class="row">
+											<div class="col-lg-7">
+												<div id="datepickerNextVisit" class="input-group date" data-date-format="yyyy-mm-dd">
+													<input size="16" class="form-control" type="text" name="txtNextVisitDate" id="txtNextVisitDate" value="<?php echo ($objTransactionMaster->nextVisit && $objTransactionMaster->nextVisit != '0000-00-00 00:00:00') ? date_format(date_create($objTransactionMaster->nextVisit),'Y-m-d') : ''; ?>">
+													<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+												</div>
+											</div>
+											<div class="col-lg-5">
+												<div class="input-group">
+													<input class="form-control" type="time" name="txtNextVisitTime" id="txtNextVisitTime" value="<?php echo ($objTransactionMaster->nextVisit && $objTransactionMaster->nextVisit != '0000-00-00 00:00:00') ? date_format(date_create($objTransactionMaster->nextVisit),'H:i') : ''; ?>">
+													<span class="input-group-addon"><i class="icon16 i-clock"></i></span>
+												</div>
+											</div>
 										</div>
+										<input type="hidden" name="txtNextVisit" id="txtNextVisit" value="<?php echo ($objTransactionMaster->nextVisit && $objTransactionMaster->nextVisit != '0000-00-00 00:00:00') ? date_format(date_create($objTransactionMaster->nextVisit),'Y-m-d H:i:s') : ''; ?>">
 									</div>
 								</div>
 

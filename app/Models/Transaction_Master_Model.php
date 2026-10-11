@@ -1067,22 +1067,25 @@ class Transaction_Master_Model extends Model  {
 			tm.transactionNumber as rememberID,
 			CONCAT('".base_url()."/app_purchase_taller/edit/companyID/',tm.companyID,'/transactionID/40/transactionMasterID/',tm.transactionMasterID) as url,
 			CONCAT(
+				IFNULL(CONCAT(TIME_FORMAT(tm.nextVisit,'%h:%i %p'), ' '), ''),
 				'TALLER ',
 				tm.transactionNumber,
 				IFNULL(CONCAT(' - ', nat.firstName, ' ', IFNULL(nat.lastName,'')), ''),
 				IFNULL(CONCAT(' *** ', fa.name), '')
 			) as title,
 			CONCAT(
-				'Estado: ', IFNULL(ws.name,''),
+				'Estado ', IFNULL(ws.name,''),
+				'<br>',
+				'Hora ', IFNULL(TIME_FORMAT(tm.nextVisit,'%h:%i %p'),''),
 				'<br><br>',
-				'Cliente: ', IFNULL(CONCAT(nat.firstName,' ',IFNULL(nat.lastName,'')),''),
+				'Cliente ', IFNULL(CONCAT(nat.firstName,' ',IFNULL(nat.lastName,'')),''),
 				'<br>',
-				'Telefono: ', IFNULL(cus.phoneNumber,''),
+				'Telefono ', IFNULL(cus.phoneNumber,''),
 				'<br>',
-				'Activo Fijo: ', IFNULL(fa.name,''),
+				'Activo Fijo ', IFNULL(fa.name,''),
 				'<br>',
-				'Direccion: ', IFNULL(fa.address, IFNULL(cus.address,'')),
-				'<br><br>',
+				'Direccion ', IFNULL(fa.address, IFNULL(cus.address,'')),
+				'<br>',
 				IFNULL(tm.note,'')
 			) as description,
 			tm.nextVisit as createdOn,
@@ -1097,12 +1100,13 @@ class Transaction_Master_Model extends Model  {
 			tb_transaction_master tm
 			inner join tb_workflow_stage ws on
 				tm.statusID = ws.workflowStageID
-			left join tb_fixed_assent fa on
-				fa.fixedAssentID = tm.priorityID
 			left join tb_customer cus on
-				cus.customerID = fa.asignedCustomerID
+				cus.entityID = tm.entityID and
+				cus.companyID = tm.companyID
 			left join tb_naturales nat on
-				nat.entityID = cus.entityID
+				nat.entityID = tm.entityID
+			left join tb_fixed_assent fa on
+				fa.fixedAssentID = tm.periodPay
 		where
 			tm.isActive = 1 and
 			tm.companyID = $companyID and
@@ -1123,6 +1127,7 @@ class Transaction_Master_Model extends Model  {
 			tm.transactionNumber as rememberID,
 			CONCAT('".base_url()."/app_purchase_taller/edit/companyID/',tm.companyID,'/transactionID/40/transactionMasterID/',tm.transactionMasterID) as url,
 			CONCAT(
+				IFNULL(CONCAT(TIME_FORMAT(tm.nextVisit,'%h:%i %p'), ' '), ''),
 				'TALLER ',
 				tm.transactionNumber,
 				IFNULL(CONCAT(' - ', nat.firstName, ' ', IFNULL(nat.lastName,'')), ''),
@@ -1130,6 +1135,8 @@ class Transaction_Master_Model extends Model  {
 			) as title,
 			CONCAT(
 				'Estado: ', IFNULL(ws.name,''),
+				'<br>',
+				'Hora: ', IFNULL(TIME_FORMAT(tm.nextVisit,'%h:%i %p'),''),
 				'<br><br>',
 				'Cliente: ', IFNULL(CONCAT(nat.firstName,' ',IFNULL(nat.lastName,'')),''),
 				'<br>',
@@ -1153,12 +1160,13 @@ class Transaction_Master_Model extends Model  {
 			tb_transaction_master tm
 			inner join tb_workflow_stage ws on
 				tm.statusID = ws.workflowStageID
-			left join tb_fixed_assent fa on
-				fa.fixedAssentID = tm.priorityID
 			left join tb_customer cus on
-				cus.customerID = fa.asignedCustomerID
+				cus.entityID = tm.entityID and
+				cus.companyID = tm.companyID
 			left join tb_naturales nat on
-				nat.entityID = cus.entityID
+				nat.entityID = tm.entityID
+			left join tb_fixed_assent fa on
+				fa.fixedAssentID = tm.periodPay
 		where
 			tm.isActive = 1 and
 			tm.companyID = $companyID and
@@ -1179,6 +1187,7 @@ class Transaction_Master_Model extends Model  {
 			tm.transactionNumber as rememberID,
 			CONCAT('".base_url()."/app_purchase_taller/edit/companyID/',tm.companyID,'/transactionID/40/transactionMasterID/',tm.transactionMasterID) as url,
 			CONCAT(
+				IFNULL(CONCAT(TIME_FORMAT(tm.nextVisit,'%h:%i %p'), ' '), ''),
 				'TALLER ',
 				tm.transactionNumber,
 				IFNULL(CONCAT(' - ', nat.firstName, ' ', IFNULL(nat.lastName,'')), ''),
@@ -1186,6 +1195,8 @@ class Transaction_Master_Model extends Model  {
 			) as title,
 			CONCAT(
 				'Estado: ', IFNULL(ws.name,''),
+				'<br>',
+				'Hora: ', IFNULL(TIME_FORMAT(tm.nextVisit,'%h:%i %p'),''),
 				'<br><br>',
 				'Cliente: ', IFNULL(CONCAT(nat.firstName,' ',IFNULL(nat.lastName,'')),''),
 				'<br>',
@@ -1209,12 +1220,13 @@ class Transaction_Master_Model extends Model  {
 			tb_transaction_master tm
 			inner join tb_workflow_stage ws on
 				tm.statusID = ws.workflowStageID
-			left join tb_fixed_assent fa on
-				fa.fixedAssentID = tm.priorityID
 			left join tb_customer cus on
-				cus.customerID = fa.asignedCustomerID
+				cus.entityID = tm.entityID and
+				cus.companyID = tm.companyID
 			left join tb_naturales nat on
-				nat.entityID = cus.entityID
+				nat.entityID = tm.entityID
+			left join tb_fixed_assent fa on
+				fa.fixedAssentID = tm.periodPay
 		where
 			tm.isActive = 1 and
 			tm.companyID = $companyID and
@@ -1252,12 +1264,13 @@ class Transaction_Master_Model extends Model  {
 			tb_transaction_master tm
 			inner join tb_workflow_stage ws on
 				tm.statusID = ws.workflowStageID
-			left join tb_fixed_assent fa on
-				fa.fixedAssentID = tm.priorityID
 			left join tb_customer cus on
-				cus.customerID = fa.asignedCustomerID
+				cus.entityID = tm.entityID and
+				cus.companyID = tm.companyID
 			left join tb_naturales nat on
-				nat.entityID = cus.entityID
+				nat.entityID = tm.entityID
+			left join tb_fixed_assent fa on
+				fa.fixedAssentID = tm.periodPay
 		where
 			tm.isActive = 1 and
 			tm.companyID = $companyID and

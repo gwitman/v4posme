@@ -61,6 +61,8 @@
             <div class="modal-body">
                 <input type="hidden" id="eventPrintId"> <!-- ID oculto para -->
                 <input type="hidden" id="eventUrl">     <!-- URL oculto para redirigir -->
+                <div id="eventOpcionTitle" class="fw-bold mb-2"></div>
+                <div id="eventOpcionInfo" class="mb-3"></div>
                 <div>
                     Seleccione una opción para el evento seleccionado:
                 </div>

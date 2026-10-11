@@ -273,6 +273,7 @@ class app_calendar_programming extends _BaseController
 			$companyID      = $dataSession["user"]->companyID;
 			$resultTaller   = $this->Transaction_Master_Model->getProgrammingOrdenTaller($companyID);
 			$result         = array_merge($result, $resultTaller);
+            log_message("error",print_r($result,true));
 
             $events = [];
             foreach ($result as $row) {
@@ -282,7 +283,11 @@ class app_calendar_programming extends _BaseController
                     'start' 		=> $row->createdOn,
                     'url'   		=> $row->url,
 					'color' 		=> $row->color,
-					'description' 	=> property_exists($row, 'description')  ? $row->description : "" 
+					'description' 	=> property_exists($row, 'description')  ? $row->description : "",
+					'entidad' 		=> property_exists($row, 'entidad')  ? $row->entidad : "",
+					'nombre' 		=> property_exists($row, 'nombre')  ? $row->nombre : "",
+					'telefono' 		=> property_exists($row, 'telefono')  ? $row->telefono : "",
+					'entregado' 	=> property_exists($row, 'entregado')  ? $row->entregado : ""
                 ];
             }
             return $this->response->setJSON($events);

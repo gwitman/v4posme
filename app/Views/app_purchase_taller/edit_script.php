@@ -6,9 +6,22 @@
 		
 		$('#txtDate').datepicker({format:"yyyy-mm-dd"});						 
 		$("#txtDate").datepicker("update");
-		$('#txtNextVisit').datepicker({format:"yyyy-mm-dd"});
-		$("#txtNextVisit").datepicker("update");
+		$('#txtNextVisitDate').datepicker({format:"yyyy-mm-dd"});
+		$("#txtNextVisitDate").datepicker("update");
 		$('.txt-numeric').mask('000,000.00', {reverse: true});
+
+		//Combinar fecha + hora de la siguiente visita en el campo oculto txtNextVisit
+		function fnUpdateNextVisit(){
+			var fecha = $('#txtNextVisitDate').val().trim();
+			var hora  = $('#txtNextVisitTime').val().trim();
+			if(fecha){
+				$('#txtNextVisit').val(hora ? (fecha + " " + hora + ":00") : (fecha + " 00:00:00"));
+			}else{
+				$('#txtNextVisit').val("");
+			}
+		}
+		$(document).on("change","#txtNextVisitDate, #txtNextVisitTime", fnUpdateNextVisit);
+		$('#txtNextVisitDate').on("changeDate", fnUpdateNextVisit);
 		var urlPrinterInput  = '<?php echo $objParameterUrlPrinterInput; ?>';
 		var urlPrinterOutput = '<?php echo $objParameterUrlPrinterOutput; ?>';
 		var urlPrinterStiker = '<?php echo $objParameterUrlPrinterSticker; ?>';
