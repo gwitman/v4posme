@@ -268,7 +268,12 @@ class app_calendar_programming extends _BaseController
 			{				
 				$result = $this->Remember_Model->getProgrammingFacturaAplicadaConHora();
 			}
-		
+
+			//Agregar las ordenes de taller (transactionID 40) con fecha de siguiente visita
+			$companyID      = $dataSession["user"]->companyID;
+			$resultTaller   = $this->Transaction_Master_Model->getProgrammingOrdenTaller($companyID);
+			$result         = array_merge($result, $resultTaller);
+
             $events = [];
             foreach ($result as $row) {
                 $events[] = [
@@ -339,7 +344,11 @@ class app_calendar_programming extends _BaseController
 			
             $eventos 	= $this->Remember_Model->getProgrammingByDateFacturaAplicadaConHora($date);
 			}
-			
+
+			//Agregar las ordenes de taller (transactionID 40) de esa fecha
+			$eventosTaller 	= $this->Transaction_Master_Model->getProgrammingOrdenTallerByDate($companyID, $date);
+			$eventos 		= array_merge($eventos, $eventosTaller);
+
             // Configurar Dompdf
             $options 	= new Options();
             $options->set('isHtml5ParserEnabled', true);
@@ -415,18 +424,23 @@ class app_calendar_programming extends _BaseController
             $objParameterRuc        = $objParameterRuc->value;
             $objCompany 	        = $this->Company_Model->get_rowByPK($companyID);
             $idevent                = $this->request->getGet("idevent");
-			
-			if($objCompany->type == "chicextensiones")
+
+			//Orden de taller (transactionID 40): el idevent es el transactionNumber (ej. IAT00000045)
+			$evento                 = $this->Transaction_Master_Model->getProgrammingOrdenTallerById($companyID, $idevent);
+			if (empty($evento))
 			{
-				$evento 	            = $this->Remember_Model->getProgrammingByIdSinHora($idevent);
-			}
-			else if($objCompany->type == "audio_pipe")
-			{
-				$evento 	            = $this->Remember_Model->getProgrammingByIdSinHora($idevent);
-			}
-			else 
-			{
-				$evento 	            = $this->Remember_Model->getProgrammingByIdConHora($idevent);
+				if($objCompany->type == "chicextensiones")
+				{
+					$evento 	            = $this->Remember_Model->getProgrammingByIdSinHora($idevent);
+				}
+				else if($objCompany->type == "audio_pipe")
+				{
+					$evento 	            = $this->Remember_Model->getProgrammingByIdSinHora($idevent);
+				}
+				else 
+				{
+					$evento 	            = $this->Remember_Model->getProgrammingByIdConHora($idevent);
+				}
 			}
 
             $objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW",$companyID);

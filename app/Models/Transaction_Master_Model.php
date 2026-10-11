@@ -1056,11 +1056,176 @@ class Transaction_Master_Model extends Model  {
 		return $db->query($sql)->getResult();
 	}
 
-	
+	//Para mostrar en el calendario
+	//Ordenes de taller (transactionID 40) con fecha de siguiente visita (nextVisit)
+	//Incluye datos del activo fijo (priorityID) y de su cliente asignado (asignedCustomerID)
+	function getProgrammingOrdenTaller($companyID)
+	{
+		$db 	= db_connect();
+		$sql = "
+		select
+			tm.transactionNumber as rememberID,
+			CONCAT('".base_url()."/app_purchase_taller/edit/companyID/',tm.companyID,'/transactionID/40/transactionMasterID/',tm.transactionMasterID) as url,
+			CONCAT(
+				'TALLER ',
+				tm.transactionNumber,
+				IFNULL(CONCAT(' - ', nat.firstName, ' ', IFNULL(nat.lastName,'')), ''),
+				IFNULL(CONCAT(' *** ', fa.name), '')
+			) as title,
+			CONCAT(
+				'Estado: ', IFNULL(ws.name,''),
+				'<br><br>',
+				'Cliente: ', IFNULL(CONCAT(nat.firstName,' ',IFNULL(nat.lastName,'')),''),
+				'<br>',
+				'Telefono: ', IFNULL(cus.phoneNumber,''),
+				'<br>',
+				'Activo Fijo: ', IFNULL(fa.name,''),
+				'<br>',
+				'Direccion: ', IFNULL(fa.address, IFNULL(cus.address,'')),
+				'<br><br>',
+				IFNULL(tm.note,'')
+			) as description,
+			tm.nextVisit as createdOn,
+			tm.createdOn as createdOn2,
+			0 as tagID,
+			'purple' as color,
+			IFNULL(cus.customerNumber,'') as entidad,
+			IFNULL(CONCAT(nat.firstName,' ',IFNULL(nat.lastName,'')),'') as nombre,
+			IFNULL(cus.phoneNumber,'') as telefono,
+			IFNULL(fa.name,'') as entregado
+		from
+			tb_transaction_master tm
+			inner join tb_workflow_stage ws on
+				tm.statusID = ws.workflowStageID
+			left join tb_fixed_assent fa on
+				fa.fixedAssentID = tm.priorityID
+			left join tb_customer cus on
+				cus.customerID = fa.asignedCustomerID
+			left join tb_naturales nat on
+				nat.entityID = cus.entityID
+		where
+			tm.isActive = 1 and
+			tm.companyID = $companyID and
+			tm.transactionID = 40 /*ORDEN DE TALLER*/ and
+			tm.nextVisit > '1000-01-01 00:00:00'
+		";
 
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+	}
 
-	
+	//Para imprimir una sola orden de taller por su transactionNumber (idevent)
+	function getProgrammingOrdenTallerById($companyID, $transactionNumber)
+	{
+		$db 	= db_connect();
+		$sql = "
+		select
+			tm.transactionNumber as rememberID,
+			CONCAT('".base_url()."/app_purchase_taller/edit/companyID/',tm.companyID,'/transactionID/40/transactionMasterID/',tm.transactionMasterID) as url,
+			CONCAT(
+				'TALLER ',
+				tm.transactionNumber,
+				IFNULL(CONCAT(' - ', nat.firstName, ' ', IFNULL(nat.lastName,'')), ''),
+				IFNULL(CONCAT(' *** ', fa.name), '')
+			) as title,
+			CONCAT(
+				'Estado: ', IFNULL(ws.name,''),
+				'<br><br>',
+				'Cliente: ', IFNULL(CONCAT(nat.firstName,' ',IFNULL(nat.lastName,'')),''),
+				'<br>',
+				'Telefono: ', IFNULL(cus.phoneNumber,''),
+				'<br>',
+				'Activo Fijo: ', IFNULL(fa.name,''),
+				'<br>',
+				'Direccion: ', IFNULL(fa.address, IFNULL(cus.address,'')),
+				'<br><br>',
+				IFNULL(tm.note,'')
+			) as description,
+			tm.nextVisit as createdOn,
+			tm.createdOn as createdOn2,
+			0 as tagID,
+			'purple' as color,
+			IFNULL(cus.customerNumber,'') as entidad,
+			IFNULL(CONCAT(nat.firstName,' ',IFNULL(nat.lastName,'')),'') as nombre,
+			IFNULL(cus.phoneNumber,'') as telefono,
+			IFNULL(fa.name,'') as entregado
+		from
+			tb_transaction_master tm
+			inner join tb_workflow_stage ws on
+				tm.statusID = ws.workflowStageID
+			left join tb_fixed_assent fa on
+				fa.fixedAssentID = tm.priorityID
+			left join tb_customer cus on
+				cus.customerID = fa.asignedCustomerID
+			left join tb_naturales nat on
+				nat.entityID = cus.entityID
+		where
+			tm.isActive = 1 and
+			tm.companyID = $companyID and
+			tm.transactionID = 40 /*ORDEN DE TALLER*/ and
+			tm.transactionNumber = ?
+		";
 
+		//Ejecutar Consulta
+		return $db->query($sql, [$transactionNumber])->getRow();
+	}
+
+	//Para imprimir todas las ordenes de taller de una fecha (por nextVisit)
+	function getProgrammingOrdenTallerByDate($companyID, $date)
+	{
+		$db 	= db_connect();
+		$sql = "
+		select
+			tm.transactionNumber as rememberID,
+			CONCAT('".base_url()."/app_purchase_taller/edit/companyID/',tm.companyID,'/transactionID/40/transactionMasterID/',tm.transactionMasterID) as url,
+			CONCAT(
+				'TALLER ',
+				tm.transactionNumber,
+				IFNULL(CONCAT(' - ', nat.firstName, ' ', IFNULL(nat.lastName,'')), ''),
+				IFNULL(CONCAT(' *** ', fa.name), '')
+			) as title,
+			CONCAT(
+				'Estado: ', IFNULL(ws.name,''),
+				'<br><br>',
+				'Cliente: ', IFNULL(CONCAT(nat.firstName,' ',IFNULL(nat.lastName,'')),''),
+				'<br>',
+				'Telefono: ', IFNULL(cus.phoneNumber,''),
+				'<br>',
+				'Activo Fijo: ', IFNULL(fa.name,''),
+				'<br>',
+				'Direccion: ', IFNULL(fa.address, IFNULL(cus.address,'')),
+				'<br><br>',
+				IFNULL(tm.note,'')
+			) as description,
+			tm.nextVisit as createdOn,
+			tm.createdOn as createdOn2,
+			0 as tagID,
+			'purple' as color,
+			IFNULL(cus.customerNumber,'') as entidad,
+			IFNULL(CONCAT(nat.firstName,' ',IFNULL(nat.lastName,'')),'') as nombre,
+			IFNULL(cus.phoneNumber,'') as telefono,
+			IFNULL(fa.name,'') as entregado
+		from
+			tb_transaction_master tm
+			inner join tb_workflow_stage ws on
+				tm.statusID = ws.workflowStageID
+			left join tb_fixed_assent fa on
+				fa.fixedAssentID = tm.priorityID
+			left join tb_customer cus on
+				cus.customerID = fa.asignedCustomerID
+			left join tb_naturales nat on
+				nat.entityID = cus.entityID
+		where
+			tm.isActive = 1 and
+			tm.companyID = $companyID and
+			tm.transactionID = 40 /*ORDEN DE TALLER*/ and
+			tm.nextVisit is not null and
+			DATE(tm.nextVisit) = ?
+		";
+
+		//Ejecutar Consulta
+		return $db->query($sql, [$date])->getResult();
+	}
 
 }
 
