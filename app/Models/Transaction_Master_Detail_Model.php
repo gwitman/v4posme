@@ -3141,7 +3141,8 @@ class Transaction_Master_Detail_Model extends Model  {
 					c.createdBy = $userID and 
 					c.transactionID in ( 19 /*factura*/) and 
 					c.statusID in (66 /*facturas registradas*/) and 
-					tmd.isActive = 1 
+					tmd.isActive = 1 and 
+					c.createdOn >= DATE_SUB(NOW(), INTERVAL 2 DAY) 
 					
 		");
 
