@@ -346,6 +346,7 @@ class app_purchase_taller extends _BaseController {
 			$objTMNew["entityID"]						= /*inicio get post*/ $this->request->getPost("txtCustomerID");
 			$objTMNew["entityIDSecondary"]				= /*inicio get post*/ $this->request->getPost("txtEmployerID");
 			$objTMNew["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");
+			$objTMNew["nextVisit"] 						= /*inicio get post*/ $this->request->getPost("txtNextVisit") ? $this->request->getPost("txtNextVisit") : NULL;
 			
 			$db=db_connect();
 			$db->transStart();
@@ -683,6 +684,7 @@ class app_purchase_taller extends _BaseController {
 			$objTM["entityID"]						= /*inicio get post*/ $this->request->getPost("txtCustomerID");
 			$objTM["entityIDSecondary"]				= /*inicio get post*/ $this->request->getPost("txtEmployerID");
 			$objTM["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");
+			$objTM["nextVisit"] 					= /*inicio get post*/ $this->request->getPost("txtNextVisit") ? $this->request->getPost("txtNextVisit") : NULL;
 			
 			
 			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);			

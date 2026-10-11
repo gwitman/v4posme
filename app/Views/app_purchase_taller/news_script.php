@@ -6,6 +6,8 @@ $(document).ready(function(){
 	$('#txtDate').datepicker({format:"yyyy-mm-dd"});
 	$('#txtDate').val(moment().format("YYYY-MM-DD"));	
 	$("#txtDate").datepicker("update");
+	$('#txtNextVisit').datepicker({format:"yyyy-mm-dd"});
+	$("#txtNextVisit").datepicker("update");
 	$('.txt-numeric').mask('000,000.00', {reverse: true});
 		
 	

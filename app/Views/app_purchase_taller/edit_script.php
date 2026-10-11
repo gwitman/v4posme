@@ -6,6 +6,8 @@
 		
 		$('#txtDate').datepicker({format:"yyyy-mm-dd"});						 
 		$("#txtDate").datepicker("update");
+		$('#txtNextVisit').datepicker({format:"yyyy-mm-dd"});
+		$("#txtNextVisit").datepicker("update");
 		$('.txt-numeric').mask('000,000.00', {reverse: true});
 		var urlPrinterInput  = '<?php echo $objParameterUrlPrinterInput; ?>';
 		var urlPrinterOutput = '<?php echo $objParameterUrlPrinterOutput; ?>';

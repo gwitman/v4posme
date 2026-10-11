@@ -443,9 +443,19 @@
 						</div>
 					</div>
 					<div class="tab-pane fade" id="dropdown">
-						
-							
-						
+						<div class="row">
+							<div class="col-lg-6">
+								<div class="form-group">
+									<label class="col-lg-4 control-label" for="datepickerNextVisit">Fecha de siguiente orden</label>
+									<div class="col-lg-8">
+										<div id="datepickerNextVisit" class="input-group date" data-date-format="yyyy-mm-dd">
+											<input size="16" class="form-control" type="text" name="txtNextVisit" id="txtNextVisit" value="<?php echo ($objTransactionMaster->nextVisit && $objTransactionMaster->nextVisit != '0000-00-00 00:00:00') ? date_format(date_create($objTransactionMaster->nextVisit),'Y-m-d') : ''; ?>">
+											<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 					</div>
 					<div class="tab-pane fade" id="dropdown-file">
 						
