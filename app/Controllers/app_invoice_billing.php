@@ -8214,8 +8214,7 @@ class app_invoice_billing extends _BaseController {
 				$datViewArray["creditAmount"]								= round($datView["objCCD"]->amount,2);
 				$datViewArray["creditAmountAndInteres"]						= round($amountAndInterest,2);
 				$datViewArray["creditAmountInteres"]						= round($amountInterest,2);
-				$objCatalogItemPeriodPay									= $this->Catalog_Item_Model->get_rowByCatalogItemID($datView["objCCD"]->periodPay);
-				$datViewArray["creditPeriodPay"]							= $objCatalogItemPeriodPay ? $objCatalogItemPeriodPay->name : "";
+				$datViewArray["creditPeriodPay"]							= $datView["objCCD"]->periodName;
 			}
 			else
 			{
