@@ -66,6 +66,18 @@
 								
 						});	
 						
+						//Buscar la Entidad (quien solicita)
+						$(document).on("click","#btnSearchEntity",function(){
+							var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/33/onCompleteEntity/SELECCIONAR_ENTIDAD_PAGINATED/true/empty/true/not_redirect_when_empty/1/1/<?php echo $objParameterCantidadItemPoup; ?>/";
+							window.open(url_request,"MsgWindow","width=900,height=450");
+							window.onCompleteEntity = onCompleteEntity;
+						});
+						//Limpiar la Entidad
+						$(document).on("click","#btnClearEntity",function(){
+							$("#txtEntityID").val("0");
+							$("#txtEntityDescription").val("");
+						});
+						
 						//Agregar Item al Detalle
 						$(document).on("click","#btnNewDetailTransaction",function(){
 							var timerNotification 	= 15000;
@@ -169,6 +181,14 @@
 						objTableDetailTransaction.fnAddData([objRow.checked,objRow.itemID,objRow.transactionMasterDetail,objRow.itemNumber,objRow.itemName,objRow.itemUM,objRow.quantity]);
 						refreschChecked();
 						
+					}
+					//Completar Entidad Seleccionada
+					function onCompleteEntity(objResponse){
+						console.info("CALL onCompleteEntity");
+						if(objResponse !== undefined){
+							$("#txtEntityID").val(objResponse[0][2]);
+							$("#txtEntityDescription").val(objResponse[0][4] + " | " + objResponse[0][3] + " / " + objResponse[0][5]);
+						}
 					}
 					//Refresh
 					function refreschChecked(){

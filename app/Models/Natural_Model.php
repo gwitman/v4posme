@@ -48,5 +48,17 @@ class Natural_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
+   function get_rowByEntityID($companyID,$entityID){
+		$db 	= db_connect();
+		$sql = "";
+		$sql = sprintf("select i.companyID,i.branchID,i.entityID,i.firstName,i.lastName,i.address,i.isActive,i.statusID,i.profesionID");
+		$sql = $sql.sprintf(" from tb_naturales i");		
+		$sql = $sql.sprintf(" where i.companyID = $companyID");
+		$sql = $sql.sprintf(" and i.entityID = $entityID");
+		$sql = $sql.sprintf(" and i.isActive= 1");		
+		
+		//Ejecutar Consulta
+		return $db->query($sql)->getRow();
+   }
 }
 ?>

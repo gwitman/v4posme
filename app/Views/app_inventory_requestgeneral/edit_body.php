@@ -111,6 +111,28 @@
 														</div>
 													</div>
 													
+													<div class="form-group">
+														<label class="col-lg-4 control-label" for="selectFilter">Solicitado Por</label>
+														<div class="col-lg-8">
+															<div class="input-group">
+																<input type="hidden" id="txtEntityID" name="txtEntityID" value="<?php echo !empty($objTM->entityID) ? $objTM->entityID : 0; ?>">
+																<input class="form-control" readonly id="txtEntityDescription" type="text" value="<?php echo $objEntitySelected != NULL ? $objEntitySelected->firstName." ".$objEntitySelected->lastName : ""; ?>">
+																<span class="input-group-btn">
+																	<button class="btn btn-danger" type="button" id="btnClearEntity">
+																		<i aria-hidden="true" class="i-undo-2"></i>
+																		clear
+																	</button>
+																</span>
+																<span class="input-group-btn">
+																	<button class="btn btn-primary" type="button" id="btnSearchEntity">
+																		<i aria-hidden="true" class="i-search-5"></i>
+																		buscar
+																	</button>
+																</span>
+															</div>
+														</div>
+													</div>
+													
 											</div>
 											</div>
 										</div>						

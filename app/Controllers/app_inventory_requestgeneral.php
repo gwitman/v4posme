@@ -309,6 +309,7 @@ class app_inventory_requestgeneral extends _BaseController {
 			$objTM["branchID"]						= $dataSession["user"]->branchID;
 			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_requestgeneral",0);
 			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($objTM["companyID"],$objTM["transactionID"]);
+			$objTM["entityID"]						= /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtEntityID"));//--fin peticion get o post
 			$objTM["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtTransactionOn");
 			$objTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
 			$objTM["componentID"] 					= $objComponent->componentID;
@@ -460,6 +461,7 @@ class app_inventory_requestgeneral extends _BaseController {
 			
 			
 			//Actualizar Maestro
+			$objTMNew["entityID"]					= /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtEntityID"));//--fin peticion get o post
 			$objTMNew["transactionOn"]				= /*inicio get post*/ $this->request->getPost("txtTransactionOn");
 			$objTMNew["statusIDChangeOn"]			= date("Y-m-d H:m:s");			
 			$objTMNew["note"] 						= /*inicio get post*/ $this->request->getPost("txtDescription");//--fin peticion get o post
@@ -669,6 +671,22 @@ class app_inventory_requestgeneral extends _BaseController {
 			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 			$datView["componentItemID"] 		= $objComponentItem->componentID;
 			
+			//Obtener el componente de Entidad (para seleccionar quien solicita)
+			$objComponentEntity					= $this->core_web_tools->getComponentIDBy_ComponentName("tb_entity");
+			if(!$objComponentEntity)
+			throw new \Exception("EL COMPONENTE 'tb_entity' NO EXISTE...");
+			$datView["objComponentEntity"]		= $objComponentEntity;
+			
+			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$datView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
+			
+			//Obtener la Entidad seleccionada (si existe) para mostrar su descripcion
+			$datView["objEntitySelected"]		= NULL;
+			if(!empty($datView["objTM"]->entityID)){
+				$datView["objEntitySelected"]	= $this->Natural_Model->get_rowByEntityID($companyID,$datView["objTM"]->entityID);
+			}
+			
 			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			=  $this->core_web_notification->get_message();
@@ -740,6 +758,17 @@ class app_inventory_requestgeneral extends _BaseController {
 			
 			
 			$dataView["componentItemID"] 		= $objComponent->componentID;
+			
+			//Obtener el componente de Entidad (para seleccionar quien solicita)
+			$objComponentEntity	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_entity");
+			if(!$objComponentEntity)
+			throw new \Exception("EL COMPONENTE 'tb_entity' NO EXISTE...");
+			$dataView["objComponentEntity"]		= $objComponentEntity;
+			
+			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
+			$dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
+			
 			//Renderizar Resultado 
 			$dataSession["notification"]		= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]				= $this->core_web_notification->get_message();
