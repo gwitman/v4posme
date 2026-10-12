@@ -234,6 +234,7 @@ $routes->match(['get', 'post'], 'app_accounting_type/index', 'app_accounting_typ
 $routes->match(['get', 'post'], 'app_accounting_type/index/(:any)', 'app_accounting_type::index');
 $routes->match(['get', 'post'], 'app_afx_fixedassent/updateElement', 'app_afx_fixedassent::updateElement');
 $routes->match(['get', 'post'], 'app_afx_fixedassent/updateElement/(:any)', 'app_afx_fixedassent::updateElement');
+$routes->match(['get', 'post'], 'app_afx_fixedassent/getWorkshopHistory', 'app_afx_fixedassent::getWorkshopHistory');
 $routes->match(['get', 'post'], 'app_afx_fixedassent/edit', 'app_afx_fixedassent::edit');
 $routes->match(['get', 'post'], 'app_afx_fixedassent/edit/(:any)', 'app_afx_fixedassent::edit');
 $routes->match(['get', 'post'], 'app_afx_fixedassent/insertElement', 'app_afx_fixedassent::insertElement');

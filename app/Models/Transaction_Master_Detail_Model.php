@@ -7,7 +7,36 @@ class Transaction_Master_Detail_Model extends Model  {
    function __construct(){		
       parent::__construct();
    }
-   
+
+   /**
+    * Obtiene los comentarios (problemas y su situacion/solucion) de una orden de taller.
+    * reference1 = descripcion del problema, catalogStatusID = situacion (catalogo tb_comments).
+    * Resuelve el nombre de la situacion desde tb_catalog_item.
+    */
+   function getCommentsWithStatusByTransaction($companyID,$transactionID,$transactionMasterID,$componentID){
+		$db 		= db_connect();
+		$companyID			= (int)$companyID;
+		$transactionID		= (int)$transactionID;
+		$transactionMasterID= (int)$transactionMasterID;
+		$componentID		= (int)$componentID;
+		$sql = "";
+		$sql = $sql.sprintf("select ");
+		$sql = $sql.sprintf("	td.transactionMasterDetailID, ");
+		$sql = $sql.sprintf("	td.expirationDate, ");
+		$sql = $sql.sprintf("	td.reference1, ");
+		$sql = $sql.sprintf("	td.catalogStatusID, ");
+		$sql = $sql.sprintf("	ci.name as situacionName ");
+		$sql = $sql.sprintf(" from tb_transaction_master_detail td ");
+		$sql = $sql.sprintf(" left join tb_catalog_item ci on td.catalogStatusID = ci.catalogItemID ");
+		$sql = $sql.sprintf(" where td.companyID = %d ", $companyID);
+		$sql = $sql.sprintf(" and td.transactionID = %d ", $transactionID);
+		$sql = $sql.sprintf(" and td.transactionMasterID = %d ", $transactionMasterID);
+		$sql = $sql.sprintf(" and td.componentID = %d ", $componentID);
+		$sql = $sql.sprintf(" and td.isActive = 1 ");
+		$sql = $sql.sprintf(" order by td.transactionMasterDetailID asc ");
+		return $db->query($sql)->getResult();
+   }
+
    function insert_app_posme($data){
 		$db 		= db_connect();
 		$builder	= $db->table("tb_transaction_master_detail");

@@ -40,6 +40,7 @@
 												<a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas <b class="caret"></b></a>
 												<ul class="dropdown-menu">
 													<li><a id="btnClickArchivo" href="#dropdown-file" data-toggle="tab">Archivos</a></li>
+													<li><a id="btnClickExpediente" href="#expediente" data-toggle="tab"><i class="icon16 i-wrench"></i> Expediente</a></li>
 												</ul>
 											</li>
 										</ul>
@@ -518,6 +519,113 @@
 												</div>
 											</div>
 											<!-- /Tab Propiedades -->
+
+											<!-- Tab Expediente (Historial de Ordenes de Taller) -->
+											<div class="tab-pane fade" id="expediente">
+												<div id="appExpediente" style="visibility:hidden;">
+
+													<!-- Resumen -->
+													<div class="row" style="margin-bottom:15px;">
+														<div class="col-lg-12">
+															<div style="background:linear-gradient(135deg,#4e73df 0%,#224abe 100%);color:#fff;border-radius:10px;padding:16px 20px;box-shadow:0 4px 12px rgba(0,0,0,0.15);">
+																<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;">
+																	<div>
+																		<h4 style="margin:0;color:#fff;font-weight:600;"><i class="fas fa-tools"></i> Expediente de Mantenimiento</h4>
+																		<small style="opacity:.9;">Historial cronol&oacute;gico de &oacute;rdenes de taller del activo fijo</small>
+																	</div>
+																	<div style="text-align:right;">
+																		<span style="font-size:34px;font-weight:700;line-height:1;">{{ objListOrders.length }}</span><br>
+																		<small style="opacity:.9;">&oacute;rdenes registradas</small>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+
+													<!-- Mensaje / sin datos -->
+													<div class="row" v-if="mostrarAlerta">
+														<div class="col-lg-12">
+															<div class="alert" :class="esError ? 'alert-danger' : 'alert-info'" style="border-radius:8px;">
+																<i class="fas" :class="esError ? 'fa-exclamation-triangle' : 'fa-info-circle'"></i>
+																{{ mensaje }}
+															</div>
+														</div>
+													</div>
+
+													<!-- Linea de tiempo -->
+													<div class="row" v-if="!mostrarAlerta">
+														<div class="col-lg-12">
+															<div class="afx-timeline">
+																<div class="afx-timeline-item" v-for="(orden, idx) in objListOrders" :key="orden.transactionMasterID">
+																	<div class="afx-timeline-badge" :style="{background: colorEstado(orden.estadoOrden)}">
+																		<i class="fas fa-wrench"></i>
+																	</div>
+																	<div class="afx-card">
+																		<div class="afx-card-header" :style="{borderLeft: '5px solid ' + colorEstado(orden.estadoOrden)}">
+																			<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;">
+																				<div>
+																					<span class="afx-order-num"><i class="fas fa-hashtag"></i> {{ orden.numero || orden.transactionMasterID }}</span>
+																					<span class="afx-badge" :style="{background: colorEstado(orden.estadoOrden)}">{{ orden.estadoOrden || 'Sin estado' }}</span>
+																				</div>
+																				<div class="afx-fecha"><i class="fas fa-calendar-alt"></i> {{ formatFecha(orden.fecha) }}</div>
+																			</div>
+																		</div>
+																		<div class="afx-card-body">
+																			<div class="row">
+																				<div class="col-lg-4 col-sm-6">
+																					<div class="afx-meta"><span class="afx-meta-label"><i class="fas fa-cogs"></i> Estado del equipo</span><span class="afx-meta-value afx-tag-info">{{ orden.estadoEquipo || 'N/D' }}</span></div>
+																				</div>
+																				<div class="col-lg-4 col-sm-6">
+																					<div class="afx-meta"><span class="afx-meta-label"><i class="fas fa-screwdriver"></i> Tipo mantenimiento</span><span class="afx-meta-value afx-tag-warning">{{ orden.tipoMantenimiento || 'N/D' }}</span></div>
+																				</div>
+																				<div class="col-lg-4 col-sm-6" v-if="orden.proximaVisita">
+																					<div class="afx-meta"><span class="afx-meta-label"><i class="fas fa-calendar-check"></i> Pr&oacute;xima visita</span><span class="afx-meta-value afx-tag-success">{{ formatFecha(orden.proximaVisita) }}</span></div>
+																				</div>
+																			</div>
+
+																			<!-- Problema -->
+																			<div class="afx-bloque afx-bloque-problema" v-if="orden.problema">
+																				<div class="afx-bloque-title"><i class="fas fa-exclamation-triangle"></i> Problema</div>
+																				<div class="afx-bloque-text">{{ orden.problema }}</div>
+																			</div>
+
+																			<!-- Solucion -->
+																			<div class="afx-bloque afx-bloque-solucion" v-if="orden.solucion">
+																				<div class="afx-bloque-title"><i class="fas fa-check-circle"></i> Soluci&oacute;n</div>
+																				<div class="afx-bloque-text">{{ orden.solucion }}</div>
+																			</div>
+
+																			<!-- Nota -->
+																			<div class="afx-nota" v-if="orden.nota">
+																				<i class="fas fa-sticky-note"></i> {{ orden.nota }}
+																			</div>
+
+																			<!-- Problemas y soluciones adicionales (comentarios) -->
+																			<div v-if="orden.comentarios && orden.comentarios.length > 0" style="margin-top:12px;">
+																				<div class="afx-sub-title"><i class="fas fa-clipboard-list"></i> Detalle adicional</div>
+																				<div class="afx-problema" v-for="(c, ci) in orden.comentarios" :key="ci">
+																					<div class="afx-problema-icon"><i class="fas fa-exclamation-circle"></i></div>
+																					<div style="flex:1;">
+																						<div class="afx-problema-text">{{ c.problema || 'Sin descripci\u00f3n' }}</div>
+																						<span class="afx-solucion" v-if="c.situacion"><i class="fas fa-check-circle"></i> {{ c.situacion }}</span>
+																					</div>
+																				</div>
+																			</div>
+
+																			<!-- Sin informacion -->
+																			<div v-if="!orden.problema && !orden.solucion && !orden.nota && (!orden.comentarios || orden.comentarios.length === 0)" class="afx-sin-problemas">
+																				<i class="fas fa-check-circle"></i> Sin problemas registrados en esta orden
+																			</div>
+																		</div>
+																	</div>
+																</div>
+															</div>
+														</div>
+													</div>
+
+												</div>
+											</div>
+											<!-- /Tab Expediente -->
 
 										</div>
 

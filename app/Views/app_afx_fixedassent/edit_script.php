@@ -232,3 +232,123 @@
 						
 					}
 				</script>
+
+<!-- ===== Expediente de Taller: estilos ===== -->
+<style>
+	.afx-timeline{position:relative;padding:10px 0 10px 10px;}
+	.afx-timeline:before{content:'';position:absolute;top:0;bottom:0;left:28px;width:3px;background:linear-gradient(#e0e6f5,#cdd6ef);border-radius:3px;}
+	.afx-timeline-item{position:relative;margin:0 0 22px 0;padding-left:62px;}
+	.afx-timeline-badge{position:absolute;left:10px;top:8px;width:38px;height:38px;border-radius:50%;color:#fff;display:flex;align-items:center;justify-content:center;font-size:15px;box-shadow:0 2px 6px rgba(0,0,0,.25);z-index:2;}
+	.afx-card{background:#fff;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.08);overflow:hidden;transition:transform .15s ease,box-shadow .15s ease;}
+	.afx-card:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.14);}
+	.afx-card-header{padding:12px 16px;background:#f8f9fc;}
+	.afx-order-num{font-weight:700;font-size:16px;color:#2e3a59;margin-right:10px;}
+	.afx-badge{display:inline-block;color:#fff;font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px;}
+	.afx-fecha{font-size:13px;color:#6c7a94;font-weight:600;}
+	.afx-card-body{padding:14px 16px;}
+	.afx-meta{display:flex;flex-direction:column;margin-bottom:10px;}
+	.afx-meta-label{font-size:11px;color:#8a94a6;text-transform:uppercase;letter-spacing:.3px;margin-bottom:3px;}
+	.afx-meta-value{font-weight:600;font-size:13px;color:#fff;padding:4px 10px;border-radius:6px;display:inline-block;width:fit-content;}
+	.afx-tag-info{background:#36b9cc;}
+	.afx-tag-warning{background:#f6a821;}
+	.afx-tag-success{background:#1cc88a;}
+	.afx-nota{margin-top:8px;background:#fff8e1;border-left:4px solid #f6a821;padding:8px 12px;border-radius:6px;color:#7a5c00;font-size:13px;}
+	.afx-bloque{margin-top:10px;padding:10px 14px;border-radius:8px;}
+	.afx-bloque-title{font-weight:700;font-size:12px;text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px;}
+	.afx-bloque-text{font-size:13px;color:#444;white-space:pre-line;line-height:1.5;}
+	.afx-bloque-problema{background:#fdf2f2;border-left:4px solid #e74a3b;}
+	.afx-bloque-problema .afx-bloque-title{color:#c0392b;}
+	.afx-bloque-solucion{background:#e8f8f1;border-left:4px solid #1cc88a;}
+	.afx-bloque-solucion .afx-bloque-title{color:#13855c;}
+	.afx-sub-title{font-weight:700;color:#2e3a59;font-size:13px;margin-bottom:8px;border-bottom:2px solid #eef1f8;padding-bottom:5px;}
+	.afx-problema{display:flex;align-items:flex-start;background:#fdf2f2;border-radius:8px;padding:10px 12px;margin-bottom:8px;border-left:4px solid #e74a3b;}
+	.afx-problema-icon{color:#e74a3b;font-size:16px;margin-right:10px;margin-top:2px;}
+	.afx-problema-text{font-size:13px;color:#444;font-weight:500;}
+	.afx-solucion{display:inline-block;margin-top:6px;background:#e8f8f1;color:#13855c;font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;}
+	.afx-sin-problemas{background:#e8f8f1;color:#13855c;border-radius:8px;padding:10px 12px;font-size:13px;font-weight:600;}
+</style>
+
+<!-- ===== Expediente de Taller: Vue ===== -->
+<script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+<script>
+	(function(){
+		const { createApp } = Vue;
+		createApp({
+			data(){
+				return {
+					objListOrders : [],
+					mensaje       : 'Cargando expediente...',
+					mostrarAlerta : true,
+					esError       : false,
+					cargado       : false
+				}
+			},
+			methods:{
+				async cargarExpediente(){
+					if(this.cargado) return;
+					this.cargado = true;
+					try{
+						const params = new URLSearchParams();
+						params.append('companyID', document.getElementById('txtCompanyID').value);
+						params.append('fixedAssentID', document.getElementById('txtFixedAssentID').value);
+
+						const res = await fetch(site_url + '/app_afx_fixedassent/getWorkshopHistory',{
+							method : 'POST',
+							headers: {'Content-Type':'application/x-www-form-urlencoded'},
+							body   : params.toString()
+						});
+						const json = await res.json();
+
+						if(json.success === false){
+							this.objListOrders = [];
+							this.esError       = true;
+							this.mostrarAlerta = true;
+							this.mensaje       = 'No se pudo cargar el expediente: ' + (json.message || '');
+							return;
+						}
+						if(json.success === true && (!json.data || json.data.length === 0)){
+							this.objListOrders = [];
+							this.esError       = false;
+							this.mostrarAlerta = true;
+							this.mensaje       = 'Este activo fijo no tiene ordenes de taller registradas.';
+							return;
+						}
+						this.objListOrders = json.data;
+						this.esError       = false;
+						this.mostrarAlerta = false;
+						this.mensaje       = '';
+					}catch(error){
+						console.error(error);
+						this.objListOrders = [];
+						this.esError       = true;
+						this.mostrarAlerta = true;
+						this.mensaje       = 'Error de conexion al cargar el expediente.';
+					}
+				},
+				formatFecha(fecha){
+					if(!fecha) return 'N/D';
+					var d = new Date((fecha+'').replace(' ','T'));
+					if(isNaN(d.getTime())) return fecha;
+					var meses = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+					var h = (fecha+'').indexOf(':') > -1 ? (' ' + ('0'+d.getHours()).slice(-2) + ':' + ('0'+d.getMinutes()).slice(-2)) : '';
+					return d.getDate() + ' ' + meses[d.getMonth()] + ' ' + d.getFullYear() + h;
+				},
+				colorEstado(estado){
+					var paleta = ['#4e73df','#1cc88a','#36b9cc','#f6a821','#e74a3b','#845ef7','#20c997','#fd7e14'];
+					if(!estado) return '#858796';
+					var hash = 0;
+					for(var i=0;i<estado.length;i++){ hash = estado.charCodeAt(i) + ((hash<<5)-hash); }
+					return paleta[Math.abs(hash) % paleta.length];
+				}
+			},
+			mounted(){
+				var self = this;
+				//Cargar al hacer click en el item del dropdown "Expediente"
+				$(document).on('click','#btnClickExpediente',function(){
+					self.cargarExpediente();
+				});
+				document.getElementById('appExpediente').style.visibility = 'visible';
+			}
+		}).mount('#appExpediente');
+	})();
+</script>

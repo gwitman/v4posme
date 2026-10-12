@@ -640,6 +640,94 @@ class app_afx_fixedassent extends _BaseController {
 		}	
 			
     }
+	/**
+	 * Devuelve en JSON el historial (expediente) de ordenes de taller de un
+	 * activo fijo, en orden cronologico, incluyendo problemas y soluciones.
+	 * El activo fijo se vincula en el campo periodPay de la orden de taller.
+	 */
+	function getWorkshopHistory(){
+		try{
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+
+			//PERMISO SOBRE LA FUNCTION
+			if(APP_NEED_AUTHENTICATION == true){
+				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				if(!$permited)
+				throw new \Exception(NOT_ACCESS_CONTROL);
+			}
+
+			//PARAMETROS
+			$companyID		= /*inicio get post*/ $this->request->getPost("companyID");
+			$fixedAssentID	= /*inicio get post*/ $this->request->getPost("fixedAssentID");
+
+			if((!$companyID || !$fixedAssentID))
+			throw new \Exception(NOT_PARAMETER);
+
+			//Componente de comentarios (problemas/soluciones)
+			$objComponentComments	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_comments");
+			if(is_null($objComponentComments))
+			throw new \Exception("EL COMPONENTE 'tb_comments' NO EXISTE...");
+
+			//Obtener las ordenes de taller del activo fijo
+			$objListOrders	= $this->Transaction_Master_Model->getWorkshopOrdersByFixedAssent($companyID,$fixedAssentID);
+
+			$data = array();
+			if($objListOrders){
+				foreach($objListOrders as $order){
+					//Obtener problemas y soluciones de la orden
+					$objListComments = $this->Transaction_Master_Detail_Model->getCommentsWithStatusByTransaction(
+						$order->companyID,
+						$order->transactionID,
+						$order->transactionMasterID,
+						$objComponentComments->componentID
+					);
+
+					$comentarios = array();
+					if($objListComments){
+						foreach($objListComments as $c){
+							$comentarios[] = array(
+								"problema"	=> $c->reference1,
+								"situacion"	=> $c->situacionName,
+								"fecha"		=> $c->expirationDate
+							);
+						}
+					}
+
+					$data[] = array(
+						"transactionMasterID"	=> $order->transactionMasterID,
+						"numero"				=> $order->transactionNumber,
+						"fecha"					=> $order->transactionOn,
+						"fechaCambioEstado"		=> $order->statusIDChangeOn,
+						"estadoOrden"			=> $order->workflowStageName,
+						"estadoEquipo"			=> $order->estadoEquipoName,
+						"tipoMantenimiento"		=> $order->tipoMantenimientoName,
+						"proximaVisita"			=> ($order->nextVisit && $order->nextVisit != '0000-00-00 00:00:00') ? $order->nextVisit : null,
+						"monto"					=> $order->amount,
+						"problema"				=> $order->reference2,
+						"nota"					=> $order->reference1,
+						"solucion"				=> $order->reference3,
+						"comentarios"			=> $comentarios
+					);
+				}
+			}
+
+			return $this->response->setJSON(array(
+				'success'	=> true,
+				'data'		=> $data
+			));//--finjson
+		}
+		catch(\Exception $ex){
+			return $this->response->setJSON(array(
+				'success'	=> false,
+				'message'	=> $ex->getLine()." ".$ex->getMessage(),
+				'data'		=> array()
+			));//--finjson
+		}
+	}
+
 	function index($dataViewID = null){	
 		try{ 
 			

@@ -38,6 +38,35 @@ class Transaction_Master_Model extends Model  {
 		return $builder->update($data);
 		
    }
+   /**
+    * Obtiene todas las ordenes de taller asociadas a un activo fijo.
+    * El activo fijo se guarda en el campo periodPay de la transaccion de taller.
+    * Devuelve datos ordenados cronologicamente (mas reciente primero) con
+    * nombres de estado del workflow, estado del equipo (areaID) y tipo (priorityID).
+    */
+   function getWorkshopOrdersByFixedAssent($companyID,$fixedAssentID){
+		$db 	= db_connect();
+		$companyID		= (int)$companyID;
+		$fixedAssentID	= (int)$fixedAssentID;
+		$sql = "";
+		$sql = $sql.sprintf("select ");
+		$sql = $sql.sprintf("	tm.companyID, tm.transactionID, tm.transactionMasterID, tm.branchID, ");
+		$sql = $sql.sprintf("	tm.transactionNumber, tm.transactionOn, tm.statusIDChangeOn, tm.note, ");
+		$sql = $sql.sprintf("	tm.amount, tm.statusID, tm.areaID, tm.priorityID, tm.periodPay, tm.nextVisit, ");
+		$sql = $sql.sprintf("	tm.reference1, tm.reference2, tm.reference3, tm.createdAt, ");
+		$sql = $sql.sprintf("	ws.name as workflowStageName, ");
+		$sql = $sql.sprintf("	ciEstado.name as estadoEquipoName, ");
+		$sql = $sql.sprintf("	ciTipo.name  as tipoMantenimientoName ");
+		$sql = $sql.sprintf(" from tb_transaction_master tm ");
+		$sql = $sql.sprintf(" inner join tb_workflow_stage ws on tm.statusID = ws.workflowStageID ");
+		$sql = $sql.sprintf(" left  join tb_catalog_item ciEstado on tm.areaID     = ciEstado.catalogItemID ");
+		$sql = $sql.sprintf(" left  join tb_catalog_item ciTipo   on tm.priorityID = ciTipo.catalogItemID ");
+		$sql = $sql.sprintf(" where tm.companyID = %d ", $companyID);
+		$sql = $sql.sprintf(" and tm.periodPay = %d ", $fixedAssentID);
+		$sql = $sql.sprintf(" and tm.isActive = 1 ");
+		$sql = $sql.sprintf(" order by tm.transactionOn desc, tm.transactionMasterID desc ");
+		return $db->query($sql)->getResult();
+   }
    function get_rowByPK($companyID,$transactionID,$transactionMasterID){
 		$db 	= db_connect();
 		$builder	= $db->table("tb_transaction_master");    
@@ -53,6 +82,7 @@ class Transaction_Master_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
+
    function get_rowByTransactionMasterID($companyID,$transactionMasterID){
 		$db 	= db_connect();
 		$builder	= $db->table("tb_transaction_master");   
