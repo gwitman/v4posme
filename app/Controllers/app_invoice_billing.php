@@ -3007,7 +3007,7 @@ class app_invoice_billing extends _BaseController {
 			
 			//Actualizar Transaccion
 			$amountTotal 		= $subAmountTotal - $discountTotal;
-			$tax4 				= ($discountTotal / $subAmountTotal) * 100;
+			$tax4 				= $subAmountTotal != 0 ? (($discountTotal / $subAmountTotal) * 100) : 0;
 			$objTM["amount"] 	= $amountTotal;
 			$objTM["tax1"] 		= $tax1Total;
 			$objTM["tax2"] 		= $tax2Total;
