@@ -116,7 +116,7 @@
 														<div class="col-lg-8">
 															<div class="input-group">
 																<input type="hidden" id="txtEntityID" name="txtEntityID" value="<?php echo !empty($objTM->entityID) ? $objTM->entityID : 0; ?>">
-																<input class="form-control" readonly id="txtEntityDescription" type="text" value="<?php echo $objEntitySelected != NULL ? $objEntitySelected->firstName." ".$objEntitySelected->lastName : ""; ?>">
+																<input class="form-control" readonly id="txtEntityDescription" type="text" value="<?php echo $objEntitySelected != NULL ? $objEntitySelected->customerNumber." | ".$objEntitySelected->firstName." ".$objEntitySelected->lastName : ""; ?>">
 																<span class="input-group-btn">
 																	<button class="btn btn-danger" type="button" id="btnClearEntity">
 																		<i aria-hidden="true" class="i-undo-2"></i>

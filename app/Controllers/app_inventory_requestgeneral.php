@@ -684,7 +684,7 @@ class app_inventory_requestgeneral extends _BaseController {
 			//Obtener la Entidad seleccionada (si existe) para mostrar su descripcion
 			$datView["objEntitySelected"]		= NULL;
 			if(!empty($datView["objTM"]->entityID)){
-				$datView["objEntitySelected"]	= $this->Natural_Model->get_rowByEntityID($companyID,$datView["objTM"]->entityID);
+				$datView["objEntitySelected"]	= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
 			}
 			
 			//Renderizar Resultado
