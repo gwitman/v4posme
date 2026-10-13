@@ -1731,7 +1731,7 @@ WHERE
 
 UPDATE tb_company SET 
 	NAME = 'Chicharrones Caraceños' , address = 'Estadio nuevo de León 200 metros al sur sobre carretera a mano isquierda casa blanca' ,
-	flavorID = 784 /*usuarioID*/,type='default'  , abreviature='chicharrones'
+	flavorID = 784 /*usuarioID*/,type='chicharrones'  , abreviature='chicharrones'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

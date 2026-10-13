@@ -14,7 +14,7 @@
                     <tr>
                         <td style="background:#4e73df; padding:20px 24px; text-align:center;">
                             <?php if (isset($logoCID) && $logoCID != "") : ?>
-                                <img src="<?php echo $logoCID; ?>" alt="logo" style="max-height:70px; margin-bottom:8px;" />
+                                <img src="cid:<?php echo $logoCID; ?>" alt="logo" style="max-height:70px; margin-bottom:8px;" />
                             <?php endif; ?>
                             <div style="color:#ffffff; font-size:20px; font-weight:bold;">
                                 <?php echo isset($objCompany) ? htmlspecialchars($objCompany->name) : "posMe"; ?>

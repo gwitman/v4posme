@@ -3109,6 +3109,7 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 			//Correo del propietario
 			$emailProperty  = $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL", $companyID);
 			$emailProperty  = $emailProperty->value;
+			$emailProperty  = "tellezcrespinc81@gmail.com";
 
 			//Logo de la empresa
 			$objLogo        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO", $companyID);
@@ -3207,7 +3208,7 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 				$params_["logoCID"] = $this->email->setAttachmentCID($logoPath);
 			}
 
-			$body = /*--inicio view*/ view('app_notification/orden_taller/email_proxima_visita', $params_); //--finview
+			$body = /*--inicio view*/ view('app_notification/orden_taller/email_proxima_visita', $params_); //--finview			
 			$this->email->setMessage($body);
 			$this->email->send();
 
