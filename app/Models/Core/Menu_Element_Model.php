@@ -116,7 +116,6 @@ class Menu_Element_Model extends Model  {
 
 		");
 		
-		log_message("error",$sql);
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
