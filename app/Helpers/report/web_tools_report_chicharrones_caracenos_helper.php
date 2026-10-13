@@ -15,9 +15,12 @@ function helper_reporte80mmTransactionMasterCaracenos(
     $statusName = "", /*estado*/
     $causalName = "", /*causal*/
 	$userNickName = "", /*vendedor*/
-    $rucCompany = "" /*ruc*/
+    $rucCompany = "", /*ruc*/
+    $datView = array() /*datos adicionales (mesa, etc)*/
 )
 {
+    //Obtener el nombre de la mesa desde el catalogo tb_catalog_item
+    $mesaName = (isset($datView["objMesa"]) && $datView["objMesa"]) ? $datView["objMesa"]->name : "";
     $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/'.$objParameterLogo->value;
     
     $type    = pathinfo($path, PATHINFO_EXTENSION);
@@ -38,7 +41,7 @@ function helper_reporte80mmTransactionMasterCaracenos(
                       <meta name='viewport' content='width=device-width, initial-scale=1.0' />
                       <style>
                         @page {       
-                          size: 2.7in 11in;
+                          size: 2.7in 15in;
                           margin-top:0px;
                           margin-left:5px;
                           margin-right:20px;
@@ -122,6 +125,14 @@ function helper_reporte80mmTransactionMasterCaracenos(
                           </td>
 						  <td colspan='2'>
                             ". ( $objTransactionMasterInfo->referenceClientName == "" ?   $objEntidadNatural->firstName." ".$objEntidadNatural->lastName  :  $objTransactionMasterInfo->referenceClientName)  ."
+                          </td>
+                        </tr>
+						<tr>
+                          <td colspan=''>
+                            MESA:
+                          </td>
+						  <td colspan='2'>
+                            ".strtoupper($mesaName)."
                           </td>
                         </tr>
 						
