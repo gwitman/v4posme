@@ -159,7 +159,7 @@
 															</div>
 														</div>
 														<div class="form-group <?php echo getBahavioSession($company->type,'tb_fixed_assent','divReferencia2','',$objListCompanyPageSetting) ?>">
-															<label class="col-lg-4 control-label" for="normal">Referencia2</label>
+															<label class="col-lg-4 control-label" for="normal"><?php echo getBahavioSession($company->type,'tb_fixed_assent','lblReferencia2','Referencia2',$objListCompanyPageSetting) ?></label>
 															<div class="col-lg-8">
 																<input class="form-control" type="text" name="txtReference2" id="txtReference2" value="">
 															</div>
