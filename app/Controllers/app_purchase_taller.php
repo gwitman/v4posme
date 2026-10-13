@@ -1411,8 +1411,18 @@ class app_purchase_taller extends _BaseController {
 
 			//Obtener Activo Fijo seleccionado (guardado en periodPay)
 			$dataView["objFixedAsset"]				= $dataView["objTransactionMaster"]->periodPay ? $this->Fixed_Assent_Model->get_rowByPK($companyID,$branchID,$dataView["objTransactionMaster"]->periodPay) : false;
-			
-			
+
+			//Resolver ubicacion del cliente (pais, departamento, municipio) desde tb_customer
+			$dataView["objCustomerCountry"]			= ($dataView["objCustomer"] && $dataView["objCustomer"]->countryID) ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objCustomer"]->countryID) : false;
+			$dataView["objCustomerState"]			= ($dataView["objCustomer"] && $dataView["objCustomer"]->stateID)   ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objCustomer"]->stateID)   : false;
+			$dataView["objCustomerCity"]			= ($dataView["objCustomer"] && $dataView["objCustomer"]->cityID)    ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objCustomer"]->cityID)    : false;
+
+			//Resolver ubicacion del activo fijo (pais, ciudad, municipio) desde tb_fixed_assent
+			$dataView["objFixedAssetCountry"]		= ($dataView["objFixedAsset"] && $dataView["objFixedAsset"]->countryID)      ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objFixedAsset"]->countryID)      : false;
+			$dataView["objFixedAssetCity"]			= ($dataView["objFixedAsset"] && $dataView["objFixedAsset"]->cityID)         ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objFixedAsset"]->cityID)         : false;
+			$dataView["objFixedAssetMunicipality"]	= ($dataView["objFixedAsset"] && $dataView["objFixedAsset"]->municipalityID) ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objFixedAsset"]->municipalityID) : false;
+
+
 			$dataView["objListCurrency"]		= $objListCurrency;
 			$dataView["companyID"]				= $dataSession["user"]->companyID;
 			$dataView["userID"]					= $dataSession["user"]->userID;

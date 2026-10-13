@@ -5313,7 +5313,23 @@ function helper_reporteA4mmTransactionMasterTallerFrioTec(
 	$customerFullName		= trim($customerName." ".$customerLastName);
 	$customerIdentification	= helper_RequestGetValueObjet($objData["objCustomer"],"identification","");
 	$customerPhone			= helper_RequestGetValueObjet($objData["objCustomer"],"phoneNumber","");
-	$customerAddress		= helper_RequestGetValueObjet($objData["objCustomer"],"address","");
+	$customerAddressDetail	= helper_RequestGetValueObjet($objData["objCustomer"],"address","");
+	$customerLocation		= helper_RequestGetValueObjet($objData["objCustomer"],"location","");
+
+	//Ubicacion del cliente (pais / departamento / municipio) resueltos a nombre
+	$customerCountryName	= isset($objData["objCustomerCountry"]) ? helper_RequestGetValueObjet($objData["objCustomerCountry"],"name","") : "";
+	$customerStateName		= isset($objData["objCustomerState"])   ? helper_RequestGetValueObjet($objData["objCustomerState"],"name","")   : "";
+	$customerCityName		= isset($objData["objCustomerCity"])    ? helper_RequestGetValueObjet($objData["objCustomerCity"],"name","")    : "";
+
+	//Direccion completa del cliente: pais, departamento, municipio, location y address
+	$customerAddressParts	= array_filter(array(
+								$customerCountryName,
+								$customerStateName,
+								$customerCityName,
+								$customerLocation,
+								$customerAddressDetail
+							), function($v){ return trim($v) !== ""; });
+	$customerAddress		= implode(", ", $customerAddressParts);
 
 	//Datos del activo fijo
 	$objFixedAsset			= isset($objData["objFixedAsset"]) ? $objData["objFixedAsset"] : false;
@@ -5324,6 +5340,21 @@ function helper_reporteA4mmTransactionMasterTallerFrioTec(
 	$faMarca				= $objFixedAsset ? helper_RequestGetValueObjet($objFixedAsset,"marca","") : "";
 	$faChasisNumber			= $objFixedAsset ? helper_RequestGetValueObjet($objFixedAsset,"chasisNumber","") : "";
 	$faYear					= $objFixedAsset ? helper_RequestGetValueObjet($objFixedAsset,"year","") : "";
+
+	//Ubicacion del activo fijo (pais / ciudad / municipio) resueltos a nombre
+	$faCountryName			= isset($objData["objFixedAssetCountry"])      ? helper_RequestGetValueObjet($objData["objFixedAssetCountry"],"name","")      : "";
+	$faCityName				= isset($objData["objFixedAssetCity"])         ? helper_RequestGetValueObjet($objData["objFixedAssetCity"],"name","")         : "";
+	$faMunicipalityName		= isset($objData["objFixedAssetMunicipality"]) ? helper_RequestGetValueObjet($objData["objFixedAssetMunicipality"],"name","") : "";
+	$faAddressDetail		= $objFixedAsset ? helper_RequestGetValueObjet($objFixedAsset,"address","") : "";
+
+	//Direccion completa del activo fijo: pais, ciudad, municipio y address
+	$faAddressParts			= array_filter(array(
+								$faCountryName,
+								$faCityName,
+								$faMunicipalityName,
+								$faAddressDetail
+							), function($v){ return trim($v) !== ""; });
+	$faAddress				= implode(", ", $faAddressParts);
 
 	//Datos del taller
 	$tallerMarca			= helper_RequestGetValueObjet($objData["objItemMarca"],"name","");
@@ -5466,6 +5497,10 @@ function helper_reporteA4mmTransactionMasterTallerFrioTec(
             <td style='vertical-align:top;' >".$faChasisNumber."</td>
 			<td style='vertical-align:top;font-weight: bold;' >Año:</td>
 			<td style='vertical-align:top;' >".$faYear."</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Dirección:</td>
+            <td colspan='3' style='vertical-align:top;' >".$faAddress."</td>
           </tr>
 		  <tr>
             <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Descripción:</td>
