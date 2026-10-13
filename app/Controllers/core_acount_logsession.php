@@ -29,23 +29,21 @@ class core_acount_logsession extends _BaseController {
 			$companyID			= $dataSession["user"]->companyID;
 			$objListUser		= $this->User_Model->get_All($companyID);
 
-			//Tipo de plantilla
-			$masterPage			= 'snagit_masterpage';
-			$viewType			= 'snagit_';
-
-			//4. RENDERIZAR
+			//4. RENDERIZAR (mismo masterpage que core_dashboards: tema Sneat)
 			$dataView["company"]				= $dataSession["company"];
 			$dataView["companyPageSetting"]		= $dataSession["companyPageSetting"];
 			$dataView["title"]					= "Log de Sesiones";
 			$dataView["objListUser"]			= $objListUser;
 			$dataView["userIDDefault"]			= (is_array($objListUser) && count($objListUser) > 0) ? $objListUser[0]->userID : 0;
 
-			$dataSession["head"]				= /*--inicio view*/ view('core_acount_logsession/'.$viewType.'index_head',$dataView);//--finview
+			$dataSession["notification"]		= $this->core_web_error->get_error($dataSession["user"]->userID);
+			$dataSession["message"]				= "";
+			$dataSession["head"]				= /*--inicio view*/ view('core_acount_logsession/index_head',$dataView);//--finview
 			$dataSession["footer"]				= "";
-			$dataSession["script"]				= /*--inicio view*/ view('core_acount_logsession/'.$viewType.'index_script',$dataView);//--finview
-			$dataSession["body"]				= /*--inicio view*/ view('core_acount_logsession/'.$viewType.'index_body',$dataView);//--finview
+			$dataSession["script"]				= /*--inicio view*/ view('core_acount_logsession/index_script',$dataView);//--finview
+			$dataSession["body"]				= /*--inicio view*/ view('core_acount_logsession/index_body',$dataView);//--finview
 
-			return view("core_masterpage/".$masterPage,$dataSession);//--finview-r
+			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r
 
 		}
 		catch(\Exception $ex){
