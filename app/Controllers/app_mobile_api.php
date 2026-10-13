@@ -741,7 +741,7 @@ class app_mobile_api extends _BaseController
 			log_message("error","[GET_DATA_DOWNLOAD] Indicadores obtenidos (type: ".$indicatorType." | rolID: ".$rolID.") -> total: ".count($objListIndicator));
 
 			log_message("error","[GET_DATA_DOWNLOAD] ===== FIN getDataDownload OK =====");
- 
+			
             return $this->response->setJSON(array(
                 'error' => false,
                 'message' => SUCCESS,

@@ -4,6 +4,20 @@
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/
+
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "2" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "APP_MOBILE_FORM_SHOW_INVOICE_COLUMN"; ##Cantidad de columnas en el dispositivo
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "default" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "APP_MOBILE_FORM_SHOW_INVOICE"; ##Modo en que se presentan los datos de facturacion en la pantalla mobile
+
+
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "" 
 WHERE 
