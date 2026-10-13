@@ -80,8 +80,13 @@ class core_acount_logsession extends _BaseController {
 			throw new \Exception("Debe seleccionar un usuario valido.");
 
 			//3. LOGICA
-			//Ultimas 5 sesiones del usuario
-			$objLogSession		= $this->Log_Session_Model->get_lastRowsByUserID($userID,5);
+			//Obtener el usuario para filtrar las sesiones por su nickname en user_data
+			$objUser			= $this->User_Model->get_rowByUserID($userID);
+			if(!$objUser)
+			throw new \Exception("El usuario seleccionado no existe.");
+
+			//Ultimas 5 sesiones del usuario (filtrado por user_data like 'nickname %create session')
+			$objLogSession		= $this->Log_Session_Model->get_lastRowsByUserData($objUser->nickname,5);
 			//Estadistica de transacciones por tipo (createdBy vs userID)
 			$objStatistic		= $this->Transaction_Master_Model->get_statisticByCreatedBy($companyID,$userID);
 			//Total de transacciones del usuario
