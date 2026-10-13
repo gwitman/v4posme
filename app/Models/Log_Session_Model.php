@@ -98,6 +98,36 @@ class Log_Session_Model extends Model
 
 		return $db->query($sql, [$userID])->getResult();
 	}
+
+	/**
+	 * Obtiene los ultimos registros de sesion de un usuario (por defecto 5),
+	 * ordenados por el ultimo movimiento mas reciente.
+	 */
+	public function get_lastRowsByUserID($userID,$limit = 5)
+	{
+		$db 	= db_connect();
+		$userID	= (int)$userID;
+		$limit	= (int)$limit;
+		$sql = "
+			select 
+				c.session_id,
+				c.userID,
+				c.ip_address,
+				c.user_agent,
+				c.last_activity,
+				c.last_update,
+				c.user_data
+			from 
+				tb_log_session c 
+			where 
+				c.userID = ? 
+			order by 
+				c.last_activity desc, c.last_update desc 
+			limit ".$limit."
+		";
+
+		return $db->query($sql, [$userID])->getResult();
+	}
 	
    
 }

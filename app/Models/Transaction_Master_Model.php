@@ -1315,6 +1315,48 @@ class Transaction_Master_Model extends Model  {
 		return $db->query($sql)->getResult();
 	}
 
+   /**
+    * Cuenta la cantidad total de transacciones creadas por un usuario (createdBy),
+    * uniendo con tb_user por userID = createdBy.
+    */
+   function get_countByCreatedBy($companyID,$userID)
+   {
+		$db 		= db_connect();
+		$companyID	= (int)$companyID;
+		$userID		= (int)$userID;
+		$sql = "";
+		$sql = $sql.sprintf("select count(*) as counter ");
+		$sql = $sql.sprintf(" from tb_transaction_master tm ");
+		$sql = $sql.sprintf(" inner join tb_user u on u.userID = tm.createdBy ");
+		$sql = $sql.sprintf(" where tm.companyID = %d ", $companyID);
+		$sql = $sql.sprintf(" and tm.createdBy = %d ", $userID);
+		$sql = $sql.sprintf(" and tm.isActive = 1 ");
+		return $db->query($sql)->getRow()->counter;
+   }
+
+   /**
+    * Estadistica de la cantidad de transacciones por tipo de transaccion
+    * para un usuario filtrado (createdBy vs userID).
+    * Devuelve el nombre de la transaccion y la cantidad.
+    */
+   function get_statisticByCreatedBy($companyID,$userID)
+   {
+		$db 		= db_connect();
+		$companyID	= (int)$companyID;
+		$userID		= (int)$userID;
+		$sql = "";
+		$sql = $sql.sprintf("select t.transactionID, t.`name` as transactionName, count(*) as counter ");
+		$sql = $sql.sprintf(" from tb_transaction_master tm ");
+		$sql = $sql.sprintf(" inner join tb_user u on u.userID = tm.createdBy ");
+		$sql = $sql.sprintf(" inner join tb_transaction t on t.transactionID = tm.transactionID ");
+		$sql = $sql.sprintf(" where tm.companyID = %d ", $companyID);
+		$sql = $sql.sprintf(" and tm.createdBy = %d ", $userID);
+		$sql = $sql.sprintf(" and tm.isActive = 1 ");
+		$sql = $sql.sprintf(" group by t.transactionID, t.`name` ");
+		$sql = $sql.sprintf(" order by counter desc ");
+		return $db->query($sql)->getResult();
+   }
+
 }
 
 ?>

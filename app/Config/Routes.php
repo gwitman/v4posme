@@ -1655,6 +1655,9 @@ $routes->match(['get', 'post'], 'core_acount/getReviewLoginSession', 'core_acoun
 $routes->match(['get', 'post'], 'core_acount/getReviewLoginSession/(:any)', 'core_acount::getReviewLoginSession');
 $routes->match(['get', 'post'], 'core_acount/setReviewLoginSession', 'core_acount::setReviewLoginSession');
 $routes->match(['get', 'post'], 'core_acount/setReviewLoginSession/(:any)', 'core_acount::setReviewLoginSession');
+$routes->match(['get', 'post'], 'core_acount_logsession/index', 'core_acount_logsession::index');
+$routes->match(['get', 'post'], 'core_acount_logsession/index/(:any)', 'core_acount_logsession::index');
+$routes->match(['get', 'post'], 'core_acount_logsession/getData', 'core_acount_logsession::getData');
 $routes->match(['get', 'post'], 'core_concept_api/index', 'core_concept_api::index');
 $routes->match(['get', 'post'], 'core_concept_api/index/(:any)', 'core_concept_api::index');
 $routes->match(['get', 'post'], 'core_concept_api/getConceptAllProduct', 'core_concept_api::getConceptAllProduct');
