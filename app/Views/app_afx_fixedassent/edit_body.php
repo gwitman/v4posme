@@ -107,7 +107,7 @@
 															</div>
 														</div>
 														<div class="form-group <?php echo getBahavioSession($company->type,'tb_fixed_assent','divTipo',' ',$objListCompanyPageSetting) ?>">
-															<label class="col-lg-4 control-label" for="selectFilter">Tipo</label>
+															<label class="col-lg-4 control-label" for="selectFilter"><?php echo getBahavioSession($company->type,'tb_fixed_assent','lblTipo','Tipo',$objListCompanyPageSetting) ?></label>
 															<div class="col-lg-8">
 																<select name="txtTypeID" id="txtTypeID" class="select2">
 																	<option></option>
@@ -147,7 +147,7 @@
 															</div>
 														</div>
 														<div class="form-group <?php echo getBahavioSession($company->type,'tb_fixed_assent','divChasis',' ',$objListCompanyPageSetting) ?>">
-															<label class="col-lg-4 control-label" for="normal">Chasis No</label>
+															<label class="col-lg-4 control-label" for="normal"><?php echo getBahavioSession($company->type,'tb_fixed_assent','lblChasis','Chasis No',$objListCompanyPageSetting) ?></label>
 															<div class="col-lg-8">
 																<input class="form-control" type="text" name="txtChasisNumber" id="txtChasisNumber" value="<?php echo $objFA->chasisNumber; ?>">
 															</div>
