@@ -13352,12 +13352,14 @@ class app_invoice_billing extends _BaseController {
 				array() 
 			);
 
-			//Generar 3 copias de la factura, separadas por salto de pagina
+			//Generar las copias de la factura, separadas por salto de pagina
+			//El usuario 464 solo imprime 1 copia, el resto imprime 3 copias
+			$totalCopias = ($datView["objUser"]->userID == 464) ? 1 : 3;
 			$html = "";
-			for($copia = 0; $copia < 3; $copia++)
+			for($copia = 0; $copia < $totalCopias; $copia++)
 			{
 				$html .= $htmlCopia;
-				if($copia < 2)
+				if($copia < ($totalCopias - 1))
 					$html .= '<div style="page-break-after:always;"></div>';
 			}
 
