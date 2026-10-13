@@ -5367,6 +5367,9 @@ function helper_reporteA4mmTransactionMasterTallerFrioTec(
 	$tallerNumero			= helper_RequestGetValueObjet($objData["objTransactionMaster"],"transactionNumber","");
 	$tallerProblema			= helper_RequestGetValueObjet($objData["objTransactionMaster"],"reference2","");
 	$tallerNota				= helper_RequestGetValueObjet($objData["objTransactionMaster"],"reference1","");
+	$tallerSolucion			= helper_RequestGetValueObjet($objData["objTransactionMaster"],"reference3","");
+	$tallerEstadoEquipo		= isset($objData["objItemEstadoEquipo"]) ? helper_RequestGetValueObjet($objData["objItemEstadoEquipo"],"name","") : "";
+	$tallerVisitaTecnica	= helper_RequestGetValueObjet($objData["objTransactionMaster"],"nextVisit","");
 
 	$html    = "
                   <!DOCTYPE html>
@@ -5426,6 +5429,16 @@ function helper_reporteA4mmTransactionMasterTallerFrioTec(
 							  <tr>
 								<td style='text-align:center'>
 								".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptPhone","Servicio Tecnico") ."
+								</td>
+							  </tr>
+							  <tr>
+								<td style='text-align:center'>
+								  ".$objCompany->address."
+								</td>
+							  </tr>
+							  <tr>
+								<td style='text-align:center'>
+								  Tel: ".$objParameterTelefono->value."
 								</td>
 							  </tr>
 							  <tr>
@@ -5493,10 +5506,8 @@ function helper_reporteA4mmTransactionMasterTallerFrioTec(
 			<td style='vertical-align:top;' >".$faModelNumber."</td>
           </tr>
 		  <tr>
-            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >No. Chasis/Serie:</td>
-            <td style='vertical-align:top;' >".$faChasisNumber."</td>
-			<td style='vertical-align:top;font-weight: bold;' >Año:</td>
-			<td style='vertical-align:top;' >".$faYear."</td>
+            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >BTU:</td>
+            <td colspan='3' style='vertical-align:top;' >".$faChasisNumber."</td>
           </tr>
 		  <tr>
             <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Dirección:</td>
@@ -5527,22 +5538,20 @@ function helper_reporteA4mmTransactionMasterTallerFrioTec(
 			<td style='width:200px;vertical-align:top;' >".$tallerFecha."</td>
           </tr>
 		  <tr>
-            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Marca:</td>
-            <td style='vertical-align:top;' >".$tallerMarca."</td>
-			<td style='vertical-align:top;font-weight: bold;' >Modelo:</td>
-			<td style='vertical-align:top;' >".$tallerModelo."</td>
-          </tr>
-		  <tr>
-            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Artículo:</td>
+            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Tipo de servicio:</td>
             <td style='vertical-align:top;' >".$tallerArticulo."</td>
-			<td style='vertical-align:top;font-weight: bold;' >Serie:</td>
-			<td style='vertical-align:top;' >".$tallerSerie."</td>
+			<td style='vertical-align:top;font-weight: bold;' >Estado del equipo:</td>
+			<td style='vertical-align:top;' >".$tallerEstadoEquipo."</td>
           </tr>
 		  <tr>
             <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Técnico:</td>
             <td style='vertical-align:top;' >".$tallerTecnico."</td>
 			<td style='vertical-align:top;font-weight: bold;' >Estado:</td>
 			<td style='vertical-align:top;' >".$statusName."</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Visita técnica:</td>
+            <td colspan='3' style='vertical-align:top;' >".$tallerVisitaTecnica."</td>
           </tr>
 		  <tr>
             <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Accesorios:</td>
@@ -5562,6 +5571,12 @@ function helper_reporteA4mmTransactionMasterTallerFrioTec(
           </tr>
 		  <tr>
             <td  style='text-align:left;vertical-align:top;' >".$tallerProblema."</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:center;vertical-align:top;font-weight: bold;' >Solución</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;' >".$tallerSolucion."</td>
           </tr>
 		  <tr>
             <td  style='text-align:center;vertical-align:top;font-weight: bold;' >Nota</td>
@@ -5597,23 +5612,23 @@ function helper_reporteA4mmTransactionMasterTallerFrioTec(
       <table style='width:98%' ><tr><td>&nbsp;</td></tr></table>
     ";
 
-	//Firma del cliente
+	//Firma del cliente y del tecnico
 	$f_html = $f_html."
         <table style='width:98%' >
           <tr>
-            <td style='text-align:center;font-weight: bold'></td>
+            <td style='text-align:center;font-weight: bold'>---------------------------------</td>
+			<td style='text-align:center;font-weight: bold'>&nbsp;</td>
 			<td style='text-align:center;font-weight: bold'>---------------------------------</td>
-			<td style='text-align:center;font-weight: bold'></td>
           </tr>
 		  <tr>
-            <td style='text-align:center;font-weight: bold'></td>
-			<td style='text-align:center;font-weight: bold'>".$customerFullName."</td>
-			<td style='text-align:center;font-weight: bold'></td>
+            <td style='text-align:center;font-weight: bold'>".$customerFullName."</td>
+			<td style='text-align:center;font-weight: bold'>&nbsp;</td>
+			<td style='text-align:center;font-weight: bold'>".$tallerTecnico."</td>
           </tr>
 		  <tr>
-            <td style='text-align:center;font-weight: bold;'></td>
-			<td style='text-align:center;font-weight: bold'>".$customerIdentification."</td>
-			<td style='text-align:center;font-weight: bold'></td>
+            <td style='text-align:center;font-weight: bold;'>Firma del cliente</td>
+			<td style='text-align:center;font-weight: bold'>&nbsp;</td>
+			<td style='text-align:center;font-weight: bold'>Firma del técnico</td>
           </tr>
         </table>";
 
