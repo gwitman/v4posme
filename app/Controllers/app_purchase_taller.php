@@ -1650,8 +1650,21 @@ class app_purchase_taller extends _BaseController {
 			
 			//Obtener Factura
 			$dataView["objBilling"]					= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,$dataView["objTransactionMaster"]->note);
-			
-			
+
+			//Obtener Activo Fijo seleccionado (guardado en periodPay)
+			$dataView["objFixedAsset"]				= $dataView["objTransactionMaster"]->periodPay ? $this->Fixed_Assent_Model->get_rowByPK($companyID,$branchID,$dataView["objTransactionMaster"]->periodPay) : false;
+
+			//Resolver ubicacion del cliente (pais, departamento, municipio) desde tb_customer
+			$dataView["objCustomerCountry"]			= ($dataView["objCustomer"] && $dataView["objCustomer"]->countryID) ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objCustomer"]->countryID) : false;
+			$dataView["objCustomerState"]			= ($dataView["objCustomer"] && $dataView["objCustomer"]->stateID)   ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objCustomer"]->stateID)   : false;
+			$dataView["objCustomerCity"]			= ($dataView["objCustomer"] && $dataView["objCustomer"]->cityID)    ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objCustomer"]->cityID)    : false;
+
+			//Resolver ubicacion del activo fijo (pais, ciudad, municipio) desde tb_fixed_assent
+			$dataView["objFixedAssetCountry"]		= ($dataView["objFixedAsset"] && $dataView["objFixedAsset"]->countryID)      ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objFixedAsset"]->countryID)      : false;
+			$dataView["objFixedAssetCity"]			= ($dataView["objFixedAsset"] && $dataView["objFixedAsset"]->cityID)         ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objFixedAsset"]->cityID)         : false;
+			$dataView["objFixedAssetMunicipality"]	= ($dataView["objFixedAsset"] && $dataView["objFixedAsset"]->municipalityID) ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objFixedAsset"]->municipalityID) : false;
+
+
 			$dataView["objListCurrency"]		= $objListCurrency;
 			$dataView["companyID"]				= $dataSession["user"]->companyID;
 			$dataView["userID"]					= $dataSession["user"]->userID;
@@ -1670,26 +1683,47 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objListArticulos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","routeID",$companyID);
 			$dataView["objItemArticulo"]		= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","routeID",$companyID,$dataView["objTransactionMasterInfo"]->routeID);
 			$dataView["objListArchivos"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_workshop_taller","mesaID",$companyID);
+			$dataView["objItemEstadoEquipo"]	= $this->core_web_catalog->getCatalogItem("tb_transaction_master_workshop_taller","areaID",$companyID,$dataView["objTransactionMaster"]->areaID);
 			$dataView["objTMD"]					= $datView["objTMD"];
 			
 			
 			
 			//Generar Reporte
-			$html = helper_reporteA4mmTransactionMasterTallerOutputGlobalPro(
-			    "TALLER",
-			    $objCompany,
-			    $objParameter,
-			    $datView["objTM"],
-			    $datView["tipoCambio"],
-			    $datView["objCurrency"],
-			    $datView["objTMI"],				
-			    $objParameterTelefono,				
-				$dataView ,
-				$datView["objStage"][0]->display, /*estado*/
-				$datView["objTC"]->name /*causal*/ , 
-				$datView
-				
-			);
+			if($dataSession["company"]->type == "frioTec" )
+			{
+				$html = helper_reporteA4mmTransactionMasterTallerOutputFrioTec(
+					"TALLER",
+					$objCompany,
+					$objParameter,
+					$datView["objTM"],
+					$datView["tipoCambio"],
+					$datView["objCurrency"],
+					$datView["objTMI"],				
+					$objParameterTelefono,				
+					$dataView ,
+					$datView["objStage"][0]->display, /*estado*/
+					$datView["objTC"]->name /*causal*/ , 
+					$datView
+				);
+			}
+			else
+			{
+				$html = helper_reporteA4mmTransactionMasterTallerOutputGlobalPro(
+				    "TALLER",
+				    $objCompany,
+				    $objParameter,
+				    $datView["objTM"],
+				    $datView["tipoCambio"],
+				    $datView["objCurrency"],
+				    $datView["objTMI"],				
+				    $objParameterTelefono,				
+					$dataView ,
+					$datView["objStage"][0]->display, /*estado*/
+					$datView["objTC"]->name /*causal*/ , 
+					$datView
+					
+				);
+			}
 			
 			$this->dompdf->loadHTML($html);
 			
