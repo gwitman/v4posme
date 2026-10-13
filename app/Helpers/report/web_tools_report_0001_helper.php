@@ -5572,12 +5572,7 @@ function helper_reporteA4mmTransactionMasterTallerFrioTec(
 		  <tr>
             <td  style='text-align:left;vertical-align:top;' >".$tallerProblema."</td>
           </tr>
-		  <tr>
-            <td  style='text-align:center;vertical-align:top;font-weight: bold;' >Solución</td>
-          </tr>
-		  <tr>
-            <td  style='text-align:left;vertical-align:top;' >".$tallerSolucion."</td>
-          </tr>
+		  
 		  <tr>
             <td  style='text-align:center;vertical-align:top;font-weight: bold;' >Nota</td>
           </tr>
