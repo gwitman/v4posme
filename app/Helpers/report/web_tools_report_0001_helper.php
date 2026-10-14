@@ -5370,6 +5370,7 @@ function helper_reporteA4mmTransactionMasterTallerFrioTec(
 	$tallerSolucion			= helper_RequestGetValueObjet($objData["objTransactionMaster"],"reference3","");
 	$tallerEstadoEquipo		= isset($objData["objItemEstadoEquipo"]) ? helper_RequestGetValueObjet($objData["objItemEstadoEquipo"],"name","") : "";
 	$tallerVisitaTecnica	= helper_RequestGetValueObjet($objData["objTransactionMaster"],"nextVisit","");
+	$tallerVisitaTecnica	= ($tallerVisitaTecnica && strtotime($tallerVisitaTecnica)) ? date("Y-m-d h:i A", strtotime($tallerVisitaTecnica)) : $tallerVisitaTecnica;
 
 	$html    = "
                   <!DOCTYPE html>
@@ -5534,7 +5535,7 @@ function helper_reporteA4mmTransactionMasterTallerFrioTec(
           <tr>
             <td  style='width:80px;text-align:left;vertical-align:top;font-weight: bold;' >No. Orden:</td>
             <td style='width:250px;vertical-align:top;' >".$tallerNumero."</td>
-			<td style='width:80px;vertical-align:top;font-weight: bold;' >Fecha:</td>
+			<td style='width:80px;vertical-align:top;font-weight: bold;' >Fecha de servicio:</td>
 			<td style='width:200px;vertical-align:top;' >".$tallerFecha."</td>
           </tr>
 		  <tr>
@@ -5550,7 +5551,7 @@ function helper_reporteA4mmTransactionMasterTallerFrioTec(
 			<td style='vertical-align:top;' >".$statusName."</td>
           </tr>
 		  <tr>
-            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Visita técnica:</td>
+            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Seguimiento:</td>
             <td colspan='3' style='vertical-align:top;' >".$tallerVisitaTecnica."</td>
           </tr>
 		  <tr>
@@ -5909,7 +5910,7 @@ function helper_reporteA4mmTransactionMasterTallerOutputFrioTec(
       <table style='width:98%' ><tr><td>&nbsp;</td></tr></table>
     ";
 
-	//Problema reportado, solucion y nota
+	//Problema reportado, nota y solucion
 	$f_html = $f_html."
         <table style='width:98%;".$border_colapse.$border_radius.$border_top.$border_left.$border_right.$border_bottom."' >
           <tr>
@@ -5919,16 +5920,16 @@ function helper_reporteA4mmTransactionMasterTallerOutputFrioTec(
             <td  style='text-align:left;vertical-align:top;' >".$tallerProblema."</td>
           </tr>
 		  <tr>
-            <td  style='text-align:center;vertical-align:top;font-weight: bold;' >Solución</td>
-          </tr>
-		  <tr>
-            <td  style='text-align:left;vertical-align:top;' >".$tallerSolucion."</td>
-          </tr>
-		  <tr>
             <td  style='text-align:center;vertical-align:top;font-weight: bold;' >Nota</td>
           </tr>
 		  <tr>
             <td  style='text-align:left;vertical-align:top;' >".$tallerNota."</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:center;vertical-align:top;font-weight: bold;' >Solución</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;' >".$tallerSolucion."</td>
           </tr>
          </table>";
 
