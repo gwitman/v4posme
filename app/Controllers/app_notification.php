@@ -3109,7 +3109,6 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 			//Correo del propietario
 			$emailProperty  = $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL", $companyID);
 			$emailProperty  = $emailProperty->value;
-			$emailProperty  = "tellezcrespinc81@gmail.com";
 
 			//Logo de la empresa
 			$objLogo        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO", $companyID);
