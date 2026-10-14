@@ -1422,6 +1422,11 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objFixedAssetCity"]			= ($dataView["objFixedAsset"] && $dataView["objFixedAsset"]->cityID)         ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objFixedAsset"]->cityID)         : false;
 			$dataView["objFixedAssetMunicipality"]	= ($dataView["objFixedAsset"] && $dataView["objFixedAsset"]->municipalityID) ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objFixedAsset"]->municipalityID) : false;
 
+			//Resolver catalogos del activo fijo (voltaje, eficiencia, categoria) desde tb_fixed_assent
+			$dataView["objFixedAssetVoltaje"]		= ($dataView["objFixedAsset"] && $dataView["objFixedAsset"]->colorID)    ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objFixedAsset"]->colorID)    : false;
+			$dataView["objFixedAssetEficiencia"]	= ($dataView["objFixedAsset"] && $dataView["objFixedAsset"]->categoryID) ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objFixedAsset"]->categoryID) : false;
+			$dataView["objFixedAssetCategoria"]		= ($dataView["objFixedAsset"] && $dataView["objFixedAsset"]->typeID)     ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objFixedAsset"]->typeID)     : false;
+
 
 			$dataView["objListCurrency"]		= $objListCurrency;
 			$dataView["companyID"]				= $dataSession["user"]->companyID;
@@ -1663,6 +1668,11 @@ class app_purchase_taller extends _BaseController {
 			$dataView["objFixedAssetCountry"]		= ($dataView["objFixedAsset"] && $dataView["objFixedAsset"]->countryID)      ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objFixedAsset"]->countryID)      : false;
 			$dataView["objFixedAssetCity"]			= ($dataView["objFixedAsset"] && $dataView["objFixedAsset"]->cityID)         ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objFixedAsset"]->cityID)         : false;
 			$dataView["objFixedAssetMunicipality"]	= ($dataView["objFixedAsset"] && $dataView["objFixedAsset"]->municipalityID) ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objFixedAsset"]->municipalityID) : false;
+
+			//Resolver catalogos del activo fijo (voltaje, eficiencia, categoria) desde tb_fixed_assent
+			$dataView["objFixedAssetVoltaje"]		= ($dataView["objFixedAsset"] && $dataView["objFixedAsset"]->colorID)    ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objFixedAsset"]->colorID)    : false;
+			$dataView["objFixedAssetEficiencia"]	= ($dataView["objFixedAsset"] && $dataView["objFixedAsset"]->categoryID) ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objFixedAsset"]->categoryID) : false;
+			$dataView["objFixedAssetCategoria"]		= ($dataView["objFixedAsset"] && $dataView["objFixedAsset"]->typeID)     ? $this->Catalog_Item_Model->get_rowByCatalogItemID($dataView["objFixedAsset"]->typeID)     : false;
 
 
 			$dataView["objListCurrency"]		= $objListCurrency;

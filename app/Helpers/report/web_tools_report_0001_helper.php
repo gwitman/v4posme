@@ -5341,6 +5341,13 @@ function helper_reporteA4mmTransactionMasterTallerFrioTec(
 	$faChasisNumber			= $objFixedAsset ? helper_RequestGetValueObjet($objFixedAsset,"chasisNumber","") : "";
 	$faYear					= $objFixedAsset ? helper_RequestGetValueObjet($objFixedAsset,"year","") : "";
 
+	//Campos adicionales del activo fijo
+	$faTipoAire				= $objFixedAsset ? helper_RequestGetValueObjet($objFixedAsset,"reference1","") : "";
+	$faReferencia			= $objFixedAsset ? helper_RequestGetValueObjet($objFixedAsset,"reference2","") : "";
+	$faVoltaje				= isset($objData["objFixedAssetVoltaje"])    ? helper_RequestGetValueObjet($objData["objFixedAssetVoltaje"],"description","")  : "";
+	$faEficiencia			= isset($objData["objFixedAssetEficiencia"]) ? helper_RequestGetValueObjet($objData["objFixedAssetEficiencia"],"name","")     : "";
+	$faCategoria			= isset($objData["objFixedAssetCategoria"])  ? helper_RequestGetValueObjet($objData["objFixedAssetCategoria"],"name","")      : "";
+
 	//Ubicacion del activo fijo (pais / ciudad / municipio) resueltos a nombre
 	$faCountryName			= isset($objData["objFixedAssetCountry"])      ? helper_RequestGetValueObjet($objData["objFixedAssetCountry"],"name","")      : "";
 	$faCityName				= isset($objData["objFixedAssetCity"])         ? helper_RequestGetValueObjet($objData["objFixedAssetCity"],"name","")         : "";
@@ -5509,6 +5516,22 @@ function helper_reporteA4mmTransactionMasterTallerFrioTec(
 		  <tr>
             <td  style='text-align:left;vertical-align:top;font-weight: bold;' >BTU:</td>
             <td colspan='3' style='vertical-align:top;' >".$faChasisNumber."</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Tipo de Aire:</td>
+            <td style='vertical-align:top;' >".$faTipoAire."</td>
+			<td style='vertical-align:top;font-weight: bold;' >Referencia:</td>
+			<td style='vertical-align:top;' >".$faReferencia."</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Voltaje:</td>
+            <td style='vertical-align:top;' >".$faVoltaje."</td>
+			<td style='vertical-align:top;font-weight: bold;' >Eficiencia:</td>
+			<td style='vertical-align:top;' >".$faEficiencia."</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Categoría:</td>
+            <td colspan='3' style='vertical-align:top;' >".$faCategoria."</td>
           </tr>
 		  <tr>
             <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Dirección:</td>
@@ -5695,6 +5718,13 @@ function helper_reporteA4mmTransactionMasterTallerOutputFrioTec(
 	$faChasisNumber			= $objFixedAsset ? helper_RequestGetValueObjet($objFixedAsset,"chasisNumber","") : "";
 	$faAddressDetail		= $objFixedAsset ? helper_RequestGetValueObjet($objFixedAsset,"address","") : "";
 
+	//Campos adicionales del activo fijo
+	$faTipoAire				= $objFixedAsset ? helper_RequestGetValueObjet($objFixedAsset,"reference1","") : "";
+	$faReferencia			= $objFixedAsset ? helper_RequestGetValueObjet($objFixedAsset,"reference2","") : "";
+	$faVoltaje				= isset($objData["objFixedAssetVoltaje"])    ? helper_RequestGetValueObjet($objData["objFixedAssetVoltaje"],"description","")  : "";
+	$faEficiencia			= isset($objData["objFixedAssetEficiencia"]) ? helper_RequestGetValueObjet($objData["objFixedAssetEficiencia"],"name","")     : "";
+	$faCategoria			= isset($objData["objFixedAssetCategoria"])  ? helper_RequestGetValueObjet($objData["objFixedAssetCategoria"],"name","")      : "";
+
 	//Ubicacion del activo fijo (pais / ciudad / municipio) resueltos a nombre
 	$faCountryName			= isset($objData["objFixedAssetCountry"])      ? helper_RequestGetValueObjet($objData["objFixedAssetCountry"],"name","")      : "";
 	$faCityName				= isset($objData["objFixedAssetCity"])         ? helper_RequestGetValueObjet($objData["objFixedAssetCity"],"name","")         : "";
@@ -5853,6 +5883,22 @@ function helper_reporteA4mmTransactionMasterTallerOutputFrioTec(
             <td style='vertical-align:top;' >".$faMarca."</td>
 			<td style='vertical-align:top;font-weight: bold;' >BTU:</td>
 			<td style='vertical-align:top;' >".$faChasisNumber."</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Tipo de Aire:</td>
+            <td style='vertical-align:top;' >".$faTipoAire."</td>
+			<td style='vertical-align:top;font-weight: bold;' >Referencia:</td>
+			<td style='vertical-align:top;' >".$faReferencia."</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Voltaje:</td>
+            <td style='vertical-align:top;' >".$faVoltaje."</td>
+			<td style='vertical-align:top;font-weight: bold;' >Eficiencia:</td>
+			<td style='vertical-align:top;' >".$faEficiencia."</td>
+          </tr>
+		  <tr>
+            <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Categoría:</td>
+            <td colspan='3' style='vertical-align:top;' >".$faCategoria."</td>
           </tr>
 		  <tr>
             <td  style='text-align:left;vertical-align:top;font-weight: bold;' >Dirección:</td>
