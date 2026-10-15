@@ -133,8 +133,9 @@
 		if(rows && rows.length > 0){
 			$.each(rows,function(i,r){
 				html += "<tr>";
+				var urlOrden = "<?php echo base_url(); ?>/app_purchase_taller/edit/companyID/"+r.companyID+"/transactionID/"+r.transactionID+"/transactionMasterID/"+r.transactionMasterID;
 				html += "<td>"+(i+1)+"</td>";
-				html += "<td><strong>"+(r.transactionNumber||"")+"</strong></td>";
+				html += "<td><a href='"+urlOrden+"' target='_blank' title='Ir a la orden'><strong>"+(r.transactionNumber||"")+"</strong> <i class='i-link-2'></i></a></td>";
 				html += "<td>"+(r.transactionOn||"")+"</td>";
 				html += "<td>"+(r.customerName||"")+"</td>";
 				html += "<td>"+(r.employerName||"<span class='text-muted'>Sin asignar</span>")+"</td>";
