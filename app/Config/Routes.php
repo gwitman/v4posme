@@ -501,6 +501,8 @@ $routes->match(['get', 'post'], 'app_purchase_taller/viewPrinterFormatoA4Stiker/
 $routes->match(['get', 'post'], 'app_purchase_printertaller/index', 'app_purchase_printertaller::index');
 $routes->match(['get', 'post'], 'app_purchase_printertaller/index/(:any)', 'app_purchase_printertaller::index');
 $routes->match(['get', 'post'], 'app_purchase_printertaller/search', 'app_purchase_printertaller::search');
+$routes->match(['get', 'post'], 'app_purchase_printertaller/viewPrinterAllInput', 'app_purchase_printertaller::viewPrinterAllInput');
+$routes->match(['get', 'post'], 'app_purchase_printertaller/viewPrinterAllOutput', 'app_purchase_printertaller::viewPrinterAllOutput');
 $routes->match(['get', 'post'], 'app_purchase_printertaller/posMeGetRutasOfController', 'app_purchase_printertaller::posMeGetRutasOfController');
 $routes->match(['get', 'post'], 'app_purchase_request/index', 'app_purchase_request::index');
 $routes->match(['get', 'post'], 'app_purchase_request/index/(:any)', 'app_purchase_request::index');

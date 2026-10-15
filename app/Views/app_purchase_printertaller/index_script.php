@@ -48,12 +48,12 @@
 			fnImprimir(urlPrinterOutput,$(this).data("company"),$(this).data("transaction"),$(this).data("master"));
 		});
 
-		//=================== IMPRESION MASIVA ===================
+		//=================== IMPRESION MASIVA (UN SOLO PDF) ===================
 		$(document).on("click","#btnPrintAllInput",function(){
-			fnImprimirTodas(urlPrinterInput,"entrada");
+			fnImprimirTodas("app_purchase_printertaller/viewPrinterAllInput");
 		});
 		$(document).on("click","#btnPrintAllOutput",function(){
-			fnImprimirTodas(urlPrinterOutput,"salida");
+			fnImprimirTodas("app_purchase_printertaller/viewPrinterAllOutput");
 		});
 
 	});
@@ -163,15 +163,34 @@
 		window.open(url,'_blank');
 	}
 
-	//Imprimir todas las ordenes del grid (entrada o salida)
-	function fnImprimirTodas(urlPrinter,tipo){
+	//Imprimir todas las ordenes en un solo PDF (una orden por hoja)
+	//Envia los mismos filtros de la pantalla al controlador por un form a una nueva pestania
+	function fnImprimirTodas(url){
+		//Validar intervalo de fecha obligatorio
+		if($("#txtStartOn").val().trim() == "" || $("#txtEndOn").val().trim() == ""){
+			fnShowNotification("Debe seleccionar un intervalo de fecha (fecha inicial y fecha final) antes de generar el PDF","error");
+			return;
+		}
+
 		if(!objOrdenes || objOrdenes.length == 0){
 			fnShowNotification("No hay ordenes para imprimir","error");
 			return;
 		}
 
-		$.each(objOrdenes,function(i,r){
-			fnImprimir(urlPrinter,r.companyID,r.transactionID,r.transactionMasterID);
+		var form = $('<form>', {
+			method : 'POST',
+			action : "<?php echo base_url(); ?>/"+url,
+			target : '_blank'
 		});
+
+		form.append($('<input>',{type:'hidden',name:'txtStartOn',      value:$("#txtStartOn").val()}));
+		form.append($('<input>',{type:'hidden',name:'txtEndOn',        value:$("#txtEndOn").val()}));
+		form.append($('<input>',{type:'hidden',name:'txtStatusID',     value:$("#txtStatusID").val()}));
+		form.append($('<input>',{type:'hidden',name:'txtEmployerID',   value:$("#txtEmployerID").val()}));
+		form.append($('<input>',{type:'hidden',name:'txtFixedAssetID', value:$("#txtFixedAssetID").val()}));
+
+		$('body').append(form);
+		form.submit();
+		form.remove();
 	}
 </script>
