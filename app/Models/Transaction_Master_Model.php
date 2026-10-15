@@ -1097,7 +1097,7 @@ class Transaction_Master_Model extends Model  {
 			tm.transactionNumber as rememberID,
 			CONCAT('".base_url()."/app_purchase_taller/edit/companyID/',tm.companyID,'/transactionID/40/transactionMasterID/',tm.transactionMasterID) as url,
 			CONCAT(
-				IFNULL(CONCAT(TIME_FORMAT(tm.nextVisit,'%h:%i %p'), ' '), ''),
+				IFNULL(CONCAT(TIME_FORMAT(tm.transactionOn,'%h:%i %p'), ' '), ''),
 				'TALLER ',
 				tm.transactionNumber,
 				IFNULL(CONCAT(' - ', nat.firstName, ' ', IFNULL(nat.lastName,'')), ''),
@@ -1106,7 +1106,7 @@ class Transaction_Master_Model extends Model  {
 			CONCAT(
 				'Estado ', IFNULL(ws.name,''),
 				'<br>',
-				'Hora ', IFNULL(TIME_FORMAT(tm.nextVisit,'%h:%i %p'),''),
+				'Hora ', IFNULL(TIME_FORMAT(tm.transactionOn,'%h:%i %p'),''),
 				'<br><br>',
 				'Cliente ', IFNULL(CONCAT(nat.firstName,' ',IFNULL(nat.lastName,'')),''),
 				'<br>',
@@ -1118,8 +1118,8 @@ class Transaction_Master_Model extends Model  {
 				'<br>',
 				IFNULL(tm.note,'')
 			) as description,
-			tm.nextVisit as createdOn,
-			tm.createdOn as createdOn2,
+			tm.transactionOn as createdOn,
+			tm.transactionOn as createdOn2,
 			0 as tagID,
 			'purple' as color,
 			IFNULL(cus.customerNumber,'') as entidad,
@@ -1141,7 +1141,7 @@ class Transaction_Master_Model extends Model  {
 			tm.isActive = 1 and
 			tm.companyID = $companyID and
 			tm.transactionID = 40 /*ORDEN DE TALLER*/ and
-			tm.nextVisit > '1000-01-01 00:00:00'
+			tm.transactionOn > '1000-01-01 00:00:00'
 		";
 
 		//Ejecutar Consulta
@@ -1157,7 +1157,7 @@ class Transaction_Master_Model extends Model  {
 			tm.transactionNumber as rememberID,
 			CONCAT('".base_url()."/app_purchase_taller/edit/companyID/',tm.companyID,'/transactionID/40/transactionMasterID/',tm.transactionMasterID) as url,
 			CONCAT(
-				IFNULL(CONCAT(TIME_FORMAT(tm.nextVisit,'%h:%i %p'), ' '), ''),
+				IFNULL(CONCAT(TIME_FORMAT(tm.transactionOn,'%h:%i %p'), ' '), ''),
 				'TALLER ',
 				tm.transactionNumber,
 				IFNULL(CONCAT(' - ', nat.firstName, ' ', IFNULL(nat.lastName,'')), ''),
@@ -1166,7 +1166,7 @@ class Transaction_Master_Model extends Model  {
 			CONCAT(
 				'Estado: ', IFNULL(ws.name,''),
 				'<br>',
-				'Hora: ', IFNULL(TIME_FORMAT(tm.nextVisit,'%h:%i %p'),''),
+				'Hora: ', IFNULL(TIME_FORMAT(tm.transactionOn,'%h:%i %p'),''),
 				'<br><br>',
 				'Cliente: ', IFNULL(CONCAT(nat.firstName,' ',IFNULL(nat.lastName,'')),''),
 				'<br>',
@@ -1178,8 +1178,8 @@ class Transaction_Master_Model extends Model  {
 				'<br><br>',
 				IFNULL(tm.note,'')
 			) as description,
-			tm.nextVisit as createdOn,
-			tm.createdOn as createdOn2,
+			tm.transactionOn as createdOn,
+			tm.transactionOn as createdOn2,
 			0 as tagID,
 			'purple' as color,
 			IFNULL(cus.customerNumber,'') as entidad,
@@ -1217,7 +1217,7 @@ class Transaction_Master_Model extends Model  {
 			tm.transactionNumber as rememberID,
 			CONCAT('".base_url()."/app_purchase_taller/edit/companyID/',tm.companyID,'/transactionID/40/transactionMasterID/',tm.transactionMasterID) as url,
 			CONCAT(
-				IFNULL(CONCAT(TIME_FORMAT(tm.nextVisit,'%h:%i %p'), ' '), ''),
+				IFNULL(CONCAT(TIME_FORMAT(tm.transactionOn,'%h:%i %p'), ' '), ''),
 				'TALLER ',
 				tm.transactionNumber,
 				IFNULL(CONCAT(' - ', nat.firstName, ' ', IFNULL(nat.lastName,'')), ''),
@@ -1226,7 +1226,7 @@ class Transaction_Master_Model extends Model  {
 			CONCAT(
 				'Estado: ', IFNULL(ws.name,''),
 				'<br>',
-				'Hora: ', IFNULL(TIME_FORMAT(tm.nextVisit,'%h:%i %p'),''),
+				'Hora: ', IFNULL(TIME_FORMAT(tm.transactionOn,'%h:%i %p'),''),
 				'<br><br>',
 				'Cliente: ', IFNULL(CONCAT(nat.firstName,' ',IFNULL(nat.lastName,'')),''),
 				'<br>',
@@ -1238,8 +1238,8 @@ class Transaction_Master_Model extends Model  {
 				'<br><br>',
 				IFNULL(tm.note,'')
 			) as description,
-			tm.nextVisit as createdOn,
-			tm.createdOn as createdOn2,
+			tm.transactionOn as createdOn,
+			tm.transactionOn as createdOn2,
 			0 as tagID,
 			'purple' as color,
 			IFNULL(cus.customerNumber,'') as entidad,
@@ -1262,7 +1262,7 @@ class Transaction_Master_Model extends Model  {
 			tm.companyID = $companyID and
 			tm.transactionID = 40 /*ORDEN DE TALLER*/ and
 			tm.nextVisit is not null and
-			DATE(tm.nextVisit) = ?
+			DATE(tm.transactionOn) = ?
 		";
 
 		//Ejecutar Consulta
@@ -1276,10 +1276,10 @@ class Transaction_Master_Model extends Model  {
 		$db 	= db_connect();
 		$sql = "
 		select
-			DATEDIFF(DATE(tm.nextVisit), CURDATE()) as diasRestantes,
+			DATEDIFF(DATE(tm.transactionOn), CURDATE()) as diasRestantes,
 			tm.transactionMasterID,
 			tm.transactionNumber,
-			tm.nextVisit,
+			tm.transactionOn,
 			tm.note,
 			IFNULL(ws.name,'') as estado,
 			IFNULL(fa.fixedAssentCode,'') as activoCodigo,
@@ -1306,7 +1306,7 @@ class Transaction_Master_Model extends Model  {
 			tm.companyID = $companyID and
 			tm.transactionID = 40 /*ORDEN DE TALLER*/ and
 			tm.nextVisit is not null and
-			DATEDIFF(DATE(tm.nextVisit), CURDATE()) in (0,1,2,3)
+			DATEDIFF(DATE(tm.transactionOn), CURDATE()) in (0,1,2,3)
 		order by
 			tm.nextVisit asc
 		";
@@ -1354,6 +1354,62 @@ class Transaction_Master_Model extends Model  {
 		$sql = $sql.sprintf(" and tm.isActive = 1 ");
 		$sql = $sql.sprintf(" group by t.transactionID, t.`name` ");
 		$sql = $sql.sprintf(" order by counter desc ");
+		return $db->query($sql)->getResult();
+   }
+
+   /**
+    * Lista las ordenes de taller (tb_transaction_master_workshop_taller) aplicando
+    * filtros opcionales: rango de fecha, colaborador (entityIDSecondary),
+    * proyecto/activo fijo (periodPay) y estado del workflow (statusID).
+    * Devuelve datos listos para el grid/dashboard con nombres de cliente,
+    * colaborador, estado del workflow y estado del equipo.
+    */
+   function getWorkshopOrdersFiltered($companyID,$transactionID,$startOn,$endOn,$employerEntityID,$fixedAssentID,$statusID)
+   {
+		$db 				= db_connect();
+		$companyID			= (int)$companyID;
+		$transactionID		= (int)$transactionID;
+		$employerEntityID	= (int)$employerEntityID;
+		$fixedAssentID		= (int)$fixedAssentID;
+		$statusID			= (int)$statusID;
+		$startOn			= $db->escapeString($startOn);
+		$endOn				= $db->escapeString($endOn);
+
+		$sql = "";
+		$sql = $sql.sprintf("select ");
+		$sql = $sql.sprintf("	tm.companyID, tm.transactionID, tm.transactionMasterID, tm.branchID, ");
+		$sql = $sql.sprintf("	tm.transactionNumber, tm.transactionOn, tm.statusIDChangeOn, tm.note, ");
+		$sql = $sql.sprintf("	tm.amount, tm.statusID, tm.areaID, tm.priorityID, tm.periodPay, ");
+		$sql = $sql.sprintf("	tm.entityID, tm.entityIDSecondary, tm.reference2, tm.createdOn, ");
+		$sql = $sql.sprintf("	ws.name as workflowStageName, ");
+		$sql = $sql.sprintf("	TRIM(CONCAT(IFNULL(natCli.firstName,''),' ',IFNULL(natCli.lastName,''))) as customerName, ");
+		$sql = $sql.sprintf("	TRIM(CONCAT(IFNULL(natEmp.firstName,''),' ',IFNULL(natEmp.lastName,''))) as employerName, ");
+		$sql = $sql.sprintf("	ciEstado.name as estadoEquipoName, ");
+		$sql = $sql.sprintf("	ciTipo.name as articuloName ");
+		$sql = $sql.sprintf(" from tb_transaction_master tm ");
+		$sql = $sql.sprintf(" inner join tb_workflow_stage ws on tm.statusID = ws.workflowStageID ");
+		$sql = $sql.sprintf(" left  join tb_naturales natCli on tm.entityID = natCli.entityID ");
+		$sql = $sql.sprintf(" left  join tb_naturales natEmp on tm.entityIDSecondary = natEmp.entityID ");
+		$sql = $sql.sprintf(" left  join tb_catalog_item ciEstado on tm.areaID = ciEstado.catalogItemID ");
+		$sql = $sql.sprintf(" left  join tb_catalog_item ciTipo on tm.priorityID = ciTipo.catalogItemID ");
+		$sql = $sql.sprintf(" where tm.companyID = %d ", $companyID);
+		$sql = $sql.sprintf(" and tm.transactionID = %d ", $transactionID);
+		$sql = $sql.sprintf(" and tm.isActive = 1 ");
+
+		if($startOn != "" && $endOn != ""){
+			$sql = $sql.sprintf(" and date(tm.transactionOn) between '%s' and '%s' ", $startOn, $endOn);
+		}
+		if($employerEntityID > 0){
+			$sql = $sql.sprintf(" and tm.entityIDSecondary = %d ", $employerEntityID);
+		}
+		if($fixedAssentID > 0){
+			$sql = $sql.sprintf(" and tm.periodPay = %d ", $fixedAssentID);
+		}
+		if($statusID > 0){
+			$sql = $sql.sprintf(" and tm.statusID = %d ", $statusID);
+		}
+
+		$sql = $sql.sprintf(" order by tm.transactionOn desc, tm.transactionMasterID desc ");
 		return $db->query($sql)->getResult();
    }
 

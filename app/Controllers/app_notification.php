@@ -3149,7 +3149,7 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 				$mensaje .= "<thead>";
 				$mensaje .= "<tr style='background:#4e73df; color:#ffffff;'>";
 				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Orden</th>";
-				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Siguiente Visita</th>";
+				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Visita</th>";
 				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Estado</th>";
 				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Cliente</th>";
 				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Telefono</th>";
@@ -3170,7 +3170,7 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 
 					$mensaje .= "<tr style='background:" . $bg . ";'>";
 					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars($i->transactionNumber) . "</td>";
-					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars($i->nextVisit) . "</td>";
+					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars($i->transactionOn) . "</td>";
 					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars($i->estado) . "</td>";
 					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars(trim($i->clienteCodigo . " " . $i->clienteNombre)) . "</td>";
 					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars($i->clienteTelefono) . "</td>";
