@@ -228,15 +228,15 @@ class app_purchase_printertaller extends _BaseController {
 			throw new \Exception("NO HAY ORDENES PARA IMPRIMIR CON LOS FILTROS APLICADOS");
 
 			$htmlFinal	= "";
-			$primera	= true;
+			$total		= count($objList);
+			$indice		= 0;
 			foreach($objList as $orden){
+				$indice++;
 				$htmlOrden = $this->buildOrdenHtml($dataSession,$companyID,$orden->transactionID,$orden->transactionMasterID,$mode);
-				//Salto de pagina entre ordenes (la primera no lo necesita)
-				if(!$primera){
-					$htmlFinal .= "<div style='page-break-before: always;'></div>";
-				}
-				$htmlFinal .= $htmlOrden;
-				$primera = false;
+				//Cada orden ocupa una sola hoja: salto de pagina DESPUES de cada orden,
+				//excepto la ultima para no generar una hoja en blanco al final.
+				$pageBreak = ($indice < $total) ? "page-break-after: always;" : "";
+				$htmlFinal .= "<div style='".$pageBreak."'>".$htmlOrden."</div>";
 			}
 
 			$this->dompdf->loadHTML($htmlFinal);
