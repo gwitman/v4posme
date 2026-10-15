@@ -3848,17 +3848,21 @@ class app_box_share extends _BaseController {
 			
 			$saldoInicial 	= $saldos == "Individuales"? $saldoInicial: $saldoInicialGeneral ;
 			$saldoFinal 	= $saldos == "Individuales"? $saldoFinal: $saldoFinalGeneral ;
-			
+			$shareAmount 	= 0;
+
 			$detalle = array();
 			if($saldos != "Basico"){
 				$row = array("SALDO INICIAL", '', $datView["objCurrency"]->simbol. sprintf("%.2f", $saldoInicial));
 				array_push($detalle,$row);
 				
+
 				foreach($datView["objTMD"] as $detail_){
-					$row = array("ABONO", '', sprintf('%.2f',round($detail_->amount,2)));
-					array_push($detalle,$row);
+					$shareAmount = $shareAmount + $detail_->amount;
 				}
 				
+				$row = array("ABONO", '', sprintf('%.2f',round($shareAmount,2)));
+				array_push($detalle,$row);
+
 				$row = array("SALDO FINAL", '', sprintf('%.2f', $saldoFinal) );
 				array_push($detalle,$row);
 			}
