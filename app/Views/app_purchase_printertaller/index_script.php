@@ -13,9 +13,9 @@
 		$('#txtStatusID').select2();
 
 		//=================== EXAMINADORES ===================
-		//Buscar Colaborador
+		//Buscar Colaborador (mismo examinador que app_afx_fixedassent/add -> Asignado A)
 		$(document).on("click","#btnSearchEmployer",function(){
-			var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteEmployee/SELECCIONAR_EMPLOYEE_PAGINATED/true/empty/true/not_redirect_when_empty/1/1/50/";
+			var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $componentEmployeeID; ?>/onCompleteEmployee/SELECCIONAR_EMPLOYEE/true/empty/false/not_redirect_when_empty";
 			window.open(url_request,"MsgWindow","width=900,height=450");
 			window.onCompleteEmployee = onCompleteEmployee;
 		});
@@ -24,11 +24,11 @@
 			$("#txtEmployerDescription").val("");
 		});
 
-		//Buscar Proyecto / Activo Fijo
+		//Buscar Proyecto (mismo examinador que app_afx_fixedassent/add -> Proyecto)
 		$(document).on("click","#btnSearchFixedAsset",function(){
-			var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentFixedAsset->componentID; ?>/onCompleteFixedAsset/SELECCIONAR_FIXEDASSENT/true/empty/false/not_redirect_when_empty";
+			var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCatalog->componentID; ?>/onCompleteProyect/SELECCIONAR_ACTIVOFIJO_PROYECTO/true/empty/false/not_redirect_when_empty";
 			window.open(url_request,"MsgWindow","width=900,height=450");
-			window.onCompleteFixedAsset = onCompleteFixedAsset;
+			window.onCompleteProyect = onCompleteProyect;
 		});
 		$(document).on("click","#btnClearFixedAsset",function(){
 			$("#txtFixedAssetID").val("");
@@ -58,17 +58,17 @@
 
 	});
 
-	//Callbacks de los examinadores
+	//Callbacks de los examinadores (mismos que app_afx_fixedassent/add)
 	function onCompleteEmployee(objResponse){
 		if(objResponse != undefined){
 			$("#txtEmployerID").val(objResponse[0][2]);
 			$("#txtEmployerDescription").val(objResponse[0][3] + " / " + objResponse[0][4]);
 		}
 	}
-	function onCompleteFixedAsset(objResponse){
+	function onCompleteProyect(objResponse){
 		if(objResponse != undefined){
 			$("#txtFixedAssetID").val(objResponse[0][0]);
-			$("#txtFixedAssetDescription").val(objResponse[0][1] + " " + objResponse[0][2]);
+			$("#txtFixedAssetDescription").val(objResponse[0][1] + " | " + objResponse[0][2]);
 		}
 	}
 

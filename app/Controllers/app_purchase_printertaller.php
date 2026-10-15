@@ -39,13 +39,14 @@ class app_purchase_printertaller extends _BaseController {
 			$transactionID		= $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_workshop_taller",0);
 
 			//Componentes usados por los examinadores (colaborador / proyecto)
-			$objComponentItem		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
-			if(!$objComponentItem)
-			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+			//Mismos examinadores que el formulario app_afx_fixedassent/add
+			$objComponentEmployee	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
+			if(!$objComponentEmployee)
+			throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
 
-			$objComponentFixedAsset	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_fixed_assent");
-			if(!$objComponentFixedAsset)
-			throw new \Exception("EL COMPONENTE 'tb_fixed_assent' NO EXISTE...");
+			$objComponentCatalog	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_public_catalog");
+			if(!$objComponentCatalog)
+			throw new \Exception("EL COMPONENTE 'tb_public_catalog' NO EXISTE...");
 
 			//Parametros con las urls de impresion de las ordenes de taller
 			$objParameterUrlPrinterInput	= $this->core_web_parameter->getParameter("WORKSHOW_URL_PRINTER_TALLER",$companyID);
@@ -58,8 +59,8 @@ class app_purchase_printertaller extends _BaseController {
 			$dataView["roleID"]						= $roleID;
 			$dataView["transactionID"]				= $transactionID;
 			$dataView["objComponent"]				= $objComponent;
-			$dataView["objComponentItem"]			= $objComponentItem;
-			$dataView["objComponentFixedAsset"]		= $objComponentFixedAsset;
+			$dataView["componentEmployeeID"]		= $objComponentEmployee->componentID;
+			$dataView["objComponentCatalog"]		= $objComponentCatalog;
 			$dataView["objListWorkflowStage"]		= $this->core_web_workflow->getWorkflowAllStage("tb_transaction_master_workshop_taller","statusID",$companyID,$branchID,$roleID);
 			$dataView["objParameterUrlPrinterInput"]	= $objParameterUrlPrinterInput ? $objParameterUrlPrinterInput->value : "app_purchase_taller/viewPrinterFormatoA4";
 			$dataView["objParameterUrlPrinterOutput"]	= $objParameterUrlPrinterOutput ? $objParameterUrlPrinterOutput->value : "app_purchase_taller/viewPrinterFormatoA4Output";
