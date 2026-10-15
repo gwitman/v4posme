@@ -163,18 +163,10 @@
 		window.open(url,'_blank');
 	}
 
-	//Imprimir todas las ordenes del grid (entrada o salida) segun checkbox
+	//Imprimir todas las ordenes del grid (entrada o salida)
 	function fnImprimirTodas(urlPrinter,tipo){
 		if(!objOrdenes || objOrdenes.length == 0){
 			fnShowNotification("No hay ordenes para imprimir","error");
-			return;
-		}
-		if(tipo == "entrada" && !$("#chkInput").is(":checked")){
-			fnShowNotification("Marque el checkbox de ordenes de entrada","error");
-			return;
-		}
-		if(tipo == "salida" && !$("#chkOutput").is(":checked")){
-			fnShowNotification("Marque el checkbox de ordenes de salida","error");
 			return;
 		}
 

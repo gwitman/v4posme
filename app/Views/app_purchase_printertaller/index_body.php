@@ -33,6 +33,37 @@
 	.ptaller-wrapper .grid-card{ border-radius:10px; box-shadow:0 2px 10px rgba(0,0,0,.08); }
 	.ptaller-wrapper table#tableOrdenes thead th{ background:#f8f9fc; }
 	.ptaller-wrapper .badge-estado{ background:#36b9cc; }
+
+	/* Asegurar que el calendario del datepicker se vea solido y por encima del panel */
+	.datepicker.dropdown-menu{
+		background:#fff !important;
+		border:1px solid #d9d9d9 !important;
+		border-radius:6px;
+		box-shadow:0 6px 18px rgba(0,0,0,.15) !important;
+		z-index:9999 !important;
+		padding:6px;
+	}
+	.datepicker table{ background:#fff; width:100%; }
+	.datepicker td, .datepicker th{ background:#fff; border-radius:4px; color:#333; text-align:center; }
+	/* Encabezado: nombre del mes + año y flechas de navegacion */
+	.datepicker thead tr:first-child th{
+		background:#4e73df !important;
+		color:#fff !important;
+		font-weight:600;
+		padding:8px 6px;
+	}
+	.datepicker thead tr:first-child th:hover{ background:#3b5fd0 !important; }
+	.datepicker .datepicker-switch{ font-size:14px; color:#fff !important; }
+	.datepicker .prev, .datepicker .next{ color:#fff !important; font-size:16px; }
+	/* Fila de nombres de dias (Lu, Ma, ...) */
+	.datepicker thead tr .dow{ background:#f8f9fc !important; color:#777 !important; font-weight:600; font-size:11px; }
+	.datepicker td.day:hover, .datepicker th:hover{ background:#eef1fb; }
+	.datepicker td.active, .datepicker td.active:hover,
+	.datepicker td.active.day, .datepicker span.active{ background:#4e73df !important; color:#fff !important; }
+	.datepicker td.today, .datepicker td.today:hover{ background:#f6c23e !important; color:#fff !important; }
+	.datepicker td.old, .datepicker td.new{ color:#bbb !important; }
+	.datepicker td span{ border-radius:4px; }
+	.datepicker td span:hover{ background:#eef1fb; }
 </style>
 
 <div class="ptaller-wrapper">
@@ -81,6 +112,7 @@
 									<?php
 									if($objListWorkflowStage)
 									foreach($objListWorkflowStage as $ws){
+										if(!$ws) continue;
 										echo "<option value='".$ws->workflowStageID."'>".$ws->name."</option>";
 									}
 									?>
@@ -120,21 +152,6 @@
 									<span class="input-group-btn">
 										<button class="btn btn-primary" type="button" id="btnSearchFixedAsset"><i class="i-search-5"></i></button>
 									</span>
-								</div>
-							</div>
-						</div>
-
-						<!-- Checkbox impresion de entrada / salida -->
-						<div class="col-lg-6 col-md-12">
-							<div class="form-group">
-								<label class="control-label">Documentos a imprimir</label>
-								<div style="padding-top:6px">
-									<label class="checkbox-inline">
-										<input type="checkbox" id="chkInput" checked> Ordenes de entrada
-									</label>
-									<label class="checkbox-inline">
-										<input type="checkbox" id="chkOutput"> Ordenes de salida
-									</label>
 								</div>
 							</div>
 						</div>

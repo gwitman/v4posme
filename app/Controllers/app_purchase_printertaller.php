@@ -60,7 +60,7 @@ class app_purchase_printertaller extends _BaseController {
 			$dataView["objComponent"]				= $objComponent;
 			$dataView["objComponentItem"]			= $objComponentItem;
 			$dataView["objComponentFixedAsset"]		= $objComponentFixedAsset;
-			$dataView["objListWorkflowStage"]		= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_workshop_taller","statusID",0,$companyID,$branchID,$roleID);
+			$dataView["objListWorkflowStage"]		= $this->core_web_workflow->getWorkflowAllStage("tb_transaction_master_workshop_taller","statusID",$companyID,$branchID,$roleID);
 			$dataView["objParameterUrlPrinterInput"]	= $objParameterUrlPrinterInput ? $objParameterUrlPrinterInput->value : "app_purchase_taller/viewPrinterFormatoA4";
 			$dataView["objParameterUrlPrinterOutput"]	= $objParameterUrlPrinterOutput ? $objParameterUrlPrinterOutput->value : "app_purchase_taller/viewPrinterFormatoA4Output";
 
