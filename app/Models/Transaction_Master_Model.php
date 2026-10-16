@@ -1303,11 +1303,10 @@ class Transaction_Master_Model extends Model  {
 		where
 			tm.isActive = 1 and
 			tm.companyID = $companyID and
-			tm.transactionID = 40 /*ORDEN DE TALLER*/ and
-			tm.nextVisit is not null and
+			tm.transactionID = 40 /*ORDEN DE TALLER*/ and 
 			DATEDIFF(DATE(tm.transactionOn), CURDATE()) in (0,1,2,3)
 		order by
-			tm.nextVisit asc
+			tm.transactionOn asc
 		";
 
 		//Ejecutar Consulta
