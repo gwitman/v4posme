@@ -4,11 +4,28 @@
 	$(document).ready(function(){					
 		var varParameterCantidadItemPoup		= '<?php echo $objParameterCantidadItemPoup; ?>';  
 		
-		$('#txtDate').datepicker({format:"yyyy-mm-dd"});						 
-		$("#txtDate").datepicker("update");
+		$('#txtDateOnly').datepicker({format:"yyyy-mm-dd"});						 
+		$("#txtDateOnly").datepicker("update");
+		if(!$('#txtDateTime').val()){
+			$('#txtDateTime').val(moment().format("HH:mm"));
+		}
 		$('#txtNextVisitDate').datepicker({format:"yyyy-mm-dd"});
 		$("#txtNextVisitDate").datepicker("update");
 		$('.txt-numeric').mask('000,000.00', {reverse: true});
+
+		//Combinar fecha + hora del documento en el campo oculto txtDate
+		function fnUpdateDate(){
+			var fecha = $('#txtDateOnly').val().trim();
+			var hora  = $('#txtDateTime').val().trim();
+			if(fecha){
+				$('#txtDate').val(hora ? (fecha + " " + hora + ":00") : (fecha + " 00:00:00"));
+			}else{
+				$('#txtDate').val("");
+			}
+		}
+		$(document).on("change","#txtDateOnly, #txtDateTime", fnUpdateDate);
+		$('#txtDateOnly').on("changeDate", fnUpdateDate);
+		fnUpdateDate();
 
 		//Combinar fecha + hora de la siguiente visita en el campo oculto txtNextVisit
 		function fnUpdateNextVisit(){
@@ -219,7 +236,7 @@
 		var timerNotification 	= 15000;
 		
 		//Validar Fecha
-		if($("#txtDate").val() == ""){
+		if($("#txtDateOnly").val() == ""){
 			fnShowNotification("Establecer Fecha al Documento","error",timerNotification);
 			result = false;
 		}

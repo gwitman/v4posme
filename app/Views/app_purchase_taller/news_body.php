@@ -39,7 +39,7 @@
 					<li class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="#dropdown" data-toggle="tab">Comentario</a></li>
+							<li><a href="#dropdown" data-toggle="tab">Datos</a></li>
 							<li><a href="#dropdown-file" data-toggle="tab">Archivos</a></li>
 							</ul>
 					</li>
@@ -56,10 +56,21 @@
 									<div class="form-group">
 										<label class="col-lg-4 control-label" for="datepicker">Fecha</label>
 										<div class="col-lg-8">
-											<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
-												<input size="16"  class="form-control" type="text" name="txtDate" id="txtDate" >
-												<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+											<div class="row">
+												<div class="col-lg-7">
+													<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
+														<input size="16"  class="form-control" type="text" name="txtDateOnly" id="txtDateOnly" >
+														<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+													</div>
+												</div>
+												<div class="col-lg-5">
+													<div class="input-group">
+														<input class="form-control" type="time" name="txtDateTime" id="txtDateTime" value="">
+														<span class="input-group-addon"><i class="icon16 i-clock"></i></span>
+													</div>
+												</div>
 											</div>
+											<input type="hidden" name="txtDate" id="txtDate" value="">
 										</div>
 									</div>
 									
