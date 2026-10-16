@@ -1261,7 +1261,6 @@ class Transaction_Master_Model extends Model  {
 			tm.isActive = 1 and
 			tm.companyID = $companyID and
 			tm.transactionID = 40 /*ORDEN DE TALLER*/ and
-			tm.nextVisit is not null and
 			DATE(tm.transactionOn) = ?
 		";
 
