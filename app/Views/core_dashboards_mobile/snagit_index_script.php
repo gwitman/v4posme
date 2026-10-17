@@ -16,6 +16,7 @@ createApp({
             detalleAbonoAbierto: null,
             detalleCashOutAbierto: null,
             detalleCashInAbierto: null,
+            detalleOtherInputAbierto: null,
             detalleGastoAbierto: null,
             detalleProductoAbierto: null,
             detalleCreditoAbierto: null,
@@ -58,9 +59,14 @@ createApp({
         isCostView() {
             return this.filterTransaction === 'cost';
         },
+        // Vista de otras entradas de inventario (maestro-detalle por producto)
+        isOtherInputView() {
+            return this.filterTransaction === '12';
+        },
         hasData() {
             if (this.isUtilityView) return this.utilityHasData;
             if (this.isCostView) return this.costGroupedData.length > 0;
+            if (this.isOtherInputView) return this.otherInputGroupedData.length > 0;
             return this.objListData.length > 0;
         },
         utilityHasData() {
@@ -93,6 +99,34 @@ createApp({
                 });
             });
             return Object.values(map);
+        },
+        otherInputGroupedData() {
+            if (this.filterTransaction !== '12') return [];
+            const map = {};
+            this.objListData.forEach(item => {
+                const key = item.transactionMasterID;
+                if (!map[key]) {
+                    map[key] = {
+                        transactionMasterID: item.transactionMasterID,
+                        Documento:           item.Documento,
+                        Fecha:               item.Fecha,
+                        Concepto:            item.Concepto,
+                        Monto:               parseFloat(item.Monto || 0),
+                        detalle: []
+                    };
+                }
+                map[key].detalle.push({
+                    Codigo:   item.Codigo,
+                    Producto: item.Producto,
+                    Cantidad: item.Cantidad,
+                    Costo:    item.Costo,
+                    Precio:   item.Precio
+                });
+            });
+            return Object.values(map);
+        },
+        otherInputTotalMonto() {
+            return this.otherInputGroupedData.reduce((sum, g) => sum + g.Monto, 0);
         },
         groupedData() {
             if (this.filterTransaction != '19') return [];
@@ -221,6 +255,7 @@ createApp({
             this.detalleAbonoAbierto = null;
             this.detalleCashOutAbierto = null;
             this.detalleCashInAbierto = null;
+            this.detalleOtherInputAbierto = null;
             this.detalleGastoAbierto = null;
             this.detalleProductoAbierto = null;
             this.detalleCreditoAbierto = null;
@@ -256,6 +291,9 @@ createApp({
         toggleDetalleCashIn(idx) {
             this.detalleCashInAbierto = this.detalleCashInAbierto === idx ? null : idx;
         },
+        toggleDetalleOtherInput(idx) {
+            this.detalleOtherInputAbierto = this.detalleOtherInputAbierto === idx ? null : idx;
+        },
         toggleDetalleGasto(idx) {
             this.detalleGastoAbierto = this.detalleGastoAbierto === idx ? null : idx;
         },
@@ -276,6 +314,7 @@ createApp({
                 this.detalleAbierto = null;
                 this.detalleCashOutAbierto = null;
                 this.detalleCashInAbierto = null;
+                this.detalleOtherInputAbierto = null;
                 this.detalleGastoAbierto = null;
                 this.detalleProductoAbierto = null;
                 this.detalleCreditoAbierto = null;
