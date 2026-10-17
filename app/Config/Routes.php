@@ -484,6 +484,8 @@ $routes->match(['get', 'post'], 'app_purchase_taller/save', 'app_purchase_taller
 $routes->match(['get', 'post'], 'app_purchase_taller/save/(:any)', 'app_purchase_taller::save');
 $routes->match(['get', 'post'], 'app_purchase_taller/insertElement', 'app_purchase_taller::insertElement');
 $routes->match(['get', 'post'], 'app_purchase_taller/insertElement/(:any)', 'app_purchase_taller::insertElement');
+$routes->match(['get', 'post'], 'app_purchase_taller/insertElementApi', 'app_purchase_taller::insertElementApi');
+$routes->match(['get', 'post'], 'app_purchase_taller/insertElementApi/(:any)', 'app_purchase_taller::insertElementApi');
 $routes->match(['get', 'post'], 'app_purchase_taller/updateElement', 'app_purchase_taller::updateElement');
 $routes->match(['get', 'post'], 'app_purchase_taller/updateElement/(:any)', 'app_purchase_taller::updateElement');
 $routes->match(['get', 'post'], 'app_purchase_taller/edit', 'app_purchase_taller::edit');

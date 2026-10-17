@@ -102,6 +102,29 @@
 					window.open("<?php echo base_url(); ?>"+"/"+urlPrinterStiker+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>", '_blank');
 					fnWaitClose();																	
 		});
+
+		//Crear una nueva orden de trabajo a partir de la actual (usa la siguiente visita)
+		$(document).on("click","#btnCrearOrden",function(e){
+			e.preventDefault();
+
+			//Validar que la siguiente visita este establecida (fecha + hora combinadas en el hidden)
+			var nextVisit = $("#txtNextVisit").val();
+			if(!nextVisit || nextVisit.trim() === ""){
+				fnShowNotification("Debe establecer la fecha de la siguiente visita antes de crear la orden","error",15000);
+				return;
+			}
+
+			//Precargar con los valores actuales y abrir el formulario rapido
+			$("#txtCrearOrdenProblema").val($("#txtDetailReference2").val());
+			$("#txtCrearOrdenNota").val($("#txtDetailReference1").val());
+			mostrarModal("ModalCrearOrden");
+		});
+
+		//Boton "Cerrar" del modal de crear orden: solo cerrar
+		$(document).on("click",".btnCerrarModalCrearOrden",function(e){
+			e.preventDefault();
+			cerrarModal("ModalCrearOrden");
+		});
 		
 		
 		
@@ -277,6 +300,42 @@
 		cerrarModal("ModalSiguienteVisitaTaller");
 		fnWaitOpen();
 		$( "#form-new-invoice" ).submit();
+	}
+
+	//Boton "Aceptar" del modal rapido: crear la nueva orden via API
+	function fnAceptarModalCrearOrden(){
+		var nextVisit = $("#txtNextVisit").val();
+		if(!nextVisit || nextVisit.trim() === ""){
+			fnShowNotification("Debe establecer la fecha de la siguiente visita antes de crear la orden","error",15000);
+			return;
+		}
+
+		cerrarModal("ModalCrearOrden");
+		fnWaitOpen();
+		$.ajax({
+			cache    : false,
+			dataType : 'json',
+			type     : 'POST',
+			url      : "<?php echo base_url(); ?>/app_purchase_taller/insertElementApi",
+			data     : {
+				transactionMasterID : <?php echo $objTransactionMaster->transactionMasterID; ?>,
+				problema            : $("#txtCrearOrdenProblema").val(),
+				nota                : $("#txtCrearOrdenNota").val()
+			},
+			success:function(data){
+				fnWaitClose();
+				if(data.error){
+					fnShowNotification(data.message,"error",15000);
+				}else{
+					var linkOrden = "<a href='"+data.url+"' style='color:#fff;text-decoration:underline'>Ir a la orden</a>";
+					fnShowNotification("La orden de trabajo fue elaborada. "+linkOrden,"success",15000);
+				}
+			},
+			error:function(xhr,data){
+				fnWaitClose();
+				fnShowNotification("Error 505 al crear la orden","error",15000);
+			}
+		});
 	}
 	
 	function refreschChecked(){

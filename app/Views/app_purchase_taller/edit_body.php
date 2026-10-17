@@ -9,7 +9,15 @@
 				<a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>									
 				<a href="#" class="btn btn-primary <?php echo getBehavio($company->type,"app_purchase_taller","classBtnTaller","");  ?>" id="btnPrinter"><i class="icon16 i-print"></i> Imprimir E.</a>
 				<a href="#" class="btn btn-primary <?php echo getBehavio($company->type,"app_purchase_taller","classBtnTaller","");  ?>" id="btnPrinterOutput"><i class="icon16 i-print"></i> Imprimir S.</a>
-				<a href="#" class="btn btn-primary <?php echo getBehavio($company->type,"app_purchase_taller","classBtnTaller","");  ?>" id="btnPrinterStiker"><i class="icon16 i-print"></i> Imprimir Stiker.</a>
+				<div class="btn-group <?php echo getBehavio($company->type,"app_purchase_taller","classBtnTaller","");  ?>">
+					<button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<i class="icon16 i-print"></i> Opciones <span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu">
+						<li><a href="#" id="btnPrinterStiker"><i class="icon16 i-print"></i> Imprimir Sticker</a></li>
+						<li><a href="#" id="btnCrearOrden" class="<?php echo getBehavio($company->type,"app_purchase_taller","classBtnCrearOrden","");  ?>"><i class="icon16 i-copy-3"></i> Crear orden</a></li>
+					</ul>
+				</div>
 				<a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
 			</div>
 		</div> 
@@ -564,5 +572,28 @@
 </div>
 <?php
 	helper_getHtmlOfModalDialog("ModalSiguienteVisitaTaller","modalBodySiguienteVisitaTaller","fnAceptarModalSiguienteVisitaTaller",true);
+?>
+
+<div id="modalBodyCrearOrden" style="display:none">
+	<div style="text-align:left">
+		<h3 style="color:#0d6efd;text-align:center;margin-bottom:5px">
+			<i class="icon20 i-copy-3"></i> Nueva Orden de Trabajo
+		</h3>
+		<p style="text-align:center;color:#6c757d;margin-top:0">
+			Completa el problema y la nota para la nueva orden
+		</p>
+		<div style="margin-top:15px">
+			<label for="txtCrearOrdenProblema" style="font-weight:bold;color:#333">Problema</label>
+			<textarea class="form-control" id="txtCrearOrdenProblema" rows="3" placeholder="Describe el problema..." style="border-radius:8px"></textarea>
+		</div>
+		<div style="margin-top:12px">
+			<label for="txtCrearOrdenNota" style="font-weight:bold;color:#333">Nota</label>
+			<textarea class="form-control" id="txtCrearOrdenNota" rows="3" placeholder="Agrega una nota..." style="border-radius:8px"></textarea>
+		</div>
+	</div>
+	<br/>
+</div>
+<?php
+	helper_getHtmlOfModalDialog("ModalCrearOrden","modalBodyCrearOrden","fnAceptarModalCrearOrden",true,"max-width:480px;width:90%;");
 ?>
 
