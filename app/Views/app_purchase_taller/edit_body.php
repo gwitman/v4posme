@@ -558,3 +558,11 @@
 	</div>
 </div>
 
+<div id="modalBodySiguienteVisitaTaller" style="display:none">
+	<h3>MARCA UNA SIGUIENTE VISITA</h3>
+	<br/>
+</div>
+<?php
+	helper_getHtmlOfModalDialog("ModalSiguienteVisitaTaller","modalBodySiguienteVisitaTaller","fnAceptarModalSiguienteVisitaTaller",true);
+?>
+

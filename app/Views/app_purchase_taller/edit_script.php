@@ -67,11 +67,21 @@
 				$( "#form-new-invoice" ).attr("method","POST");
 				$( "#form-new-invoice" ).attr("action","<?php echo base_url(); ?>/app_purchase_taller/save/edit");
 				
-				if(validateForm()){
-					fnWaitOpen();
-					$( "#form-new-invoice" ).submit();
+				if(!validateForm()){
+					return;
 				}
+
+				<?php echo getBehavio($company->type,"app_purchase_taller","scriptBtnAceptBeforeSubmit","") ?>
+
+				fnWaitOpen();
+				$( "#form-new-invoice" ).submit();
 				
+		});
+
+		//Boton "Cerrar" del modal: solo cerrar, no guardar
+		$(document).on("click",".btnCerrarModalSiguienteVisitaTaller",function(e){
+			e.preventDefault();
+			cerrarModal("ModalSiguienteVisitaTaller");
 		});
 		
 		
@@ -255,6 +265,18 @@
 		
 		<?php echo getBehavio($company->type,"app_purchase_taller","scriptValidateForm","") ?>
 		return result;
+	}
+
+	//Boton "Aceptar" (Si) del modal: no dejar pasar si la siguiente visita esta vacia o nula
+	function fnAceptarModalSiguienteVisitaTaller(){		
+		var nextVisit = $("#txtNextVisit").val();
+		if(!nextVisit || nextVisit.trim() === ""){
+			fnShowNotification("Debe establecer la siguiente visita","error",15000);
+			return;
+		}
+		cerrarModal("ModalSiguienteVisitaTaller");
+		fnWaitOpen();
+		$( "#form-new-invoice" ).submit();
 	}
 	
 	function refreschChecked(){
