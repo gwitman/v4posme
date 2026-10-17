@@ -27,6 +27,7 @@
                     <option value="productInventoryQuantity">INVENTARIO QYT</option>
                     <option value="productInventoryZero">INVENTARIO C$</option>
                     <option value="30">SALIDA DE CAJA</option>
+                    <option value="29">ENTRADA DE CAJA</option>
                     <option value="38">GASTO</option>
                     <option value="interest">INTERESES</option>
                     <option value="capital">CAPITAL</option>
@@ -484,6 +485,56 @@
                             <p class="small mb-1"><i class="bx bx-category me-1"></i><strong>Tipo:</strong> {{ item.Tipo }}</p>
                             <p class="small mb-1"><i class="bx bx-folder me-1"></i><strong>Categoría:</strong> {{ item.Categoria }}</p>
                             <p class="small mb-1"><i class="bx bx-calendar me-1"></i><strong>Fecha:</strong> {{ formatFecha(item.Fecha) }}</p>
+                            <p class="small mb-0"><i class="bx bx-note me-1"></i><strong>Descripción:</strong> {{ item.Descripcion || '-' }}</p>
+                          </div>
+                        </td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla ENTRADA DE CAJA -->
+      <div class="row" v-if="!loading && objListData.length > 0 && filterTransaction == '29'">
+        <div class="col-12">
+          <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center py-2">
+              <h6 class="mb-0"><i class="bx bx-log-in me-1"></i>Entrada de Caja</h6>
+              <span class="badge bg-success">{{ objListData.length }} registros</span>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-sm table-hover mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th class="small" style="width:30px;"></th>
+                      <th class="small">Código</th>
+                      <th class="small d-none d-md-table-cell">Concepto</th>
+                      <th class="small text-end">Monto</th>
+                      <th class="small d-none d-md-table-cell">Fecha y Hora</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <template v-for="(item, idx) in objListData" :key="idx">
+                      <tr @click="toggleDetalleCashIn(idx)" style="cursor:pointer;">
+                        <td class="small text-center">
+                          <i class="bx" :class="detalleCashInAbierto === idx ? 'bx-chevron-down text-primary' : 'bx-chevron-right'"></i>
+                        </td>
+                        <td class="small fw-semibold text-success">{{ item.Codigo }}</td>
+                        <td class="small d-none d-md-table-cell">{{ item.Tipo }}</td>
+                        <td class="small text-end fw-bold">{{ formatMoney(item.Monto) }}</td>
+                        <td class="small d-none d-md-table-cell">{{ formatFechaHora(item.Fecha) }}</td>
+                      </tr>
+                      <tr v-if="detalleCashInAbierto === idx">
+                        <td :colspan="isMobile ? 3 : 5" class="p-0">
+                          <div class="p-2" style="background-color: #e8f5e9; border-left: 4px solid #43a047;">
+                            <p class="small mb-1"><i class="bx bx-category me-1"></i><strong>Concepto:</strong> {{ item.Tipo }}</p>
+                            <p class="small mb-1"><i class="bx bx-folder me-1"></i><strong>Categoría:</strong> {{ item.Categoria }}</p>
+                            <p class="small mb-1"><i class="bx bx-calendar me-1"></i><strong>Fecha y Hora:</strong> {{ formatFechaHora(item.Fecha) }}</p>
                             <p class="small mb-0"><i class="bx bx-note me-1"></i><strong>Descripción:</strong> {{ item.Descripcion || '-' }}</p>
                           </div>
                         </td>

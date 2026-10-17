@@ -15,6 +15,7 @@ createApp({
             detalleAbierto: null,
             detalleAbonoAbierto: null,
             detalleCashOutAbierto: null,
+            detalleCashInAbierto: null,
             detalleGastoAbierto: null,
             detalleProductoAbierto: null,
             detalleCreditoAbierto: null,
@@ -41,7 +42,7 @@ createApp({
             return ['productSalesAmount', 'productSalesQuantity'].includes(this.filterTransaction);
         },
         isCashOutView() {
-            return ['30', '38'].includes(this.filterTransaction);
+            return ['30', '38', '29'].includes(this.filterTransaction);
         },
         isUtilityView() {
             return this.filterTransaction === 'utility';
@@ -219,6 +220,7 @@ createApp({
             this.detalleAbierto = null;
             this.detalleAbonoAbierto = null;
             this.detalleCashOutAbierto = null;
+            this.detalleCashInAbierto = null;
             this.detalleGastoAbierto = null;
             this.detalleProductoAbierto = null;
             this.detalleCreditoAbierto = null;
@@ -235,6 +237,13 @@ createApp({
             if (isNaN(d)) return fecha;
             return d.toLocaleDateString('es-NI', { day: '2-digit', month: '2-digit', year: 'numeric' });
         },
+        formatFechaHora(fecha) {
+            if (!fecha) return '-';
+            const d = new Date(fecha);
+            if (isNaN(d)) return fecha;
+            return d.toLocaleDateString('es-NI', { day: '2-digit', month: '2-digit', year: 'numeric' }) +
+                ' ' + d.toLocaleTimeString('es-NI', { hour: '2-digit', minute: '2-digit' });
+        },
         toggleDetalle(idx) {
             this.detalleAbierto = this.detalleAbierto === idx ? null : idx;
         },
@@ -243,6 +252,9 @@ createApp({
         },
         toggleDetalleCashOut(idx) {
             this.detalleCashOutAbierto = this.detalleCashOutAbierto === idx ? null : idx;
+        },
+        toggleDetalleCashIn(idx) {
+            this.detalleCashInAbierto = this.detalleCashInAbierto === idx ? null : idx;
         },
         toggleDetalleGasto(idx) {
             this.detalleGastoAbierto = this.detalleGastoAbierto === idx ? null : idx;
@@ -263,6 +275,7 @@ createApp({
                 this.mensaje = '';
                 this.detalleAbierto = null;
                 this.detalleCashOutAbierto = null;
+                this.detalleCashInAbierto = null;
                 this.detalleGastoAbierto = null;
                 this.detalleProductoAbierto = null;
                 this.detalleCreditoAbierto = null;

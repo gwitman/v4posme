@@ -1039,6 +1039,55 @@ class Transaction_Master_Model extends Model  {
 		log_message("error",print_r($sql,true));
 		return $db->query($sql)->getResult();
 	}
+	function getRowAll_DashboardMobile_EntradaDeCaja(
+			$transactionID,
+			$startOn,
+			$endOn,
+			$custonerName,
+			$itemName
+	)
+	{
+		$db = db_connect();
+		$sql = "";
+		$sql = $sql . sprintf("
+			SELECT
+				c.transactionMasterID,
+				c.createdOn as Fecha,
+				c.transactionNumber as Codigo,
+				tipo.`name` as Tipo,
+				categoria.`name` as Categoria ,
+				c.amount as Monto,
+				c.reference1 as Descripcion   
+			FROM tb_transaction_master c
+			INNER JOIN tb_workflow_stage ws
+				ON ws.workflowStageID = c.statusID			
+			INNER JOIN tb_transaction t
+				ON t.transactionID = c.transactionID
+			INNER JOIN tb_transaction_master_detail tmd
+				ON tmd.transactionMasterID = c.transactionMasterID
+			INNER JOIN tb_catalog_item tipo on 
+				tipo.catalogItemID = c.areaID 
+			INNER JOIN tb_catalog_item categoria on 	
+				categoria.catalogItemID = c.priorityID 
+			WHERE
+				c.isActive = 1
+				AND ws.aplicable = 1
+				AND c.transactionID = 29 
+				AND c.createdOn BETWEEN '$startOn' AND '$endOn'
+				AND tmd.isActive = 1
+				AND (
+					'$custonerName' = ''
+					OR CONCAT(c.reference1) LIKE '%%$custonerName%%'
+				) 
+			GROUP BY 
+				c.createdOn 
+			ORDER BY 
+				1 DESC 
+		");
+
+		log_message("error",print_r($sql,true));
+		return $db->query($sql)->getResult();
+	}
 	function getRowAll_DashboardMobile_Gastos(
 			$transactionID,
 			$startOn,
