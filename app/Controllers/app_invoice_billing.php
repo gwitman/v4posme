@@ -12345,14 +12345,10 @@ class app_invoice_billing extends _BaseController {
 				$objCompany->type,
 				"app_invoice_billing"
 			);
-			$titleDocument 		= 
-			getBahavioSession(
-					$objCompany->type, 
-					"app_invoice_billing", 
-					"viewRegisterFormatoPaginaNormal80mmOpcion1_LabelTitle", 
-					"FACTURA",
-					$dataView["objListCompanyPageSetting"]
-			);
+			
+			$titleDocument 		= "FACTURA";
+			if($datView["objStage"][0]->display == "REGITRADO")
+				$titleDocument 		= "PROFORMA";
 
 			$datView["viewRegisterFormatoPaginaNormal80mmOpcion1_LabelAfterDateTime"] = 
 			getBahavioSession(
