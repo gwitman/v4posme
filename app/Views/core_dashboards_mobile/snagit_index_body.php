@@ -29,6 +29,7 @@
                     <option value="30">SALIDA DE CAJA</option>
                     <option value="29">ENTRADA DE CAJA</option>
                     <option value="12">OTRAS ENTRADAS INV</option>
+                    <option value="8">OTRAS SALIDAS INV</option>
                     <option value="38">GASTO</option>
                     <option value="interest">INTERESES</option>
                     <option value="capital">CAPITAL</option>
@@ -301,6 +302,32 @@
                 <h2 class="mb-0 d-md-none">{{ formatMoney(otherInputTotalMonto) }}</h2>
                 <h4 class="mb-0 d-none d-md-block">{{ formatMoney(otherInputTotalMonto) }}</h4>
                 <small class="text-muted">Total Monto</small>
+              </div>
+            </div>
+          </div>
+        </template>
+        <!-- Cards Otras Salidas de Inventario -->
+        <template v-if="isOtherOutputView">
+          <div class="col-6 col-md-3 mb-3">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body text-center p-3">
+                <div class="avatar avatar-sm bg-label-danger rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                  <i class="bx bx-up-arrow-circle"></i>
+                </div>
+                <h4 class="mb-0">{{ otherOutputGroupedData.length }}</h4>
+                <small class="text-muted">Documentos</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-12 col-md-3 mb-3 order-first order-md-0">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body text-center p-3">
+                <div class="avatar avatar-sm bg-label-danger rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                  <i class="bx bx-dollar-circle"></i>
+                </div>
+                <h2 class="mb-0 d-md-none">{{ formatMoney(otherOutputTotalCosto) }}</h2>
+                <h4 class="mb-0 d-none d-md-block">{{ formatMoney(otherOutputTotalCosto) }}</h4>
+                <small class="text-muted">Total Costo</small>
               </div>
             </div>
           </div>
@@ -633,6 +660,77 @@
                                   <td class="small text-center">{{ det.Cantidad }}</td>
                                   <td class="small text-end">{{ formatMoney(det.Costo) }}</td>
                                   <td class="small text-end">{{ formatMoney(det.Precio) }}</td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </td>
+                      </tr>
+                    </template>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tabla OTRAS SALIDAS INV (maestro-detalle) -->
+      <div class="row" v-if="!loading && otherOutputGroupedData.length > 0 && filterTransaction == '8'">
+        <div class="col-12">
+          <div class="card shadow-sm">
+            <div class="card-header d-flex justify-content-between align-items-center py-2">
+              <h6 class="mb-0"><i class="bx bx-up-arrow-circle me-1"></i>Otras Salidas de Inventario</h6>
+              <span class="badge bg-danger">{{ otherOutputGroupedData.length }} documentos</span>
+            </div>
+            <div class="card-body p-0">
+              <div class="table-responsive">
+                <table class="table table-sm table-hover mb-0">
+                  <thead class="table-light">
+                    <tr>
+                      <th class="small" style="width:30px;"></th>
+                      <th class="small">Documento</th>
+                      <th class="small d-none d-md-table-cell">Concepto</th>
+                      <th class="small text-end">Costo Total</th>
+                      <th class="small d-none d-md-table-cell">Fecha y Hora</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <template v-for="(grupo, idx) in otherOutputGroupedData" :key="idx">
+                      <tr @click="toggleDetalleOtherOutput(idx)" style="cursor:pointer;" class="table-row-master">
+                        <td class="small text-center">
+                          <i class="bx" :class="detalleOtherOutputAbierto === idx ? 'bx-chevron-down text-primary' : 'bx-chevron-right'"></i>
+                        </td>
+                        <td class="small fw-semibold text-danger">{{ grupo.Documento }}</td>
+                        <td class="small d-none d-md-table-cell">{{ grupo.Concepto || '-' }}</td>
+                        <td class="small text-end fw-bold">{{ formatMoney(grupo.CostoTotal) }}</td>
+                        <td class="small d-none d-md-table-cell">{{ formatFechaHora(grupo.Fecha) }}</td>
+                      </tr>
+                      <tr v-if="detalleOtherOutputAbierto === idx">
+                        <td :colspan="isMobile ? 3 : 5" class="p-0">
+                          <div class="p-2" style="background-color: #fce4ec; border-left: 4px solid #e53935;">
+                            <p class="small fw-semibold mb-1" style="color: #b71c1c;">
+                              <i class="bx bx-note me-1"></i>Concepto: <span class="fw-bold">{{ grupo.Concepto || '-' }}</span>
+                            </p>
+                            <p class="small fw-semibold mb-2" style="color: #b71c1c;">
+                              <i class="bx bx-calendar me-1"></i>Fecha y Hora: <span class="fw-bold">{{ formatFechaHora(grupo.Fecha) }}</span>
+                            </p>
+                            <p class="small fw-semibold mb-2" style="color: #b71c1c;"><i class="bx bx-package me-1"></i>Productos que salieron:</p>
+                            <table class="table table-sm table-bordered mb-0" style="background-color: #ffffff;">
+                              <thead>
+                                <tr style="background-color: #f8bbd0;">
+                                  <th class="small">Código</th>
+                                  <th class="small">Producto</th>
+                                  <th class="small text-center">Cant.</th>
+                                  <th class="small text-end">Costo</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr v-for="(det, dIdx) in grupo.detalle" :key="dIdx" style="background-color: #fce4ec;">
+                                  <td class="small"><span class="badge bg-danger">{{ det.Codigo }}</span></td>
+                                  <td class="small">{{ det.Producto }}</td>
+                                  <td class="small text-center">{{ det.Cantidad }}</td>
+                                  <td class="small text-end">{{ formatMoney(det.Costo) }}</td>
                                 </tr>
                               </tbody>
                             </table>

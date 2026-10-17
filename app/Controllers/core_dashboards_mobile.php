@@ -172,6 +172,16 @@ class core_dashboards_mobile extends _BaseController {
                         $itemName
                 );
             }
+			else if($transactionID == "8" /* OTRAS SALIDAS INV */)
+            {
+                $objData    = $this->Transaction_Master_Model->getRowAll_DashboardMobile_OtrasSalidas(
+                        $transactionID,
+                        $startOn,
+                        $endOn,
+                        $customerName,
+                        $itemName
+                );
+            }
 			else if($transactionID == "30" /* SALIDA DE CAJA */)
             {
                 $objData    = $this->Transaction_Master_Model->getRowAll_DashboardMobile_SalidaDeCaja(

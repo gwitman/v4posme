@@ -1141,6 +1141,59 @@ class Transaction_Master_Model extends Model  {
 		log_message("error",print_r($sql,true));
 		return $db->query($sql)->getResult();
 	}
+	function getRowAll_DashboardMobile_OtrasSalidas(
+			$transactionID,
+			$startOn,
+			$endOn,
+			$custonerName,
+			$itemName
+	)
+	{
+		$db = db_connect();
+		$sql = "";
+		$sql = $sql . sprintf("
+			SELECT
+				t.transactionID AS TransactionID,
+				t.`name` AS Transaccion,
+				c.transactionMasterID,
+				c.transactionNumber AS Documento,
+				c.createdOn AS Fecha,
+				c.note AS Concepto,
+				c.amount AS Monto,
+				i.itemNumber AS Codigo,
+				i.`name` AS Producto,
+				tmd.quantity AS Cantidad,
+				tmd.unitaryCost AS Costo,
+				tmd.cost AS SubCosto
+			FROM tb_transaction_master c
+			INNER JOIN tb_workflow_stage ws
+				ON ws.workflowStageID = c.statusID
+			INNER JOIN tb_transaction t
+				ON t.transactionID = c.transactionID
+			INNER JOIN tb_transaction_master_detail tmd
+				ON tmd.transactionMasterID = c.transactionMasterID
+			INNER JOIN tb_item i
+				ON i.itemID = tmd.componentItemID
+			WHERE
+				c.isActive = 1
+				AND ws.aplicable = 1
+				AND c.transactionID = 8
+				AND c.createdOn BETWEEN '$startOn' AND '$endOn'
+				AND tmd.isActive = 1
+				AND (
+					'$custonerName' = ''
+					OR c.note LIKE '%%$custonerName%%'
+				)
+				AND (
+					'$itemName' = ''
+					OR i.`name` LIKE '%%$itemName%%'
+				)
+			ORDER BY c.createdOn DESC
+		");
+
+		log_message("error",print_r($sql,true));
+		return $db->query($sql)->getResult();
+	}
 	function getRowAll_DashboardMobile_Gastos(
 			$transactionID,
 			$startOn,
