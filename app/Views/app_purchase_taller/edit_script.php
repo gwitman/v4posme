@@ -319,6 +319,7 @@
 			url      : "<?php echo base_url(); ?>/app_purchase_taller/insertElementApi",
 			data     : {
 				transactionMasterID : <?php echo $objTransactionMaster->transactionMasterID; ?>,
+				nextVisit           : $("#txtNextVisit").val(),
 				problema            : $("#txtCrearOrdenProblema").val(),
 				nota                : $("#txtCrearOrdenNota").val()
 			},
@@ -327,7 +328,7 @@
 				if(data.error){
 					fnShowNotification(data.message,"error",15000);
 				}else{
-					var linkOrden = "<a href='"+data.url+"' style='color:#fff;text-decoration:underline'>Ir a la orden</a>";
+					var linkOrden = "<a href='"+data.url+"' target='_blank' style='color:#fff;text-decoration:underline'>Ir a la orden</a>";
 					fnShowNotification("La orden de trabajo fue elaborada. "+linkOrden,"success",15000);
 				}
 			},

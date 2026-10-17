@@ -989,11 +989,16 @@ class app_purchase_taller extends _BaseController {
 
 			//Parametros
 			$transactionMasterID	= /*inicio get post*/ $this->request->getPost("transactionMasterID");
+			$nextVisit				= /*inicio get post*/ $this->request->getPost("nextVisit");
 			$problema				= /*inicio get post*/ $this->request->getPost("problema");
 			$nota					= /*inicio get post*/ $this->request->getPost("nota");
 
 			if(!$transactionMasterID)
 			throw new \Exception(NOT_PARAMETER);
+
+			//Validar que exista la fecha de la siguiente visita
+			if(!$nextVisit || trim($nextVisit) == "" || $nextVisit == '0000-00-00 00:00:00')
+			throw new \Exception("LA ORDEN NO TIENE ESTABLECIDA LA FECHA DE LA SIGUIENTE VISITA");
 
 			$companyID				= $dataSession["user"]->companyID;
 
@@ -1012,12 +1017,16 @@ class app_purchase_taller extends _BaseController {
 			if(!$objTMOld)
 			throw new \Exception("LA ORDEN DE TRABAJO ORIGEN NO EXISTE...");
 
-			//Validar que exista la fecha de la siguiente visita
-			if(!$objTMOld->nextVisit || $objTMOld->nextVisit == '0000-00-00 00:00:00')
-			throw new \Exception("LA ORDEN NO TIENE ESTABLECIDA LA FECHA DE LA SIGUIENTE VISITA");
-
 			$objTMIOld				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$objT					= $this->Transaction_Model->getByCompanyAndTransaction($companyID,$transactionID);
+
+			//Obtener el estado inicial del workflow (no el de la orden origen)
+			$branchID				= $dataSession["user"]->branchID;
+			$roleID					= $dataSession["role"]->roleID;
+			$objWorkflowInitStage	= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_workshop_taller","statusID",$companyID,$branchID,$roleID);
+			$statusIDInit			= is_array($objWorkflowInitStage) ? $objWorkflowInitStage[0]->workflowStageID : $objWorkflowInitStage->workflowStageID;
+			if(!$statusIDInit)
+			throw new \Exception("NO SE ENCONTRO EL ESTADO INICIAL DEL WORKFLOW");
 
 			$db=db_connect();
 			$db->transStart();
@@ -1029,7 +1038,7 @@ class app_purchase_taller extends _BaseController {
 			$objTM["branchID"]						= $objTMOld->branchID;
 			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($companyID,$dataSession["user"]->branchID,"tb_transaction_master_workshop_taller",0);
 			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($companyID,$transactionID);
-			$objTM["transactionOn"]					= $objTMOld->nextVisit; //La nueva orden se agenda en la siguiente visita
+			$objTM["transactionOn"]					= $nextVisit; //La nueva orden se agenda en la fecha de la siguiente visita
 			$objTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
 			$objTM["componentID"] 					= $objComponentShare->componentID;
 			$objTM["sign"] 							= $objT->signInventory;
@@ -1040,7 +1049,7 @@ class app_purchase_taller extends _BaseController {
 			$objTM["reference2"] 					= $problema;  //Problema
 			$objTM["reference3"] 					= "";
 			$objTM["reference4"] 					= $objTMOld->reference4;
-			$objTM["statusID"] 						= $objTMOld->statusID;
+			$objTM["statusID"] 						= $statusIDInit; //Estado inicial del workflow
 			$objTM["isTemplate"]		 			= 0;
 			$objTM["printerQuantity"]				= 0;
 			$objTM["amount"] 						= 0;
