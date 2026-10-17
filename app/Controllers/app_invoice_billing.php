@@ -1151,7 +1151,16 @@ class app_invoice_billing extends _BaseController {
 			$objListPrice 								= $this->List_Price_Model->getListPriceToApply($companyID);
 			$objTMNew["transactionCausalID"] 			= /*inicio get post*/ $this->request->getPost("txtCausalID");
 			$objTMNew["entityID"] 						= /*inicio get post*/ $this->request->getPost("txtCustomerID");
-			$objTMNew["transactionOn"]					= $objParameterUpdateDateAplication == "true" ? date("Y-m-d")  : $this->request->getPost("txtDate");
+			//Validar si el nuevo estado es aplicable para definir el formato de la fecha
+			$nuevoStatusID								= /*inicio get post*/ $this->request->getPost("txtStatusID");
+			$esEstadoAplicado							= $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_billing","statusID",$nuevoStatusID,COMMAND_APLICABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID);
+			//Cuando el estado es aplicado se guarda la fecha con hora, minuto y segundo
+			if($esEstadoAplicado)
+				$objTMNew["transactionOn"]				= $objParameterUpdateDateAplication == "true" ? date("Y-m-d H:i:s") : ($this->request->getPost("txtDate")." ".date("H:i:s"));
+			else
+				$objTMNew["transactionOn"]				= $objParameterUpdateDateAplication == "true" ? date("Y-m-d")  : $this->request->getPost("txtDate");
+			
+			
 			$objTMNew["transactionOn2"]					= /*inicio get post*/ $this->request->getPost("txtDateFirst");//Fecha del Primer Pago, de las facturas al credito
 			$objTMNew["statusIDChangeOn"]				= date("Y-m-d H:i:s");			
 			$objTMNew["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");//--fin peticion get o post			
