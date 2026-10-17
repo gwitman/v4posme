@@ -18,6 +18,7 @@ createApp({
             detalleCashInAbierto: null,
             detalleOtherInputAbierto: null,
             detalleOtherOutputAbierto: null,
+            detallePurchaseAbierto: null,
             detalleGastoAbierto: null,
             detalleProductoAbierto: null,
             detalleCreditoAbierto: null,
@@ -68,11 +69,16 @@ createApp({
         isOtherOutputView() {
             return this.filterTransaction === '8';
         },
+        // Vista de compras (maestro-detalle por producto)
+        isPurchaseView() {
+            return this.filterTransaction === '21';
+        },
         hasData() {
             if (this.isUtilityView) return this.utilityHasData;
             if (this.isCostView) return this.costGroupedData.length > 0;
             if (this.isOtherInputView) return this.otherInputGroupedData.length > 0;
             if (this.isOtherOutputView) return this.otherOutputGroupedData.length > 0;
+            if (this.isPurchaseView) return this.purchaseGroupedData.length > 0;
             return this.objListData.length > 0;
         },
         utilityHasData() {
@@ -161,6 +167,36 @@ createApp({
         },
         otherOutputTotalCosto() {
             return this.otherOutputGroupedData.reduce((sum, g) => sum + g.CostoTotal, 0);
+        },
+        purchaseGroupedData() {
+            if (this.filterTransaction !== '21') return [];
+            const map = {};
+            this.objListData.forEach(item => {
+                const key = item.transactionMasterID;
+                if (!map[key]) {
+                    map[key] = {
+                        transactionMasterID: item.transactionMasterID,
+                        Documento:           item.Documento,
+                        Fecha:               item.Fecha,
+                        Concepto:            item.Concepto,
+                        CostoTotal:          0,
+                        detalle: []
+                    };
+                }
+                map[key].CostoTotal += parseFloat(item.SubCosto || 0);
+                map[key].detalle.push({
+                    Codigo:   item.Codigo,
+                    Producto: item.Producto,
+                    Cantidad: item.Cantidad,
+                    Costo:    item.Costo,
+                    Precio:   item.Precio,
+                    SubCosto: item.SubCosto
+                });
+            });
+            return Object.values(map);
+        },
+        purchaseTotalCosto() {
+            return this.purchaseGroupedData.reduce((sum, g) => sum + g.CostoTotal, 0);
         },
         groupedData() {
             if (this.filterTransaction != '19') return [];
@@ -291,6 +327,7 @@ createApp({
             this.detalleCashInAbierto = null;
             this.detalleOtherInputAbierto = null;
             this.detalleOtherOutputAbierto = null;
+            this.detallePurchaseAbierto = null;
             this.detalleGastoAbierto = null;
             this.detalleProductoAbierto = null;
             this.detalleCreditoAbierto = null;
@@ -332,6 +369,9 @@ createApp({
         toggleDetalleOtherOutput(idx) {
             this.detalleOtherOutputAbierto = this.detalleOtherOutputAbierto === idx ? null : idx;
         },
+        toggleDetallePurchase(idx) {
+            this.detallePurchaseAbierto = this.detallePurchaseAbierto === idx ? null : idx;
+        },
         toggleDetalleGasto(idx) {
             this.detalleGastoAbierto = this.detalleGastoAbierto === idx ? null : idx;
         },
@@ -354,6 +394,7 @@ createApp({
                 this.detalleCashInAbierto = null;
                 this.detalleOtherInputAbierto = null;
                 this.detalleOtherOutputAbierto = null;
+                this.detallePurchaseAbierto = null;
                 this.detalleGastoAbierto = null;
                 this.detalleProductoAbierto = null;
                 this.detalleCreditoAbierto = null;
