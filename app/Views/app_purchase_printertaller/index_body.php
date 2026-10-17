@@ -198,7 +198,7 @@
 			<div class="dash-card bg-red">
 				<i class="icon20 i-wrench dash-icon"></i>
 				<div class="dash-number" id="dashEquipos">0</div>
-				<div class="dash-label">Estados equipo</div>
+				<div class="dash-label">Marcas</div>
 			</div>
 		</div>
 	</div>
@@ -236,21 +236,20 @@
 						<table class="table table-hover table-bordered" id="tableOrdenes" style="width:100%">
 							<thead>
 								<tr>
-									<th style="width:150px">Activo fijo</th>
 									<th>#</th>
 									<th>Documento</th>
 									<th>Fecha</th>
 									<th>Cliente</th>
 									<th>Colaborador</th>
 									<th>Estado</th>
-									<th>Estado equipo</th>
-									<th>Articulo</th>
-									<th>Nombre activo fijo</th>
+									<th>Marca</th>
+									<th>Modelo</th>
+									<th>Nombre</th>
 									<th style="width:180px">Impresion</th>
 								</tr>
 							</thead>
 							<tbody id="bodyOrdenes">
-								<tr><td colspan="11" class="text-center text-muted">Aplique un filtro para mostrar las ordenes de taller.</td></tr>
+								<tr><td colspan="10" class="text-center text-muted">Aplique un filtro para mostrar las ordenes de taller.</td></tr>
 							</tbody>
 						</table>
 					</div>

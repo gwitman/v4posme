@@ -142,7 +142,7 @@ class app_purchase_printertaller extends _BaseController {
 				foreach($objList as $row){
 					$keyEmp = ($row->employerName != "") ? $row->employerName : "SIN ASIGNAR";
 					$keySta = ($row->workflowStageName != "") ? $row->workflowStageName : "SIN ESTADO";
-					$keyEqu = ($row->estadoEquipoName != "") ? $row->estadoEquipoName : "SIN DEFINIR";
+					$keyEqu = ($row->marcaName != "") ? $row->marcaName : "SIN DEFINIR";
 
 					$dashboardByEmployer[$keyEmp]	= isset($dashboardByEmployer[$keyEmp]) ? $dashboardByEmployer[$keyEmp] + 1 : 1;
 					$dashboardByStatus[$keySta]		= isset($dashboardByStatus[$keySta]) ? $dashboardByStatus[$keySta] + 1 : 1;

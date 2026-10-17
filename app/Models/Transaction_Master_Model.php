@@ -1382,8 +1382,8 @@ class Transaction_Master_Model extends Model  {
 		$sql = $sql.sprintf("	ws.name as workflowStageName, ");
 		$sql = $sql.sprintf("	TRIM(CONCAT(IFNULL(natCli.firstName,''),' ',IFNULL(natCli.lastName,''))) as customerName, ");
 		$sql = $sql.sprintf("	TRIM(CONCAT(IFNULL(natEmp.firstName,''),' ',IFNULL(natEmp.lastName,''))) as employerName, ");
-		$sql = $sql.sprintf("	ciEstado.name as estadoEquipoName, ");
-		$sql = $sql.sprintf("	ciTipo.name as articuloName, ");
+		$sql = $sql.sprintf("	fa.marca as marcaName, ");
+		$sql = $sql.sprintf("	fa.modelNumber as modeloName, ");
 		$sql = $sql.sprintf("	fa.fixedAssentID as fixedAssentID, ");
 		$sql = $sql.sprintf("	fa.branchID as fixedAssentBranchID, ");
 		$sql = $sql.sprintf("	fa.fixedAssentCode as fixedAssentCode, ");
@@ -1392,8 +1392,6 @@ class Transaction_Master_Model extends Model  {
 		$sql = $sql.sprintf(" inner join tb_workflow_stage ws on tm.statusID = ws.workflowStageID ");
 		$sql = $sql.sprintf(" left  join tb_naturales natCli on tm.entityID = natCli.entityID ");
 		$sql = $sql.sprintf(" left  join tb_naturales natEmp on tm.entityIDSecondary = natEmp.entityID ");
-		$sql = $sql.sprintf(" left  join tb_catalog_item ciEstado on tm.areaID = ciEstado.catalogItemID ");
-		$sql = $sql.sprintf(" left  join tb_catalog_item ciTipo on tm.priorityID = ciTipo.catalogItemID ");
 		$sql = $sql.sprintf(" left  join tb_fixed_assent fa on tm.periodPay = fa.fixedAssentID and tm.companyID = fa.companyID ");
 		$sql = $sql.sprintf(" where tm.companyID = %d ", $companyID);
 		$sql = $sql.sprintf(" and tm.transactionID = %d ", $transactionID);

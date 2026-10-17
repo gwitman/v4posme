@@ -134,22 +134,26 @@
 			$.each(rows,function(i,r){
 				html += "<tr>";
 				var urlOrden = "<?php echo base_url(); ?>/app_purchase_taller/edit/companyID/"+r.companyID+"/transactionID/"+r.transactionID+"/transactionMasterID/"+r.transactionMasterID;
-				//Celda: Ir al activo fijo (abre en otra pestania)
-				if(r.fixedAssentID && parseInt(r.fixedAssentID) > 0){
-					var urlFixedAsset = "<?php echo base_url(); ?>/app_afx_fixedassent/edit/companyID/"+r.companyID+"/branchID/"+r.fixedAssentBranchID+"/fixedAssentID/"+r.fixedAssentID;
-					html += "<td><a class='btn btn-xs btn-primary' href='"+urlFixedAsset+"' target='_blank' title='Ir al activo fijo'><i class='i-wrench'></i> Ir al activo fijo</a></td>";
-				}else{
-					html += "<td><span class='text-muted'>Sin activo fijo</span></td>";
-				}
 				html += "<td>"+(i+1)+"</td>";
 				html += "<td><a href='"+urlOrden+"' target='_blank' title='Ir a la orden'><strong>"+(r.transactionNumber||"")+"</strong> <i class='i-link-2'></i></a></td>";
 				html += "<td>"+(r.transactionOn||"")+"</td>";
 				html += "<td>"+(r.customerName||"")+"</td>";
 				html += "<td>"+(r.employerName||"<span class='text-muted'>Sin asignar</span>")+"</td>";
 				html += "<td><span class='badge'>"+(r.workflowStageName||"")+"</span></td>";
-				html += "<td><span class='badge badge-estado'>"+(r.estadoEquipoName||"")+"</span></td>";
-				html += "<td>"+(r.articuloName||"")+"</td>";
-				html += "<td>"+(r.fixedAssentName ? (r.fixedAssentName + (r.fixedAssentCode ? " <small class='text-muted'>("+r.fixedAssentCode+")</small>" : "")) : "")+"</td>";
+				html += "<td>"+(r.marcaName||"")+"</td>";
+				html += "<td>"+(r.modeloName||"")+"</td>";
+				//Columna Nombre: muestra el nombre del activo fijo y su codigo como link al activo fijo (otra pestania)
+				var celdaActivo = "";
+				if(r.fixedAssentName){
+					celdaActivo += r.fixedAssentName;
+				}
+				if(r.fixedAssentCode && r.fixedAssentID && parseInt(r.fixedAssentID) > 0){
+					var urlFixedAsset = "<?php echo base_url(); ?>/app_afx_fixedassent/edit/companyID/"+r.companyID+"/branchID/"+r.fixedAssentBranchID+"/fixedAssentID/"+r.fixedAssentID;
+					celdaActivo += " <a href='"+urlFixedAsset+"' target='_blank' title='Ir al activo fijo'><small>("+r.fixedAssentCode+")</small></a>";
+				}else if(r.fixedAssentCode){
+					celdaActivo += " <small class='text-muted'>("+r.fixedAssentCode+")</small>";
+				}
+				html += "<td>"+celdaActivo+"</td>";
 				html += "<td>"+
 							"<button type='button' class='btn btn-xs btn-info btnPrintInput' title='Orden de entrada' "+
 								"data-company='"+r.companyID+"' data-transaction='"+r.transactionID+"' data-master='"+r.transactionMasterID+"'>"+
@@ -161,7 +165,7 @@
 				html += "</tr>";
 			});
 		}else{
-			html = "<tr><td colspan='11' class='text-center text-muted'>No se encontraron ordenes con los filtros aplicados.</td></tr>";
+			html = "<tr><td colspan='10' class='text-center text-muted'>No se encontraron ordenes con los filtros aplicados.</td></tr>";
 		}
 		$("#bodyOrdenes").html(html);
 	}
