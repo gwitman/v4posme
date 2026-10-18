@@ -1058,7 +1058,7 @@ class app_purchase_taller extends _BaseController {
 			$objTM["classID"] 						= NULL;
 			$objTM["areaID"] 						= $objTMOld->areaID;
 			$objTM["priorityID"] 					= $objTMOld->priorityID;
-			$objTM["sourceWarehouseID"]				= NULL;
+			$objTM["sourceWarehouseID"]				= $transactionMasterID; //Referencia a la transaccion origen (transactionMasterID original)
 			$objTM["targetWarehouseID"]				= NULL;
 			$objTM["isActive"]						= 1;
 			$objTM["entityID"]						= $objTMOld->entityID;
