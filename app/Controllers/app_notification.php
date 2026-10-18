@@ -3218,4 +3218,63 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 		}
 	}
 
+	/*ejecutar 1 ves al dia a las 0 horas (medianoche)*/
+	//Genera automaticamente la siguiente orden de taller (requerida) para las ordenes
+	//que no tienen referencia de origen (sourceWarehouseID null o <= 0) y cuya nextVisit
+	//se cumple dentro de 5 dias. Usa la logica central createOrdenTallerFromExisting.
+	//curl "https://posme.net/v4posme/chic/public/app_notification/crearRequetTaller"
+	//0 0 * * *
+	function crearRequetTaller()
+	{
+		try {
+			ini_set('max_execution_time', 0);
+
+			$companyID		= APP_COMPANY;
+
+			//Construir una sesion minima para la logica de creacion (job sin usuario autenticado)
+			$dataSession			= array();
+			$objUser				= new \stdClass();
+			$objUser->userID		= APP_USERADMIN;
+			$objUser->companyID		= $companyID;
+			$objUser->branchID		= APP_BRANCH;
+			$dataSession["user"]	= $objUser;
+			$objRole				= new \stdClass();
+			$objRole->roleID		= APP_ROL_SUPERADMIN;
+			$dataSession["role"]	= $objRole;
+
+			//Buscar ordenes de taller sin referencia cuya nextVisit se cumple en 5 dias
+			$objList		= $this->Transaction_Master_Model->getProgrammingOrdenTallerToRequest($companyID);
+
+			if (!$objList || count($objList) <= 0) {
+				echo "SUCCESS (sin ordenes por requerir)";
+				return;
+			}
+
+			//Instanciar el controlador de taller para reutilizar la logica central
+			$ctrlTaller		= new \App\Controllers\app_purchase_taller();
+
+			$creadas		= 0;
+			$errores		= 0;
+			foreach ($objList as $orden) {
+				try {
+					$nota		= $orden->reference1; //Nota de la orden anterior
+					$problema	= "generado automaticamente";
+					$nextVisit	= $orden->nextVisit;
+
+					$ctrlTaller->createOrdenTallerFromExisting($dataSession, $orden->transactionMasterID, $nextVisit, $problema, $nota);
+					$creadas++;
+				} catch (\Exception $exItem) {
+					$errores++;
+					log_message('error', '[crearRequetTaller] Error en orden ' . $orden->transactionMasterID . ': ' . $exItem->getLine() . " " . $exItem->getMessage());
+				}
+			}
+
+			echo "SUCCESS (creadas: " . $creadas . ", errores: " . $errores . ")";
+
+		} catch (\Exception $ex) {
+			log_message('error', '[crearRequetTaller] Error: ' . $ex->getLine() . " " . $ex->getMessage());
+			echo "ERROR: " . $ex->getMessage();
+		}
+	}
+
 }
