@@ -375,7 +375,7 @@ class Customer_Model extends Model  {
 							) as isHaveShareNow  /*flag que indica si tiene abonos hoy*/ ,
 							(
 								select 
-									GROUP_CONCAT(sub_period.name) 
+									sub_period.name 
 								from 
 									tb_customer_credit_document sub_d
 									inner join tb_catalog_item sub_period on 
@@ -384,6 +384,7 @@ class Customer_Model extends Model  {
 									sub_d.entityID = i.entityID and 
 									sub_d.isActive = 1 and 
 									sub_d.statusID = 77 /*REGISTRADOS*/
+								LIMIT 1 
 									
 							) as frecuencyNameIntoShare,
 							1 as showFrecuenciInCustomerIntoShare 
