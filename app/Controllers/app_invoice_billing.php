@@ -8193,7 +8193,7 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["emalProperty"]						= $objParameterEmail->value;
 			$datViewArray["address"]							= $objCompany->address;
 			$datViewArray["note"]								= $datView["objTM"]->note;
-			$datViewArray["mesaName"] 							= $datView["objMesa"]->name;			
+			$datViewArray["mesaName"] 							= $datView["objMesa"] ? $datView["objMesa"]->name : "";			
 			$datViewArray["zoneID"] 							= $datView["objTMI"]->zoneID;
 			$datViewArray["zoneName"] 							= $datView["objZone"] ? $datView["objZone"]->name : "";
 			$datViewArray["customerName"]						= $datView["objTMI"]->referenceClientName == "" ? 
