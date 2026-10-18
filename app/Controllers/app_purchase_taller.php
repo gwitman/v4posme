@@ -996,128 +996,17 @@ class app_purchase_taller extends _BaseController {
 			if(!$transactionMasterID)
 			throw new \Exception(NOT_PARAMETER);
 
-			//Validar que exista la fecha de la siguiente visita
-			if(!$nextVisit || trim($nextVisit) == "" || $nextVisit == '0000-00-00 00:00:00')
-			throw new \Exception("LA ORDEN NO TIENE ESTABLECIDA LA FECHA DE LA SIGUIENTE VISITA");
-
 			$companyID				= $dataSession["user"]->companyID;
-
-			//Componentes
-			$objComponentShare		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_workshop_taller");
-			if(!$objComponentShare)
-			throw new \Exception("EL COMPONENTE 'tb_transaction_master_workshop_taller' NO EXISTE...");
-
-			$objComponentComments	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_comments");
-			if(is_null($objComponentComments))
-			throw new \Exception("EL COMPONENTE 'tb_comments' NO EXISTE...");
-
-			//Obtener la orden origen
 			$transactionID			= $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_workshop_taller",0);
-			$objTMOld				= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
-			if(!$objTMOld)
-			throw new \Exception("LA ORDEN DE TRABAJO ORIGEN NO EXISTE...");
 
-			$objTMIOld				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
-			$objT					= $this->Transaction_Model->getByCompanyAndTransaction($companyID,$transactionID);
+			//Crear la nueva orden reutilizando la logica central
+			$transactionMasterIDNew = $this->createOrdenTallerFromExisting($dataSession,$transactionMasterID,$nextVisit,$problema,$nota);
 
-			//Obtener el estado inicial del workflow (no el de la orden origen)
-			$branchID				= $dataSession["user"]->branchID;
-			$roleID					= $dataSession["role"]->roleID;
-			$objWorkflowInitStage	= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_workshop_taller","statusID",$companyID,$branchID,$roleID);
-			$statusIDInit			= is_array($objWorkflowInitStage) ? $objWorkflowInitStage[0]->workflowStageID : $objWorkflowInitStage->workflowStageID;
-			if(!$statusIDInit)
-			throw new \Exception("NO SE ENCONTRO EL ESTADO INICIAL DEL WORKFLOW");
-
-			$db=db_connect();
-			$db->transStart();
-
-			//Crear el maestro de la nueva orden (clonando la origen)
-			$objTM									= array();
-			$objTM["companyID"] 					= $companyID;
-			$objTM["transactionID"] 				= $transactionID;
-			$objTM["branchID"]						= $objTMOld->branchID;
-			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($companyID,$dataSession["user"]->branchID,"tb_transaction_master_workshop_taller",0);
-			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($companyID,$transactionID);
-			$objTM["transactionOn"]					= $nextVisit; //La nueva orden se agenda en la fecha de la siguiente visita
-			$objTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
-			$objTM["componentID"] 					= $objComponentShare->componentID;
-			$objTM["sign"] 							= $objT->signInventory;
-			$objTM["currencyID"]					= $objTMOld->currencyID;
-			$objTM["currencyID2"]					= $objTMOld->currencyID2;
-			$objTM["exchangeRate"]					= $objTMOld->exchangeRate;
-			$objTM["reference1"] 					= $nota;      //Nota
-			$objTM["reference2"] 					= $problema;  //Problema
-			$objTM["reference3"] 					= "";
-			$objTM["reference4"] 					= $objTMOld->reference4;
-			$objTM["statusID"] 						= $statusIDInit; //Estado inicial del workflow
-			$objTM["isTemplate"]		 			= 0;
-			$objTM["printerQuantity"]				= 0;
-			$objTM["amount"] 						= 0;
-			$objTM["isApplied"] 					= 0;
-			$objTM["journalEntryID"] 				= 0;
-			$objTM["classID"] 						= NULL;
-			$objTM["areaID"] 						= $objTMOld->areaID;
-			$objTM["priorityID"] 					= $objTMOld->priorityID;
-			$objTM["sourceWarehouseID"]				= $transactionMasterID; //Referencia a la transaccion origen (transactionMasterID original)
-			$objTM["targetWarehouseID"]				= NULL;
-			$objTM["isActive"]						= 1;
-			$objTM["entityID"]						= $objTMOld->entityID;
-			$objTM["entityIDSecondary"]				= $objTMOld->entityIDSecondary;
-			$objTM["note"] 							= $objTMOld->note;
-			$objTM["nextVisit"] 					= NULL; //La nueva orden inicia sin siguiente visita
-			$objTM["periodPay"] 					= $objTMOld->periodPay;
-
-			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);
-
-			$transactionMasterIDNew = $this->Transaction_Master_Model->insert_app_posme($objTM);
-
-			//Clonar mas informacion
-			if($objTMIOld){
-				$objTMI									= array();
-				$objTMI["companyID"]					= $companyID;
-				$objTMI["transactionID"]				= $transactionID;
-				$objTMI["transactionMasterID"]			= $transactionMasterIDNew;
-				$objTMI["routeID"]						= $objTMIOld->routeID;
-				$objTMI["zoneID"]						= $objTMIOld->zoneID;
-				$objTMI["reference2"]					= $objTMIOld->reference2;
-				$objTMI["reference1"]					= $objTMIOld->reference1;
-				$objTMI["referenceClientName"]			= $objTMIOld->referenceClientName;
-				$this->Transaction_Master_Info_Model->insert_app_posme($objTMI);
-			}
-
-			//Clonar comentarios del trabajo a realizar
-			$objListComentarios	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID,$transactionID,$transactionMasterID,$objComponentComments->componentID);
-			if($objListComentarios){
-				foreach($objListComentarios as $ws){
-					$objTMD 							= NULL;
-					$objTMD["companyID"] 				= $companyID;
-					$objTMD["transactionID"] 			= $transactionID;
-					$objTMD["transactionMasterID"] 		= $transactionMasterIDNew;
-					$objTMD["componentID"]				= $objComponentComments->componentID;
-					$objTMD['catalogStatusID']			= $ws->catalogStatusID;
-					$objTMD["reference1"]				= $ws->reference1;
-					$objTMD['expirationDate']			= date('Y-m-d H:i:s');
-					$objTMD["isActive"]					= 1;
-					$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
-				}
-			}
-
-			if($db->transStatus() !== false){
-				$db->transCommit();
-				return $this->response->setJSON(array(
-					'error'   => false,
-					'message' => SUCCESS,
-					'url'     => base_url()."/".'app_purchase_taller/edit/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterIDNew
-				));//--finjson
-			}
-			else{
-				$db->transRollback();
-				$errorMessage 	= $db->error()["message"];
-				return $this->response->setJSON(array(
-					'error'   => true,
-					'message' => $errorMessage
-				));//--finjson
-			}
+			return $this->response->setJSON(array(
+				'error'   => false,
+				'message' => SUCCESS,
+				'url'     => base_url()."/".'app_purchase_taller/edit/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterIDNew
+			));//--finjson
 		}
 		catch(\Exception $ex){
 			return $this->response->setJSON(array(
@@ -1125,6 +1014,130 @@ class app_purchase_taller extends _BaseController {
 				'message' => $ex->getLine()." ".$ex->getMessage()
 			));//--finjson
 		}
+	}
+
+	//Logica central para crear una nueva orden de taller a partir de una existente.
+	//Clona el maestro, info y comentarios; guarda la referencia al origen en sourceWarehouseID.
+	//Retorna el transactionMasterID de la nueva orden o lanza excepcion si falla.
+	function createOrdenTallerFromExisting($dataSession,$transactionMasterID,$nextVisit,$problema,$nota){
+
+		if(!$transactionMasterID)
+		throw new \Exception(NOT_PARAMETER);
+
+		//Validar que exista la fecha de la siguiente visita
+		if(!$nextVisit || trim($nextVisit) == "" || $nextVisit == '0000-00-00 00:00:00')
+		throw new \Exception("LA ORDEN NO TIENE ESTABLECIDA LA FECHA DE LA SIGUIENTE VISITA");
+
+		$companyID				= $dataSession["user"]->companyID;
+
+		//Componentes
+		$objComponentShare		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_workshop_taller");
+		if(!$objComponentShare)
+		throw new \Exception("EL COMPONENTE 'tb_transaction_master_workshop_taller' NO EXISTE...");
+
+		$objComponentComments	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_comments");
+		if(is_null($objComponentComments))
+		throw new \Exception("EL COMPONENTE 'tb_comments' NO EXISTE...");
+
+		//Obtener la orden origen
+		$transactionID			= $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_workshop_taller",0);
+		$objTMOld				= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+		if(!$objTMOld)
+		throw new \Exception("LA ORDEN DE TRABAJO ORIGEN NO EXISTE...");
+
+		$objTMIOld				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+		$objT					= $this->Transaction_Model->getByCompanyAndTransaction($companyID,$transactionID);
+
+		//Obtener el estado inicial del workflow (no el de la orden origen)
+		$branchID				= $dataSession["user"]->branchID;
+		$roleID					= $dataSession["role"]->roleID;
+		$objWorkflowInitStage	= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_workshop_taller","statusID",$companyID,$branchID,$roleID);
+		$statusIDInit			= is_array($objWorkflowInitStage) ? $objWorkflowInitStage[0]->workflowStageID : $objWorkflowInitStage->workflowStageID;
+		if(!$statusIDInit)
+		throw new \Exception("NO SE ENCONTRO EL ESTADO INICIAL DEL WORKFLOW");
+
+		$db=db_connect();
+		$db->transStart();
+
+		//Crear el maestro de la nueva orden (clonando la origen)
+		$objTM									= array();
+		$objTM["companyID"] 					= $companyID;
+		$objTM["transactionID"] 				= $transactionID;
+		$objTM["branchID"]						= $objTMOld->branchID;
+		$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($companyID,$dataSession["user"]->branchID,"tb_transaction_master_workshop_taller",0);
+		$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($companyID,$transactionID);
+		$objTM["transactionOn"]					= $nextVisit; //La nueva orden se agenda en la fecha de la siguiente visita
+		$objTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
+		$objTM["componentID"] 					= $objComponentShare->componentID;
+		$objTM["sign"] 							= $objT->signInventory;
+		$objTM["currencyID"]					= $objTMOld->currencyID;
+		$objTM["currencyID2"]					= $objTMOld->currencyID2;
+		$objTM["exchangeRate"]					= $objTMOld->exchangeRate;
+		$objTM["reference1"] 					= $nota;      //Nota
+		$objTM["reference2"] 					= $problema;  //Problema
+		$objTM["reference3"] 					= "";
+		$objTM["reference4"] 					= $objTMOld->reference4;
+		$objTM["statusID"] 						= $statusIDInit; //Estado inicial del workflow
+		$objTM["isTemplate"]		 			= 0;
+		$objTM["printerQuantity"]				= 0;
+		$objTM["amount"] 						= 0;
+		$objTM["isApplied"] 					= 0;
+		$objTM["journalEntryID"] 				= 0;
+		$objTM["classID"] 						= NULL;
+		$objTM["areaID"] 						= $objTMOld->areaID;
+		$objTM["priorityID"] 					= $objTMOld->priorityID;
+		$objTM["sourceWarehouseID"]				= $transactionMasterID; //Referencia a la transaccion origen (transactionMasterID original)
+		$objTM["targetWarehouseID"]				= NULL;
+		$objTM["isActive"]						= 1;
+		$objTM["entityID"]						= $objTMOld->entityID;
+		$objTM["entityIDSecondary"]				= $objTMOld->entityIDSecondary;
+		$objTM["note"] 							= $objTMOld->note;
+		$objTM["nextVisit"] 					= NULL; //La nueva orden inicia sin siguiente visita
+		$objTM["periodPay"] 					= $objTMOld->periodPay;
+
+		$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);
+
+		$transactionMasterIDNew = $this->Transaction_Master_Model->insert_app_posme($objTM);
+
+		//Clonar mas informacion
+		if($objTMIOld){
+			$objTMI									= array();
+			$objTMI["companyID"]					= $companyID;
+			$objTMI["transactionID"]				= $transactionID;
+			$objTMI["transactionMasterID"]			= $transactionMasterIDNew;
+			$objTMI["routeID"]						= $objTMIOld->routeID;
+			$objTMI["zoneID"]						= $objTMIOld->zoneID;
+			$objTMI["reference2"]					= $objTMIOld->reference2;
+			$objTMI["reference1"]					= $objTMIOld->reference1;
+			$objTMI["referenceClientName"]			= $objTMIOld->referenceClientName;
+			$this->Transaction_Master_Info_Model->insert_app_posme($objTMI);
+		}
+
+		//Clonar comentarios del trabajo a realizar
+		$objListComentarios	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID,$transactionID,$transactionMasterID,$objComponentComments->componentID);
+		if($objListComentarios){
+			foreach($objListComentarios as $ws){
+				$objTMD 							= NULL;
+				$objTMD["companyID"] 				= $companyID;
+				$objTMD["transactionID"] 			= $transactionID;
+				$objTMD["transactionMasterID"] 		= $transactionMasterIDNew;
+				$objTMD["componentID"]				= $objComponentComments->componentID;
+				$objTMD['catalogStatusID']			= $ws->catalogStatusID;
+				$objTMD["reference1"]				= $ws->reference1;
+				$objTMD['expirationDate']			= date('Y-m-d H:i:s');
+				$objTMD["isActive"]					= 1;
+				$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
+			}
+		}
+
+		if($db->transStatus() === false){
+			$db->transRollback();
+			$errorMessage 	= $db->error()["message"];
+			throw new \Exception($errorMessage);
+		}
+
+		$db->transCommit();
+		return $transactionMasterIDNew;
 	}
 
 	function save($mode=""){
