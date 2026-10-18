@@ -5454,7 +5454,7 @@ function helper_reporteA4mmTransactionMasterTallerFrioTec(
 							  </tr>
 							  <tr>
 								<td style='text-align:center'>
-								".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptRed","FrioTec") ."
+								".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptRed","") ."
 								</td>
 							  </tr>
 							</table>
@@ -5825,7 +5825,7 @@ function helper_reporteA4mmTransactionMasterTallerOutputFrioTec(
 							  </tr>
 							  <tr>
 								<td style='text-align:center'>
-								".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptRed","FrioTec") ."
+								".getBehavio($objCompany->type,"app_purchase_taller","lblReportEntradaRptRed","") ."
 								</td>
 							  </tr>
 							</table>
