@@ -589,15 +589,15 @@
 																				<div class="afx-bloque-text">{{ orden.problema }}</div>
 																			</div>
 
+																			<!-- Nota -->
+																			<div class="afx-nota" v-if="orden.nota">
+																				<i class="fas fa-sticky-note"></i> {{ orden.nota }}
+																			</div>
+
 																			<!-- Solucion -->
 																			<div class="afx-bloque afx-bloque-solucion" v-if="orden.solucion">
 																				<div class="afx-bloque-title"><i class="fas fa-check-circle"></i> Soluci&oacute;n</div>
 																				<div class="afx-bloque-text">{{ orden.solucion }}</div>
-																			</div>
-
-																			<!-- Nota -->
-																			<div class="afx-nota" v-if="orden.nota">
-																				<i class="fas fa-sticky-note"></i> {{ orden.nota }}
 																			</div>
 
 																			<!-- Problemas y soluciones adicionales (comentarios) -->

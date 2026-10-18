@@ -206,15 +206,15 @@
 								echo "<td style='text-align:left;' colspan='6'  class='border' >";							
 										echo "<b>Problema:</b>".$w["reference2"];
 								echo "</td>";
-							echo "</tr>";
+							echo "</tr>";							
 							echo "<tr>";
 								echo "<td style='text-align:left;' colspan='6'  class='border' >";							
-										echo "<b>Solucion:</b>".$w["reference3"];
+										echo "<b>Nota:</b>".$w["reference1"];
 								echo "</td>";
 							echo "</tr>";
 							echo "<tr>";
 								echo "<td style='text-align:left;' colspan='6'  class='border' >";							
-										echo "<b>Nota:</b>".$w["reference1"];
+										echo "<b>Solucion:</b>".$w["reference3"];
 								echo "</td>";
 							echo "</tr>";
 							echo "<tr>";
