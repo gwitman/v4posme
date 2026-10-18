@@ -244,7 +244,7 @@
 													</div>
 													<div class="col-lg-6">
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="buttons">Proyecto</label>
+															<label class="col-lg-4 control-label" for="buttons"><?php echo getBahavioSession($company->type,"tb_fixed_assent","labelProyecto","Proyecto",$objListCompanyPageSetting); ?></label>
 															<div class="col-lg-8">
 																<div class="input-group">
 																	<input type="hidden" id="txtProyectID" name="txtProyectID">
