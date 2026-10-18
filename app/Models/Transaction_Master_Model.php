@@ -1522,6 +1522,45 @@ class Transaction_Master_Model extends Model  {
 		return $db->query($sql)->getResult();
 	}
 
+	//Ordenes de taller cuya nextVisit se cumple dentro de 5 dias (faltan exactamente 5 dias)
+	//y que AUN NO han sido usadas como origen: es decir, su transactionMasterID no aparece
+	//en el campo sourceWarehouseID de ninguna otra orden de taller (transactionID = 40).
+	//Se usa para generar automaticamente la siguiente orden (requerida) solo una vez.
+	function getProgrammingOrdenTallerToRequest($companyID)
+	{
+		$db 	= db_connect();
+		$companyID	= (int)$companyID;
+		$sql = "";
+		$sql = $sql.sprintf("select ");
+		$sql = $sql.sprintf("	tm.companyID, ");
+		$sql = $sql.sprintf("	tm.transactionID, ");
+		$sql = $sql.sprintf("	tm.transactionMasterID, ");
+		$sql = $sql.sprintf("	tm.transactionNumber, ");
+		$sql = $sql.sprintf("	tm.nextVisit, ");
+		$sql = $sql.sprintf("	tm.reference1, ");
+		$sql = $sql.sprintf("	tm.sourceWarehouseID ");
+		$sql = $sql.sprintf(" from tb_transaction_master tm ");
+		$sql = $sql.sprintf(" where ");
+		$sql = $sql.sprintf("	tm.isActive = 1 and ");
+		$sql = $sql.sprintf("	tm.companyID = %d and ", $companyID);
+		$sql = $sql.sprintf("	tm.transactionID = 40 /*ORDEN DE TALLER*/ and ");
+		$sql = $sql.sprintf("	tm.nextVisit is not null and ");
+		$sql = $sql.sprintf("	tm.nextVisit != '0000-00-00 00:00:00' and ");
+		$sql = $sql.sprintf("	DATEDIFF(DATE(tm.nextVisit), CURDATE()) = 5 and ");
+		$sql = $sql.sprintf("	not exists ( ");
+		$sql = $sql.sprintf("		select 1 ");
+		$sql = $sql.sprintf("		from tb_transaction_master tmChild ");
+		$sql = $sql.sprintf("		where tmChild.companyID = tm.companyID ");
+		$sql = $sql.sprintf("		and tmChild.transactionID = 40 /*ORDEN DE TALLER*/ ");
+		$sql = $sql.sprintf("		and tmChild.isActive = 1 ");
+		$sql = $sql.sprintf("		and tmChild.sourceWarehouseID = tm.transactionMasterID ");
+		$sql = $sql.sprintf("	) ");
+		$sql = $sql.sprintf(" order by tm.nextVisit asc ");
+
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+	}
+
    /**
     * Cuenta la cantidad total de transacciones creadas por un usuario (createdBy),
     * uniendo con tb_user por userID = createdBy.
