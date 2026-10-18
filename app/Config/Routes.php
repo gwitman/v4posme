@@ -1497,6 +1497,8 @@ $routes->match(['get', 'post'], 'app_notification/getResultLotoNicaragua', 'app_
 $routes->match(['get', 'post'], 'app_notification/getResultLotoNicaragua/(:any)', 'app_notification::getResultLotoNicaragua');
 $routes->match(['get', 'post'], 'app_notification/sendEmailOrdenTallerProximaVisita', 'app_notification::sendEmailOrdenTallerProximaVisita');
 $routes->match(['get', 'post'], 'app_notification/sendEmailOrdenTallerProximaVisita/(:any)', 'app_notification::sendEmailOrdenTallerProximaVisita');
+$routes->match(['get', 'post'], 'app_notification/crearRequetTaller', 'app_notification::crearRequetTaller');
+$routes->match(['get', 'post'], 'app_notification/crearRequetTaller/(:any)', 'app_notification::crearRequetTaller');
 $routes->match(['get', 'post'], 'app_planilla_adelantos/searchTransactionMaster', 'app_planilla_adelantos::searchTransactionMaster');
 $routes->match(['get', 'post'], 'app_planilla_adelantos/edit', 'app_planilla_adelantos::edit');
 $routes->match(['get', 'post'], 'app_planilla_adelantos/edit/(:any)', 'app_planilla_adelantos::edit');
