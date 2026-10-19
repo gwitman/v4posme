@@ -653,6 +653,8 @@ class Transaction_Master_Model extends Model  {
 				c.createdOn AS Fecha,
 				CONCAT(nat.firstName, ' ', nat.lastName) AS Cliente,
 				c.amount AS Monto,
+				c.transactionCausalID AS CausalID,
+				IFNULL(tc.`name`, 'CONTADO') AS TipoPago,
 				i.itemNumber AS Codigo,
 				i.`name` AS Producto,
 				tmd.quantity AS Cantidad,
@@ -668,6 +670,10 @@ class Transaction_Master_Model extends Model  {
 				ON tmd.transactionMasterID = c.transactionMasterID
 			INNER JOIN tb_item i
 				ON i.itemID = tmd.componentItemID
+			LEFT JOIN tb_transaction_causal tc
+				ON tc.transactionCausalID = c.transactionCausalID
+				AND tc.companyID = c.companyID
+				AND tc.transactionID = c.transactionID
 			WHERE
 				c.isActive = 1
 				AND ws.aplicable = 1

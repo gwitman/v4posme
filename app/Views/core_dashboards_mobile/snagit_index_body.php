@@ -155,6 +155,30 @@
             </div>
           </div>
         </div>
+        <!-- Total Contado (solo facturas) -->
+        <div class="col-6 col-md-3 mb-3" v-if="filterTransaction == '19'">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center p-3">
+              <div class="avatar avatar-sm bg-label-success rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                <i class="bx bx-wallet"></i>
+              </div>
+              <h4 class="mb-0 text-success">{{ formatMoney(totalMontoContado) }}</h4>
+              <small class="text-muted">Contado ({{ totalDocumentosContado }})</small>
+            </div>
+          </div>
+        </div>
+        <!-- Total Credito (solo facturas) -->
+        <div class="col-6 col-md-3 mb-3" v-if="filterTransaction == '19'">
+          <div class="card border-0 shadow-sm h-100">
+            <div class="card-body text-center p-3">
+              <div class="avatar avatar-sm bg-label-danger rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
+                <i class="bx bx-credit-card"></i>
+              </div>
+              <h4 class="mb-0 text-danger">{{ formatMoney(totalMontoCredito) }}</h4>
+              <small class="text-muted">Crédito ({{ totalDocumentosCredito }})</small>
+            </div>
+          </div>
+        </div>
         <!-- Cards Salida de Caja / Gastos -->
         <template v-if="isCashOutView">
           <div class="col-6 col-md-3 mb-3">
@@ -376,6 +400,7 @@
                     <tr>
                       <th class="small" style="width:30px;"></th>
                       <th class="small">Documento</th>
+                      <th class="small">Tipo</th>
                       <th class="small d-none d-md-table-cell">Cliente</th>
                       <th class="small text-end">Monto</th>
                       <th class="small d-none d-md-table-cell">Fecha</th>
@@ -383,25 +408,31 @@
                   </thead>
                   <tbody>
                     <template v-for="(grupo, idx) in groupedData" :key="idx">
-                      <tr @click="toggleDetalle(idx)" style="cursor:pointer;" class="table-row-master">
+                      <tr @click="toggleDetalle(idx)" style="cursor:pointer;" class="table-row-master" :class="isFacturaCredito(grupo.TipoPago) ? 'table-danger' : ''">
                         <td class="small text-center">
                           <i class="bx" :class="detalleAbierto === idx ? 'bx-chevron-down text-primary' : 'bx-chevron-right'"></i>
                         </td>
-                        <td class="small fw-semibold text-primary">{{ grupo.Documento }}</td>
+                        <td class="small fw-semibold" :class="isFacturaCredito(grupo.TipoPago) ? 'text-danger' : 'text-primary'">{{ grupo.Documento }}</td>
+                        <td class="small">
+                          <span class="badge" :class="isFacturaCredito(grupo.TipoPago) ? 'bg-danger' : 'bg-success'">{{ grupo.TipoPago }}</span>
+                        </td>
                         <td class="small d-none d-md-table-cell">{{ grupo.Cliente }}</td>
-                        <td class="small text-end fw-bold">{{ formatMoney(grupo.Monto) }}</td>
+                        <td class="small text-end fw-bold" :class="isFacturaCredito(grupo.TipoPago) ? 'text-danger' : ''">{{ formatMoney(grupo.Monto) }}</td>
                         <td class="small d-none d-md-table-cell">{{ formatFechaHora(grupo.Fecha) }}</td>
                       </tr>
                       <tr v-if="detalleAbierto === idx">
-                        <td :colspan="isMobile ? 3 : 5" class="p-0">
-                          <div class="p-2" style="background-color: #e8f5e9; border-left: 4px solid #4caf50;">
-                            <p class="small fw-semibold mb-1" style="color: #2e7d32;">
+                        <td :colspan="isMobile ? 4 : 6" class="p-0">
+                          <div class="p-2" :style="isFacturaCredito(grupo.TipoPago) ? 'background-color: #fdecea; border-left: 4px solid #e53935;' : 'background-color: #e8f5e9; border-left: 4px solid #4caf50;'">
+                            <p class="small fw-semibold mb-2">
+                              <span class="badge" :class="isFacturaCredito(grupo.TipoPago) ? 'bg-danger' : 'bg-success'"><i class="bx bx-purchase-tag me-1"></i>{{ grupo.TipoPago }}</span>
+                            </p>
+                            <p class="small fw-semibold mb-1" :style="isFacturaCredito(grupo.TipoPago) ? 'color: #c62828;' : 'color: #2e7d32;'">
                               <i class="bx bx-user me-1"></i>Cliente: <span class="fw-bold">{{ grupo.Cliente }}</span>
                             </p>
-                            <p class="small fw-semibold mb-2" style="color: #2e7d32;">
+                            <p class="small fw-semibold mb-2" :style="isFacturaCredito(grupo.TipoPago) ? 'color: #c62828;' : 'color: #2e7d32;'">
                               <i class="bx bx-calendar me-1"></i>Fecha y Hora: <span class="fw-bold">{{ formatFechaHora(grupo.Fecha) }}</span>
                             </p>
-                            <p class="small fw-semibold mb-2" style="color: #2e7d32;"><i class="bx bx-package me-1"></i>Productos vendidos:</p>
+                            <p class="small fw-semibold mb-2" :style="isFacturaCredito(grupo.TipoPago) ? 'color: #c62828;' : 'color: #2e7d32;'"><i class="bx bx-package me-1"></i>Productos vendidos:</p>
                             <table class="table table-sm table-bordered mb-0" style="background-color: #ffffff;">
                               <thead>
                                 <tr style="background-color: #c8e6c9;">

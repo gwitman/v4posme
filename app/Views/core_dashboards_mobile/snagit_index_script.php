@@ -210,6 +210,7 @@ createApp({
                         Fecha:                  item.Fecha,
                         Cliente:                item.Cliente,
                         Monto:                  parseFloat(item.Monto || 0),
+                        TipoPago:               item.TipoPago || 'CONTADO',
                         detalle: []
                     };
                 }
@@ -221,6 +222,26 @@ createApp({
                 });
             });
             return Object.values(map);
+        },
+        // Totales de facturas por tipo de pago (CONTADO / CREDITO)
+        isFacturaCredito() {
+            return (tipo) => (tipo || '').toUpperCase() === 'CREDITO';
+        },
+        totalMontoContado() {
+            return this.groupedData
+                .filter(g => (g.TipoPago || '').toUpperCase() !== 'CREDITO')
+                .reduce((sum, g) => sum + g.Monto, 0);
+        },
+        totalMontoCredito() {
+            return this.groupedData
+                .filter(g => (g.TipoPago || '').toUpperCase() === 'CREDITO')
+                .reduce((sum, g) => sum + g.Monto, 0);
+        },
+        totalDocumentosContado() {
+            return this.groupedData.filter(g => (g.TipoPago || '').toUpperCase() !== 'CREDITO').length;
+        },
+        totalDocumentosCredito() {
+            return this.groupedData.filter(g => (g.TipoPago || '').toUpperCase() === 'CREDITO').length;
         },
         productGridTitle() {
             const titles = {
