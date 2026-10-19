@@ -156,7 +156,7 @@
           </div>
         </div>
         <!-- Total Contado (solo facturas) -->
-        <div class="col-6 col-md-3 mb-3" v-if="filterTransaction == '19'">
+        <div class="col-12 col-md-3 mb-3" v-if="filterTransaction == '19'">
           <div class="card border-0 shadow-sm h-100">
             <div class="card-body text-center p-3">
               <div class="avatar avatar-sm bg-label-success rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
@@ -168,7 +168,7 @@
           </div>
         </div>
         <!-- Total Credito (solo facturas) -->
-        <div class="col-6 col-md-3 mb-3" v-if="filterTransaction == '19'">
+        <div class="col-12 col-md-3 mb-3" v-if="filterTransaction == '19'">
           <div class="card border-0 shadow-sm h-100">
             <div class="card-body text-center p-3">
               <div class="avatar avatar-sm bg-label-danger rounded-circle mb-2 mx-auto d-flex align-items-center justify-content-center" style="width:40px;height:40px;">
