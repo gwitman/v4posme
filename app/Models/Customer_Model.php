@@ -393,7 +393,7 @@ class Customer_Model extends Model  {
 							inner join  tb_naturales nat on nat.entityID = i.entityID 
 							inner join  tb_customer_credit_line cl on cl.entityID = i.entityID 
 							inner join tb_currency cur on  cur.currencyID = cl.currencyID 					
-							left join  tb_customer_credit_document cdd on cdd.entityID = i.entityID and cdd.balance > 0 
+							left join  tb_customer_credit_document cdd on cdd.entityID = i.entityID and cdd.balance > 0  and cdd.statusID = 77 /*registrada*/
 					where 
 							i.companyID = $companyID 
 							and i.isActive= 1

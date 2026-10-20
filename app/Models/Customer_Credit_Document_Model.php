@@ -388,7 +388,9 @@ class Customer_Credit_Document_Model extends Model  {
 								a.isActive = 1 and 
 								wsa.aplicable = 1 and 
 								wsd.aplicable = 1 and 
-								a.remaining > 0  
+								a.remaining > 0  and 
+								a.statusID = 78 /*registrada*/ and 
+ 								d.statusID = 77 /*registrada*/  
 							group by 
 								d.entityID,
 								d.customerCreditDocumentID,
