@@ -2890,7 +2890,7 @@ class app_invoice_billing extends _BaseController {
 			$objTMReference["reference1"]				= "";  //numero de exoneracion
 			$objTMReference["reference2"]				= "0"; //aplica exoneracion
 			$objTMReference["reference3"]				= $transactionMaster->Reference3; //saldo nuevo 
-			$objTMReference["reference4"]				= $transactionMaster->Reference4; //saldo anterior
+			$objTMReference["refernece4"]				= $transactionMaster->Reference4; //saldo anterior
 			$objTMReference["createdOn"]				= helper_getDateTime();
 			$objTMReference["isActive"]					= 1;
 			$this->Transaction_Master_References_Model->insert_app_posme($objTMReference);
