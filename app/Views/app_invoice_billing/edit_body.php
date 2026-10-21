@@ -306,7 +306,7 @@ echo helper_getHtmlOfPageLanding();
 									
 									
 									<div class="form-group" id="divNote" >
-										<label class="col-lg-4 control-label" for="normal">Descripcion</label>
+										<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","divTxtDescripcion","Descripcion"); ?></label>
 										<div class="col-lg-8">										
 											<input class="form-control"   type="text" name="txtNote" id="txtNote" value="<?php echo $objTransactionMaster->note; ?>">
 										</div>
@@ -774,7 +774,7 @@ echo helper_getHtmlOfPageLanding();
 						
 						<div class="tab-pane fade" id="dropdown">						
 							<div class="form-group">
-									<label class="col-lg-2 control-label" for="normal">Procedimiento</label>
+									<label class="col-lg-2 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","divTxtProcedimiento","Procedimiento"); ?></label>
 									<div class="col-lg-10">
 										<textarea class="form-control" type="text"  name="txtTMIReference1" id="txtTMIReference1" ><?php echo $objTransactionMasterInfo->reference1; ?></textarea>
 									</div>
