@@ -1,5 +1,6 @@
+
 				<li>
-								<a href="#">
+								<a href="javascript:void(0);" class="menu-has-sub">
 									<span class="icon"><i class="icon20 <?php echo $icon; ?>"></i></span>
 									<span class="txt"><?php echo $display; ?></span>
 								</a>

@@ -283,6 +283,19 @@
 	selectMenu("<?php echo current_url(); ?>");
 	
 	
+	// Evitar que los enlaces de submenu (padres) hagan ancla con # y bloqueen el menu en movil
+	$(document).on("click", "#mainnav li.hasSub > a, #mainnav a.menu-has-sub", function(e) {
+		e.preventDefault();
+	});
+	
+	// Cerrar el menu superior colapsado al tocar una opcion en movil
+	$(document).on("click", "#navbar-to-collapse a[href]:not([href^='javascript']):not(.dropdown-toggle)", function() {
+		if ($(".navbar-toggle").is(":visible")) {
+			$("#navbar-to-collapse").removeClass("in").collapse("hide");
+		}
+	});
+	
+	
 	$(document).on("click", "#link-tramites", function(e) {	  
 	  mostrarModal("ModalOpcionesTramites");
 	});

@@ -42,3 +42,102 @@
 .swal2-title-custom{
   font-size:18px !important;
 }
+
+/* ============================================================
+   MENU - mejoras visuales alineadas a la paleta del tema (#006E98)
+   ============================================================ */
+
+/* Menu lateral: transicion suave y mejor espaciado */
+#mainnav .nav-list > li > a {
+	transition: background .15s ease, color .15s ease, box-shadow .15s ease;
+}
+
+/* Hover del item padre */
+#mainnav .nav-list > li > a:hover {
+	background: #f0f7fb;
+	color: #006E98;
+}
+
+#mainnav .nav-list > li > a:hover .icon,
+#mainnav .nav-list > li > a:hover .icon i {
+	color: #006E98;
+}
+
+/* Item activo / submenu expandido: barra azul del tema */
+#mainnav .nav-list > li.current > a,
+#mainnav .nav-list > li > a.expand {
+	background: #e6f2f8;
+	color: #006E98;
+	box-shadow: inset 3px 0 0 #006E98;
+}
+
+#mainnav .nav-list > li.current > a .icon i,
+#mainnav .nav-list > li > a.expand .icon i {
+	color: #006E98;
+}
+
+/* Submenu: fondo claro y separacion sutil */
+#mainnav .nav-list ul.sub {
+	background: #fafbfc;
+}
+
+#mainnav .nav-list ul.sub > li > a {
+	padding: 0 6px 0 16px;
+	color: #6b7280;
+	line-height: 39px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	border-bottom: 1px solid #eef0f2;
+	transition: background .15s ease, color .15s ease;
+	display: block;
+	text-decoration: none;
+}
+
+#mainnav .nav-list ul.sub > li > a:hover {
+	background: #f0f7fb;
+	color: #006E98;
+}
+
+#mainnav .nav-list ul.sub > li > a .icon i {
+	color: #9aa3af;
+}
+
+#mainnav .nav-list ul.sub > li > a:hover .icon i {
+	color: #006E98;
+}
+
+/* Navbar superior: dropdown mas limpio */
+#header .dropdown-menu {
+	box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+#header .dropdown-menu li a {
+	transition: background .15s ease, color .15s ease;
+}
+
+/* ============================================================
+   RESPONSIVE / MOVIL
+   ============================================================ */
+@media (max-width: 768px) {
+
+	/* Areas de toque comodas */
+	#mainnav .nav-list > li > a,
+	#mainnav .nav-list ul.sub > li > a,
+	#header .dropdown-menu li a {
+		min-height: 44px;
+	}
+
+	/* Menu superior colapsado: permitir scroll si hay muchas opciones */
+	#navbar-to-collapse {
+		max-height: 80vh;
+		overflow-y: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+
+	/* Evitar doble-tap/zoom y bloqueos de toque en los enlaces */
+	#mainnav a,
+	#navbar-to-collapse a {
+		touch-action: manipulation;
+	}
+}
