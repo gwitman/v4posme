@@ -1327,6 +1327,8 @@ $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNo
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1DB/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1DB');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1DBLotificadoraCA', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1DBLotificadoraCA');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1DBLotificadoraCA/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1DBLotificadoraCA');
+$routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1DBLotificadoraCAPrima', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1DBLotificadoraCAPrima');
+$routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1DBLotificadoraCAPrima/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1DBLotificadoraCAPrima');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion2DB', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion2DB');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion2DB/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion2DB');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion3DB', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion3DB');
@@ -1804,6 +1806,8 @@ $routes->match(['get', 'post'], 'app_box_share/viewRegisterFormatoPaginaTicketRe
 $routes->match(['get', 'post'], 'app_box_share/viewRegisterFormatoPaginaTicketRepuestoCristoRey/(:any)', 'app_box_share::viewRegisterFormatoPaginaTicketRepuestoCristoRey');
 $routes->match(['get', 'post'], 'app_box_share/viewRegisterFormatoPaginaTicketDb', 'app_box_share::viewRegisterFormatoPaginaTicketDb');
 $routes->match(['get', 'post'], 'app_box_share/viewRegisterFormatoPaginaTicketDb/(:any)', 'app_box_share::viewRegisterFormatoPaginaTicketDb');
+$routes->match(['get', 'post'], 'app_box_share/viewRegisterFormatoPaginaTicketDbLotificadoraCA', 'app_box_share::viewRegisterFormatoPaginaTicketDbLotificadoraCA');
+$routes->match(['get', 'post'], 'app_box_share/viewRegisterFormatoPaginaTicketDbLotificadoraCA/(:any)', 'app_box_share::viewRegisterFormatoPaginaTicketDbLotificadoraCA');
 $routes->match(['get', 'post'], 'core_upgrade/byPop3', 'core_upgrade::byPop3');
 $routes->match(['get', 'post'], 'core_upgrade/byPop3/(:any)', 'core_upgrade::byPop3');
 $routes->match(['get', 'post'], 'core_merge/merge_of_posme_merge_to_posme_data_insert_and_update', 'core_merge::merge_of_posme_merge_to_posme_data_insert_and_update');
