@@ -2826,7 +2826,8 @@ class app_box_share extends _BaseController {
 					"itemReference9" 					=>$objCustomerCreditDocument->periodName,
 					"itemReference10" 					=>$objCustomerCreditDocumentAmortization->dateApply,
 					"itemReference11" 					=>$objCustomerCreditDocumentAmortization->dayDelay,
-					"transactionMasterInfoReference1"	=>$datView["objTM"]->note. " Saldo inicial: C$ ". $saldoInicial.",  Abono: C$ ".sprintf("%01.2f",round($detail_->amount,2))." Saldo final: C$ ".$saldoFinal 
+					"transactionMasterInfoReference1"		=>$datView["objTM"]->note,
+					"transactionMasterInfoReference1Saldo"	=>"Saldo inicial: C$ ". $saldoInicial." Saldo final: C$ ".$saldoFinal 
 				);
 				array_push($datViewArray["transactionMasterDetail"],$row);		
 			}
