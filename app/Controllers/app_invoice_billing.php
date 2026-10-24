@@ -9202,7 +9202,7 @@ class app_invoice_billing extends _BaseController {
 					"itemBarCode"							=>$detail_->barCode,
 					"itemName"								=>$detail_->itemName. " ". strtolower($detail_->skuFormatoDescription),
 					"itemNameQuantity"						=>"",
-					"itemNamePrice"							=>sprintf("%01.2f",round($detail_->unitaryPrice,2)),
+					"itemNamePrice"							=>"",
 					"itemNameAmount"						=>sprintf("%01.2f",round($detail_->amount,2)),
 					"transactionMasterDetailReference"		=>$objTMDReferences ? $objTMDReferences[0]->reference2 : "" 
 				);

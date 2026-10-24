@@ -2998,7 +2998,7 @@ class app_box_share extends _BaseController {
 			$datViewArray["customerRuc"]						= $datView["objCustumer"]->identification;	
 			$datViewArray["referenceClientName"]				= "";
 			$datViewArray["referenceClientIdentifier"]			= "";
-			$datViewArray["note"]								= "";
+			$datViewArray["note"]								= $datView["objTM"]->note;
 			$datViewArray["xContado"]							= "";
 			$datViewArray["xCredito"]							= "";
 			$datViewArray["customerAddress"]					= strtolower($datView["objCustumer"]->address);
@@ -3036,6 +3036,8 @@ class app_box_share extends _BaseController {
 			$datViewArray["amount_initial_balance"]				= sprintf("%01.2f",round($saldoInicial,2));
 			$datViewArray["amount_total_payment"]				= sprintf("%01.2f",round($datView["objTM"]->amount,2));
 			$datViewArray["amount_final_balance"]				= sprintf("%01.2f",round($saldoFinal,2));
+			$datViewArray["block"]								= "";
+			$datViewArray["lote"]								= "";
 
 
 			
@@ -3049,6 +3051,20 @@ class app_box_share extends _BaseController {
 				$objCustomerCreditDocumentAmortization 	= $this->Customer_Credit_Amortization_Model->get_rowByPK(
 						$detail_->reference3
 				);
+
+				$objTransactionMasterFactura 			= $this->Transaction_Master_Model->get_rowByTransactionNumber(
+						$datView["objTM"]->companyID,
+						$detail_->reference1
+				);
+
+				$objTransactionMasterFacturaInfo		= $this->Transaction_Master_Info_Model->get_rowByPK(
+					$objTransactionMasterFactura->companyID,
+					$objTransactionMasterFactura->transactionID,
+					$objTransactionMasterFactura->transactionMasterID
+				);
+
+				$datViewArray["block"]  = $objTransactionMasterFacturaInfo->referenceClientIdentifier;
+				$datViewArray["lote"]  	= $objTransactionMasterFacturaInfo->referenceClientName;
 
 				$row = array(
 					"itemName"							=>"",
