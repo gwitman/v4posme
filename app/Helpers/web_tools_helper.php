@@ -489,13 +489,13 @@ function helper_GetLetras($xcifra, $moneda, $centavos)
                     break;
                 case 2:
                     if ($xcifra < 1) {
-                        $xcadena = "CERO $moneda $xdecimales/100 $centavos";
+                        $xcadena = "CERO $moneda CON $xdecimales/100 $centavos";
                     }
                     if ($xcifra >= 1 && $xcifra < 2) {
-                        $xcadena = "UN $moneda $xdecimales/100 $centavos";
+                        $xcadena = "UN $moneda CON $xdecimales/100 $centavos";
                     }
                     if ($xcifra >= 2) {
-                        $xcadena .= " $moneda $xdecimales/100 $centavos"; //
+                        $xcadena .= " $moneda CON $xdecimales/100 $centavos"; //
                     }
                     break;
             } // endswitch ($xz)

@@ -2594,6 +2594,7 @@ class app_box_share extends _BaseController {
 			$detalle = array();
 			$datViewArray["amount_initial_balance"]				= sprintf("%01.2f",round($saldoInicial,2));
 			$datViewArray["amount_total_payment"]				= sprintf("%01.2f",round($datView["objTM"]->amount,2));
+			$datViewArray["amount_total_payment_latter"]		= strtolower(helper_GetLetras(round($datView["objTM"]->amount,2),"CORDOBA","CENTAVOS"));
 			$datViewArray["amount_final_balance"]				= sprintf("%01.2f",round($saldoFinal,2));
 
 
@@ -3035,6 +3036,7 @@ class app_box_share extends _BaseController {
 			$detalle = array();
 			$datViewArray["amount_initial_balance"]				= sprintf("%01.2f",round($saldoInicial,2));
 			$datViewArray["amount_total_payment"]				= sprintf("%01.2f",round($datView["objTM"]->amount,2));
+			$datViewArray["amount_total_payment_latter"]		= strtolower(helper_GetLetras(round($datView["objTM"]->amount,2),"CORDOBA","CENTAVOS"));
 			$datViewArray["amount_final_balance"]				= sprintf("%01.2f",round($saldoFinal,2));
 			$datViewArray["block"]								= "";
 			$datViewArray["lote"]								= "";
