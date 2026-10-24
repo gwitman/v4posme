@@ -273,6 +273,10 @@ class app_calendar_programming extends _BaseController
 			$companyID      = $dataSession["user"]->companyID;
 			$resultTaller   = $this->Transaction_Master_Model->getProgrammingOrdenTaller($companyID);
 			$result         = array_merge($result, $resultTaller);
+
+            //Agregasr los abonos para que aparessacn en calendario
+            $resultAbonos   = $this->Transaction_Master_Model->getProgrammingShares($companyID);
+            $result         = array_merge($result, $resultAbonos);
             log_message("error",print_r($result,true));
 
             $events = [];

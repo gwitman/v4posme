@@ -1567,6 +1567,61 @@ class Transaction_Master_Model extends Model  {
 		return $db->query($sql)->getResult();
 	}
 
+	function getProgrammingShares($companyID)
+	{
+		$db 	= db_connect();
+		$sql = "
+		select 
+			c.documentNumber as rememberID,
+			CONCAT('".base_url()."/app_box_share/add') as url,
+			concat(
+				'Nombre: ', nat.firstName,' ',nat.lastName,
+				', Bloque: ', tmi.referenceClientIdentifier,
+				', Lote: ',tmi.referenceClientName,
+				', Cuota: ', round(am.`share`,2) 
+			) as title,
+			concat(
+				'Nombre: ', nat.firstName,' ',nat.lastName,
+				', Bloque: ', tmi.referenceClientIdentifier,
+				', Lote: ',tmi.referenceClientName,
+				', Cuota: ', round(am.`share`,2) 
+			) as description,
+			am.dateApply as createdOn,
+			am.dateApply as createdOn2,	
+			0 as tagID,
+			'purple' as color,
+			IFNULL(cus.customerNumber,'') as entidad,
+			IFNULL(CONCAT(nat.firstName,' ',IFNULL(nat.lastName,'')),'') as nombre,
+			IFNULL(cus.phoneNumber,'') as telefono,
+			'' as entregado 	
+		from 
+			tb_customer_credit_document c 
+			inner join tb_transaction_master tm on 
+				c.documentNumber = tm.transactionNumber 
+			inner join tb_transaction_master_info tmi on 
+				tm.transactionMasterID = tmi.transactionMasterID 
+			inner join tb_naturales nat on 
+				nat.entityID = c.entityID 
+			inner join tb_customer cus on 
+				cus.entityID = nat.entityID 
+			inner join tb_customer_credit_amoritization am on 
+				am.customerCreditDocumentID = c.customerCreditDocumentID 
+		where 
+			c.isActive = 1 and 
+			tm.isActive = 1 and 
+			c.statusID = 77 and 
+			c.balance > 0 and 
+			am.statusID = 78 and 
+			am.remaining > 0 and 
+			tm.companyID = $companyID
+			
+		";
+
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+	}
+
+
    /**
     * Cuenta la cantidad total de transacciones creadas por un usuario (createdBy),
     * uniendo con tb_user por userID = createdBy.
