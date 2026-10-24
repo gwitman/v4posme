@@ -1834,7 +1834,8 @@ class app_invoice_billing extends _BaseController {
 					
 					
 					/*Calcular el monto real del financiamiento*/
-					$changeAmount 	=  $objTMInfoNew["changeAmount"];
+					$changeAmount 		 =  $objTMInfoNew["changeAmount"];
+					$amountTotalBackupTm =  $amountTotal;
 					if($changeAmount < 0)
 					{
 						$amountTotal = -1 * $changeAmount;
@@ -1843,7 +1844,6 @@ class app_invoice_billing extends _BaseController {
 					{
 						$amountTotal = $amountTotal;
 					}
-					
 					
 					//Crear documento del modulo
 					$objCustomerCreditLine 								= $this->Customer_Credit_Line_Model->get_rowByPK($objTMNew["reference4"]);
@@ -1863,7 +1863,7 @@ class app_invoice_billing extends _BaseController {
 					if($objParameterAmortizationDuranteFactura == "true" &&  $objTMNew["currencyID"] == 1 /*cordoba*/)
 					{
 						
-						
+						$amountTotal 										= $amountTotalBackupTm;
 						$objCustomerCreditDocument["term"] 					= $objTMNew["reference2"];
 						$objCustomerCreditDocument["interes"] 				= /*inicio get post*/ $this->request->getPost("txtFixedExpenses");
 						$objCustomerCreditDocument["amount"] 				= 	$amountTotal - 
@@ -1882,6 +1882,7 @@ class app_invoice_billing extends _BaseController {
 					
 					if($objParameterAmortizationDuranteFactura == "true" &&  $objTMNew["currencyID"] == 2 /*dolares*/)
 					{
+						$amountTotal 										= $amountTotalBackupTm;
 						$objCustomerCreditDocument["term"] 					= $objTMNew["reference2"];
 						$objCustomerCreditDocument["interes"] 				= /*inicio get post*/ $this->request->getPost("txtFixedExpenses");
 						$objCustomerCreditDocument["amount"] 				= 	$amountTotal - 
