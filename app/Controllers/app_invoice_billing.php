@@ -8550,8 +8550,8 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["transactionMasterInfoReference1"]	= $datView["objTMI"]->reference1;
 			$datViewArray["statusName"]							= $datView["objStage"][0]->display;
 			$datViewArray["causalName"]							= $datView["objTC"]->name;
-			$datViewArray["xContado"]							= $datView["objTC"]->name == "CONTADO" ? "X":"";
-			$datViewArray["xCredito"]							= $datView["objTC"]->name == "CREDITO" ? "X":"";
+			$datViewArray["xContado"]							= $datView["objTC"]->name == "CONTADO" ? "":"";
+			$datViewArray["xCredito"]							= $datView["objTC"]->name == "CREDITO" ? "":"";
 			$datViewArray["customerNumber"]						= $datView["objCustumer"]->customerNumber;
 			$datViewArray["amount_sub_total"]					= sprintf("%.2f",$datView["objTM"]->subAmount);
 			$datViewArray["amount_iva"]							= sprintf("%.2f",$datView["objTM"]->tax1);
@@ -8578,7 +8578,7 @@ class app_invoice_billing extends _BaseController {
 					"itemNumber"							=>$detail_->itemNumber,
 					"itemBarCode"							=>$detail_->barCode,
 					"itemName"								=>$detail_->itemName. " ". strtolower($detail_->skuFormatoDescription),
-					"itemNameQuantity"						=>sprintf("%01.2f",round($detail_->quantity,2)),
+					"itemNameQuantity"						=>"",
 					"itemNamePrice"							=>sprintf("%01.2f",round($detail_->unitaryPrice,2)),
 					"itemNameAmount"						=>sprintf("%01.2f",round($detail_->amount,2)),
 					"transactionMasterDetailReference"		=>$objTMDReferences ? $objTMDReferences[0]->reference2 : "" 
@@ -8861,8 +8861,8 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["transactionMasterInfoReference1"]	= $datView["objTMI"]->reference1;
 			$datViewArray["statusName"]							= $datView["objStage"][0]->display;
 			$datViewArray["causalName"]							= $datView["objTC"]->name;
-			$datViewArray["xContado"]							= $datView["objTC"]->name == "CONTADO" ? "X":"";
-			$datViewArray["xCredito"]							= $datView["objTC"]->name == "CREDITO" ? "X":"";
+			$datViewArray["xContado"]							= $datView["objTC"]->name == "CONTADO" ? "":"";
+			$datViewArray["xCredito"]							= $datView["objTC"]->name == "CREDITO" ? "":"";
 			$datViewArray["customerNumber"]						= $datView["objCustumer"]->customerNumber;
 			$datViewArray["amount_sub_total"]					= sprintf("%.2f",$datView["objTM"]->subAmount);
 			$datViewArray["amount_iva"]							= sprintf("%.2f",$datView["objTM"]->tax1);
@@ -8889,7 +8889,7 @@ class app_invoice_billing extends _BaseController {
 					"itemNumber"							=>$detail_->itemNumber,
 					"itemBarCode"							=>$detail_->barCode,
 					"itemName"								=>$detail_->itemName. " ". strtolower($detail_->skuFormatoDescription),
-					"itemNameQuantity"						=>sprintf("%01.2f",round($detail_->quantity,2)),
+					"itemNameQuantity"						=>"",
 					"itemNamePrice"							=>sprintf("%01.2f",round($detail_->unitaryPrice,2)),
 					"itemNameAmount"						=>sprintf("%01.2f",round($detail_->amount,2)),
 					"transactionMasterDetailReference"		=>$objTMDReferences ? $objTMDReferences[0]->reference2 : "" 

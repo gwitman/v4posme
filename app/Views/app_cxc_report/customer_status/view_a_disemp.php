@@ -15,7 +15,7 @@
 			
 		
 		<?php
-		
+		$configColumn["1"]["IdTable"] 		= "myReport";		
 		$configColumn["1"]["Titulo"] 		= "Factura";
 		$configColumn["1"]["TituloFoot"]	= "";
 		$configColumn["1"]["FiledSouce"]	= "documentNumber";
@@ -103,11 +103,11 @@
 		$configColumn["100"]["Alineacion"] 	= "Left";
 		$configColumn["100"]["TotalValor"] 	= 0;
 		$configColumn["100"]["FiledSoucePrefix"]	= "";
-		$configColumn["100"]["Width"]		= "80px";
+		$configColumn["100"]["Width"]		= "220px";
 			
 		
 		
-		$resultado = helper_reporteGeneralCreateTable($objDocument,$configColumn,'1000px');
+		$resultado = helper_reporteGeneralCreateTable($objDocument,$configColumn,'1500px');
 		
 		
 		?>

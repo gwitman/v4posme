@@ -178,7 +178,8 @@ class app_box_share extends _BaseController {
 			//Nuevo Registro
 			$companyID 				= /*inicio get post*/ $this->request->getPost("companyID");
 			$transactionID 			= /*inicio get post*/ $this->request->getPost("transactionID");				
-			$transactionMasterID 	= /*inicio get post*/ $this->request->getPost("transactionMasterID");				
+			$transactionMasterID 	= /*inicio get post*/ $this->request->getPost("transactionMasterID");		
+			$comments 				= /*inicio get post*/ $this->request->getPost("comments");		
 			$objListComanyParameter					= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
 			$workflowStageAmortizationRegister 		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"SHARE_AMORTIZATION_STATUS_REGISTER")->value;	
 			$workflowStageDocumentRegister 			= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"SHARE_DOCUMENT_CREDIT_STATUS_REGISTER")->value;	
@@ -202,7 +203,13 @@ class app_box_share extends _BaseController {
 			
 			if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_share","statusID",$objTM->statusID,COMMAND_ELIMINABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
 			{
-				
+				$dataNewTM 			= array();
+				if(!is_null($comments) && $comments !== '')
+				{
+					$dataNewTM["note"]  = trim($objTM->note . ' ' . $comments);
+				}
+				$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$dataNewTM);
+
 				//Eliminar el Registro			
 				$this->Transaction_Master_Model->delete_app_posme($companyID,$transactionID,$transactionMasterID);
 				$this->Transaction_Master_Detail_Model->deleteWhereTM($companyID,$transactionID,$transactionMasterID);			
@@ -240,6 +247,15 @@ class app_box_share extends _BaseController {
 					}
 				}
 				
+				//Guardar comentario de la anulacion
+				$dataNewTM 			= array();
+				if(!is_null($comments) && $comments !== '')
+				{
+					$dataNewTM["note"]  = trim($objTM->note . ' ' . $comments);
+				}
+				$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$dataNewTM);
+
+
 				//Recorrare las cuotas a regresar
 				foreach($objTMDR as $key => $amRef)
 				{
