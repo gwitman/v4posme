@@ -491,7 +491,7 @@ echo helper_getHtmlOfPageLanding();
 									<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divHiddenReference",""); ?> " id="divReferencia">
 										<label class="col-lg-4 control-label" for="txtReference3"><?php echo getBehavio($company->type,"app_invoice_billing","lblReferencia","Referencia"); ?></label>
 										<div class="col-lg-8">
-											<input class="form-control"  type="text"  name="txtReference3" id="txtReference3" value="<?php echo ($objEmployeeNatural ? $objEmployeeNatural->firstName : "N/D"); ?>">
+											<input class="form-control"  type="text"  name="txtReference3" id="txtReference3" value="<?php echo getBehavio($company->type,"app_invoice_billing","valueReferencia","Predeterminado"); ?>">
 										</div>
 									</div>
 									
