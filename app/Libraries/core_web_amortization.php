@@ -308,108 +308,135 @@ class core_web_amortization {
 		}
    }
 
+   /**
+    * Aplica un abono a las cuotas de un documento de crédito.
+    *
+    * Parámetros de compañía:
+    *  - SHARE_PRIORITY_INTERES : "interest" | "true" | "interes" | "intere"  => dentro de cada cuota se paga primero el interés y luego el capital.
+    *                             Cualquier otro valor (o si no existe)       => se paga primero el capital y luego el interés.
+    *  - SHARE_APPLY_ORDEN_DESC : "true" => el remanente (luego de pagar las cuotas vencidas o de hoy) se aplica desde la última cuota hacia arriba.
+    *                             Cualquier otro valor (o si no existe) => el remanente se aplica de arriba hacia abajo (orden normal).
+    *
+    * Orden de aplicación:
+    *  1) Cuotas con fecha de vencimiento <= hoy, de la más antigua a la más reciente.
+    *  2) Si sobra dinero, cuotas futuras según SHARE_APPLY_ORDEN_DESC.
+    *
+    * @return float Monto sobrante que no se pudo aplicar (0 si se consumió todo).
+    */
    function applyCuote($companyID,$customerCreditDocumentID,$amount,$amoritizationID,$transactionMasterDetailID){
 	    $core_web_parameter 						= new core_web_parameter();
 		$Customer_Credit_Document_Model 			= new Customer_Credit_Document_Model();
 		$Customer_Credit_Amortization_Model 		= new Customer_Credit_Amortization_Model();
-		$Transaction_Master_Detail_Model			= new Transaction_Master_Detail_Model();
 		$Transaction_Master_Detail_References_Model = new Transaction_Master_Detail_References_Model();	
 		$core_web_tools								= new core_web_tools();
 		date_default_timezone_set(APP_TIMEZONE);
-		 
+		
+		$epsilon 									= 0.000001;
+		$amount										= (float)$amount;
 		 
 		$objComponentAmortization			= $core_web_tools->getComponentIDBy_ComponentName("tb_customer_credit_amoritization");
 		if(!$objComponentAmortization)
 		throw new \Exception("EL COMPONENTE 'tb_customer_credit_amoritization' NO EXISTE...");		
 	
-	
-		$objTransactionMasterDetail 				= $Transaction_Master_Detail_Model->get_rowByTransactionMasterDetailID($transactionMasterDetailID);
 		$documentCancel 							= $core_web_parameter->getParameter("SHARE_DOCUMENT_CANCEL",$companyID)->value;
 		$amortizationCancel 						= $core_web_parameter->getParameter("SHARE_CANCEL",$companyID)->value;
+		
+		//Parametro: prioridad interes / capital
+		$priorityValue								= strtolower(trim((string)$this->getParameterValueOrDefault($core_web_parameter,"SHARE_PRIORITY_INTERES",$companyID,"false")));
+		$priorityInterest							= in_array($priorityValue, array("interest","true","interes","intere"), true);
+		
+		//Parametro: orden del remanente
+		$ordenDescValue								= strtolower(trim((string)$this->getParameterValueOrDefault($core_web_parameter,"SHARE_APPLY_ORDEN_DESC",$companyID,"false")));
+		$ordenDesc									= ($ordenDescValue === "true");
+		
 		$objCustomerCreditDocument					= $Customer_Credit_Document_Model->get_rowByPK($customerCreditDocumentID);
 		$objListCustomerCreditDocumentAmortization 	= $Customer_Credit_Amortization_Model->get_rowByDocumentAndVinculable($customerCreditDocumentID);
 		$objConceptos 				= array();
 		$objConceptos["capital"] 	= 0;
 		$objConceptos["interes"] 	= 0;
 		
-		
-		//Cancel Cuota
+		//Separar cuotas vencidas/hoy y cuotas futuras
+		$today						= date("Y-m-d");
+		$listVencidas				= array();
+		$listFuturas				= array();
 		if($objListCustomerCreditDocumentAmortization)
-		foreach($objListCustomerCreditDocumentAmortization as $key => $itemAmortization){	
-			$interval	= date_diff(date_create($itemAmortization->dateApply),date_create());			
+		foreach($objListCustomerCreditDocumentAmortization as $itemAmortization){
+			if((float)$itemAmortization->remaining <= $epsilon)
+				continue;
 			
-			if ($amount >= $itemAmortization->remaining && $amount <> 0){
-				$amount									= $amount - $itemAmortization->remaining;				
-				$dif									= $itemAmortization->remaining - $amount;
-				$itemAmortizationNew					= NULL;
-				$itemAmortizationNew["statusID"]		= $amortizationCancel;
-				$itemAmortizationNew["remaining"]		= 0; 
-				$itemAmortizationNew["dayDelay"]		= $interval->format('%r%a');	
-				
-				//Abonar a la cuota completa
-				if($itemAmortization->remaining == $itemAmortization->share )
-				{
-					$objConceptos["capital"] 	= $objConceptos["capital"] + $itemAmortization->capital;
-					$objConceptos["interes"] 	= $objConceptos["interes"] + $itemAmortization->interest;
-				}
-				else if ($itemAmortization->remaining > $itemAmortization->interest){
-					$objConceptos["capital"] 	= $objConceptos["capital"] + ($itemAmortization->remaining - $itemAmortization->interest);
-					$objConceptos["interes"] 	= $objConceptos["interes"] + $itemAmortization->interest;
-				}
-				else if ($itemAmortization->remaining < $itemAmortization->interest){
-					$objConceptos["capital"] 	= $objConceptos["capital"] + 0;
-					$objConceptos["interes"] 	= $objConceptos["interes"] + $itemAmortization->remaining;
-				}
-				else if ($itemAmortization->remaining = $itemAmortization->interest){
-					$objConceptos["capital"] 	= $objConceptos["capital"] + 0;
-					$objConceptos["interes"] 	= $objConceptos["interes"] + $itemAmortization->interest;
-				}
+			if(date("Y-m-d",strtotime($itemAmortization->dateApply)) <= $today)
+				$listVencidas[]	= $itemAmortization;
+			else
+				$listFuturas[]	= $itemAmortization;
+		}
+		
+		//Las cuotas futuras del final hacia arriba
+		if($ordenDesc)
+			$listFuturas = array_reverse($listFuturas);
+		
+		$listToApply = array_merge($listVencidas,$listFuturas);
+		
+		//Aplicar abono
+		foreach($listToApply as $itemAmortization){
+			if($amount <= $epsilon)
+				break;
 			
-				$Customer_Credit_Amortization_Model->update_app_posme($itemAmortization->creditAmortizationID,$itemAmortizationNew);	
-				
-				$dataTMDR["transactionMasterDetailID"]		= $transactionMasterDetailID;
-				$dataTMDR["componentID"]					= $objComponentAmortization->componentID;
-				$dataTMDR["componentItemID"]				= $itemAmortization->creditAmortizationID;
-				$dataTMDR["quantity"]						= $itemAmortization->remaining;
-				$dataTMDR["isActive"]						= 1;
-				$dataTMDR["createdOn"]						= helper_getDateTime();	
-				$Transaction_Master_Detail_References_Model->insert_app_posme($dataTMDR);
+			$remaining		= (float)$itemAmortization->remaining;
+			$share			= (float)$itemAmortization->share;
+			$capital		= (float)$itemAmortization->capital;
+			$interest		= (float)$itemAmortization->interest;
+			$paidBefore		= max(0, $share - $remaining);
+			
+			//Calcular lo pendiente de interes y capital de la cuota segun la prioridad
+			if($priorityInterest){
+				$pendingInterest	= max(0, $interest - min($interest,$paidBefore));
+				$pendingInterest	= min($pendingInterest,$remaining);
+				$pendingCapital		= max(0, $remaining - $pendingInterest);
+				$pendingFirst		= $pendingInterest;
 			}
-			else if ($amount <> 0){	
-				$itemAmortizationNew					= NULL;
-				$itemAmortizationNew["remaining"]		= $itemAmortization->remaining - $amount;
-				$itemAmortizationNew["dayDelay"]		= $interval->format('%r%a');
-				$dif									= $itemAmortization->remaining - $amount;
-				
-				if ($dif > $itemAmortization->interest){
-					$objConceptos["capital"] 	= $objConceptos["capital"] + $amount;
-					$objConceptos["interes"] 	= $objConceptos["interes"] + 0;
-				}
-				else if ($dif == $itemAmortization->interest){
-					$objConceptos["capital"] 	= $objConceptos["capital"] + $amount;
-					$objConceptos["interes"] 	= $objConceptos["interes"] + 0;
-				}
-				else if ($dif < $itemAmortization->interest and $itemAmortization->remaining <= $itemAmortization->interest){
-					$objConceptos["capital"] 	= $objConceptos["capital"] + 0;
-					$objConceptos["interes"] 	= $objConceptos["interes"] + $amount;
-				}
-				else if ($dif < $itemAmortization->interest and $itemAmortization->remaining > $itemAmortization->interest){
-					$capital001 				= $itemAmortization->remaining - $itemAmortization->interest;
-					$interes001 				= $amount - $capital001;					
-					$objConceptos["capital"] 	= $objConceptos["capital"] + $capital001;
-					$objConceptos["interes"] 	= $objConceptos["interes"] + $interes001;
-				}
-				
-				$Customer_Credit_Amortization_Model->update_app_posme($itemAmortization->creditAmortizationID,$itemAmortizationNew);					
-				$dataTMDR["transactionMasterDetailID"]		= $transactionMasterDetailID;
-				$dataTMDR["componentID"]					= $objComponentAmortization->componentID;
-				$dataTMDR["componentItemID"]				= $itemAmortization->creditAmortizationID;
-				$dataTMDR["quantity"]						= $amount;
-				$dataTMDR["isActive"]						= 1;
-				$dataTMDR["createdOn"]						= helper_getDateTime();				
-				$Transaction_Master_Detail_References_Model->insert_app_posme($dataTMDR);				
-				$amount 								= 0;					
+			else{
+				$pendingCapital		= max(0, $capital - min($capital,$paidBefore));
+				$pendingCapital		= min($pendingCapital,$remaining);
+				$pendingInterest	= max(0, $remaining - $pendingCapital);
+				$pendingFirst		= $pendingCapital;
 			}
+			
+			$pay			= min($amount,$remaining);
+			$payFirst		= min($pay,$pendingFirst);
+			$paySecond		= $pay - $payFirst;
+			
+			if($priorityInterest){
+				$objConceptos["interes"] 	= $objConceptos["interes"] + $payFirst;
+				$objConceptos["capital"] 	= $objConceptos["capital"] + $paySecond;
+			}
+			else{
+				$objConceptos["capital"] 	= $objConceptos["capital"] + $payFirst;
+				$objConceptos["interes"] 	= $objConceptos["interes"] + $paySecond;
+			}
+			
+			$interval								= date_diff(date_create($itemAmortization->dateApply),date_create());
+			$newRemaining							= $remaining - $pay;
+			$itemAmortizationNew					= NULL;
+			$itemAmortizationNew["dayDelay"]		= $interval->format('%r%a');
+			if($newRemaining <= $epsilon){
+				$itemAmortizationNew["remaining"]	= 0;
+				$itemAmortizationNew["statusID"]	= $amortizationCancel;
+			}
+			else{
+				$itemAmortizationNew["remaining"]	= $newRemaining;
+			}
+			$Customer_Credit_Amortization_Model->update_app_posme($itemAmortization->creditAmortizationID,$itemAmortizationNew);
+			
+			$dataTMDR								= NULL;
+			$dataTMDR["transactionMasterDetailID"]	= $transactionMasterDetailID;
+			$dataTMDR["componentID"]				= $objComponentAmortization->componentID;
+			$dataTMDR["componentItemID"]			= $itemAmortization->creditAmortizationID;
+			$dataTMDR["quantity"]					= $pay;
+			$dataTMDR["isActive"]					= 1;
+			$dataTMDR["createdOn"]					= helper_getDateTime();	
+			$Transaction_Master_Detail_References_Model->insert_app_posme($dataTMDR);
+			
+			$amount									= $amount - $pay;
 		}
 		
 		//Actualizar Balance del Documento
@@ -418,14 +445,34 @@ class core_web_amortization {
 		$Customer_Credit_Document_Model->update_app_posme($objCustomerCreditDocument->customerCreditDocumentID,$objCustomerCreditDocumentNew);
 		
 		//Cancel Document
-		$objListCustomerCreditDocumentAmortization 	= $Customer_Credit_Amortization_Model->get_rowByDocumentAndVinculable($customerCreditDocumentID);			
-		if(!$objListCustomerCreditDocumentAmortization){
+		$objListCustomerCreditDocumentAmortization 	= $Customer_Credit_Amortization_Model->get_rowByDocumentAndVinculable($customerCreditDocumentID);
+		$pendientes = 0;
+		if($objListCustomerCreditDocumentAmortization)
+		foreach($objListCustomerCreditDocumentAmortization as $itemAmortization){
+			if((float)$itemAmortization->remaining > $epsilon)
+				$pendientes++;
+		}
+		if($pendientes == 0){
 			$objCustomerCreditDocumentNew				= null;
 			$objCustomerCreditDocumentNew["statusID"]	= $documentCancel;
 			$Customer_Credit_Document_Model->update_app_posme($objCustomerCreditDocument->customerCreditDocumentID,$objCustomerCreditDocumentNew);
 		}
 		
-		
+		//Retornar el restante no aplicado
+		return ($amount > $epsilon) ? $amount : 0;
+   }
+   
+   /**
+    * Obtiene el valor de un parametro de compañia; si no existe retorna el valor por defecto.
+    */
+   private function getParameterValueOrDefault($core_web_parameter,$parameterName,$companyID,$default){
+		try{
+			$obj = $core_web_parameter->getParameter($parameterName,$companyID);
+			return $obj ? $obj->value : $default;
+		}
+		catch(\Exception $ex){
+			return $default;
+		}
    }
   
 }

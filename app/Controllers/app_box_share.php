@@ -2780,7 +2780,7 @@ class app_box_share extends _BaseController {
 			$datViewArray["note"]								= "";
 			$datViewArray["xContado"]							= "";
 			$datViewArray["xCredito"]							= "";
-			$datViewArray["customerAddress"]					= strtolower($datView["objCustumer"]->address);
+			$datViewArray["customerAddress"]					= $datView["objCustumer"]->address;
 			$datViewArray["currencySimbol"]						= $datView["objCurrency"]->simbol;
 			$datViewArray["paymentTypeName"]					= "";
 			$datViewArray["amount_initial_balance"]				= 0;
@@ -3002,7 +3002,7 @@ class app_box_share extends _BaseController {
 			$datViewArray["note"]								= $datView["objTM"]->note;
 			$datViewArray["xContado"]							= "";
 			$datViewArray["xCredito"]							= "";
-			$datViewArray["customerAddress"]					= strtolower($datView["objCustumer"]->address);
+			$datViewArray["customerAddress"]					= $datView["objCustumer"]->address;
 			$datViewArray["currencySimbol"]						= $datView["objCurrency"]->simbol;
 			$datViewArray["paymentTypeName"]					= "";
 			$datViewArray["amount_initial_balance"]				= 0;
