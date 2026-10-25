@@ -27,6 +27,7 @@ use App\Libraries\core_web_convertion;
 use App\Libraries\core_web_conversation;
 use App\Libraries\core_web_counter;
 use App\Libraries\core_web_currency;
+use App\Libraries\core_web_google_calendar;
 use App\Libraries\core_web_error;
 use App\Libraries\core_web_inventory;
 use App\Libraries\core_web_javascript;
@@ -254,6 +255,7 @@ abstract class _BaseController extends Controller
     protected $core_financial;
     protected $core_web_accounting;
     protected $core_web_amortization;
+    protected $core_web_google_calendar;
     protected $core_web_auditoria;
     protected $core_web_authentication;
     protected $core_web_catalog;
@@ -443,6 +445,7 @@ abstract class _BaseController extends Controller
 		$this->core_web_conversation = new core_web_conversation();
         $this->core_web_counter= new core_web_counter();
         $this->core_web_currency= new core_web_currency();
+        $this->core_web_google_calendar = new core_web_google_calendar();
 
         $this->core_web_error= new core_web_error();
         $this->core_web_inventory= new core_web_inventory();
