@@ -2843,8 +2843,9 @@ class app_box_share extends _BaseController {
 					"itemReference9" 					=>$objCustomerCreditDocument->periodName,
 					"itemReference10" 					=>$objCustomerCreditDocumentAmortization->dateApply,
 					"itemReference11" 					=>$objCustomerCreditDocumentAmortization->dayDelay,
-					"transactionMasterInfoReference1"		=>$datView["objTM"]->note,
-					"transactionMasterInfoReference1Saldo"	=>"Saldo inicial: C$ ". sprintf("%01.2f",round($detail_->reference2,2))." Saldo final: C$ ". sprintf("%01.2f",round($detail_->reference4,2)) 
+					"transactionMasterInfoReference1"			=>$datView["objTM"]->note,
+					"transactionMasterInfoReference1Saldo"		=> "Saldo inicial: C$ ". sprintf("%01.2f",round($detail_->reference2,2)),
+					"transactionMasterInfoReference1SaldoFinal" => "Saldo final: C$ ". sprintf("%01.2f",round($detail_->reference4,2)) 
 				);
 				array_push($datViewArray["transactionMasterDetail"],$row);		
 			}
@@ -3080,10 +3081,11 @@ class app_box_share extends _BaseController {
 					"itemAmountReference7"				=>$detail_->reference7,
 					"itemReference8" 					=>$detail_->reference3, /*customer credit amortizacion id */
 					"itemReference9" 					=>$objCustomerCreditDocument->periodName,
-					"itemReference10" 					=>$objCustomerCreditDocumentAmortization->dateApply,
-					"itemReference11" 					=>$objCustomerCreditDocumentAmortization->dayDelay,
-					"transactionMasterInfoReference1"		=>$datView["objTM"]->note,
-					"transactionMasterInfoReference1Saldo"	=>"Saldo inicial: C$ ". $saldoInicial." Saldo final: C$ ".$saldoFinal 
+					"itemReference10" 							=>$objCustomerCreditDocumentAmortization->dateApply,
+					"itemReference11" 							=>$objCustomerCreditDocumentAmortization->dayDelay,
+					"transactionMasterInfoReference1"			=>$datView["objTM"]->note,
+					"transactionMasterInfoReference1Saldo"		=> "Saldo inicial: C$ ". sprintf("%01.2f",round($detail_->reference2,2)),
+					"transactionMasterInfoReference1SaldoFinal" => "Saldo final: C$ ". sprintf("%01.2f",round($detail_->reference4,2)) 
 				);
 				array_push($datViewArray["transactionMasterDetail"],$row);		
 			}
