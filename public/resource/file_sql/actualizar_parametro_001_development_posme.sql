@@ -5,6 +5,37 @@
 /*****Personalizar pantalla**********/
 /******************************************************************/
 UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "CAMBIAR@group.calendar.google.com" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "GOOGLE_CALENDAR_ID"; ##ID DE calendario
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "CAMBIAR@PROYECTO.iam.gserviceaccount.com" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "GOOGLE_CALENDAR_SERVICE_EMAIL"; ##Cuenta de servicio
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "C:/xampp/teamds2/nsSystem/google/service-account.json" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "GOOGLE_CALENDAR_PRIVATE_KEY"; ##Llave de acceso
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "America/Managua" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "GOOGLE_CALENDAR_TIMEZONE"; ##Zona horaria
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
+	tb_company_parameter.value = "60" 
+WHERE 
+	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
+	tb_parameter.name = "GOOGLE_CALENDAR_DURATION_MINUTES"; ##Duracion en minuto de cada evento
+	
+	
+UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "30" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 

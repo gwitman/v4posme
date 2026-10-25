@@ -28,3 +28,9 @@ package.json
 package-lock.json
 node_modules/
 tests/
+claude-rules/controladores.md
+claude-rules/helpers.md
+claude-rules/librerias.md
+claude-rules/modelos.md
+claude-rules/vistas.md
+CLAUDE.md
