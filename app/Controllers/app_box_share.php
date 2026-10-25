@@ -2844,8 +2844,8 @@ class app_box_share extends _BaseController {
 					"itemReference10" 					=>$objCustomerCreditDocumentAmortization->dateApply,
 					"itemReference11" 					=>$objCustomerCreditDocumentAmortization->dayDelay,
 					"transactionMasterInfoReference1"			=>$datView["objTM"]->note,
-					"transactionMasterInfoReference1Saldo"		=> "Saldo inicial: C$ ". sprintf("%01.2f",round($detail_->reference2,2)),
-					"transactionMasterInfoReference1SaldoFinal" => "Saldo final: C$ ". sprintf("%01.2f",round($detail_->reference4,2)) 
+					"transactionMasterInfoReference1Saldo"		=> "SALDO INICIAL: C$ ". sprintf("%01.2f",round($detail_->reference2,2)),
+					"transactionMasterInfoReference1SaldoFinal" => "SALDO FINAL: C$ ". sprintf("%01.2f",round($detail_->reference4,2)) 
 				);
 				array_push($datViewArray["transactionMasterDetail"],$row);		
 			}
@@ -3084,8 +3084,8 @@ class app_box_share extends _BaseController {
 					"itemReference10" 							=>$objCustomerCreditDocumentAmortization->dateApply,
 					"itemReference11" 							=>$objCustomerCreditDocumentAmortization->dayDelay,
 					"transactionMasterInfoReference1"			=>$datView["objTM"]->note,
-					"transactionMasterInfoReference1Saldo"		=> "Saldo inicial: C$ ". sprintf("%01.2f",round($detail_->reference2,2)),
-					"transactionMasterInfoReference1SaldoFinal" => "Saldo final: C$ ". sprintf("%01.2f",round($detail_->reference4,2)) 
+					"transactionMasterInfoReference1Saldo"		=> "SALDO INICIAL: C$ ". sprintf("%01.2f",round($detail_->reference2,2)),
+					"transactionMasterInfoReference1SaldoFinal" => "SALDO FINAL: C$ ". sprintf("%01.2f",round($detail_->reference4,2)) 
 				);
 				array_push($datViewArray["transactionMasterDetail"],$row);		
 			}
