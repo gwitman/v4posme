@@ -349,6 +349,10 @@ class core_web_amortization {
 		$ordenDescValue								= strtolower(trim((string)$this->getParameterValueOrDefault($core_web_parameter,"SHARE_APPLY_ORDEN_DESC",$companyID,"false")));
 		$ordenDesc									= ($ordenDescValue === "true");
 		
+		//Parametro: dias limite para pagar primero la cuota mas proxima (por defecto 30)
+		$shareDayAfterValue							= trim((string)$this->getParameterValueOrDefault($core_web_parameter,"SHARE_DAY_AFTER",$companyID,"30"));
+		$shareDayAfter								= is_numeric($shareDayAfterValue) ? (int)$shareDayAfterValue : 30;
+		
 		$objCustomerCreditDocument					= $Customer_Credit_Document_Model->get_rowByPK($customerCreditDocumentID);
 		$objListCustomerCreditDocumentAmortization 	= $Customer_Credit_Amortization_Model->get_rowByDocumentAndVinculable($customerCreditDocumentID);
 		$objConceptos 				= array();
@@ -371,8 +375,21 @@ class core_web_amortization {
 		}
 		
 		//Las cuotas futuras del final hacia arriba
-		if($ordenDesc)
-			$listFuturas = array_reverse($listFuturas);
+		//Si la primera cuota futura (la mas antigua) vence en SHARE_DAY_AFTER dias o menos (por defecto 30),
+		//se paga primero esa cuota y el restante se aplica del final hacia arriba.
+		//Si faltan mas de SHARE_DAY_AFTER dias, todo se aplica del final hacia arriba.
+		if($ordenDesc && count($listFuturas) > 0){
+			$firstFutura		= $listFuturas[0];
+			$diasParaVencer		= (int)date_diff(date_create($today),date_create(date("Y-m-d",strtotime($firstFutura->dateApply))))->format('%r%a');
+
+			if($diasParaVencer <= $shareDayAfter){
+				$restoFuturas	= array_reverse(array_slice($listFuturas,1));
+				$listFuturas	= array_merge(array($firstFutura),$restoFuturas);
+			}
+			else{
+				$listFuturas	= array_reverse($listFuturas);
+			}
+		}
 		
 		$listToApply = array_merge($listVencidas,$listFuturas);
 		
