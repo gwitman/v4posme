@@ -156,7 +156,7 @@
 			}
 			
 			
-			var url_request 			= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomerCreditDocument->componentID; ?>/onCompleteNewShare/SELECCIONAR_DOCUMENTOS_DE_CREDITO/true/"+encodeURI("{\"entityID\"|\""+ $("#txtCustomerID").val() +"\",\"currencyID\"|\""+ $("#txtCurrencyID").val() +"\"}") + "/false/not_redirect_when_empty";
+			var url_request 			= "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?php echo $objComponentCustomerCreditDocument->componentID; ?>/onCompleteNewShare/SELECCIONAR_DOCUMENTOS_DE_CREDITO_PAGINATED/true/"+encodeURI("{\"entityID\"|\""+ $("#txtCustomerID").val() +"\",\"currencyID\"|\""+ $("#txtCurrencyID").val() +"\"}") + "/false/not_redirect_when_empty/1/1/500/";;
 			window.open(url_request,"MsgWindow","width=1585,height=795");
 			window.onCompleteNewShare 	= onCompleteNewShare; 
 		});
