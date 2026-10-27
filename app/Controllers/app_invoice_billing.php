@@ -727,7 +727,12 @@ class app_invoice_billing extends _BaseController {
 				(
 					$exisCausalInCredit || $exisCausalInCredit === 0
 				)
-				and 
+				and
+				(
+					//No todas las facturas tienen documento de credito
+					$objCustomerCredotDocument
+				)
+				and
 				(
 					$objCustomerCredotDocument->amount != $objCustomerCredotDocument->balance
 				)
@@ -757,11 +762,12 @@ class app_invoice_billing extends _BaseController {
 				$result = $this->core_web_transaction->createInverseDocumentByTransaccion($companyID,$transactionID,$transactionMasterID,$transactionIDRevert,0);
 				
 				
-				if($exisCausalInCredit || $exisCausalInCredit === 0)
+				//Solo si la factura es de credito y tiene documento de credito
+				if(($exisCausalInCredit || $exisCausalInCredit === 0) && $objCustomerCredotDocument)
 				{
-				
+
 					//Valores de tasa de cambio
-					date_default_timezone_set(APP_TIMEZONE); 
+					date_default_timezone_set(APP_TIMEZONE);
 					$objCurrencyDolares							= $this->core_web_currency->getCurrencyExternal($companyID);
 					$objCurrencyCordoba							= $this->core_web_currency->getCurrencyDefault($companyID);
 					$dateOn 									= date("Y-m-d");
