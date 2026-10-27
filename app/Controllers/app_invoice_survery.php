@@ -306,15 +306,19 @@ class app_invoice_survery extends _BaseController {
 
 				
 				////Mandar mensaje por whatapp al propietario
-				$mensajeColaborador	= "[simbol-mano-derecha] Hay una nueva orden de trabajo:  ".$objTM["transactionNumber"].".  [simbol-link] ".$url;
-				$this->core_web_whatsap->sendMessageGeneric(
-						$objCompany->type,
-						APP_COMPANY, 
-						replaceSimbol($mensajeColaborador), 
-						getNumberPhone(clearNumero($objColaborador[0]->phoneNumber)),
-						true,
-						""
-					);
+				////Las compañias de tipo alphaDblMotor no envian mensaje al propietario
+				if($objCompany->type != "alphaDblMotor")
+				{
+					$mensajeColaborador	= "[simbol-mano-derecha] Hay una nueva orden de trabajo:  ".$objTM["transactionNumber"].".  [simbol-link] ".$url;
+					$this->core_web_whatsap->sendMessageGeneric(
+							$objCompany->type,
+							APP_COMPANY,
+							replaceSimbol($mensajeColaborador),
+							getNumberPhone(clearNumero($objColaborador[0]->phoneNumber)),
+							true,
+							""
+						);
+				}
 
 				
                 $db->transCommit();
