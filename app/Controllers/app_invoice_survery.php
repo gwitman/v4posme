@@ -101,8 +101,29 @@ class app_invoice_survery extends _BaseController {
 			log_message('debug', '[app_invoice_survery::insertElement] price (listPrice): ' . json_encode($listPrice));
 			log_message('debug', '[app_invoice_survery::insertElement] combo_reference (listComboReference): ' . json_encode($listComboReference));
 			log_message('debug', '[app_invoice_survery::insertElement] comment_reference (listCommentReference): ' . json_encode($listCommentReference));
-			
-			
+
+
+			//Validar variables obligatorias del post
+			$listRequired 	= array("key" => $key, "name" => $name, "phone" => $phone, "itemID" => $listItem, "quantity" => $listQuantity);
+			$listLabel 		= array("key" => "Codigo del negocio", "name" => "Nombre", "phone" => "Telefono", "itemID" => "Productos", "quantity" => "Cantidad");
+			$listMissing 	= array();
+			$listMissingLbl	= array();
+			foreach($listRequired as $fieldName => $fieldValue)
+			{
+				if(is_array($fieldValue) ? count($fieldValue) == 0 : trim((string)$fieldValue) === "")
+				{
+					$listMissing[] 		= $fieldName;
+					$listMissingLbl[] 	= $listLabel[$fieldName];
+				}
+			}
+
+			if(count($listMissing) > 0)
+			{
+				log_message('error', '[app_invoice_survery::insertElement] Datos incompletos, faltan: ' . implode(", ", $listMissing));
+				throw new \Exception("LOS DATOS ESTAN INCOMPLETOS: " . implode(", ", $listMissingLbl));
+			}
+
+
 			//Buscar el colaborador
 			$objColaborador	= $this->Employee_Model->get_rowByItemReference1($key);
 			if(!$objColaborador)
@@ -304,21 +325,19 @@ class app_invoice_survery extends _BaseController {
 						"" 
 					);
 
+				log_message("error",print_r("Colaborador vs Customer:",true));
+				log_message("error",print_r($objColaborador[0],true));
+				log_message("error",print_r($objCustomer[0],true));
+				$mensajeColaborador	= "[simbol-mano-derecha] Hay una nueva orden de trabajo:  ".$objTM["transactionNumber"].".  [simbol-link] ".$url;
+				$this->core_web_whatsap->sendMessageGeneric(
+						$objCompany->type,
+						APP_COMPANY,
+						replaceSimbol($mensajeColaborador),
+						getNumberPhone(clearNumero($objColaborador[0]->phoneNumber)),
+						true,
+						""
+					);
 				
-				////Mandar mensaje por whatapp al propietario
-				////Las compañias de tipo alphaDblMotor no envian mensaje al propietario
-				if($objCompany->type != "alphaDblMotor")
-				{
-					$mensajeColaborador	= "[simbol-mano-derecha] Hay una nueva orden de trabajo:  ".$objTM["transactionNumber"].".  [simbol-link] ".$url;
-					$this->core_web_whatsap->sendMessageGeneric(
-							$objCompany->type,
-							APP_COMPANY,
-							replaceSimbol($mensajeColaborador),
-							getNumberPhone(clearNumero($objColaborador[0]->phoneNumber)),
-							true,
-							""
-						);
-				}
 
 				
                 $db->transCommit();
