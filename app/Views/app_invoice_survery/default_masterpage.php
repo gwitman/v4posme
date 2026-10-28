@@ -780,9 +780,28 @@ $wholesaleKey       = getBahavioDB($key, 'app_invoice_survery', 'clave_mayorista
   </div>
   <?php helper_getHtmlOfModalDialog("ModalValidSurvery","modalValidSurvery","fnAceptarModalValidSurvery",true,false); ?>
 
+  <div id="modalQuantitySurvery" style="display:none">
+    <h3>CANTIDAD INVALIDA</h3>
+    <br/>
+    La cantidad del producto <strong id="modalQuantityProductName"></strong> no puede ser menor o igual a 0.
+  </div>
+  <?php helper_getHtmlOfModalDialog("ModalQuantitySurvery","modalQuantitySurvery","fnAceptarModalQuantitySurvery",false,true); ?>
+
   <script src="<?= base_url()?>/resource/js/jquery-3.7.1.min.js"></script>
   <script src="<?= base_url()?>/resource/js/bootstrap5/bootstrap.bundle.min.js"></script>
   <script>
+    // Input de cantidad invalida pendiente de enfocar al cerrar el modal
+    var $quantityInvalidInput = null;
+
+    // Cerrar el modal de cantidad y colocar el cursor en el producto con cantidad invalida
+    function fnAceptarModalQuantitySurvery() {
+      cerrarModal('ModalQuantitySurvery');
+      if ($quantityInvalidInput && $quantityInvalidInput.length) {
+        $quantityInvalidInput[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        $quantityInvalidInput.focus().select();
+      }
+    }
+
     $(document).ready(function() {
 
       <?php if($isBuyerTypeGate): ?>
@@ -862,6 +881,7 @@ $wholesaleKey       = getBahavioDB($key, 'app_invoice_survery', 'clave_mayorista
 
       // Validar rango de cantidad
       $(document).on('input', '.quantity', function() {
+        $(this).removeClass('is-invalid');
         let val = parseInt($(this).val());
         if (isNaN(val) || val < 1) $(this).val(1);
         else if (val > 10000) $(this).val(10000);
@@ -875,13 +895,23 @@ $wholesaleKey       = getBahavioDB($key, 'app_invoice_survery', 'clave_mayorista
         let cedula  = $('#cedula').val().trim();
         let options = [];
         let total   = 0;
+        let invalidQuantity = null;
 
         $('.option:checked').each(function() {
           let itemId      = $(this).data('item-id');
           let productName = $(this).val();
           let price       = parseFloat($(this).data('price'));
           let optsDiv     = $('#opts' + itemId);
-          let qty         = parseInt(optsDiv.find('.quantity').val()) || 1;
+
+          // Validar que la cantidad del producto seleccionado sea mayor que 0
+          let qtyInput    = optsDiv.find('.quantity');
+          let qtyRaw      = parseFloat(qtyInput.val());
+          if (isNaN(qtyRaw) || qtyRaw <= 0) {
+            invalidQuantity = { name: productName, input: qtyInput };
+            return false;
+          }
+
+          let qty         = parseInt(qtyInput.val()) || 1;
           qty = Math.min(Math.max(qty, 1), 10000);
           let subtotal    = qty * price;
           total += subtotal;
@@ -891,6 +921,14 @@ $wholesaleKey       = getBahavioDB($key, 'app_invoice_survery', 'clave_mayorista
 
           options.push({ name: productName, quantity: qty, price: price, subtotal: subtotal, combo: comboVal, comment: commentVal });
         });
+
+        if (invalidQuantity) {
+          $quantityInvalidInput = invalidQuantity.input;
+          $quantityInvalidInput.addClass('is-invalid');
+          $('#modalQuantityProductName').text(invalidQuantity.name);
+          mostrarModal('ModalQuantitySurvery');
+          return;
+        }
 
         if (!name || !address || !phone || !cedula || options.length === 0) {
           mostrarModal('ModalValidSurvery');
