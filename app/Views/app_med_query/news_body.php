@@ -1,309 +1,357 @@
-<div class="row"> 
-	<div id="email" class="col-lg-12">
-	
-		<!-- botonera -->
-		<div class="email-bar" style="border-left:1px solid #c9c9c9">                                
-			<div class="btn-group pull-right">                                    
-				<a href="<?php echo base_url(); ?>/app_med_query/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>                                    
-				<a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+<div class="mqv2 mqv2-form">
+<form id="form-new-invoice" name="form-new-invoice" role="form" autocomplete="off">
+
+	<!-- encabezado y acciones -->
+	<div class="mqv2-card mqv2-header">
+		<div class="mqv2-header-info">
+			<div class="mqv2-header-icon"><i class="fas fa-notes-medical"></i></div>
+			<div>
+				<p class="mqv2-header-num">
+					Asistencia #<span class="invoice-num">00000000</span>
+					<span class="mqv2-chip" id="mqv2HeaderPriority" style="display:none"></span>
+				</p>
+				<p class="mqv2-header-sub">Nueva consulta</p>
 			</div>
-		</div> 
-		<!-- /botonera -->
+		</div>
+		<div class="mqv2-actions">
+			<a href="<?php echo base_url(); ?>/app_med_query/index" id="btnBack" class="btn btn-default"><i class="icon16 i-arrow-left"></i> Atras</a>
+			<a href="#" class="btn btn-primary mqv2-hide-xs" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+		</div>
 	</div>
-	<!-- End #email  -->
-</div>
-<!-- End .row-fluid  -->
-<div class="row">
-	<div class="col-lg-12">
-		<div class="panel panel-default">
-					
-			<!-- titulo de comprobante-->
-			<div class="panel-heading">
-					<div class="icon"><i class="icon20 i-file"></i></div> 
-					<h4>ASISTENCIA:#<span class="invoice-num">00000000</span></h4>
+	<!-- /encabezado y acciones -->
+
+	<div class="row">
+
+		<!-- paciente -->
+		<div class="col-md-6">
+			<div class="mqv2-card">
+				<p class="mqv2-card-title"><span class="mqv2-ico"><i class="fas fa-user-injured"></i></span> Paciente</p>
+				<div class="form-group">
+					<label class="mqv2-label" for="txtCustomerDescription">Cliente</label>
+					<div class="input-group">
+						<input type="hidden" id="txtCustomerID" name="txtCustomerID" value="<?php echo $objCustomerDefault->entityID;  ?>">
+						<input class="form-control" readonly id="txtCustomerDescription" type="text" placeholder="Busca un paciente" value="<?php echo $objNaturalDefault != null ? strtoupper($objCustomerDefault->customerNumber . " ". $objNaturalDefault->firstName . " ". $objNaturalDefault->lastName ) : strtoupper($objCustomerDefault->customerNumber." ".$objLegalDefault->comercialName); ?>">
+						<span class="input-group-btn">
+							<button class="btn btn-primary" type="button" id="btnSearchCustomer" title="Buscar paciente">
+								<i aria-hidden="true" class="i-search-5"></i> Buscar
+							</button>
+						</span>
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="button" id="btnClearCustomer" title="Limpiar paciente">
+								<i aria-hidden="true" class="i-undo-2"></i>
+							</button>
+						</span>
+					</div>
+				</div>
 			</div>
-			<!-- /titulo de comprobante-->
-			
-			<!-- body -->	
-			<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form">
-			<div class="panel-body printArea"> 
-			<!--tab menu-->
-				<ul id="myTab" class="nav nav-tabs">
-					<li class="active">
-						<a href="#home" data-toggle="tab">Informacion</a>
-					</li>		
-					<li>
-						<a href="#details" data-toggle="tab">Detalles</a>
-					</li>			
-				</ul>
-			<!--tab menu-->
+		</div>
+		<!-- /paciente -->
 
-				<div class="tab-content">
-					<div class="tab-pane fade in active" id="home">	
-						<div class="row">										
-							<div class="col-lg-12">
-								
-									<div class="form-group">
-										<label class="col-lg-4 control-label" for="datepicker">Fecha</label>
-										<div class="col-lg-8">
-											<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
-												<input size="16"  class="form-control" type="date" name="txtDate" id="txtDate" >
-												<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
-											</div>
-										</div>
-									</div>							
-									
-									<div class="form-group">
-										<label class="col-lg-4 control-label" for="selectFilter">Prioridad</label>
-										<div class="col-lg-8">
-											<select name="txtPriorityID" id="txtPriorityID" class="select2">
-													<option></option>																
-													<?php
-													$count = 0;
-													if($objListPrioridad)
-													foreach($objListPrioridad as $price){
-														if($count == 0)
-															echo "<option value='".$price->catalogItemID."' selected >".$price->display."</option>";
-														else
-															echo "<option value='".$price->catalogItemID."'  >".$price->display."</option>";
-														
-														$count++;
-													}
-													?>
-											</select>
-										</div>
-									</div>
-									
-								
-									<div class="form-group">
-										<label class="col-lg-4 control-label" for="selectFilter">Estado</label>
-										<div class="col-lg-8">
-											<select name="txtStatusID" id="txtStatusID" class="select2">
-													<option></option>																
-													<?php
-													if($objListWorkflowStage)
-													foreach($objListWorkflowStage as $ws){
-														echo "<option value='".$ws->workflowStageID."' selected>".$ws->name."</option>";
-													}
-													?>
-											</select>
-										</div>
-									</div>
-									
-									
-									
-									<div class="form-group">
-										<label class="col-lg-4 control-label" for="buttons">Cliente</label>
-										<div class="col-lg-8">
-											<div class="input-group">
-												<input type="hidden" id="txtCustomerID" name="txtCustomerID" value="<?php echo $objCustomerDefault->entityID;  ?>">
-												<input class="form-control" readonly id="txtCustomerDescription" type="txtCustomerDescription" value="<?php echo $objNaturalDefault != null ? strtoupper($objCustomerDefault->customerNumber . " ". $objNaturalDefault->firstName . " ". $objNaturalDefault->lastName ) : strtoupper($objCustomerDefault->customerNumber." ".$objLegalDefault->comercialName); ?>">
-												
-												<span class="input-group-btn">
-													<button class="btn btn-danger" type="button" id="btnClearCustomer">
-														<i aria-hidden="true" class="i-undo-2"></i>
-														clear
-													</button>
-												</span>
-												<span class="input-group-btn">
-													<button class="btn btn-primary" type="button" id="btnSearchCustomer">
-														<i aria-hidden="true" class="i-search-5"></i>
-														buscar
-													</button>
-												</span>										
-											</div>
-										</div>
-									</div>
-								
-									<div class="form-group">
-										<label class="col-lg-4 control-label" for="buttons">Observacion</label>
-										<div class="col-lg-8">
-											<textarea class="form-control" type="text"  name="txtNote" id="txtNote" ></textarea>
-										</div>
-									</div>
-								
-								<!-- New inputs -->
-									
-									<!-- Edad-->
-									<div class="form-group <?php echo getBehavio($company->type,"app_med_query","divPanelEdad",""); ?> ">
-										<label class="col-lg-4 control-label" for="buttons">Edad(años)</label>
-										<div class="col-lg-8">
-											<input class="form-control" type="number"  name="txtAge" id="txtAge" ></input>
-										</div>
-									</div>
+		<!-- consulta -->
+		<div class="col-md-6">
+			<div class="mqv2-card">
+				<p class="mqv2-card-title"><span class="mqv2-ico"><i class="fas fa-calendar-alt"></i></span> Consulta</p>
+				<div class="row">
+					<div class="col-xs-12 col-sm-6 form-group">
+						<label class="mqv2-label" for="txtDate">Fecha</label>
+						<div class="input-group date" data-date-format="yyyy-mm-dd">
+							<input size="16" class="form-control" type="text" name="txtDate" id="txtDate" >
+							<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-6 form-group">
+						<label class="mqv2-label" for="txtNextVisit">Proxima visita</label>
+						<div class="input-group date" data-date-format="yyyy-mm-dd">
+							<input size="16" class="form-control" type="text" name="txtNextVisit" id="txtNextVisit" >
+							<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+						</div>
+					</div>
+					<div class="col-xs-12 col-sm-6 form-group">
+						<label class="mqv2-label" for="txtPriorityID">Prioridad</label>
+						<select name="txtPriorityID" id="txtPriorityID" class="form-control">
+								<option></option>
+								<?php
+								$count = 0;
+								if($objListPrioridad)
+								foreach($objListPrioridad as $price){
+									if($count == 0)
+										echo "<option value='".$price->catalogItemID."' selected >".$price->display."</option>";
+									else
+										echo "<option value='".$price->catalogItemID."'  >".$price->display."</option>";
 
-									<!-- Altura-->
-									<div class="form-group <?php echo getBehavio($company->type,"app_med_query","divPanelAltura",""); ?> ">
-										<label class="col-lg-4 control-label" for="buttons">Altura(cm)</label>
-										<div class="col-lg-8">
-											<input class="form-control" type="number"  name="txtHeight" id="txtHeight"></input>
-										</div>
-									</div>
+									$count++;
+								}
+								?>
+						</select>
+					</div>
+					<div class="col-xs-12 col-sm-6 form-group">
+						<label class="mqv2-label" for="txtStatusID">Estado</label>
+						<select name="txtStatusID" id="txtStatusID" class="form-control">
+								<option></option>
+								<?php
+								if($objListWorkflowStage)
+								foreach($objListWorkflowStage as $ws){
+									echo "<option value='".$ws->workflowStageID."' selected>".$ws->name."</option>";
+								}
+								?>
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /consulta -->
 
-									<!-- Peso -->
-									<div class="form-group <?php echo getBehavio($company->type,"app_med_query","divPanelPeso",""); ?> ">
-										<label class="col-lg-4 control-label" for="buttons">Peso(kg)</label>
-										<div class="col-lg-8">
-											<input class="form-control" type="number"  name="txtWeight" id="txtWeight" ></input>
-										</div>
-									</div>
-								
-									<!-- IMC -->
-									<div class="form-group <?php echo getBehavio($company->type,"app_med_query","divPanelIMC",""); ?>">
-										<label class="col-lg-4 control-label" for="buttons">IMC</label>
-										<div class="col-lg-8">
-											<input class="form-control" readonly id="txtIMC"  type="number"></input>
-											<span class="badge badge-info" >bajo de 18.5 , bajo de peso</span>
-											<span class="badge badge-success" >18.5 a 24.9 peso noral</span>
-											<span class="badge badge-warning" >25 a 29.9 sobre peso</span>
-											<span class="badge badge-important" >30 a mas obesidad</span>
-										</div>
-									</div>
-									
-									<!-- Proxima visita -->
-									<div class="form-group">
-										<label class="col-lg-4 control-label" for="datepicker">Proxima Visita</label>
-										<div class="col-lg-8">
-											<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
-												<input size="16"  class="form-control" type="date" name="txtNextVisit" id="txtNextVisit" >
-												<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
-											</div>
-										</div>
-									</div>
+	</div>
 
-									<!-- Resultado -->
-									<div class="form-group <?php echo getBehavio($company->type,"app_med_query","divPanelResultado",""); ?> ">
-										<label class="col-lg-4 control-label" for="buttons">Resultado</label>
-										<div class="col-lg-8">
-											<input class="form-control" type="text"  name="txtResult" id="txtResult" ></input>
-										</div>
-									</div>
+	<div class="row">
 
-									<!-- Evaluacion -->
-									<div class="form-group <?php echo getBehavio($company->type,"app_med_query","divPanelEvaluacion",""); ?> ">
-										<label class="col-lg-4 control-label" for="buttons">Evaluacion</label>
-										<div class="col-lg-8">
-											<input class="form-control" type="text"  name="txtEvaluation" id="txtEvaluation" ></input>
-										</div>
-									</div>
-
-									<!-- Recomendacion -->
-									<div class="form-group <?php echo getBehavio($company->type,"app_med_query","divPanelRecomendacion",""); ?> ">
-										<label class="col-lg-4 control-label" for="buttons">Recomendacion</label>
-										<div class="col-lg-8">
-											<input class="form-control" type="text"  name="txtRecomendation" id="txtRecomendation" ></input>
-										</div>
-									</div>
-
-									<!-- Diagnostico -->
-									<div class="form-group <?php echo getBehavio($company->type,"app_med_query","divPanelDiagnostico",""); ?> ">
-										<label class="col-lg-4 control-label" for="buttons">Diagnostico</label>
-										<div class="col-lg-8">
-											<input class="form-control" type="text"  name="txtDiagnostic" id="txtDiagnostic" ></input>
-										</div>
-									</div>
-
-									
-								
-							</div>
-						
+		<!-- signos vitales -->
+		<div class="col-md-5" id="mqv2ColVitals" data-mqv2-autohide="1" data-mqv2-expand="#mqv2ColClinical">
+			<div class="mqv2-card">
+				<p class="mqv2-card-title"><span class="mqv2-ico"><i class="fas fa-heartbeat"></i></span> Signos vitales</p>
+				<div class="row">
+					<!-- Edad-->
+					<div class="col-xs-12 col-sm-4 form-group <?php echo getBehavio($company->type,"app_med_query","divPanelEdad",""); ?> ">
+						<label class="mqv2-label" for="txtAge">Edad</label>
+						<div class="mqv2-unit">
+							<input class="form-control" type="number" inputmode="numeric" step="any" name="txtAge" id="txtAge" >
+							<span>años</span>
 						</div>
 					</div>
 
-					<div class="tab-pane fade" id="details">
-					
-						<div class="row">
-							<div class="col-md-12">
-								<table class="table" id="tableFrecuency">
-								<thead>
-									<tr>
-										<th>Nombre</th>
-										<th>Prioridad</th>
-										<th>Frecuencia</th>
-										<th>Dosis</th>
-										<th>Monto</th>
-										<th>Acción</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr class="" id="filaEntrada">
-										<td>
-											<input class="form-control"  type="text"  name="txtDetailName" id="txtDetailName" value="">
-											<label id="errorLabel" class="text-danger">Este campo no puede estar vacío</label>
-										</td>
-										<td>
-											<label class="sr-only" for="txtPriority">Prioridad:</label>
-											<select name="txtPriority" id="txtPriority" class="select2">
-													<?php
-													$count = 0;
-													if($objListPriority){
-														foreach($objListPriority as $ws){
-															if($count == 0 )
-																echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
-															else
-																echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
-															$count++;
-														}
-													}
-													?>
-											</select>
-										</td>
-										<td>
-											<label class="sr-only" for="txtFrecuency">Frecuencia:</label>
-											<select name="txtFrecuency" id="txtFrecuency" class="select2">
-													<?php
-													$count = 0;
-													if($objListFrecuency){
-														foreach($objListFrecuency as $ws){
-															if($count == 0 )
-																echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
-															else
-																echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
-															$count++;
-														}
-													}
-													?>
-											</select>
-										</td>
-										<td>
-											<label class="sr-only" for="txtDose">Dosis:</label>
-											<select name="txtDose" id="txtDose" class="select2">
-													<?php
-													$count = 0;
-													if($objListDose){
-														foreach($objListDose as $ws){
-															if($count == 0 )
-																echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
-															else
-																echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
-															$count++;
-														}
-													}
-													?>
-											</select>
-										</td>
-										<td>
-											<label class="sr-only" for="txtAmount">Monto:</label>
-											<input class="form-control" type="number"  name="txtAmount" id="txtAmount" value="">
-										</td>
-										<td>
-											<a href="#" class="btn btn-flat btn-info" id="btnAddDetail"><i class="fas fa-plus"></i></a>
-										</td>
-									</tr>
-									<!-- Aquí se agregarán las filas dinámicamente -->
-									 
-								</tbody>
-								</table>
-							</div>
+					<!-- Altura-->
+					<div class="col-xs-6 col-sm-4 form-group <?php echo getBehavio($company->type,"app_med_query","divPanelAltura",""); ?> ">
+						<label class="mqv2-label" for="txtHeight">Altura</label>
+						<div class="mqv2-unit">
+							<input class="form-control" type="number" inputmode="decimal" step="any" name="txtHeight" id="txtHeight">
+							<span>cm</span>
 						</div>
-					</div>  
-					
-				</div>    
-		
-				   
+					</div>
+
+					<!-- Peso -->
+					<div class="col-xs-6 col-sm-4 form-group <?php echo getBehavio($company->type,"app_med_query","divPanelPeso",""); ?> ">
+						<label class="mqv2-label" for="txtWeight">Peso</label>
+						<div class="mqv2-unit">
+							<input class="form-control" type="number" inputmode="decimal" step="any" name="txtWeight" id="txtWeight" >
+							<span>kg</span>
+						</div>
+					</div>
+
+					<!-- IMC -->
+					<div class="col-xs-12 form-group <?php echo getBehavio($company->type,"app_med_query","divPanelIMC",""); ?>">
+						<label class="mqv2-label" for="txtIMC">Indice de masa corporal (IMC)</label>
+						<div class="mqv2-imc" id="mqv2ImcBox">
+							<input class="form-control" readonly name="txtIMC" id="txtIMC" type="number" value="0">
+							<span class="mqv2-imc-label" id="mqv2ImcLabel">Sin datos</span>
+						</div>
+						<div class="mqv2-imc-legend">
+							<span class="l1">&lt; 18.5 bajo peso</span>
+							<span class="l2">18.5 a 24.9 normal</span>
+							<span class="l3">25 a 29.9 sobrepeso</span>
+							<span class="l4">30 o mas obesidad</span>
+						</div>
+					</div>
+				</div>
 			</div>
-			</form>
-			<!-- /body -->
+		</div>
+		<!-- /signos vitales -->
+
+		<!-- evaluacion clinica -->
+		<div class="col-md-7" id="mqv2ColClinical">
+			<div class="mqv2-card">
+				<p class="mqv2-card-title"><span class="mqv2-ico"><i class="fas fa-stethoscope"></i></span> Evaluacion clinica</p>
+				<div class="row">
+					<!-- Resultado -->
+					<div class="col-xs-12 col-sm-6 form-group <?php echo getBehavio($company->type,"app_med_query","divPanelResultado",""); ?> ">
+						<label class="mqv2-label" for="txtResult">Resultado</label>
+						<input class="form-control" type="text" name="txtResult" id="txtResult" >
+					</div>
+
+					<!-- Evaluacion -->
+					<div class="col-xs-12 col-sm-6 form-group <?php echo getBehavio($company->type,"app_med_query","divPanelEvaluacion",""); ?> ">
+						<label class="mqv2-label" for="txtEvaluation">Evaluacion</label>
+						<input class="form-control" type="text" name="txtEvaluation" id="txtEvaluation" >
+					</div>
+
+					<!-- Recomendacion -->
+					<div class="col-xs-12 col-sm-6 form-group <?php echo getBehavio($company->type,"app_med_query","divPanelRecomendacion",""); ?> ">
+						<label class="mqv2-label" for="txtRecomendation">Recomendacion</label>
+						<input class="form-control" type="text" name="txtRecomendation" id="txtRecomendation" >
+					</div>
+
+					<!-- Diagnostico -->
+					<div class="col-xs-12 col-sm-6 form-group <?php echo getBehavio($company->type,"app_med_query","divPanelDiagnostico",""); ?> ">
+						<label class="mqv2-label" for="txtDiagnostic">Diagnostico</label>
+						<input class="form-control" type="text" name="txtDiagnostic" id="txtDiagnostic" >
+					</div>
+
+					<!-- Observacion -->
+					<div class="col-xs-12 form-group">
+						<label class="mqv2-label" for="txtNote">Observacion</label>
+						<textarea class="form-control" name="txtNote" id="txtNote" rows="3"></textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- /evaluacion clinica -->
+
+	</div>
+
+	<!-- receta / indicaciones -->
+	<div class="mqv2-card">
+		<div class="mqv2-detail-head">
+			<p class="mqv2-card-title"><span class="mqv2-ico"><i class="fas fa-pills"></i></span> Receta / indicaciones <span class="mqv2-count" id="mqv2DetailCount">0</span></p>
+		</div>
+
+		<!-- captura -->
+		<div class="mqv2-entry" id="filaEntrada">
+			<div class="row">
+				<div class="col-xs-12 col-md-4 form-group">
+					<label class="mqv2-label" for="txtDetailName">Nombre</label>
+					<input class="form-control" type="text" name="txtDetailName" id="txtDetailName" value="" placeholder="Medicamento o indicacion">
+					<span id="errorLabel" class="mqv2-error" style="display:none">Este campo no puede estar vacío</span>
+				</div>
+				<div class="col-xs-6 col-md-2 form-group">
+					<label class="mqv2-label" for="txtPriority">Prioridad</label>
+					<select name="txtPriority" id="txtPriority" class="form-control">
+							<?php
+							$count = 0;
+							if($objListPriority){
+								foreach($objListPriority as $ws){
+									if($count == 0 )
+										echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+									else
+										echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+									$count++;
+								}
+							}
+							?>
+					</select>
+				</div>
+				<div class="col-xs-6 col-md-2 form-group">
+					<label class="mqv2-label" for="txtFrecuency">Frecuencia</label>
+					<select name="txtFrecuency" id="txtFrecuency" class="form-control">
+							<?php
+							$count = 0;
+							if($objListFrecuency){
+								foreach($objListFrecuency as $ws){
+									if($count == 0 )
+										echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+									else
+										echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+									$count++;
+								}
+							}
+							?>
+					</select>
+				</div>
+				<div class="col-xs-6 col-md-2 form-group">
+					<label class="mqv2-label" for="txtDose">Dosis</label>
+					<select name="txtDose" id="txtDose" class="form-control">
+							<?php
+							$count = 0;
+							if($objListDose){
+								foreach($objListDose as $ws){
+									if($count == 0 )
+										echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+									else
+										echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+									$count++;
+								}
+							}
+							?>
+					</select>
+				</div>
+				<div class="col-xs-6 col-md-1 form-group">
+					<label class="mqv2-label" for="txtAmount">Monto</label>
+					<input class="form-control" type="number" inputmode="decimal" step="any" name="txtAmount" id="txtAmount" value="">
+				</div>
+				<div class="col-xs-12 col-md-1 form-group mqv2-entry-btn">
+					<button type="button" class="btn btn-primary" id="btnAddDetail" title="Agregar indicacion"><i class="fas fa-plus"></i><span class="visible-xs-inline visible-sm-inline"> Agregar</span></button>
+				</div>
+			</div>
+		</div>
+		<!-- /captura -->
+
+		<table class="mqv2-table hidden" id="tableFrecuency">
+			<thead>
+				<tr>
+					<th>Nombre</th>
+					<th>Prioridad</th>
+					<th>Frecuencia</th>
+					<th>Dosis</th>
+					<th class="mqv2-col-amount">Monto</th>
+					<th class="mqv2-col-del"></th>
+				</tr>
+			</thead>
+			<tbody id="mqv2DetailBody">
+				<!-- Aquí se agregarán las filas dinámicamente -->
+			</tbody>
+		</table>
+
+		<div class="mqv2-empty" id="mqv2EmptyDetail">
+			<i class="fas fa-prescription-bottle-alt"></i>
+			Aun no hay indicaciones. Escribe el nombre y toca <b>Agregar</b>.
 		</div>
 	</div>
+	<!-- /receta / indicaciones -->
+
+</form>
+
+	<!-- barra inferior (telefono) -->
+	<div class="mqv2-mbar">
+		<div class="mqv2-mbar-info">
+			<p class="mqv2-mbar-label">Paciente</p>
+			<p class="mqv2-mbar-name" id="mqv2MbarName"></p>
+		</div>
+		<a href="#" class="btn btn-primary" id="btnAceptMobile"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+	</div>
 </div>
+
+
+<script type="text/template" id="tmpl_row_detail">
+	<tr class="mqv2-row">
+		<td class="mqv2-col-name" data-label="Nombre">
+			<input class="form-control mqv2-in-name" type="text" name="txtDetailNameArray[]" value="">
+		</td>
+		<td data-label="Prioridad">
+			<select name="txtPriorityArray[]" class="form-control mqv2-in-priority">
+				<?php
+					if(isset($objListPriority) && $objListPriority){
+						foreach($objListPriority as $ws){
+							echo "<option value='".$ws->catalogItemID."'>".$ws->name."</option>";
+						}
+					}
+				?>
+			</select>
+		</td>
+		<td data-label="Frecuencia">
+			<select name="txtFrecuencyArray[]" class="form-control mqv2-in-frecuency">
+				<?php
+					if(isset($objListFrecuency) && $objListFrecuency){
+						foreach($objListFrecuency as $ws){
+							echo "<option value='".$ws->catalogItemID."'>".$ws->name."</option>";
+						}
+					}
+				?>
+			</select>
+		</td>
+		<td data-label="Dosis">
+			<select name="txtDoseArray[]" class="form-control mqv2-in-dose">
+				<?php
+					if(isset($objListDose) && $objListDose){
+						foreach($objListDose as $ws){
+							echo "<option value='".$ws->catalogItemID."'>".$ws->name."</option>";
+						}
+					}
+				?>
+			</select>
+		</td>
+		<td class="mqv2-col-amount" data-label="Monto">
+			<input class="form-control mqv2-in-amount" type="number" inputmode="decimal" step="any" name="txtAmountArray[]" value="">
+		</td>
+		<td class="mqv2-col-del">
+			<button type="button" class="btn mqv2-btn-del" title="Quitar" onclick="fnEliminarFila(this)"><i class="fas fa-trash"></i></button>
+		</td>
+	</tr>
+</script>

@@ -95,8 +95,9 @@ class app_med_query extends _BaseController {
 			$dataView["objListDose"] 			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia_detail","typePriceID",$companyID);;
 			$dataView["objListDetails"]			= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID,$transactionID,$transactionMasterID,$objComponentTransactionShare->componentID);
 			$dataView['company']				= $dataSession["company"];
+			$dataView["useMobile"]				= $dataSession["user"]->useMobile;
 
-			//Renderizar Resultado 
+			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
 			$dataSession["head"]			= /*--inicio view*/ view('app_med_query/edit_head',$dataView);//--finview
@@ -263,7 +264,7 @@ class app_med_query extends _BaseController {
 			$objTMNew["tax2"]							= /*inicio get post*/ $this->request->getPost("txtHeight");
 			$objTMNew["tax3"]							= /*inicio get post*/ $this->request->getPost("txtWeight");
 			$objTMNew["tax4"]							= /*inicio get post*/ $this->request->getPost("txtIMC");
-			$objTMNew["nextVisit"]						= /*inicio get post*/ $this->request->getPost("txtNextVisit");
+			$objTMNew["nextVisit"]						= /*inicio get post*/ ($this->request->getPost("txtNextVisit") == "" ? NULL : $this->request->getPost("txtNextVisit"));
 			$objTMNew["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");			
 			$objTMNew["priorityID"]						= /*inicio get post*/ $this->request->getPost("txtPriorityID");
 			
@@ -406,7 +407,7 @@ class app_med_query extends _BaseController {
 			$objTM["sourceWarehouseID"]				= NULL;
 			$objTM["targetWarehouseID"]				= NULL;
 			$objTM["isActive"]						= 1;
-			$objTM["nextVisit"]						= $this->request->getPost("txtNextVisit");			
+			$objTM["nextVisit"]						= ($this->request->getPost("txtNextVisit") == "" ? NULL : $this->request->getPost("txtNextVisit"));
 			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);			
 			
 			
@@ -710,8 +711,9 @@ class app_med_query extends _BaseController {
 			$dataView['objListFrecuency'] 		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia_detail","skuQuantityBySku",$companyID);;
 			$dataView['objListDose'] 			= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_med_asistencia_detail","typePriceID",$companyID);;
 			$dataView['company']				= $dataSession["company"];
-			
-			//Renderizar Resultado 
+			$dataView["useMobile"]				= $dataSession["user"]->useMobile;
+
+			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
 			$dataSession["head"]			= /*--inicio view*/ view('app_med_query/news_head',$dataView);//--finview
