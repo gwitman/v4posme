@@ -4,6 +4,8 @@
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/mask/jquery.mask.min.js"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jLinq-2.2.1.js"></script>
 				
+				<?php echo view('app_box_share/share_v2_style'); ?>
+				
 				<style>
 					<?php echo getBehavio($company->type,"app_box_share","stylePage",""); ?>
 				</style>

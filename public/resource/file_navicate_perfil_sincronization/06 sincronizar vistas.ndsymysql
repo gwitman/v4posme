@@ -20,8 +20,8 @@
     "TargetCloudInstanceName": "",
     "TargetProject": "",
     "TargetProjectOwnerNavicatID": "",
-    "TargetSchema": "htrqzsmwdyknap",
-    "TargetServer": "aws",
+    "TargetSchema": "dbs3obkhhc1pgu",
+    "TargetServer": "posme.net",
     "TargetServerServiceProvider": 0,
     "TargetServerType": "MYSQL",
     "UseTransaction": false
@@ -58,6 +58,18 @@
       },
       "Target": {
         "Name": "tb_company_component_item_dataview",
+        "ObjectType": "Table_MYSQL"
+      },
+      "Keys": [],
+      "Fields": []
+    },
+	{
+      "Source": {
+        "Name": "tb_dataview",
+        "ObjectType": "Table_MYSQL"
+      },
+      "Target": {
+        "Name": "tb_dataview",
         "ObjectType": "Table_MYSQL"
       },
       "Keys": [],
