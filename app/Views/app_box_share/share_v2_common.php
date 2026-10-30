@@ -31,6 +31,43 @@
 		$elements.mask('000,000,000.00', {reverse: true});
 	}
 
+	/* ---------------- Controles segun el dispositivo ---------------- */
+	//En telefono: Estado y Moneda como combo normal (sin select2)
+	function abv2SetupMobileSelects(){
+		if(!abv2IsMobile()) return;
+		$("#txtStatusID, #txtCurrencyID").each(function(i,obj){
+			var $select = $(obj);
+			try{
+				if($select.data("select2")) $select.select2("destroy");
+			}
+			catch(ex){
+				console.info("abv2SetupMobileSelects", ex);
+			}
+			$select.removeClass("select2").show();
+		});
+	}
+	//Fecha: calendario del tema en PC, selector nativo del telefono en movil
+	function abv2InitDate(setToday){
+		var input = document.getElementById("txtDate");
+		if(!input) return;
+
+		var valor = $.trim(input.value);
+		if(setToday || valor == "") valor = moment().format("YYYY-MM-DD");
+		valor = valor.substring(0,10);
+
+		if(abv2IsMobile()){
+			try { input.type = "date"; } catch(ex) { console.info("abv2InitDate", ex); }
+			input.value = valor;
+			$(input).closest(".input-group").find(".input-group-addon").hide();
+			$(input).closest(".input-group").removeClass("input-group date");
+			return;
+		}
+
+		$(input).datepicker({format:"yyyy-mm-dd"});
+		$(input).val(valor);
+		$(input).datepicker("update");
+	}
+
 	/* ---------------- Busqueda (ventana emergente en PC, ventana interna en telefono) ---------------- */
 	function abv2EnsureSearchModal(){
 		var $modal = $("#abv2SearchModal");
@@ -280,6 +317,7 @@
 
 	//Eventos comunes de las dos pantallas
 	function abv2BindCommon(){
+		abv2SetupMobileSelects();
 		abv2Mask($('.abv2 .txt-numeric'));
 
 		//Recalcular mientras se escribe (no solo al salir del campo)

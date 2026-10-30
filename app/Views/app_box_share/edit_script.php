@@ -13,8 +13,7 @@
 <?php echo view('app_box_share/share_v2_common'); ?>
 <script>
 	$(document).ready(function(){
-		 $('#txtDate').datepicker({format:"yyyy-mm-dd"});
-		 $("#txtDate").datepicker("update");
+		 abv2InitDate(false);
 		 abv2BindCommon();
 
 		//Cargar los creditos del cliente (sin cambiar el saldo guardado)

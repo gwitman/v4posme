@@ -8,9 +8,7 @@
 <?php echo view('app_box_share/share_v2_common'); ?>
 <script>
 	$(document).ready(function(){
-		 $('#txtDate').datepicker({format:"yyyy-mm-dd"});
-		 $('#txtDate').val(moment().format("YYYY-MM-DD"));
-		 $("#txtDate").datepicker("update");
+		 abv2InitDate(true);
 		 abv2BindCommon();
 
 		 <?php
