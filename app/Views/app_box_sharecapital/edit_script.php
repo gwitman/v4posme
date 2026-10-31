@@ -1,84 +1,44 @@
 				<!-- ./ page heading -->
-				<script>		
-					var varUrlPrinter					= '<?php echo $urlPrinterDocument; ?>';
-					var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
+				<script>
+					var varUseMobile							= '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+					var varUrlPrinter							= '<?php echo $urlPrinterDocument; ?>';
+					var varParameterCantidadItemPoup			= '<?php echo $objParameterCantidadItemPoup; ?>';
+					var varComponentItemID						= '<?php echo $objComponentItem->componentID; ?>';
+					var varComponentCustomerCreditDocumentID	= '<?php echo $objComponentCustomerCreditDocument->componentID; ?>';
+					var varIsEditMode							= true;
+				</script>
+				<?php echo view('core_template/posme_v2_common'); ?>
+				<?php echo view('app_box_sharecapital/cap_v2_common'); ?>
+				<script>
+					$(document).ready(function(){
+						pv2InitDate("txtDate", false);
+						capBindCommon();
 
-					$(document).ready(function(){					
-						 $('#txtDate').datepicker({format:"yyyy-mm-dd"});						 
-						 $("#txtDate").datepicker("update");
-						 $('.txt-numeric').mask('000,000.00', {reverse: true});
-						 
-						//Buscar el Cliente
-						$(document).on("click","#btnSearchCustomer",function(){
-							var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_BILLING_PAGINATED/true/empty/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
-							window.open(url_request,"MsgWindow","width=900,height=450");
-							window.onCompleteCustomer = onCompleteCustomer; 
-						});						
-					
-						//Eliminar Cliente
-						$(document).on("click","#btnClearCustomer",function(){
-									$("#txtCustomerID").val("");
-									$("#txtCustomerDescription").val("");
-						});
-						
-						//Regresar a la lista
-						$(document).on("click","#btnBack",function(){
-								fnWaitOpen();
-						});
-						
-						
 						//Imprimir Documento
-						$(document).on("click","#btnPrinter",function(){
-							fnWaitOpen();							
+						$(document).on("click","#btnPrinter",function(e){
+							e.preventDefault();
+							fnWaitOpen();
 							window.location = "<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>";
 						});
 
-						//Evento Agregar el Usuario
-						$(document).on("click","#btnAcept",function(){
+						//Guardar
+						$(document).on("click","#btnAcept",function(e){
+								e.preventDefault();
 								$( "#form-new-invoice" ).attr("method","POST");
 								$( "#form-new-invoice" ).attr("action","<?php echo base_url(); ?>/app_box_sharecapital/save/edit");
-								
+
 								if(validateForm()){
 									fnWaitOpen();
 									$( "#form-new-invoice" ).submit();
 								}
-								
 						});
-						
-						//Nueva factura
-						$(document).on("click","#btnNewShare",function(){
-						
-							if($("#txtCustomerID").val() == ""){
-								fnShowNotification("Seleccione el cliente","error");
-								return;
-							}
-							
-							var url_request 			= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomerCreditDocument->componentID; ?>/onCompleteNewShare/SELECCIONAR_DOCUMENTOS_DE_CREDITO_SUMMARY/true/"+encodeURI("{\"entityID\"|\""+$("#txtCustomerID").val()+"\"}") + "/false/not_redirect_when_empty";
-							window.open(url_request,"MsgWindow","width=1585,height=795");
-							window.onCompleteNewShare 	= onCompleteNewShare; 
-						});
-						//Eliminar factura
-						$(document).on("click","#btnDeleteShare",function(){
-							console.info("btnDeleteShare");
-							$(".txtCheckedIsActive").each(function(i,obj){
-									if($(obj).attr("checked") == "checked"){
-										$(obj).parents("tr").first().remove();
-									}
-							});	
-							
-						});
-						
-						$(document).on("change","input.txtDetailShare",function(){
-							updateSummary();
-						});
-						$(document).on("change","#txtReceiptAmount",function(){
-							updateCalculateChange();
-						});
-						
-						$(document).on("click","#btnDelete",function(){							
+
+						//Eliminar el documento
+						$(document).on("click","#btnDelete",function(e){
+							e.preventDefault();
 							fnShowConfirm("Confirmar..","Desea eliminar este Registro...",function(){
 								fnWaitOpen();
-								$.ajax({									
+								$.ajax({
 									cache       : false,
 									dataType    : 'json',
 									type        : 'POST',
@@ -94,100 +54,19 @@
 											window.location = "<?php echo base_url(); ?>/app_box_sharecapital/index";
 										}
 									},
-									error:function(xhr,data){	
-										console.info("complete delete error");									
+									error:function(xhr,data){
+										console.info("complete delete error");
 										fnWaitClose();
 										fnShowNotification("Error 505","error");
 									}
 								});
 							});
 						});
-						
-						$(document).on("click","#btnClickArchivo",function(){
+
+						//Archivos
+						$(document).on("click","#btnClickArchivo",function(e){
+							e.preventDefault();
 							window.open("<?php echo base_url()."core_elfinder/index/componentID/".$objComponentTransactionShareCapital->componentID."/componentItemID/".$objTransactionMaster->transactionMasterID; ?>","blanck");
 						});
-						
 					});
-					
-					function updateCalculateChange(){
-						console.info("updateCalculateChange");
-						var i = fnFormatFloat($("#txtTotal").val());
-						var x = fnFormatFloat($("#txtReceiptAmount").val());
-						$("#txtChangeAmount").val(fnFormatNumber((x-i),2));
-					}
-					function onCompleteCustomer(objResponse){
-						console.info("CALL onCompleteCustomer");
-					
-						var entityID = objResponse[0][1];
-						$("#txtCustomerID").val(objResponse[0][1]);
-						$("#txtCustomerDescription").val(objResponse[0][2] + " " + objResponse[0][3] + " / " + objResponse[0][4]);
-											
-					}
-					function updateSummary(){
-						console.info("updateSummary");
-						var total = 0;
-						$(".txtDetailShare").each(function(index,obj){
-							total = total + fnFormatFloat($(obj).val());
-						});
-						total = fnFormatNumber(total,2);
-						$("#txtTotal").val(total);
-					}
-					function onCompleteNewShare(objResponse){
-						console.info("CALL onCompleteNewShare");	
-
-						var objRow 						= {};
-						objRow.checked 					= false;
-						objRow.transactionMasterDetail 	= 0;
-						objRow.customerCreditDocumentID = objResponse[0][0];	/*customerCreditDocumentID*/
-						objRow.doc 						= objResponse[0][1];	/*Doc*/
-						objRow.balance					= objResponse[0][3];	/*Saldo*/
-						
-						//Validar si esta el item
-						for(var i = 0 ; i < $(".classDetailItem").length; i++){
-								var x  = $(($(".classDetailItem")[i])).val(); 
-								var y  = objRow.customerCreditDocumentID;
-								
-								if(x == y){
-									fnShowNotification("El Documento ya esta agregado","error");
-									return;
-								}
-						}
-						
-						var tmpl = $($("#tmpl_row_document").html());
-						tmpl.find("#txtDetailCustomerCreditDocumentID").attr("value",objRow.customerCreditDocumentID);
-						tmpl.find("#txtDetailTransactionDetailID").attr("value",objRow.transactionMasterDetail);
-						tmpl.find("#txtDocument").text(objRow.doc);
-						tmpl.find("#txtDetailShare").attr("value",objRow.balance);
-						
-						$("#body_tb_transaction_master_detail").append(tmpl);
-						refreschChecked();					
-						
-					}
-					
-					function validateForm(){
-						var result 				= true;
-						var timerNotification 	= 15000;
-						
-						//Validar Fecha
-						if($("#txtDate").val() == ""){
-							fnShowNotification("Establecer Fecha al Documento","error",timerNotification);
-							result = false;
-						}
-						
-						//Validar Cliente
-						if($("#txtCustomerID").val() == ""){
-							fnShowNotification("Seleccionar el Cliente","error",timerNotification);
-							result = false;
-						}
-						
-						return result;
-					}
-					
-					function refreschChecked(){
-						$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();
-						//$('.txtDebit').mask('000,000.00', {reverse: true});
-						//$('.txtCredit').mask('000,000.00', {reverse: true});
-						$('.txt-numeric').mask('000,000.00', {reverse: true});
-					}
-					
 				</script>

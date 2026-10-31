@@ -48,7 +48,7 @@
 					<tr>
 						<td style="text-align:justify;font-size:small;font-family: 'Inconsolata', monospace;">
 						El o los productos serán pagado en Dólares de los Estados Unidos de América, este valor se pagará en  <b><?php echo $objFirstDetail["term"]; ?> cuotas </b>
-						de <b>US$ <?php echo sprintf("%01.2f",$objFirstDetail["cuotaDolares"] / $objFirstDetail["term"]); ?></b> 
+						de <b>US$ <?php echo sprintf("%01.2f",isset($objFirstDetail["montoCuota"]) ? $objFirstDetail["montoCuota"] : $objFirstDetail["cuotaDolares"] / $objFirstDetail["term"]); ?></b>
 						dólares o su equivalente en córdobas segun el tipo de cambio emitido por el Banco Central de Nicaragua, 
 						iguales y sucesivas cada periodo <b><?php echo $objFirstDetail["period"]; ?></b>,
 						la fecha en que la deuda deberá ser cancelada en su totalidad será   

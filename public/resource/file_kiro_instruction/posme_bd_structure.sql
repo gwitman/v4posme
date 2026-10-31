@@ -11,7 +11,7 @@
  Target Server Version : 100427 (10.4.27-MariaDB)
  File Encoding         : 65001
 
- Date: 27/09/2026 10:06:42
+ Date: 31/10/2026 02:07:09
 */
 
 SET NAMES utf8mb4;
@@ -402,7 +402,7 @@ CREATE TABLE `tb_cash_box_user`  (
   INDEX `IDX_CASH_BOX_USER_004`(`cashBoxID` ASC) USING BTREE,
   INDEX `IDX_CASH_BOX_USER_005`(`typeID` ASC) USING BTREE,
   INDEX `IDX_CASH_BOX_USER_006`(`cashBoxUserID` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 654 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 675 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_catalog
@@ -451,7 +451,7 @@ CREATE TABLE `tb_catalog_item`  (
   INDEX `IDX_CATALOG_ITEM_007`(`catalogID` ASC, `flavorID` ASC) USING BTREE,
   INDEX `IDX_CI_CATALOG_ACTIVE`(`catalogID` ASC, `isActive` ASC) USING BTREE,
   INDEX `IDX_CI_CATALOG_FLAVOR_ACTIVE`(`catalogID` ASC, `flavorID` ASC, `isActive` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5232 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 5296 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_catalog_item_convertion
@@ -649,7 +649,7 @@ CREATE TABLE `tb_company_dataview`  (
   INDEX `IDX_COMPANY_DATAVIEW_003`(`callerID` ASC) USING BTREE,
   INDEX `IDX_COMPANY_DATAVIEW_004`(`componentID` ASC) USING BTREE,
   INDEX `IDX_COMPANY_DATAVIEW_005`(`companyID` ASC, `dataViewID` ASC, `callerID` ASC, `componentID` ASC, `isActive` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 414 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 424 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_company_default_dataview
@@ -669,7 +669,7 @@ CREATE TABLE `tb_company_default_dataview`  (
   INDEX `IDX_COMPANY_DEFAULT_DATAVIEW_004`(`callerID` ASC) USING BTREE,
   INDEX `IDX_COMPANY_DEFAULT_DATAVIEW_005`(`targetComponentID` ASC) USING BTREE,
   INDEX `IDX_COMPANY_DEFAULT_DATAVIEW_006`(`companyID` ASC, `componentID` ASC, `callerID` ASC, `targetComponentID` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 345 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 351 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_company_page_setting
@@ -687,7 +687,7 @@ CREATE TABLE `tb_company_page_setting`  (
   `valuei` varchar(4000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `isActive` int NULL DEFAULT NULL,
   PRIMARY KEY (`customPageID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 128 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 176 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_company_page_setting_large
@@ -705,7 +705,7 @@ CREATE TABLE `tb_company_page_setting_large`  (
   `valuei` blob NULL,
   `isActive` int NULL DEFAULT NULL,
   PRIMARY KEY (`customPageLargeID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 44 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 50 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_company_parameter
@@ -723,7 +723,7 @@ CREATE TABLE `tb_company_parameter`  (
   INDEX `IDX_COMPANY_PARAMETER_001`(`parameterID` ASC) USING BTREE,
   INDEX `IDX_COMPANY_PARAMETER_002`(`companyID` ASC) USING BTREE,
   INDEX `IDX_COMPANY_PARAMETER_003`(`parameterID` ASC, `companyID` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 320 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 340 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_company_parameter_user
@@ -885,7 +885,7 @@ CREATE TABLE `tb_component_element`  (
   PRIMARY KEY (`componentElementID`) USING BTREE,
   INDEX `IDX_COMPONENT_ELEMENT_001`(`elementID` ASC) USING BTREE,
   INDEX `IDX_COMPONENT_ELEMENT_002`(`componentID` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 356 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 362 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_component_property
@@ -902,7 +902,7 @@ CREATE TABLE `tb_component_property`  (
   `type` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `isActive` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`propertyItemID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for tb_counter
@@ -1169,7 +1169,7 @@ CREATE TABLE `tb_customer_credit_document`  (
   `entityID` int NOT NULL DEFAULT 0,
   `customerCreditLineID` int NOT NULL DEFAULT 0,
   `documentNumber` varchar(50) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '0',
-  `dateOn` date NOT NULL DEFAULT '1980-01-01',
+  `dateOn` datetime NOT NULL DEFAULT '1980-01-01 00:00:00',
   `amount` decimal(19, 9) NOT NULL DEFAULT 0.000000000,
   `interes` decimal(19, 9) NOT NULL DEFAULT 0.000000000,
   `term` int NOT NULL DEFAULT 0,
@@ -1186,6 +1186,7 @@ CREATE TABLE `tb_customer_credit_document`  (
   `periodPay` int NOT NULL DEFAULT 0,
   `providerIDCredit` int NOT NULL DEFAULT 0,
   `reportSinRiesgo` int NOT NULL DEFAULT 1,
+  `termDecimal` decimal(20, 5) NULL DEFAULT 0.00000,
   PRIMARY KEY (`customerCreditDocumentID`) USING BTREE,
   INDEX `IDX_CUSTOMER_CREDIT_DOCUMENT_001`(`companyID` ASC) USING BTREE,
   INDEX `IDX_CUSTOMER_CREDIT_DOCUMENT_002`(`entityID` ASC) USING BTREE,
@@ -1382,7 +1383,7 @@ CREATE TABLE `tb_dataview`  (
   PRIMARY KEY (`dataViewID`) USING BTREE,
   INDEX `IDX_DATAVIEW_001`(`callerID` ASC) USING BTREE,
   INDEX `IDX_DATAVIEW_002`(`componentID` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 269 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 272 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_element
@@ -1396,7 +1397,7 @@ CREATE TABLE `tb_element`  (
   PRIMARY KEY (`elementID`) USING BTREE,
   INDEX `IDX_ELEMENT_001`(`elementTypeID` ASC) USING BTREE,
   INDEX `IDX_ELEMENT_002`(`elementTypeID` ASC, `name` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 428 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 431 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_element_type
@@ -1750,6 +1751,7 @@ CREATE TABLE `tb_fixed_assent`  (
   `currentAmount` decimal(10, 2) NULL DEFAULT NULL,
   `settlementAmount` decimal(10, 2) NULL DEFAULT NULL,
   `isActive` bit(1) NOT NULL DEFAULT b'0',
+  `asignedCustomerID` int NULL DEFAULT NULL,
   PRIMARY KEY (`fixedAssentID`) USING BTREE,
   INDEX `IDX_FIDEX_ASSENT_001`(`companyID` ASC) USING BTREE,
   INDEX `IDX_FIDEX_ASSENT_002`(`branchID` ASC) USING BTREE,
@@ -1782,7 +1784,7 @@ CREATE TABLE `tb_indicator`  (
   PRIMARY KEY (`indicadorID`) USING BTREE,
   INDEX `IDX_INDICATOR_001`(`companyID` ASC) USING BTREE,
   INDEX `IDX_INDICATOR_002`(`code` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 21 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 22 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_indicator_history
@@ -2321,7 +2323,7 @@ CREATE TABLE `tb_membership`  (
   INDEX `IDX_MEMBERSHIP_003`(`branchID` ASC) USING BTREE,
   INDEX `IDX_MEMBERSHIP_004`(`userID` ASC) USING BTREE,
   INDEX `IDX_MEMBERSHIP_005`(`companyID` ASC, `branchID` ASC, `userID` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1953723032 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1953723053 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_menu_element
@@ -2352,7 +2354,7 @@ CREATE TABLE `tb_menu_element`  (
   INDEX `IDX_MENU_ELEMENT_002`(`elementID` ASC) USING BTREE,
   INDEX `IDX_MENU_ELEMENT_003`(`parentMenuElementID` ASC) USING BTREE,
   INDEX `IDX_MENU_ELEMENT_004`(`typeMenuElementID` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 308 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 311 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_naturales
@@ -2425,7 +2427,7 @@ CREATE TABLE `tb_parameter`  (
   `isEdited` tinyint(1) NOT NULL DEFAULT 0,
   PRIMARY KEY (`parameterID`) USING BTREE,
   INDEX `IDX_PARAMETER_001`(`name` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 324 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 344 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_price
@@ -2535,7 +2537,7 @@ CREATE TABLE `tb_public_catalog`  (
   INDEX `IDX_PUBLIC_CATALOG_001`(`statusID` ASC) USING BTREE,
   INDEX `IDX_PUBLIC_CATALOG_002`(`flavorID` ASC) USING BTREE,
   INDEX `IDX_PUBLIC_CATALOG_003`(`publicCatalogID` ASC, `flavorID` ASC, `isActive` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 253 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 259 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_public_catalog_detail
@@ -2607,7 +2609,7 @@ CREATE TABLE `tb_public_catalog_detail`  (
   INDEX `IDX_PUBLIC_CATALOG_DETAIL_026`(`reference22` ASC) USING BTREE,
   INDEX `IDX_PUBLIC_CATALOG_DETAIL_027`(`reference23` ASC) USING BTREE,
   INDEX `IDX_PUBLIC_CATALOG_DETAIL_028`(`refecence24` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 812 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 818 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_razones_financieras_tmp
@@ -2703,7 +2705,7 @@ CREATE TABLE `tb_reporting`  (
   `isActive` int NULL DEFAULT NULL,
   `flavorID` int NULL DEFAULT 0,
   PRIMARY KEY (`reportID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 17 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_reporting_parameter
@@ -2721,7 +2723,7 @@ CREATE TABLE `tb_reporting_parameter`  (
   `datasource` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `value` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`reportParameterID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 90 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 95 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_reporting_result
@@ -2746,7 +2748,7 @@ CREATE TABLE `tb_reporting_result`  (
   `tableNumberColumn` int NULL DEFAULT NULL,
   `isActive` int NULL DEFAULT NULL,
   PRIMARY KEY (`reportResultID`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 165 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 170 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_role
@@ -2768,7 +2770,7 @@ CREATE TABLE `tb_role`  (
   INDEX `IDX_ROLE_001`(`companyID` ASC) USING BTREE,
   INDEX `IDX_ROLE_002`(`branchID` ASC) USING BTREE,
   INDEX `IDX_ROLE_003`(`roleID` ASC, `companyID` ASC, `branchID` ASC, `isActive` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1236 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1269 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_role_autorization
@@ -2787,7 +2789,7 @@ CREATE TABLE `tb_role_autorization`  (
   INDEX `IDX_ROLE_AUROTIZATION_004`(`branchID` ASC) USING BTREE,
   INDEX `IDX_ROLE_AUROTIZATION_005`(`companyID` ASC, `componentAutorizationID` ASC) USING BTREE,
   INDEX `IDX_ROLE_AUROTIZATION_006`(`companyID` ASC, `roleID` ASC, `branchID` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2628 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2679 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_subelement
@@ -2974,7 +2976,7 @@ CREATE TABLE `tb_transaction_master`  (
   INDEX `IDX_TM_COMP_NEXTVISIT_ACTIVE`(`companyID` ASC, `nextVisit` ASC, `isActive` ASC) USING BTREE,
   INDEX `IDX_TM_TRANSID_COMPONENTID_ACTIVE`(`transactionID` ASC, `componentID` ASC, `isActive` ASC) USING BTREE,
   INDEX `IDX_TM_REPORT_PAYMENT`(`companyID` ASC, `isActive` ASC, `transactionID` ASC, `statusID` ASC, `createdOn` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2259 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 2261 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_transaction_master_concept
@@ -3096,7 +3098,7 @@ CREATE TABLE `tb_transaction_master_detail`  (
   INDEX `IDX_TMD_MASTER_ACTIVE`(`transactionMasterID` ASC, `isActive` ASC) USING BTREE,
   INDEX `IDX_TMD_COMPONENT_ITEM_ACTIVE`(`componentID` ASC, `componentItemID` ASC, `isActive` ASC) USING BTREE,
   INDEX `IDX_TMD_DETAIL_ACTIVE`(`transactionMasterDetailID` ASC, `isActive` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4126 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 4130 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_transaction_master_detail_credit
@@ -3259,7 +3261,7 @@ CREATE TABLE `tb_transaction_master_info`  (
   INDEX `IDX_TMI_ZONE`(`zoneID` ASC) USING BTREE,
   INDEX `IDX_TMI_MESA`(`mesaID` ASC) USING BTREE,
   INDEX `IDX_TMI_REF2`(`reference2` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 705 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 707 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_transaction_master_purchase
@@ -3428,7 +3430,7 @@ CREATE TABLE `tb_user`  (
   INDEX `IDX_USER_004`(`employeeID` ASC) USING BTREE,
   INDEX `IDX_USER_005`(`nickname` ASC, `password` ASC, `isActive` ASC) USING BTREE,
   INDEX `IDX_USER_006`(`locationID` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1263 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 1284 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_user_permission
@@ -3449,7 +3451,7 @@ CREATE TABLE `tb_user_permission`  (
   INDEX `IDX_USER_PERMISSION_002`(`branchID` ASC) USING BTREE,
   INDEX `IDX_USER_PERMISSION_003`(`elementID` ASC) USING BTREE,
   INDEX `IDX_USER_PERMISSION_004`(`roleID` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 81853 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 83304 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_user_tag
@@ -3466,7 +3468,7 @@ CREATE TABLE `tb_user_tag`  (
   INDEX `IDX_USER_TAG_002`(`companyID` ASC) USING BTREE,
   INDEX `IDX_USER_TAG_003`(`branchID` ASC) USING BTREE,
   INDEX `IDX_USER_TAG_004`(`userID` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 6378 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 6447 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_user_warehouse
@@ -3483,7 +3485,7 @@ CREATE TABLE `tb_user_warehouse`  (
   INDEX `IDX_USER_WAREHOUSE_002`(`branchID` ASC) USING BTREE,
   INDEX `IDX_USER_WAREHOUSE_003`(`userID` ASC) USING BTREE,
   INDEX `IDX_USER_WAREHOUSE_004`(`warehouseID` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4675 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 4748 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_warehouse
@@ -22207,6 +22209,7 @@ BEGIN
 	DECLARE deudaTotalCordobas DECIMAL(19,0) DEFAULT 0;
 	DECLARE deudaTotalDolares DECIMAL(19,0) DEFAULT 0;
 	DECLARE varCompanyType VARCHAR(50);
+	
 
 	
 
@@ -22304,7 +22307,12 @@ BEGIN
 		ccda.dayDelay,
 		ws4.name as statusShare,
 		curx.name ,
-		ccd.reference1 as nota,
+		case
+			when varCompanyType = 'lotificadoraCa'  then 
+				tmix.reference1
+			else 
+			ccd.reference1 
+		end as nota,
 		c.phoneNumber 
 	FROM
 		tb_entity e 
@@ -22385,6 +22393,8 @@ BEGIN
 				ccd.documentNumber = tmx.transactionNumber and 
 				ccd.companyID = tmx.companyID and 
 				ccd.entityID = tmx.entityID 
+		left join tb_transaction_master_info tmix on 
+			tmx.transactionMasterID = tmix.transactionMasterID 
 		left join tb_currency curx on 
 			tmx.currencyID = curx.currencyID 
 	where
@@ -22582,422 +22592,267 @@ CREATE PROCEDURE `pr_cxc_get_report_document_contract`(IN `prCompanyID` INT, IN 
   SQL SECURITY INVOKER
   COMMENT 'Procedimiento para obtener el contrato de credito'
 BEGIN
-
-	DECLARE exchangeRate_ DECIMAL(18,8) DEFAULT 0;		
-
+	DECLARE exchangeRate_ DECIMAL(18,8) DEFAULT 0;
 	DECLARE currencyIDNameSource VARCHAR(250);
-
-	DECLARE currencyIDNameTarget VARCHAR(250);	
-
+	DECLARE currencyIDNameTarget VARCHAR(250);
 	DECLARE currencyID_ INT DEFAULT 0;
-
 	DECLARE currencyIDTarget_ INT DEFAULT 0;
-
 	DECLARE nameLayEmployee VARCHAR(250);
-
 	DECLARE nameLayEmployeeEstadoCivil VARCHAR(250);
-
 	DECLARE nameLayEmployeeQuinquenio VARCHAR(500);
 
-
-
 	CALL pr_core_get_parameter_value(prCompanyID,"CXC_LAY_EMPLOYER_NAME",nameLayEmployee);
-
 	CALL pr_core_get_parameter_value(prCompanyID,"CXC_LAY_EMPLOYER_STATUS_PUBLIC",nameLayEmployeeEstadoCivil);
-
 	CALL pr_core_get_parameter_value(prCompanyID,"CXC_LAY_EMPLOYER_QUINQUENIO",nameLayEmployeeQuinquenio);
 
-				
-
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameSource);
-
-	SET currencyID_ 		= (SELECT currencyID FROM tb_currency where name = currencyIDNameSource);	
-
-		
+	SET currencyID_ 		= (SELECT currencyID FROM tb_currency where name = currencyIDNameSource);
 
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",currencyIDNameTarget);
-
 	SET currencyIDTarget_ 	= (SELECT currencyID FROM tb_currency where name = currencyIDNameTarget);
 
-	
+	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameSource,currencyIDNameTarget,exchangeRate_);
 
-	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameSource,currencyIDNameTarget,exchangeRate_);	
-
-
-
-
-
-	select 
-
+	select
 		tx.legalName,
-
 		tx.identification,
-
 		tx.address,
-
 		min(tx.dateApply) as fechInicial,
-
 		tx.curridate as fechActual,
-
 		tx.currencyName,
-
 		tx.sexo,
-
 		tx.term,
-
 		tx.period,
-
 		tx.createdOn,
-
 		tx.NombreProveedor,
-
 		tx.CedulaProveedor,
-
 		tx.DireccionProveedor,
-
 		tx.estadoCivil,
-
 		tx.profesion,
-
 		tx.Domicilio,
-
 		tx.typeFirmaCustomer,
-
-		tx.typeFirmaProvider,	
-
+		tx.typeFirmaProvider,
 		round(fn_calculate_exchange_rate(tx.companyID,tx.dateOn,1  ,2  ,1  ),2) as TipoCambio,
-
 		round(sum(tx.share),2) as cuota,
-
-		round(sum(tx.shareDolares),2) as cuotaDolares, 
-
-		(round(sum(tx.shareDolares),2) / tx.term) as montoCuota,
-
+		round(sum(tx.shareDolares),2) as cuotaDolares,
+		/*Frances 194: cuota nivelada => cuota real = primera fila de amortizacion (la prorrateada es la ultima); resto (193 Constante, etc.): promedio historico*/
+		(
+			CASE
+				WHEN IFNULL((
+						select cdt.typeAmortization from tb_customer_credit_document cdt
+						where cdt.companyID = prCompanyID and cdt.documentNumber = prDocumentNumber and cdt.isActive = 1
+						limit 1
+					),0) = 194 THEN
+					IFNULL((
+						select
+							round(IF(cdx.currencyID = currencyID_,amx.share * cdx.exchangeRate,amx.share / cdx.exchangeRate),2)
+						from
+							tb_customer_credit_document cdx
+							inner join tb_customer_credit_amoritization amx on
+								cdx.customerCreditDocumentID = amx.customerCreditDocumentID
+						where
+							cdx.companyID = prCompanyID and
+							cdx.documentNumber = prDocumentNumber and
+							cdx.isActive = 1 and
+							amx.isActive = 1
+						order by
+							amx.dateApply asc, amx.creditAmortizationID asc
+						limit 1
+					),(round(sum(tx.shareDolares),2) / tx.term))
+				ELSE
+					(round(sum(tx.shareDolares),2) / tx.term)
+			END
+		) as montoCuota,
+		/*Misma regla que montoCuota pero en la moneda del documento, sin conversion*/
+		(
+			CASE
+				WHEN IFNULL((
+						select cdt.typeAmortization from tb_customer_credit_document cdt
+						where cdt.companyID = prCompanyID and cdt.documentNumber = prDocumentNumber and cdt.isActive = 1
+						limit 1
+					),0) = 194 THEN
+					IFNULL((
+						select
+							round(amx.share,2)
+						from
+							tb_customer_credit_document cdx
+							inner join tb_customer_credit_amoritization amx on
+								cdx.customerCreditDocumentID = amx.customerCreditDocumentID
+						where
+							cdx.companyID = prCompanyID and
+							cdx.documentNumber = prDocumentNumber and
+							cdx.isActive = 1 and
+							amx.isActive = 1
+						order by
+							amx.dateApply asc, amx.creditAmortizationID asc
+						limit 1
+					),(round(sum(tx.share),2) / tx.term))
+				ELSE
+					(round(sum(tx.share),2) / tx.term)
+			END
+		) as montoCuotaLocal,
 		tx.amountTotal,
-
-		tx.receiptAmount, 
-
+		tx.receiptAmount,
 		max(tx.dateApply) as fechFinal,
-
 		DATEDIFF(max(tx.dateApply),min(tx.dateApply)) as DuracionDelCredito,
-
 		nameLayEmployee,
-
 		nameLayEmployeeEstadoCivil,
-
-		nameLayEmployeeQuinquenio, 
-
+		nameLayEmployeeQuinquenio,
 		documentNumber,
-
 		Concepto,
-
 		phoneNumber,
-
 		lugarTrabajo,
-
 		birthDate,
-
 		CantidadProductos,
 
-		
-
 		phoneNumberTransactionMaster,
-
 		referenceClientIdentifier,
-
-		referenceClientName, 
-
+		referenceClientName,
 		Zona,
 
-		
-
 		IFNULL((
-
-				select (xp.reference2) from tb_transaction_master_detail_credit xp 
-
+				select (xp.reference2) from tb_transaction_master_detail_credit xp
 				where xp.transactionMasterID = tx.transactionMasterID ),'*******'
-
 		) as LayWritePublicNumber,
-
 		IFNULL((
-
-				select (xp.reference1) from tb_transaction_master_detail_credit xp 
-
+				select (xp.reference1) from tb_transaction_master_detail_credit xp
 				where xp.transactionMasterID = tx.transactionMasterID ),'*******'
-
 		) as LayPasoAnteMi,
-
 		IFNULL((
-
-				select (xp.reference3) from tb_transaction_master_detail_credit xp 
-
+				select (xp.reference3) from tb_transaction_master_detail_credit xp
 				where xp.transactionMasterID = tx.transactionMasterID ),'*******'
-
 		) as LayPrimerLineaProtocolo,
-
 		IFNULL((
-
-				select (xpz.itemNameLog) from tb_transaction_master_detail xpz 
-
+				select (xpz.itemNameLog) from tb_transaction_master_detail xpz
 				where xpz.transactionMasterID = tx.transactionMasterID ),'*******'
-
 		) as productNameLog
-
-	from 
-
+	from
 		(
-
-			SELECT 
-
+			SELECT
 				zon.`name` as Zona,
-
 				tmx.numberPhone as phoneNumberTransactionMaster,
-
 				tmi.referenceClientIdentifier,
-
 				tmi.referenceClientName,
-
 				cu.birthDate,
-
 				cu.phoneNumber,
-
 				cu.reference1 as lugarTrabajo,
-
 				tmx.transactionMasterID,
-
 				c.companyID,
-
 				leg.legalName,
-
 				cu.identification,
-
 				leg.address,
-
 				c.dateOn,
-
 				c.term,
-
 				tmx.amount as amountTotal,
-
 				tmx.createdOn,
-
 				now() as curridate,
-
 				amori.share,
-
 				amori.dateApply,
-
-				cur.name as currencyName ,		
-
+				cur.name as currencyName ,
 				ci2.name as sexo,
-
 				ci1.name as period,
-
 				estadoCivil.display as estadoCivil,
-
 				profesion.display as profesion,
-
 				IF(c.currencyID = currencyID_,amori.share * c.exchangeRate,amori.share / c.exchangeRate  ) AS shareDolares,
-
 				CONCAT(natProv.firstName , ' ',natProv.lastName ) as NombreProveedor,
-
 				pro.numberIdentification as CedulaProveedor,
-
 				pro.address as DireccionProveedor ,
-
 				cu.location as Domicilio,
-
 				firma.display as typeFirmaCustomer,
-
 				'Ilegible' as typeFirmaProvider,
-
 				c.documentNumber ,
-
 				tmi.receiptAmount,
-
 				(select xl.note from tb_transaction_master xl where xl.transactionNumber = c.documentNumber limit 1) as Concepto,
-
-				( select 
-
+				( select
 					sum(xmld.quantity)
-
-					from 
-
-					tb_transaction_master_detail xmld 
-
-					where xmld.transactionMasterID = tmx.transactionMasterID and xmld.isActive = 1  
-
+					from
+					tb_transaction_master_detail xmld
+					where xmld.transactionMasterID = tmx.transactionMasterID and xmld.isActive = 1
 				) as CantidadProductos
-
-			FROM 
-
-				tb_customer_credit_document c 
-
-				inner join tb_transaction_master tmx on 
-
-					c.companyID = tmx.companyID and 
-
-					c.documentNumber = tmx.transactionNumber and 
-
-					c.entityID = tmx.entityID 
-
-				inner join tb_provider pro on 
-
-					c.providerIDCredit = pro.entityID 
-
-				inner join tb_naturales natProv on 
-
-					pro.entityID = natProv.entityID 
-
-				inner join tb_currency cur on 
-
-					tmx.currencyID = cur.currencyID 
-
-				inner join tb_customer_credit_line l on 
-
-					c.customerCreditLineID = l.customerCreditLineID 
-
-				inner join tb_customer cu on 
-
-					l.entityID = cu.entityID and 
-
-					l.companyID = cu.companyID 
-
-				inner join tb_naturales nat on 
-
-					cu.entityID = nat.entityID and 
-
+			FROM
+				tb_customer_credit_document c
+				inner join tb_transaction_master tmx on
+					c.companyID = tmx.companyID and
+					c.documentNumber = tmx.transactionNumber and
+					c.entityID = tmx.entityID
+				inner join tb_provider pro on
+					c.providerIDCredit = pro.entityID
+				inner join tb_naturales natProv on
+					pro.entityID = natProv.entityID
+				inner join tb_currency cur on
+					tmx.currencyID = cur.currencyID
+				inner join tb_customer_credit_line l on
+					c.customerCreditLineID = l.customerCreditLineID
+				inner join tb_customer cu on
+					l.entityID = cu.entityID and
+					l.companyID = cu.companyID
+				inner join tb_naturales nat on
+					cu.entityID = nat.entityID and
 					cu.companyID = nat.companyID
-
-				inner join tb_legal leg on 
-
-					nat.entityID = leg.entityID  and 
-
-					nat.companyID = leg.companyID 
-
-				inner join tb_entity ent on 
-
-					leg.entityID = ent.entityID and 
-
-					leg.companyID = ent.companyID 
-
-				inner join tb_customer_credit_amoritization amori on 
-
-					c.customerCreditDocumentID = amori.customerCreditDocumentID 
-
-				inner join tb_workflow_stage ws1 on 
-
-					l.statusID = ws1.workflowStageID 
-
-				inner join tb_workflow_stage ws2 on 
-
-					c.statusID = ws2.workflowStageID 
-
-				inner join tb_workflow_stage ws3 on 
-
-					amori.statusID = ws3.workflowStageID 
-
-				inner join tb_catalog_item ci1 on 
-
-					l.periodPay = ci1.catalogItemID 
-
-				inner join tb_catalog_item ci2 on 
-
-					cu.sexoID = ci2.catalogItemID 
-
-				inner join tb_catalog_item estadoCivil on 
-
-					estadoCivil.catalogItemID = nat.statusID 
-
+				inner join tb_legal leg on
+					nat.entityID = leg.entityID  and
+					nat.companyID = leg.companyID
+				inner join tb_entity ent on
+					leg.entityID = ent.entityID and
+					leg.companyID = ent.companyID
+				inner join tb_customer_credit_amoritization amori on
+					c.customerCreditDocumentID = amori.customerCreditDocumentID
+				inner join tb_workflow_stage ws1 on
+					l.statusID = ws1.workflowStageID
+				inner join tb_workflow_stage ws2 on
+					c.statusID = ws2.workflowStageID
+				inner join tb_workflow_stage ws3 on
+					amori.statusID = ws3.workflowStageID
+				inner join tb_catalog_item ci1 on
+					l.periodPay = ci1.catalogItemID
+				inner join tb_catalog_item ci2 on
+					cu.sexoID = ci2.catalogItemID
+				inner join tb_catalog_item estadoCivil on
+					estadoCivil.catalogItemID = nat.statusID
 				inner join tb_catalog_item profesion on
-
-				 	profesion.catalogItemID = nat.profesionID 
-
-				inner join tb_catalog_item firma on 
-
+				 	profesion.catalogItemID = nat.profesionID
+				inner join tb_catalog_item firma on
 					cu.typeFirm = firma.catalogItemID
-
-				inner join tb_transaction_master_info tmi on 
-
-							tmi.transactionMasterID = tmx.transactionMasterID 
-
-				inner join tb_catalog_item zon on 
-
-					zon.catalogItemID = tmi.zoneID 
-
+				inner join tb_transaction_master_info tmi on
+							tmi.transactionMasterID = tmx.transactionMasterID
+				inner join tb_catalog_item zon on
+					zon.catalogItemID = tmi.zoneID
 			where
-
-				c.companyID = prCompanyID and 
-
-				c.documentNumber = prDocumentNumber and 
-
-				(	
-
+				c.companyID = prCompanyID and
+				c.documentNumber = prDocumentNumber and
+				(
 			   	((c.providerIDCredit = fn_get_provider_id (prCompanyID,prUserID)) and (fn_get_provider_id (prCompanyID,prUserID) != 0))
-
-					or 
-
+					or
 					(fn_get_provider_id (prCompanyID,prUserID) = 0 )
-
 				)
-
-		) tx 
-
-	group by 
-
+		) tx
+	group by
 		tx.legalName,
-
 		tx.identification,
-
 		tx.address,
-
 		tx.dateOn,
-
 		tx.curridate,
-
 		tx.currencyName,
-
 		tx.sexo,
-
 		tx.term,
-
 		tx.period,
-
 		tx.createdOn,
-
 		tx.NombreProveedor,
-
 		tx.CedulaProveedor,
-
 		tx.DireccionProveedor,
-
 		tx.estadoCivil,
-
 		tx.profesion,
-
 		tx.Domicilio,
-
 		tx.typeFirmaCustomer,
-
 		tx.typeFirmaProvider,
-
 		tx.phoneNumber,
-
 		tx.lugarTrabajo,
-
 		tx.birthDate,
-
 		tx.CantidadProductos,
-
 		tx.phoneNumberTransactionMaster,
-
 		tx.referenceClientIdentifier,
-
 		tx.referenceClientName,
-
-		tx.Zona; 
-
-		
+		tx.Zona;
 
 END
 ;;
@@ -28610,7 +28465,14 @@ BEGIN
 				i.companyID = prCompanyID and 
 				(
 					(
-						prWarehouseID = 0 
+						prWarehouseID = 0 and 
+						iw.warehouseID IN 
+						( 
+							select c.warehouseID 
+							from tb_user_warehouse c 
+							where c.userID = prUserID
+						)
+						
 					)
 					or 
 					(
@@ -28891,7 +28753,10 @@ BEGIN
 	WHERE
 		i.isActive = 1 AND 
 		i.companyID = prCompanyID and 
-		i.quantity <= 0 
+		i.quantity <= 0 AND 
+		w.warehouseID in (
+				select c.warehouseID from tb_user_warehouse c where c.userID = prUserID
+		)
 	ORDER BY 
 		ic.`name` , i.`name`; 
 END
@@ -28908,79 +28773,43 @@ CREATE PROCEDURE `pr_inventory_get_report_list_item_width_exists`(IN `prUserID` 
   SQL SECURITY INVOKER
   COMMENT 'Lista de Productos'
 BEGIN
-
 	SELECT 
-
 		i.itemNumber,
-
 		case 
-
 			when comp.flavorID = 309  then 
-
 				CONCAT(i.`name`,' ',i.barCode)
-
 			else 
-
 				i.name 
-
 		end as itemName,
-
 		cat.`name` as categoryName, 
-
 		ciu.name as unitMeasure,
-
 		ic.name as categoryName,
-
 		i.quantity as quantity,
-
 		i.cost as cost,
-
 		(select pp.price from tb_price pp where pp.itemID = i.itemID limit 1) as price,
-
 		w.`name` as warehouseName
-
 	FROM 
-
 		tb_item i
-
 		inner join tb_workflow_stage ws on 
-
 			i.statusID = ws.workflowStageID 
-
 		inner join tb_catalog_item ciu on 
-
 			i.unitMeasureID = ciu.catalogItemID 
-
 		inner join tb_item_category ic on 
-
 			i.inventoryCategoryID = ic.inventoryCategoryID 
-
 		inner join tb_warehouse w on 
-
 			w.warehouseID = i.defaultWarehouseID 		
-
 		inner join tb_item_category cat on 
-
 			i.inventoryCategoryID = cat.inventoryCategoryID 
-
 		inner join tb_company comp on 
-
 			comp.companyID = i.companyID 
-
 		
-
 	WHERE
-
 		i.isActive = 1 AND 
-
 		i.companyID = prCompanyID and 
-
-		i.quantity > 0 
-
+		i.quantity > 0 and 
+		w.warehouseID iN (select c.warehouseID from tb_user_warehouse c where c.userID = prUserID	)
 	ORDER BY 
-
 		ic.`name` , i.`name`; 
-
 END
 ;;
 delimiter ;
@@ -28998,15 +28827,42 @@ BEGIN
 	declare minItemID int default 0;
 	declare maxItemID int default 0;
 	declare minKardexID int default 0; 
+	declare initialKardexID int default 0;
 	declare newCost decimal(19,9)		 default 0;
 	declare newQuantity decimal(19,9) default 0;
 	declare itemName varchar(500) default '';
 	declare itemNumber varchar(50) default ''; 
+
+	-- ============================================================
+	-- VARIABLES INTERNAS DE CONFIGURACION / DEPURACION
+	-- ------------------------------------------------------------
+	-- varItemID  : Si es distinto de 0, TODO el procedimiento se
+	--              enfoca unicamente en ese itemID (calculo, inserts,
+	--              recorrido y resultado final). Si es 0, procesa
+	--              todos los productos como de costumbre.
+	-- varDebugLog: Si es 1, inserta trazas de depuracion en tb_log.
+	--              Si es 0, no registra nada en el log.
+	-- ============================================================
+	declare varItemID int default 0;
+	declare varDebugLog int default 0;
 	 
-	set minItemID = (select min(i.itemID) from tb_item i where i.companyID = prCompanyID and i.isActive = 1 and IFNULL(i.isServices,0) = 0 );
-	set maxItemID = (select max(i.itemID) from tb_item i where i.companyID = prCompanyID and i.isActive = 1 and IFNULL(i.isServices,0) = 0 );
+	-- Rango de itemID a recorrer. Si varItemID <> 0 se limita a ese producto.
+	if varItemID <> 0 then
+		set minItemID = varItemID;
+		set maxItemID = varItemID;
+	else
+		set minItemID = (select min(i.itemID) from tb_item i where i.companyID = prCompanyID and i.isActive = 1 and IFNULL(i.isServices,0) = 0 );
+		set maxItemID = (select max(i.itemID) from tb_item i where i.companyID = prCompanyID and i.isActive = 1 and IFNULL(i.isServices,0) = 0 );
+	end if;
+
+	if varDebugLog = 1 then
+		insert into tb_log (companyID,branchID,loginID,token,procedureName,code,description,createdOn)
+		values (prCompanyID,0,prUserID,IFNULL(prTokenID,'0'),'pr_inventory_get_report_master_kardex',0,
+			concat('INICIO. varItemID=',varItemID,' minItemID=',IFNULL(minItemID,-1),' maxItemID=',IFNULL(maxItemID,-1),
+				' prWarehouseID=',prWarehouseID,' prStartOn=',IFNULL(prStartOn,''),' prEndOn=',IFNULL(prEndOn,'')),now());
+	end if;
 		
-  delete  from tb_master_kardex_temp  where userID = prUserID;
+	delete  from tb_master_kardex_temp  where userID = prUserID;
 	
 	
 	insert into tb_master_kardex_temp (
@@ -29037,7 +28893,8 @@ BEGIN
 	  IFNULL(i.isServices,0) = 0 and 
 		k.companyID = prCompanyID and 
 		k.movementOn between prStartOn and  prEndOn and 
-		((k.warehouseID = prWarehouseID  and prWarehouseID <> 0) or (prWarehouseID = 0))
+		((k.warehouseID = prWarehouseID  and prWarehouseID <> 0) or (prWarehouseID = 0)) and
+		(varItemID = 0 or i.itemID = varItemID)
 	group by 
 		prUserID,
 		prTokenID,
@@ -29045,6 +28902,12 @@ BEGIN
 		i.itemID,
 		i.itemNumber,
 		i.name;
+
+	if varDebugLog = 1 then
+		insert into tb_log (companyID,branchID,loginID,token,procedureName,code,description,createdOn)
+		values (prCompanyID,0,prUserID,IFNULL(prTokenID,'0'),'pr_inventory_get_report_master_kardex',1,
+			concat('INSERT 1 (con movimiento en rango) filas=',row_count()),now());
+	end if;
 
 	
 	insert into tb_master_kardex_temp (
@@ -29070,71 +28933,89 @@ BEGIN
 	  IFNULL(i.isServices,0) = 0 and 
 		i.companyID = prCompanyID and 
 		i.isActive = 1 and 
+		(varItemID = 0 or i.itemID = varItemID) and
 		i.itemID not in (select k.itemID from tb_master_kardex_temp k where k.userID = prUserID and k.companyID = prCompanyID);
+
+	if varDebugLog = 1 then
+		insert into tb_log (companyID,branchID,loginID,token,procedureName,code,description,createdOn)
+		values (prCompanyID,0,prUserID,IFNULL(prTokenID,'0'),'pr_inventory_get_report_master_kardex',2,
+			concat('INSERT 2 (sin movimiento en rango) filas=',row_count()),now());
+	end if;
 		
 		
 			
 	while minItemID <= maxItemID and minItemID is not null do 	
 		
-				
-				if exists (
-					select  p.itemID from tb_master_kardex_temp p 
-					where p.companyID = prCompanyID and p.itemID = minItemID and userID = prUserID and p.minKardexID <> 0  
-				) 
-				then 
-						set newQuantity = 0;
-						set newCost 	 = 0;
-						set minKardexID 	= (
-																	select min(c.minKardexID) 
-																	from tb_master_kardex_temp c 
-																	where c.itemID = minItemID and c.companyID = prCompanyID and c.userID = prUserID
-																);
-						set minKardexID	= (
-																select max(p.kardexID) 
-																from tb_kardex p 
-																where 
-																	p.companyID = prCompanyID and p.itemID = minItemID 
-																	and p.kardexID < minKardexID and 
-																		(
-																			(p.warehouseID = prWarehouseID  and prWarehouseID <> 0) or (prWarehouseID = 0)
-																		)  
-															); 
-						
-						select 
-							p.newCost,p.newQuantity into newCost,newQuantity 
-						from 
-							tb_kardex p where p.kardexID = minKardexID;
-							
-						update tb_master_kardex_temp set quantityInicial =  newQuantity, costInicial = (newCost * newQuantity) 
-						where 
-							companyID = prCompanyID and itemID = minItemID and userID = prUserID;
-				else
-				
-						set newQuantity = 0;
-						set newCost 	 = 0;
-					
-						set minKardexID = (
-																select max(p.kardexID) 
-																from tb_kardex p 
-																where 
-																	p.companyID = prCompanyID and p.itemID = minItemID and p.movementOn < prStartOn and 
-																	(
-																		(p.warehouseID = prWarehouseID  and prWarehouseID <> 0) or (prWarehouseID = 0)
-																	) 
-															); 
-						select p.newCost,p.newQuantity into newCost,newQuantity from tb_kardex p where p.kardexID = minKardexID;
-						
-						update tb_master_kardex_temp set 
-							quantityInicial =  newQuantity, costInicial = (newCost * newQuantity),minKardexID = IFNULL(minKardexID,0)  
-						where 
-							companyID = prCompanyID and itemID = minItemID and userID = prUserID;
-											
+				-- Reiniciar variables por cada producto
+				set newQuantity     = 0;
+				set newCost         = 0;
+				set minKardexID     = 0;
+				set initialKardexID = 0;
+
+				-- 1) Determinar el kardex de referencia para el SALDO INICIAL.
+				--    El saldo inicial es SIEMPRE el ultimo movimiento ANTERIOR a la
+				--    fecha inicial del reporte (prStartOn), sin importar si el
+				--    producto tuvo o no movimiento dentro del rango de fechas.
+				set initialKardexID = (
+					select p.kardexID
+					from tb_kardex p
+					where
+						p.companyID = prCompanyID and
+						p.itemID    = minItemID and
+						p.movementOn < prStartOn and
+						(
+							(p.warehouseID = prWarehouseID and prWarehouseID <> 0) or (prWarehouseID = 0)
+						)
+					order by p.movementOn desc, p.kardexID desc
+					limit 1
+				);
+
+				-- 2) Si existe un movimiento anterior, tomar su saldo (newQuantity/newCost).
+				if initialKardexID is not null and initialKardexID <> 0 then
+					select p.newQuantity, p.newCost
+					into newQuantity, newCost
+					from tb_kardex p
+					where p.kardexID = initialKardexID;
 				end if;
-				
-				set minItemID 		= (
-																select min(i.itemID) from tb_item i where i.isActive = 1 and i.companyID = prCompanyID and i.itemID > minItemID and IFNULL(i.isServices,0) = 0 
-														);
+
+				-- 3) Guardar el saldo inicial y el kardex de referencia.
+				update tb_master_kardex_temp set
+					quantityInicial = newQuantity,
+					costInicial     = (newCost * newQuantity),
+					minKardexID     = IFNULL(initialKardexID, 0)
+				where
+					companyID = prCompanyID and
+					itemID    = minItemID and
+					userID    = prUserID;
+
+				if varDebugLog = 1 then
+					insert into tb_log (companyID,branchID,loginID,token,procedureName,code,description,createdOn)
+					values (prCompanyID,0,prUserID,IFNULL(prTokenID,'0'),'pr_inventory_get_report_master_kardex',3,
+						concat('WHILE itemID=',minItemID,' initialKardexID=',IFNULL(initialKardexID,0),
+							' quantityInicial=',newQuantity,' costInicial=',(newCost * newQuantity)),now());
+				end if;
+
+				-- Avanzar al siguiente producto (si esta enfocado en un solo itemID, termina el ciclo)
+				if varItemID <> 0 then
+					set minItemID = null;
+				else
+					set minItemID = (
+						select min(i.itemID)
+						from tb_item i
+						where
+							i.isActive = 1 and
+							i.companyID = prCompanyID and
+							i.itemID > minItemID and
+							IFNULL(i.isServices,0) = 0
+					);
+				end if;
 	end while;
+
+	if varDebugLog = 1 then
+		insert into tb_log (companyID,branchID,loginID,token,procedureName,code,description,createdOn)
+		values (prCompanyID,0,prUserID,IFNULL(prTokenID,'0'),'pr_inventory_get_report_master_kardex',9,
+			concat('FIN. Registros en temp=',(select count(*) from tb_master_kardex_temp where userID = prUserID)),now());
+	end if;
 		
 	select 
 		* 
@@ -32607,7 +32488,6 @@ BEGIN
 	set @sql = concat("insert into tb_tmp_split (val) values ('", replace(prConceptFilter, ",", "'),('"),"');");
 	prepare stmt1 from @sql;
 	execute stmt1;
-  
 
 	select 
 			rx.userID,
@@ -32629,17 +32509,11 @@ BEGIN
 			rx.exchangeRate,
 			rx.transactionID,
 			
-			/* -------------------------------------------------------
-			   Los montos de pago vienen de tmi_pay (una fila por 
-			   transaccion via LEFT JOIN), NO del detalle de productos.
-			   Por eso se usan los valores directos de tmi_pay sin SUM.
-			   ------------------------------------------------------- */
-			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmount,    rx.receiptAmountDol,    'Amount'),    DECIMAL(10,2)) as EfectivoCordoba,
-			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmount,    rx.receiptAmountDol,    'AmountExt'),  DECIMAL(10,2)) as EfectivoDolares,
 			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountCard, rx.receiptAmountCardDol, 'Amount'),    DECIMAL(10,2)) as TarjetaCordoba,
 			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountCard, rx.receiptAmountCardDol, 'AmountExt'),  DECIMAL(10,2)) as TarjetaDolares,
 			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountBank, rx.receiptAmountBankDol, 'Amount'),    DECIMAL(10,2)) as TansferenciaCordoba,
 			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountBank, rx.receiptAmountBankDol, 'AmountExt'),  DECIMAL(10,2)) as TransferenciaDolares,
+			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmount,    rx.receiptAmountDol,    'AmountExt'),  DECIMAL(10,2)) as EfectivoDolares,
 			rx.receiptAmountPoint as receiptAmountPoint, 
 			IFNULL(AVG(rx.discount),0) as discount, 
 			sum((rx.unitaryCost * rx.quantity)) as cost,
@@ -32657,15 +32531,41 @@ BEGIN
 								(rx.iva * rx.quantity ) + 
 								( ifnull(rx.tax2,0) * 1 ) 
 							) - 
-						rx.receiptAmountPoint - 
-						CASE 
-						  WHEN rx.statusName = 'ANULADA' THEN 0
-							ELSE 
-								IFNULL(AVG(rx.discount),0)
-						END 
+						rx.receiptAmountPoint
 					), 0,  'Convert'
 				) , DECIMAL(10,2)
 			)  as totalDocument,
+			
+			CONVERT(
+				GREATEST(
+					0,
+					CONVERT(
+						fn_translate_transaction_master_info_amounts( 
+							prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, 
+							(
+								sum(
+										(rx.unitaryPrice * rx.quantity) + 
+										(rx.iva * rx.quantity ) + 
+										( ifnull(rx.tax2,0) * 1 ) 
+									) - 
+								rx.receiptAmountPoint - 
+								CASE 
+								  WHEN rx.statusName = 'ANULADA' THEN 0
+									ELSE 
+										IFNULL(AVG(rx.discount),0)
+								END 
+							), 0,  'Convert'
+						) , DECIMAL(10,2)
+					)
+					-
+					CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountCard, rx.receiptAmountCardDol, 'Amount'),    DECIMAL(10,2))
+					-
+					CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountBank, rx.receiptAmountBankDol, 'Amount'),    DECIMAL(10,2))
+					-
+					( CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmount,    rx.receiptAmountDol,    'AmountExt'),  DECIMAL(10,2)) * rx.exchangeRate )
+				),
+				DECIMAL(10,2)
+			) as EfectivoCordoba,
 			sum((rx.unitaryPrice * rx.quantity) - (rx.unitaryCost * rx.quantity)) as utilidad		
 	from
 		(
@@ -32705,15 +32605,6 @@ BEGIN
 					ci.name as zone,
 					tm.tax2 as tax2,
 					
-					/* 
-					   CORRECCION: los campos de pago se traen UNA sola vez
-					   por transaccionMasterID desde tb_transaction_master_info.
-					   Al existir multiples filas en tb_transaction_master_detail
-					   por cada factura, hacer SUM() sobre estos campos los
-					   multiplicaba por la cantidad de productos. 
-					   La solucion es usar MAX() que devuelve el valor unico
-					   del campo sin multiplicarlo por el numero de detalles.
-					*/
 					MAX(tmi.receiptAmount)      AS receiptAmount,
 					MAX(tmi.receiptAmountDol)   AS receiptAmountDol,
 					MAX(tmi.receiptAmountCard)  AS receiptAmountCard,
@@ -32768,9 +32659,9 @@ BEGIN
 						when varCurrencyCompras = varCurrencyReporte  then 				
 							tmd.unitaryCost
 						when tm.exchangeRate > 1 then 
-							tm.exchangeRate *  tmd.unitaryCost														
-						else 								
-						  (1/tm.exchangeRate) *   tmd.unitaryCost							
+							tm.exchangeRate *  tmd.unitaryCost											
+						else 							
+						  (1/tm.exchangeRate) *   tmd.unitaryCost			
 					end  unitaryCost ,
 					IFNULL(tmd.tax1,0) as  iva ,
 					IFNULL(tmd.amountCommision,0) as amountCommision,
@@ -32865,30 +32756,30 @@ BEGIN
 					and 
 					(
 					(
-  							tm.transactionID = 19 and 
-								DATE_ADD(tm.createdOn, INTERVAL varZoneOraria HOUR)  between prStartOn and prEndOn and 								ws.aplicable = 1  
-							)
-							or 
-							(
-								tm.transactionID = 19 and 
-								ws.eliminable = 0 and 
-								DATE_ADD(tm.createdOn, INTERVAL varZoneOraria HOUR) between prStartOn and prEndOn  and 
-								DATE_ADD(tm.statusIDChangeOn, INTERVAL varZoneOraria HOUR) between prStartOn and prEndOn 
-							)
-							or 
-							(
-	  						tm.transactionID = 19 and 
-								ws.eliminable = 0 and 								
-								DATE_ADD(tm.createdOn, INTERVAL varZoneOraria HOUR) between prStartOn and prEndOn  and 
-								DATE_ADD(tm.statusIDChangeOn, INTERVAL varZoneOraria HOUR) > prEndOn 
-  						)
-							or 							
-							(
-								tm.transactionID = 19 and 
-								ws.eliminable = 0 and 
-								DATE_ADD(tm.createdOn, INTERVAL varZoneOraria HOUR) < prStartOn  and 
-								DATE_ADD(tm.statusIDChangeOn, INTERVAL varZoneOraria HOUR) between prStartOn and prEndOn 
-							)						
+  						tm.transactionID = 19 and 
+							DATE_ADD(tm.createdOn, INTERVAL varZoneOraria HOUR)  between prStartOn and prEndOn and 				ws.aplicable = 1  
+						)
+						or 
+						(
+							tm.transactionID = 19 and 
+							ws.eliminable = 0 and 
+							DATE_ADD(tm.createdOn, INTERVAL varZoneOraria HOUR) between prStartOn and prEndOn  and 
+							DATE_ADD(tm.statusIDChangeOn, INTERVAL varZoneOraria HOUR) between prStartOn and prEndOn 
+						)
+						or 
+						(
+	  					tm.transactionID = 19 and 
+							ws.eliminable = 0 and 				
+							DATE_ADD(tm.createdOn, INTERVAL varZoneOraria HOUR) between prStartOn and prEndOn  and 
+							DATE_ADD(tm.statusIDChangeOn, INTERVAL varZoneOraria HOUR) > prEndOn 
+  					)
+						or 						
+						(
+							tm.transactionID = 19 and 
+							ws.eliminable = 0 and 
+							DATE_ADD(tm.createdOn, INTERVAL varZoneOraria HOUR) < prStartOn  and 
+							DATE_ADD(tm.statusIDChangeOn, INTERVAL varZoneOraria HOUR) between prStartOn and prEndOn 
+						)					
 					) 
 				group by
 					usr.userID,

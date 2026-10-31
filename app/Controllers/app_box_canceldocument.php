@@ -84,6 +84,17 @@ class app_box_canceldocument extends _BaseController {
 			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMaster"]->transactionOn 	= date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");
+
+			//Saldo de cada documento (tope del monto en pantalla); si la cancelacion ya se aplico, el tope incluye el monto guardado
+			$isAppliedCancelInvoice								= $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_cancel_invoice","statusID",$dataView["objTransactionMaster"]->statusID,COMMAND_APLICABLE,$companyID,$branchID,$roleID);
+			if($dataView["objTransactionMasterDetail"])
+			foreach($dataView["objTransactionMasterDetail"] as $key => $value){
+				$value->balance									= "";
+				$objCustomerCreditDocumentBalance				= $this->Customer_Credit_Document_Model->get_rowByPK($value->componentItemID);
+				if($objCustomerCreditDocumentBalance && $objCustomerCreditDocumentBalance->companyID == $companyID)
+				$value->balance									= $isAppliedCancelInvoice ? ($objCustomerCreditDocumentBalance->balance + $value->amount) : $objCustomerCreditDocumentBalance->balance;
+			}
+
 			$dataView["objComponentCustomerCreditDocument"]		= $objComponentCustomerCreditDocument;
 			$dataView["objComponentTransactionCancelInvoice"]	= $objComponentTransactionCancelInvoice;
 			$dataView["objComponentCustomer"]					= $objComponentCustomer;
@@ -95,7 +106,8 @@ class app_box_canceldocument extends _BaseController {
 			$dataView["roleName"]				= $dataSession["role"]->name;
 			$dataView["branchID"]				= $dataSession["branch"]->branchID;
 			$dataView["branchName"]				= $dataSession["branch"]->name;
-			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
+			$dataView["useMobile"]				= $dataSession["user"]->useMobile;
+			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);
 			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_cancel_invoice","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
 			$dataView["objCustomerDefault"]		= $this->Customer_Model->get_rowByEntity($companyID,$dataView["objTransactionMaster"]->entityID);
 			$dataView["objNaturalDefault"]		= $this->Natural_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
@@ -808,8 +820,9 @@ class app_box_canceldocument extends _BaseController {
 			$dataView["roleName"]				= $dataSession["role"]->name;
 			$dataView["branchID"]				= $dataSession["branch"]->branchID;
 			$dataView["branchName"]				= $dataSession["branch"]->name;
-			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
-			
+			$dataView["useMobile"]				= $dataSession["user"]->useMobile;
+			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);
+
 			$dataView["objComponentCustomer"]				= $objComponentCustomer;
 			$dataView["objComponentCustomerCreditDocument"]	= $objComponentCustomerCreditDocument;
 			$dataView["objCaudal"]							= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);			

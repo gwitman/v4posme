@@ -167,7 +167,11 @@ class financial_amort{
 		 $this->dayDesplazados							= 	0;
 		 
 	}
-	function getPmtValueAleman($pv,$n,$i){ 
+	function getPmtValueAleman($pv,$n,$i){
+		//Tasa 0: amortizacion lineal, evita la division entre cero
+		if($i == 0)
+			return $pv / $n;
+
 		$pmt = (($pv* $i) / (1-( pow((1 - $i),$n))));
 		return $pmt;
 	}
@@ -203,6 +207,84 @@ class financial_amort{
 			'rango' => $enRango,
 			'valor' => number_format($decimal, 2, '.', '')
 		];
+	}
+	//Devuelve la parte decimal del plazo (ej. 50.666 => 0.666).
+	//Si la fraccion es <= 0.001 se considera plazo entero y devuelve 0.
+	function getFraccionPlazo($numberPay)
+	{
+		$numero		= (float)$numberPay;
+		$fraccion	= round($numero - floor($numero),6);
+		return $fraccion > 0.001 ? $fraccion : 0;
+	}
+	//Plazo que usan las tablas Constante y Francesa.
+	//Si la fraccion es despreciable (<= 0.001) pero el plazo no es entero exacto, se usa floor(n)
+	//(minimo 1 cuota) para que el saldo cierre en la cuota k. En cualquier otro caso devuelve
+	//el valor original sin modificar (plazo entero o con fraccion prorrateable).
+	function getPlazoEfectivo($numberPay)
+	{
+		$numero		= (float)$numberPay;
+		if($this->getFraccionPlazo($numberPay) == 0 && $numero != floor($numero))
+		{
+			$cuotas	= floor($numero);
+			return $cuotas < 1 ? 1 : $cuotas;
+		}
+		return $numberPay;
+	}
+	//Fecha de la cuota fraccionaria: fecha base + round(fraccion * dias del periodo), minimo 1 dia,
+	//corrida al siguiente dia cobrable. Trabaja sobre una copia para no mutar la fecha recibida.
+	function getFechaFraccion($fechaBase,$fraccion,$periodPay)
+	{
+		$fechaReturn	= clone $fechaBase;
+		$dias			= (int)round($fraccion * $periodPay);
+		if($dias < 1)
+			$dias = 1;
+
+		$fechaReturn	= date_add($fechaReturn,date_interval_create_from_date_string($dias.' days'));
+		for($ii = 0 ; $ii <= 10 ; $ii++ )
+		{
+			if($this->fechaEsFeriada($fechaReturn))
+			{
+				$fechaReturn = date_add($fechaReturn,date_interval_create_from_date_string('1 days'));
+			}
+			else
+			{
+				break;
+			}
+		}
+		return $fechaReturn;
+	}
+	//Tasa 0: la cuota $k absorbe la diferencia de redondeo para que la suma del capital
+	//sea igual al monto y el saldo final quede en 0 (tablas con formato sprintf %01.2f)
+	function cerrarCuotaTasaCero($result,$k,$amount)
+	{
+		if(!$result["detail"] || !isset($result["detail"][$k]))
+			return $result;
+
+		$totalPrincipal							= array_sum(array_map('floatval', array_column($result["detail"], "principal")));
+		$principalK								= round(floatval($result["detail"][$k]["principal"]) + round($amount - $totalPrincipal,2),2);
+		$result["detail"][$k]["principal"] 		= sprintf("%01.2f",$principalK) ;
+		$result["detail"][$k]["cuota"] 			= sprintf("%01.2f",$principalK + floatval($result["detail"][$k]["interes"]));
+		$result["detail"][$k]["saldo"] 			= sprintf("%01.2f",0) ;
+		return $result;
+	}
+	//Plazo decimal: recalcula saldoInicial y saldo de las filas $desde..$hasta a partir de los capitales
+	//mostrados, para que encadenen exacto (saldoInicial(t+1) = saldo(t), saldoInicial - capital = saldo).
+	//No cambia capital, interes ni cuota. Formato sprintf %01.2f (tablas Simple y Aleman).
+	function encadenarSaldos($result,$desde,$hasta,$saldoInicial)
+	{
+		$saldoCadena	= round($saldoInicial,2);
+		for($t = $desde ; $t <= $hasta ; $t++ )
+		{
+			if(!isset($result["detail"][$t]))
+				continue;
+
+			$result["detail"][$t]["saldoInicial"] 	= sprintf("%01.2f",$saldoCadena) ;
+			$saldoCadena							= round($saldoCadena - floatval($result["detail"][$t]["principal"]),2);
+			if($saldoCadena == 0)
+				$saldoCadena						= 0; //evita "-0.00"
+			$result["detail"][$t]["saldo"]			= sprintf("%01.2f",$saldoCadena) ;
+		}
+		return $result;
 	}
 	function fechaEsFeriada($fecha)
 	{
@@ -316,9 +398,11 @@ class financial_amort{
 		/*mensual*/
 		else if ($periodPay == 30 )
 		{
-			// Obtener mes y año de la fecha actual
-			$mesBase = (int)date_format($date, 'm');
-			$añoBase = (int)date_format($date, 'Y');
+			// Mes y año base: los de la fecha TEORICA anterior (fecha mostrada menos los dias corridos
+			// por dia no cobrable), para que el corrimiento no arrastre la cuota al mes siguiente
+			$fechaTeorica	= date_sub(clone $date, date_interval_create_from_date_string(((int)$this->dayDesplazados).' days'));
+			$mesBase = (int)date_format($fechaTeorica, 'm');
+			$añoBase = (int)date_format($fechaTeorica, 'Y');
 			
 			// Avanzar un mes
 			$mesSiguiente = $mesBase + 1;
@@ -337,13 +421,22 @@ class financial_amort{
 			
 			// Crear la fecha con el día original
 			$fechaReturn 	= date_create(sprintf('%04d-%02d-%02d', $añoSiguiente, $mesSiguiente, $diaFinal));
-			$esFeriado 		= $this->fechaEsFeriada($fechaReturn);
-			// Si es feriado, mover al siguiente día
-			if($esFeriado)
+			// Mientras no sea dia cobrable, mover al siguiente dia (con tope, como en la rama diaria).
+			// Se guarda el total de dias corridos para calcular la siguiente fecha teorica.
+			$this->dayDesplazados = 0;
+			for($ii = 0 ; $ii <= 10 ; $ii++ )
 			{
-				$fechaReturn = date_add($fechaReturn, date_interval_create_from_date_string('1 days'));
+				if($this->fechaEsFeriada($fechaReturn))
+				{
+					$fechaReturn 			= date_add($fechaReturn, date_interval_create_from_date_string('1 days'));
+					$this->dayDesplazados	= $this->dayDesplazados + 1;
+				}
+				else
+				{
+					break;
+				}
 			}
-			
+
 			return $fechaReturn;
 		}
 		/*diario*/
@@ -387,11 +480,19 @@ class financial_amort{
 		}
 	}
 	
-	function getPmtValueFrances($pv,$n,$i){ 
+	function getPmtValueFrances($pv,$n,$i){
+		//Tasa 0: amortizacion lineal, evita la division entre cero
+		if($i == 0)
+			return $pv / $n;
+
 		$pmt = ($pv * $i*( pow( 1 + $i ,$n )) / ( pow( 1 + $i , $n ) - 1));
 		return $pmt;
 	}
-	function getPmtValueSimple($pv,$n,$i){		
+	function getPmtValueSimple($pv,$n,$i){
+		//Tasa 0: amortizacion lineal, evita la division entre cero
+		if($i == 0)
+			return round($pv / $n,2,PHP_ROUND_HALF_UP);
+
 		$pmt = ($pv * $i*( pow( 1 + $i ,$n )) / ( pow( 1 + $i , $n ) - 1));
 		$pmt = round(($pv + ($pv * ($i) * $n)) / $n,2,PHP_ROUND_HALF_UP); 
 		return $pmt;
@@ -403,7 +504,10 @@ class financial_amort{
 		$result["summary"]["totalCuotas"] 	= 0;
 		$result["summary"]["pagoMensual"] 	= 0;
 		$result["detail"] 					= null;
-		
+
+		//Reiniciar el corrimiento por dias no cobrables (fechas mensuales)
+		$this->dayDesplazados				= 0;
+
 		if ($this->typeAmortization == 194)
 			$result = $this->getTableFrances();
 		else if ($this->typeAmortization == 195)
@@ -424,7 +528,8 @@ class financial_amort{
 	function getTableSimpleNotEmplementable()
 	{
 		$capitalDesembolsado 	= $this->amount;
-		$numeroDePagos		   	= $this->numberPay; 
+		$numeroDePagos		   	= $this->getPlazoEfectivo($this->numberPay);
+		$fraccion				= $this->getFraccionPlazo($this->numberPay);
 		$montoTotalInteres  	= round((($this->rate/100) * $this->amount),2);
 		$montoTotalApagar		= $montoTotalInteres + $capitalDesembolsado ;
 		$montoPorCuota			= round($montoTotalApagar / $numeroDePagos,2);
@@ -471,11 +576,44 @@ class financial_amort{
 			$result["detail"][$i]["saldoInicial"] 	= sprintf("%01.2f",round($balanceInicial,2)) ;
 			$result["detail"][$i]["cpmnt"] 			= 0;
 			$nextDate								= $this->getNextDate($nextDate,$this->periodPay);			
-			$balanceInicial							= $balanceInicial - $amort;			
+			$balanceInicial							= $balanceInicial - $amort;
 			$i++;
 		}
-		
-		
+
+		//Plazo con decimales: cuota k+1 con el capital restante y el interes pactado restante
+		//(el interes total es fijo); el bloque de validacion ajusta los centavos en la cuota k+1
+		if($fraccion > 0)
+		{
+			$k					= (int)floor((float)$numpay);
+			$amort				= round($balance,2);
+			if($amort >= 0.01)
+			{
+				$interes		= round($montoTotalInteres - ($k * round($montoTotalInteres / $numeroDePagos,2)),2);
+				$payment		= $amort + $interes;
+				$fechaFraccion	= $k > 0 ?
+									$this->getFechaFraccion(date_create($result["detail"][$k]["date"]),$fraccion,$this->periodPay) :
+									clone $this->firstDate;
+				$i				= $k + 1;
+
+				$result["detail"][$i]	  				= null;
+				$result["detail"][$i]["pnum"] 			= $i;
+				$result["detail"][$i]["date"] 			= date_format($fechaFraccion,"Y-m-d");
+				$result["detail"][$i]["principal"] 		= sprintf("%01.2f",round($amort,2)) ;
+				$result["detail"][$i]["interes"] 		= sprintf("%01.2f",round($interes,2)) ;
+				$result["detail"][$i]["cuota"] 			= sprintf("%01.2f",round($payment,2));
+				$result["detail"][$i]["saldo"] 			= sprintf("%01.2f",0) ;
+				$result["detail"][$i]["saldoInicial"] 	= sprintf("%01.2f",round($balance,2)) ;
+				$result["detail"][$i]["cpmnt"] 			= 0;
+				$i++;
+			}
+			else if($k > 0)
+			{
+				//El remanente es menor a 0.01: se cierra el saldo en la cuota k (la validacion ajusta capital e interes)
+				$result["detail"][$k]["saldo"] 			= sprintf("%01.2f",0) ;
+			}
+		}
+
+
 		//Validar principal
 		///////////////////////////////////////////////
 		$totalPrincipal 			= array_sum(array_map('floatval', array_column($result["detail"], "principal")));		
@@ -513,7 +651,7 @@ class financial_amort{
 	}
 	function getTableSimple(){
 		$pv 	= $this->amount;
-		$n   	= $this->numberPay; 
+		$n   	= $this->getPlazoEfectivo($this->numberPay);
 		$i  	= ($this->rate / $this->getBaseRatio($this->periodPay)) / 100;		
 		$pmt 	= $this->getPmtValueSimple($pv,$n,$i);
 		
@@ -532,7 +670,7 @@ class financial_amort{
 		
 		
 		$amount		=$this->amount;
-		$numpay		=$this->numberPay; 
+		$numpay		=$n;
 		$rate		=($this->rate / $this->getBaseRatio($this->periodPay));
 		$rate		=$rate/100;
 		$monthly	=$rate;
@@ -567,18 +705,73 @@ class financial_amort{
 			$result["detail"][$i]["saldo"] 			= sprintf("%01.2f",$balance) ;				
 			$result["detail"][$i]["saldoInicial"] 	= sprintf("%01.2f",$balanceInicial) ;
 			$result["detail"][$i]["cpmnt"] 			= 0;
-			$nextDate								= $this->getNextDate($nextDate,$this->periodPay);			
-			
+			$nextDate								= $this->getNextDate($nextDate,$this->periodPay);
+
 			$i++;
 		}
-		
+
+		//Plazo con decimales: cuota k+1 = capital restante + interes simple proporcional (pv * i * fraccion)
+		$fraccion	= $this->getFraccionPlazo($this->numberPay);
+		if($fraccion > 0)
+		{
+			$k					= (int)floor((float)$numpay);
+			//Saldos de las filas 1..k encadenados con los capitales mostrados: el saldo de la fila k
+			//es el capital de la cuota k+1 (= monto - suma de capitales mostrados)
+			$capitalFraccion	= round($amount,2);
+			if($k > 0)
+			{
+				$result				= $this->encadenarSaldos($result,1,$k,$amount);
+				$capitalFraccion	= floatval($result["detail"][$k]["saldo"]);
+			}
+
+			if($capitalFraccion >= 0.01)
+			{
+				$fechaFraccion	= $k > 0 ?
+									$this->getFechaFraccion(date_create($result["detail"][$k]["date"]),$fraccion,$this->periodPay) :
+									clone $this->firstDate;
+				$newInterest	= $monthly*$amount*$fraccion;
+				$cuotaFraccion	= $capitalFraccion + $newInterest;
+				$i				= $k + 1;
+
+				$result["detail"][$i]	  				= null;
+				$result["detail"][$i]["pnum"] 			= $i;
+				$result["detail"][$i]["date"] 			= date_format($fechaFraccion,"Y-m-d");
+				$result["detail"][$i]["principal"] 		= sprintf("%01.2f",$capitalFraccion) ;
+				$result["detail"][$i]["interes"] 		= sprintf("%01.2f",$newInterest) ;
+				$result["detail"][$i]["cuota"] 			= sprintf("%01.2f",$cuotaFraccion);
+				$result["detail"][$i]["saldo"] 			= sprintf("%01.2f",0) ;
+				$result["detail"][$i]["saldoInicial"] 	= sprintf("%01.2f",$capitalFraccion) ;
+				$result["detail"][$i]["cpmnt"] 			= 0;
+				$i++;
+			}
+			else if($k > 0)
+			{
+				//El remanente es menor a 0.01: se cierra el saldo en la cuota k
+				$principalK								= round(floatval($result["detail"][$k]["principal"]) + $capitalFraccion,2);
+				$result["detail"][$k]["principal"] 		= sprintf("%01.2f",$principalK) ;
+				$result["detail"][$k]["cuota"] 			= sprintf("%01.2f",$principalK + floatval($result["detail"][$k]["interes"]));
+				$result["detail"][$k]["saldo"] 			= sprintf("%01.2f",0) ;
+			}
+		}
+
+		//Tasa 0: la ultima cuota absorbe el redondeo y el saldo final queda en 0
+		//(con plazo decimal el cierre lo hace la cuota k+1)
+		if($monthly == 0)
+		{
+			if($fraccion == 0)
+				$result = $this->cerrarCuotaTasaCero($result,$i - 1,$amount);
+
+			$result["summary"]["totalIntest"] 	= 0;
+			$result["summary"]["totalCuotas"] 	= $pv;
+		}
+
 		return $result;
 	}
 	function getTableFrances(){
 	
 		$pv 	= $this->amount;
-		$n   	= $this->numberPay; 
-		$i  	= ($this->rate / $this->getBaseRatio($this->periodPay)) / 100;					
+		$n   	= $this->getPlazoEfectivo($this->numberPay);
+		$i  	= ($this->rate / $this->getBaseRatio($this->periodPay)) / 100;
 		$pmt 	= $this->getPmtValueFrances($pv,$n,$i);
 		
 		
@@ -596,18 +789,19 @@ class financial_amort{
 		
 		
 		$amount		=$this->amount;
-		$numpay		=$this->numberPay; 
+		$numpay		=$n;
 		$rate		=($this->rate / $this->getBaseRatio($this->periodPay));
 		$rate		=$rate/100;
 		$monthly	=$rate;
-		$payment	=(($amount*$monthly)/(1-pow((1+$monthly),-$numpay)));
+		//Tasa 0: amortizacion lineal (principal = round(monto/n,2)), evita la division entre cero
+		$payment	=$monthly == 0 ? round($amount/$numpay,2) : (($amount*$monthly)/(1-pow((1+$monthly),-$numpay)));
 		$total		=$payment*$numpay;
 		$interest	=$total-$amount;
-	
+
 		$balance	=$amount;
 		$i 			=1;
 		$nextDate 	=$this->firstDate;
-			
+
 		while ($i <= $numpay) {
 			$newInterest	= $monthly*$balance;
 			$amort			= $payment-$newInterest;
@@ -623,16 +817,70 @@ class financial_amort{
 			$result["detail"][$i]["saldo"] 			= sprintf("%01.2f",$balance) ;				
 			$result["detail"][$i]["saldoInicial"] 	= sprintf("%01.2f",$balanceInicial) ;
 			$result["detail"][$i]["cpmnt"] 			= 0;
-			$nextDate								= $this->getNextDate($nextDate,$this->periodPay);			
+			$nextDate								= $this->getNextDate($nextDate,$this->periodPay);
 			$i++;
 		}
-		
+
+		//Plazo con decimales: cuota k+1 prorrateada (saldo restante + interes proporcional)
+		$fraccion	= $this->getFraccionPlazo($this->numberPay);
+
+		//Tasa 0 con plazo entero: la ultima cuota absorbe el redondeo y el saldo final queda en 0
+		if($monthly == 0 && $fraccion == 0)
+			$result = $this->cerrarCuotaTasaCero($result,$i - 1,$amount);
+
+		if($fraccion > 0)
+		{
+			$k					= (int)floor((float)$numpay);
+			$totalPrincipal		= $result["detail"] ? array_sum(array_map('floatval', array_column($result["detail"], "principal"))) : 0;
+			$capitalFraccion	= round($amount - $totalPrincipal,2);
+
+			if($capitalFraccion >= 0.01)
+			{
+				$fechaFraccion	= $k > 0 ?
+									$this->getFechaFraccion(date_create($result["detail"][$k]["date"]),$fraccion,$this->periodPay) :
+									clone $this->firstDate;
+				$newInterest	= $monthly*$capitalFraccion*$fraccion;
+				$cuotaFraccion	= $capitalFraccion + $newInterest;
+				$i				= $k + 1;
+
+				$result["detail"][$i]	  				= null;
+				$result["detail"][$i]["pnum"] 			= $i;
+				$result["detail"][$i]["date"] 			= date_format($fechaFraccion,"Y-m-d");
+				$result["detail"][$i]["principal"] 		= sprintf("%01.2f",$capitalFraccion) ;
+				$result["detail"][$i]["interes"] 		= sprintf("%01.2f",$newInterest) ;
+				$result["detail"][$i]["cuota"] 			= sprintf("%01.2f",$cuotaFraccion);
+				$result["detail"][$i]["saldo"] 			= sprintf("%01.2f",0) ;
+				$result["detail"][$i]["saldoInicial"] 	= sprintf("%01.2f",$capitalFraccion) ;
+				$result["detail"][$i]["cpmnt"] 			= 0;
+
+				//Resumen: k cuotas completas + la cuota fraccionaria
+				$result["summary"]["totalIntest"] 		= (($pmt * $k) + $cuotaFraccion) - $pv;
+				$result["summary"]["totalCuotas"] 		= (($pmt * $k) + $cuotaFraccion);
+			}
+			else if($k > 0)
+			{
+				//El remanente es menor a 0.01: se cierra el saldo en la cuota k
+				$principalK								= round(floatval($result["detail"][$k]["principal"]) + $capitalFraccion,2);
+				$result["detail"][$k]["principal"] 		= sprintf("%01.2f",$principalK) ;
+				$result["detail"][$k]["cuota"] 			= sprintf("%01.2f",$principalK + floatval($result["detail"][$k]["interes"]));
+				$result["detail"][$k]["saldo"] 			= sprintf("%01.2f",0) ;
+			}
+		}
+
+		//Tasa 0: sin intereses, el total de cuotas es el monto
+		if($monthly == 0)
+		{
+			$result["summary"]["totalPay"] 		= $payment;
+			$result["summary"]["totalIntest"] 	= 0;
+			$result["summary"]["totalCuotas"] 	= $pv;
+		}
+
 		return $result;
 	}
 	function getTableAleman(){
 		
 		$pv 		= $this->amount;
-		$n   		= $this->numberPay; 
+		$n   		= $this->getPlazoEfectivo($this->numberPay);
 		$i  		= ($this->rate / $this->getBaseRatio($this->periodPay)) / 100;
 		$pmt 		= $this->getPmtValueAleman($pv,$n,$i);
 		$interest 	= $pv*$i;
@@ -645,17 +893,18 @@ class financial_amort{
 		$result["detail"] 					= null;
 		
 		$amount		=$this->amount;
-		$numpay		=$this->numberPay; 
+		$numpay		=$n;
 		$rate		=($this->rate / $this->getBaseRatio($this->periodPay));
 		$rate		=$rate/100;
 		$monthly	=$rate;
-		
-		
-		
+
+
+
 		$Init_interest 	=$monthly*$amount;
 		$Init_parcela 	=$Init_interest;
 		$s 				=(1-$monthly);
-		$payment		=($amount* $monthly) / (1-( pow($s,$numpay)));
+		//Tasa 0: amortizacion lineal (principal = round(monto/n,2)), evita la division entre cero
+		$payment		=$monthly == 0 ? round($amount/$numpay,2) : (($amount* $monthly) / (1-( pow($s,$numpay))));
 		$amort 			=0;
 		$principal 		=$payment;
 		$saldo 			=$amount;
@@ -702,17 +951,80 @@ class financial_amort{
 			$result["detail"][$i]["saldo"] 			= sprintf("%01.2f",$saldo) ;
 			$result["detail"][$i]["saldoInicial"] 	= sprintf("%01.2f",$saldoInicial) ;
 			$result["detail"][$i]["cpmnt"] 			= 0;
-			
+
 			$i++;
 		}
-		
+
+		//Plazo con decimales (interes por adelantado): la fila k cobra el interes del periodo fraccionario
+		//(saldo * tasa * fraccion) y la fila k+1 paga el capital restante con interes 0
+		$fraccion	= $this->getFraccionPlazo($this->numberPay);
+		if($fraccion > 0)
+		{
+			$k					= (int)floor((float)$numpay);
+			//Saldos de las filas 1..k encadenados con los capitales mostrados (la fila 0 no amortiza):
+			//el saldo de la fila k es el capital de la cuota k+1 (= monto - suma de capitales mostrados)
+			$capitalFraccion	= round($amount,2);
+			if($k > 0)
+			{
+				$result				= $this->encadenarSaldos($result,1,$k,$amount);
+				$capitalFraccion	= floatval($result["detail"][$k]["saldo"]);
+			}
+
+			if($capitalFraccion >= 0.01)
+			{
+				//Fila k (con k = 0 es la fila del interes inicial): interes proporcional al periodo fraccionario
+				$interesK								= $monthly*$capitalFraccion*$fraccion;
+				$result["detail"][$k]["interes"] 		= sprintf("%01.2f",$interesK) ;
+				$result["detail"][$k]["cuota"] 			= sprintf("%01.2f",floatval($result["detail"][$k]["principal"]) + $interesK);
+
+				$fechaFraccion	= $this->getFechaFraccion(date_create($result["detail"][$k]["date"]),$fraccion,$this->periodPay);
+				$i				= $k + 1;
+
+				$result["detail"][$i]	  				= null;
+				$result["detail"][$i]["pnum"] 			= $i;
+				$result["detail"][$i]["date"] 			= date_format($fechaFraccion,"Y-m-d");
+				$result["detail"][$i]["principal"]		= sprintf("%01.2f",$capitalFraccion) ;
+				$result["detail"][$i]["interes"] 		= sprintf("%01.2f",0) ;
+				$result["detail"][$i]["cuota"] 			= sprintf("%01.2f",$capitalFraccion);
+				$result["detail"][$i]["saldo"] 			= sprintf("%01.2f",0) ;
+				$result["detail"][$i]["saldoInicial"] 	= sprintf("%01.2f",$capitalFraccion) ;
+				$result["detail"][$i]["cpmnt"] 			= 0;
+				$i++;
+			}
+			else if($k > 0)
+			{
+				//El remanente es menor a 0.01: se cierra el saldo en la cuota k (ultima fila, interes 0)
+				$principalK								= round(floatval($result["detail"][$k]["principal"]) + $capitalFraccion,2);
+				$result["detail"][$k]["principal"] 		= sprintf("%01.2f",$principalK) ;
+				$result["detail"][$k]["interes"] 		= sprintf("%01.2f",0) ;
+				$result["detail"][$k]["cuota"] 			= sprintf("%01.2f",$principalK);
+				$result["detail"][$k]["saldo"] 			= sprintf("%01.2f",0) ;
+			}
+
+			//Resumen a partir del detalle (incluye la fila del interes inicial)
+			$result["summary"]["totalCuotas"] 	= array_sum(array_map('floatval', array_column($result["detail"], "cuota")));
+			$result["summary"]["totalIntest"] 	= array_sum(array_map('floatval', array_column($result["detail"], "interes")));
+		}
+
+		//Tasa 0: la ultima cuota absorbe el redondeo y el saldo final queda en 0
+		//(con plazo decimal el cierre lo hace la cuota k+1)
+		if($monthly == 0)
+		{
+			if($fraccion == 0)
+				$result = $this->cerrarCuotaTasaCero($result,$i - 1,$amount);
+
+			$result["summary"]["totalPay"] 		= $payment;
+			$result["summary"]["totalIntest"] 	= 0;
+			$result["summary"]["totalCuotas"] 	= $pv;
+		}
+
 		return $result;
 	}
 	function getTableAmericano(){
 		$pv 		= $this->amount;
-		$n   		= $this->numberPay; 
+		$n   		= $this->getPlazoEfectivo($this->numberPay);
 		$i  		= ($this->rate / $this->getBaseRatio($this->periodPay)) / 100;
-		$interest 	= $n * $pv * $i;		
+		$interest 	= $n * $pv * $i;
 		
 		$result["summary"]					= null;
 		$result["summary"]["totalPay"] 		= 0;
@@ -722,7 +1034,7 @@ class financial_amort{
 		$result["detail"] 					= null;
 		
 		$amount		=$this->amount;
-		$numpay		=$this->numberPay; 
+		$numpay		=$n;
 		$rate		=($this->rate / $this->getBaseRatio($this->periodPay));
 		$rate		=$rate/100;
 		$monthly	=$rate;
@@ -762,29 +1074,70 @@ class financial_amort{
 			$i++;
 		}
 
+		//Plazo con decimales: las cuotas 1..k son solo interes; la cuota k+1 devuelve el capital completo
+		//mas el interes proporcional (monto * tasa * fraccion). El resumen (n * pv * i) ya incluye la fraccion.
+		$fraccion	= $this->getFraccionPlazo($this->numberPay);
+		if($fraccion > 0 && round($amount,2) >= 0.01)
+		{
+			$k				= (int)floor((float)$numpay);
+			$fechaFraccion	= $k > 0 ?
+								$this->getFechaFraccion(date_create($result["detail"][$k]["date"]),$fraccion,$this->periodPay) :
+								clone $this->firstDate;
+			$newInterest	= $monthly*$amount*$fraccion;
+			$payment		= $amount + $newInterest;
+			$i				= $k + 1;
+
+			$result["detail"][$i]	  				= null;
+			$result["detail"][$i]["pnum"] 			= $i;
+			$result["detail"][$i]["date"] 			= date_format($fechaFraccion,"Y-m-d");
+			$result["detail"][$i]["principal"]		= sprintf("%01.2f",$amount) ;
+			$result["detail"][$i]["interes"] 		= sprintf("%01.2f",$newInterest) ;
+			$result["detail"][$i]["cuota"] 			= sprintf("%01.2f",$payment);
+			$result["detail"][$i]["saldo"] 			= sprintf("%01.2f",0) ;
+			$result["detail"][$i]["saldoInicial"] 	= sprintf("%01.2f",$amount) ;
+			$result["detail"][$i]["cpmnt"] 			= 0;
+		}
+
 		return $result;
-	
+
 	}
 	function getTableConstante(){
 	
 		$pv 		= $this->amount;
-		$n   		= $this->numberPay; 
+		$n   		= $this->getPlazoEfectivo($this->numberPay);
 		$i  		= ($this->rate / $this->getBaseRatio($this->periodPay)) / 100;
-		
+
 		$p 				= $pv/$n;
 		$saldo 			= $pv+$p;
 		$npv 			= 0;
 		$newInterest 	= 0;
 		$Totpay 		= 0;
-		
+
+		//Plazo con decimales: se agrega una cuota k+1 prorrateada si su capital es >= 0.01
+		$fraccion			= $this->getFraccionPlazo($this->numberPay);
+		$cuotasCompletas	= floor((float)$n);
+		$aplicarFraccion	= false;
+		if($fraccion > 0)
+		{
+			$capitalFraccion	= round($pv - ($cuotasCompletas * round(round($pv,2)/$n,2)),2);
+			$aplicarFraccion	= $capitalFraccion >= 0.01;
+		}
+
 		for ($t=1;$t<= $n;$t++ ){
 			$npv			= $saldo-$p ;
 			$newInterest 	= $newInterest+($i*$npv);
 			$saldo 			= $npv;
 			$Totpay 		= $Totpay+$npv;
-			
+
 		}
-		
+
+		//Interes proporcional de la cuota fraccionaria
+		if($aplicarFraccion)
+		{
+			$npv			= $saldo-$p ;
+			$newInterest 	= $newInterest+($i*$npv*$fraccion);
+		}
+
 		
 		$Totint 							=  $newInterest;//total de intereses
 		$Totpay 							=  $pv+$Totint;//total de pago
@@ -799,11 +1152,11 @@ class financial_amort{
 		
 			
 		$amount		=$this->amount;
-		$numpay		=$this->numberPay; 
+		$numpay		=$n;
 		$rate		=($this->rate / $this->getBaseRatio($this->periodPay));
 		$rate		=$rate/100;
 		$monthly	=$rate;
-		$base		=(1-pow((1+$monthly),-$numpay));		
+		$base		=(1-pow((1+$monthly),-$numpay));
 		$payment	=$base == 0 ? ($amount / $numpay) : (($amount*$monthly) / $base);
 		$total		=$payment*$numpay;
 		$interest	=$total-$amount;
@@ -813,17 +1166,24 @@ class financial_amort{
 		$nextDate 	=$this->firstDate;		
 		
 		$cuotaAcumulada	= 0;
+
+		//Ultima cuota donde se cierra el saldo: con plazo entero es $numpay (igual que antes);
+		//con fraccion sin cuota k+1 (capital < 0.01) el cierre se hace en la cuota k
+		$ultimaCuota	= $numpay;
+		if($fraccion > 0 && !$aplicarFraccion)
+			$ultimaCuota = $cuotasCompletas;
+
 		while ($i <= $numpay) {
 			$newInterest	=round(round($monthly,2)*round($saldo,2),2);
 			$principal 		=round(round($amount,2)/$numpay,2);
 			$parcela		=$principal+$newInterest;
 
 			$saldo			=round($saldo-$principal,2) ;
-			$saldoInicial	=$saldo+$principal ;			
+			$saldoInicial	=$saldo+$principal ;
 			$cuotaAcumulada =$cuotaAcumulada + $principal;
-	
-			
-			if($i == $numpay){
+
+
+			if($i == $ultimaCuota){
 				
 				$diferencia = round($cuotaAcumulada - $amount,2);
 				$principal 	= round($principal - $diferencia,2);//principal
@@ -855,11 +1215,36 @@ class financial_amort{
 			$nextDate								= $this->getNextDate($nextDate,$this->periodPay);
 			$i++;
 		}
-		
+
+		//Plazo con decimales: cuota k+1 prorrateada (saldo restante + interes proporcional)
+		if($aplicarFraccion)
+		{
+			$k				= (int)$cuotasCompletas;
+			$fechaFraccion	= $k > 0 ?
+								$this->getFechaFraccion(date_create($result["detail"][$k]["date"]),$fraccion,$this->periodPay) :
+								clone $this->firstDate;
+
+			$principal		= round($amount - $cuotaAcumulada,2);
+			$saldoInicial	= $principal;
+			$newInterest	= round(round($monthly,2)*round($saldoInicial,2)*$fraccion,2);
+			$parcela		= round($principal + $newInterest,2);
+			$i				= $k + 1;
+
+			$result["detail"][$i]	  				= null;
+			$result["detail"][$i]["pnum"] 			= $i;
+			$result["detail"][$i]["date"] 			= date_format($fechaFraccion,"Y-m-d");
+			$result["detail"][$i]["principal"] 		= $principal ;
+			$result["detail"][$i]["interes"] 		= $newInterest ;
+			$result["detail"][$i]["cuota"] 			= $parcela;
+			$result["detail"][$i]["saldo"] 			= 0;
+			$result["detail"][$i]["saldoInicial"] 	= $saldoInicial;
+			$result["detail"][$i]["cpmnt"] 			= 0;
+		}
+
 		return $result;
-		
+
 	}
-	
+
 }
 
 ?>

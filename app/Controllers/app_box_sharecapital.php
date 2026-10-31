@@ -83,6 +83,17 @@ class app_box_sharecapital extends _BaseController {
 			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMaster"]->transactionOn 	= date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");
+
+			//Saldo de cada documento (tope del abono en pantalla); si el abono ya se aplico, el tope incluye el monto guardado
+			$isAppliedShareCapital								= $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_share_capital","statusID",$dataView["objTransactionMaster"]->statusID,COMMAND_APLICABLE,$companyID,$branchID,$roleID);
+			if($dataView["objTransactionMasterDetail"])
+			foreach($dataView["objTransactionMasterDetail"] as $key => $value){
+				$value->balance									= "";
+				$objCustomerCreditDocumentBalance				= $this->Customer_Credit_Document_Model->get_rowByPK($value->componentItemID);
+				if($objCustomerCreditDocumentBalance && $objCustomerCreditDocumentBalance->companyID == $companyID)
+				$value->balance									= $isAppliedShareCapital ? ($objCustomerCreditDocumentBalance->balance + $value->amount) : $objCustomerCreditDocumentBalance->balance;
+			}
+
 			$dataView["objComponentCustomerCreditDocument"]		= $objComponentCustomerCreditDocument;
 			$dataView["objComponentTransactionShareCapital"]	= $objComponentTransactionShareCapital;
 			$dataView["objComponentCustomer"]					= $objComponentCustomer;
@@ -94,7 +105,8 @@ class app_box_sharecapital extends _BaseController {
 			$dataView["roleName"]				= $dataSession["role"]->name;
 			$dataView["branchID"]				= $dataSession["branch"]->branchID;
 			$dataView["branchName"]				= $dataSession["branch"]->name;
-			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
+			$dataView["useMobile"]				= $dataSession["user"]->useMobile;
+			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);
 			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_share_capital","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
 			$dataView["objCustomerDefault"]		= $this->Customer_Model->get_rowByEntity($companyID,$dataView["objTransactionMaster"]->entityID);
 			$dataView["objNaturalDefault"]		= $this->Natural_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
@@ -492,9 +504,13 @@ class app_box_sharecapital extends _BaseController {
 				$this->core_web_notification->set_message(true,$this->db->_error_message());
 				$this->response->redirect(base_url()."/".'app_box_sharecapital/add');	
 			}
-			
+
 		}
-		catch(\Exception $ex){			
+		catch(\Exception $ex){
+			//Deshacer la transaccion abierta (si se llego a iniciar)
+			if(isset($db) && $db)
+				$db->transRollback();
+
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
@@ -675,12 +691,16 @@ class app_box_sharecapital extends _BaseController {
 			else{
 				$db->transRollback();						
 				$this->core_web_notification->set_message(true,$this->db->_error_message());
-				$this->response->redirect(base_url()."/".'app_box_sharecapital/add');	
+				$this->response->redirect(base_url()."/".'app_box_sharecapital/add');
 			}
-			
-			
+
+
 		}
 		catch(\Exception $ex){
+			//Deshacer la transaccion abierta (si se llego a iniciar)
+			if(isset($db) && $db)
+				$db->transRollback();
+
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
@@ -812,8 +832,9 @@ class app_box_sharecapital extends _BaseController {
 			$dataView["roleName"]				= $dataSession["role"]->name;
 			$dataView["branchID"]				= $dataSession["branch"]->branchID;
 			$dataView["branchName"]				= $dataSession["branch"]->name;
-			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
-			
+			$dataView["useMobile"]				= $dataSession["user"]->useMobile;
+			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);
+
 			$dataView["objComponentCustomer"]				= $objComponentCustomer;
 			$dataView["objComponentCustomerCreditDocument"]	= $objComponentCustomerCreditDocument;
 			$dataView["objCaudal"]							= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);			

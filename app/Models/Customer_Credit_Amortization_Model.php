@@ -84,11 +84,26 @@ class Customer_Credit_Amortization_Model extends Model  {
 		$sql = $sql.sprintf(" where i.customerCreditDocumentID = $customerCreditDocumentID");
 		$sql = $sql.sprintf(" and i.isActive= 1");
 		$sql = $sql.sprintf(" and ws.vinculable = 1");
-		$sql = $sql.sprintf(" order by i.creditAmortizationID asc"); 
+		$sql = $sql.sprintf(" order by i.creditAmortizationID asc");
 
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
-   }   
+   }
+   //Ultima cuota activa del documento (pendiente o no); con plazo decimal es la cuota prorrateada
+   function get_rowLastByDocument($customerCreditDocumentID){
+		$db 	= db_connect();
+
+		$sql = "";
+		$sql = sprintf("select i.creditAmortizationID, i.customerCreditDocumentID,i.balanceStart, i.dateApply, i.interest, i.capital, i.`share`, i.balanceEnd, i.remaining, i.dayDelay, i.note, i.statusID, i.isActive,i.shareCapital,i.sequence");
+		$sql = $sql.sprintf(" from tb_customer_credit_amoritization i");
+		$sql = $sql.sprintf(" where i.customerCreditDocumentID = %d",$customerCreditDocumentID);
+		$sql = $sql.sprintf(" and i.isActive= 1");
+		$sql = $sql.sprintf(" order by i.dateApply desc, i.creditAmortizationID desc");
+		$sql = $sql.sprintf(" limit 1");
+
+		//Ejecutar Consulta
+		return $db->query($sql)->getRow();
+   }
    function get_rowByCustomerID($customerID)
    {
 	   

@@ -442,7 +442,9 @@ SET character_set_client = @saved_cs_client;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` FUNCTION `fn_calculate_exchange_rate`(`prCompanyID` INT, `prDate` DATE, `prCurrencySourceID` INT, `prCurrencyTargetID` INT, `prValorToConvert` DECIMAL(21,11)) RETURNS decimal(10,4)
+CREATE DEFINER=`root`@`localhost` FUNCTION `fn_calculate_exchange_rate`(`prCompanyID` INT, `prDate` DATE, `prCurrencySourceID` INT, `prCurrencyTargetID` INT, `prValorToConvert` DECIMAL(21,11))
+ RETURNS decimal(10,4)
+  READS SQL DATA
 BEGIN
 
 	DECLARE currencyIDDefault INT DEFAULT 0;
@@ -451,51 +453,51 @@ BEGIN
 
 	DECLARE currencyIDTarget  INT DEFAULT 0;
 
-	DECLARE ratio_1 DECIMAL(18,8) DEFAULT 1; 
+	DECLARE ratio_1 DECIMAL(18,8) DEFAULT 1;
 
 	DECLARE ratio_2 DECIMAL(18,8) DEFAULT 1;
 
-  
 
-	
+
+
 
 	SET currencyIDDefault = (
 
-		SELECT c.currencyID	
+		SELECT c.currencyID
 
-		FROM tb_parameter p 
+		FROM tb_parameter p
 
-		INNER JOIN tb_company_parameter cp ON p.parameterID = cp.parameterID 
+		INNER JOIN tb_company_parameter cp ON p.parameterID = cp.parameterID
 
-		INNER JOIN tb_currency c ON  cp.value = c.name 
+		INNER JOIN tb_currency c ON  cp.value = c.name
 
-		WHERE p.name = 'ACCOUNTING_CURRENCY_NAME_FUNCTION' and c.isActive = 1 and cp.companyID = prCompanyID LIMIT 1 
+		WHERE p.name = 'ACCOUNTING_CURRENCY_NAME_FUNCTION' and c.isActive = 1 and cp.companyID = prCompanyID LIMIT 1
 
 	);
 
 	SET currencyIDSource  = prCurrencySourceID;
 
-	SET currencyIDTarget  = prCurrencyTargetID;	
+	SET currencyIDTarget  = prCurrencyTargetID;
 
 
 
-	
+
 
 	IF currencyIDSource != currencyIDTarget THEN
 
 		SET ratio_1 = (
 
-				SELECT ratio 
+				SELECT ratio
 
-				FROM tb_exchange_rate e 
+				FROM tb_exchange_rate e
 
-				where 
+				where
 
-					e.companyID = prCompanyID and 
+					e.companyID = prCompanyID and
 
-					e.currencyID = currencyIDSource and 
+					e.currencyID = currencyIDSource and
 
-					e.targetCurrencyID = currencyIDTarget AND 
+					e.targetCurrencyID = currencyIDTarget AND
 
 					e.`date` =  prDate
 
@@ -503,33 +505,33 @@ BEGIN
 
 	END IF;
 
-	
 
 
 
-	  
 
-	
 
-	IF currencyIDSource = currencyIDTarget THEN		
+
+
+
+	IF currencyIDSource = currencyIDTarget THEN
 
 		RETURN ROUND((1 * prValorToConvert),2);
 
-	ELSEIF currencyIDSource = 1 THEN 
+	ELSEIF currencyIDSource = 1 THEN
 
-		
 
-		RETURN ROUND((prValorToConvert * ratio_1) ,2) ; 
 
-	ELSE  
+		RETURN ROUND((prValorToConvert * ratio_1) ,2) ;
 
-		
+	ELSE
 
-		RETURN ROUND((prValorToConvert * ratio_1),2) ; 
+
+
+		RETURN ROUND((prValorToConvert * ratio_1),2) ;
 
 	END IF;
 
-	
+
 
 
 
@@ -760,54 +762,56 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` FUNCTION `fn_get_provider_id`(`prCompanyID` INT, `prUserID` INT) RETURNS int(11)
+CREATE DEFINER=`root`@`localhost` FUNCTION `fn_get_provider_id`(`prCompanyID` INT, `prUserID` INT)
+ RETURNS int(11)
+  READS SQL DATA
 BEGIN
 
 	DECLARE varProviderID INT DEFAULT 0;
 
-	
+
 
 	SET varProviderID = (
 
-	SELECT 
+	SELECT
 
-		u.employeeID as providerID    
+		u.employeeID as providerID
 
-	FROM 
+	FROM
 
 		tb_user u
 
-		inner join tb_membership p on 
+		inner join tb_membership p on
 
-			u.userID = p.userID 
+			u.userID = p.userID
 
-		inner join tb_role r on 
+		inner join tb_role r on
 
 			p.roleID = r.roleID
 
-		inner join tb_provider pro on 
+		inner join tb_provider pro on
 
-			pro.entityID = u.employeeID 
+			pro.entityID = u.employeeID
 
 	where
 
-		u.userID = prUserID and 
+		u.userID = prUserID and
 
-		u.companyID = prCompanyID and 
+		u.companyID = prCompanyID and
 
-		u.isActive = 1 and 
+		u.isActive = 1 and
 
 		r.name = 'INVERSIONISTA' LIMIT 1);
 
-		
 
-	IF (varProviderID IS NULL) OR (varProviderID = 0) THEN 
+
+	IF (varProviderID IS NULL) OR (varProviderID = 0) THEN
 
 		RETURN 0;
 
 	ELSE
 
-		RETURN varProviderID;		
+		RETURN varProviderID;
 
 	END IF;
 
@@ -873,115 +877,113 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` FUNCTION `fn_translate_transaction_master_info_amounts`( 
-	`prCompanyID` INT, 
-	`prFlavorID` INT, 
+CREATE DEFINER=`root`@`localhost` FUNCTION `fn_translate_transaction_master_info_amounts`(`prCompanyID` INT,
+	`prFlavorID` INT,
 	`prTransactionID` INT,
-	`prCurrencyFunction` VARCHAR(50), -- moneda que queremos 
-	`prCurrencyReport` VARCHAR(50), -- no usado en la lógica actual 
-	`prCurrencyReportConvert` VARCHAR(50), -- moneda final para el reporte ('Cordoba', 'Dolar', 'None') 
-	`prTransactionCurrencyID` INT, -- 1 = Córdoba, 2 = Dólar 
+	`prCurrencyFunction` VARCHAR(50), -- moneda que queremos
+	`prCurrencyReport` VARCHAR(50), -- no usado en la lógica actual
+	`prCurrencyReportConvert` VARCHAR(50), -- moneda final para el reporte ('Cordoba', 'Dolar', 'None')
+	`prTransactionCurrencyID` INT, -- 1 = Córdoba, 2 = Dólar
 	`prExchangeRate` DECIMAL(18,8), -- tasa USD/C$
-	`prTransactionAmount` DECIMAL(18,6), -- amount 
+	`prTransactionAmount` DECIMAL(18,6), -- amount
 	`prTransactionAmountExt` DECIMAL(18,6),-- amountExt
-	`prField` VARCHAR(30) -- 'Amount' o 'AmountExt', 'CurrencyName', Convert indica cuál esperamos recibir 
-) 
-RETURNS VARCHAR(50)
-DETERMINISTIC
-READS SQL DATA 
-BEGIN 
-	DECLARE vTransCurrency VARCHAR(10); 
-	DECLARE vFuncCurrency VARCHAR(10); 
+	`prField` VARCHAR(30))
+ RETURNS varchar(50) CHARSET utf8mb4 COLLATE utf8mb4_general_ci
+  READS SQL DATA
+  DETERMINISTIC
+BEGIN
+	DECLARE vTransCurrency VARCHAR(10);
+	DECLARE vFuncCurrency VARCHAR(10);
 	DECLARE vConvCurrency VARCHAR(10);
-	DECLARE vBaseAmount DECIMAL(18,6); 
+	DECLARE vBaseAmount DECIMAL(18,6);
 	DECLARE vResult DECIMAL(18,6);
-	 -- Solo para transactionID = 19 
-	-- IF prTransactionID <> 19 THEN 
-	-- RETURN NULL; 
-	-- END IF; 
-	SET vFuncCurrency 								= UPPER(TRIM(prCurrencyFunction)); 
-	SET vConvCurrency 								= UPPER(TRIM(prCurrencyReportConvert)); 
-	-- Moneda de la transacción y asignación de campos 
-	IF prTransactionCurrencyID 				= 1 THEN 
-		SET vTransCurrency 							= 'CORDOBA'; 
-	ELSEIF prTransactionCurrencyID 		= 2 THEN 
-		SET vTransCurrency 							= 'DOLAR'; 
-	ELSE 
-		RETURN NULL; 
-	END IF; 
-	-- 1) Selección según el campo que esperamos 
+	 -- Solo para transactionID = 19
+	-- IF prTransactionID <> 19 THEN
+	-- RETURN NULL;
+	-- END IF;
+	SET vFuncCurrency 								= UPPER(TRIM(prCurrencyFunction));
+	SET vConvCurrency 								= UPPER(TRIM(prCurrencyReportConvert));
+	-- Moneda de la transacción y asignación de campos
+	IF prTransactionCurrencyID 				= 1 THEN
+		SET vTransCurrency 							= 'CORDOBA';
+	ELSEIF prTransactionCurrencyID 		= 2 THEN
+		SET vTransCurrency 							= 'DOLAR';
+	ELSE
+		RETURN NULL;
+	END IF;
+	-- 1) Selección según el campo que esperamos
 	IF UPPER(TRIM(prField)) 					= 'CURRENCYNAME' THEN
 		IF vConvCurrency 								= 'NONE' THEN
-			RETURN CONCAT(UCASE(LEFT(vTransCurrency, 1)), 
+			RETURN CONCAT(UCASE(LEFT(vTransCurrency, 1)),
                              LCASE(SUBSTRING(vTransCurrency, 2)));
 		ELSE
-			RETURN CONCAT(UCASE(LEFT(vConvCurrency, 1)), 
+			RETURN CONCAT(UCASE(LEFT(vConvCurrency, 1)),
                              LCASE(SUBSTRING(vConvCurrency, 2)));
 		END IF;
-	ELSEIF UPPER(TRIM(prField)) 			= 'AMOUNT' THEN 
+	ELSEIF UPPER(TRIM(prField)) 			= 'AMOUNT' THEN
 		SET vBaseAmount 								= prTransactionAmount;
-	ELSEIF UPPER(TRIM(prField)) 			= 'AMOUNTEXT' THEN 
-		SET vBaseAmount									= prTransactionAmountExt; 
-	ELSEIF UPPER(TRIM(prField)) 			= 'CONVERT' THEN 
-		SET vBaseAmount 								= prTransactionAmount; 
-	ELSE 
-		RETURN NULL; -- campo inválido 
-	END IF; 
-	-- 2) Inversión si la moneda de función ≠ moneda de transacción 
-	IF vFuncCurrency 									<> vTransCurrency THEN 
-		IF UPPER(TRIM(prField)) 				= 'AMOUNT' THEN 
-			SET vBaseAmount 							= prTransactionAmountExt; 
-		ELSE 
-			SET vBaseAmount 							= prTransactionAmount; 
-		END IF; 
-	END IF; 
-	-- 3) Conversión final solo si prCurrencyReportConvert <> 'NONE' 
-	IF UPPER(TRIM(prField)) 						= 'CONVERT' THEN 
-		IF vConvCurrency 									= 'NONE' THEN 
+	ELSEIF UPPER(TRIM(prField)) 			= 'AMOUNTEXT' THEN
+		SET vBaseAmount									= prTransactionAmountExt;
+	ELSEIF UPPER(TRIM(prField)) 			= 'CONVERT' THEN
+		SET vBaseAmount 								= prTransactionAmount;
+	ELSE
+		RETURN NULL; -- campo inválido
+	END IF;
+	-- 2) Inversión si la moneda de función ≠ moneda de transacción
+	IF vFuncCurrency 									<> vTransCurrency THEN
+		IF UPPER(TRIM(prField)) 				= 'AMOUNT' THEN
+			SET vBaseAmount 							= prTransactionAmountExt;
+		ELSE
+			SET vBaseAmount 							= prTransactionAmount;
+		END IF;
+	END IF;
+	-- 3) Conversión final solo si prCurrencyReportConvert <> 'NONE'
+	IF UPPER(TRIM(prField)) 						= 'CONVERT' THEN
+		IF vConvCurrency 									= 'NONE' THEN
 			SET vResult 										= vBaseAmount;
 		ELSEIF vConvCurrency 							= vTransCurrency THEN
 			SET vResult 										= vBaseAmount;
-		ELSE 
-			IF vFuncCurrency 								= 'CORDOBA' 
-			AND vConvCurrency 							= 'DOLAR' THEN 
-				IF prExchangeRate IS NULL 
-				OR prExchangeRate 						= 0 THEN 
-					RETURN NULL; 
-				END IF; 
-				SET vResult 									= vBaseAmount * prExchangeRate; 
-			ELSEIF vFuncCurrency						= 'DOLAR' 
-			AND vConvCurrency 							= 'CORDOBA' THEN 
-				IF prExchangeRate IS NULL 
-				OR prExchangeRate 						= 0 THEN 
-					RETURN NULL; 
-				END IF; 
-				SET vResult 									= vBaseAmount / prExchangeRate; 
-			ELSE -- mismas monedas → no cambiar 
-				IF vFuncCurrency 							<> vTransCurrency THEN
-					IF vFuncCurrency 						= 'CORDOBA' 
-					AND vTransCurrency 					= 'DOLAR' THEN 
-						IF prExchangeRate IS NULL 
-						OR prExchangeRate 				= 0 THEN 
-							RETURN NULL; 
-						END IF; 
-						SET vResult 							= vBaseAmount / prExchangeRate; 
-					ELSEIF vFuncCurrency 				= 'DOLAR' 
-					AND vTransCurrency 					= 'CORDOBA' THEN 
-						IF prExchangeRate IS NULL 
-						OR prExchangeRate 				= 0 THEN 
-							RETURN NULL; 
-						END IF; 
-						SET vResult 							= vBaseAmount * prExchangeRate; 
-					END IF;
-				ELSE 
-					SET vResult 								= vBaseAmount; 
+		ELSE
+			IF vFuncCurrency 								= 'CORDOBA'
+			AND vConvCurrency 							= 'DOLAR' THEN
+				IF prExchangeRate IS NULL
+				OR prExchangeRate 						= 0 THEN
+					RETURN NULL;
 				END IF;
-			END IF; 
-		END IF; 
+				SET vResult 									= vBaseAmount * prExchangeRate;
+			ELSEIF vFuncCurrency						= 'DOLAR'
+			AND vConvCurrency 							= 'CORDOBA' THEN
+				IF prExchangeRate IS NULL
+				OR prExchangeRate 						= 0 THEN
+					RETURN NULL;
+				END IF;
+				SET vResult 									= vBaseAmount / prExchangeRate;
+			ELSE -- mismas monedas → no cambiar
+				IF vFuncCurrency 							<> vTransCurrency THEN
+					IF vFuncCurrency 						= 'CORDOBA'
+					AND vTransCurrency 					= 'DOLAR' THEN
+						IF prExchangeRate IS NULL
+						OR prExchangeRate 				= 0 THEN
+							RETURN NULL;
+						END IF;
+						SET vResult 							= vBaseAmount / prExchangeRate;
+					ELSEIF vFuncCurrency 				= 'DOLAR'
+					AND vTransCurrency 					= 'CORDOBA' THEN
+						IF prExchangeRate IS NULL
+						OR prExchangeRate 				= 0 THEN
+							RETURN NULL;
+						END IF;
+						SET vResult 							= vBaseAmount * prExchangeRate;
+					END IF;
+				ELSE
+					SET vResult 								= vBaseAmount;
+				END IF;
+			END IF;
+		END IF;
 		RETURN ROUND(vResult, 4);
 	ELSE  RETURN ROUND(vBaseAmount, 4);
 	END IF;
-END ;; 
+END ;;
 
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -5905,175 +5907,136 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_app_invoice_survery_get_report`(IN `prCompanyID` INT, 
-
-	IN `prTokenID` VARCHAR(50), 
-
-	IN `prUserID` INT, 
-
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_app_invoice_survery_get_report`(IN `prCompanyID` INT,
+	IN `prTokenID` VARCHAR(50),
+	IN `prUserID` INT,
 	IN `prDateTimeStart` DATETIME,
-
 	IN `prDateTimeFinish` DATETIME,
-
 	IN `prSurveryKey` VARCHAR(50))
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
 BEGIN
 
+  IF NOT EXISTS (
+			SELECT 1
+			FROM tb_item c
+			WHERE c.reference1 = prSurveryKey
+	) THEN
+			SET prSurveryKey = '';
+	END IF;
 
 
-  SELECT 
-
+  SELECT
     ttm.transactionNumber,
-
     ttm.transactionOn,
-
     tc.customerNumber,
-
+		tc.identification as Identificacion,
     CONCAT(tn.firstName, ' ', tn.lastName) as Cliente,
-
     ti.itemNumber,
-
-    ti.name,
-
+		ti.barCode as Barra,
+    concat(ti.name,' ', ttmd.reference1, ' ', ttmd.reference2  ) as name ,
     ttmd.quantity,
-
     tcr.simbol as Moneda,
-
-    ttm.amount
-
+		ttmd.unitaryPrice as price,
+    ttmd.amount as amount
   FROM tb_transaction_master ttm
-
   INNER JOIN tb_transaction_master_detail ttmd ON ttm.transactionMasterID=ttmd.transactionMasterID
-
   INNER JOIN tb_currency tcr ON ttm.currencyID = tcr.currencyID
-
   INNER JOIN tb_customer tc ON ttm.entityID = tc.entityID
-
   INNER JOIN tb_naturales tn ON tc.entityID = tn.entityID
-
   INNER JOIN tb_item ti ON ttmd.componentItemID = ti.itemID
-
-  WHERE ttm.transactionID=65 
-
-    AND ti.reference1 = prSurveryKey 
-
+  WHERE ttm.transactionID=65
+    AND ti.reference1 = prSurveryKey
     AND ttm.transactionOn BETWEEN prDateTimeStart AND prDateTimeFinish
-
     AND ttm.isActive = 1
-
   order BY ttm.transactionOn DESC;
 
 
-
-  SELECT 
-
-    ti.itemNumber as Codigo,
-
-    ti.name as Descripcion,
-
-    SUM(ttmd.quantity) as Cantidad,
-
-    tcr.simbol as Moneda,
-
-    SUM(ttm.amount) as Monto
-
-  FROM tb_transaction_master ttm
-
-  INNER JOIN tb_transaction_master_detail ttmd ON ttm.transactionMasterID=ttmd.transactionMasterID
-
-  INNER JOIN tb_currency tcr ON ttm.currencyID = tcr.currencyID
-
-  INNER JOIN tb_item ti ON ttmd.componentItemID = ti.itemID
-
-  WHERE 
-
-    ttm.transactionID=65 
-
-    AND ti.reference1 = prSurveryKey 
-
-    AND ttm.transactionOn BETWEEN prDateTimeStart AND prDateTimeFinish
-
-    AND ttm.isActive = 1
-
-  GROUP BY ti.itemNumber, tcr.simbol
-
-  order BY ttm.transactionOn DESC;
+  SELECT
+			ti.itemNumber as Codigo,
+			ti.barCode as Barra,
+			ti.name as Descripcion,
+			SUM(ttmd.quantity) as Cantidad,
+			tcr.simbol as Moneda,
+			SUM(ttmd.amount) as Monto
+	FROM tb_transaction_master ttm
+	INNER JOIN tb_transaction_master_detail ttmd
+			ON ttm.transactionMasterID = ttmd.transactionMasterID
+	INNER JOIN tb_currency tcr
+			ON ttm.currencyID = tcr.currencyID
+	INNER JOIN tb_item ti
+			ON ttmd.componentItemID = ti.itemID
+	WHERE
+			ttm.transactionID = 65
+			AND ti.reference1 = prSurveryKey
+			AND ttm.transactionOn BETWEEN prDateTimeStart AND prDateTimeFinish
+			AND ttm.isActive = 1
+	GROUP BY ti.itemNumber, ti.barCode, ti.name, tcr.simbol
+	ORDER BY MAX(ttm.transactionOn) DESC;
 
 
 
-  SELECT 
-
-    tc.customerNumber,
-
-    tn.firstName as Nombres,
-
-    tn.lastName AS Apellidos,
-
-    SUM(ttmd.quantity) as Cantidad,
-
-    tcr.simbol as Moneda,
-
-    SUM(ttm.amount) AS Monto
-
-  FROM tb_transaction_master ttm
-
-  INNER JOIN tb_transaction_master_detail ttmd ON ttm.transactionMasterID=ttmd.transactionMasterID
-
-  INNER JOIN tb_currency tcr ON ttm.currencyID = tcr.currencyID
-
-  INNER JOIN tb_customer tc ON ttm.entityID = tc.entityID
-
-  INNER JOIN tb_naturales tn ON tc.entityID = tn.entityID
-
-  INNER JOIN tb_item ti ON ttmd.componentItemID = ti.itemID
-
-  WHERE 
-
-    ttm.transactionID=65 
-
-    AND ti.reference1 = prSurveryKey 
-
-    AND ttm.transactionOn BETWEEN prDateTimeStart AND prDateTimeFinish
-
-    AND ttm.isActive = 1
-
-  GROUP BY tc.customerNumber, tn.firstName, tn.lastName;
+  SELECT
+			tc.customerNumber,
+			tc.identification as Identificacion,
+			tn.firstName as Nombres,
+			tn.lastName AS Apellidos,
+			SUM(ttmd.quantity) as Cantidad,
+			tcr.simbol as Moneda,
+			SUM(ttmd.amount) AS Monto
+	FROM tb_transaction_master ttm
+	INNER JOIN tb_transaction_master_detail ttmd
+			ON ttm.transactionMasterID = ttmd.transactionMasterID
+	INNER JOIN tb_currency tcr
+			ON ttm.currencyID = tcr.currencyID
+	INNER JOIN tb_customer tc
+			ON ttm.entityID = tc.entityID
+	INNER JOIN tb_naturales tn
+			ON tc.entityID = tn.entityID
+	INNER JOIN tb_item ti
+			ON ttmd.componentItemID = ti.itemID
+	WHERE
+			ttm.transactionID = 65
+			AND ti.reference1 = prSurveryKey
+			AND ttm.transactionOn BETWEEN prDateTimeStart AND prDateTimeFinish
+			AND ttm.isActive = 1
+	GROUP BY
+			tc.customerNumber,
+			tc.identification,
+			tn.firstName,
+			tn.lastName,
+			tcr.simbol;
 
 
 
-  SELECT 
-
+  SELECT
     ttm.transactionOn as Fecha,
-
     ttm.transactionNumber,
-
     SUM(ttmd.quantity) as Cantidad,
-
     tcr.simbol as Moneda,
-
-    SUM(ttm.amount) AS Monto 
+    SUM(ttmd.amount) AS Monto ,
+		CASE
+      WHEN EXISTS (
+        SELECT 1
+        FROM tb_transaction_master inv
+        WHERE inv.transactionID = 19
+          AND inv.isActive = 1
+          AND inv.statusID IN (67 /*aplicada*/)
+          AND inv.reference3 = ttm.transactionNumber
+      ) THEN '<span style="color:#00b300;font-weight:bold;padding:2px 8px;border-radius:4px;">SI</span>'
+      ELSE '<span style="color:#ff0000;background-color:#ffffff;font-weight:bold;padding:2px 8px;border-radius:4px;">NO</span>'
+    END AS Facturado
 
   FROM tb_transaction_master ttm
-
   INNER JOIN tb_transaction_master_detail ttmd ON ttm.transactionMasterID=ttmd.transactionMasterID
-
   INNER JOIN tb_currency tcr ON ttm.currencyID = tcr.currencyID
-
   INNER JOIN tb_item ti ON ttmd.componentItemID = ti.itemID
-
-  WHERE 
-
-    ttm.transactionID=65 
-
-    AND ti.reference1 = prSurveryKey 
-
+  WHERE
+    ttm.transactionID=65
+    AND ti.reference1 = prSurveryKey
     AND ttm.transactionOn BETWEEN prDateTimeStart AND prDateTimeFinish
-
     AND ttm.isActive = 1
-
   GROUP BY ttm.transactionNumber, ttm.transactionOn, tcr.simbol
-
   order BY ttm.transactionOn DESC;
 
 
@@ -6170,16 +6133,16 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_box_get_report_abonos`(IN `prUserID` INT, IN `prTokenID` VARCHAR(150), IN `prCompanyID` INT, IN `prAuthorization` INT, IN `prStartOn` DATETIME, IN `prEndOn` DATETIME, 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_box_get_report_abonos`(IN `prUserID` INT, IN `prTokenID` VARCHAR(150), IN `prCompanyID` INT, IN `prAuthorization` INT, IN `prStartOn` DATETIME, IN `prEndOn` DATETIME,
 IN `prUserIDFilter` INT,  IN `prBranchID` INT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'lista de abonos de los clientes'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'lista de abonos de los clientes'
 BEGIN
-	DECLARE exchangeRate_ DECIMAL(18,4) DEFAULT 0;		
+	DECLARE exchangeRate_ DECIMAL(18,4) DEFAULT 0;
 	DECLARE currencyIDNameSource VARCHAR(250);
-	DECLARE currencyIDNameTarget VARCHAR(250);	
-	DECLARE moneda_ VARCHAR(50); 
+	DECLARE currencyIDNameTarget VARCHAR(250);
+	DECLARE moneda_ VARCHAR(50);
 	DECLARE currencyID_ INT DEFAULT 0;
 	DECLARE currencyIDTarget_ INT DEFAULT 0;
 	DECLARE currencyTargetSale DECIMAL(19,9) DEFAULT 0;
@@ -6187,59 +6150,62 @@ BEGIN
 	DECLARE PERMISSION_NONE INT DEFAULT -1;
 	DECLARE PERMISSION_ALL INT DEFAULT 0;
 	DECLARE PERMISSION_BRANCH INT DEFAULT 1;
-	DECLARE PERMISSION_ME INT DEFAULT 2; 
-	DECLARE isAdmin_ INT DEFAULT   0; 
-  DECLARE convert_ VARCHAR(50);	
+	DECLARE PERMISSION_ME INT DEFAULT 2;
+	DECLARE isAdmin_ INT DEFAULT   0;
+  DECLARE convert_ VARCHAR(50);
+	DECLARE varFlavorInt INT default 0;
 
-	select 
-		r.isAdmin into isAdmin_ 
-	from 
-		tb_user u 
-		inner join tb_membership me on 
-			u.userID = me.userID 
-		inner join tb_role r on 
-			me.roleID = r.roleID 
+	select
+		r.isAdmin into isAdmin_
+	from
+		tb_user u
+		inner join tb_membership me on
+			u.userID = me.userID
+		inner join tb_role r on
+			me.roleID = r.roleID
 	where
 		me.userID = prUserID and r.isAdmin = 1 limit 1 ;
 	set isAdmin_ = (case when isAdmin_ is null then 0 else isAdmin_ end);
+	set varFlavorInt = (select c.flavorID from tb_company c where c.companyID = prCompanyID );
+
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameSource);
-	SET currencyID_ 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameSource);		
+	SET currencyID_ 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameSource);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_EXTERNAL",currencyIDNameTarget);
 	SET currencyIDTarget_ 	= (SELECT currencyID FROM tb_currency where name = currencyIDNameTarget);
-	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_);	
+	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_EXCHANGE_SALE",currencyTargetSale);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_EXCHANGE_PURCHASE",currencyTargetPurchase);
 	CALL pr_core_get_parameter_value(prCompanyID, "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT", convert_);
 
 
-	SELECT 
+	SELECT
 		tt.name as transactionName,
 		cus.customerNumber,
-		concat(nat.firstName,' ',nat.lastName) as firstName , 
-		tm.transactionNumber ,		
+		concat(nat.firstName,' ',nat.lastName) as firstName ,
+		tm.transactionNumber ,
 		DATE_FORMAT(tm.transactionOn, '%Y-%m-%d %r')  as transactionOn,
 		tm.amount as montoTotal ,
 		ws.name as estado,
-		tm.note,		
+		tm.note,
 		tmd.reference1 as Fac,
 		if(
 			cur.name = 'Dolar',
 			tmd.amount * (exchangeRate_  + currencyTargetSale),
 			tmd.amount
 		)  as montoCordoba,
-    case 
-			when convert_ = 'Dolar' and cur.name != 'Dolar'  then 
+    case
+			when convert_ = 'Dolar' and cur.name != 'Dolar'  then
 				tmd.amount * (exchangeRate_  )
-       when convert_ = 'Cordoba' and cur.name != 'Cordoba'  then 
+       when convert_ = 'Cordoba' and cur.name != 'Cordoba'  then
 				tmd.amount / (exchangeRate_ )
-			else 
-				tmd.amount 
+			else
+				tmd.amount
 		end as  montoFac,
-		case 
-			when convert_ = 'None'  then 
+		case
+			when convert_ = 'None'  then
       cur.`name`
-			else 
-				convert_ 
+			else
+				convert_
 		end as moneda,
 		(exchangeRate_  + currencyTargetSale) as tipoCambio ,
 		PERMISSION_ME,
@@ -6247,71 +6213,76 @@ BEGIN
 		tm.createdBy ,
 		us.nickname ,
 		'' as conceptosName ,
-		'' as conceptosSubName 
-	FROM 
-		tb_transaction_master tm			
-		inner join tb_transaction tt on 
-			tm.transactionID = tt.transactionID 
-		inner join tb_customer cus on 
-			tm.entityID = cus.entityID 
-		inner join tb_naturales nat on 
-			cus.entityID = nat.entityID 
-		inner join tb_transaction_master_detail tmd on 
-			tm.companyID = tmd.companyID and 
-			tm.transactionID = tmd.transactionID and 
-			tm.transactionMasterID = tmd.transactionMasterID 	
-		inner join tb_workflow_stage ws on 
-			tm.statusID = ws.workflowStageID  
-		inner join tb_transaction_master tm2 on 
-			tmd.reference1 = tm2.transactionNumber and 
-			tmd.companyID = tm2.companyID and 
-			tm.entityID = tm2.entityID 
-		inner join tb_currency cur on 
-			tm2.currencyID = cur.currencyID 
-		inner join tb_user us on 
-			us.userID = tm.createdBy 
-		inner join tb_branch braus on 
+		'' as conceptosSubName
+	FROM
+		tb_transaction_master tm
+		inner join tb_transaction tt on
+			tm.transactionID = tt.transactionID
+		inner join tb_customer cus on
+			tm.entityID = cus.entityID
+		inner join tb_naturales nat on
+			cus.entityID = nat.entityID
+		inner join tb_transaction_master_detail tmd on
+			tm.companyID = tmd.companyID and
+			tm.transactionID = tmd.transactionID and
+			tm.transactionMasterID = tmd.transactionMasterID
+		inner join tb_workflow_stage ws on
+			tm.statusID = ws.workflowStageID
+		inner join tb_transaction_master tm2 on
+			tmd.reference1 = tm2.transactionNumber and
+			tmd.companyID = tm2.companyID and
+			tm.entityID = tm2.entityID
+		inner join tb_currency cur on
+			tm2.currencyID = cur.currencyID
+		inner join tb_user us on
+			us.userID = tm.createdBy
+		inner join tb_branch braus on
 			braus.branchID = us.locationID
-		inner join tb_company comp on 
-			comp.companyID = tm.companyID 
+		inner join tb_company comp on
+			comp.companyID = tm.companyID
 	where
-		tm.transactionID in  (23,24,25) 		
-		and 
+		tm.transactionID in  (23,24,25)
+		and not
+		(
+		  tm.transactionID = 24 /*cancealcion de factura */ and
+			varFlavorInt = 303 /*audio el pipe*/
+		)
+		and
 		(
 				(
-					comp.flavorID = 326  and 
+					comp.flavorID = 326  and
 					tm.transactionID in (23)
-				)  or 
+				)  or
 				(
-					comp.flavorID != 326 
+					comp.flavorID != 326
 				)
-		)		
-		and tm.isActive = 1 
-		and tmd.isActive = 1 
-		and 
+		)
+		and tm.isActive = 1
+		and tmd.isActive = 1
+		and
 		(
 			(braus.branchID = prBranchID and prBranchID != 0 )
-			or 
+			or
 			(prBranchID = 0)
 		)
-		and tm.companyID = prCompanyID 
-		and tm.transactionOn  between prStartOn and prEndOn 
-		and  
+		and tm.companyID = prCompanyID
+		and tm.transactionOn  between prStartOn and prEndOn
+		and
 		(
 				fn_get_access_ready(
-					prCompanyID  , 
-					prUserID  , 173, 
-					tm.createdBy  , 0 
-				) = 1 
-		) and 
+					prCompanyID  ,
+					prUserID  , 173,
+					tm.createdBy  , 0
+				) = 1
+		) and
 		(
 					  (tm.createdBy = prUserIDFilter and prUserIDFilter != 0 )
-						or 
+						or
 						(prUserIDFilter = 0)
-		) and 
-		ws.aplicable = 1   
-	order by 
-		tm.transactionOn;   
+		) and
+		ws.aplicable = 1
+	order by
+		tm.transactionOn;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -6407,2126 +6378,1199 @@ DELIMITER ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_box_get_report_closed`(IN `prUserID` int,IN `prTokenID` varchar(150),IN `prCompanyID` int,IN `prAuthorization` int,IN `prStartOn` datetime,IN `prEndOn` datetime,IN `prUserIDFilter` int)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'lista de abonos de los clientes'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'lista de abonos de los clientes'
 BEGIN
 
-	
-
-		DECLARE varCurrencyCompras INT DEFAULT 0;	
-
-	DECLARE varCurrencyReporte INT DEFAULT 0;	
-
+	DECLARE varCurrencyCompras INT DEFAULT 0;
+	DECLARE varCurrencyReporte INT DEFAULT 0;
 	DECLARE currencyIDNameCompra VARCHAR(250);
-
-	DECLARE currencyIDNameReporte VARCHAR(250);			
-
-	DECLARE exchangeRate_ DECIMAL(18,4) DEFAULT 0;		
-
-	DECLARE amount1 DECIMAL(18,4) DEFAULT 0;		
-
-	DECLARE amount2 DECIMAL(18,4) DEFAULT 0;		
-
-	DECLARE amount3 DECIMAL(18,4) DEFAULT 0;		
-
-	DECLARE amount4 DECIMAL(18,4) DEFAULT 0;		
-
-	
+	DECLARE currencyIDNameReporte VARCHAR(250);
+	DECLARE exchangeRate_ DECIMAL(18,4) DEFAULT 0;
+	DECLARE amount1 DECIMAL(18,4) DEFAULT 0;
+	DECLARE amount2 DECIMAL(18,4) DEFAULT 0;
+	DECLARE amount3 DECIMAL(18,4) DEFAULT 0;
+	DECLARE amount4 DECIMAL(18,4) DEFAULT 0;
 
 	DECLARE currencyIDNameSource VARCHAR(250);
-
-	DECLARE currencyIDNameTarget VARCHAR(250);	
-
-	DECLARE moneda_ VARCHAR(50); 
-
+	DECLARE currencyIDNameTarget VARCHAR(250);
+	DECLARE moneda_ VARCHAR(50);
 	DECLARE currencyID_ INT DEFAULT 0;
-
 	DECLARE currencyIDTarget_ INT DEFAULT 0;
-
 	DECLARE currencyTargetSale DECIMAL(19,9) DEFAULT 0;
-
 	DECLARE currencyTargetPurchase  DECIMAL(19,9) DEFAULT 0;
-
 	DECLARE PERMISSION_NONE INT DEFAULT -1;
-
 	DECLARE PERMISSION_ALL INT DEFAULT 0;
-
 	DECLARE PERMISSION_BRANCH INT DEFAULT 1;
-
-	DECLARE PERMISSION_ME INT DEFAULT 2; 		
-
-	DECLARE isAdmin_ INT DEFAULT   0; 
-
+	DECLARE PERMISSION_ME INT DEFAULT 2;
+	DECLARE isAdmin_ INT DEFAULT   0;
 	DECLARE varDif DECIMAL(19,4) DEFAULT 0;
-
 	DECLARE varCompanyType VARCHAR(50);
 
-	
-
-	
 
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameCompra);
-
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",currencyIDNameReporte);
 
-	
-
 	SET varCompanyType					= (SELECT c.type FROM tb_company c where c.companyID = prCompanyID);
+	SET varCurrencyCompras 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameCompra);
+	SET varCurrencyReporte 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameReporte);
+	SET prUserIDFilter 				  = IF(prUserIDFilter = 1, 0, prUserIDFilter);
 
-	SET varCurrencyCompras 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameCompra);		
-
-	SET varCurrencyReporte 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameReporte);		
-
-
-
-	
-
-	select 
-
-		r.isAdmin into isAdmin_ 
-
-	from 
-
-		tb_user u 
-
-		inner join tb_membership me on 
-
-			u.userID = me.userID 
-
-		inner join tb_role r on 
-
-			me.roleID = r.roleID 
-
+	select
+		r.isAdmin into isAdmin_
+	from
+		tb_user u
+		inner join tb_membership me on
+			u.userID = me.userID
+		inner join tb_role r on
+			me.roleID = r.roleID
 	where
-
 		me.userID = prUserID and r.isAdmin = 1 limit 1 ;
 
-		
-
-	
 
 	set isAdmin_ = (case when isAdmin_ is null then 0 else isAdmin_ end);
 
 
-
-	
-
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameSource);
-
-	SET currencyID_ 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameSource);		
-
+	SET currencyID_ 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameSource);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_EXTERNAL",currencyIDNameTarget);
-
 	SET currencyIDTarget_ 	= (SELECT currencyID FROM tb_currency where name = currencyIDNameTarget);
-
-	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_);	
-
+	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_EXCHANGE_SALE",currencyTargetSale);
-
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_EXCHANGE_PURCHASE",currencyTargetPurchase);
 
-	
-
-	
 
 	create table tb_tmp_closed (
-
 		substitulo varchar(250),
-
 		codigo varchar(50),
-
 		nombre varchar(150),
-
 		cantidad varchar(150),
-
 		subtotal varchar(150),
-
 		total decimal(19,2),
-
 		moneda int ,
-
 		tipoCambio decimal(19,2),
-
 		comandoProce varchar(150),
-
 		sumary varchar(50)
-
-		
 
 	);
 
-	
 
-	
 
-	
 
-		
-
-	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
-	select 
-
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
 		'No',
-
 		'MinMax',
-
 		'Estado',
-
 		'001.001',
-
 		'PRI Y ULTI.',
-
 		IFNULL(min(tm.transactionMasterID),0) as min,
-
 		IFNULL(max(tm.transactionMasterID),0) as max,
-
 		0 as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+	where
+		tm.isActive = 1 and
+		tm.companyID = prCompanyID and
+		tm.transactionID = 19  and
+		tm.statusID = 67  and
+		tm.createdOn between prStartOn  and prEndOn and
+		(
+			(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+			(prUserIDFilter = 0)
+		);
 
-		1 as moneda, 
 
-		0 as tipoCambio 
-
-	from 
-
-		tb_transaction t 
-
-		inner join tb_transaction_master tm  on 
-
-			t.transactionID = tm.transactionID 
-
-		inner join tb_transaction_causal tmc on 
-
-			tm.transactionCausalID = tmc.transactionCausalID 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = tm.statusID 
-
-	where 		 
-
-		tm.isActive = 1 and 
-
-		tm.companyID = prCompanyID and 
-
-		tm.transactionID = 19  and 
-
-		tm.statusID = 67  and 		
-
-		tm.createdOn between prStartOn  and prEndOn ;
-
-		
-
-	update tb_tmp_closed set 
-
+	update tb_tmp_closed set
 		cantidad = IFNULL((select u.transactionNumber from tb_transaction_master u where u.transactionMasterID = cantidad ),0),
-
 		subtotal = IFNULL((select u.transactionNumber from tb_transaction_master u where u.transactionMasterID = subtotal ),0)
-
-	where 
-
+	where
 		codigo = '001.001';
 
-		
 
-	
-
-	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
-	select 
-
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
 		'No',
-
 		'Default',
-
 		'Estado',
-
 		'001.002',
-
 		'TRAN. Eli',
-
 		IFNULL(count(tm.transactionMasterID),0) as cantidad,
-
 		IFNULL(sum(tm.amount),0) as subtotal,
-
 		IFNULL(sum(tm.amount),0) as total,
-
-		1 as moneda, 
-
-		0 as tipoCambio 
-
-	from 
-
-		tb_transaction t 
-
-		inner join tb_transaction_master tm  on 
-
-			t.transactionID = tm.transactionID 
-
-		inner join tb_transaction_causal tmc on 
-
-			tm.transactionCausalID = tmc.transactionCausalID 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = tm.statusID 
-
-	where 		 
-
-		tm.isActive = 1 and 
-
-		tm.transactionID = 19  and 
-
-		tm.statusID = 68  and  
-
-		tm.companyID = prCompanyID and 
-
-		tm.createdOn between prStartOn  and prEndOn ;
-
-		
-
-	
-
-	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
-	select 
-
-		'No',
-
-		'Default',
-
-		'Estado',
-
-		'001.003',
-
-		'TRAN. Reg',
-
-		IFNULL(count(tm.transactionMasterID),0) as cantidad,
-
-		IFNULL(sum(tm.amount),0) as subtotal,
-
-		IFNULL(sum(tm.amount),0) as total,
-
-		1 as moneda, 
-
-		0 as tipoCambio 
-
-	from 
-
-		tb_transaction t 
-
-		inner join tb_transaction_master tm  on 
-
-			t.transactionID = tm.transactionID 
-
-		inner join tb_transaction_causal tmc on 
-
-			tm.transactionCausalID = tmc.transactionCausalID 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = tm.statusID 		
-
-	where 		
-
-		tm.isActive = 1 and 
-
-		tm.transactionID = 19  and 
-
-		tm.statusID in ( 66  ) and 
-
-		tm.companyID = prCompanyID and 
-
-		tm.createdOn between prStartOn  and prEndOn ;
-
-		
-
-	
-
-	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
-	select 
-
-		'No',
-
-		'Default',
-
-		'Estado',
-
-		'001.003',
-
-		'TRAN. Apli',
-
-		IFNULL(count(tm.transactionMasterID),0) as cantidad,
-
-		IFNULL(sum(tm.amount),0) as subtotal,
-
-		IFNULL(sum(tm.amount),0) as total,
-
-		1 as moneda, 
-
-		0 as tipoCambio 
-
-	from 
-
-		tb_transaction t 
-
-		inner join tb_transaction_master tm  on 
-
-			t.transactionID = tm.transactionID 
-
-		inner join tb_transaction_causal tmc on 
-
-			tm.transactionCausalID = tmc.transactionCausalID 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = tm.statusID 		
-
-	where 		
-
-		tm.isActive = 1 and 
-
-		tm.companyID = prCompanyID and 
-
-		tm.transactionID = 19  and 
-
-		tm.statusID in (67  ) and 
-
-		tm.createdOn between prStartOn  and prEndOn ;
-
-	
-
-	
-
-		
-
-	
-
-	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
-	select 
-
-		'Si',
-
-		'Default',
-
-		'Apertura C$',
-
-		'002.001',
-
-		IFNULL(ci.`name`,'N/D')  as NombreDeMoneda,
-
-		IFNULL(sum(tmdd.quantity),0) as cantidad,
-
-		IFNULL(sum(tmdd.quantity * tmdd.reference1),0) as subtotal,
-
-		IFNULL(sum(tmdd.quantity * tmdd.reference1),0) as total,
-
-		1 as moneda, 
-
-		0 as tipoCambio 
-
-	from 
-
-		tb_transaction t 
-
-		inner join tb_transaction_master tm  on 
-
-			t.transactionID = tm.transactionID 
-
-		inner join tb_transaction_causal tmc on 
-
-			tm.transactionCausalID = tmc.transactionCausalID 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = tm.statusID 
-
-		inner join tb_transaction_master_denomination tmdd  on 
-
-			tmdd.transactionMasterID = tm.transactionMasterID 
-
-		inner join tb_catalog_item ci on 
-
-			tmdd.catalogItemID = ci.catalogItemID 		
-
-		inner join tb_catalog_item ci2 on 
-
-			ci2.catalogItemID = tm.areaID 
-
-	where 
-
-		t.transactionID = 29  and 		
-
-		tm.isActive = 1 and 
-
-		ws.aplicable = 1 and 
-
-		tm.companyID = prCompanyID and 
-
-		tmdd.quantity > 0 and 
-
-		tm.currencyID = 1 and 
-
-		ci2.`name` = 'Apertura' and 
-
-		tm.createdOn between prStartOn  and prEndOn 
-
-	group by 
-
-		ci.`name`; 
-
-		
-
-		
-
-		
-
-	
-
-		
-
-		
-
-	
-
-	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
-	select 
-
-		'Si',
-
-		'Default',
-
-		'Apertura $',
-
-		'003.001',
-
-		IFNULL(ci.`name`,'N/D')  as NombreDeMoneda,
-
-		IFNULL(sum(tmdd.quantity),0) as cantidad,
-
-		IFNULL(sum(tmdd.quantity * tmdd.reference1),0) as subtotal,
-
-		IFNULL(sum(tmdd.quantity * tmdd.reference1),0) as total,
-
-		1 as moneda, 
-
-		0 as tipoCambio 
-
-	from 
-
-		tb_transaction t 
-
-		inner join tb_transaction_master tm  on 
-
-			t.transactionID = tm.transactionID 
-
-		inner join tb_transaction_causal tmc on 
-
-			tm.transactionCausalID = tmc.transactionCausalID 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = tm.statusID 
-
-		inner join tb_transaction_master_denomination tmdd  on 
-
-			tmdd.transactionMasterID = tm.transactionMasterID 
-
-		inner join tb_catalog_item ci on 
-
-			tmdd.catalogItemID = ci.catalogItemID 		
-
-		inner join tb_catalog_item ci2 on 
-
-			ci2.catalogItemID = tm.areaID 
-
-	where 
-
-		t.transactionID = 29  and 		
-
-		tm.isActive = 1 and 
-
-		ws.aplicable = 1 and 
-
-		tm.companyID = prCompanyID and 
-
-		tmdd.quantity > 0 and 
-
-		tm.currencyID = 2 and 
-
-		ci2.`name` = 'Apertura' and 
-
-		tm.createdOn between prStartOn  and prEndOn 
-
-	group by 
-
-		ci.`name`; 
-
-		
-
-	
-
-		
-
-	
-
-	
-
-		
-
-		
-
-		
-
-	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
-	select 
-
-		*
-
-	from 
-
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+	where
+		tm.isActive = 1 and
+		tm.transactionID = 19  and
+		tm.statusID = 68  and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn and
 		(
+			(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+			(prUserIDFilter = 0)
+		);
 
-		select 
 
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'No',
+		'Default',
+		'Estado',
+		'001.003',
+		'TRAN. Reg',
+		IFNULL(count(tm.transactionMasterID),0) as cantidad,
+		IFNULL(sum(tm.amount),0) as subtotal,
+		IFNULL(sum(tm.amount),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+	where
+		tm.isActive = 1 and
+		tm.transactionID = 19  and
+		tm.statusID in ( 66  ) and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn and
+		(
+			(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+			(prUserIDFilter = 0)
+		);
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'No',
+		'Default',
+		'Estado',
+		'001.003',
+		'TRAN. Apli',
+		IFNULL(count(tm.transactionMasterID),0) as cantidad,
+		IFNULL(sum(tm.amount),0) as subtotal,
+		IFNULL(sum(tm.amount),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+	where
+		tm.isActive = 1 and
+		tm.companyID = prCompanyID and
+		tm.transactionID = 19  and
+		tm.statusID in (67  ) and
+		tm.createdOn between prStartOn  and prEndOn and
+		(
+			(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+			(prUserIDFilter = 0)
+		);
+
+
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'Si',
+		'Default',
+		'Apertura C$',
+		'002.001',
+		IFNULL(ci.`name`,'N/D')  as NombreDeMoneda,
+		IFNULL(sum(tmdd.quantity),0) as cantidad,
+		IFNULL(sum(tmdd.quantity * tmdd.reference1),0) as subtotal,
+		IFNULL(sum(tmdd.quantity * tmdd.reference1),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_transaction_master_denomination tmdd  on
+			tmdd.transactionMasterID = tm.transactionMasterID
+		inner join tb_catalog_item ci on
+			tmdd.catalogItemID = ci.catalogItemID
+		inner join tb_catalog_item ci2 on
+			ci2.catalogItemID = tm.areaID
+	where
+		t.transactionID = 29  and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.companyID = prCompanyID and
+		tmdd.quantity > 0 and
+		tm.currencyID = 1 and
+		ci2.`name` = 'Apertura' and
+		tm.createdOn between prStartOn  and prEndOn and
+		(
+			(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+			(prUserIDFilter = 0)
+		)
+	group by
+		ci.`name`;
+
+
+
+
+
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'Si',
+		'Default',
+		'Apertura $',
+		'003.001',
+		IFNULL(ci.`name`,'N/D')  as NombreDeMoneda,
+		IFNULL(sum(tmdd.quantity),0) as cantidad,
+		IFNULL(sum(tmdd.quantity * tmdd.reference1),0) as subtotal,
+		IFNULL(sum(tmdd.quantity * tmdd.reference1),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_transaction_master_denomination tmdd  on
+			tmdd.transactionMasterID = tm.transactionMasterID
+		inner join tb_catalog_item ci on
+			tmdd.catalogItemID = ci.catalogItemID
+		inner join tb_catalog_item ci2 on
+			ci2.catalogItemID = tm.areaID
+	where
+		t.transactionID = 29  and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.companyID = prCompanyID and
+		tmdd.quantity > 0 and
+		tm.currencyID = 2 and
+		ci2.`name` = 'Apertura' and
+		tm.createdOn between prStartOn  and prEndOn and
+		(
+			(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+			(prUserIDFilter = 0)
+		)
+	group by
+		ci.`name`;
+
+
+
+
+
+
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		*
+	from
+		(
+		select
 			'Si',
-
 			'Default',
-
 			concat('Formas de Pago ', case when tm.currencyID = 2 then '$' else 'C$' end  ) ,
-
 			'004.001',
-
 			concat('Efectivo ' , case when tm.currencyID = 2 then '$' else 'C$' end),
-
 			IFNULL(count(tmi.receiptAmount),0) as efectivo,
-
 			IFNULL(sum(tmi.receiptAmount),0)as transferencia,
-
 			IFNULL(sum(tmi.receiptAmount),0) as tarjeta,
+			1 as moneda,
+			0 as tipoCambio
+		from
+			tb_transaction t
+			inner join tb_transaction_master tm  on
+				t.transactionID = tm.transactionID
+			inner join tb_transaction_causal tmc on
+				tm.transactionCausalID = tmc.transactionCausalID
+			inner join tb_workflow_stage ws on
+				ws.workflowStageID = tm.statusID
+			inner join tb_transaction_master_info tmi on
+				tmi.transactionMasterID = tm.transactionMasterID
+		where
+			t.transactionID = 19  and
+			tmc.transactionCausalID in (23  , 21  ) and
+			tm.isActive = 1 and
+			ws.aplicable = 1 and
+			tmi.receiptAmount > 0 and
+			tm.companyID = prCompanyID and
+			tm.createdOn between prStartOn  and prEndOn and
+			(
+				(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+				(prUserIDFilter = 0)
+			)
 
-			1 as moneda, 
+		union all
 
-			0 as tipoCambio 
-
-		from 
-
-			tb_transaction t 
-
-			inner join tb_transaction_master tm  on 
-
-				t.transactionID = tm.transactionID 
-
-			inner join tb_transaction_causal tmc on 
-
-				tm.transactionCausalID = tmc.transactionCausalID 
-
-			inner join tb_workflow_stage ws on 
-
-				ws.workflowStageID = tm.statusID 
-
-			inner join tb_transaction_master_info tmi on 
-
-				tmi.transactionMasterID = tm.transactionMasterID 
-
-		where 
-
-			t.transactionID = 19  and 
-
-			tmc.transactionCausalID in (23  , 21  ) and 
-
-			tm.isActive = 1 and 
-
-			ws.aplicable = 1 and 			
-
-			tmi.receiptAmount > 0 and 
-
-			tm.companyID = prCompanyID and 			
-
-			tm.createdOn between prStartOn  and prEndOn 
-
-		
-
-		union all 
-
-		
-
-		select 
-
+		select
 			'Si',
-
 			'Default',
-
 			concat('Formas de Pago ' , case when tm.currencyID = 2 then '$' else 'C$' end ),
-
 			'004.002',
-
 			concat('Tarjeta ', case when tm.currencyID = 2 then '$' else 'C$' end),
-
 			IFNULL(count(tmi.receiptAmountCard),0) as efectivo,
-
 			IFNULL(sum(tmi.receiptAmountCard),0)as transferencia,
-
 			IFNULL(sum(tmi.receiptAmountCard),0) as tarjeta,
+			1 as moneda,
+			0 as tipoCambio
+		from
+			tb_transaction t
+			inner join tb_transaction_master tm  on
+				t.transactionID = tm.transactionID
+			inner join tb_transaction_causal tmc on
+				tm.transactionCausalID = tmc.transactionCausalID
+			inner join tb_workflow_stage ws on
+				ws.workflowStageID = tm.statusID
+			inner join tb_transaction_master_info tmi on
+				tmi.transactionMasterID = tm.transactionMasterID
+		where
+			t.transactionID = 19  and
+			tmc.transactionCausalID in (23  , 21  ) and
+			tm.isActive = 1 and
+			ws.aplicable = 1 and
+			tmi.receiptAmountCard > 0 and
+			tm.companyID = prCompanyID and
+			tm.createdOn between prStartOn  and prEndOn and
+			(
+				(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+				(prUserIDFilter = 0)
+			)
 
-			1 as moneda, 
+		union all
 
-			0 as tipoCambio 
-
-		from 
-
-			tb_transaction t 
-
-			inner join tb_transaction_master tm  on 
-
-				t.transactionID = tm.transactionID 
-
-			inner join tb_transaction_causal tmc on 
-
-				tm.transactionCausalID = tmc.transactionCausalID 
-
-			inner join tb_workflow_stage ws on 
-
-				ws.workflowStageID = tm.statusID 
-
-			inner join tb_transaction_master_info tmi on 
-
-				tmi.transactionMasterID = tm.transactionMasterID 
-
-		where 
-
-			t.transactionID = 19  and 
-
-			tmc.transactionCausalID in (23  , 21  ) and 
-
-			tm.isActive = 1 and 
-
-			ws.aplicable = 1 and 			
-
-			tmi.receiptAmountCard > 0 and 
-
-			tm.companyID = prCompanyID and 
-
-			tm.createdOn between prStartOn  and prEndOn 
-
-			
-
-		union all 
-
-		
-
-		select 
-
+		select
 			'Si',
-
 			'Default',
-
 			concat('Formas de Pago ', case when tm.currencyID = 2 then '$' else 'C$' end),
-
 			'004.003',
-
 			concat('Transferencia ', case when tm.currencyID = 2 then '$' else 'C$' end ),
-
 			IFNULL(count(tmi.receiptAmountBank),0) as efectivo,
-
 			IFNULL(sum(tmi.receiptAmountBank),0)as transferencia,
-
 			IFNULL(sum(tmi.receiptAmountBank),0) as tarjeta,
-
-			1 as moneda, 
-
-			0 as tipoCambio 
-
-		from 
-
-			tb_transaction t 
-
-			inner join tb_transaction_master tm  on 
-
-				t.transactionID = tm.transactionID 
-
-			inner join tb_transaction_causal tmc on 
-
-				tm.transactionCausalID = tmc.transactionCausalID 
-
-			inner join tb_workflow_stage ws on 
-
-				ws.workflowStageID = tm.statusID 
-
-			inner join tb_transaction_master_info tmi on 
-
-				tmi.transactionMasterID = tm.transactionMasterID 
-
-		where 
-
-			t.transactionID = 19  and 
-
-			tmc.transactionCausalID in (23  , 21  ) and 
-
-			tm.isActive = 1 and 
-
-			ws.aplicable = 1 and 		
-
-			tmi.receiptAmountBank > 0 and 
-
-			tm.companyID = prCompanyID and 
-
-			tm.createdOn between prStartOn  and prEndOn 
-
+			1 as moneda,
+			0 as tipoCambio
+		from
+			tb_transaction t
+			inner join tb_transaction_master tm  on
+				t.transactionID = tm.transactionID
+			inner join tb_transaction_causal tmc on
+				tm.transactionCausalID = tmc.transactionCausalID
+			inner join tb_workflow_stage ws on
+				ws.workflowStageID = tm.statusID
+			inner join tb_transaction_master_info tmi on
+				tmi.transactionMasterID = tm.transactionMasterID
+		where
+			t.transactionID = 19  and
+			tmc.transactionCausalID in (23  , 21  ) and
+			tm.isActive = 1 and
+			ws.aplicable = 1 and
+			tmi.receiptAmountBank > 0 and
+			tm.companyID = prCompanyID and
+			tm.createdOn between prStartOn  and prEndOn and
+			(
+				(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+				(prUserIDFilter = 0)
+			)
 	) as kl
-
-	where 
-
+	where
 		kl.tarjeta > 0 ;
 
-		
-
-	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
-	select 
-
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
 		*
-
-	from 
-
+	from
 		(
-
-			select 
-
+			select
 				'Si',
-
 				'Default',
-
 				concat('Formas de Pago ', case when tm.currencyID = 2 then 'C$' else '$' end),
-
 				'005.001',
-
 				concat('Efectivo ', case when tm.currencyID = 2 then 'C$' else '$' end ),
-
 				IFNULL(count(IFNULL(tmi.receiptAmountDol,0)),0) as efectivo,
-
 				IFNULL(sum(IFNULL(tmi.receiptAmountDol,0)),0) as transferencia,
-
 				IFNULL(sum(IFNULL(tmi.receiptAmountDol,0)),0) as tarjeta,
+				1 as moneda,
+				0 as tipoCambio
+			from
+				tb_transaction t
+				inner join tb_transaction_master tm  on
+					t.transactionID = tm.transactionID
+				inner join tb_transaction_causal tmc on
+					tm.transactionCausalID = tmc.transactionCausalID
+				inner join tb_workflow_stage ws on
+					ws.workflowStageID = tm.statusID
+				inner join tb_transaction_master_info tmi on
+					tmi.transactionMasterID = tm.transactionMasterID
+			where
+				t.transactionID = 19  and
+				tmc.transactionCausalID in (23  , 21  ) and
+				tm.isActive = 1 and
+				ws.aplicable = 1 and
+				tmi.receiptAmountDol > 0 and
+				tm.companyID = prCompanyID and
+				tm.createdOn between prStartOn  and prEndOn and
+				(
+					(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+					(prUserIDFilter = 0)
+				)
 
-				1 as moneda, 
+			union all
 
-				0 as tipoCambio 
-
-			from 
-
-				tb_transaction t 
-
-				inner join tb_transaction_master tm  on 
-
-					t.transactionID = tm.transactionID 
-
-				inner join tb_transaction_causal tmc on 
-
-					tm.transactionCausalID = tmc.transactionCausalID 
-
-				inner join tb_workflow_stage ws on 
-
-					ws.workflowStageID = tm.statusID 
-
-				inner join tb_transaction_master_info tmi on 
-
-					tmi.transactionMasterID = tm.transactionMasterID 
-
-			where 
-
-				t.transactionID = 19  and 
-
-				tmc.transactionCausalID in (23  , 21  ) and 
-
-				tm.isActive = 1 and 
-
-				ws.aplicable = 1 and 
-
-				tmi.receiptAmountDol > 0 and 
-
-				tm.companyID = prCompanyID and 
-
-				tm.createdOn between prStartOn  and prEndOn 
-
-				
-
-			union all 
-
-			
-
-			select 
-
+			select
 				'Si',
-
 				'Default',
-
 				concat('Formas de Pago ', case when tm.currencyID = 2 then 'C$' else '$' end),
-
 				'005.002',
-
 				concat('Tarjeta ',case when tm.currencyID = 2 then 'C$' else '$' end),
-
 				IFNULL(count(IFNULL(tmi.receiptAmountCardDol,0)),0) as efectivo,
-
 				IFNULL(sum(IFNULL(tmi.receiptAmountCardDol,0)),0) as transferencia,
-
 				IFNULL(sum(IFNULL(tmi.receiptAmountCardDol,0)),0) as tarjeta,
+				1 as moneda,
+				0 as tipoCambio
+			from
+				tb_transaction t
+				inner join tb_transaction_master tm  on
+					t.transactionID = tm.transactionID
+				inner join tb_transaction_causal tmc on
+					tm.transactionCausalID = tmc.transactionCausalID
+				inner join tb_workflow_stage ws on
+					ws.workflowStageID = tm.statusID
+				inner join tb_transaction_master_info tmi on
+					tmi.transactionMasterID = tm.transactionMasterID
+			where
+				t.transactionID = 19  and
+				tmc.transactionCausalID in (23  , 21  ) and
+				tm.isActive = 1 and
+				ws.aplicable = 1 and
+				tmi.receiptAmountCardDol > 0 and
+				tm.companyID = prCompanyID and
+				tm.createdOn between prStartOn  and prEndOn and
+				(
+					(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+					(prUserIDFilter = 0)
+				)
 
-				1 as moneda, 
+			union all
 
-				0 as tipoCambio 
-
-			from 
-
-				tb_transaction t 
-
-				inner join tb_transaction_master tm  on 
-
-					t.transactionID = tm.transactionID 
-
-				inner join tb_transaction_causal tmc on 
-
-					tm.transactionCausalID = tmc.transactionCausalID 
-
-				inner join tb_workflow_stage ws on 
-
-					ws.workflowStageID = tm.statusID 
-
-				inner join tb_transaction_master_info tmi on 
-
-					tmi.transactionMasterID = tm.transactionMasterID 
-
-			where 
-
-				t.transactionID = 19  and 
-
-				tmc.transactionCausalID in (23  , 21  ) and 
-
-				tm.isActive = 1 and 
-
-				ws.aplicable = 1 and 
-
-				tmi.receiptAmountCardDol > 0 and 
-
-				tm.companyID = prCompanyID and 
-
-				tm.createdOn between prStartOn  and prEndOn 
-
-				
-
-			union all 
-
-			
-
-			select 
-
+			select
 				'Si',
-
 				'Default',
-
 				concat('Formas de Pago ',case when tm.currencyID = 2 then 'C$' else '$' end),
-
 				'005.003',
-
 				concat('Transferencia ',case when tm.currencyID = 2 then 'C$' else '$' end),
-
 				IFNULL(count(IFNULL(tmi.receiptAmountBankDol,0)),0) as efectivo,
-
 				IFNULL(sum(IFNULL(tmi.receiptAmountBankDol,0)),0) as transferencia,
-
 				IFNULL(sum(IFNULL(tmi.receiptAmountBankDol,0)),0) as tarjeta,
-
-				1 as moneda, 
-
-				0 as tipoCambio 
-
-			from 
-
-				tb_transaction t 
-
-				inner join tb_transaction_master tm  on 
-
-					t.transactionID = tm.transactionID 
-
-				inner join tb_transaction_causal tmc on 
-
-					tm.transactionCausalID = tmc.transactionCausalID 
-
-				inner join tb_workflow_stage ws on 
-
-					ws.workflowStageID = tm.statusID 
-
-				inner join tb_transaction_master_info tmi on 
-
-					tmi.transactionMasterID = tm.transactionMasterID 
-
-			where 
-
-				t.transactionID = 19  and 
-
-				tmc.transactionCausalID in (23  , 21  ) and 
-
-				tm.isActive = 1 and 
-
-				ws.aplicable = 1 and 
-
-				tmi.receiptAmountBankDol > 0 and 
-
-				tm.companyID = prCompanyID and 
-
-				tm.createdOn between prStartOn  and prEndOn 
+				1 as moneda,
+				0 as tipoCambio
+			from
+				tb_transaction t
+				inner join tb_transaction_master tm  on
+					t.transactionID = tm.transactionID
+				inner join tb_transaction_causal tmc on
+					tm.transactionCausalID = tmc.transactionCausalID
+				inner join tb_workflow_stage ws on
+					ws.workflowStageID = tm.statusID
+				inner join tb_transaction_master_info tmi on
+					tmi.transactionMasterID = tm.transactionMasterID
+			where
+				t.transactionID = 19  and
+				tmc.transactionCausalID in (23  , 21  ) and
+				tm.isActive = 1 and
+				ws.aplicable = 1 and
+				tmi.receiptAmountBankDol > 0 and
+				tm.companyID = prCompanyID and
+				tm.createdOn between prStartOn  and prEndOn and
+				(
+					(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+					(prUserIDFilter = 0)
+				)
 
 	) as kl
+ where
+	kl.tarjeta > 0 ;
 
- where 
 
-	kl.tarjeta > 0 ; 				
 
-			
 
-		
-
-	
-
-	
-
-	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
-	select 
-
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
 		'No',
-
 		'Default',
-
 		'Operaciones',
-
 		'006.001',
-
 		concat('Vent Cred ',case when tm.currencyID = 1 then 'C$' else '$' end),
-
 		IFNULL(count(tm.transactionMasterID),0) as cantidad,
-
 		IFNULL(sum(tm.amount),0) as subtotal,
-
 		IFNULL(sum(tm.amount),0) as total,
-
-		1 as moneda, 
-
-		0 as tipoCambio 
-
-	from 
-
-		tb_transaction t 
-
-		inner join tb_transaction_master tm  on 
-
-			t.transactionID = tm.transactionID 
-
-		inner join tb_transaction_causal tmc on 
-
-			tm.transactionCausalID = tmc.transactionCausalID 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = tm.statusID 
-
-	where 
-
-		t.transactionID = 19  and 
-
-		tmc.transactionCausalID in (22  , 24  ) and 
-
-		tm.isActive = 1 and 
-
-		ws.aplicable = 1 and 
-
-		tm.companyID = prCompanyID and 
-
-		tm.createdOn between prStartOn  and prEndOn ;
-
-		
-
-	
-
-	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
-	select 
-
-		'No',
-
-		'Default',
-
-		'Operaciones',
-
-		'006.002',
-
-		concat('Vent Cont ',case when tm.currencyID = 1 then 'C$' else '$' end),
-
-		IFNULL(count(tm.transactionMasterID),0) as cantidad,
-
-		IFNULL(sum(tm.amount),0) as subtotal,
-
-		IFNULL(sum(tm.amount),0) as total,
-
-		1 as moneda, 
-
-		0 as tipoCambio 
-
-	from 
-
-		tb_transaction t 
-
-		inner join tb_transaction_master tm  on 
-
-			t.transactionID = tm.transactionID 
-
-		inner join tb_transaction_causal tmc on 
-
-			tm.transactionCausalID = tmc.transactionCausalID 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = tm.statusID 
-
-	where 
-
-		t.transactionID = 19  and 
-
-		tmc.transactionCausalID in (23  , 21  ) and 
-
-		tm.isActive = 1 and 
-
-		ws.aplicable = 1 and 
-
-		tm.companyID = prCompanyID and 
-
-		tm.createdOn between prStartOn  and prEndOn ;
-
-		
-
-	
-
-	
-
-		
-
-	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
-	select 
-
-		'No',
-
-		'Default',
-
-		'Operaciones',
-
-		'006.003',
-
-		'Abonos C$',
-
-		IFNULL(count(tm.transactionMasterID),0) as cantidad,
-
-		IFNULL(sum(tmi.receiptAmount),0) as subtotal,
-
-		IFNULL(sum(tmi.receiptAmount),0) as total,
-
-		1 as moneda, 
-
-		0 as tipoCambio 
-
-	from 
-
-		tb_transaction t 
-
-		inner join tb_transaction_master tm  on 
-
-			t.transactionID = tm.transactionID 
-
-		inner join tb_transaction_master_info tmi on 
-
-			tm.transactionMasterID = tmi.transactionMasterID  
-
-		inner join tb_transaction_causal tmc on 
-
-			tm.transactionCausalID = tmc.transactionCausalID 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = tm.statusID 
-
-		inner join tb_company com on 
-
-			com.companyID = t.companyID 
-
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
 	where
+		t.transactionID = 19  and
+		tmc.transactionCausalID in (22  , 24  ) and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn and
+		(
+			(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+			(prUserIDFilter = 0)
+		);
 
-		tm.transactionID = 23 and 
 
-		tm.isActive = 1 and 
-
-		ws.aplicable = 1 and 
-
-		tm.companyID = prCompanyID and 
-
-		tm.createdOn between prStartOn  and prEndOn and 
-
-		tmi.receiptAmount > 0 ;
-
-		
-
-	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
-	select 
-
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
 		'No',
-
 		'Default',
-
 		'Operaciones',
+		'006.002',
+		concat('Vent Cont ',case when tm.currencyID = 1 then 'C$' else '$' end),
+		IFNULL(count(tm.transactionMasterID),0) as cantidad,
+		IFNULL(sum(tm.amount),0) as subtotal,
+		IFNULL(sum(tm.amount),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+	where
+		t.transactionID = 19  and
+		tmc.transactionCausalID in (23  , 21  ) and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn AND
+		(
+			(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+			(prUserIDFilter = 0)
+		);
 
+
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'No',
+		'Default',
+		'Operaciones',
+		'006.003',
+		'Abonos C$',
+		IFNULL(count(tm.transactionMasterID),0) as cantidad,
+		IFNULL(sum(tmi.receiptAmount),0) as subtotal,
+		IFNULL(sum(tmi.receiptAmount),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_master_info tmi on
+			tm.transactionMasterID = tmi.transactionMasterID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_company com on
+			com.companyID = t.companyID
+	where
+		tm.transactionID = 23 and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn and
+		tmi.receiptAmount > 0 and
+		(
+			(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+			(prUserIDFilter = 0)
+		);
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'No',
+		'Default',
+		'Operaciones',
 		'006.004',
-
 		'Abonos $',
-
 		IFNULL(count(tm.transactionMasterID),0) as cantidad,
-
 		IFNULL(sum(tmi.receiptAmountDol),0) as subtotal,
-
 		IFNULL(sum(tmi.receiptAmountDol),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_master_info tmi on
+			tm.transactionMasterID = tmi.transactionMasterID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_company com on
+			com.companyID = t.companyID
+	where
+		tm.transactionID = 23 and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn and
+		tmi.receiptAmountDol > 0 and
+		(
+			(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+			(prUserIDFilter = 0)
+		);
 
-		1 as moneda, 
 
-		0 as tipoCambio 
 
-	from 
-
-		tb_transaction t 
-
-		inner join tb_transaction_master tm  on 
-
-			t.transactionID = tm.transactionID 
-
-		inner join tb_transaction_master_info tmi on 
-
-			tm.transactionMasterID = tmi.transactionMasterID 
-
-		inner join tb_transaction_causal tmc on 
-
-			tm.transactionCausalID = tmc.transactionCausalID 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = tm.statusID 
-
-		inner join tb_company com on 
-
-			com.companyID = t.companyID 
-
-	where 
-
-		tm.transactionID = 23 and 			
-
-		tm.isActive = 1 and 
-
-		ws.aplicable = 1 and 
-
-		tm.companyID = prCompanyID and 
-
-		tm.createdOn between prStartOn  and prEndOn and 
-
-		tmi.receiptAmountDol > 0 ;
-
-	
-
-	
-
-	
-
-	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
-	select 
-
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
 		'No',
-
 		'Default',
-
 		'Operaciones',
-
 		'006.005',
-
 		'Ing. Efectivo C$',
-
 		IFNULL(count(tm.transactionMasterID),0) as cantidad,
-
 		IFNULL(sum(tm.amount),0) as subtotal,
-
 		IFNULL(sum(tm.amount),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_catalog_item ci2 on
+			ci2.catalogItemID = tm.areaID
+	where
+		t.transactionID = 29  and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.currencyID = 1 and
+		ci2.`name` != 'Apertura' and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn and
+		(
+			(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+			(prUserIDFilter = 0)
+		);
 
-		1 as moneda, 
 
-		0 as tipoCambio 
-
-	from 
-
-		tb_transaction t 
-
-		inner join tb_transaction_master tm  on 
-
-			t.transactionID = tm.transactionID 
-
-		inner join tb_transaction_causal tmc on 
-
-			tm.transactionCausalID = tmc.transactionCausalID 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = tm.statusID 		
-
-		inner join tb_catalog_item ci2 on 
-
-			ci2.catalogItemID = tm.areaID 
-
-	where 
-
-		t.transactionID = 29  and 		
-
-		tm.isActive = 1 and 
-
-		ws.aplicable = 1 and 
-
-		tm.currencyID = 1 and 		
-
-		ci2.`name` != 'Apertura' and 
-
-		tm.companyID = prCompanyID and 
-
-		tm.createdOn between prStartOn  and prEndOn ;
-
-		
-
-	
-
-	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
-	select 
-
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
 		'No',
-
 		'Default',
-
 		'Operaciones',
-
 		'006.006',
-
 		'Ing. Efectivo $',
-
 		IFNULL(count(tm.transactionMasterID),0) as cantidad,
-
 		IFNULL(sum(tm.amount),0) as subtotal,
-
 		IFNULL(sum(tm.amount),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_catalog_item ci2 on
+			ci2.catalogItemID = tm.areaID
+	where
+		t.transactionID = 29  and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.currencyID = 2 and
+		ci2.`name` != 'Apertura' and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn and
+		(
+			(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+			(prUserIDFilter = 0)
+		);
 
-		1 as moneda, 
 
-		0 as tipoCambio 
 
-	from 
 
-		tb_transaction t 
-
-		inner join tb_transaction_master tm  on 
-
-			t.transactionID = tm.transactionID 
-
-		inner join tb_transaction_causal tmc on 
-
-			tm.transactionCausalID = tmc.transactionCausalID 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = tm.statusID 		
-
-		inner join tb_catalog_item ci2 on 
-
-			ci2.catalogItemID = tm.areaID 
-
-	where 
-
-		t.transactionID = 29  and 		
-
-		tm.isActive = 1 and 
-
-		ws.aplicable = 1 and 
-
-		tm.currencyID = 2 and 
-
-		ci2.`name` != 'Apertura' and 
-
-		tm.companyID = prCompanyID and 
-
-		tm.createdOn between prStartOn  and prEndOn ;
-
-		
-
-		
-
-		
-
-	
-
-	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
-	select 
-
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
 		'No',
-
 		'Default',
-
 		'Operaciones',
-
 		'006.007',
-
 		'Primas C$',
-
 		IFNULL(count(tm.transactionMasterID),0) as cantidad,
-
 		IFNULL(
-
 		sum(
-
-			tmi.receiptAmount + 
-
+			tmi.receiptAmount +
 			tmi.receiptAmountDol +
-
-			tmi.receiptAmountBank + 
-
-			tmi.receiptAmountBankDol + 
-
-			tmi.receiptAmountCard + 
-
-			tmi.receiptAmountCardDol 
-
+			tmi.receiptAmountBank +
+			tmi.receiptAmountBankDol +
+			tmi.receiptAmountCard +
+			tmi.receiptAmountCardDol
 		),
-
 		0) as subtotal,
-
 		IFNULL(
-
 		sum(
-
-			tmi.receiptAmount + 
-
-			tmi.receiptAmountDol + 
-
-			tmi.receiptAmountBank + 
-
-			tmi.receiptAmountBankDol + 
-
-			tmi.receiptAmountCard + 
-
-			tmi.receiptAmountCardDol 
-
+			tmi.receiptAmount +
+			tmi.receiptAmountDol +
+			tmi.receiptAmountBank +
+			tmi.receiptAmountBankDol +
+			tmi.receiptAmountCard +
+			tmi.receiptAmountCardDol
 		),
-
 		0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_transaction_master_info tmi on
+			tmi.transactionMasterID = tm.transactionMasterID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+	where
+		t.transactionID = 19  and
+		tmc.transactionCausalID in (22  , 24  ) and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn and
+		(
+			(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+			(prUserIDFilter = 0)
+		);
 
-		1 as moneda, 
 
-		0 as tipoCambio 
 
-	from 
-
-		tb_transaction t 
-
-		inner join tb_transaction_master tm  on 
-
-			t.transactionID = tm.transactionID 
-
-		inner join tb_transaction_causal tmc on 
-
-			tm.transactionCausalID = tmc.transactionCausalID 
-
-		inner join tb_transaction_master_info tmi on 
-
-			tmi.transactionMasterID = tm.transactionMasterID 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = tm.statusID 
-
-	where 
-
-		t.transactionID = 19  and 
-
-		tmc.transactionCausalID in (22  , 24  ) and 
-
-		tm.isActive = 1 and 
-
-		ws.aplicable = 1 and 
-
-		tm.companyID = prCompanyID and 
-
-		tm.createdOn between prStartOn  and prEndOn ;
-
-		
-
-		
-
-		
-
-	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
-	select 
-
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
 		'No',
-
 		'Default',
-
 		'Operaciones',
-
 		'006.008',
-
 		'Egr. Efectivo C$',
-
 		IFNULL(count(tm.transactionMasterID),0) as cantidad,
-
 		IFNULL(sum(tm.amount),0) as subtotal,
-
 		IFNULL(sum(tm.amount),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_catalog_item ci2 on
+			ci2.catalogItemID = tm.areaID
+	where
+		t.transactionID = 30  and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.currencyID = 1 and
+		ci2.`name` != 'Cierre' and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn and
+		(
+			(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+			(prUserIDFilter = 0)
+		);
 
-		1 as moneda, 
 
-		0 as tipoCambio 
 
-	from 
 
-		tb_transaction t 
 
-		inner join tb_transaction_master tm  on 
 
-			t.transactionID = tm.transactionID 
-
-		inner join tb_transaction_causal tmc on 
-
-			tm.transactionCausalID = tmc.transactionCausalID 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = tm.statusID 		
-
-		inner join tb_catalog_item ci2 on 
-
-			ci2.catalogItemID = tm.areaID 
-
-	where 
-
-		t.transactionID = 30  and 		
-
-		tm.isActive = 1 and 
-
-		ws.aplicable = 1 and 
-
-		tm.currencyID = 1 and 
-
-		ci2.`name` != 'Cierre' and 
-
-		tm.companyID = prCompanyID and 
-
-		tm.createdOn between prStartOn  and prEndOn ;
-
-		
-
-	
-
-	
-
-			
-
-			
-
-			
-
-	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
-	select 
-
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
 		'No',
-
 		'Default',
-
 		'Operaciones',
-
 		'006.009',
-
 		'Egr. Efectivo $',
-
 		IFNULL(count(tm.transactionMasterID),0) as cantidad,
-
 		IFNULL(sum(tm.amount),0) as subtotal,
-
 		IFNULL(sum(tm.amount),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_catalog_item ci2 on
+			ci2.catalogItemID = tm.areaID
+	where
+		t.transactionID = 30  and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.currencyID = 2 and
+		ci2.`name` != 'Cierre' and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn and
+		(
+			(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+			(prUserIDFilter = 0)
+		);
 
-		1 as moneda, 
 
-		0 as tipoCambio 
 
-	from 
 
-		tb_transaction t 
 
-		inner join tb_transaction_master tm  on 
 
-			t.transactionID = tm.transactionID 
-
-		inner join tb_transaction_causal tmc on 
-
-			tm.transactionCausalID = tmc.transactionCausalID 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = tm.statusID 		
-
-		inner join tb_catalog_item ci2 on 
-
-			ci2.catalogItemID = tm.areaID 
-
-	where 
-
-		t.transactionID = 30  and 		
-
-		tm.isActive = 1 and 
-
-		ws.aplicable = 1 and 
-
-		tm.currencyID = 2 and 
-
-		ci2.`name` != 'Cierre' and 
-
-		tm.companyID = prCompanyID and 
-
-		tm.createdOn between prStartOn  and prEndOn ;
-
-		
-
-	
-
-	
-
-		
-
-	
-
-		
-
-	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
-	select 
-
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
 		'Si',
-
 		'Default',
-
 		'Cierre C$',
-
 		'007.001',
-
 		IFNULL(ci.`name`,'N/D')  as NombreDeMoneda,
-
 		IFNULL(sum(tmdd.quantity),0) as cantidad,
-
 		IFNULL(sum(tmdd.quantity * tmdd.reference1),0) as subtotal,
-
 		IFNULL(sum(tmdd.quantity * tmdd.reference1),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_transaction_master_denomination tmdd  on
+			tmdd.transactionMasterID = tm.transactionMasterID
+		inner join tb_catalog_item ci on
+			tmdd.catalogItemID = ci.catalogItemID
+		inner join tb_catalog_item ci2 on
+			ci2.catalogItemID = tm.areaID
+	where
+		t.transactionID = 30  and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.companyID = prCompanyID and
+		tmdd.quantity > 0 and
+		tm.currencyID = 1 and
+		ci2.`name` = 'Cierre' and
+		tm.createdOn between prStartOn  and prEndOn and
+		(
+			(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+			(prUserIDFilter = 0)
+		)
+	group by
+		ci.`name`;
 
-		1 as moneda, 
 
-		0 as tipoCambio 
 
-	from 
-
-		tb_transaction t 
-
-		inner join tb_transaction_master tm  on 
-
-			t.transactionID = tm.transactionID 
-
-		inner join tb_transaction_causal tmc on 
-
-			tm.transactionCausalID = tmc.transactionCausalID 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = tm.statusID 
-
-		inner join tb_transaction_master_denomination tmdd  on 
-
-			tmdd.transactionMasterID = tm.transactionMasterID 
-
-		inner join tb_catalog_item ci on 
-
-			tmdd.catalogItemID = ci.catalogItemID 		
-
-		inner join tb_catalog_item ci2 on 
-
-			ci2.catalogItemID = tm.areaID 
-
-	where 
-
-		t.transactionID = 30  and 		
-
-		tm.isActive = 1 and 
-
-		ws.aplicable = 1 and 
-
-		tm.companyID = prCompanyID and 
-
-		tmdd.quantity > 0 and 
-
-		tm.currencyID = 1 and 
-
-		ci2.`name` = 'Cierre' and 
-
-		tm.createdOn between prStartOn  and prEndOn 
-
-	group by 
-
-		ci.`name`; 
-
-		
-
-	
-
-		
-
-	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
-	select 
-
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
 		'Si',
-
 		'Default',
-
 		'Cierre $',
-
 		'008.001',
-
 		IFNULL(ci.`name`,'N/D')  as NombreDeMoneda,
-
 		IFNULL(sum(tmdd.quantity),0) as cantidad,
-
 		IFNULL(sum(tmdd.quantity * tmdd.reference1),0) as subtotal,
-
 		IFNULL(sum(tmdd.quantity * tmdd.reference1),0) as total,
-
-		1 as moneda, 
-
-		0 as tipoCambio 
-
-	from 
-
-		tb_transaction t 
-
-		inner join tb_transaction_master tm  on 
-
-			t.transactionID = tm.transactionID 
-
-		inner join tb_transaction_causal tmc on 
-
-			tm.transactionCausalID = tmc.transactionCausalID 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = tm.statusID 
-
-		inner join tb_transaction_master_denomination tmdd  on 
-
-			tmdd.transactionMasterID = tm.transactionMasterID 
-
-		inner join tb_catalog_item ci on 
-
-			tmdd.catalogItemID = ci.catalogItemID 		
-
-		inner join tb_catalog_item ci2 on 
-
-			ci2.catalogItemID = tm.areaID 
-
-	where 
-
-		t.transactionID = 30  and 		
-
-		tm.isActive = 1 and 
-
-		ws.aplicable = 1 and 
-
-		tm.companyID = prCompanyID and 
-
-		tmdd.quantity > 0 and 
-
-		tm.currencyID = 2 and 
-
-		ci2.`name` = 'Cierre' and 
-
-		tm.createdOn between prStartOn  and prEndOn 
-
-	group by 
-
-		ci.`name`; 
-
-		
-
-	
-
-	
-
-		
-
-	
-
-	
-
-	
-
-	IF varCompanyType != "galmcuts" THEN 
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_transaction_master_denomination tmdd  on
+			tmdd.transactionMasterID = tm.transactionMasterID
+		inner join tb_catalog_item ci on
+			tmdd.catalogItemID = ci.catalogItemID
+		inner join tb_catalog_item ci2 on
+			ci2.catalogItemID = tm.areaID
+	where
+		t.transactionID = 30  and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.companyID = prCompanyID and
+		tmdd.quantity > 0 and
+		tm.currencyID = 2 and
+		ci2.`name` = 'Cierre' and
+		tm.createdOn between prStartOn  and prEndOn and
+		(
+			(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+			(prUserIDFilter = 0)
+		)
+	group by
+		ci.`name`;
 
 
 
-		SET varDif = 0;	
 
-		
+
+
+
+	IF varCompanyType != "galmcuts" THEN
+
+		SET varDif = 0;
 
 		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Vent Cont C$' );
-
 		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Apertura C$' );
-
 		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Abonos C$' );
-
 		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Primas C$' );
-
 		SET varDif = varDif - (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'EGR. Efectivo C$' );
-
 		SET varDif = varDif - (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Cierre C$' );
-
-		insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
+		insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
 		values ('No','Default','Diferencia','009.001','Dif C$',0,ifnull(varDif,0),ifnull(varDif,0),1,0);
 
-		
 
-		
-
-		
 
 		SET varDif = 0;
 
-		
 
-		
-
-		
 
 		SET varDif = varDif + (select ifnull(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Vent Cont $' );
-
-		SET varDif = varDif + (select ifnull(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Apertura $' );	
-
+		SET varDif = varDif + (select ifnull(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Apertura $' );
 		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Abonos $' );
-
 		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Primas $' );
-
 		SET varDif = varDif - (select ifnull(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'EGR. Efectivo $' );
-
 		SET varDif = varDif - (select ifnull(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Cierre $' );
 
-		
-
-		insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
+		insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
 		values ('No','Default','Diferencia','009.002','Dif $',0,ifnull(varDif,0),ifnull(varDif,0),1,0);
 
-		
-
 	end if;
 
-	
 
-	
-
-	IF varCompanyType = "galmcuts" THEN 
-
-
-
-		SET varDif = 0;	
-
-		
-
-		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Vent Cont C$' );
-
-		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Apertura C$' );
-
-		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Abonos C$' );
-
-		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Primas C$' );
-
-		SET varDif = varDif - (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'EGR. Efectivo C$' );
-
-		SET varDif = varDif - (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Cierre C$' );
-
-		insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
-		values ('No','Default','Saldo Final Caja','009.001','C$',0,ifnull(varDif,0),ifnull(varDif,0),1,0);
-
-		
-
-		
-
-		
+	IF varCompanyType = "galmcuts" THEN
 
 		SET varDif = 0;
 
-		
+		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Vent Cont C$' );
+		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Apertura C$' );
+		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Abonos C$' );
+		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Primas C$' );
+		SET varDif = varDif - (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'EGR. Efectivo C$' );
+		SET varDif = varDif - (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Cierre C$' );
+		insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+		values ('No','Default','Saldo Final Caja','009.001','C$',0,ifnull(varDif,0),ifnull(varDif,0),1,0);
 
-		
 
-		
+
+		SET varDif = 0;
+
+
 
 		SET varDif = varDif + (select ifnull(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Vent Cont $' );
-
-		SET varDif = varDif + (select ifnull(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Apertura $' );	
-
+		SET varDif = varDif + (select ifnull(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Apertura $' );
 		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Abonos $' );
-
 		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Primas $' );
-
 		SET varDif = varDif - (select ifnull(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'EGR. Efectivo $' );
-
 		SET varDif = varDif - (select ifnull(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Cierre $' );
 
-		
-
-		insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio) 
-
+		insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
 		values ('No','Default','Saldo Final Caja','009.002','$',0,ifnull(varDif,0),ifnull(varDif,0),1,0);
-
-		
 
 	end if;
 
-	
 
-	
+	IF varCompanyType = "carlosluis" THEN
 
-	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,moneda,tipoCambio,cantidad,subtotal,total) 
+			insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+			select
+				'No',
+				'Default',
+				'Detalle de los abono',
+				'011.001',
+				concat(cus.customerNumber,' ',nat.firstName,' ', nat.lastName) as nombre,
+				1 as cantidad,
+				sum(c.amount ) as subtotal ,
+				sum(c.amount ) as total ,
+				1 as moneda,
+				0 as tipoCambio
+			from
+				tb_transaction_master c
+				inner join tb_customer cus on
+					cus.entityID = c.entityID
+				inner join tb_naturales nat on
+					nat.entityID = cus.entityID
+				inner join tb_workflow_stage ws on
+					ws.workflowStageID = c.statusID
+			where
+				c.isActive = 1 and
+				c.transactionID = 23 /**abonos*/  and
+				ws.aplicable = 1 and
+				c.companyID = prCompanyID and
+				c.createdOn between prStartOn  and prEndOn
+			group by
+				cus.customerNumber ,
+				concat(nat.firstName,' ', nat.lastName) ;
 
-	select 
 
+
+	end if;
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,moneda,tipoCambio,cantidad,subtotal,total)
+	select
 		z.sumary,
-
 		z.comandoProces,
-
 		z.subtitulo,
-
 		z.codigo,
-
-		z.nombre,		
-
+		z.nombre,
 		z.moneda,
-
 		z.tipoCambio,
-
 		sum(z.cantidad) as cantidad,
-
 		sum(z.subtotal) as subtotal,
-
 		sum(z.total) as total
-
-	from 
-
+	from
 		(
-
-			select 
-
+			select
 				'Si' as sumary,
-
 				'Default' as comandoProces,
-
 				'Detalle de Venta' as subtitulo,
-
 				'010.001' as codigo,
-
-				i.`name` as nombre,		
-
+				i.`name` as nombre,
 				td.quantity as cantidad,
-
 				td.amount as subtotal,
-
 				td.amount as total,
-
-				1 as moneda, 
-
-				0 as tipoCambio 
-
-			from 
-
-				tb_transaction t 
-
-				inner join tb_transaction_master tm  on 
-
-					t.transactionID = tm.transactionID 
-
-				inner join tb_transaction_master_detail td on 
-
-					td.transactionMasterID = tm.transactionMasterID 
-
-				inner join tb_item i on 
-
-					td.componentItemID = i.itemID 
-
-				inner join tb_item_category  cat on 
-
-					cat.inventoryCategoryID = i.inventoryCategoryID 
-
-				inner join tb_transaction_causal tmc on 
-
-					tm.transactionCausalID = tmc.transactionCausalID 
-
-				inner join tb_workflow_stage ws on 
-
-					ws.workflowStageID = tm.statusID 
-
-			where 
-
-				t.transactionID = 19  and 
-
-				tm.isActive = 1 and 
-
-				ws.aplicable = 1 and 
-
-				td.isActive = 1 and 
-
-				tm.companyID = prCompanyID and 
-
-				tm.createdOn between prStartOn  and prEndOn 	
-
-			order by 
-
+				1 as moneda,
+				0 as tipoCambio
+			from
+				tb_transaction t
+				inner join tb_transaction_master tm  on
+					t.transactionID = tm.transactionID
+				inner join tb_transaction_master_detail td on
+					td.transactionMasterID = tm.transactionMasterID
+				inner join tb_item i on
+					td.componentItemID = i.itemID
+				inner join tb_item_category  cat on
+					cat.inventoryCategoryID = i.inventoryCategoryID
+				inner join tb_transaction_causal tmc on
+					tm.transactionCausalID = tmc.transactionCausalID
+				inner join tb_workflow_stage ws on
+					ws.workflowStageID = tm.statusID
+			where
+				t.transactionID = 19  and
+				tm.isActive = 1 and
+				ws.aplicable = 1 and
+				td.isActive = 1 and
+				tm.companyID = prCompanyID and
+				tm.createdOn between prStartOn  and prEndOn 	and
+				(
+					(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+					(prUserIDFilter = 0)
+				)
+			order by
 				cat.`name`,i.`name`
-
-		) z 
-
-	group by 
-
+		) z
+	group by
 		z.sumary,
-
 		z.comandoProces,
-
 		z.subtitulo,
-
 		z.codigo,
-
-		z.nombre,		
-
+		z.nombre,
 		z.moneda,
-
 		z.tipoCambio;
 
-	
 
-		
-
-	
 
 	SET amount1 = (select k.total from  tb_tmp_closed k where  k.nombre = 'Vent Cont C$');
-
 	SET amount2 = (select k.total from  tb_tmp_closed k where  k.nombre = 'Efectivo $'  and k.substitulo = 'Formas de Pago $');
-
 	SET amount3 = (select k.total from  tb_tmp_closed k where  k.nombre = 'Efectivo C$' and k.substitulo = 'Formas de Pago C$');
-
 	SET amount4 = (select k.total from  tb_tmp_closed k where  k.nombre = 'Tarjeta C$' and k.substitulo = 'Formas de Pago C$');
-
 	SET amount1 = IFNULL(amount1,0);
-
 	SET amount2 = IFNULL(amount2,0);
-
 	SET amount3 = IFNULL(amount3,0);
-
 	SET amount4 = IFNULL(amount4,0);
 
-	
 
-	
-
-	UPDATE tb_tmp_closed set 
-
+	UPDATE tb_tmp_closed set
 		total = amount1 -  (amount2 * 36.5) - amount4,
-
-		subtotal = amount1 -  (amount2 * 36.5) - amount4 
-
-	WHERE 
-
-		nombre = 'Efectivo C$' and 
-
+		subtotal = amount1 -  (amount2 * 36.5) - amount4
+	WHERE
+		nombre = 'Efectivo C$' and
 		substitulo = 'Formas de Pago C$';
 
-		
 
-		
 
-	
-
-	
-
-		
-
-			
-
-	select 
-
+	select
 		sumary,
-
 		comandoProce,
-
 		substitulo,
-
 		codigo,
-
 		nombre,
-
 		cantidad,
-
 		subtotal,
-
 		total,
-
 		moneda,
-
 		tipoCambio
-
-	from 
-
-		tb_tmp_closed 
-
-	order by 
-
+	from
+		tb_tmp_closed
+	order by
 		codigo asc ;
 
-		
 
-			
+	drop table tb_tmp_closed;
 
-	drop table tb_tmp_closed;		
 
-	
 
-	
-
-	 
-
-	 
 
 END ;;
 DELIMITER ;
@@ -10881,14 +9925,14 @@ DELIMITER ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_box_get_report_input_cash`(IN `prUserID` INT, IN `prTokenID` VARCHAR(150), IN `prCompanyID` INT, IN `prAuthorization` INT, IN `prStartOn` DATE, IN `prEndOn` DATE, IN `prUserIDFilter` INT , IN prConceptFilter VARCHAR(150) ,IN `prBranchID` INT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'listado de ingresos y egresos de efectivo de la caja'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'listado de ingresos y egresos de efectivo de la caja'
 BEGIN
-	DECLARE exchangeRate_ DECIMAL(18,4) DEFAULT 0;		
+	DECLARE exchangeRate_ DECIMAL(18,4) DEFAULT 0;
 	DECLARE currencyIDNameSource VARCHAR(250);
-	DECLARE currencyIDNameTarget VARCHAR(250);	
-	DECLARE moneda_ VARCHAR(50); 
+	DECLARE currencyIDNameTarget VARCHAR(250);
+	DECLARE moneda_ VARCHAR(50);
 	DECLARE currencyID_ INT DEFAULT 0;
 	DECLARE currencyIDTarget_ INT DEFAULT 0;
 	DECLARE currencyTargetSale DECIMAL(19,9) DEFAULT 0;
@@ -10896,18 +9940,18 @@ BEGIN
 	DECLARE PERMISSION_NONE INT DEFAULT -1;
 	DECLARE PERMISSION_ALL INT DEFAULT 0;
 	DECLARE PERMISSION_BRANCH INT DEFAULT 1;
-	DECLARE PERMISSION_ME INT DEFAULT 2; 
+	DECLARE PERMISSION_ME INT DEFAULT 2;
 	DECLARE isAdmin_ INT DEFAULT   0;
-  DECLARE convert_ VARCHAR(50);	 
+  DECLARE convert_ VARCHAR(50);
 
-	select 
-		r.isAdmin into isAdmin_ 
-	from 
-		tb_user u 
-		inner join tb_membership me on 
-			u.userID = me.userID 
-		inner join tb_role r on 
-			me.roleID = r.roleID 
+	select
+		r.isAdmin into isAdmin_
+	from
+		tb_user u
+		inner join tb_membership me on
+			u.userID = me.userID
+		inner join tb_role r on
+			me.roleID = r.roleID
 	where
 		me.userID = prUserID and r.isAdmin = 1 limit 1 ;
 	set isAdmin_ = (case when isAdmin_ is null then 0 else isAdmin_ end);
@@ -10915,107 +9959,107 @@ BEGIN
 	SET currencyID_ 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameSource);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",currencyIDNameTarget);
 	SET currencyIDTarget_ 	= (SELECT currencyID FROM tb_currency where name = currencyIDNameTarget);
-	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_);	
+	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_EXCHANGE_SALE",currencyTargetSale);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_EXCHANGE_PURCHASE",currencyTargetPurchase);
-	CALL pr_core_get_parameter_value(prCompanyID, "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT", convert_);	
+	CALL pr_core_get_parameter_value(prCompanyID, "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT", convert_);
   drop temporary table if exists tb_tmp_split;
 	create temporary table tb_tmp_split( val char(255) );
 	set @sql = concat("insert into tb_tmp_split (val) values ('", replace(prConceptFilter, ",", "'),('"),"');");
 	prepare stmt1 from @sql;
 	execute stmt1;
 
-	SELECT 
-		tt.name as transactionName,	
+	SELECT
+		tt.name as transactionName,
 		tm.transactionNumber ,
 		tm.createdOn as transactionOn,
 		tm.amount as montoTotal ,
 		ws.name as estado,
-		tm.note,		
+		tm.note,
 		tmd.reference1 as Fac,
 		if(
 			cur.name = 'Dolar',
 			tmd.amount * (exchangeRate_  + currencyTargetSale),
 			tmd.amount
 		)  as montoCordoba,
-    case 
-			when convert_ = 'Dolar' and cur.name != 'Dolar'  then 
+    case
+			when convert_ = 'Dolar' and cur.name != 'Dolar'  then
 				tmd.amount * (exchangeRate_  )
-			when convert_ = 'Cordoba' and cur.name != 'Cordoba'  then 
+			when convert_ = 'Cordoba' and cur.name != 'Cordoba'  then
 				tmd.amount / (exchangeRate_ )
-			else 
-				tmd.amount 
+			else
+				tmd.amount
 		end as montoTransaccion,
-		case 
-			when convert_ = 'None'  then 
+		case
+			when convert_ = 'None'  then
       cur.`name`
-			else 
-				convert_ 
+			else
+				convert_
 		end as moneda ,
 		(exchangeRate_  + currencyTargetSale) as tipoCambio ,
 		PERMISSION_ME,
 		prAuthorization,
 		tm.createdBy ,
-		us.nickname ,		
+		us.nickname ,
 		ten.`name` as tipoEntrada,
 		subten.`name` as tipoSubEntrada,
-		if(LENGTH(tm.note)  > 0 , tm.note ,CONCAT(tm.reference1,'-',tm.reference2,'-',tm.reference3) )as note 
-	FROM 
+		if(LENGTH(tm.note)  > 0 , tm.note ,CONCAT(tm.reference1,'-',tm.reference2,'-',tm.reference3) )as note
+	FROM
 		tb_transaction_master tm
-		inner join tb_transaction tt on 
-			tm.transactionID = tt.transactionID 	
-		inner join tb_transaction_master_detail tmd on 
-			tm.companyID = tmd.companyID and 
-			tm.transactionID = tmd.transactionID and 
-			tm.transactionMasterID = tmd.transactionMasterID 	
-		inner join tb_workflow_stage ws on 
-			tm.statusID = ws.workflowStageID  	
-    inner join tb_currency cur on 
-			tm.currencyID = cur.currencyID 
-		inner join tb_user us on 
-			us.userID = tm.createdBy 
-		left join tb_catalog_item ten on 
-			ten.catalogItemID = tm.areaID 
-		left join tb_catalog_item subten on 
-			subten.catalogItemID = tm.priorityID 
+		inner join tb_transaction tt on
+			tm.transactionID = tt.transactionID
+		inner join tb_transaction_master_detail tmd on
+			tm.companyID = tmd.companyID and
+			tm.transactionID = tmd.transactionID and
+			tm.transactionMasterID = tmd.transactionMasterID
+		inner join tb_workflow_stage ws on
+			tm.statusID = ws.workflowStageID
+    inner join tb_currency cur on
+			tm.currencyID = cur.currencyID
+		inner join tb_user us on
+			us.userID = tm.createdBy
+		left join tb_catalog_item ten on
+			ten.catalogItemID = tm.areaID
+		left join tb_catalog_item subten on
+			subten.catalogItemID = tm.priorityID
 	where
-		tm.transactionID IN  (29) 		
-		and tm.isActive = 1 
-		and tmd.isActive = 1 
-		and tm.companyID = prCompanyID 
-		AND ws.aplicable = 1  
-		and 
+		tm.transactionID IN  (29 /*INGRESO A CAJA*/, 67 /*APERTURA DE CAJA*/ )
+		and tm.isActive = 1
+		and tmd.isActive = 1
+		and tm.companyID = prCompanyID
+		AND ws.aplicable = 1
+		and
 		(
 			(tm.branchID = prBranchID and prBranchID != 0 )
-			or 
+			or
 			(prBranchID = 0)
 		)
-		and cast(tm.createdOn as date) between prStartOn and concat(prEndOn,' 23:59:59') 
-		and  
+		and cast(tm.createdOn as date) between prStartOn and concat(prEndOn,' 23:59:59')
+		and
 		(
 				fn_get_access_ready(
-					prCompanyID  , 
-					prUserID  , 173  , 
-					tm.createdBy  , 0 
-				) = 1 
-		) and 
+					prCompanyID  ,
+					prUserID  , 173  ,
+					tm.createdBy  , 0
+				) = 1
+		) and
 		(
 					  (tm.createdBy = prUserIDFilter and prUserIDFilter != 0 )
-						or 
+						or
 						(prUserIDFilter = 0)
-		) and 
+		) and
 		(
 			(prConceptFilter = '-1') or
 			(
-					prConceptFilter != '-1' and 
-					tm.areaID in 
+					prConceptFilter != '-1' and
+					tm.areaID in
 					(
-						select val  from tb_tmp_split 
+						select val  from tb_tmp_split
 					)
-			) 
+			)
 		)
-	order by 
-		tm.createdOn;   
+	order by
+		tm.createdOn;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -11033,14 +10077,14 @@ DELIMITER ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_box_get_report_output_cash`(IN `prUserID` INT, IN `prTokenID` VARCHAR(150), IN `prCompanyID` INT, IN `prAuthorization` INT, IN `prStartOn` DATE, IN `prEndOn` DATE, IN `prUserIDFilter` INT,IN prConceptFilter VARCHAR(150) ,IN `prBranchID` INT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'listado de ingresos y egresos de efectivo de la caja'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'listado de ingresos y egresos de efectivo de la caja'
 BEGIN
-	DECLARE exchangeRate_ DECIMAL(18,4) DEFAULT 0;		
+	DECLARE exchangeRate_ DECIMAL(18,4) DEFAULT 0;
 	DECLARE currencyIDNameSource VARCHAR(250);
-	DECLARE currencyIDNameTarget VARCHAR(250);	
-	DECLARE moneda_ VARCHAR(50); 
+	DECLARE currencyIDNameTarget VARCHAR(250);
+	DECLARE moneda_ VARCHAR(50);
 	DECLARE currencyID_ INT DEFAULT 0;
 	DECLARE currencyIDTarget_ INT DEFAULT 0;
 	DECLARE currencyTargetSale DECIMAL(19,9) DEFAULT 0;
@@ -11048,147 +10092,147 @@ BEGIN
 	DECLARE PERMISSION_NONE INT DEFAULT -1;
 	DECLARE PERMISSION_ALL INT DEFAULT 0;
 	DECLARE PERMISSION_BRANCH INT DEFAULT 1;
-	DECLARE PERMISSION_ME INT DEFAULT 2; 
+	DECLARE PERMISSION_ME INT DEFAULT 2;
 	DECLARE isAdmin_ INT DEFAULT   0;
-  DECLARE convert_ VARCHAR(50);	 
+  DECLARE convert_ VARCHAR(50);
 
-	select 
-		r.isAdmin into isAdmin_ 
-	from 
-		tb_user u 
-		inner join tb_membership me on 
-			u.userID = me.userID 
-    inner join tb_role r on 
-			me.roleID = r.roleID 
+	select
+		r.isAdmin into isAdmin_
+	from
+		tb_user u
+		inner join tb_membership me on
+			u.userID = me.userID
+    inner join tb_role r on
+			me.roleID = r.roleID
 	where
 		me.userID = prUserID and r.isAdmin = 1 limit 1 ;
 	set isAdmin_ = (case when isAdmin_ is null then 0 else isAdmin_ end);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameSource);
-	SET currencyID_ 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameSource);	
+	SET currencyID_ 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameSource);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",currencyIDNameTarget);
 	SET currencyIDTarget_ 	= (SELECT currencyID FROM tb_currency where name = currencyIDNameTarget);
-	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_);	
+	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_EXCHANGE_SALE",currencyTargetSale);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_EXCHANGE_PURCHASE",currencyTargetPurchase);
-	CALL pr_core_get_parameter_value(prCompanyID, "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT", convert_);	
+	CALL pr_core_get_parameter_value(prCompanyID, "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT", convert_);
   drop temporary table if exists tb_tmp_split;
 	create temporary table tb_tmp_split( val char(255) );
 	set @sql = concat("insert into tb_tmp_split (val) values ('", replace(prConceptFilter, ",", "'),('"),"');");
 	prepare stmt1 from @sql;
 	execute stmt1;
 
-	SELECT 			
-		tt.name as transactionName,	
+	SELECT
+		tt.name as transactionName,
 		tm.transactionNumber ,
-		tm.createdOn as transactionOn,
+		tm.transactionOn as transactionOn,
 		tm.amount as montoTotal ,
 		ws.name as estado,
-		tm.note,		
-		case 
-			when tm.transactionID = 30  then 
-				tmd.reference1 
-			else 
+		tm.note,
+		case
+			when tm.transactionID = 30  then
+				tmd.reference1
+			else
 				''
 		end as Fac,
-		case 
-			when tm.transactionID = 30  then 
+		case
+			when tm.transactionID = 30  then
 				if(
 					cur.name = 'Dolar',
 					tmd.amount * (exchangeRate_  + currencyTargetSale),
 					tmd.amount
-				)  
-			else 
-				tm.amount 
+				)
+			else
+				tm.amount
 		end as montoCordoba,
-		case 
-			when convert_ = 'Dolar' and cur.name != 'Dolar'  then 
+		case
+			when convert_ = 'Dolar' and cur.name != 'Dolar'  then
 				tmd.amount * (exchangeRate_  )
-			when convert_ = 'Cordoba' and cur.name != 'Cordoba'  then 
+			when convert_ = 'Cordoba' and cur.name != 'Cordoba'  then
 				tmd.amount / (exchangeRate_  )
-			else 
-				tmd.amount 
+			else
+				tmd.amount
 		end as montoTransaccion,
-		case 
-			when convert_ = 'None'  then 
+		case
+			when convert_ = 'None'  then
       cur.`name`
-			else 
-				convert_ 
+			else
+				convert_
 		end as moneda  ,
 		(exchangeRate_  + currencyTargetSale) as tipoCambio ,
 		PERMISSION_ME,
 		prAuthorization,
 		tm.createdBy ,
 		us.nickname ,
-		case 
-			when tm.transactionID = 30  then  
+		case
+			when tm.transactionID = 30  then
 				ten.`name`
-			else 
+			else
 				''
 		end  as tipoSalida,
-		case 
-			when tm.transactionID = 30  then 
-				subten.`name` 
-			else 
+		case
+			when tm.transactionID = 30  then
+				subten.`name`
+			else
 				''
 		end as tipoSubSalida,
 		if(LENGTH(tm.note)  > 0 , tm.note ,CONCAT(tm.reference1,'-',tm.reference2,'-',tm.reference3) )as notev2
-	FROM 
+	FROM
 		tb_transaction_master tm
-		inner join tb_transaction tt on 
-			tm.transactionID = tt.transactionID 	
-		left join tb_transaction_master_detail tmd on 
-			tm.companyID = tmd.companyID and 
-			tm.transactionID = tmd.transactionID and 
-			tm.transactionMasterID = tmd.transactionMasterID 	and 
-			tmd.isActive = 1 
-		inner join tb_workflow_stage ws on 
-			tm.statusID = ws.workflowStageID  	
-		inner join tb_currency cur on 
-			tm.currencyID = cur.currencyID 
-		inner join tb_user us on 
-			us.userID = tm.createdBy 
-		left join tb_catalog_item ten on 
-			ten.catalogItemID = tm.areaID 
-		left join tb_catalog_item subten on 
-			subten.catalogItemID = tm.priorityID 
+		inner join tb_transaction tt on
+			tm.transactionID = tt.transactionID
+		left join tb_transaction_master_detail tmd on
+			tm.companyID = tmd.companyID and
+			tm.transactionID = tmd.transactionID and
+			tm.transactionMasterID = tmd.transactionMasterID 	and
+			tmd.isActive = 1
+		inner join tb_workflow_stage ws on
+			tm.statusID = ws.workflowStageID
+		inner join tb_currency cur on
+			tm.currencyID = cur.currencyID
+		inner join tb_user us on
+			us.userID = tm.createdBy
+		left join tb_catalog_item ten on
+			ten.catalogItemID = tm.areaID
+		left join tb_catalog_item subten on
+			subten.catalogItemID = tm.priorityID
 	where
-		tm.transactionID IN  (30  ) 		
-		and tm.isActive = 1 
-		and tm.companyID = prCompanyID 
-		AND ws.aplicable = 1  
-		and 
+		tm.transactionID IN  (30  /*SALIDA DE CAJA*/ , 66 /*CIERRE DE CAJA*/ )
+		and tm.isActive = 1
+		and tm.companyID = prCompanyID
+		AND ws.aplicable = 1
+		and
 		(
 			(tm.branchID = prBranchID and prBranchID != 0 )
-			or 
+			or
 			(prBranchID = 0)
-		) 
-		and cast(tm.createdOn as date) between prStartOn and concat(prEndOn,' 23:59:59') 
-		and  
-		(			
+		)
+		and cast(tm.transactionOn as date) between prStartOn and concat(prEndOn,' 23:59:59')
+		and
+		(
 				fn_get_access_ready(
-					prCompanyID  , prUserID  , 
-					173  , 
-					tm.createdBy  , 0 
-				) = 1 
-		) and 
+					prCompanyID  , prUserID  ,
+					173  ,
+					tm.createdBy  , 0
+				) = 1
+		) and
 		(
 			(tm.createdBy = prUserIDFilter and prUserIDFilter != 0 )
-			or 
+			or
 			(prUserIDFilter = 0)
-		) and 
+		) and
 		(
 			(prConceptFilter = '-1') or
 			(
-					prConceptFilter != '-1' and 
-					tm.areaID in 
+					prConceptFilter != '-1' and
+					tm.areaID in
 					(
-						select val  from tb_tmp_split 
+						select val  from tb_tmp_split
 					)
-			) 
+			)
 		)
-	order by 
-		tm.createdOn;   
-END;;
+	order by
+		tm.transactionOn;
+END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -12275,698 +11319,340 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_collection_get_report_documents_credit`(IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), IN `prUserID` INT, IN prDate DATETIME)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_collection_get_report_documents_credit`(IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), IN `prUserID` INT,IN prDateStart DATETIME, IN prDateEnd DATETIME)
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
 BEGIN
 
 	DECLARE varMin DATETIME;
-
 	DECLARE varMax DATETIME;
-
 	DECLARE columnas_pivot VARCHAR(10000);
-
   DECLARE sql_query VARCHAR(10000);
 
-	
 
-	
+
 
 	DROP TEMPORARY TABLE IF EXISTS tbl_document_temp;
-
 	CREATE TEMPORARY TABLE tbl_document_temp AS
-
-	select 
-
+	select
 		d.customerCreditDocumentID,
-
 		d.documentNumber,
-
 		DATE(NOW()) as documentOn,
+		0 as amount
+	from
+		tb_customer_credit_document d
+	where
+		d.isActive = 1 and
+		d.dateOn between  prDateStart and prDateEnd;
 
-		0 as amount 
 
-	from 
 
-		tb_customer_credit_document d 
 
-	where 
 
-		d.isActive = 1 ; 
 
-		
-
-		
-
-	
 
 	DROP TEMPORARY TABLE IF EXISTS tbl_abonos_temp;
-
 	CREATE TEMPORARY TABLE tbl_abonos_temp AS
-
-	select 
-
+	select
 		td.reference1 as documentNumber,
-
 		date(c.transactionOn ) as transactionOn,
-
-		sum(td.amount) as amount 
-
-	from 
-
-		tb_transaction_master c 
-
-		inner join tb_transaction_master_detail td on 
-
-			c.transactionMasterID = td.transactionMasterID 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = c.statusID 
-
-	where 
-
-		c.transactionID = 23  and 
-
-		c.isActive = 1 and 
-
-		td.isActive = 1 and 
-
-		ws.aplicable = 1 and 
-
+		sum(td.amount) as amount
+	from
+		tb_transaction_master c
+		inner join tb_transaction_master_detail td on
+			c.transactionMasterID = td.transactionMasterID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = c.statusID
+	where
+		c.transactionID = 23  /*abonos*/ and
+		c.isActive = 1 and
+		td.isActive = 1 and
+		ws.aplicable = 1 and
 		c.transactionOn >=    (DATE(NOW()) - INTERVAL 10 DAY )
-
-	group by 
-
+	group by
 		td.reference1,
+		date(c.transactionOn );
 
-		date(c.transactionOn ); 
-
-		
-
-		
-
-	
 
 	SET varMin = (DATE(NOW()) - INTERVAL 10 DAY );
-
 	SET varMax = DATE(NOW());
-
-	WHILE varMin < varMax DO 
-
-	
-
-	  
+	WHILE varMin < varMax DO
 
 		insert into tbl_document_temp(customerCreditDocumentID,documentNumber,documentOn,amount )
-
-		select 
-
+		select
 				d.customerCreditDocumentID,
-
 				d.documentNumber,
-
 				varMin as documentOn ,
+				0 as amount
+			from
+				tb_customer_credit_document d
+			where
+				d.isActive = 1 and
+				d.dateOn between  prDateStart and prDateEnd;
 
-				0 as amount 
 
-			from 
-
-				tb_customer_credit_document d 
-
-			where 
-
-				d.isActive = 1 ; 
-
-			
-
-		
-
-		
-
-	  
 
 		SET varMin = varMin + INTERVAL 1 DAY;
-
 	END WHILE;
 
-	
 
-	
-
-	
-
-	UPDATE 
-
+	UPDATE
 		tbl_document_temp d
-
-		JOIN tbl_abonos_temp a ON 
-
-				d.documentNumber = a.documentNumber and 
-
+		JOIN tbl_abonos_temp a ON
+				d.documentNumber = a.documentNumber and
 				d.documentOn = a.transactionOn
-
-		SET 
-
+		SET
 			d.amount = a.amount;
 
-			
 
-	
-
-		
-
-    
-
-		SELECT 
-
+		SELECT
 				GROUP_CONCAT(
-
 						CONCAT(
-
-								'SUM(CASE WHEN documentOn = ''', 
-
-								DATE(documentOn), 
-
+								'SUM(CASE WHEN documentOn = ''',
+								DATE(documentOn),
 								''' THEN amount ELSE 0 END) AS ',
-
 								'`',
-
-								DATE(documentOn) , 
-
-								
-
-								
-
-								
-
-								
-
-								
-
-								
-
+								DATE(documentOn) ,
 								'`'
-
 						)
-
-						ORDER BY DATE(documentOn) DESC 
-
+						ORDER BY DATE(documentOn) DESC
 						SEPARATOR ', '
-
-				) 
+				)
 
 		INTO columnas_pivot
-
 		FROM (
-
 				SELECT DISTINCT DATE(documentOn) AS documentOn
-
 				FROM tbl_document_temp
-
-				ORDER BY DATE(documentOn) DESC 
-
+				ORDER BY DATE(documentOn) DESC
 		) AS fechas;
 
 
 
-		
-
-    
-
 		DROP TEMPORARY TABLE IF EXISTS tbl_document_pivot_temp;
-
     SET sql_query = CONCAT(
-
-        ' 
-
-	      CREATE TEMPORARY TABLE tbl_document_pivot_temp AS 
-
-				SELECT 
-
-					 customerCreditDocumentID, ', columnas_pivot, ' ',
-
-        'FROM 
-
-					tbl_document_temp 
-
-				',
-
         '
-
-				GROUP BY 
-
+	      CREATE TEMPORARY TABLE tbl_document_pivot_temp AS
+				SELECT
+					 customerCreditDocumentID, ', columnas_pivot, ' ',
+        'FROM
+					tbl_document_temp
+				',
+        '
+				GROUP BY
 						customerCreditDocumentID
-
 				'
-
     );
 
 
 
-	
-
-	 
-
-    
-
 		set @sql = sql_query;
-
 		prepare stmt1 from @sql;
-
 		execute stmt1;
 
-		
 
-		
 
-		
-
-		
-
-	
-
-	
-
-	
-
-	select 
-
+	select
 		usu.nickname as orden,
-
 		usu.nickname ,
-
 		cast(cu.createdOn as date) as customerCreatedOn,
-
 		cu.customerNumber,
-
 		concat(nat.firstName,' ',nat.lastName) as customerName,
-
 		d.documentNumber,
-
-		leg.comercialName , 
-
-		cu.identification, 
-
+		leg.comercialName ,
+		cu.identification,
 		sexo.`name` as sexo,
-
-		cu.location, 
-
+		cu.location,
 		(
 
-			select 
-
-				ph.number 
-
-			from 
-
-				tb_entity_phone ph 
-
-			where 
-
-				ph.entityID = cu.entityID 
-
-			limit 1 
-
+			select
+				ph.number
+			from
+				tb_entity_phone ph
+			where
+				ph.entityID = cu.entityID
+			limit 1
 		) as phoneNumber ,
-
 		civil.`name` as statusCivil,
-
 		d.term,
-
 		d.interes,
-
 		d.amount as amountDocument,
-
 		d.dateOn as dateDocument,
-
 		(
 
-			select 
-
-				date(max(p.transactionOn)) 
-
-			from 
-
-				tb_transaction_master p 
-
-				inner join tb_transaction_master_detail pd on 
-
-					p.transactionMasterID = pd.transactionMasterID 
-
-			where 
-
-				p.isActive = 1 and 
-
-				pd.isActive = 1 and 
-
-				pd.reference1 = d.documentNumber 
-
-				
-
+			select
+				date(max(p.transactionOn))
+			from
+				tb_transaction_master p
+				inner join tb_transaction_master_detail pd on
+					p.transactionMasterID = pd.transactionMasterID
+			where
+				p.isActive = 1 and
+				pd.isActive = 1 and
+				pd.reference1 = d.documentNumber
 		) as dateLastShareDocument,
-
 		(
-
-			select 
-
-				sum(xaa.`share`) as total 
-
-			from 
-
-				tb_customer_credit_document xd 
-
-				inner join tb_customer_credit_amoritization xaa on 
-
-					xd.customerCreditDocumentID = xaa.customerCreditDocumentID 
-
-			where 
-
-				xaa.isActive = 1 and 
-
-				xd.customerCreditDocumentID = d.customerCreditDocumentID 
-
+			select
+				sum(xaa.`share`) as total
+			from
+				tb_customer_credit_document xd
+				inner join tb_customer_credit_amoritization xaa on
+					xd.customerCreditDocumentID = xaa.customerCreditDocumentID
+			where
+				xaa.isActive = 1 and
+				xd.customerCreditDocumentID = d.customerCreditDocumentID
 		) as deudaTotal,
-
 		(
-
-				select 
-
+				select
 					sum(s_td.amount) as montoPagado
-
-				from 
-
-					tb_transaction_master_detail s_td 
-
-					inner join tb_transaction_master s_t on 
-
-						s_td.transactionMasterID = s_t.transactionMasterID 
-
-					inner join tb_workflow_stage s_ws on 
-
-						s_ws.workflowStageID = s_t.statusID 
-
-				where 
-
-					s_td.isActive = 1 and 
-
-					s_t.isActive = 1 and 
-
-					s_t.transactionID = 23  and 
-
-					s_ws.aplicable = 1 and 
-
-					s_td.reference1 = d.documentNumber 
-
+				from
+					tb_transaction_master_detail s_td
+					inner join tb_transaction_master s_t on
+						s_td.transactionMasterID = s_t.transactionMasterID
+					inner join tb_workflow_stage s_ws on
+						s_ws.workflowStageID = s_t.statusID
+				where
+					s_td.isActive = 1 and
+					s_t.isActive = 1 and
+					s_t.transactionID = 23  and
+					s_ws.aplicable = 1 and
+					s_td.reference1 = d.documentNumber
 		) as montoPagado,
-
-
-
 		ROUND(
-
 			(
-
 				IFNULL
-
 				(
-
 					(
-
-						select 
-
+						select
 							sum(s_td.amount) as montoPagado
-
-						from 
-
-							tb_transaction_master_detail s_td 
-
-							inner join tb_transaction_master s_t on 
-
-								s_td.transactionMasterID = s_t.transactionMasterID 
-
-							inner join tb_workflow_stage s_ws on 
-
-								s_ws.workflowStageID = s_t.statusID 
-
-						where 
-
-							s_td.isActive = 1 and 
-
-							s_t.isActive = 1 and 
-
-							s_t.transactionID = 23  and 
-
-							s_ws.aplicable = 1 and 
-
-							s_td.reference1 = d.documentNumber 
-
+						from
+							tb_transaction_master_detail s_td
+							inner join tb_transaction_master s_t on
+								s_td.transactionMasterID = s_t.transactionMasterID
+							inner join tb_workflow_stage s_ws on
+								s_ws.workflowStageID = s_t.statusID
+						where
+							s_td.isActive = 1 and
+							s_t.isActive = 1 and
+							s_t.transactionID = 23  and
+							s_ws.aplicable = 1 and
+							s_td.reference1 = d.documentNumber
 					),
-
 					0
-
 				)
-
 				/
-
 				(
-
-							
-
-					select 
-
-						sum(xaa.`share`) as total 
-
-					from 
-
-						tb_customer_credit_document xd 
-
-						inner join tb_customer_credit_amoritization xaa on 
-
-							xd.customerCreditDocumentID = xaa.customerCreditDocumentID 
-
-					where 
-
-						xaa.isActive = 1 and 
-
-						xd.customerCreditDocumentID = d.customerCreditDocumentID 
-
-						
-
+					select
+						sum(xaa.`share`) as total
+					from
+						tb_customer_credit_document xd
+						inner join tb_customer_credit_amoritization xaa on
+							xd.customerCreditDocumentID = xaa.customerCreditDocumentID
+					where
+						xaa.isActive = 1 and
+						xd.customerCreditDocumentID = d.customerCreditDocumentID
 				)
-
 			),
-
 			2
-
-		) * 100 AS avance ,  
-
-		
-
+		) * 100 AS avance ,
 		ROUND(
-
 			(
-
-				d.amount - 
-
+				d.amount -
 				IFNULL
-
 				(
-
 					(
-
-						select 
-
+						select
 							sum(s_td.amount) as montoPagado
-
-						from 
-
-							tb_transaction_master_detail s_td 
-
-							inner join tb_transaction_master s_t on 
-
-								s_td.transactionMasterID = s_t.transactionMasterID 
-
-							inner join tb_workflow_stage s_ws on 
-
-								s_ws.workflowStageID = s_t.statusID 
-
-						where 
-
-							s_td.isActive = 1 and 
-
-							s_t.isActive = 1 and 
-
-							s_t.transactionID = 23  and 
-
-							s_ws.aplicable = 1 and 
-
-							s_td.reference1 = d.documentNumber 
-
+						from
+							tb_transaction_master_detail s_td
+							inner join tb_transaction_master s_t on
+								s_td.transactionMasterID = s_t.transactionMasterID
+							inner join tb_workflow_stage s_ws on
+								s_ws.workflowStageID = s_t.statusID
+						where
+							s_td.isActive = 1 and
+							s_t.isActive = 1 and
+							s_t.transactionID = 23  and
+							s_ws.aplicable = 1 and
+							s_td.reference1 = d.documentNumber
 					),
-
 					0
-
 				)
-
 			),
-
 			2
-
-		) AS saldo ,  
-
+		) AS saldo ,
 		(
-
-			select 
-
-				if(ro.orderNo is null,0,ro.orderNo)  				
-
-			from 
-
-				tb_relationship ro 
-
-			where 
-
-				ro.isActive = 1 and 
-
-				ro.employeeID = usu.employeeID and 
-
-			  ro.customerID = cu.entityID 
-
-			limit 1 
-
-				
-
-		) as Orden , 
-
+			select
+				if(ro.orderNo is null,0,ro.orderNo)
+			from
+				tb_relationship ro
+			where
+				ro.isActive = 1 and
+				ro.employeeID = usu.employeeID and
+			  ro.customerID = cu.entityID
+			limit 1
+		) as Orden ,
 		d.currencyID ,
-
-		
-
 		IF(
-
 			(
-
-				select 
-
+				select
 					ccd.customerCreditDocumentID
-
-				from 
-
-					tb_customer_credit_document ccd 
-
-				where 
-
-					ccd.entityID = cu.entityID and 
-
-					ccd.isActive = 1 and 
-
+				from
+					tb_customer_credit_document ccd
+				where
+					ccd.entityID = cu.entityID and
+					ccd.isActive = 1 and
 					ccd.statusID in  (77  )
-
-				limit 1 
-
-			) IS NULL , 
-
+				limit 1
+			) IS NULL ,
 			'CANCELADO',
-
 			'ACTIVO'
-
 		) as statusCustomer,
-
-		
-
 		ws.`name` as statusName,
-
-		pe.`name` as periodPay,		 
-
-		i.* 
-
-	from 
-
-		tbl_document_pivot_temp i 
-
-		inner join tb_customer_credit_document d on 
-
-			d.customerCreditDocumentID = i.customerCreditDocumentID 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = d.statusID 
-
-		inner join tb_catalog_item pe on 
-
-			pe.catalogItemID = d.periodPay 
-
-		inner join tb_customer cu on 
-
-			d.entityID = cu.entityID 
-
-		inner join tb_naturales nat on 
-
-			nat.entityID = cu.entityID 
-
-		inner join tb_legal leg on 
-
-			leg.entityID = cu.entityID 
-
-		inner join tb_catalog_item sexo on 
-
-			sexo.catalogItemID = cu.sexoID 
-
-		inner join tb_catalog_item civil on 
-
-			civil.catalogItemID = nat.statusID   
-
+		pe.`name` as periodPay,
+		i.*
+	from
+		tbl_document_pivot_temp i
+		inner join tb_customer_credit_document d on
+			d.customerCreditDocumentID = i.customerCreditDocumentID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = d.statusID
+		inner join tb_catalog_item pe on
+			pe.catalogItemID = d.periodPay
+		inner join tb_customer cu on
+			d.entityID = cu.entityID
+		inner join tb_naturales nat on
+			nat.entityID = cu.entityID
+		inner join tb_legal leg on
+			leg.entityID = cu.entityID
+		inner join tb_catalog_item sexo on
+			sexo.catalogItemID = cu.sexoID
+		inner join tb_catalog_item civil on
+			civil.catalogItemID = nat.statusID
 		inner join (
-
-			select 
-
-				distinct 
-
+			select
+				distinct
 				r.customerID as entityIDCustomer,
-
-				r.employeeID  
-
-			from 
-
-				tb_relationship  r 
-
-			where 
-
-				r.isActive = 1 
-
-		) r on 
-
-			r.entityIDCustomer = cu.entityID 
-
-		inner join tb_user usu on 
-
-			usu.employeeID = r.employeeID 
-
-	WHERE 
-
-		usu.isActive = 1 and 
-
-		cu.isActive = 1 and 
-
-		d.isActive = 1 and 
-
-		usu.isActive = 1 and 
-
+				r.employeeID
+			from
+				tb_relationship  r
+			where
+				r.isActive = 1
+		) r on
+			r.entityIDCustomer = cu.entityID
+		inner join tb_user usu on
+			usu.employeeID = r.employeeID
+	WHERE
+		usu.isActive = 1 and
+		cu.isActive = 1 and
+		d.isActive = 1 and
+		d.dateOn  between  prDateStart and prDateEnd and
+		usu.isActive = 1 and
 		usu.userID not in ( 2  , 666  )
-
-	order by 
-
-		22 
-
-	;
-
-	
+	order by
+		22;
 
 
 
-	
-
-		
 
 END ;;
 DELIMITER ;
@@ -17159,711 +15845,437 @@ DELIMITER ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_cxc_get_report_customer_credit`(IN `prUserID` INT, IN `prTokenID` VARCHAR(50), IN `prCompanyID` INT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'cartera de credito diferenciada por moneda'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'cartera de credito diferenciada por moneda'
 BEGIN
-
-	DECLARE exchangeRate_ DECIMAL(18,4) DEFAULT 0;		
-
+	DECLARE exchangeRate_ DECIMAL(18,4) DEFAULT 0;
 	DECLARE currencyIDNameSource VARCHAR(250);
-
-	DECLARE currencyIDNameTarget VARCHAR(250);	
-
-	DECLARE moneda_ VARCHAR(50); 
-
+	DECLARE currencyIDNameTarget VARCHAR(250);
+	DECLARE moneda_ VARCHAR(50);
 	DECLARE currencyID_ INT DEFAULT 0;
-
 	DECLARE currencyIDTarget_ INT DEFAULT 0;
-
 	DECLARE currencyTargetSale DECIMAL(19,9) DEFAULT 0;
-
 	DECLARE currencyTargetPurchase  DECIMAL(19,9) DEFAULT 0;
-
 	DECLARE minClientID int DEFAULT 0;
-
 	DECLARE maxClientID int DEFAULT 0;
-
 	DECLARE maxDiasMora_ int  DEFAULT 0;
-
 	DECLARE montoAtrazado_ DECIMAL(19,9) DEFAULT 0;
-
 	DECLARE cantidadFactura_ INT DEFAULT 0;
-
-	DECLARE customerNumber_ varchar(50); 
-
-	DECLARE lastVisit_ varchar(550); 
-
-	DECLARE documentNumber_ varchar(50); 
-
+	DECLARE customerNumber_ varchar(50);
+	DECLARE lastVisit_ varchar(550);
+	DECLARE documentNumber_ varchar(50);
 	DECLARE capitalPrestado_ DECIMAL(19,9) DEFAULT 0;
-
 	DECLARE interesDebengado_ DECIMAL(19,9) DEFAULT 0;
-
-	DECLARE capitalPagado_ DECIMAL(19,9) DEFAULT 0; 
-
+	DECLARE capitalPagado_ DECIMAL(19,9) DEFAULT 0;
 	DECLARE interesPagado_ DECIMAL(19,9) DEFAULT 0;
-
 	DECLARE proximoPago_ DATE;
-
-	DECLARE maximoPago_ DATE;	
-
+	DECLARE maximoPago_ DATE;
 	DECLARE ultimoPagoFecha_ DATE;
-
 	DECLARE montoProximoPago_ DECIMAL(19,9) DEFAULT 0;
-
 	DECLARE capitalAtrazado_ DECIMAL(19,9) DEFAULT 0;
-
 	DECLARE interesAtrazado_ DECIMAL(19,9) DEFAULT 0;
 
-	
-
-	CREATE TEMPORARY TABLE tmp_customer_credit 					( 
-
+	CREATE TEMPORARY TABLE tmp_customer_credit 					(
 			ID INT AUTO_INCREMENT PRIMARY KEY,
-
 			customerNumber varchar(50),legalName varchar(550),
-
 			commercialName varchar(550),firstName varchar(550),lastName varchar(550),
-
 			limitCredit decimal(19,9),balanceCredit decimal(19,9),
-
 			moneda varchar(50),
-
 			tipoCambio decimal(19,4),customerCreditLineID int,documentNumber varchar(50),
-
 			statusDocument varchar(50),dateApply DATETIME,balanceStart DECIMAL(19,9),
-
 			interest DECIMAL(19,9),capital DECIMAL(19,9),share DECIMAL(19,9),balanceEnd DECIMAL(19,9),
-
 			remaining DECIMAL (19,9), dayDelay INT,statusShare varchar(50),
-
 			direccion varchar(550),
-
 			identification varchar(50) ,
-
-			phone varchar(150),			
-
-			lastShareNumber varchar(50),																
-
-			dateLastShareNumber date,																
-
+			phone varchar(150),
+			lastShareNumber varchar(50),
+			dateLastShareNumber date,
 			amountLastShareNumber decimal(19,4),
-
-			employerName varchar(150) 
-
-	); 
-
-
+			employerName varchar(150),
+			pais varchar(150),
+			departamento varchar(150),
+			municipio varchar(150),
+			domicilio varchar(150),
+			gps varchar(150),
+			tipo_cobro varchar(150),
+			tipo_factura varchar(150),
+			observacion varchar(150)
+	);
 
 	CREATE TEMPORARY TABLE tmp_customer_credit_summary 			(
-
 				ID INT AUTO_INCREMENT PRIMARY KEY,customerNumber varchar(50),
-
 				legalName varchar(550),commercialName varchar(550),firstName varchar(550),
-
-				lastName varchar(550),limitCredit decimal(19,9),balanceCredit decimal(19,9),				
-
-				factura varchar(50),				
-
-				tipoCambio decimal(19,4),				
-
-				moneda varchar(50),				
-
-				capitalPrestado decimal(19,9) default 0,				
-
-				maxDiasMora int default 0,				
-
-				montoAtrazado decimal(19,9) default 0,				
-
-				capitalAtrazado decimal(19,9) default 0,				
-
-				interesAtrazado decimal(19,9) default 0,																				
-
-				capitalPagado decimal(19,9) default 0,																				
-
+				lastName varchar(550),limitCredit decimal(19,9),balanceCredit decimal(19,9),
+				factura varchar(50),
+				tipoCambio decimal(19,4),
+				moneda varchar(50),
+				capitalPrestado decimal(19,9) default 0,
+				maxDiasMora int default 0,
+				montoAtrazado decimal(19,9) default 0,
+				capitalAtrazado decimal(19,9) default 0,
+				interesAtrazado decimal(19,9) default 0,
+				capitalPagado decimal(19,9) default 0,
 				interesPagado decimal(19,9) default 0,
-
 				proximoPago DATE ,
-
 				montoProximoPago decimal(19,9) default 0,
-
-				ultimoPagoFecha DATE,																
-
-				direccion varchar(550), 
-
+				ultimoPagoFecha DATE,
+				direccion varchar(550),
 				identification varchar(50),
-
-				phone varchar(150),				
-
-				lastShareNumber varchar(50),				
-
-				dateLastShareNumber date,				
-
+				phone varchar(150),
+				lastShareNumber varchar(50),
+				dateLastShareNumber date,
 				amountLastShareNumber decimal(19,4),
-
 				lastVisit varchar(550),
-
 				remainingDocument decimal(19,4),
-
-				employerName varchar(150)
-
-); 
-
-	
+				employerName varchar(150),
+			  pais varchar(150),
+			  departamento varchar(150),
+			  municipio varchar(150),
+			  domicilio varchar(150),
+			  gps varchar(150),
+			  tipo_cobro varchar(150),
+			  tipo_factura varchar(150),
+			  observacion varchar(150)
+  );
 
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameSource);
-
-	SET currencyID_ 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameSource);		
-
-
+	SET currencyID_ 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameSource);
 
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",currencyIDNameTarget);
-
 	SET currencyIDTarget_ 	= (SELECT currencyID FROM tb_currency where name = currencyIDNameTarget);
 
-
-
-	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_);	
-
+	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_EXCHANGE_SALE",currencyTargetSale);
-
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_EXCHANGE_PURCHASE",currencyTargetPurchase);
-
-	
-
 
 
 	insert into tmp_customer_credit (
-
 		customerNumber ,legalName ,commercialName ,firstName ,lastName ,limitCredit ,
-
 		balanceCredit,tipoCambio ,customerCreditLineID ,documentNumber ,statusDocument ,dateApply ,
-
 		balanceStart ,interest ,capital ,share ,balanceEnd ,remaining, dayDelay ,
-
 		statusShare,moneda ,direccion,identification,phone,
-
 		lastShareNumber,dateLastShareNumber ,amountLastShareNumber	,
-
-		employerName
-
+		employerName,
+		pais,
+		departamento,
+		municipio,
+		domicilio,
+		gps,
+		tipo_cobro,
+		tipo_factura,
+		observacion
 	)
-
-	select 
-
+	select
 		c.customerNumber,
-
 		l.legalName,
-
 		l.comercialName,
-
 		n.firstName,
-
 		n.lastName,
-
 		ccl.limitCredit  AS limitCredit,
-
 		ccl.balance  AS balance,
-
 		tmc.exchangeRate AS TipoCambio,
-
 		ccl.customerCreditLineID,
-
 		ccd.documentNumber,
-
 		ws1.name,
-
 		cca.dateApply,
-
 		cca.balanceStart,
-
 		cca.interest,
-
 		cca.capital,
-
 		cca.share,
-
 		cca.balanceEnd,
-
-		cca.remaining, 
-
+		cca.remaining,
 		cca.dayDelay as dayDelay,
-
 		ws2.name		,
-
-		cur.simbol  , 
-
+		cur.simbol  ,
 		n.address as direccion,
-
 		c.identification as identification ,
-
 		IFNULL(
-
 			(select  lm.number from tb_entity_phone lm where lm.entityID = e.entityID and lm.isPrimary = 1 limit 1 ),
-
-			'N/A'
-
+			IFNULL(c.phoneNumber , 'N/A')
 		)  as phone,
-
 		IFNULL(infoUltimaTransaccion.transactionNumber,'N/A') 	 as lastShareNumber,
-
 		IFNULL(infoUltimaTransaccion.transactionOn,'N/A') 	 as dateLastShareNumber,
-
 		IFNULL(infoUltimaTransaccion.amount,'0') 	 as amountLastShareNumber,
+		nate.firstName as employerName ,
 
-		nate.firstName as employerName 
-
-	from 
-
+		pais.`name` as pais,
+		departamento.`name` as departamento,
+		municipio.`name` as municipio,
+		c.location as domicilio,
+		c.reference1 as gps,
+		c.reference2 as tipo_cobro,
+		c.reference3 as tipo_factura,
+		c.reference4 as observacion
+	from
 		tb_entity e
-
-		inner join tb_customer c on 
-
+		inner join tb_customer c on
 			e.entityID = c.entityID
+		inner join tb_catalog_item pais on
+			pais.catalogItemID = c.countryID
+		inner join tb_catalog_item departamento on
+			departamento.catalogItemID = c.stateID
+		inner join tb_catalog_item municipio on
+			municipio.catalogItemID = c.cityID
 
-		inner join tb_naturales n on 
-
-			c.entityID = n.entityID  		
-
-		inner join tb_legal l on 
-
+		inner join tb_naturales n on
+			c.entityID = n.entityID
+		inner join tb_legal l on
 			l.entityID = n.entityID
-
-		inner join tb_customer_credit_line ccl on 
-
-			e.entityID = ccl.entityID  
-
-		inner join tb_customer_credit_document ccd on 
-
-			ccd.entityID = e.entityID and 
-
-			ccd.customerCreditLineID = ccl.customerCreditLineID 
-
-		inner join tb_transaction_master tmc on  
-
-			ccd.documentNumber = tmc.transactionNumber and 
-
-			tmc.isActive = 1 and 
-
-			ccd.isActive = 1 
-
-		inner join tb_customer_credit_amoritization cca on 
-
-			ccd.customerCreditDocumentID = cca.customerCreditDocumentID 
-
-		inner join tb_workflow_stage ws1 on 
-
-			ccd.statusID = ws1.workflowStageID 
-
-		inner join tb_workflow_stage ws2 on  
-
+		inner join tb_customer_credit_line ccl on
+			e.entityID = ccl.entityID
+		inner join tb_customer_credit_document ccd on
+			ccd.entityID = e.entityID and
+			ccd.customerCreditLineID = ccl.customerCreditLineID
+		inner join tb_transaction_master tmc on
+			ccd.documentNumber = tmc.transactionNumber and
+			tmc.isActive = 1 and
+			ccd.isActive = 1
+		inner join tb_customer_credit_amoritization cca on
+			ccd.customerCreditDocumentID = cca.customerCreditDocumentID
+		inner join tb_workflow_stage ws1 on
+			ccd.statusID = ws1.workflowStageID
+		inner join tb_workflow_stage ws2 on
 			cca.statusID = ws2.workflowStageID
-
-		inner join tb_currency cur on 
-
-			tmc.currencyID = cur.currencyID 
-
-		inner join tb_naturales nate on 
-
-			nate.entityID = tmc.entityIDSecondary 
-
-		left join (		
-
-				select 
-
-					lxp.customerCreditDocumentID,
-
-					max(cxl.transactionMasterID) maxTransactionID 
-
-				from 
-
-					tb_transaction_master cxl 
-
-					inner join tb_transaction_master_detail lmxl on 
-
-						lmxl.transactionMasterID = cxl.transactionMasterID 
-
-					inner join tb_customer_credit_document lxp on 
-
-						lxp.documentNumber = lmxl.reference1 and 
-
-						lxp.customerCreditDocumentID = lmxl.componentItemID  
-
-				where  
-
-					cxl.transactionID = 23  
-
-				group by 
-
-					lxp.customerCreditDocumentID 
-
-					
-
-		) ultimaTransaccion on  
-
-			ultimaTransaccion.customerCreditDocumentID = ccd.customerCreditDocumentID 
-
+		inner join tb_currency cur on
+			tmc.currencyID = cur.currencyID
+		left join tb_naturales nate on
+			nate.entityID = tmc.entityIDSecondary
 		left join (
-
-				select 
-
+				select
 					lxp.customerCreditDocumentID,
+					max(cxl.transactionMasterID) maxTransactionID
+				from
+					tb_transaction_master cxl
+					inner join tb_transaction_master_detail lmxl on
+						lmxl.transactionMasterID = cxl.transactionMasterID
+					inner join tb_customer_credit_document lxp on
+						lxp.documentNumber = lmxl.reference1 and
+						lxp.customerCreditDocumentID = lmxl.componentItemID
+				where
+					cxl.transactionID = 23
+				group by
+					lxp.customerCreditDocumentID
 
-					cxl.transactionMasterID, 
-
+		) ultimaTransaccion on
+			ultimaTransaccion.customerCreditDocumentID = ccd.customerCreditDocumentID
+		left join (
+				select
+					lxp.customerCreditDocumentID,
+					cxl.transactionMasterID,
 					cxl.transactionNumber,
-
 					cxl.transactionOn,
-
-					cxl.amount 
-
-				from 
-
-					tb_transaction_master cxl 
-
-					inner join tb_transaction_master_detail lmxl on 
-
-						lmxl.transactionMasterID = cxl.transactionMasterID  
-
-					inner join tb_customer_credit_document lxp on 
-
-						lxp.documentNumber = lmxl.reference1 and 
-
-						lxp.customerCreditDocumentID = lmxl.componentItemID  
-
-		) as infoUltimaTransaccion on 
-
-			ultimaTransaccion.customerCreditDocumentID = infoUltimaTransaccion.customerCreditDocumentID and 
-
-			ultimaTransaccion.maxTransactionID = infoUltimaTransaccion.transactionMasterID 
-
+					cxl.amount
+				from
+					tb_transaction_master cxl
+					inner join tb_transaction_master_detail lmxl on
+						lmxl.transactionMasterID = cxl.transactionMasterID
+					inner join tb_customer_credit_document lxp on
+						lxp.documentNumber = lmxl.reference1 and
+						lxp.customerCreditDocumentID = lmxl.componentItemID
+		) as infoUltimaTransaccion on
+			ultimaTransaccion.customerCreditDocumentID = infoUltimaTransaccion.customerCreditDocumentID and
+			ultimaTransaccion.maxTransactionID = infoUltimaTransaccion.transactionMasterID
 	where
-
 		e.companyID 	= prCompanyID and
-
-		c.isActive 		= 1 and 
-
-		ccl.isActive 	= 1  and 
-
-		ccd.isActive 	= 1 and 
-
-		tmc.isActive 	= 1 and 
-
-		ws1.name in ('REGISTRADO' ) and 
-
-		(	
-
+		c.isActive 		= 1 and
+		ccl.isActive 	= 1  and
+		ccd.isActive 	= 1 and
+		tmc.isActive 	= 1 and
+		ws1.name in ('REGISTRADO' ) and
+		(
 			   	(
-
-						(ccd.providerIDCredit = fn_get_provider_id (prCompanyID,prUserID)) and 
-
+						(ccd.providerIDCredit = fn_get_provider_id (prCompanyID,prUserID)) and
 						(fn_get_provider_id (prCompanyID,prUserID) != 0)
-
 					)
-
-					or 
-
+					or
 					(fn_get_provider_id (prCompanyID,prUserID) = 0 )
-
 		)
+	order by
+		c.customerNumber,
+		ccd.dateOn,
+		ccd.documentNumber,
+		cca.creditAmortizationID;
 
-	order by 
-
-		c.customerNumber,ccd.dateOn, ccd.documentNumber,cca.creditAmortizationID;
-
-		
-
-		
 
 	INSERT INTO tmp_customer_credit_summary (
-
 		customerNumber ,legalName ,commercialName,firstName ,lastName ,factura,direccion,
-
-		identification,phone,lastShareNumber,dateLastShareNumber ,amountLastShareNumber,employerName,limitCredit,balanceCredit, remainingDocument		 
+		identification,phone,lastShareNumber,dateLastShareNumber ,amountLastShareNumber,employerName,
+		pais,
+		departamento,
+		municipio,
+		domicilio,
+		gps,
+		tipo_cobro,
+		tipo_factura,
+		observacion,
+		limitCredit,balanceCredit, remainingDocument
 
 	)
-
-	select 
-
+	select
 		x.customerNumber ,
-
 		x.legalName ,
-
 		x.commercialName,
-
 		x.firstName ,
-
 		x.lastName ,
-
 		x.documentNumber,
-
 		x.direccion as direccion,
-
 		x.identification,
-
 		x.phone,
-
 		x.lastShareNumber,
-
-		x.dateLastShareNumber , 
-
-		x.amountLastShareNumber,		
-
-		x.employerName,
-
-		SUM(x.limitCredit) as limitCredit,
-
-		SUM(x.balanceCredit) as balanceCredit,
-
-		SUM(x.remaining) as remainingDocument
-
-	from 
-
-		tmp_customer_credit x
-
-	group by 
-
-		x.customerNumber ,
-
-		x.legalName , 
-
-		x.commercialName,
-
-		x.firstName ,
-
-		x.lastName,
-
-		x.documentNumber ,
-
-		x.direccion,
-
-		x.identification,
-
-		x.phone,
-
-		x.lastShareNumber,
-
 		x.dateLastShareNumber ,
-
 		x.amountLastShareNumber,
-
-		x.employerName; 
-
-	
+		x.employerName,
+		x.pais,
+		x.departamento,
+		x.municipio,
+		x.domicilio,
+		x.gps,
+		x.tipo_cobro,
+		x.tipo_factura,
+		x.observacion,
+		SUM(x.limitCredit) as limitCredit,
+		SUM(x.balanceCredit) as balanceCredit,
+		SUM(x.remaining) as remainingDocument
+	from
+		tmp_customer_credit x
+	group by
+		x.customerNumber ,
+		x.legalName ,
+		x.commercialName,
+		x.firstName ,
+		x.lastName,
+		x.documentNumber ,
+		x.direccion,
+		x.identification,
+		x.phone,
+		x.lastShareNumber,
+		x.dateLastShareNumber ,
+		x.amountLastShareNumber,
+		x.employerName,
+		x.pais,
+		x.departamento,
+		x.municipio,
+		x.domicilio,
+		x.gps,
+		x.tipo_cobro,
+		x.tipo_factura,
+		x.observacion;
 
 	SET minClientID = (SELECT MIN(ID) FROM tmp_customer_credit_summary);
-
 	SET maxClientID = (SELECT MAX(ID) FROM tmp_customer_credit_summary);
-
-	WHILE minClientID <= maxClientID and minClientID is not null DO 	
-
+	WHILE minClientID <= maxClientID and minClientID is not null DO
 		SET documentNumber_				= (SELECT C.factura FROM tmp_customer_credit_summary C WHERE ID = minClientID LIMIT 1);
-
 		SET customerNumber_				= (SELECT C.customerNumber FROM tmp_customer_credit_summary C WHERE ID = minClientID LIMIT 1);
-
 		SET moneda_								= (SELECT C.moneda FROM tmp_customer_credit C WHERE documentNumber = documentNumber_ LIMIT 1);
-
 		SET capitalPrestado_			= (SELECT balanceStart FROM tmp_customer_credit WHERE  documentNumber = documentNumber_ ORDER BY dateApply LIMIT 1  );
-
 		SET maxDiasMora_					= (
-
-																		SELECT DATEDIFF(NOW(),dateApply) 
-
-																		FROM tmp_customer_credit C 
-
-																		WHERE 
-
-																			documentNumber = documentNumber_  and 
-
-																			dateApply <= curdate() AND 
-
-																			remaining > 0  
-
-																		ORDER BY dateApply LIMIT 1 
-
+																		SELECT DATEDIFF(NOW(),dateApply)
+																		FROM tmp_customer_credit C
+																		WHERE
+																			documentNumber = documentNumber_  and
+																			dateApply <= curdate() AND
+																			remaining > 0
+																		ORDER BY dateApply LIMIT 1
 																);
-
 		SET montoAtrazado_				= (
-
-																	SELECT SUM(C.remaining)  
-
-																	FROM tmp_customer_credit C 
-
-																	WHERE 
-
-																		documentNumber = documentNumber_ and 
-
-																		remaining > 0 and  
-
-																		dateApply <= curdate() 
-
+																	SELECT SUM(C.remaining)
+																	FROM tmp_customer_credit C
+																	WHERE
+																		documentNumber = documentNumber_ and
+																		remaining > 0 and
+																		dateApply <= curdate()
 																);
-
 		SET capitalAtrazado_ 			= (SELECT SUM(capital) FROM tmp_customer_credit WHERE  documentNumber = documentNumber_ and remaining > 0 AND dateApply <= curdate());
-
 		SET interesAtrazado_ 			= (SELECT SUM(interest) FROM tmp_customer_credit WHERE  documentNumber = documentNumber_ and remaining > 0 AND dateApply <= curdate());
-
 		SET capitalPagado_				= (SELECT SUM(capital)  FROM tmp_customer_credit WHERE  documentNumber = documentNumber_ and remaining <= 0);
-
 		SET interesPagado_				= (SELECT SUM(interest) FROM tmp_customer_credit WHERE  documentNumber = documentNumber_ and remaining <= 0);
 
-		
 
-		
-
-		SET proximoPago_				= (SELECT MIN(C.dateApply) FROM tmp_customer_credit C WHERE documentNumber = documentNumber_  and remaining > 0  );		
-
-		SET montoProximoPago_		= (SELECT SUM(C.remaining)  FROM tmp_customer_credit C WHERE C.documentNumber = documentNumber_  and C.dateApply = proximoPago_ );  
-
+		SET proximoPago_				= (SELECT MIN(C.dateApply) FROM tmp_customer_credit C WHERE documentNumber = documentNumber_  and remaining > 0  );
+		SET montoProximoPago_		= (SELECT SUM(C.remaining)  FROM tmp_customer_credit C WHERE C.documentNumber = documentNumber_  and C.dateApply = proximoPago_ );
 		SET maximoPago_ 				= (SELECT MAX(C.dateApply) FROM tmp_customer_credit C WHERE documentNumber = documentNumber_  and remaining > 0  );
-
 		SET lastVisit_ 					= (
-
 																SELECT IFNULL(note ,'Ninguna')
-
-																FROM tb_transaction_master c 
-
-																INNER JOIN tb_customer cus on 
-
-																	cus.entityID = c.entityID 
-
-																WHERE 
-
-																	c.transactionID = 35  and 
-
-																	c.isActive = 1 and 
-
-																	cus.customerNumber = customerNumber_  
-
-																ORDER BY 
-
-																	c.transactionMasterID DESC 
-
-																LIMIT 0,1 
-
+																FROM tb_transaction_master c
+																INNER JOIN tb_customer cus on
+																	cus.entityID = c.entityID
+																WHERE
+																	c.transactionID = 35  and
+																	c.isActive = 1 and
+																	cus.customerNumber = customerNumber_
+																ORDER BY
+																	c.transactionMasterID DESC
+																LIMIT 0,1
 															);
 
-		 
 
-		 
-
-		UPDATE 	tmp_customer_credit_summary set 
-
+		UPDATE 	tmp_customer_credit_summary set
 			tipoCambio 			= exchangeRate_,
-
 			moneda 				= moneda_,
-
-			capitalPrestado 	= IFNULL(capitalPrestado_,0),				
-
+			capitalPrestado 	= IFNULL(capitalPrestado_,0),
 			maxDiasMora 		= IFNULL(maxDiasMora_,0),
-
 			montoAtrazado 		= IFNULL(montoAtrazado_,0),
-
 			capitalAtrazado		= capitalAtrazado_,
-
 			interesAtrazado		= interesAtrazado_,
-
 			capitalPagado 		= IFNULL(capitalPagado_,0),
-
 			interesPagado 		= IFNULL(interesPagado_,0),
 
-			
-
 			proximoPago 		= IF(DATE(NOW()) > maximoPago_,'1900-01-01',proximoPago_),
-
 			montoProximoPago 	= IF(DATE(NOW()) > maximoPago_, 0,montoProximoPago_)  ,
-
 			ultimoPagoFecha 	= maximoPago_,
-
 			lastVisit = lastVisit_
-
-		WHERE 
-
+		WHERE
 			ID = minClientID;
 
-			
-
-		
 
 		SET minClientID					= (SELECT MIN(ID) FROM tmp_customer_credit_summary  WHERE ID > minClientID);
 
+	END WHILE;
 
 
-	END WHILE; 
-
-	
-
-
-
-	SELECT 
-
-		RIGHT(customerNumber,15) as customerNumber ,		
-
+	SELECT
+		RIGHT(customerNumber,15) as customerNumber ,
 		CONCAT(LEFT(firstName,250),' ',LEFT(lastName,250)) as legalName,
-
 		commercialName,
-
 		firstName ,lastName ,limitCredit,balanceCredit,
-
 		exchangeRate_ - currencyTargetPurchase  as tipoCambioCompra,exchangeRate_ + currencyTargetSale as tipoCambioVenta,
-
-		factura,		
-
+		factura,
 		moneda,
-
-		capitalPrestado,		
-
+		capitalPrestado,
 		maxDiasMora,
-
 		montoAtrazado,
-
 		capitalAtrazado,
-
 		interesAtrazado,
-
 		capitalPagado,
-
-		interesPagado,		 
-
+		interesPagado,
 		proximoPago,
-
 		montoProximoPago ,
-
 		ultimoPagoFecha,
-
 		direccion ,
-
 		identification,
-
 		phone ,
-
 		lastShareNumber ,
-
 		dateLastShareNumber ,
-
 		amountLastShareNumber ,
-
 		lastVisit ,
-
 		remainingDocument  ,
-
-		employerName
-
-	FROM 
-
+		employerName,
+		pais,
+		departamento,
+		municipio,
+		domicilio,
+		gps,
+		tipo_cobro,
+		tipo_factura,
+		observacion
+	FROM
 		tmp_customer_credit_summary
-
-	ORDER BY 
-
+	ORDER BY
 		maxDiasMora desc, firstName;
 
-	
-
 	DROP TABLE tmp_customer_credit;
-
 	DROP TABLE tmp_customer_credit_summary;
-
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -19074,162 +17486,96 @@ DELIMITER ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_cxc_get_report_customer_pay`(IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), IN `prUserID` INT, IN `prCustomerNumber` VARCHAR(50), IN `prReference` VARCHAR(50))
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Lista de Pagos del Cliente'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Lista de Pagos del Cliente'
 BEGIN
 
-
-
-
-
-	select 
-
-	  ROW_NUMBER() OVER (PARTITION BY tmd.reference1 ORDER BY transactionNumber) AS contador, 		
-
+	select
+	  ROW_NUMBER() OVER (PARTITION BY tmd.reference1 ORDER BY transactionNumber) AS contador,
+		tm.companyID,
+		tm.transactionID,
+		tm.transactionMasterID,
 		tm.createdOn,
-
 		tm.transactionNumber,
-
+		concat(
+			'<a href="{base_url}/app_box_share/edit/companyID/2/transactionID/23/transactionMasterID/',
+			tm.transactionMasterID,
+			'" target="_blank" >',
+			tm.transactionNumber,
+			'</a>'
+		) as transactionNumberLink,
 		usr.nickname as userName,
-
 		tm.note,
-
 		tmd.amount as Pago,
-
 		tmd.reference1,
-
 		tcc.amount as MontoDesembolso,
-
 		tcc.balance as Balance,
-
 		cur.name as MonedaDesembolso,
-
-		case 
-
-			when tmd.reference2 is null then 
-
-				0 
-
-			when tmd.reference2 = '' then 
-
+		case
+			when tmd.reference2 is null then
 				0
-
+			when tmd.reference2 = '' then
+				0
 			else
-
 				tmd.reference2
-
 		end  SaldoAterior,
-
-		case 
-
-			when tmd.reference4 is null then 
-
-				0 
-
-			when tmd.reference4 = '' then 
-
+		case
+			when tmd.reference4 is null then
 				0
-
+			when tmd.reference4 = '' then
+				0
 			else
-
 				tmd.reference4
-
 		end  SaldoNuevo
-
-	from 
-
-		tb_transaction t 
-
-		inner join tb_transaction_master tm on 
-
-			t.transactionID = tm.transactionID and 
-
-			t.companyID = tm.companyID 
-
-		inner join tb_transaction_master_detail tmd on 
-
-			tm.companyID = tmd.companyID and 
-
-			tm.transactionID = tmd.transactionID and 
-
-			tm.transactionMasterID = tmd.transactionMasterID 
-
-		inner join tb_workflow_stage ws on  
-
-			tm.statusID = ws.workflowStageID 
-
-		inner join tb_transaction_master tm2 on 
-
-			tmd.reference1 = tm2.transactionNumber and 
-
-			tmd.companyID = tm2.companyID 
-
-		inner join tb_workflow_stage ws2 on 
-
-			tm2.statusID = ws2.workflowStageID 
-
-		inner join tb_customer_credit_document tcc on 
-
-			tm2.transactionNumber = tcc.documentNumber and 
-
-			tm.entityID = tcc.entityID 
-
-		inner join tb_customer c on 
-
-			tm.entityID = c.entityID 
-
-		inner join tb_currency cur on 
-
-			tm.currencyID = cur.currencyID 
-
-		inner join tb_user usr on 
-
-			usr.userID = tm.createdBy 
-
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm on
+			t.transactionID = tm.transactionID and
+			t.companyID = tm.companyID
+		inner join tb_transaction_master_detail tmd on
+			tm.companyID = tmd.companyID and
+			tm.transactionID = tmd.transactionID and
+			tm.transactionMasterID = tmd.transactionMasterID
+		inner join tb_workflow_stage ws on
+			tm.statusID = ws.workflowStageID
+		inner join tb_transaction_master tm2 on
+			tmd.reference1 = tm2.transactionNumber and
+			tmd.companyID = tm2.companyID
+		inner join tb_workflow_stage ws2 on
+			tm2.statusID = ws2.workflowStageID
+		inner join tb_customer_credit_document tcc on
+			tm2.transactionNumber = tcc.documentNumber and
+			tm.entityID = tcc.entityID
+		inner join tb_customer c on
+			tm.entityID = c.entityID
+		inner join tb_currency cur on
+			tm.currencyID = cur.currencyID
+		inner join tb_user usr on
+			usr.userID = tm.createdBy
 	where
-
-		t.companyID = prCompanyID  and 
-
-		t.isActive = 1 and 
-
-		t.transactionID in (23 ,24 ,25 ) and 
-
-		tm.isActive =  1 and 
-
-		tmd.isActive = 1 and 
-
-		ws.aplicable = 1 and 
-
-		tm2.isActive = 1 and 
-
-		ws2.vinculable = 1 and 
-
-		c.customerNumber = prCustomerNumber and 
-
-		(	
-
-			   	((tcc.providerIDCredit = fn_get_provider_id (prCompanyID,prUserID)) and (fn_get_provider_id (prCompanyID,prUserID) != 0))
-
-					or 
-
-					(fn_get_provider_id (prCompanyID,prUserID) = 0 )
-
-		) and 
-
+		t.companyID = prCompanyID  and
+		t.isActive = 1 and
+		t.transactionID in (23 ,24 ,25 ) and
+		tm.isActive =  1 and
+		tmd.isActive = 1 and
+		ws.aplicable = 1 and
+		tm2.isActive = 1 and
+		ws2.vinculable = 1 and
+		c.customerNumber = prCustomerNumber and
 		(
-
+			   	((tcc.providerIDCredit = fn_get_provider_id (prCompanyID,prUserID)) and (fn_get_provider_id (prCompanyID,prUserID) != 0))
+					or
+					(fn_get_provider_id (prCompanyID,prUserID) = 0 )
+		) and
+		(
 				( tcc.documentNumber  = prReference and prReference != '0') or
-
-				( prReference = '0' ) 
-
+				( prReference = '0' )
 		)
-
-	order by 
-
+	order by
 		tmd.reference1 desc ,tm.transactionNumber desc  ;
 
-		
+
 
 END ;;
 DELIMITER ;
@@ -19685,635 +18031,388 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_cxc_get_report_customer_status`(IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), IN `prUserID` INT, IN `prCustomerNumber` VARCHAR(50))
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Estado de cuenta del cliente'
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_cxc_get_report_customer_status`(IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), IN `prUserID` INT, IN `prCustomerNumber` VARCHAR(50), IN prStatOn DATETIME, IN prEndOn DATETIME)
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Estado de cuenta del cliente'
 BEGIN
 
-	DECLARE exchangeRate_ DECIMAL(18,8) DEFAULT 0;		
-
+	DECLARE exchangeRate_ DECIMAL(18,8) DEFAULT 0;
 	DECLARE currencyIDNameSource VARCHAR(250);
-
-	DECLARE currencyIDNameTarget VARCHAR(250);	
-
+	DECLARE currencyIDNameTarget VARCHAR(250);
 	DECLARE currencyID_ INT DEFAULT 0;
-
 	DECLARE currencyIDTarget_ INT DEFAULT 0;
-
 	DECLARE deudaTotalCordobas DECIMAL(19,0) DEFAULT 0;
-
 	DECLARE deudaTotalDolares DECIMAL(19,0) DEFAULT 0;
+	DECLARE varCompanyType VARCHAR(50);
 
-	
 
-	
+
 
 	CREATE TEMPORARY TABLE tmp_customer_credit (
-
-		ID INT AUTO_INCREMENT PRIMARY KEY,customerCreditDocumentID INT, 
-
+		ID INT AUTO_INCREMENT PRIMARY KEY,customerCreditDocumentID INT,
 		customerNumber VARCHAR(50), identificationType VARCHAR(50),
-
 		firstName VARCHAR(150),lastName VARCHAR(150),comercialName VARCHAR(150),
-
 		legalName VARCHAR(150),address VARCHAR(500),identification VARCHAR(50),
-
 		country VARCHAR(50),state VARCHAR(50),city VARCHAR(120),birth DATE,statusClient VARCHAR(60),
-
-		limitCreditCordoba DECIMAL(19,9),balanceCordoba DECIMAL(19,9), 
-
+		limitCreditCordoba DECIMAL(19,9),balanceCordoba DECIMAL(19,9),
 		deudaCordobas DECIMAL(19,9), deudaDolares DECIMAL(19,9), incomeCordoba DECIMAL(19,9),
-
 		lineName VARCHAR(120),lineNumber VARCHAR(50) ,limitCreditCordobaLinea DECIMAL(19,9),
-
 		balanceCordobaLinea DECIMAL(19,9),interestYearLine DECIMAL(19,9),
-
 		termLine DECIMAL(19,9),periodPayLine VARCHAR(50),statusLine VARCHAR(50),
-
 		documentNumber VARCHAR(50),documentOn DATE,amountDocument DECIMAL(19,9),
-
 		interesDocument DECIMAL(19,9),termDocument DECIMAL(19,9),periodPayDocument VARCHAR(150),
-
 		statusDocument VARCHAR(50),dateApplyAmori DATE,balanceStartAmori DECIMAL(19,9),
-
 		interestAmori DECIMAL(19,9),capitalAmori DECIMAL(19,9),shareAmori DECIMAL(19,9),
-
 		balanceEndAmori DECIMAL(19,9),remainingAmori DECIMAL(19,9),dayDelayAmori INT,
-
-		statusShare VARCHAR(50),moneda VARCHAR(150),balanceDocument DECIMAL(19,9), 
-
+		statusShare VARCHAR(50),moneda VARCHAR(150),balanceDocument DECIMAL(19,9),
 		nota VARCHAR(1500), phoneNumber VARCHAR(255)
-
-	); 
-
+	);
 
 
+	SET varCompanyType  = (select c.type from tb_company c where c.companyID = prCompanyID);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameSource);
-
-	SET currencyID_ 		= (SELECT currencyID FROM tb_currency where name = currencyIDNameSource);		
-
+	SET currencyID_ 		= (SELECT currencyID FROM tb_currency where name = currencyIDNameSource);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",currencyIDNameTarget);
-
 	SET currencyIDTarget_ 	= (SELECT currencyID FROM tb_currency where name = currencyIDNameTarget);
-
-	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameSource,currencyIDNameTarget,exchangeRate_);	
-
-
-
+	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameSource,currencyIDNameTarget,exchangeRate_);
 
 
 	INSERT INTO tmp_customer_credit (
-
-		customerCreditDocumentID,customerNumber , 
-
+		customerCreditDocumentID,customerNumber ,
 		identificationType ,firstName ,lastName ,comercialName ,
-
 		legalName ,address ,identification ,country ,state ,city ,birth ,
-
 		statusClient ,limitCreditCordoba ,balanceCordoba ,
-
 		deudaCordobas,deudaDolares ,incomeCordoba ,lineName ,
-
 		lineNumber  ,limitCreditCordobaLinea ,balanceCordobaLinea ,
-
 		interestYearLine ,termLine ,periodPayLine ,statusLine ,
-
 		documentNumber ,documentOn ,amountDocument,balanceDocument ,
-
 		interesDocument ,termDocument,periodPayDocument ,statusDocument ,
-
 		dateApplyAmori ,balanceStartAmori ,interestAmori ,capitalAmori ,
-
 		shareAmori ,balanceEndAmori ,remainingAmori ,dayDelayAmori ,
-
 		statusShare , moneda,nota,phoneNumber
-
 	)
-
-	SELECT 
-
+	SELECT
 		ccd.customerCreditDocumentID,
-
 		c.customerNumber,
-
 		ci1.name as identificationType,
-
 		n.firstName,
-
 		n.lastName,
-
 		l.comercialName,
-
 		l.legalName,
-
 		c.address,
-
 		c.identification,
-
 		ci2.name as country,
-
 		ci3.name as state,
-
 		ci4.name as city,
-
 		c.birthDate,
-
 		ws1.name as statusClient,
-
 		round((cc.limitCreditDol / exchangeRate_),2) as limitCreditCordoba,
-
 		round((cc.balanceDol / exchangeRate_),2) as balanceCordoba,
-
 		IF(ccd.currencyID = 1,ccda.remaining, 0) AS deudaCordobas,
-
 		IF(ccd.currencyID = 2,ccda.remaining, 0) AS deudaDolares,
-
 		round((cc.incomeDol / exchangeRate_),2) as incomeCordoba ,
-
 		cl.name,
-
 		ccl.accountNumber,
-
 		IF(ccl.currencyID = currencyID_,ccl.limitCredit,round(ccl.limitCredit / exchangeRate_,2)  ) AS limitCreditCordobaLinea,
-
 		IF(ccl.currencyID = currencyID_,ccl.balance,round(ccl.balance / exchangeRate_,2)  ) AS balanceCordobaLinea,
-
 		ccl.interestYear,
-
 		ccl.term,
-
 		ci5.name as periodPayLine,
-
 		ws2.name as statusLine,
-
 		ccd.documentNumber,
-
 		ccd.dateOn,
-
 		ccd.amount,
-
 		if(ccd.balance < 0 , 0 , ccd.balance) as balance,
-
 		ccd.interes,
-
 		ccd.term,
-
 		ci6.name as periodPayDocument,
-
-		ws3.name as statusDocument,
-
+		case
+			when ws3.name = 'REGISTRADO' then
+				'PENDIENTE'
+			else
+				ws3.name
+		end as statusDocument,
 		ccda.dateApply,
-
 		ccda.balanceStart,
-
 		ccda.interest,
-
 		ccda.capital,
-
 		ccda.`share`,
-
 		ccda.balanceEnd,
-
 		ccda.remaining,
-
 		ccda.dayDelay,
-
 		ws4.name as statusShare,
-
 		curx.name ,
-
-		ccd.reference1 as nota,
-
-		c.phoneNumber 
-
+		case
+			when varCompanyType = 'lotificadoraCa'  then
+				tmix.reference1
+			else
+			ccd.reference1
+		end as nota,
+		c.phoneNumber
 	FROM
-
-		tb_entity e 
-
-		inner join tb_customer c on 
-
-			e.entityID = c.entityID and 
-
-			e.companyID = c.companyID 
-
-		inner join tb_naturales n on 
-
+		tb_entity e
+		inner join tb_customer c on
+			e.entityID = c.entityID and
+			e.companyID = c.companyID
+		inner join tb_naturales n on
 			c.entityID = n.entityID and
-
-			c.companyID = n.companyID 
-
-		inner join tb_legal l on 
-
-			n.entityID = l.entityID and 
-
-			n.companyID = l.companyID 
-
-		inner join tb_customer_credit cc on 
-
-			e.entityID = cc.entityID and 
-
-			e.companyID = cc.companyID 
-
-		inner join tb_customer_credit_line ccl on 
-
-			cc.entityID = ccl.entityID  and 
-
-			cc.companyID = ccl.companyID 
-
-		inner join tb_credit_line cl on 
-
-			ccl.creditLineID = cl.creditLineID 		
-
-		inner join tb_catalog_item ci1 on 
-
-			c.identificationType = ci1.catalogItemID 
-
-		inner join tb_catalog_item ci2 on 
-
-			c.countryID = ci2.catalogItemID 
-
-		inner join tb_catalog_item ci3 on 
-
-			c.stateID = ci3.catalogItemID 
-
-		inner join tb_catalog_item ci4 on 
-
-			c.cityID = ci4.catalogItemID 
-
-		inner join tb_workflow_stage ws1 on 
-
-			c.statusID = ws1.workflowStageID 
-
-		inner join tb_catalog_item ci5 on 
-
-			ccl.periodPay = ci5.catalogItemID 
-
-		inner join tb_workflow_stage ws2 on 
-
-			ccl.statusID = ws2.workflowStageID 
-
-			
-
-			
-
-		left join tb_customer_credit_document ccd on 
-
-			ccd.entityID =  c.entityID 
-
-		left join tb_customer_credit_amoritization ccda on 
-
-			ccd.customerCreditDocumentID = ccda.customerCreditDocumentID  
-
-		left join tb_catalog_item ci6 on 
-
-			ccd.periodPay = ci6.catalogItemID 		
-
-		left join tb_workflow_stage ws3 on 
-
-			ccd.statusID = ws3.workflowStageID 
-
-		left  join tb_workflow_stage ws4 on 
-
-				ccda.statusID = ws4.workflowStageID 	
-
-		
-
-		left join tb_transaction_master tmx on 	
-
-				ccd.documentNumber = tmx.transactionNumber and 
-
-				ccd.companyID = tmx.companyID and 
-
-				ccd.entityID = tmx.entityID 
-
-		left join tb_currency curx on 
-
-			tmx.currencyID = curx.currencyID 
-
-		
-
-					
-
+			c.companyID = n.companyID
+		inner join tb_legal l on
+			n.entityID = l.entityID and
+			n.companyID = l.companyID
+		inner join tb_customer_credit cc on
+			e.entityID = cc.entityID and
+			e.companyID = cc.companyID
+		inner join tb_customer_credit_line ccl on
+			cc.entityID = ccl.entityID  and
+			cc.companyID = ccl.companyID
+		inner join tb_credit_line cl on
+			ccl.creditLineID = cl.creditLineID
+		inner join tb_catalog_item ci1 on
+			c.identificationType = ci1.catalogItemID
+		inner join tb_catalog_item ci2 on
+			c.countryID = ci2.catalogItemID
+		inner join tb_catalog_item ci3 on
+			c.stateID = ci3.catalogItemID
+		inner join tb_catalog_item ci4 on
+			c.cityID = ci4.catalogItemID
+		inner join tb_workflow_stage ws1 on
+			c.statusID = ws1.workflowStageID
+		inner join tb_catalog_item ci5 on
+			ccl.periodPay = ci5.catalogItemID
+		inner join tb_workflow_stage ws2 on
+			ccl.statusID = ws2.workflowStageID
+		left join (
+			select
+				xlm.customerCreditDocumentID,
+				xlm.companyID,
+				xlm.entityID,
+				xlm.customerCreditLineID,
+				xlm.documentNumber,
+				xlm.dateOn,
+				xlm.amount,
+				xlm.interes,
+				xlm.term,
+				xlm.balance,
+				xlm.balanceProvicioned,
+				xlm.exchangeRate,
+				xlm.currencyID,
+				xlm.reference1,
+				xlm.reference2,
+				xlm.reference3,
+				xlm.statusID,
+				xlm.isActive,
+				xlm.typeAmortization,
+				xlm.periodPay,
+				xlm.providerIDCredit,
+				xlm.reportSinRiesgo
+			from
+				tb_customer_credit_document  xlm
+			where
+				xlm.isActive = 1 and
+				(
+					(xlm.dateOn BETWEEN prStatOn and prEndOn and prStatOn <> prEndOn) or
+					(prStatOn = prEndOn)
+				)
+		)  as ccd on
+			ccd.entityID =  c.entityID
+		left join tb_customer_credit_amoritization ccda on
+			ccd.customerCreditDocumentID = ccda.customerCreditDocumentID
+		left join tb_catalog_item ci6 on
+			ccd.periodPay = ci6.catalogItemID
+		left join tb_workflow_stage ws3 on
+			ccd.statusID = ws3.workflowStageID
+		left  join tb_workflow_stage ws4 on
+				ccda.statusID = ws4.workflowStageID
+		left join tb_transaction_master tmx on
+				ccd.documentNumber = tmx.transactionNumber and
+				ccd.companyID = tmx.companyID and
+				ccd.entityID = tmx.entityID
+		left join tb_transaction_master_info tmix on
+			tmx.transactionMasterID = tmix.transactionMasterID
+		left join tb_currency curx on
+			tmx.currencyID = curx.currencyID
 	where
+		e.companyID = prCompanyID and
+		c.customerNumber = prCustomerNumber and
+		ws3.`name` != 'ANULADO' ;
 
-		e.companyID = prCompanyID and 
 
-		c.customerNumber = prCustomerNumber;
+	IF varCompanyType = 'jorgeRamirez' THEN
 
-		
+		UPDATE
+					tmp_customer_credit d,
+					(
+						select
+							tm.transactionNumber,
+							GROUP_CONCAT(i.`name`) as nombre
+						from
+							tb_transaction_master tm
+							inner join tb_transaction_master_detail td on
+								tm.transactionMasterID = td.transactionMasterID
+							inner join tb_item i on
+								i.itemID = td.componentItemID
+						where
+							tm.isActive = 1 and
+							td.isActive = 1
+						group by
+							tm.transactionNumber
+					) oo
+		SET
+			d.nota = oo.nombre
+		WHERE
+			d.documentNumber = oo.transactionNumber;
 
-	
+	END IF;
 
-		
 
 	CREATE TEMPORARY TABLE tmp_customer_credit_v2 select * from tmp_customer_credit;
-
 	CREATE TEMPORARY TABLE tmp_customer_credit_v3 select * from tmp_customer_credit;
-
 	CREATE TEMPORARY TABLE tmp_customer_credit_v4 select * from tmp_customer_credit;
-
 	CREATE TEMPORARY TABLE tmp_customer_credit_v5 select * from tmp_customer_credit;
-
 	CREATE TEMPORARY TABLE tmp_customer_credit_v6 select * from tmp_customer_credit;
-
 	CREATE TEMPORARY TABLE tmp_customer_credit_v7 select * from tmp_customer_credit;
 
-	
 
-	
 
 	SELECT SUM(deudaCordobas) INTO deudaTotalCordobas
-
     FROM tmp_customer_credit;
 
-  
 
    SELECT SUM(deudaDolares) INTO deudaTotalDolares
-
     FROM tmp_customer_credit;
 
-    
 
 
 
-
-
-	
-
-	SELECT 
-
-		DISTINCT 
-
+	SELECT
+		DISTINCT
 		'INFORMACION_DEL_CLIENTE',
-
-		customerNumber , 
-
+		customerNumber ,
 		identificationType ,
-
 		firstName ,
-
 		lastName ,
-
 		comercialName ,
-
 		legalName ,
-
 		address ,
-
 		identification ,country ,
-
 		state ,city ,birth ,
-
 		statusClient ,limitCreditCordoba ,
-
 		balanceCordoba ,
-
 		deudaTotalCordobas AS deudaCordobas, deudaTotalDolares AS deudaDolares,
-
 		incomeCordoba,
-
-		x.phoneNumber 
-
-	FROM 
-
+		x.phoneNumber
+	FROM
 		tmp_customer_credit x;
 
 
-
-
-
-	
-
-	SELECT 
-
-		DISTINCT 
-
+	SELECT
+		DISTINCT
 		'INFORMACION_DE_LINEA_CREDITO',
-
 		lineName ,lineNumber  ,
-
 		limitCreditCordobaLinea ,
-
 		balanceCordobaLinea ,
-
 		interestYearLine ,termLine ,
-
 		periodPayLine ,
-
-		statusLine 
-
-	FROM 
-
+		statusLine
+	FROM
 		tmp_customer_credit x;
 
-	
 
-	
-
-	SELECT 
-
-		DISTINCT 
-
-		'INFORMACION_DOCUMENTO_CREDITO',	
-
-		lineNumber,	
-
+	SELECT
+		DISTINCT
+		'INFORMACION_DOCUMENTO_CREDITO',
+		lineNumber,
 		documentNumber ,documentOn ,amountDocument ,
-
 		interesDocument ,
-
 		interesDocument / 120 as interesDocumentMultiploDe120,
-
 		termDocument ,
-
 		periodPayDocument,
-
 		statusDocument,moneda,
-
+		amountDocument - balanceDocument as amountShare,
 		balanceDocument,
-
-		
-
 		IFNULL((
-
-			select 
-
-				datediff(current_date(),min(p.dateApplyAmori)) 
-
-			from 			 
-
+			select
+				datediff(current_date(),min(p.dateApplyAmori))
+			from
 				tmp_customer_credit_v2 p
-
 			where
-
-				p.customerCreditDocumentID = x.customerCreditDocumentID and 
-
-				p.remainingAmori <> 0 
-
+				p.customerCreditDocumentID = x.customerCreditDocumentID and
+				p.remainingAmori <> 0
 		),0)    as dayAtrazo,
-
-		
-
 		IFNULL((
-
-			select 
-
-				sum(p.remainingAmori) 
-
-			from 			 
-
+			select
+				sum(p.remainingAmori)
+			from
 				tmp_customer_credit_v3 p
-
 			where
-
-				p.customerCreditDocumentID = x.customerCreditDocumentID and 
-
-				p.remainingAmori <> 0 and 
-
-				p.dateApplyAmori <= current_date() 
-
+				p.customerCreditDocumentID = x.customerCreditDocumentID and
+				p.remainingAmori <> 0 and
+				p.dateApplyAmori <= current_date()
 		),0)    as amountAtrazo ,
-
-		
-
 		(
-
-			select 
-
-				sum(tn.interestAmori) 
-
-			from 
-
+			select
+				sum(tn.interestAmori)
+			from
 				tmp_customer_credit_v4 tn
-
 			where
-
-				tn.customerCreditDocumentID = x.customerCreditDocumentID 
-
-				
-
+				tn.customerCreditDocumentID = x.customerCreditDocumentID
 		) as interestTotalMontoDocument,
-
-
-
 		(
-
-			select 
-
+			select
 				max(p.dateApplyAmori)
-
-			from 			 
-
+			from
 				tmp_customer_credit_v5 p
-
 			where
-
-				p.customerCreditDocumentID = x.customerCreditDocumentID  
-
+				p.customerCreditDocumentID = x.customerCreditDocumentID
 		)    as vencimientoUltimaCuota,
-
-			
-
-			
-
 		IFNULL((
-
-			select 
-
-				AVG(p.dayDelayAmori) 
-
-			from 			 
-
+			select
+				AVG(p.dayDelayAmori)
+			from
 				tmp_customer_credit_v6 p
-
 			where
-
-				p.customerCreditDocumentID = x.customerCreditDocumentID and 
-
-				p.dayDelayAmori <> 0 
-
+				p.customerCreditDocumentID = x.customerCreditDocumentID and
+				p.dayDelayAmori <> 0
 		),0)    as promedioDiaPago ,
-
-		
-
-		
-
 		IFNULL((
-
-			select 
-
-				p.dayDelayAmori 
-
-			from 			 
-
+			select
+				p.dayDelayAmori
+			from
 				tmp_customer_credit_v7 p
-
 			where
-
-				p.customerCreditDocumentID = x.customerCreditDocumentID 
-
-			ORDER BY 
-
-				p.dateApplyAmori 				
-
+				p.customerCreditDocumentID = x.customerCreditDocumentID
+			ORDER BY
+				p.dateApplyAmori
 			LIMIT 1
-
 		),0)    as atrasoCancelacionDia ,
-
-		
-
-		x.nota 				
-
-	FROM 
-
-		tmp_customer_credit x 
-
-	order by 
-
+		x.nota
+	FROM
+		tmp_customer_credit x
+	order by
 		documentOn;
 
-		
 
-	
 
-	SELECT 
-
-		DISTINCT 
-
+	SELECT
+		DISTINCT
 		'INFORMACION_TABLA_AMORITIZACION',
-
 		documentNumber ,
-
 		dateApplyAmori ,balanceStartAmori ,
-
 		interestAmori ,capitalAmori ,
-
 		shareAmori ,balanceEndAmori ,remainingAmori ,dayDelayAmori ,statusShare
-
-	FROM 
-
+	FROM
 		tmp_customer_credit x  ;
 
-			
-
-			
-
-	DROP TABLE tmp_customer_credit; 
-
-	DROP TABLE tmp_customer_credit_v2; 
-
-	DROP TABLE tmp_customer_credit_v3; 
-
-	DROP TABLE tmp_customer_credit_v4; 
-
+	DROP TABLE tmp_customer_credit;
+	DROP TABLE tmp_customer_credit_v2;
+	DROP TABLE tmp_customer_credit_v3;
+	DROP TABLE tmp_customer_credit_v4;
 	DROP TABLE tmp_customer_credit_v5;
-
 	DROP TABLE tmp_customer_credit_v6;
-
 	DROP TABLE tmp_customer_credit_v7;
 
-	
 
 END ;;
 DELIMITER ;
@@ -20425,7 +18524,63 @@ BEGIN
 
 		round(sum(tx.shareDolares),2) as cuotaDolares, 
 
-		(round(sum(tx.shareDolares),2) / tx.term) as montoCuota,
+		/*Frances 194: cuota nivelada => cuota real = primera fila de amortizacion (la prorrateada es la ultima); resto (193 Constante, etc.): promedio historico*/
+		(
+			CASE
+				WHEN IFNULL((
+						select cdt.typeAmortization from tb_customer_credit_document cdt
+						where cdt.companyID = prCompanyID and cdt.documentNumber = prDocumentNumber and cdt.isActive = 1
+						limit 1
+					),0) = 194 THEN
+					IFNULL((
+						select
+							round(IF(cdx.currencyID = currencyID_,amx.share * cdx.exchangeRate,amx.share / cdx.exchangeRate),2)
+						from
+							tb_customer_credit_document cdx
+							inner join tb_customer_credit_amoritization amx on
+								cdx.customerCreditDocumentID = amx.customerCreditDocumentID
+						where
+							cdx.companyID = prCompanyID and
+							cdx.documentNumber = prDocumentNumber and
+							cdx.isActive = 1 and
+							amx.isActive = 1
+						order by
+							amx.dateApply asc, amx.creditAmortizationID asc
+						limit 1
+					),(round(sum(tx.shareDolares),2) / tx.term))
+				ELSE
+					(round(sum(tx.shareDolares),2) / tx.term)
+			END
+		) as montoCuota,
+
+		/*Misma regla que montoCuota pero en la moneda del documento, sin conversion*/
+		(
+			CASE
+				WHEN IFNULL((
+						select cdt.typeAmortization from tb_customer_credit_document cdt
+						where cdt.companyID = prCompanyID and cdt.documentNumber = prDocumentNumber and cdt.isActive = 1
+						limit 1
+					),0) = 194 THEN
+					IFNULL((
+						select
+							round(amx.share,2)
+						from
+							tb_customer_credit_document cdx
+							inner join tb_customer_credit_amoritization amx on
+								cdx.customerCreditDocumentID = amx.customerCreditDocumentID
+						where
+							cdx.companyID = prCompanyID and
+							cdx.documentNumber = prDocumentNumber and
+							cdx.isActive = 1 and
+							amx.isActive = 1
+						order by
+							amx.dateApply asc, amx.creditAmortizationID asc
+						limit 1
+					),(round(sum(tx.share),2) / tx.term))
+				ELSE
+					(round(sum(tx.share),2) / tx.term)
+			END
+		) as montoCuotaLocal,
 
 		tx.amountTotal,
 
@@ -21953,309 +20108,310 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_cxc_get_report_sales_customer`(IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), IN `prUserID` INT, 
-
-IN prCustomerNumber VARCHAR(250))
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Detalle de ventas'
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_cxc_get_report_sales_customer`(IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), IN `prUserID` INT,
+IN prCustomerNumber VARCHAR(250), IN prStartOn DATETIME, IN prEndOn DATETIME, IN prTransactionCausal VARCHAR(50))
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Detalle de ventas'
 BEGIN
 
-
-
-	DECLARE varCurrencyCompras INT DEFAULT 0;	
-
-	DECLARE varCurrencyReporte INT DEFAULT 0;	
-
+	DECLARE varCurrencyCompras INT DEFAULT 0;
+	DECLARE varCurrencyReporte INT DEFAULT 0;
 	DECLARE currencyIDNameCompra VARCHAR(250);
-
-	DECLARE currencyIDNameReporte VARCHAR(250);	
-
-
+	DECLARE currencyIDNameReporte VARCHAR(250);
 
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameCompra);
-
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",currencyIDNameReporte);
 
+	SET varCurrencyCompras 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameCompra);
+	SET varCurrencyReporte 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameReporte);
 
 
-	SET varCurrencyCompras 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameCompra);		
+	-- Borrar la tabla temporal si existe
+  DROP TEMPORARY TABLE IF EXISTS tmp_sales_report;
 
-	SET varCurrencyReporte 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameReporte);		
+  -- Crear tabla temporal
+  CREATE TEMPORARY TABLE tmp_sales_report (
+      userID INT,
+      nickname VARCHAR(250),
+      transactionNumber VARCHAR(50),
+      transactionCausalName VARCHAR(250),
+      employerName VARCHAR(250),
+      tipo VARCHAR(250),
+      transactionOn DATETIME,
+      createdOn DATETIME,
+      dayOfMonth INT,
+      customerNumber VARCHAR(250),
+      currencyName VARCHAR(250),
+      note VARCHAR(500),
+      legalName VARCHAR(250),
+      zone VARCHAR(250),
+      itemNumber VARCHAR(250),
+      itemName VARCHAR(250),
+      itemNameLog VARCHAR(250),
+      phoneNumber VARCHAR(50),
+      Agent VARCHAR(250),
+      Commentary VARCHAR(250),
+      nameCategory VARCHAR(250),
+      quantity DECIMAL(18,2),
+      unitaryCost DECIMAL(18,2),
+      unitaryPrice DECIMAL(18,2),
+      cost DECIMAL(18,2),
+      amount DECIMAL(18,2),
+      amountConIva DECIMAL(18,2),
+      utilidad DECIMAL(18,2),
+      iva DECIMAL(18,2),
+      ivaTotal DECIMAL(18,2),
+      varCurrencyReporte INT,
+      currencyID INT,
+      exchangeRate DECIMAL(18,4),
+      amountCommision DECIMAL(18,2)
+  );
 
 
 
-	select 
-
+	INSERT INTO tmp_sales_report (
+        userID,
+        nickname,
+        transactionNumber,
+        transactionCausalName,
+        employerName,
+        tipo,
+        transactionOn,
+        createdOn,
+        dayOfMonth,
+        customerNumber,
+        currencyName,
+        note,
+        legalName,
+        zone,
+        itemNumber,
+        itemName,
+        itemNameLog,
+        phoneNumber,
+        Agent,
+        Commentary,
+        nameCategory,
+        quantity,
+        unitaryCost,
+        unitaryPrice,
+        cost,
+        amount,
+        amountConIva,
+        utilidad,
+        iva,
+        ivaTotal,
+        varCurrencyReporte,
+        currencyID,
+        exchangeRate,
+        amountCommision
+  )
+	select
 		rx.userID,
-
 		rx.nickname,
-
 		rx.transactionNumber,
-
+		rx.transactionCausalName,
 		rx.employerName,
-
 		rx.tipo,
-
 		rx.transactionOn,
-
 		rx.createdOn,
-
 		DAYOFMONTH(rx.createdOn) as dayOfMonth,
-
 		rx.customerNumber,
-
 		rx.currencyName,
-
 		rx.note,
-
 		rx.legalName,
-
 		rx.zone,
-
 		rx.itemNumber,
-
 		rx.itemName,
-
 		rx.itemNameLog,
-
 		rx.phoneNumber,
-
 		rx.Agent,
-
 		rx.Commentary,
-
 		rx.nameCategory,
-
 		rx.quantity,
-
 		rx.unitaryCost,
-
 		rx.unitaryPrice,
-
 		(rx.unitaryCost * rx.quantity) as cost,
-
 		(rx.unitaryPrice * rx.quantity) as amount,
-
 		(rx.unitaryPrice * rx.quantity) + (rx.iva * rx.quantity)  as amountConIva,
-
 		(rx.unitaryPrice * rx.quantity) - (rx.unitaryCost * rx.quantity)    as utilidad,
-
 		(rx.iva) as iva,
-
 		(rx.quantity * rx.iva) as ivaTotal,
-
 		varCurrencyReporte,
-
 		rx.currencyID,
-
 		rx.exchangeRate,
-
-		rx.amountCommision 
-
-	from 
-
+		rx.amountCommision
+	from
 		(
-
-				select 
-
+				select
 					usr.userID,
-
 					usr.nickname,
-
 					tm.transactionNumber,
-
+					tc.`name` as transactionCausalName,
 					IFNULL(CONCAT(nat_emp.firstName,' ',nat_emp.lastName),'') as employerName,
-
 					tc.name as tipo,
-
 					tm.transactionOn,
-
 					cus.customerNumber,
-
 					concat(nat_cus.firstName,' ', nat_cus.lastName) as legalName ,
-
 					ci.name as zone,
-
 					i.itemNumber,
-
 					i.name as itemName,
-
 					tmd.itemNameLog,
-
 					cat.`name` as nameCategory,
-
 					cus.phoneNumber,
-
 					'' AS Agent,
-
 					'' as Commentary,
-
 					tmd.quantity as quantity,
-
 					tm.currencyID,
-
 					tm.exchangeRate,
-
 					tm.createdOn,
-
 					cur.`name` as currencyName,
-
 					tm.note as note,
-
-					case 
-
-						when varCurrencyReporte = tm.currencyID then 
-
-							tmd.unitaryPrice 
-
-						when tm.exchangeRate > 1 then 
-
+					case
+						when varCurrencyReporte = tm.currencyID then
+							tmd.unitaryPrice
+						when tm.exchangeRate > 1 then
 							tm.exchangeRate * (tmd.unitaryPrice)
-
-						else 
-
+						else
 							(1/tm.exchangeRate) * (tmd.unitaryPrice)
-
 					end unitaryPrice,
+					case
+						when varCurrencyReporte = tm.currencyID  then
+							tmd.unitaryCost * ifnull(tmd.skuQuantity ,0)
+						when tm.exchangeRate > 1 then
+							tm.exchangeRate *  tmd.unitaryCost	* ifnull(tmd.skuQuantity ,0)
+						else
 
-					case 
-
-						when varCurrencyReporte = tm.currencyID  then 				
-
-							tmd.unitaryCost * ifnull(tmd.skuQuantity ,0) 
-
-						when tm.exchangeRate > 1 then 
-
-							tm.exchangeRate *  tmd.unitaryCost	* ifnull(tmd.skuQuantity ,0) 												
-
-						else 								
-
-
-
-						  (1/tm.exchangeRate) *   tmd.unitaryCost	* ifnull(tmd.skuQuantity ,0) 				
-
-					end  unitaryCost,					
-
-					case 
-
-						when varCurrencyReporte = tm.currencyID  then 				
-
+						  (1/tm.exchangeRate) *   tmd.unitaryCost	* ifnull(tmd.skuQuantity ,0)
+					end  unitaryCost,
+					case
+						when varCurrencyReporte = tm.currencyID  then
 							IFNULL(tmd.tax1,0)
-
-						when tm.exchangeRate > 1 then 
-
+						when tm.exchangeRate > 1 then
 							tm.exchangeRate *  IFNULL(tmd.tax1,0)
-
-						else 								
-
+						else
 						  (1/tm.exchangeRate) *   IFNULL(tmd.tax1,0)
-
 					end as iva ,
-
-					case 
-
-						when varCurrencyReporte = tm.currencyID  then 				
-
+					case
+						when varCurrencyReporte = tm.currencyID  then
 							IFNULL(amountCommision,0)
-
-						when tm.exchangeRate > 1 then 
-
+						when tm.exchangeRate > 1 then
 							tm.exchangeRate *  IFNULL(amountCommision,0)
-
-						else 								
-
+						else
 						  (1/tm.exchangeRate) *   IFNULL(amountCommision,0)
-
-					end  as amountCommision 	
-
-				from 
-
-					tb_transaction_master tm  					
-
-					inner join tb_transaction_master_detail tmd on 
-
-						tm.companyID = tmd.companyID and 
-
-						tm.transactionID = tmd.transactionID and 
-
-						tm.transactionMasterID = tmd.transactionMasterID 
-
-					inner join tb_currency cur on 
-
-						cur.currencyID = tm.currencyID 
-
-					inner join tb_transaction_causal tc on 
-
-						tm.transactionCausalID = tc.transactionCausalID 
-
-					inner join tb_customer cus on 
-
-						tm.entityID = cus.entityID 
-
-					inner join tb_legal l on 
-
-						cus.entityID = l.entityID 
-
-					inner join tb_naturales nat_cus on 
-
-						nat_cus.entityID   = l.entityID 
-
-					inner join tb_user usr on 
-
-						tm.createdBy = usr.userID 
-
-					inner join tb_workflow_stage ws on 
-
-						tm.statusID = ws.workflowStageID 
-
-					inner join tb_transaction_master_info tmi on 
-
-						tm.companyID = tmi.companyID and 
-
-						tm.transactionID = tmi.transactionID and 
-
-						tm.transactionMasterID = tmi.transactionMasterID 
-
-					inner join tb_catalog_item ci on 
-
-						tmi.zoneID = ci.catalogItemID 
-
-					inner join tb_item i on 
-
-						tmd.componentItemID = i.itemID 
-
-					inner join tb_item_category cat on 
-
-						cat.inventoryCategoryID = i.inventoryCategoryID 
-
-					left join tb_naturales nat_emp on 
-
-						nat_emp.entityID = tm.entityIDSecondary 
-
-				where  					
-
-					tm.companyID = prCompanyID and 
-
-					cus.customerNumber = prCustomerNumber and			
-
-					tm.isActive = 1 and 
-
-					tmd.isActive = 1 and 
-
-					ws.aplicable = 1 
-
-				order by 
-
-					tm.transactionNumber desc, tmd.transactionMasterDetailID desc					
-
+					end  as amountCommision
+				from
+					tb_transaction_master tm
+					inner join tb_transaction_master_detail tmd on
+						tm.companyID = tmd.companyID and
+						tm.transactionID = tmd.transactionID and
+						tm.transactionMasterID = tmd.transactionMasterID
+					inner join tb_currency cur on
+						cur.currencyID = tm.currencyID
+					inner join tb_transaction_causal tc on
+						tm.transactionCausalID = tc.transactionCausalID
+					inner join tb_customer cus on
+						tm.entityID = cus.entityID
+					inner join tb_legal l on
+						cus.entityID = l.entityID
+					inner join tb_naturales nat_cus on
+						nat_cus.entityID   = l.entityID
+					inner join tb_user usr on
+						tm.createdBy = usr.userID
+					inner join tb_workflow_stage ws on
+						tm.statusID = ws.workflowStageID
+					inner join tb_transaction_master_info tmi on
+						tm.companyID = tmi.companyID and
+						tm.transactionID = tmi.transactionID and
+						tm.transactionMasterID = tmi.transactionMasterID
+					inner join tb_catalog_item ci on
+						tmi.zoneID = ci.catalogItemID
+					inner join tb_item i on
+						tmd.componentItemID = i.itemID
+					inner join tb_item_category cat on
+						cat.inventoryCategoryID = i.inventoryCategoryID
+					left join tb_naturales nat_emp on
+						nat_emp.entityID = tm.entityIDSecondary
+				where
+					tm.companyID = prCompanyID and
+					cus.customerNumber = prCustomerNumber and
+					tm.isActive = 1 and
+					tmd.isActive = 1 and
+					ws.aplicable = 1 and
+					tm.transactionID in (19 /*facturas*/ ) and
+					tm.statusID in (67 /*aplicada*/ ) and
+					tm.transactionOn BETWEEN prStartOn and prEndOn and
+					(
+					  ( prTransactionCausal = 'Todas' ) or
+						( prTransactionCausal = 'Contado' and tm.transactionCausalID in (21, 23) ) or
+						( prTransactionCausal = 'Credito' and tm.transactionCausalID in (22, 24) )
+					)
+				order by
+					tm.transactionNumber desc, tmd.transactionMasterDetailID desc
 		) rx
-
-		order by 
-
+		order by
 					rx.transactionNumber desc;
 
 
+
+
+
+	-- Mostrar los resultados finales
+  SELECT
+				userID,
+        nickname,
+        transactionNumber,
+        transactionCausalName,
+        employerName,
+        tipo,
+        transactionOn,
+        createdOn,
+        dayOfMonth,
+        customerNumber,
+        currencyName,
+        note,
+        legalName,
+        zone,
+        itemNumber,
+        itemName,
+        itemNameLog,
+        phoneNumber,
+        Agent,
+        Commentary,
+        nameCategory,
+        quantity,
+        unitaryCost,
+        unitaryPrice,
+        cost,
+        amount,
+        amountConIva,
+        utilidad,
+        iva,
+        ivaTotal,
+        varCurrencyReporte,
+        currencyID,
+        exchangeRate,
+        amountCommision
+	FROM
+				tmp_sales_report ORDER BY transactionNumber DESC;
+
+
+
+
+	-- Mostrar los resultados resumidos
+  SELECT
+        transactionNumber,
+        transactionCausalName,
+        employerName,
+        transactionOn,
+				SUM(amount) as amount
+	FROM
+				tmp_sales_report
+	GROUP BY
+				transactionNumber,
+        transactionCausalName,
+        employerName,
+        transactionOn;
 
 END ;;
 DELIMITER ;
@@ -22435,53 +20591,29 @@ DELIMITER ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_cxc_get_report_upload_buro`(IN `prUserID` INT, IN `prTokenID` VARCHAR(250), IN `prCompanyID` INT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Reporte para reportal al buro de credito'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Reporte para reportal al buro de credito'
 BEGIN
 
 	DECLARE itemNotReportable VARCHAR(250);
-
   DECLARE varAbreviature VARCHAR(50);
-
-	
-
-	
-
-		  
-
 	SET varAbreviature = IFNULL((SELECT c.abreviature FROM tb_company c where c.companyID = prCompanyID ),'');
 
-	
-
 	CREATE TEMPORARY TABLE tb_tmp_customer_buro (
-
 			companyID INT,
-
-			customerCreditDocumentID INT,			
-
+			customerCreditDocumentID INT,
 			entityID INT,
-
 			TIPO_DE_ENTIDAD VARCHAR(50),
-
 			NUMERO_CORRELATIVO VARCHAR(50),
-
 			FECHA_DE_REPORTE VARCHAR(50),
-
 			DEPARTAMENTO VARCHAR(50),
-
 			NUMERO_DE_CEDULA_O_RUC VARCHAR(50),
-
 			NOMBRE_DE_PERSONA VARCHAR(250),
-
 			TIPO_DE_CREDITO VARCHAR(250),
-
 			FECHA_DE_DESEMBOLSO VARCHAR(50),
-
 			TIPO_DE_OBLIGACION VARCHAR(250),
-
 			MONTO_AUTORIZADO DECIMAL(19,2),
-
 			PLAZO INT,
 
 			FRECUENCIA_DE_PAGO VARCHAR(50),
@@ -22504,17 +20636,17 @@ BEGIN
 
 	);
 
-	
 
-	   
 
-        
+
+
+
 
    CALL pr_core_get_parameter_value(prCompanyID,"INVENTORY_ITEM_NOT_REPORT_TO_SINRIESGO",itemNotReportable);
 
-   	
 
-	
+
+
 
 	INSERT INTO tb_tmp_customer_buro(
 
@@ -22540,7 +20672,7 @@ BEGIN
 
 		VALOR_DE_LA_CUOTA )
 
-	SELECT 
+	SELECT
 
 		    `cc`.`companyID` AS `companyID`,
 
@@ -22548,27 +20680,27 @@ BEGIN
 
         `cc`.`entityID` AS `entityID`,
 
-        '99' AS `TIPO DE ENTIDAD`,  
+        '99' AS `TIPO DE ENTIDAD`,
 
-        '552' AS `NUMERO CORRELATIVO`, 
+        '552' AS `NUMERO CORRELATIVO`,
 
         DATE_FORMAT(NOW(), '%d/%m/%Y') AS `FECHA DE REPORTE`,
 
-        '08' AS `DEPARTAMENTO`, 
+        '08' AS `DEPARTAMENTO`,
 
         REPLACE(`c`.`identification`, '-', '') AS `NUMERO DE CEDULA O RUC`,
 
         CONCAT(`nat`.`firstName`, ' ', `nat`.`lastName`) AS `NOMBRE DE PERSONA`,
 
-        RIGHT(CONCAT('0000', `tipocredito`.`sequence`),2) AS `TIPO DE CREDITO`, 
+        RIGHT(CONCAT('0000', `tipocredito`.`sequence`),2) AS `TIPO DE CREDITO`,
 
-        DATE_FORMAT(`cc`.`dateOn`, '%d/%m/%Y') AS `FECHA DE DESEMBOLSO`, 
+        DATE_FORMAT(`cc`.`dateOn`, '%d/%m/%Y') AS `FECHA DE DESEMBOLSO`,
 
-        RIGHT(CONCAT('0000', `obli`.`sequence`),2) AS `TIPO DE OBLIGACION`,  
+        RIGHT(CONCAT('0000', `obli`.`sequence`),2) AS `TIPO DE OBLIGACION`,
 
-				
 
-				
+
+
 
         ROUND(
 
@@ -22576,19 +20708,19 @@ BEGIN
 
 			  ) AS `MONTO AUTORIZADO`,
 
-				
 
-				
+
+
 
         CONCAT(varAbreviature,`cc`.`documentNumber`) AS `NUMERO DE CREDITO`,
 
-        RIGHT(CONCAT('0000', `tipogarantia`.`sequence`),2) AS `TIPO DE GARANTIA`,          
+        RIGHT(CONCAT('0000', `tipogarantia`.`sequence`),2) AS `TIPO DE GARANTIA`,
 
-        
 
-				
 
-				
+
+
+
 
 				CASE
 
@@ -22598,35 +20730,39 @@ BEGIN
 
 						WHEN (`cc`.`periodPay` = 189) THEN ( round(`cc`.`term` / 2) ) /*quincenal a meses*/
 
+						WHEN (`cc`.`periodPay` = 2322) THEN ( round(`cc`.`term` / 2) ) /*catorcenal a meses*/
+
 						WHEN (`cc`.`periodPay` = 531) THEN ( round(`cc`.`term` / 30) ) /*diario a meses*/
+
+
 
 						ELSE 0
 
 				END as  `PLAZO`,
 
-         
 
-			
+
+
 
         (CASE
 
-            WHEN (`cc`.`periodPay` = 190)  THEN '05'  
+            WHEN (`cc`.`periodPay` = 190)  THEN '05'
 
-            WHEN (`cc`.`periodPay` = 188)  THEN '07'  
+            WHEN (`cc`.`periodPay` = 188)  THEN '07'
 
-            WHEN (`cc`.`periodPay` = 189)  THEN '06'  
+            WHEN (`cc`.`periodPay` = 189)  THEN '06'
 
-						WHEN (`cc`.`periodPay` = 531)  THEN '08'  
+						WHEN (`cc`.`periodPay` = 531)  THEN '08'
 
-						WHEN (`cc`.`periodPay` = 2322) THEN '06'  
+						WHEN (`cc`.`periodPay` = 2322) THEN '06'
 
             ELSE 0
 
         END) AS `FRECUENCIA DE PAGO`,
 
-        
 
-        
+
+
 
         (CASE
 
@@ -22646,21 +20782,21 @@ BEGIN
 
         END) AS `SALDO DEUDA`,
 
-        
 
-		  
+
+
 
         (CASE
 
-        		WHEN `estadosinriesgo`.`sequence` = 1  THEN   
+        		WHEN `estadosinriesgo`.`sequence` = 1  THEN
 
-				   CASE      			
+				   CASE
 
 		            WHEN
 
 		                ((`ws`.`workflowStageID` NOT IN (93 , 92, 82))
 
-		                    AND (CAST(NOW() AS DATE) > (SELECT 
+		                    AND (CAST(NOW() AS DATE) > (SELECT
 
 		                        MAX(`xl`.`dateApply`)
 
@@ -22674,13 +20810,13 @@ BEGIN
 
 		            THEN
 
-		                '02' 
+		                '02'
 
 		            WHEN
 
 		                ((`ws`.`workflowStageID` NOT IN (93 , 92, 82)  )
 
-		                    AND (CAST(NOW() AS DATE) > (SELECT 
+		                    AND (CAST(NOW() AS DATE) > (SELECT
 
 		                        MIN(`xl`.`dateApply`)
 
@@ -22692,37 +20828,37 @@ BEGIN
 
 		                        ((`xl`.`customerCreditDocumentID` = `cc`.`customerCreditDocumentID`)
 
-		                            AND (`xl`.`remaining` > 0)))))  
+		                            AND (`xl`.`remaining` > 0)))))
 
 		            THEN
 
-		                '02' 
+		                '02'
 
 		            WHEN (`ws`.`workflowStageID` = 83) THEN 'N/D'
 
-		            WHEN (`ws`.`workflowStageID` = 92) THEN '08' 
+		            WHEN (`ws`.`workflowStageID` = 92) THEN '08'
 
-		            WHEN (`ws`.`workflowStageID` = 82) THEN '03' 
+		            WHEN (`ws`.`workflowStageID` = 82) THEN '03'
 
-		            WHEN (`ws`.`workflowStageID` = 77) THEN '01' 
+		            WHEN (`ws`.`workflowStageID` = 77) THEN '01'
 
 		            ELSE RIGHT(CONCAT('0000', `estadosinriesgo`.`sequence`),2)
 
-	            END 
+	            END
 
-	         ELSE 
+	         ELSE
 
 	         	RIGHT(CONCAT('0000', `estadosinriesgo`.`sequence`),2)
 
         END) AS `ESTADO`,
 
-        
 
-		  
+
+
 
         ROUND(((
 
-		  				  SELECT 
+		  				  SELECT
 
                         IFNULL(ROUND((CASE
 
@@ -22730,15 +20866,15 @@ BEGIN
 
                                                    AVG(FN_CALCULATE_EXCHANGE_RATE(2,CAST(NOW() AS DATE),`cc`.`currencyID`,1,`cx`.`balanceStart`))
 
-                                                ELSE 
+                                                ELSE
 
-																	SUM(FN_CALCULATE_EXCHANGE_RATE(2,CAST(NOW() AS DATE),`cc`.`currencyID`,1,`cx`.`capital`)) 
+																	SUM(FN_CALCULATE_EXCHANGE_RATE(2,CAST(NOW() AS DATE),`cc`.`currencyID`,1,`cx`.`capital`))
 
                                             END),
 
                                             2),
 
-                                    0) 
+                                    0)
 
                     FROM
 
@@ -22760,11 +20896,11 @@ BEGIN
 
          2) AS `MONTO VENCIDO`,
 
-      	
 
-			
 
-        (SELECT 
+
+
+        (SELECT
 
                 IFNULL((TO_DAYS(NOW()) - TO_DAYS(MIN(`cx`.`dateApply`))),
 
@@ -22788,27 +20924,27 @@ BEGIN
 
 			) AS `ANTIGUEDAD DE MORA`,
 
-			
 
-			
+
+
 
       (CASE
 
         		WHEN `recuperacion`.`sequence` = 1 THEN
 
-        			CASE 
+        			CASE
 
-		            WHEN (`ws`.`workflowStageID` = 83) THEN '01' 
+		            WHEN (`ws`.`workflowStageID` = 83) THEN '01'
 
-		            WHEN (`ws`.`workflowStageID` = 92) THEN '08' 
+		            WHEN (`ws`.`workflowStageID` = 92) THEN '08'
 
-		            WHEN (`ws`.`workflowStageID` = 82) THEN '01' 
+		            WHEN (`ws`.`workflowStageID` = 82) THEN '01'
 
 		            WHEN
 
 		                ((`ws`.`workflowStageID` = 77)
 
-		                    AND ((SELECT 
+		                    AND ((SELECT
 
 		                        IFNULL((TO_DAYS(NOW()) - TO_DAYS(MIN(`cx`.`dateApply`))),
 
@@ -22832,13 +20968,13 @@ BEGIN
 
 		            THEN
 
-		                '03' 
+		                '03'
 
 		            WHEN
 
 		                ((`ws`.`workflowStageID` = 77)
 
-		                    AND ((SELECT 
+		                    AND ((SELECT
 
 		                        IFNULL((TO_DAYS(NOW()) - TO_DAYS(MIN(`cx`.`dateApply`))),
 
@@ -22862,15 +20998,15 @@ BEGIN
 
 		            THEN
 
-		                '04' 
+		                '04'
 
-		            WHEN (`ws`.`workflowStageID` = 77) THEN '01' 
+		            WHEN (`ws`.`workflowStageID` = 77) THEN '01'
 
 		            ELSE RIGHT(CONCAT('0000', `recuperacion`.`sequence`),2)
 
-		         END 
+		         END
 
-		      ELSE 
+		      ELSE
 
 		      	RIGHT(CONCAT('0000', `recuperacion`.`sequence`),2)
 
@@ -22912,7 +21048,7 @@ BEGIN
 
 			  	(  `cc`.`isActive` = 1)
 
-			  	AND (cc.reportSinRiesgo = 1 ) 
+			  	AND (cc.reportSinRiesgo = 1 )
 
 	        AND (`cc`.`entityID` <> 309)
 
@@ -22920,11 +21056,11 @@ BEGIN
 
 						REPLACE(`c`.`identification`, '-', '') NOT IN (
 
-						'0000000000000B', 
+						'0000000000000B',
 
 						'0000000000000A',
 
-						'0000000000000C', 
+						'0000000000000C',
 
 						'0000000000000P',
 
@@ -22944,133 +21080,133 @@ BEGIN
 
 	         AND (`ws`.`workflowStageID` <> 83)
 
-			) 
+			)
 
-    ORDER BY 
+    ORDER BY
 
 	 		CONCAT(`nat`.`firstName`, ' ', `nat`.`lastName`) ;
 
-	 		
 
-	
+
+
 
 	 /*cuota segun la frecuencia de pago, si la frecuencia de pago es semanal, la cuota el monto se debe ver reflejado semanal*/
 
-	update tb_tmp_customer_buro set VALOR_DE_LA_CUOTA = 
+	update tb_tmp_customer_buro set VALOR_DE_LA_CUOTA =
 
 			(
 
-			CASE 
+			CASE
 
-				WHEN  tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '07' /*SEMANAL*/ THEN 
+				WHEN  tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '07' /*SEMANAL*/ THEN
 
-						tb_tmp_customer_buro.MONTO_AUTORIZADO / (tb_tmp_customer_buro.PLAZO * 4) 
+						tb_tmp_customer_buro.MONTO_AUTORIZADO / (tb_tmp_customer_buro.PLAZO * 4)
 
-				WHEN  tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '05' /*MENSUAL*/ THEN 
+				WHEN  tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '05' /*MENSUAL*/ THEN
 
-						tb_tmp_customer_buro.MONTO_AUTORIZADO / (tb_tmp_customer_buro.PLAZO * 1) 
+						tb_tmp_customer_buro.MONTO_AUTORIZADO / (tb_tmp_customer_buro.PLAZO * 1)
 
-				WHEN  tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '06' /*QUINCENAL*/ THEN 
+				WHEN  tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '06' /*QUINCENAL*/ THEN
 
-						tb_tmp_customer_buro.MONTO_AUTORIZADO / (tb_tmp_customer_buro.PLAZO * 2) 
+						tb_tmp_customer_buro.MONTO_AUTORIZADO / (tb_tmp_customer_buro.PLAZO * 2)
 
 				ELSE /*DIARIO*/
 
-						tb_tmp_customer_buro.MONTO_AUTORIZADO / (tb_tmp_customer_buro.PLAZO * 30 ) 
+						tb_tmp_customer_buro.MONTO_AUTORIZADO / (tb_tmp_customer_buro.PLAZO * 30 )
 
 			END
 
 			);
 
-			
 
-	
 
-	
 
-   update tb_tmp_customer_buro,tb_catalog_item set 
 
-		tb_tmp_customer_buro.ESTADO = 
 
-		case 
+
+   update tb_tmp_customer_buro,tb_catalog_item set
+
+		tb_tmp_customer_buro.ESTADO =
+
+		case
 
 			when
 
-				( 
+				(
 
-					case 
+					case
 
-						WHEN tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '07' then  
+						WHEN tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '07' then
 
-							DATE_ADD(STR_TO_DATE(tb_tmp_customer_buro.FECHA_DE_DESEMBOLSO,'%d/%m/%Y'), INTERVAL 7 * tb_tmp_customer_buro.PLAZO  DAY)  
+							DATE_ADD(STR_TO_DATE(tb_tmp_customer_buro.FECHA_DE_DESEMBOLSO,'%d/%m/%Y'), INTERVAL 7 * tb_tmp_customer_buro.PLAZO  DAY)
 
-						WHEN tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '06' then 
+						WHEN tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '06' then
 
-							DATE_ADD(STR_TO_DATE(tb_tmp_customer_buro.FECHA_DE_DESEMBOLSO,'%d/%m/%Y'), INTERVAL 15 * tb_tmp_customer_buro.PLAZO  DAY)  
+							DATE_ADD(STR_TO_DATE(tb_tmp_customer_buro.FECHA_DE_DESEMBOLSO,'%d/%m/%Y'), INTERVAL 15 * tb_tmp_customer_buro.PLAZO  DAY)
 
-						WHEN tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '05' then 
+						WHEN tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '05' then
 
-							DATE_ADD(STR_TO_DATE(tb_tmp_customer_buro.FECHA_DE_DESEMBOLSO,'%d/%m/%Y'), INTERVAL 30 * tb_tmp_customer_buro.PLAZO DAY)  
+							DATE_ADD(STR_TO_DATE(tb_tmp_customer_buro.FECHA_DE_DESEMBOLSO,'%d/%m/%Y'), INTERVAL 30 * tb_tmp_customer_buro.PLAZO DAY)
 
 					end
 
-				) < CURDATE() THEN 
+				) < CURDATE() THEN
 
-					'02' 
+					'02'
 
 			else
 
-					'01' 
+					'01'
 
 		end ,
 
-		tb_tmp_customer_buro.ANTIGUEDAD_DE_MORA = 
+		tb_tmp_customer_buro.ANTIGUEDAD_DE_MORA =
 
-		case 
+		case
 
 			when
 
-				( 
+				(
 
-					case 
+					case
 
-						WHEN tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '07' then  
+						WHEN tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '07' then
 
-							DATE_ADD(STR_TO_DATE(tb_tmp_customer_buro.FECHA_DE_DESEMBOLSO,'%d/%m/%Y'), INTERVAL 7 * tb_tmp_customer_buro.PLAZO  DAY)  
+							DATE_ADD(STR_TO_DATE(tb_tmp_customer_buro.FECHA_DE_DESEMBOLSO,'%d/%m/%Y'), INTERVAL 7 * tb_tmp_customer_buro.PLAZO  DAY)
 
-						WHEN tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '06' then 
+						WHEN tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '06' then
 
-							DATE_ADD(STR_TO_DATE(tb_tmp_customer_buro.FECHA_DE_DESEMBOLSO,'%d/%m/%Y'), INTERVAL 15 * tb_tmp_customer_buro.PLAZO  DAY)  
+							DATE_ADD(STR_TO_DATE(tb_tmp_customer_buro.FECHA_DE_DESEMBOLSO,'%d/%m/%Y'), INTERVAL 15 * tb_tmp_customer_buro.PLAZO  DAY)
 
-						WHEN tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '05' then 
+						WHEN tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '05' then
 
-							DATE_ADD(STR_TO_DATE(tb_tmp_customer_buro.FECHA_DE_DESEMBOLSO,'%d/%m/%Y'), INTERVAL 30 * tb_tmp_customer_buro.PLAZO DAY)  
+							DATE_ADD(STR_TO_DATE(tb_tmp_customer_buro.FECHA_DE_DESEMBOLSO,'%d/%m/%Y'), INTERVAL 30 * tb_tmp_customer_buro.PLAZO DAY)
 
 					end
 
-				) < CURDATE() THEN 
+				) < CURDATE() THEN
 
 					DATEDIFF(
 
 						CURDATE(),
 
-						case 
+						case
 
-							WHEN tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '07' then  
+							WHEN tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '07' then
 
-								DATE_ADD(STR_TO_DATE(tb_tmp_customer_buro.FECHA_DE_DESEMBOLSO,'%d/%m/%Y'), INTERVAL 7 * tb_tmp_customer_buro.PLAZO  DAY)  
+								DATE_ADD(STR_TO_DATE(tb_tmp_customer_buro.FECHA_DE_DESEMBOLSO,'%d/%m/%Y'), INTERVAL 7 * tb_tmp_customer_buro.PLAZO  DAY)
 
-							WHEN tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '06' then 
+							WHEN tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '06' then
 
-								DATE_ADD(STR_TO_DATE(tb_tmp_customer_buro.FECHA_DE_DESEMBOLSO,'%d/%m/%Y'), INTERVAL 15 * tb_tmp_customer_buro.PLAZO  DAY)  
+								DATE_ADD(STR_TO_DATE(tb_tmp_customer_buro.FECHA_DE_DESEMBOLSO,'%d/%m/%Y'), INTERVAL 15 * tb_tmp_customer_buro.PLAZO  DAY)
 
-							WHEN tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '05' then 
+							WHEN tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = '05' then
 
-								DATE_ADD(STR_TO_DATE(tb_tmp_customer_buro.FECHA_DE_DESEMBOLSO,'%d/%m/%Y'), INTERVAL 30 * tb_tmp_customer_buro.PLAZO DAY)  
+								DATE_ADD(STR_TO_DATE(tb_tmp_customer_buro.FECHA_DE_DESEMBOLSO,'%d/%m/%Y'), INTERVAL 30 * tb_tmp_customer_buro.PLAZO DAY)
 
-						end 
+						end
 
-					)   
+					)
 
 			else
 
@@ -23080,69 +21216,69 @@ BEGIN
 
    where
 
-   	tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = tb_catalog_item.sequence and 
+   	tb_tmp_customer_buro.FRECUENCIA_DE_PAGO = tb_catalog_item.sequence and
 
-   	tb_catalog_item.catalogID = 51 and 
+   	tb_catalog_item.catalogID = 51 and
 
-   	tb_tmp_customer_buro.ESTADO = '01'  and 
+   	tb_tmp_customer_buro.ESTADO = '01'  and
 
-		tb_tmp_customer_buro.FORMA_DE_RECUPERACION = '03'  and 
+		tb_tmp_customer_buro.FORMA_DE_RECUPERACION = '03'  and
 
 		tb_tmp_customer_buro.entityID = 0;
 
-	
-
-	 
-
-	
-
-	update tb_tmp_customer_buro set tb_tmp_customer_buro.FORMA_DE_RECUPERACION = '03'  
-
-	where 
-
-		tb_tmp_customer_buro.ESTADO = '02'  ; 	
 
 
 
-	
 
-	update tb_tmp_customer_buro set 
 
-			tb_tmp_customer_buro.MONTO_VENCIDO = tb_tmp_customer_buro.SALDO_DEUDA 
+
+	update tb_tmp_customer_buro set tb_tmp_customer_buro.FORMA_DE_RECUPERACION = '03'
 
 	where
 
-		tb_tmp_customer_buro.ESTADO = '02'  ; 	
+		tb_tmp_customer_buro.ESTADO = '02'  ;
 
-		 
 
-	
 
-	update tb_tmp_customer_buro set tb_tmp_customer_buro.FORMA_DE_RECUPERACION = '01'  
 
-	where 
 
-		tb_tmp_customer_buro.ESTADO = '01'  and tb_tmp_customer_buro.ANTIGUEDAD_DE_MORA = 0;  	
+	update tb_tmp_customer_buro set
 
-					
+			tb_tmp_customer_buro.MONTO_VENCIDO = tb_tmp_customer_buro.SALDO_DEUDA
 
-	
+	where
 
-   update tb_tmp_customer_buro set  ESTADO = '03' 
+		tb_tmp_customer_buro.ESTADO = '02'  ;
 
-   where  
 
-   	SALDO_DEUDA = 0;   	
 
-		
 
-	 
 
-   select 
+	update tb_tmp_customer_buro set tb_tmp_customer_buro.FORMA_DE_RECUPERACION = '01'
+
+	where
+
+		tb_tmp_customer_buro.ESTADO = '01'  and tb_tmp_customer_buro.ANTIGUEDAD_DE_MORA = 0;
+
+
+
+
+
+   update tb_tmp_customer_buro set  ESTADO = '03'
+
+   where
+
+   	SALDO_DEUDA = 0;
+
+
+
+
+
+   select
 
 		`i`.`TIPO_DE_ENTIDAD`,
 
-		`i`.`NUMERO_CORRELATIVO`, 
+		`i`.`NUMERO_CORRELATIVO`,
 
 		`i`.`FECHA_DE_REPORTE`,
 
@@ -23178,13 +21314,13 @@ BEGIN
 
 		`i`.`NUMERO_DE_CREDITO`,
 
-		`i`.`VALOR_DE_LA_CUOTA`	
+		`i`.`VALOR_DE_LA_CUOTA`
 
-	from 
+	from
 
-		tb_tmp_customer_buro i;
+		tb_tmp_customer_buro i ;
 
-   
+
 
    DROP TABLE tb_tmp_customer_buro;
 
@@ -23716,132 +21852,90 @@ DELIMITER ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_cxp_get_report_expenses_detail`(IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), IN `prUserID` INT, IN `prStartOn` DATE, IN `prEndOn` DATE , IN prTipoExpense INT , IN prCategoryExpenses INT, IN prClassExpenses INT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Obtener detalle de gastos '
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Obtener detalle de gastos '
 BEGIN
 
-	
 
-	 
-
-	select 
-
+	select
 		 tm.transactionID,
-
 		 tm.transactionMasterID,
-
 		 tm.companyID,
-
 		 tm.transactionNumber,
-
-		 tm.createdOn,
-
+		 tm.transactionOn as createdOn ,
 		 tm.amount,
-
 		 tm.tax1 as Iva,
-
 		 tm.tax2 as Total,
-
 		 tm.note,
-
 		 tm.reference1,
-
 		 tm.reference2 ,
-
-		 tm.reference4 as ruc,
-
 		 tm.currencyID,
-
 		 tm.currencyID2,
-
 		 tm.exchangeRate,
-
 		 tm.areaID,
-
 		 tm.priorityID  ,
-
 		 ifnull(clas.display,'ND') as Clasificacion,
-
 		 ci.name as Tipo,
-
 		 ci2.name as Categoria,
-
 		 '' as CodigoReglon,
+		 br.`name` as sucursal ,
 
-		 tm.reference3 as Proveedor ,
 
-		 br.`name` as sucursal 
+		 CASE
+			WHEN pronat.firstName IS NULL THEN
+				tm.reference3
+			ELSE
+				pronat.firstName
+		 END as Proveedor ,
 
-	from 
+		 CASE
+				WHEN pro.numberIdentification  IS NULL THEN
+					tm.reference4
+				ELSE
+					pro.numberIdentification
+			END as ruc
 
-		tb_transaction_master tm 
-
-		inner join tb_branch br on 	
-
-			br.branchID = tm.branchID 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = tm.statusID 
-
-		inner join tb_public_catalog_detail ci on 
-
-			ci.publicCatalogDetailID = tm.priorityID 
-
-		inner join tb_public_catalog_detail ci2 on 
-
-			ci2.publicCatalogDetailID = tm.areaID 
-
-		left JOIN tb_catalog_item clas on 
-
+	from
+		tb_transaction_master tm
+		inner join tb_branch br on
+			br.branchID = tm.branchID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_public_catalog_detail ci on
+			ci.publicCatalogDetailID = tm.priorityID
+		inner join tb_public_catalog_detail ci2 on
+			ci2.publicCatalogDetailID = tm.areaID
+		left JOIN tb_catalog_item clas on
 			tm.classID = clas.catalogItemID
-
+		left JOIN tb_provider pro on
+			pro.entityID = tm.entityID
+		left JOIN tb_naturales pronat on
+			pronat.entityID = pro.entityID
 	where
-
-		tm.transactionID = 38  and 
-
-		tm.isActive = 1 and 
-
-		ws.aplicable = 1 and 
-
-		tm.transactionOn between prStartOn and prEndOn and 
-
+		tm.transactionID = 38  and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.transactionOn between prStartOn and prEndOn and
 		(
-
 			(
-
-				(tm.areaID = prCategoryExpenses and prCategoryExpenses != 0) or 
-
+				(tm.areaID = prCategoryExpenses and prCategoryExpenses != 0) or
 				(prCategoryExpenses = 0)
-
-			)  
-
-			and 
-
+			)
+			and
 			(
-
-				(tm.priorityID = prTipoExpense and prTipoExpense != 0)  or 
-
+				(tm.priorityID = prTipoExpense and prTipoExpense != 0)  or
 				(prTipoExpense = 0 )
-
 			)
-
 			AND
-
 			(
-
 				(tm.classID=prClassExpenses and prClassExpenses !=0 ) OR
-
 				(prClassExpenses=0)
-
 			)
-
 	  );
 
-	
 
- 
+
 
 END ;;
 DELIMITER ;
@@ -24412,414 +22506,218 @@ DELIMITER ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_calculate_kardex_new_input`(IN `prCompanyID` INT, IN `prTransactionID` INT, IN `prTransactionMasterID` BIGINT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Procedimiento que se utilizara para calcular el costo de los Item cuando se registra una nueva entrada de mercaderia'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Procedimiento que se utilizara para calcular el costo de los Item cuando se registra una nueva entrada de mercaderia'
 BEGIN
 
 	declare varBranchID int;
-
 	declare varSign int;
-
 	declare varTransactionOn datetime;
-
-	declare varWarehouseID INT; 
-
+	declare varWarehouseID INT;
 	DECLARE varTiposCosto VARCHAR(50);
 
-		
 
 	CALL pr_core_get_parameter_value(prCompanyID,'INVENTORY_TYPE_COST',varTiposCosto);
-
-		
-
-	select tm.createdAt,sign,transactionOn,tm.targetWarehouseID into varBranchID,varSign,varTransactionOn,varWarehouseID 
-
-	from 
-
-		tb_transaction_master tm 
-
-	where 
-
-		tm.companyID = prCompanyID and tm.transactionID = prTransactionID and 
-
+	select tm.createdAt,sign,transactionOn,tm.targetWarehouseID into varBranchID,varSign,varTransactionOn,varWarehouseID
+	from
+		tb_transaction_master tm
+	where
+		tm.companyID = prCompanyID and tm.transactionID = prTransactionID and
 		tm.transactionMasterID = prTransactionMasterID limit 1;
 
-		
-
 	insert into tb_item_warehouse (companyID,branchID,itemID,warehouseID,quantity,cost,quantityMax,quantityMin)
-
-	select 
-
+	select
 		k.companyID,k.branchID,k.itemID,k.warehouseID,0,0,0,0
-
 	from
-
-		tb_kardex k 
-
+		tb_kardex k
 	where
-
 		k.itemID not in (
-
-				select 
-
-					l.itemID 
-
-				from 
-
-					tb_item_warehouse l 
-
-				where  
-
-					l.companyID = prCompanyID and 
-
-					l.warehouseID = varWarehouseID  
-
-		) and 
-
-		k.companyID = prCompanyID and 
-
-		k.transactionID = prTransactionID and 
-
+				select
+					l.itemID
+				from
+					tb_item_warehouse l
+				where
+					l.companyID = prCompanyID and
+					l.warehouseID = varWarehouseID
+		) and
+		k.companyID = prCompanyID and
+		k.transactionID = prTransactionID and
 		k.transactionMasterID = prTransactionMasterID;
 
-		
 
-		
 
 	insert into tb_kardex (
-
 		companyID,branchID,transactionID,transactionMasterID,transactionDetailID,warehouseID,
-
 		itemID,kardexCode,kardexDate,sign,movementOn,
-
 		transactionQuantity,
-
 		transactionCost,
-
-	  quantityInWarehouseCurrent,quantityInCurrent 
-
+	  quantityInWarehouseCurrent,quantityInCurrent
 	)
-
-	select 
-
+	select
 		tm.companyID,varBranchID,tm.transactionID,tm.transactionMasterID,tm.transactionMasterDetailID,
-
 		tm.inventoryWarehouseTargetID,tm.componentItemID,0,current_timestamp(),varSign,
-
-		varTransactionOn,		
-
-		IF(tm.transactionID = 20  ,tm.skuQuantityBySku,tm.quantity) as tm_quantity, 
-
+		varTransactionOn,
+		IF(tm.transactionID = 20  ,tm.skuQuantityBySku,tm.quantity) as tm_quantity,
 		tm.unitaryCost,
-
-		ifnull(iw.quantity,0),i.quantity  
-
-	from 
-
-		tb_transaction_master_detail tm 
-
-		inner join tb_item i on 
-
-				tm.componentItemID = i.itemID 		
-
-		left join tb_item_warehouse iw on 
-
-			  iw.itemID = i.itemID and 
-
-				iw.warehouseID = tm.inventoryWarehouseTargetID  
-
-	where 
-
-		tm.companyID = prCompanyID and 
-
-		tm.transactionID = prTransactionID and tm.transactionMasterID = prTransactionMasterID and 
-
+		ifnull(iw.quantity,0),i.quantity
+	from
+		tb_transaction_master_detail tm
+		inner join tb_item i on
+				tm.componentItemID = i.itemID
+		left join tb_item_warehouse iw on
+			  iw.itemID = i.itemID and
+				iw.warehouseID = tm.inventoryWarehouseTargetID
+	where
+		tm.companyID = prCompanyID and
+		tm.transactionID = prTransactionID and tm.transactionMasterID = prTransactionMasterID and
 		tm.isActive = 1;
 
-	
 
-	
-
-	
-
-	update tb_kardex,tb_item  set 
-
-		tb_kardex.oldQuantity = IFNULL(tb_item.quantity,0), 
-
+	update tb_kardex,tb_item  set
+		tb_kardex.oldQuantity = IFNULL(tb_item.quantity,0),
 		tb_kardex.oldCost = IFNULL(tb_item.cost,0)
-
 	where
+		tb_item.companyID = tb_kardex.companyID and
+		tb_item.itemID = tb_kardex.itemID and
+		tb_kardex.companyID = prCompanyID and
+		tb_kardex.transactionID = prTransactionID and
+		tb_kardex.transactionMasterID = prTransactionMasterID ;
 
-		tb_item.companyID = tb_kardex.companyID and 
-
-		tb_item.itemID = tb_kardex.itemID and 		
-
-		tb_kardex.companyID = prCompanyID and 
-
-		tb_kardex.transactionID = prTransactionID and 
-
+	update tb_item_warehouse , tb_kardex set
+		  tb_kardex.oldQuantityWarehouse = IFNULL(tb_item_warehouse.quantity,0),
+      tb_kardex.oldCostWarehouse = 0
+	where
+		tb_item_warehouse.companyID = tb_kardex.companyID and
+		tb_item_warehouse.itemID = tb_kardex.itemID and
+		tb_item_warehouse.warehouseID = tb_kardex.warehouseID and
+		tb_kardex.companyID = prCompanyID and
+		tb_kardex.transactionID = prTransactionID and
 		tb_kardex.transactionMasterID = prTransactionMasterID ;
 
 
 
-	update tb_item_warehouse , tb_kardex set 
-
-		  tb_kardex.oldQuantityWarehouse = IFNULL(tb_item_warehouse.quantity,0),
-
-      tb_kardex.oldCostWarehouse = 0 
-
-	where 
-
-		tb_item_warehouse.companyID = tb_kardex.companyID and 
-
-		tb_item_warehouse.itemID = tb_kardex.itemID and 
-
-		tb_item_warehouse.warehouseID = tb_kardex.warehouseID and 
-
-		tb_kardex.companyID = prCompanyID and 
-
-		tb_kardex.transactionID = prTransactionID and 
-
-		tb_kardex.transactionMasterID = prTransactionMasterID ; 
-
-	
-
-	
-
-	update tb_kardex set 
-
+	update tb_kardex set
 		newQuantity           = ((sign * IFNULL(transactionQuantity,0)) + IFNULL(oldQuantity,0)) ,
-
-		newQuantityWarehouse  = ((sign * IFNULL(transactionQuantity,0)) + IFNULL(oldQuantityWarehouse,0)) 
-
-	where 
-
+		newQuantityWarehouse  = ((sign * IFNULL(transactionQuantity,0)) + IFNULL(oldQuantityWarehouse,0))
+	where
 		companyID = prCompanyID and transactionID = prTransactionID and transactionMasterID = prTransactionMasterID ;
 
-	
 
-	
 
-	IF varTiposCosto = 'ULTIMO COSTO' THEN  
 
-			update tb_kardex set 
-
-				newCost               = IFNULL(transactionCost,0), 
-
+	IF varTiposCosto = 'ULTIMO COSTO' THEN
+			update tb_kardex set
+				newCost               = IFNULL(transactionCost,0),
 				newCostWarehouse      = 0
-
-			where 
-
+			where
 				companyID = prCompanyID and transactionID = prTransactionID and transactionMasterID = prTransactionMasterID ;
-
 	END IF;
 
-	
 
-	
 
-	IF varTiposCosto = 'PROMEDIO COSTO' THEN 
 
-			update tb_kardex set 
 
-				newCost               = 
-
+	IF varTiposCosto = 'PROMEDIO COSTO' THEN
+			update tb_kardex set
+				newCost               =
 					(
-
-						(IFNULL(transactionQuantity,0) * IFNULL(transactionCost,0)) + 
-
+						(IFNULL(transactionQuantity,0) * IFNULL(transactionCost,0)) +
 						(IFNULL(oldQuantity,0) * IFNULL(oldCost,0))
-
 					) / IFNULL(newQuantity,0) ,
-
 				newCostWarehouse      = 0
-
-			where 
-
+			where
 				companyID = prCompanyID and transactionID = prTransactionID and transactionMasterID = prTransactionMasterID ;
-
 	END IF;
 
-	
 
-	IF varTiposCosto = 'PONDERADO COSTO' THEN 
 
-			update tb_kardex set 
-
-				newCost               = 				
-
-				  (((transactionQuantity) / newQuantity)  * transactionCost )					
-
-					+					
-
-					(((oldQuantity) / newQuantity) * oldCost ) , 
-
+	IF varTiposCosto = 'PONDERADO COSTO' THEN
+			update tb_kardex set
+				newCost               =
+				  (((transactionQuantity) / newQuantity)  * transactionCost )
+					+
+					(((oldQuantity) / newQuantity) * oldCost ) ,
 				newCostWarehouse      = 0
-
-			where 
-
+			where
 				companyID = prCompanyID and transactionID = prTransactionID and transactionMasterID = prTransactionMasterID ;
-
 	END IF;
 
-	
 
-	
-
-	
-
-	update tb_item , tb_kardex set 
-
+	update tb_item , tb_kardex set
 		tb_item.quantity = tb_kardex.newQuantity,
-
 		tb_item.cost = tb_kardex.newCost,
-
 		tb_item.dateLastUse = NOW()
-
 	where
-
-		tb_item.companyID = tb_kardex.companyID and 
-
-		tb_item.itemID = tb_kardex.itemID and 
-
-		tb_kardex.companyID = prCompanyID and 
-
-		tb_kardex.transactionID = prTransactionID and 
-
+		tb_item.companyID = tb_kardex.companyID and
+		tb_item.itemID = tb_kardex.itemID and
+		tb_kardex.companyID = prCompanyID and
+		tb_kardex.transactionID = prTransactionID and
 		tb_kardex.transactionMasterID = prTransactionMasterID ;
 
 
-
-	update tb_item_warehouse , tb_kardex set 
-
+	update tb_item_warehouse , tb_kardex set
 		tb_item_warehouse.quantity = tb_kardex.newQuantityWarehouse,
-
 		tb_item_warehouse.cost = tb_kardex.newCostWarehouse
-
 	where
-
-		tb_item_warehouse.companyID = tb_kardex.companyID and 
-
-		tb_item_warehouse.itemID = tb_kardex.itemID and 
-
-		tb_item_warehouse.warehouseID = tb_kardex.warehouseID and 
-
-		tb_kardex.companyID = prCompanyID and 
-
-		tb_kardex.transactionID = prTransactionID and 
-
+		tb_item_warehouse.companyID = tb_kardex.companyID and
+		tb_item_warehouse.itemID = tb_kardex.itemID and
+		tb_item_warehouse.warehouseID = tb_kardex.warehouseID and
+		tb_kardex.companyID = prCompanyID and
+		tb_kardex.transactionID = prTransactionID and
 		tb_kardex.transactionMasterID = prTransactionMasterID ;
 
-			
+	update
+		tb_transaction_master set isApplied = 1
+	where
+		companyID = prCompanyID and transactionID = prTransactionID and transactionMasterID = prTransactionMasterID;
 
-	update 
-
-		tb_transaction_master set isApplied = 1 	
-
-	where 
-
-		companyID = prCompanyID and transactionID = prTransactionID and transactionMasterID = prTransactionMasterID; 
-
-		
-
-	
-
-	
 
 	INSERT INTO tb_item_warehouse_expired (warehouseID,itemID,companyID,quantity,lote,dateExpired)
-
-	SELECT 
-
+	SELECT
 			c.inventoryWarehouseTargetID ,
-
 			c.componentItemID,
-
-			c.companyID,		
-
-			0 as quantity, 
-
+			c.companyID,
+			0 as quantity,
 			REPLACE( UPPER(c.lote),' ','') as lote,
-
-			c.expirationDate
-
-	FROM 
-
-			tb_transaction_master_detail c 
-
-	WHERE	
-
-			c.transactionMasterID = prTransactionMasterID  and 
-
-			c.transactionID = prTransactionID and 		
-
-			c.companyID = prCompanyID and 
-
-			c.componentID = 33 and  
-
-			c.isActive = 1 and 
-
+			IFNULL(c.expirationDate,'1900-01-01 00:00:00') as expirationDate
+	FROM
+			tb_transaction_master_detail c
+	WHERE
+			c.transactionMasterID = prTransactionMasterID  and
+			c.transactionID = prTransactionID and
+			c.companyID = prCompanyID and
+			c.componentID = 33 and
+			c.isActive = 1 and
 			c.componentItemID not in (
-
-				select 
-
-					u.itemID 
-
-				from 
-
-					tb_item_warehouse_expired u 
-
-				where 
-
-					u.companyID = c.companyID and 
-
-					u.itemID = c.componentItemID and 
-
-					u.warehouseID = c.inventoryWarehouseTargetID and 				
-
-					u.dateExpired = IFNULL(c.expirationDate,'0000-00-00 00:00:00') 
-
+				select
+					u.itemID
+				from
+					tb_item_warehouse_expired u
+				where
+					u.companyID = c.companyID and
+					u.itemID = c.componentItemID and
+					u.warehouseID = c.inventoryWarehouseTargetID and
+					u.dateExpired = IFNULL(c.expirationDate,'1900-01-01 00:00:00')
 			);
 
-		
 
-		
-
-		update tb_item_warehouse_expired , tb_transaction_master_detail set 
-
-			tb_item_warehouse_expired.quantity = 
-
-			tb_item_warehouse_expired.quantity + (varSign * tb_transaction_master_detail.quantity) 
-
+		update tb_item_warehouse_expired , tb_transaction_master_detail set
+			tb_item_warehouse_expired.quantity =
+			tb_item_warehouse_expired.quantity + (varSign * tb_transaction_master_detail.quantity)
 		where
-
-			tb_item_warehouse_expired.itemID = tb_transaction_master_detail.componentItemID and 
-
-			tb_item_warehouse_expired.companyID = tb_transaction_master_detail.companyID and 
-
-			tb_item_warehouse_expired.warehouseID = tb_transaction_master_detail.inventoryWarehouseTargetID and 			 			
-
+			tb_item_warehouse_expired.itemID = tb_transaction_master_detail.componentItemID and
+			tb_item_warehouse_expired.companyID = tb_transaction_master_detail.companyID and
+			tb_item_warehouse_expired.warehouseID = tb_transaction_master_detail.inventoryWarehouseTargetID and
 			tb_item_warehouse_expired.dateExpired = IFNULL(
-
 							tb_transaction_master_detail.expirationDate,
-
-							'0000-00-00 00:00:00'
-
-			)  and 
-
-			tb_transaction_master_detail.companyID = prCompanyID and 
-
-			tb_transaction_master_detail.transactionID = prTransactionID and 
-
+							'1900-01-01 00:00:00'
+			)  and
+			tb_transaction_master_detail.companyID = prCompanyID and
+			tb_transaction_master_detail.transactionID = prTransactionID and
 			tb_transaction_master_detail.transactionMasterID = prTransactionMasterID;
 
-			
 
-			
-
-			
-
-	
 
 END ;;
 DELIMITER ;
@@ -24838,566 +22736,287 @@ DELIMITER ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_calculate_kardex_new_output`(IN `prCompanyID` INT, IN `prTransactionID` INT, IN `prTransactionMasterID` BIGINT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Procedimiento que se utiliza para restar el inventario al momento de registrar una salida de inventario'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Procedimiento que se utiliza para restar el inventario al momento de registrar una salida de inventario'
 BEGIN
-
 	 declare varBranchID int;
-
 	 declare varSign int;
-
 	 declare varTransactionOn datetime;
-
 	 declare varWarehouseID int;
-
 	 DECLARE varTiposCosto VARCHAR(50);
-
 	 declare varTransactionIDFactura int default 19;
-
 	 declare varWhileItemMin int default 0;
-
 	 declare varWhileItemMax int default 0;
-
 	 declare varWhileItemQuantity decimal(19,5) DEFAULT 0;
 
-	 
-
-	 declare varWhileFechaVencimientoMin date default 0;
-
-	 declare varWhileFechaVencimientoMax date default 0;
-
+	 declare varWhileFechaVencimientoMin date default '1970-01-01';
+	 declare varWhileFechaVencimientoMax date default '1970-01-01';
 	 declare varWhileFechaVencimientoQuantity decimal(19,5) DEFAULT 0;
-
 	 declare varWhileFechaVencimientoContinue int default 1;
 
-	  
-
-    DECLARE EXIT HANDLER FOR SQLEXCEPTION 
-
+    DECLARE EXIT HANDLER FOR SQLEXCEPTION
 		BEGIN
-
 				ROLLBACK;
-
 				RESIGNAL;
-
 		END;
 
 
-
-		
-
     START TRANSACTION;
-
 		CALL pr_core_get_parameter_value(prCompanyID,'INVENTORY_TYPE_COST',varTiposCosto);
 
-		
 
-		
-
-		select tm.createdAt,sign,transactionOn,tm.sourceWarehouseID 
-
-		into varBranchID,varSign,varTransactionOn,varWarehouseID 
-
-		from tb_transaction_master tm 
-
-		where 
-
-			tm.companyID = prCompanyID and 
-
+		select tm.createdAt,sign,transactionOn,tm.sourceWarehouseID
+		into varBranchID,varSign,varTransactionOn,varWarehouseID
+		from tb_transaction_master tm
+		where
+			tm.companyID = prCompanyID and
 			tm.transactionID = prTransactionID and tm.transactionMasterID = prTransactionMasterID limit 1;
 
-	
 
-	
-
-				
 
 		insert into tb_item_warehouse (companyID,branchID,itemID,warehouseID,quantity,cost,quantityMax,quantityMin)
-
-		select 
-
+		select
 			k.companyID,k.branchID,k.itemID,k.warehouseID,0,0,0,0
-
 		from
-
-			tb_kardex k  
-
+			tb_kardex k
 		where
-
 			k.itemID not in (
-
-					select 
-
-						l.itemID 
-
-					from 
-
-						tb_item_warehouse l 
-
-					where  
-
-						l.companyID = prCompanyID and 
-
-						l.warehouseID = varWarehouseID  
-
-			) and 
-
-			k.companyID = prCompanyID and 
-
-			k.transactionID = prTransactionID and 
-
+					select
+						l.itemID
+					from
+						tb_item_warehouse l
+					where
+						l.companyID = prCompanyID and
+						l.warehouseID = varWarehouseID
+			) and
+			k.companyID = prCompanyID and
+			k.transactionID = prTransactionID and
 			k.transactionMasterID = prTransactionMasterID;
 
-			
-
-			
 
 		insert into tb_kardex (
-
 		companyID,branchID,transactionID,transactionMasterID,
-
 		transactionDetailID,warehouseID,itemID,kardexCode,kardexDate,sign,movementOn,transactionQuantity,transactionCost,
-
 		quantityInWarehouseCurrent,quantityInCurrent
-
 		)
-
-		select 
-
+		select
 			tm.companyID,varBranchID,tm.transactionID,tm.transactionMasterID,
-
 			tm.transactionMasterDetailID,tm.inventoryWarehouseSourceID,tm.componentItemID,
-
 			0,current_timestamp(),varSign,varTransactionOn,
-
 			IF(tm.transactionID = 19  ,tm.skuQuantityBySku,tm.quantity) as tm_quantity,
-
 			tm.unitaryCost ,
-
-			iw.quantity,i.quantity 
-
-		from 
-
-			tb_transaction_master_detail tm 
-
-			inner join tb_item i on 
-
-				tm.componentItemID = i.itemID 
-
-			inner join tb_item_warehouse iw on 
-
-				iw.itemID = i.itemID and 
-
-				iw.warehouseID = varWarehouseID 
-
-		where 
-
-			tm.companyID = prCompanyID and 
-
+			iw.quantity,i.quantity
+		from
+			tb_transaction_master_detail tm
+			inner join tb_item i on
+				tm.componentItemID = i.itemID
+			inner join tb_item_warehouse iw on
+				iw.itemID = i.itemID and
+				iw.warehouseID = varWarehouseID
+		where
+			tm.companyID = prCompanyID and
 			tm.transactionID = prTransactionID and tm.transactionMasterID = prTransactionMasterID and tm.isActive = 1;
 
-		
 
 
 
-		
 
-		
-
-		
-
-		update tb_kardex,tb_item  set 
-
-			tb_kardex.oldQuantity = IFNULL(tb_item.quantity,0), 
-
+		update tb_kardex,tb_item  set
+			tb_kardex.oldQuantity = IFNULL(tb_item.quantity,0),
 			tb_kardex.oldCost     = IFNULL(tb_item.cost,0)
-
 		where
-
-			tb_item.companyID = tb_kardex.companyID and 
-
-			tb_item.itemID = tb_kardex.itemID and 
-
-			tb_kardex.companyID = prCompanyID and 
-
-			tb_kardex.transactionID = prTransactionID and 
-
+			tb_item.companyID = tb_kardex.companyID and
+			tb_item.itemID = tb_kardex.itemID and
+			tb_kardex.companyID = prCompanyID and
+			tb_kardex.transactionID = prTransactionID and
 			tb_kardex.transactionMasterID = prTransactionMasterID ;
 
-	
 
-		
-
-		update tb_item_warehouse , tb_kardex set 
-
+		update tb_item_warehouse , tb_kardex set
 					tb_kardex.oldQuantityWarehouse 	= IFNULL(tb_item_warehouse.quantity,0),
-
 	        tb_kardex.oldCostWarehouse 			= IFNULL(tb_item_warehouse.cost,0)
-
 		where
-
-			tb_item_warehouse.companyID = tb_kardex.companyID and 
-
-			tb_item_warehouse.itemID = tb_kardex.itemID and 
-
-			tb_item_warehouse.warehouseID = tb_kardex.warehouseID and 
-
-			tb_kardex.companyID = prCompanyID and 
-
-			tb_kardex.transactionID = prTransactionID and 
-
+			tb_item_warehouse.companyID = tb_kardex.companyID and
+			tb_item_warehouse.itemID = tb_kardex.itemID and
+			tb_item_warehouse.warehouseID = tb_kardex.warehouseID and
+			tb_kardex.companyID = prCompanyID and
+			tb_kardex.transactionID = prTransactionID and
 			tb_kardex.transactionMasterID = prTransactionMasterID ;
 
-		
 
-		
 
-		
-
-		update tb_kardex set 
-
+		update tb_kardex set
 			newQuantity           = ((sign * IFNULL(transactionQuantity,0)) + IFNULL(oldQuantity,0)) ,
-
-			newQuantityWarehouse  = ((sign * IFNULL(transactionQuantity,0)) + IFNULL(oldQuantityWarehouse,0)) 
-
-		where 
-
+			newQuantityWarehouse  = ((sign * IFNULL(transactionQuantity,0)) + IFNULL(oldQuantityWarehouse,0))
+		where
 			companyID = prCompanyID and transactionID = prTransactionID and transactionMasterID = prTransactionMasterID ;
 
-		
-
-		update tb_kardex set 
-
+		update tb_kardex set
 			newCost           = oldCost,
-
 			newCostWarehouse  = oldCostWarehouse
+		where
+			companyID = prCompanyID and transactionID = prTransactionID and transactionMasterID = prTransactionMasterID ;
 
-		where 
 
-			companyID = prCompanyID and transactionID = prTransactionID and transactionMasterID = prTransactionMasterID ;	
-
-		
-
-		
-
-		update tb_item , tb_kardex set 
-
+		update tb_item , tb_kardex set
 			tb_item.quantity = tb_kardex.newQuantity,
-
 			tb_item.cost = tb_kardex.newCost,
-
 			tb_item.dateLastUse = NOW()
-
 		where
-
-			tb_item.companyID = tb_kardex.companyID and 
-
-			tb_item.itemID = tb_kardex.itemID and 
-
-			tb_kardex.companyID = prCompanyID and 
-
-			tb_kardex.transactionID = prTransactionID and 
-
+			tb_item.companyID = tb_kardex.companyID and
+			tb_item.itemID = tb_kardex.itemID and
+			tb_kardex.companyID = prCompanyID and
+			tb_kardex.transactionID = prTransactionID and
 			tb_kardex.transactionMasterID = prTransactionMasterID ;
 
-	
 
-	  
-
-		update tb_item_warehouse , tb_kardex set 
-
+		update tb_item_warehouse , tb_kardex set
 			tb_item_warehouse.quantity = tb_kardex.newQuantityWarehouse,
-
 			tb_item_warehouse.cost = tb_kardex.newCostWarehouse
-
 		where
-
-			tb_item_warehouse.companyID = tb_kardex.companyID and 
-
-			tb_item_warehouse.itemID = tb_kardex.itemID and 
-
-			tb_item_warehouse.warehouseID = tb_kardex.warehouseID and 
-
-			tb_kardex.companyID = prCompanyID and 
-
-			tb_kardex.transactionID = prTransactionID and 
-
+			tb_item_warehouse.companyID = tb_kardex.companyID and
+			tb_item_warehouse.itemID = tb_kardex.itemID and
+			tb_item_warehouse.warehouseID = tb_kardex.warehouseID and
+			tb_kardex.companyID = prCompanyID and
+			tb_kardex.transactionID = prTransactionID and
 			tb_kardex.transactionMasterID = prTransactionMasterID ;
 
-				
 
-				
 
-				
+		update tb_transaction_master set
+			isApplied = 1
+		where companyID = prCompanyID and transactionID = prTransactionID and transactionMasterID = prTransactionMasterID;
 
-		update tb_transaction_master set 
 
-			isApplied = 1 	
 
-		where companyID = prCompanyID and transactionID = prTransactionID and transactionMasterID = prTransactionMasterID; 
-
-	
-
-	
-
-	  
-
-		if varTransactionIDFactura = prTransactionID  then 
-
-				update tb_item , tb_kardex set 
-
-					tb_item.quantityInvoice = IFNULL(tb_item.quantityInvoice,0) + tb_kardex.transactionQuantity 
-
+		if varTransactionIDFactura = prTransactionID  then
+				update tb_item , tb_kardex set
+					tb_item.quantityInvoice = IFNULL(tb_item.quantityInvoice,0) + tb_kardex.transactionQuantity
 				where
-
-					tb_item.companyID = tb_kardex.companyID and 
-
-					tb_item.itemID = tb_kardex.itemID and 
-
-					tb_kardex.companyID = prCompanyID and 
-
-					tb_kardex.transactionID = prTransactionID and 
-
+					tb_item.companyID = tb_kardex.companyID and
+					tb_item.itemID = tb_kardex.itemID and
+					tb_kardex.companyID = prCompanyID and
+					tb_kardex.transactionID = prTransactionID and
 					tb_kardex.transactionMasterID = prTransactionMasterID ;
-
 		end if;
 
-		
 
-		
 
-		
-
-		if varTransactionIDFactura != prTransactionID  then 		
-
-					update tb_item_warehouse_expired , tb_transaction_master_detail set 
-
-						  tb_item_warehouse_expired.quantity = 
-
-							tb_item_warehouse_expired.quantity + (varSign * tb_transaction_master_detail.quantity) 
-
+		if varTransactionIDFactura != prTransactionID  then
+					update tb_item_warehouse_expired , tb_transaction_master_detail set
+						  tb_item_warehouse_expired.quantity =
+							tb_item_warehouse_expired.quantity + (varSign * tb_transaction_master_detail.quantity)
 					where
-
-						tb_item_warehouse_expired.itemID = tb_transaction_master_detail.componentItemID and 
-
-						tb_item_warehouse_expired.companyID = tb_transaction_master_detail.companyID and 
-
-						tb_item_warehouse_expired.warehouseID = tb_transaction_master_detail.inventoryWarehouseSourceID and 
-
+						tb_item_warehouse_expired.itemID = tb_transaction_master_detail.componentItemID and
+						tb_item_warehouse_expired.companyID = tb_transaction_master_detail.companyID and
+						tb_item_warehouse_expired.warehouseID = tb_transaction_master_detail.inventoryWarehouseSourceID and
 						tb_item_warehouse_expired.dateExpired = IFNULL(
-
 							tb_transaction_master_detail.expirationDate,
-
-							'0000-00-00 00:00:00'
-
-						)  and 
-
-						tb_transaction_master_detail.companyID = prCompanyID and 
-
-						tb_transaction_master_detail.transactionID = prTransactionID and 
-
-						tb_transaction_master_detail.transactionMasterID = prTransactionMasterID and 
-
+							'1900-01-01 00:00:00'
+						)  and
+						tb_transaction_master_detail.companyID = prCompanyID and
+						tb_transaction_master_detail.transactionID = prTransactionID and
+						tb_transaction_master_detail.transactionMasterID = prTransactionMasterID and
 						tb_transaction_master_detail.isActive = 1;
-
-		else 
-
-				
+		else
 
 				set varWhileItemMin = (
-
-						select min(u.componentItemID) 
-
+						select min(u.componentItemID)
 						from tb_transaction_master_detail u where u.isActive = 1 and u.transactionMasterID = prTransactionMasterID
-
 				);
-
-				
 
 				set varWhileItemMax = (
-
-						select max(u.componentItemID) 
-
+						select max(u.componentItemID)
 						from tb_transaction_master_detail u where u.isActive = 1 and u.transactionMasterID = prTransactionMasterID
-
 				);
 
-				
-
-				while varWhileItemMin <= varWhileItemMax do 
-
-							
+				while varWhileItemMin <= varWhileItemMax do
 
 							set varWhileItemQuantity = (
-
-								select u.skuQuantityBySku from tb_transaction_master_detail u where u.isActive = 1 and 
-
-								u.componentItemID = varWhileItemMin and 
-
+								select sum(u.skuQuantityBySku) from tb_transaction_master_detail u where u.isActive = 1 and
+								u.componentItemID = varWhileItemMin and
 								u.transactionMasterID = prTransactionMasterID
-
 							);
 
-							
-
-							
 
 							set varWhileFechaVencimientoMin = (
-
-								select min(u.dateExpired) from tb_item_warehouse_expired u where u.itemID = varWhileItemMin 
-
-								and u.warehouseID = varWarehouseID  
-
+								select min(u.dateExpired) from tb_item_warehouse_expired u where u.itemID = varWhileItemMin
+								and u.warehouseID = varWarehouseID
 								and u.quantity > 0
-
 							);
 
-							
-
-							
 
 							set varWhileFechaVencimientoMax = (
-
-								select max(u.dateExpired) from tb_item_warehouse_expired u where u.itemID = varWhileItemMin 
-
-								and u.warehouseID = varWarehouseID  
-
+								select max(u.dateExpired) from tb_item_warehouse_expired u where u.itemID = varWhileItemMin
+								and u.warehouseID = varWarehouseID
 								and u.quantity > 0
-
 							);
 
-							
-
-							
 
 							set varWhileFechaVencimientoContinue = 1;
 
-							
 
-							
+							while varWhileFechaVencimientoMin <= varWhileFechaVencimientoMax and varWhileFechaVencimientoContinue = 1 do
 
-							while varWhileFechaVencimientoMin <= varWhileFechaVencimientoMax and varWhileFechaVencimientoContinue = 1 do 
-
-							
-
-										
 
 										set varWhileFechaVencimientoQuantity = (
-
-											select u.quantity from tb_item_warehouse_expired u where u.itemID = varWhileItemMin 
-
-											and u.dateExpired = varWhileFechaVencimientoMin and 
-
-											u.quantity > 0 and 
-
-											u.warehouseID = varWarehouseID limit 1 
-
+											select u.quantity from tb_item_warehouse_expired u where u.itemID = varWhileItemMin
+											and u.dateExpired = varWhileFechaVencimientoMin and
+											u.quantity > 0 and
+											u.warehouseID = varWarehouseID limit 1
 										);
 
-										
 
-										
-
-										if varWhileFechaVencimientoQuantity >= varWhileItemQuantity  then 											
-
-												update tb_item_warehouse_expired set 
-
+										if varWhileFechaVencimientoQuantity >= varWhileItemQuantity  then
+												update tb_item_warehouse_expired set
 													quantity = quantity - varWhileItemQuantity
-
 												where
-
-													dateExpired = varWhileFechaVencimientoMin and 
-
-													itemID = varWhileItemMin and 
-
+													dateExpired = varWhileFechaVencimientoMin and
+													itemID = varWhileItemMin and
 													warehouseID = varWarehouseID;
-
-													
 
 												set varWhileItemQuantity = 0;
 
-												
-
-										elseif varWhileFechaVencimientoQuantity < varWhileItemQuantity  then 
-
-												update tb_item_warehouse_expired set 
-
+										elseif varWhileFechaVencimientoQuantity < varWhileItemQuantity  then
+												update tb_item_warehouse_expired set
 													quantity = 0
-
 												where
-
-													dateExpired = varWhileFechaVencimientoMin and 
-
-													itemID = varWhileItemMin and 
-
+													dateExpired = varWhileFechaVencimientoMin and
+													itemID = varWhileItemMin and
 													warehouseID = varWarehouseID;
 
-													
-
 												set varWhileItemQuantity = varWhileItemQuantity - varWhileFechaVencimientoQuantity;
-
 										end if;
 
-										
 
-										
-
-										if varWhileItemQuantity <= 0 then 
-
+										if varWhileItemQuantity <= 0 then
 											set varWhileFechaVencimientoContinue = 0;
-
 										end if;
 
-										
 
-										
-
-										
 
 										set varWhileFechaVencimientoMin = (
-
-											select min(u.dateExpired) from tb_item_warehouse_expired u where u.itemID = varWhileItemMin 
-
-											and u.warehouseID = varWarehouseID  
-
-											and u.quantity > 0 and 
-
-											u.dateExpired > varWhileFechaVencimientoMin 
-
+											select min(u.dateExpired) from tb_item_warehouse_expired u where u.itemID = varWhileItemMin
+											and u.warehouseID = varWarehouseID
+											and u.quantity > 0 and
+											u.dateExpired > varWhileFechaVencimientoMin
 										);
-
 							end while;
 
-							
-
-							
 
 							set varWhileItemMin = (
-
-									select min(u.componentItemID) 
-
-									from tb_transaction_master_detail u 
-
-									where 
-
+									select min(u.componentItemID)
+									from tb_transaction_master_detail u
+									where
 										u.isActive = 1 and u.transactionMasterID = prTransactionMasterID
-
-										and u.componentItemID > varWhileItemMin 
-
+										and u.componentItemID > varWhileItemMin
 							);
-
-				end while; 
-
-				
+				end while;
 
 		end if;
 
-		
-
-		COMMIT;
-
-  
+		commit ;
 
 END ;;
 DELIMITER ;
@@ -25415,419 +23034,214 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_create_transaction_input_by_ajuste`(IN `prCompanyID` INT, IN `prBranchID` INT, IN `prLoginID` INT, 
-
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_create_transaction_input_by_ajuste`(IN `prCompanyID` INT, IN `prBranchID` INT, IN `prLoginID` INT,
 	IN `prTransactionID` INT, IN `prTransactionMasterID` INT, OUT `prResult` INT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Procedimiento para crer entradas de meraderia'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Procedimiento para crer entradas de meraderia'
 LBL_PROCEDURE:
-
 BEGIN
+			DECLARE varTransactionID int default  12;
+			DECLARE varComponentID int default  34;
+			DECLARE varComponentItemID int default  33;
+			DECLARE varComponentAccountID int default 4;
 
-	
-
-			DECLARE varTransactionID int default  12; 		
-
-			DECLARE varComponentID int default  34; 			
-
-			DECLARE varComponentItemID int default  33; 	
-
-			DECLARE varComponentAccountID int default 4; 	
-
-				
-
-			
-
-			DECLARE varTransactionMasterID BIGINT default 0; 			
-
-			declare varNote varchar(150) default 'Entrada por ajuste de inventario';			
-
+			DECLARE varTransactionMasterID BIGINT default 0;
+			declare varNote varchar(150) default 'Entrada por ajuste de inventario';
 			DECLARE varTransactionNumber VARCHAR(50) DEFAULT '';
-
 			DECLARE varTransactionCausalID int default  0;
-
 			DECLARE varSignID int default  0;
-
 			DECLARE varCurrencyIDFunction int default  0;
-
 			DECLARE varCurrencyIDExternal int default  0;
-
 			DECLARE varCurrencyIDReport int default  0;
-
 			DECLARE varCurrencyTmporal varchar(50) default '';
-
 			DECLARE varStatusIDTransactionInit int default  0;
-
 			DECLARE varStatusIDTransactionFinish int default  0;
-
 			DECLARE varWarehouseTempora varchar(50) default  '';
-
 			DECLARE varWarehouseID int default  0;
-
 			DECLARE varFechaStart datetime;
-
 			DECLARE varFechaEnd datetime;
-
 			DECLARE varWorkflowStageCycleClosed varchar(50) default '';
-
-			DECLARE varAmount decimal(19,4) default 0;			
-
+			DECLARE varAmount decimal(19,4) default 0;
 			DECLARE varCountDetail INT DEFAULT 0;
-
 			DECLARE varExchangeRate DECIMAL (19,4) DEFAULT 0;
 
-			
-
-			
-
-		
-
-			
-
 			CALL pr_core_get_parameter_value(prCompanyID,"INVENTORY_ITEM_WAREHOUSE_DEFAULT",varWarehouseTempora);
-
 			SET varWarehouseID 		= (
-
-							SELECT 
-
-								c.targetWarehouseID 
-
-							FROM 
-
-								tb_transaction_master  c 
-
-							where 
-
-								c.transactionMasterID = prTransactionMasterID  
-
-							);					
-
-			
+							SELECT
+								c.targetWarehouseID
+							FROM
+								tb_transaction_master  c
+							where
+								c.transactionMasterID = prTransactionMasterID
+							);
 
 			CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",varCurrencyTmporal);
-
-			SET varCurrencyIDFunction 		= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);		
-
-			
+			SET varCurrencyIDFunction 		= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);
 
 			CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",varCurrencyTmporal);
-
-			SET varCurrencyIDReport 	= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);
-
-			
+			SET varCurrencyIDReport 			= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);
 
 			CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_EXTERNAL",varCurrencyTmporal);
+			SET varCurrencyIDExternal 		= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);
 
-			SET varCurrencyIDExternal 	= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);		
 
-				
-
-			
-
-			SET varSignID = (SELECT t.signInventory FROM tb_transaction t where t.transactionID = varTransactionID);			
-
+			SET varSignID = (SELECT t.signInventory FROM tb_transaction t where t.transactionID = varTransactionID);
 			SET varTransactionCausalID = (
-
-				select t.transactionCausalID from tb_transaction_causal t where t.transactionID = varTransactionID and t.isDefault = 1 limit 1); 
-
-				
+				select t.transactionCausalID from tb_transaction_causal t where t.transactionID = varTransactionID and t.isDefault = 1 limit 1);
 
 			set varExchangeRate = (
-
-					SELECT c.ratio 
-
-					from tb_exchange_rate c 
-
-					where 
-
-						c.currencyID = varCurrencyIDFunction and 
-
-						c.targetCurrencyID = varCurrencyIDExternal and 
-
+					SELECT c.ratio
+					from tb_exchange_rate c
+					where
+						c.currencyID = varCurrencyIDFunction and
+						c.targetCurrencyID = varCurrencyIDExternal and
 						c.date =  CURDATE()
-
 			);
 
-			
+			CALL pr_core_get_next_number(prCompanyID,'tb_transaction_master_otherinput',prBranchID,0,varTransactionNumber);
+			CALL pr_core_get_workflow_stage_init (prCompanyID,"tb_transaction_master_otherinput","statusID",varStatusIDTransactionInit );
 
-			CALL pr_core_get_next_number(prCompanyID,'tb_transaction_master_otherinput',prBranchID,0,varTransactionNumber);		
-
-			CALL pr_core_get_workflow_stage_init (prCompanyID,"tb_transaction_master_otherinput","statusID",varStatusIDTransactionInit );	
-
-			
-
-			
 
 			SET varStatusIDTransactionFinish = (
-
-				select 
-
-					ws.workflowStageID 
-
-				from 
-
-					tb_subelement e 
-
-					inner join tb_element el on 
-
+				select
+					ws.workflowStageID
+				from
+					tb_subelement e
+					inner join tb_element el on
 						e.elementID = el.elementID
-
-					inner join tb_workflow_stage ws on 
-
-						ws.workflowID = e.workflowID 
-
-				where 
-
-					e.`name` = 'statusID' and 
-
-					el.`name` = 'tb_transaction_master_otherinput' and 
-
-					ws.aplicable = 1 
-
+					inner join tb_workflow_stage ws on
+						ws.workflowID = e.workflowID
+				where
+					e.`name` = 'statusID' and
+					el.`name` = 'tb_transaction_master_otherinput' and
+					ws.aplicable = 1
 			);
 
-			
-
-			
 
 			INSERT INTO tb_transaction_master(
-
 				companyID,transactionNumber,transactionID,branchID,transactionCausalID,transactionOn,statusIDChangeOn,componentID,
-
 				note,sign,currencyID,currencyID2,exchangeRate,statusID,amount,isApplied,journalEntryID,
-
-				targetWarehouseID,createdBy,createdAt,createdOn,createdIn,isActive) 
-
-			VALUES 
-
+				targetWarehouseID,createdBy,createdAt,createdOn,createdIn,isActive)
+			VALUES
 			(
-
 				prCompanyID,varTransactionNumber,varTransactionID,prBranchID,varTransactionCausalID,CURDATE(),NOW(),varComponentID,
-
 				varNote,varSignID,varCurrencyIDFunction,varCurrencyIDFunction,1,varStatusIDTransactionFinish,0,1,0,
-
 				varWarehouseID,prLoginID,prBranchID,NOW(),'::01',1
-
 			);
 
-			
+			SET varTransactionMasterID = LAST_INSERT_ID();
 
-			SET varTransactionMasterID = LAST_INSERT_ID();	
 
-			
-
-			
-
-			DELETE FROM  
-
-				tb_transaction_master_detail_temp 
-
-			WHERE 
-
-				companyID = prCompanyID and 
-
+			DELETE FROM
+				tb_transaction_master_detail_temp
+			WHERE
+				companyID = prCompanyID and
 				transactionID = varTransactionID;
 
-				
 
-			
 
-			
 
-			
-
-			
 
 			INSERT INTO tb_transaction_master_detail_temp (
-
 				transactionMasterDetailID,
-
  				companyID,transactionID,transactionMasterID,componentID,componentItemID,promotionID,
-
  				amount,cost,quantity,discount,unitaryAmount,unitaryCost,unitaryPrice,
-
  				catalogStatusID,inventoryStatusID,isActive,quantityStock,quantiryStockInTraffic,
-
- 				quantityStockUnaswared,remaingStock,inventoryWarehouseTargetID				
-
+ 				quantityStockUnaswared,remaingStock,inventoryWarehouseTargetID,
+				expirationDate
  			)
-
- 			SELECT 
-
+ 			SELECT
 				c.transactionMasterDetailID,
-
  				prCompanyID,varTransactionID,varTransactionMasterID,varComponentItemID,i.itemID,0,
-
  				0,c.unitaryPrice * (c.quantity - (iw.quantity)), (c.quantity - (iw.quantity))  ,0,c.unitaryPrice, c.unitaryCost,c.unitaryPrice,
-
  				0,0,1,0,0,
-
- 				0,0,varWarehouseID
-
- 			from 
-
-				tb_transaction_master tm 
-
-				inner join  tb_transaction_master_detail c  on 
-
+ 				0,0,varWarehouseID,
+				c.expirationDate
+ 			from
+				tb_transaction_master tm
+				inner join  tb_transaction_master_detail c  on
 					c.transactionMasterID = tm.transactionMasterID
-
-				inner join tb_item i on 
-
+				inner join tb_item i on
 					c.componentItemID  = i.itemID
-
-				inner join tb_item_warehouse iw on 
-
-					iw.itemID = i.itemID and 
-
-					iw.warehouseID = varWarehouseID 
-
-			where 
-
-				c.isActive = 1 and 
-
-				c.transactionID = prTransactionID and 
-
-				c.transactionMasterID = prTransactionMasterID and 
-
+				inner join tb_item_warehouse iw on
+					iw.itemID = i.itemID and
+					iw.warehouseID = varWarehouseID
+			where
+				c.isActive = 1 and
+				c.transactionID = prTransactionID and
+				c.transactionMasterID = prTransactionMasterID and
 				iw.quantity < c.quantity;
 
-				
 
-				
-
-			
 
 			INSERT INTO tb_transaction_master_detail (
-
  				companyID,transactionID,transactionMasterID,componentID,
-
-				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseTargetID	,			
-
+				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseTargetID	,
 				catalogStatusID,inventoryStatusID,isActive,quantityStock,quantiryStockInTraffic,
-
-				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,				
-
+				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,
 				componentItemID,
-
- 				cost, quantity
-
+				expirationDate,
+ 				cost,
+				quantity
  			)
-
- 			select 
-
+ 			select
 				companyID,transactionID,transactionMasterID,componentID,
-
-				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseTargetID	,		
-
+				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseTargetID	,
 				catalogStatusID,inventoryStatusID,isActive,quantityStock,quantiryStockInTraffic,
-
 				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,componentItemID,
-
- 				sum(cost) as cost, sum(quantity) as quantity
-
-			from 
-
+				expirationDate,
+ 				sum(cost) as cost,
+				sum(quantity) as quantity
+			from
 				tb_transaction_master_detail_temp u
-
-			where 
-
-				u.transactionID = varTransactionID 
-
-			group by 
-
+			where
+				u.transactionID = varTransactionID
+			group by
 				companyID,transactionID,transactionMasterID,componentID,
-
-				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseTargetID	,			
-
+				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseTargetID	,
 				catalogStatusID,inventoryStatusID,isActive,quantityStock,quantiryStockInTraffic,
+				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,componentItemID,expirationDate;
 
-				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,componentItemID; 
 
-				
-
-			
-
-			
 
 			SET varAmount 			= (select sum(u.cost) from tb_transaction_master_detail u where u.transactionMasterID = varTransactionMasterID);
-
 			SET varAmount 			= (case when varAmount is null then 0 else varAmount end);
-
 			SET varCountDetail 	= (select count(u.transactionMasterDetailID) from tb_transaction_master_detail u where u.transactionMasterID = varTransactionMasterID and u.isActive = 1 );
-
-			
 
  			UPDATE tb_transaction_master set amount = varAmount,subAmount = varAmount where transactionMasterID = varTransactionMasterID;
 
-			
-
-			
 
 			IF varCountDetail = 0 THEN
-
 				UPDATE tb_transaction_master  set isActive = 0 where transactionMasterID = varTransactionMasterID;
-
-				SET varTransactionMasterID = 0;		
-
+				SET varTransactionMasterID = 0;
 			END IF;
 
 
 
-			
-
-			
-
-			SET prResult = 1;			
-
+			SET prResult = 1;
 			INSERT INTO tb_log(companyID,branchID,loginID,token,procedureName,code,description,createdOn)
-
 			VALUES(
-
 				prCompanyID,prBranchID,prLoginID,'',
-
 				'pr_inventory_create_transaction_input_by_ajuste',
-
 				0,'Success',CURRENT_TIMESTAMP());
 
-			
-
-			
 
 			INSERT INTO tb_log(companyID,branchID,loginID,token,procedureName,code,description,createdOn)
-
 			VALUES(
-
 				prCompanyID,prBranchID,prLoginID,'',
-
 				'pr_inventory_create_transaction_input_by_ajuste_transactionID',
-
 				0,varTransactionID,CURRENT_TIMESTAMP());
 
-				
 
-			
-
-			
 
 			INSERT INTO tb_log(companyID,branchID,loginID,token,procedureName,code,description,createdOn)
-
 			VALUES(
-
 				prCompanyID,prBranchID,prLoginID,'',
-
 				'pr_inventory_create_transaction_input_by_ajuste_transactionMasterID',
-
 				0,varTransactionMasterID,CURRENT_TIMESTAMP());
 
-		
 
-		
-
-		
-
-		
 
 
 
@@ -25847,555 +23261,282 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_create_transaction_otherinput_by_production`(IN `prCompanyID` INT, IN `prBranchID` INT, IN `prLoginID` INT, 
-
-	IN `prTransactionID` INT, IN `prTransactionMasterID` INT, 	
-
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_create_transaction_otherinput_by_production`(IN `prCompanyID` INT, IN `prBranchID` INT, IN `prLoginID` INT,
+	IN `prTransactionID` INT, IN `prTransactionMasterID` INT,
 	IN prWarehouseID INT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Procedimiento para crer entradas de meraderia por produccion'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Procedimiento para crer entradas de meraderia por produccion'
 LBL_PROCEDURE:
-
 BEGIN
 
-	
-
-			DECLARE varTransactionID int default  12  ; 		
-
-			DECLARE varComponentID int default  34; 			
-
-			DECLARE varComponentItemID int default  33; 	
-
-			DECLARE varComponentAccountID int default 4; 	
-
+			DECLARE varTransactionID int default  12  ;
+			DECLARE varComponentID int default  34;
+			DECLARE varComponentItemID int default  33;
+			DECLARE varComponentAccountID int default 4;
 		  DECLARE minItemID int default 0;
-
 			DECLARE maxItemID int default 0;
-
 			DECLARE quantityWhile  DECIMAL(18,8) default 0;
-
 			DECLARE costWhile      DECIMAL(18,8) default 0;
 
-			
-
-			DECLARE varTransactionMasterID BIGINT default 0; 			
-
-			declare varNote varchar(150) default 'Entrada por produccion de inventario';			
-
+			DECLARE varTransactionMasterID BIGINT default 0;
+			declare varNote varchar(150) default 'Entrada por produccion de inventario';
 			DECLARE varTransactionNumber VARCHAR(50) DEFAULT '';
-
 			DECLARE varTransactionCausalID int default  78;
-
 			DECLARE varSignID int default  0;
-
 			DECLARE varCurrencyIDFunction int default  0;
-
 			DECLARE varCurrencyIDExternal int default  0;
-
 			DECLARE varCurrencyIDReport int default  0;
-
 			DECLARE varCurrencyTmporal varchar(50) default '';
-
 			DECLARE varStatusIDTransactionInit int default  0;
-
 			DECLARE varStatusIDTransactionFinish int default  0;
-
-			DECLARE varWarehouseTempora varchar(50) default  '';			
-
+			DECLARE varWarehouseTempora varchar(50) default  '';
 			DECLARE varFechaStart datetime;
-
 			DECLARE varFechaEnd datetime;
-
 			DECLARE varWorkflowStageCycleClosed varchar(50) default '';
-
-			DECLARE varAmount decimal(19,4) default 0;			
-
+			DECLARE varAmount decimal(19,4) default 0;
 			DECLARE varExchangeRate DECIMAL (19,4) DEFAULT 0;
-
 			DECLARE varTransactionNumberOrigen varchar(50) default '';
 
-			
-
-		
-
-			
-
-			
-
-			
 
 			CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",varCurrencyTmporal);
-
-			SET varCurrencyIDFunction 		= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);		
-
-			
+			SET varCurrencyIDFunction 		= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);
 
 			CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",varCurrencyTmporal);
-
 			SET varCurrencyIDReport 	= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);
 
-			
-
 			CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_EXTERNAL",varCurrencyTmporal);
+			SET varCurrencyIDExternal 	= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);
 
-			SET varCurrencyIDExternal 	= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);						
-
-			
-
-			SET varSignID = (SELECT t.signInventory FROM tb_transaction t where t.transactionID = varTransactionID);			
-
+			SET varSignID = (SELECT t.signInventory FROM tb_transaction t where t.transactionID = varTransactionID);
 			SET varTransactionNumberOrigen  = (
-
-						select k.transactionNumber 
-
-						from tb_transaction_master k 
-
-						where k.transactionMasterID = prTransactionMasterID 
-
+						select k.transactionNumber
+						from tb_transaction_master k
+						where k.transactionMasterID = prTransactionMasterID
 			);
-
-				
 
 			set varExchangeRate = (
-
-					SELECT c.ratio 
-
-					from tb_exchange_rate c 
-
-					where 
-
-						c.currencyID = varCurrencyIDFunction and 
-
-						c.targetCurrencyID = varCurrencyIDExternal and 
-
+					SELECT c.ratio
+					from tb_exchange_rate c
+					where
+						c.currencyID = varCurrencyIDFunction and
+						c.targetCurrencyID = varCurrencyIDExternal and
 						c.date =  CURDATE()
-
 			);
 
-			
+			CALL pr_core_get_next_number(prCompanyID,'tb_transaction_master_otherinput',prBranchID,0,varTransactionNumber);
+			CALL pr_core_get_workflow_stage_init (prCompanyID,"tb_transaction_master_otherinput","statusID",varStatusIDTransactionInit );
 
-			CALL pr_core_get_next_number(prCompanyID,'tb_transaction_master_otherinput',prBranchID,0,varTransactionNumber);		
-
-			CALL pr_core_get_workflow_stage_init (prCompanyID,"tb_transaction_master_otherinput","statusID",varStatusIDTransactionInit );	
-
-			
-
-			
 
 			SET varStatusIDTransactionFinish = (
-
-				select 
-
-					ws.workflowStageID 
-
-				from 
-
-					tb_subelement e 
-
-					inner join tb_element el on 
-
+				select
+					ws.workflowStageID
+				from
+					tb_subelement e
+					inner join tb_element el on
 						e.elementID = el.elementID
-
-					inner join tb_workflow_stage ws on 
-
-						ws.workflowID = e.workflowID 
-
-				where 
-
-					e.`name` = 'statusID' and 
-
-					el.`name` = 'tb_transaction_master_otherinput' and 
-
-					ws.aplicable = 1 
-
+					inner join tb_workflow_stage ws on
+						ws.workflowID = e.workflowID
+				where
+					e.`name` = 'statusID' and
+					el.`name` = 'tb_transaction_master_otherinput' and
+					ws.aplicable = 1
 			);
 
-			
-
-			
 
 			INSERT INTO tb_transaction_master(
-
 				companyID,transactionNumber,transactionID,branchID,transactionCausalID,transactionOn,statusIDChangeOn,componentID,
-
 				note,sign,currencyID,currencyID2,exchangeRate,statusID,amount,isApplied,journalEntryID,
-
-				targetWarehouseID,createdBy,createdAt,createdOn,createdIn,isActive,reference1) 
-
-			VALUES 
-
+				targetWarehouseID,createdBy,createdAt,createdOn,createdIn,isActive,reference1)
+			VALUES
 			(
-
 				prCompanyID,varTransactionNumber,varTransactionID,prBranchID,varTransactionCausalID,CURDATE(),NOW(),varComponentID,
-
 				varNote,varSignID,varCurrencyIDFunction,varCurrencyIDFunction,1,varStatusIDTransactionFinish,0,1,0,
-
 				prWarehouseID,prLoginID,prBranchID,NOW(),'::01',1,varTransactionNumberOrigen
-
 			);
 
-			
+			SET varTransactionMasterID = LAST_INSERT_ID();
 
-			SET varTransactionMasterID = LAST_INSERT_ID();	
 
-			
-
-			
-
-			DELETE FROM  
-
-				tb_transaction_master_detail_temp 
-
-			WHERE 
-
-				companyID = prCompanyID and 
-
+			DELETE FROM
+				tb_transaction_master_detail_temp
+			WHERE
+				companyID = prCompanyID and
 				transactionID = varTransactionID;
 
-				
-
-			
-
-			
-
-			
 
 			SET minItemID = (
-
-				select 
-
+				select
 						min(c.componentItemID)
-
-				from 
-
-					tb_transaction_master_detail c 
-
-				where 
-
-					c.transactionMasterID = prTransactionMasterID and 
-
-					c.inventoryWarehouseTargetID = prWarehouseID and 
-
-					c.isActive = 1 
-
+				from
+					tb_transaction_master_detail c
+				where
+					c.transactionMasterID = prTransactionMasterID and
+					c.inventoryWarehouseTargetID = prWarehouseID and
+					c.isActive = 1
 			);
-
-			
 
 			SET maxItemID = (
-
-				select 
-
+				select
 						min(c.componentItemID)
-
-				from 
-
-					tb_transaction_master_detail c 
-
-				where 
-
-					c.transactionMasterID = prTransactionMasterID and 
-
-					c.inventoryWarehouseTargetID = prWarehouseID and 
-
-					c.isActive = 1 
-
+				from
+					tb_transaction_master_detail c
+				where
+					c.transactionMasterID = prTransactionMasterID and
+					c.inventoryWarehouseTargetID = prWarehouseID and
+					c.isActive = 1
 			);
 
-			
 
-			
 
-			
-
-			while minItemID <= maxItemID and minItemID is not null do 				
-
+			while minItemID <= maxItemID and minItemID is not null do
 					set quantityWhile  = 0 ;
-
 					set costWhile 		 = 0 ;
-
 					set quantityWhile  = (
-
-																select sum(u.quantity) from tb_transaction_master_detail u 
-
-																where 
-
-																		u.transactionMasterID = prTransactionMasterID AND 
-
-																		u.isActive = 1 and 
-
-																		u.inventoryWarehouseTargetID = prWarehouseID AND 
-
-																		u.componentItemID = minItemID 
-
+																select sum(u.quantity) from tb_transaction_master_detail u
+																where
+																		u.transactionMasterID = prTransactionMasterID AND
+																		u.isActive = 1 and
+																		u.inventoryWarehouseTargetID = prWarehouseID AND
+																		u.componentItemID = minItemID
 															);
-
-															
 
 					set costWhile  = (
-
-																select 
-
+																select
 																			sum(
-
 																				u.quantity * u.unitaryCost
-
-																			) 
-
-																from 
-
-																	  tb_transaction_master_detail u 
-
-																where 
-
-																		u.transactionMasterID = prTransactionMasterID AND 
-
-																		u.isActive = 1 and 
-
-																		u.inventoryWarehouseSourceID is not null and 
-
-																		u.inventoryWarehouseSourceID > 0 and 
-
-																		u.skuCatalogItemID = minItemID 
-
+																			)
+																from
+																	  tb_transaction_master_detail u
+																where
+																		u.transactionMasterID = prTransactionMasterID AND
+																		u.isActive = 1 and
+																		u.inventoryWarehouseSourceID is not null and
+																		u.inventoryWarehouseSourceID > 0 and
+																		u.skuCatalogItemID = minItemID
 															);
 
-					
-
-					
 
 					SET quantityWhile = IFNULL(quantityWhile,0);
-
-					SET costWhile 		= IFNULL(costWhile,0);					
-
-					
+					SET costWhile 		= IFNULL(costWhile,0);
 
 					INSERT INTO tb_transaction_master_detail_temp (
-
 						transactionMasterDetailID,
-
 						companyID,transactionID,transactionMasterID,componentID,componentItemID,promotionID,
-
 						amount,cost,quantity,discount,unitaryAmount,unitaryCost,unitaryPrice,
-
 						catalogStatusID,inventoryStatusID,isActive,quantityStock,quantiryStockInTraffic,
-
-						quantityStockUnaswared,remaingStock,inventoryWarehouseTargetID				
-
+						quantityStockUnaswared,remaingStock,inventoryWarehouseTargetID,
+						expirationDate
 					)
-
 					VALUES (
-
 						0,
-
 						prCompanyID,varTransactionID,varTransactionMasterID,varComponentItemID,minItemID,0,
-
 						0  ,
-
-						quantityWhile * costWhile   , 
-
+						quantityWhile * costWhile   ,
 						quantityWhile   ,
-
 						0,
-
-						costWhile  , 
-
 						costWhile  ,
-
 						costWhile  ,
-
+						costWhile  ,
 						0,0,1,0,0,
-
-						0,0,prWarehouseID
-
+						0,0,prWarehouseID,
+						'1900-01-01'
 					);
 
-					
 
-			
-
-					
 
 					set minItemID 		= (
-
-																	select 
-
+																	select
 																			min(c.componentItemID)
-
-																	from 
-
-																		tb_transaction_master_detail c 
-
-																	where 
-
-																		c.transactionMasterID = prTransactionMasterID and 
-
-																		c.inventoryWarehouseTargetID = prWarehouseID and 
-
-																		c.isActive = 1 and 
-
+																	from
+																		tb_transaction_master_detail c
+																	where
+																		c.transactionMasterID = prTransactionMasterID and
+																		c.inventoryWarehouseTargetID = prWarehouseID and
+																		c.isActive = 1 and
 																		c.componentItemID > minItemID
-
 															);
-
 			end while;
 
-			
 
-			
 
-			
 
-				
 
-				
-
-			
 
 			INSERT INTO tb_transaction_master_detail (
-
  				companyID,transactionID,transactionMasterID,componentID,
-
-				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseTargetID	,			
-
+				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseTargetID	,
 				catalogStatusID,inventoryStatusID,isActive,quantityStock,quantiryStockInTraffic,
-
-				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,				
-
+				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,
 				componentItemID,
-
- 				cost, quantity
-
+				expirationDate,
+ 				cost,
+				quantity
  			)
-
- 			select 
-
+ 			select
 				companyID,transactionID,transactionMasterID,componentID,
-
-				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseTargetID	,		
-
+				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseTargetID	,
 				catalogStatusID,inventoryStatusID,isActive,quantityStock,quantiryStockInTraffic,
-
 				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,componentItemID,
-
- 				sum(cost) as cost, sum(quantity) as quantity
-
-			from 
-
+				expirationDate,
+ 				sum(cost) as cost,
+				sum(quantity) as quantity
+			from
 				tb_transaction_master_detail_temp u
-
-			where 
-
-				u.transactionID = varTransactionID 
-
-			group by 
-
+			where
+				u.transactionID = varTransactionID
+			group by
 				companyID,transactionID,transactionMasterID,componentID,
-
-				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseTargetID	,			
-
+				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseTargetID	,
 				catalogStatusID,inventoryStatusID,isActive,quantityStock,quantiryStockInTraffic,
+				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,componentItemID,expirationDate;
 
-				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,componentItemID; 
 
-				
-
-			
-
-			
 
 			SET varAmount = (select sum(u.cost) from tb_transaction_master_detail u where u.transactionMasterID = varTransactionMasterID);
-
 			SET varAmount = (case when varAmount is null then 0 else varAmount end);
-
  			UPDATE tb_transaction_master set amount = varAmount,subAmount = varAmount where transactionMasterID = varTransactionMasterID;
 
-			
 
-			
-
-			UPDATE tb_transaction_master set 
-
-							reference1 = 	CASE 
-
-															WHEN IFNULL(reference1,'') = '' THEN 
-
+			UPDATE tb_transaction_master set
+							reference1 = 	CASE
+															WHEN IFNULL(reference1,'') = '' THEN
 																	'|'
-
-															ELSE 
-
+															ELSE
 																	''
-
-														END 
-
-			WHERE transactionMasterID = prTransactionMasterID;			
-
-			UPDATE tb_transaction_master set 
-
-							reference1 = 							
-
+														END
+			WHERE transactionMasterID = prTransactionMasterID;
+			UPDATE tb_transaction_master set
+							reference1 =
 										CONCAT(
-
-																	reference1, 
-
+																	reference1,
 																	'|',
-
 																	varTransactionNumber
-
 									)
-
 			WHERE transactionMasterID = prTransactionMasterID;
 
-			
-
-			
 
 			INSERT INTO tb_log(companyID,branchID,loginID,token,procedureName,code,description,createdOn)
-
 			VALUES(
-
 				prCompanyID,prBranchID,prLoginID,'',
-
 				'pr_inventory_create_transaction_otherinput_by_production',
-
 				0,'Success',CURRENT_TIMESTAMP());
 
-			
-
-			
 
 			INSERT INTO tb_log(companyID,branchID,loginID,token,procedureName,code,description,createdOn)
-
 			VALUES(
-
 				prCompanyID,prBranchID,prLoginID,'',
-
 				'pr_inventory_create_transaction_otherinput_by_production_transactionID',
-
 				0,varTransactionID,CURRENT_TIMESTAMP());
 
-				
 
-			
-
-			
 
 			INSERT INTO tb_log(companyID,branchID,loginID,token,procedureName,code,description,createdOn)
-
 			VALUES(
-
 				prCompanyID,prBranchID,prLoginID,'',
-
 				'pr_inventory_create_transaction_otherinput_by_production_transactionMasterID',
-
 				0,varTransactionMasterID,CURRENT_TIMESTAMP());
 
-		
-
-		
-
-		
 
 
 
@@ -26415,425 +23556,213 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_create_transaction_otheroutput_by_production`(IN `prCompanyID` INT, IN `prBranchID` INT, IN `prLoginID` INT, 
-
-	IN `prTransactionID` INT, IN `prTransactionMasterID` INT, 	
-
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_create_transaction_otheroutput_by_production`(IN `prCompanyID` INT, IN `prBranchID` INT, IN `prLoginID` INT,
+	IN `prTransactionID` INT, IN `prTransactionMasterID` INT,
 	IN prWarehouseID INT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Procedimiento para crer salida de meraderia'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Procedimiento para crer salida de meraderia'
 LBL_PROCEDURE:
-
 BEGIN
+			DECLARE varTransactionID int default  8  ;
+			DECLARE varComponentID int default  35;
+			DECLARE varComponentItemID int default  33;
+			DECLARE varComponentAccountID int default 4;
 
-	
-
-			DECLARE varTransactionID int default  8  ; 		
-
-			DECLARE varComponentID int default  35; 			
-
-			DECLARE varComponentItemID int default  33; 	
-
-			DECLARE varComponentAccountID int default 4; 	
-
-			
-
-			DECLARE varTransactionMasterID BIGINT default 0; 			
-
-			declare varNote varchar(150) default 'Salida por produccion de inventario';			
-
+			DECLARE varTransactionMasterID BIGINT default 0;
+			declare varNote varchar(150) default 'Salida por produccion de inventario';
 			DECLARE varTransactionNumber VARCHAR(50) DEFAULT '';
-
 			DECLARE varTransactionCausalID int default  77;
-
 			DECLARE varSignID int default  0;
-
 			DECLARE varCurrencyIDFunction int default  0;
-
 			DECLARE varCurrencyIDExternal int default  0;
-
 			DECLARE varCurrencyIDReport int default  0;
-
 			DECLARE varCurrencyTmporal varchar(50) default '';
-
 			DECLARE varStatusIDTransactionInit int default  0;
-
 			DECLARE varStatusIDTransactionFinish int default  0;
-
 			DECLARE varWarehouseTempora varchar(50) default  '';
-
 			DECLARE varFechaStart datetime;
-
 			DECLARE varFechaEnd datetime;
-
 			DECLARE varWorkflowStageCycleClosed varchar(50) default '';
-
-			DECLARE varAmount decimal(19,4) default 0;			
-
+			DECLARE varAmount decimal(19,4) default 0;
 			DECLARE varExchangeRate DECIMAL (19,4) DEFAULT 0;
-
 			DECLARE varTransactionNumberOrigen varchar(50) default '';
 
-			
-
-			
-
-		
-
-		
-
 			CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",varCurrencyTmporal);
-
-			SET varCurrencyIDFunction 		= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);		
-
-			
+			SET varCurrencyIDFunction 		= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);
 
 			CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",varCurrencyTmporal);
-
 			SET varCurrencyIDReport 	= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);
 
-			
-
 			CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_EXTERNAL",varCurrencyTmporal);
+			SET varCurrencyIDExternal 	= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);
 
-			SET varCurrencyIDExternal 	= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);						
-
-			
-
-			SET varSignID = (SELECT t.signInventory FROM tb_transaction t where t.transactionID = varTransactionID);			
-
+			SET varSignID = (SELECT t.signInventory FROM tb_transaction t where t.transactionID = varTransactionID);
 			SET varTransactionNumberOrigen  = (
-
-						select k.transactionNumber 
-
-						from tb_transaction_master k 
-
-						where k.transactionMasterID = prTransactionMasterID 
-
+						select k.transactionNumber
+						from tb_transaction_master k
+						where k.transactionMasterID = prTransactionMasterID
 			);
-
-				
 
 			set varExchangeRate = (
-
-					SELECT c.ratio 
-
-					from tb_exchange_rate c 
-
-					where 
-
-						c.currencyID = varCurrencyIDFunction and 
-
-						c.targetCurrencyID = varCurrencyIDExternal and 
-
+					SELECT c.ratio
+					from tb_exchange_rate c
+					where
+						c.currencyID = varCurrencyIDFunction and
+						c.targetCurrencyID = varCurrencyIDExternal and
 						c.date =  CURDATE()
-
 			);
 
-			
+			CALL pr_core_get_next_number(prCompanyID,'tb_transaction_master_otheroutput',prBranchID,0,varTransactionNumber);
+			CALL pr_core_get_workflow_stage_init (prCompanyID,"tb_transaction_master_otheroutput","statusID",varStatusIDTransactionInit );
 
-			CALL pr_core_get_next_number(prCompanyID,'tb_transaction_master_otheroutput',prBranchID,0,varTransactionNumber);		
-
-			CALL pr_core_get_workflow_stage_init (prCompanyID,"tb_transaction_master_otheroutput","statusID",varStatusIDTransactionInit );	
-
-			
-
-			
 
 			SET varStatusIDTransactionFinish = (
-
-				select 
-
-					ws.workflowStageID 
-
-				from 
-
-					tb_subelement e 
-
-					inner join tb_element el on 
-
+				select
+					ws.workflowStageID
+				from
+					tb_subelement e
+					inner join tb_element el on
 						e.elementID = el.elementID
-
-					inner join tb_workflow_stage ws on 
-
-						ws.workflowID = e.workflowID 
-
-				where 
-
-					e.`name` = 'statusID' and 
-
-					el.`name` = 'tb_transaction_master_otheroutput' and 
-
-					ws.aplicable = 1 
-
+					inner join tb_workflow_stage ws on
+						ws.workflowID = e.workflowID
+				where
+					e.`name` = 'statusID' and
+					el.`name` = 'tb_transaction_master_otheroutput' and
+					ws.aplicable = 1
 			);
 
-			
-
-			
 
 			INSERT INTO tb_transaction_master(
-
 				companyID,transactionNumber,transactionID,branchID,transactionCausalID,transactionOn,statusIDChangeOn,componentID,
-
 				note,sign,currencyID,currencyID2,exchangeRate,statusID,amount,isApplied,journalEntryID,
-
-				sourceWarehouseID,createdBy,createdAt,createdOn,createdIn,isActive,reference1,notificationID) 
-
-			VALUES 
-
+				sourceWarehouseID,createdBy,createdAt,createdOn,createdIn,isActive,reference1,notificationID)
+			VALUES
 			(
-
 				prCompanyID,varTransactionNumber,varTransactionID,prBranchID,varTransactionCausalID,CURDATE(),NOW(),varComponentID,
-
 				varNote,varSignID,varCurrencyIDFunction,varCurrencyIDFunction,1,varStatusIDTransactionFinish,0,1,0,
-
-				prWarehouseID,prLoginID,prBranchID,NOW(),'::01',1,varTransactionNumberOrigen,1 
-
+				prWarehouseID,prLoginID,prBranchID,NOW(),'::01',1,varTransactionNumberOrigen,1
 			);
 
-			
-
-			SET varTransactionMasterID = LAST_INSERT_ID();	
-
-			
-
-			
-
-			DELETE FROM  
-
-				tb_transaction_master_detail_temp 
-
-			WHERE 
-
-				companyID = prCompanyID and 
-
+			SET varTransactionMasterID = LAST_INSERT_ID();
+			DELETE FROM
+				tb_transaction_master_detail_temp
+			WHERE
+				companyID = prCompanyID and
 				transactionID = varTransactionID;
 
-			
-
-			
-
-			
 
 			INSERT INTO tb_transaction_master_detail_temp (
-
 				transactionMasterDetailID,
-
  				companyID,transactionID,transactionMasterID,componentID,componentItemID,promotionID,
-
  				amount,cost,quantity,discount,unitaryAmount,unitaryCost,unitaryPrice,
-
  				catalogStatusID,inventoryStatusID,isActive,quantityStock,quantiryStockInTraffic,
-
- 				quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID				
-
+ 				quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID,
+				expirationDate
  			)
-
- 			SELECT 
-
+ 			SELECT
 				c.transactionMasterDetailID,
-
  				prCompanyID,varTransactionID,varTransactionMasterID,varComponentItemID,i.itemID,0,
-
  				0,
-
-				i.cost * c.quantity, 
-
+				i.cost * c.quantity,
 				c.quantity  ,
-
 				0,
-
-				i.cost, 
-
 				i.cost,
-
 				i.cost,
-
+				i.cost,
  				0,0,1,0,0,
-
- 				0,0,prWarehouseID
-
- 			from 
-
-				tb_transaction_master tm 
-
-				inner join  tb_transaction_master_detail c  on 
-
+ 				0,0,prWarehouseID,
+				c.expirationDate
+ 			from
+				tb_transaction_master tm
+				inner join  tb_transaction_master_detail c  on
 					c.transactionMasterID = tm.transactionMasterID
-
-				inner join tb_item i on 
-
+				inner join tb_item i on
 					c.componentItemID  = i.itemID
+			where
+				c.isActive = 1 and
+				c.transactionID = prTransactionID and
+				c.transactionMasterID = prTransactionMasterID and
+				IFNULL(c.inventoryWarehouseSourceID ,0) = prWarehouseID and
+				c.quantity > 0 ;
 
-			where 
-
-				c.isActive = 1 and 
-
-				c.transactionID = prTransactionID and 
-
-				c.transactionMasterID = prTransactionMasterID and 
-
-				IFNULL(c.inventoryWarehouseSourceID ,0) = prWarehouseID and 
-
-				c.quantity > 0 ; 
-
-			
-
-			
 
 			INSERT INTO tb_transaction_master_detail (
-
  				companyID,transactionID,transactionMasterID,componentID,
-
-				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID	,			
-
+				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID	,
 				catalogStatusID,inventoryStatusID,isActive,quantityStock,quantiryStockInTraffic,
-
-				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,				
-
+				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,
 				componentItemID,
-
- 				cost, quantity
-
+				expirationDate,
+ 				cost,
+				quantity
  			)
-
- 			select 
-
+ 			select
 				companyID,transactionID,transactionMasterID,componentID,
-
-				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID	,		
-
+				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID	,
 				catalogStatusID,inventoryStatusID,isActive,quantityStock,quantiryStockInTraffic,
-
 				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,componentItemID,
-
- 				sum(cost) as cost, sum(quantity) as quantity
-
-			from 
-
+				expirationDate,
+ 				sum(cost) as cost,
+				sum(quantity) as quantity
+			from
 				tb_transaction_master_detail_temp u
-
-			where 
-
-				u.transactionID = varTransactionID 
-
-			group by 
-
+			where
+				u.transactionID = varTransactionID
+			group by
 				companyID,transactionID,transactionMasterID,componentID,
-
-				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseTargetID	,			
-
+				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseTargetID	,
 				catalogStatusID,inventoryStatusID,isActive,quantityStock,quantiryStockInTraffic,
+				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,componentItemID,expirationDate;
 
-				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,componentItemID; 
 
-			
-
-			
-
-			
 
 			SET varAmount = (select sum(u.cost) from tb_transaction_master_detail u where u.transactionMasterID = varTransactionMasterID);
-
 			SET varAmount = (case when varAmount is null then 0 else varAmount end);
-
  			UPDATE tb_transaction_master set amount = varAmount,subAmount = varAmount where transactionMasterID = varTransactionMasterID;
 
-			
-
-			
-
-			
-
-			UPDATE tb_transaction_master set 
-
-							reference1 = 	CASE 
-
-															WHEN IFNULL(reference1,'') = '' THEN 
-
+			UPDATE tb_transaction_master set
+							reference1 = 	CASE
+															WHEN IFNULL(reference1,'') = '' THEN
 																	'|'
-
-															ELSE 
-
+															ELSE
 																	''
-
-														END 
-
-			WHERE transactionMasterID = prTransactionMasterID;			
-
-			UPDATE tb_transaction_master set 
-
-							reference1 = 							
-
+														END
+			WHERE transactionMasterID = prTransactionMasterID;
+			UPDATE tb_transaction_master set
+							reference1 =
 										CONCAT(
-
-																	reference1, 
-
+																	reference1,
 																	'|',
-
 																	varTransactionNumber
-
 									)
-
 			WHERE transactionMasterID = prTransactionMasterID;
 
-			
 
 
 
-			
-
-			
-
-				
 
 			INSERT INTO tb_log(companyID,branchID,loginID,token,procedureName,code,description,createdOn)
-
 			VALUES(
-
 				prCompanyID,prBranchID,prLoginID,'',
-
 				'pr_inventory_create_transaction_otheroutput_by_production',
-
 				0,'Success',CURRENT_TIMESTAMP());
 
-			
-
-			
 
 			INSERT INTO tb_log(companyID,branchID,loginID,token,procedureName,code,description,createdOn)
-
 			VALUES(
-
 				prCompanyID,prBranchID,prLoginID,'',
-
 				'pr_inventory_create_transaction_otheroutput_by_production_transactionID',
-
 				0,varTransactionID,CURRENT_TIMESTAMP());
 
-				
 
-			
-
-			
 
 			INSERT INTO tb_log(companyID,branchID,loginID,token,procedureName,code,description,createdOn)
-
 			VALUES(
-
 				prCompanyID,prBranchID,prLoginID,'',
-
 				'pr_inventory_create_transaction_otheroutput_by_production_transactionMasterID',
-
 				0,varTransactionMasterID,CURRENT_TIMESTAMP());
 
-		  
-
-		
-
-		
 
 
 
@@ -26853,461 +23782,234 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_create_transaction_output_by_ajuste`(IN `prCompanyID` INT, IN `prBranchID` INT, IN `prLoginID` INT, 
-
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_create_transaction_output_by_ajuste`(IN `prCompanyID` INT, IN `prBranchID` INT, IN `prLoginID` INT,
 	IN `prTransactionID` INT, IN `prTransactionMasterID` INT, OUT `prResult` INT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Procedimiento para crear facturacion de meraderia'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Procedimiento para crear facturacion de meraderia'
 LBL_PROCEDURE:
-
 BEGIN
 
-	
-
-			DECLARE varTransactionID int default  8; 		
-
-			DECLARE varComponentID int default  48; 			
-
-			DECLARE varComponentItemID int default  33; 	
-
-			DECLARE varComponentAccountID int default 4; 	
-
-				
+			DECLARE varTransactionID int default  8;
+			DECLARE varComponentID int default  48;
+			DECLARE varComponentItemID int default  33;
+			DECLARE varComponentAccountID int default 4;
 
 			DECLARE varEntityClientDefault INT default 13;
-
-			DECLARE varTransactionMasterID BIGINT default 0; 			
-
-			declare varNote varchar(150) default 'Salida por ajuste de inventario';			
-
+			DECLARE varTransactionMasterID BIGINT default 0;
+			declare varNote varchar(150) default 'Salida por ajuste de inventario';
 			DECLARE varTransactionNumber VARCHAR(50) DEFAULT '';
-
 			DECLARE varTransactionCausalID int default  0;
-
 			DECLARE varSignID int default  0;
-
 			DECLARE varCurrencyIDFunction int default  0;
-
 			DECLARE varCurrencyIDExternal int default  0;
-
 			DECLARE varCurrencyIDReport int default  0;
-
 			DECLARE varCurrencyTmporal varchar(50) default '';
-
 			DECLARE varStatusIDTransactionInit int default  0;
-
 			DECLARE varStatusIDTransactionFinish int default  0;
-
 			DECLARE varWarehouseTempora varchar(50) default  '';
-
 			DECLARE varWarehouseID int default  0;
-
 			DECLARE varFechaStart datetime;
-
 			DECLARE varFechaEnd datetime;
-
 			DECLARE varWorkflowStageCycleClosed varchar(50) default '';
-
 			DECLARE varAmount decimal(19,4) default 0;
-
 			DECLARE varExchangeRate DECIMAL (19,4) DEFAULT 0;
 
-			
-
-			
-
-		
-
-			
-
 			CALL pr_core_get_parameter_value(prCompanyID,"INVENTORY_ITEM_WAREHOUSE_DEFAULT",varWarehouseTempora);
-
 			SET varWarehouseID 		= (
-
-							SELECT 
-
-								c.targetWarehouseID 
-
-							FROM 
-
-								tb_transaction_master  c 
-
-							where 
-
-								c.transactionMasterID = prTransactionMasterID  
-
-							);		
-
-			
+							SELECT
+								c.targetWarehouseID
+							FROM
+								tb_transaction_master  c
+							where
+								c.transactionMasterID = prTransactionMasterID
+							);
 
 			CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",varCurrencyTmporal);
-
-			SET varCurrencyIDFunction 		= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);		
-
-			
+			SET varCurrencyIDFunction 		= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);
 
 			CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",varCurrencyTmporal);
-
 			SET varCurrencyIDReport 	= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);
 
-			
-
 			CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_EXTERNAL",varCurrencyTmporal);
+			SET varCurrencyIDExternal 	= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);
 
-			SET varCurrencyIDExternal 	= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);		
 
-				
-
-			
-
-			SET varSignID = (SELECT t.signInventory FROM tb_transaction t where t.transactionID = varTransactionID);			
-
+			SET varSignID = (SELECT t.signInventory FROM tb_transaction t where t.transactionID = varTransactionID);
 			SET varTransactionCausalID = (
-
-				select t.transactionCausalID from 
-
-				tb_transaction_causal t where 
-
+				select t.transactionCausalID from
+				tb_transaction_causal t where
 				t.transactionID = varTransactionID and t.isDefault = 1 limit 1
-
-			); 
-
-			
+			);
 
 			set varExchangeRate = (
-
-					SELECT c.ratio 
-
-					from tb_exchange_rate c 
-
-					where 
-
-						c.currencyID = varCurrencyIDFunction and 
-
-						c.targetCurrencyID = varCurrencyIDExternal and 
-
+					SELECT c.ratio
+					from tb_exchange_rate c
+					where
+						c.currencyID = varCurrencyIDFunction and
+						c.targetCurrencyID = varCurrencyIDExternal and
 						c.date =  CURDATE()
-
 			);
 
-			
+			CALL pr_core_get_next_number(prCompanyID,'tb_transaction_master_otheroutput',prBranchID,0,varTransactionNumber);
+			CALL pr_core_get_workflow_stage_init (prCompanyID,"tb_transaction_master_otheroutput","statusID",varStatusIDTransactionInit );
 
-			CALL pr_core_get_next_number(prCompanyID,'tb_transaction_master_otheroutput',prBranchID,0,varTransactionNumber);		
-
-			CALL pr_core_get_workflow_stage_init (prCompanyID,"tb_transaction_master_otheroutput","statusID",varStatusIDTransactionInit );	
-
-			
-
-			
 
 			SET varStatusIDTransactionFinish = (
-
-				select 
-
-					ws.workflowStageID 
-
-				from 
-
-					tb_subelement e 
-
-					inner join tb_element el on 
-
+				select
+					ws.workflowStageID
+				from
+					tb_subelement e
+					inner join tb_element el on
 						e.elementID = el.elementID
-
-					inner join tb_workflow_stage ws on 
-
-						ws.workflowID = e.workflowID 
-
-				where 
-
-					e.`name` = 'statusID' and 
-
-					el.`name` = 'tb_transaction_master_otheroutput' and 
-
-					ws.aplicable = 1 
-
+					inner join tb_workflow_stage ws on
+						ws.workflowID = e.workflowID
+				where
+					e.`name` = 'statusID' and
+					el.`name` = 'tb_transaction_master_otheroutput' and
+					ws.aplicable = 1
 			);
 
-			
-
-			
 
 			INSERT INTO tb_transaction_master(
-
 				companyID,transactionNumber,transactionID,branchID,transactionCausalID,transactionOn,statusIDChangeOn,componentID,
-
 				entityID,transactionOn2,reference1,reference2,reference4,periodPay,nextVisit,reference3,
-
 				note,sign,currencyID,currencyID2,exchangeRate,statusID,amount,isApplied,journalEntryID,
-
-				sourceWarehouseID,createdBy,createdAt,createdOn,createdIn,isActive) 
-
-			VALUES 
-
+				sourceWarehouseID,createdBy,createdAt,createdOn,createdIn,isActive)
+			VALUES
 			(
-
 				prCompanyID,varTransactionNumber,varTransactionID,prBranchID,varTransactionCausalID,CURDATE(),NOW(),varComponentID,
-
 				varEntityClientDefault,CURDATE(),293  , 1 , 0 , 190  , '0000-00-00 00:00:00' , 'N/D',
-
 				varNote,varSignID,varCurrencyIDFunction,varCurrencyIDExternal,varExchangeRate,varStatusIDTransactionFinish,0,1,0,
-
 				varWarehouseID,prLoginID,prBranchID,NOW(),'::01',1
-
 			);
 
-			
+			SET varTransactionMasterID = LAST_INSERT_ID();
 
-			SET varTransactionMasterID = LAST_INSERT_ID();	
 
-			
-
-			
-
-			DELETE FROM  
-
-				tb_transaction_master_detail_temp 
-
-			WHERE 
-
-				companyID = prCompanyID and 
-
+			DELETE FROM
+				tb_transaction_master_detail_temp
+			WHERE
+				companyID = prCompanyID and
 				transactionID = varTransactionID;
 
-				
-
-			
-
-			
-
-			
-
-			
 
 			INSERT INTO tb_transaction_master_detail_temp (
-
 				transactionMasterDetailID,
-
  				companyID,transactionID,transactionMasterID,componentID,componentItemID,promotionID,
-
  				amount,cost,quantity,
-
 				discount,unitaryAmount,unitaryCost,unitaryPrice,
-
  				catalogStatusID,inventoryStatusID,isActive,quantityStock,quantiryStockInTraffic,
-
  				quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID,
-
 				tax1,reference3,skuCatalogItemID,skuQuantity,skuQuantityBySku,
-
-				skuFormatoDescription,itemNameLog 				
-
+				skuFormatoDescription,itemNameLog,
+			  expirationDate
  			)
-
- 			SELECT 
-
+ 			SELECT
 				c.transactionMasterDetailID,
-
  				prCompanyID,varTransactionID,varTransactionMasterID,varComponentItemID,i.itemID,0,
-
  				c.unitaryPrice * (iw.quantity - c.quantity),c.unitaryCost * (iw.quantity - c.quantity), (iw.quantity - c.quantity) ,
-
 				0 ,c.unitaryPrice,c.unitaryCost, c.unitaryPrice,
-
  				0,0,1,0,0,
-
- 				0,0,varWarehouseID,0, 0  , 78  ,  (iw.quantity - c.quantity)   , 1 , 'UNIDAD',i.name 
-
- 			from 
-
-				tb_transaction_master tm 
-
-				inner join  tb_transaction_master_detail c  on 
-
+ 				0,0,varWarehouseID,0, 0  , 78  ,  (iw.quantity - c.quantity)   , 1 , 'UNIDAD',i.name ,
+				c.expirationDate
+ 			from
+				tb_transaction_master tm
+				inner join  tb_transaction_master_detail c  on
 					c.transactionMasterID = tm.transactionMasterID
-
-				inner join tb_item i on 
-
+				inner join tb_item i on
 					c.componentItemID  = i.itemID
-
-				inner join tb_item_warehouse iw on 
-
-					iw.itemID = i.itemID and 
-
-					iw.warehouseID = varWarehouseID 
-
-			where 
-
-				c.isActive = 1 and 
-
-				c.transactionID = prTransactionID and 
-
-				c.transactionMasterID = prTransactionMasterID and 
-
+				inner join tb_item_warehouse iw on
+					iw.itemID = i.itemID and
+					iw.warehouseID = varWarehouseID
+			where
+				c.isActive = 1 and
+				c.transactionID = prTransactionID and
+				c.transactionMasterID = prTransactionMasterID and
 				iw.quantity > c.quantity;
 
-				
 
-				
-
-				
-
-				
-
-			
 
 			INSERT INTO tb_transaction_master_detail (
-
  				companyID,transactionID,transactionMasterID,componentID,
-
-				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID	,			
-
+				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID	,
 				catalogStatusID,inventoryStatusID,isActive,quantityStock,quantiryStockInTraffic,
-
-				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,				
-
+				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,
 				componentItemID,tax1,reference3,skuCatalogItemID,skuQuantityBySku,skuFormatoDescription		,
-
 				itemNameLog,
-
- 				cost, quantity,skuQuantity
-
+				expirationDate,
+ 				cost,
+				quantity,
+				skuQuantity
  			)
-
- 			select 
-
+ 			select
 				companyID,transactionID,transactionMasterID,componentID,
-
-				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID	,		
-
+				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID	,
 				catalogStatusID,inventoryStatusID,isActive,quantityStock,quantiryStockInTraffic,
-
-				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,				
-
+				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,
 				componentItemID,u.tax1,reference3,skuCatalogItemID,skuQuantityBySku,skuFormatoDescription		,
-
 				itemNameLog,
-
- 				sum(cost) as cost, sum(quantity) as quantity,sum(skuQuantity) as skuQuantity
-
-			from 
-
+				expirationDate,
+ 				sum(cost) as cost,
+				sum(quantity) as quantity,
+				sum(skuQuantity) as skuQuantity
+			from
 				tb_transaction_master_detail_temp u
-
-			where 
-
-				u.transactionID = varTransactionID 
-
-			group by 
-
+			where
+				u.transactionID = varTransactionID
+			group by
 				companyID,transactionID,transactionMasterID,componentID,
-
-				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID	,			
-
+				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID	,
 				catalogStatusID,inventoryStatusID,isActive,quantityStock,quantiryStockInTraffic,
-
 				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,componentItemID,tax1,
-
 				reference3,skuCatalogItemID,skuQuantityBySku,skuFormatoDescription,
+				itemNameLog,expirationDate;
 
-				itemNameLog; 
 
-				
 
-			
-
-			
-
-			SET varAmount = 0; 
-
+			SET varAmount = 0;
 			SET varAmount = (select sum(u.amount) from tb_transaction_master_detail u where u.transactionMasterID = varTransactionMasterID);
-
 			SET varAmount = (case when varAmount is null then 0 else varAmount end);
-
 			UPDATE tb_transaction_master set amount = varAmount,subAmount = varAmount,tax1 = 0  where transactionMasterID = varTransactionMasterID;
 
-			
-
-			
 
 			insert into tb_transaction_master_info (
-
 				companyID,transactionID,transactionMasterID,
-
 				zoneID,routeID,referenceClientName,referenceClientIdentifier,
-
 				receiptAmount,changeAmount,mesaID
-
 				)
-
 			VALUES(prCompanyID,varTransactionID,varTransactionMasterID,157,0,'','',varAmount,0,546);
 
-			
-
-			
 
 			IF varAmount = 0 THEN
-
 				UPDATE tb_transaction_master  set isActive = 0 where transactionMasterID = varTransactionMasterID;
-
-				SET varTransactionMasterID = 0;		
-
+				SET varTransactionMasterID = 0;
 			END IF;
 
 
 
-			
-
-			
-
-			SET prResult = 1;			
-
+			SET prResult = 1;
 			INSERT INTO tb_log(companyID,branchID,loginID,token,procedureName,code,description,createdOn)
-
 			VALUES(
-
 				prCompanyID,prBranchID,prLoginID,'',
-
 				'pr_inventory_create_transaction_output_by_ajuste',
-
 				0,'Success',CURRENT_TIMESTAMP());
 
-			
-
-			
 
 			INSERT INTO tb_log(companyID,branchID,loginID,token,procedureName,code,description,createdOn)
-
 			VALUES(
-
 				prCompanyID,prBranchID,prLoginID,'',
-
 				'pr_inventory_create_transaction_output_by_ajuste_transactionID',
-
 				0,varTransactionID,CURRENT_TIMESTAMP());
 
-				
 
-			
-
-			
 
 			INSERT INTO tb_log(companyID,branchID,loginID,token,procedureName,code,description,createdOn)
-
 			VALUES(
-
 				prCompanyID,prBranchID,prLoginID,'',
-
 				'pr_inventory_create_transaction_output_by_ajuste_transactionMasterID',
-
 				0,varTransactionMasterID,CURRENT_TIMESTAMP());
 
-		
-
-		
-
-		
 
 
 
@@ -27327,535 +24029,268 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_create_transaction_output_by_formulated`(IN `prCompanyID` INT, IN `prBranchID` INT, IN `prLoginID` INT, IN `prPeriodID` INT, 
-
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_create_transaction_output_by_formulated`(IN `prCompanyID` INT, IN `prBranchID` INT, IN `prLoginID` INT, IN `prPeriodID` INT,
 	IN `prCycleID` INT, OUT `prResult` INT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Procedimiento para crer una salida de inventario automatica, para los productos tipos formulas'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Procedimiento para crer una salida de inventario automatica, para los productos tipos formulas'
 LBL_PROCEDURE:
-
 BEGIN
 
-			
-
-			DECLARE varTransactionID int default  8; 	
-
-			DECLARE varComponentID int default  35; 	
-
-			DECLARE varComponentItemID int default  33; 							
-
-			DECLARE varComponentAccountID int default 4;		
-
-			
+			DECLARE varTransactionID int default  8;
+			DECLARE varComponentID int default  35;
+			DECLARE varComponentItemID int default  33;
+			DECLARE varComponentAccountID int default 4;
 
 			DECLARE varCountTransactionMasterDetail int default 0;
-
-			DECLARE varTransactionMasterID BIGINT default 0; 			
-
-			declare varNote varchar(150) default 'Salida automatica por evaluacion de formulas';			
-
+			DECLARE varTransactionMasterID BIGINT default 0;
+			declare varNote varchar(150) default 'Salida automatica por evaluacion de formulas';
 			DECLARE varTransactionNumber VARCHAR(50) DEFAULT '';
-
 			DECLARE varTransactionCausalID int default  0;
-
 			DECLARE varSignID int default  0;
-
 			DECLARE varCurrencyIDFunction int default  0;
-
 			DECLARE varCurrencyIDExternal int default  0;
-
 			DECLARE varCurrencyIDReport int default  0;
-
 			DECLARE varCurrencyTmporal varchar(50) default '';
-
 			DECLARE varStatusIDTransactionInit int default  0;
-
 			DECLARE varStatusIDTransactionFinish int default  0;
-
 			DECLARE varWarehouseTempora varchar(50) default  '';
-
 			DECLARE varWarehouseID int default  0;
-
 			DECLARE varFechaStart datetime;
-
 			DECLARE varFechaEnd datetime;
-
 			DECLARE varWorkflowStageCycleClosed varchar(50) default '';
 
-			
-
-			
 
 			SET varFechaStart = (select u.startOn from tb_accounting_cycle u where u.componentCycleID = prCycleID and u.componentPeriodID = prPeriodID);
-
 			SET varFechaEnd = (select u.endOn from tb_accounting_cycle u where u.componentCycleID = prCycleID and u.componentPeriodID = prPeriodID);
 
-			
-
-			
 
 			CALL pr_core_get_parameter_value(prCompanyID,"INVENTORY_ITEM_WAREHOUSE_DEFAULT",varWarehouseTempora);
+			SET varWarehouseID 		= (SELECT warehouseID FROM tb_warehouse where number = varWarehouseTempora);
 
-			SET varWarehouseID 		= (SELECT warehouseID FROM tb_warehouse where number = varWarehouseTempora);		
-
-			
-
-			
 
 			CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",varCurrencyTmporal);
-
-			SET varCurrencyIDFunction 		= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);		
-
-			
+			SET varCurrencyIDFunction 		= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);
 
 			CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",varCurrencyTmporal);
-
 			SET varCurrencyIDReport 	= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);
 
-			
-
 			CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_EXTERNAL",varCurrencyTmporal);
-
 			SET varCurrencyIDExternal 	= (SELECT currencyID FROM tb_currency where name = varCurrencyTmporal);
 
-		
 
-				
 
-			
-
-			SET varSignID = (SELECT t.signInventory FROM tb_transaction t where t.transactionID = varTransactionID);		
-
+			SET varSignID = (SELECT t.signInventory FROM tb_transaction t where t.transactionID = varTransactionID);
 			SET varTransactionCausalID = (
-
-					select t.transactionCausalID 
-
-					from tb_transaction_causal t 
-
+					select t.transactionCausalID
+					from tb_transaction_causal t
 					where t.transactionID = varTransactionID and t.isDefault = 1 limit 1
-
-			); 
-
-			
-
-			
-
-			
-
-			CALL pr_core_get_workflow_stage_init (prCompanyID,"tb_transaction_master_otheroutput","statusID",varStatusIDTransactionInit );	
-
-			
-
-			
-
-			
-
-			SET varStatusIDTransactionFinish = (
-
-				select 
-
-					ws.workflowStageID 
-
-				from 
-
-					tb_subelement e 
-
-					inner join tb_element el on 
-
-						e.elementID = el.elementID
-
-					inner join tb_workflow_stage ws on 
-
-						ws.workflowID = e.workflowID 
-
-				where 
-
-					e.`name` = 'statusID' and 
-
-					el.`name` = 'tb_transaction_master_otheroutput' and 
-
-					ws.aplicable = 1 
-
 			);
 
-			
+			CALL pr_core_get_workflow_stage_init (prCompanyID,"tb_transaction_master_otheroutput","statusID",varStatusIDTransactionInit );
+			SET varStatusIDTransactionFinish = (
+				select
+					ws.workflowStageID
+				from
+					tb_subelement e
+					inner join tb_element el on
+						e.elementID = el.elementID
+					inner join tb_workflow_stage ws on
+						ws.workflowID = e.workflowID
+				where
+					e.`name` = 'statusID' and
+					el.`name` = 'tb_transaction_master_otheroutput' and
+					ws.aplicable = 1
+			);
 
-			
 
 			CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CYCLE_WORKFLOWSTAGECLOSED",varWorkflowStageCycleClosed);
-
-	
-
-
-
-			
-
-			IF   
-
+			IF
 				 EXISTS(
-
-					SELECT cc.companyID FROM tb_accounting_cycle cc 
-
-					WHERE  
-
-						cc.companyID = prCompanyID and componentID = varComponentAccountID AND 
-
-						componentPeriodID = prPeriodID and componentCycleID = prCycleID AND 
-
-						statusID = varWorkflowStageCycleClosed 
-
-				) 
-
+					SELECT cc.companyID FROM tb_accounting_cycle cc
+					WHERE
+						cc.companyID = prCompanyID and componentID = varComponentAccountID AND
+						componentPeriodID = prPeriodID and componentCycleID = prCycleID AND
+						statusID = varWorkflowStageCycleClosed
+				)
 			THEN
-
 						SET prResult = 0;
-
 						INSERT INTO tb_log(companyID,branchID,loginID,token,procedureName,code,description,createdOn)
-
 						VALUES(prCompanyID,prBranchID,prLoginID,'','pr_inventory_create_transaction_output_by_formulated',1,'El ciclo ya esta cerrado',CURRENT_TIMESTAMP());
-
 						LEAVE LBL_PROCEDURE;
-
-			END IF ; 
-
-	
-
-	
+			END IF ;
 
 
 
-			
 
 			INSERT INTO tb_transaction_master(
-
 				companyID,transactionNumber,transactionID,branchID,transactionCausalID,transactionOn,statusIDChangeOn,componentID,
-
 				note,sign,currencyID,currencyID2,exchangeRate,statusID,amount,isApplied,journalEntryID,
-
-				sourceWarehouseID,createdBy,createdAt,createdOn,createdIn,isActive) 
-
-			VALUES 
-
+				sourceWarehouseID,createdBy,createdAt,createdOn,createdIn,isActive)
+			VALUES
 			(
-
 				prCompanyID,varTransactionNumber,varTransactionID,prBranchID,varTransactionCausalID,CURDATE(),NOW(),varComponentID,
-
 				varNote,varSignID,varCurrencyIDFunction,varCurrencyIDFunction,1,varStatusIDTransactionFinish,0,1,0,
-
 				varWarehouseID,prLoginID,prBranchID,NOW(),'::01',1
-
 			);
 
-			
+			SET varTransactionMasterID = LAST_INSERT_ID();
 
-			SET varTransactionMasterID = LAST_INSERT_ID();	
-
-			
-
-			
-
-			
-
-			DELETE FROM  
-
-				tb_transaction_master_detail_temp 
-
-			WHERE 
-
-				companyID = prCompanyID and 
-
+			DELETE FROM
+				tb_transaction_master_detail_temp
+			WHERE
+				companyID = prCompanyID and
 				transactionID = varTransactionID;
 
-				
-
-			
 
  			INSERT INTO tb_transaction_master_detail_temp (
-
 				transactionMasterDetailID,
-
  				companyID,transactionID,transactionMasterID,componentID,componentItemID,promotionID,
-
  				amount,cost,quantity,discount,unitaryAmount,unitaryCost,unitaryPrice,
-
  				catalogStatusID,inventoryStatusID,isActive,quantityStock,quantiryStockInTraffic,
-
- 				quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID				
-
+ 				quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID,
+				expirationDate
  			)
-
- 			SELECT 
-
+ 			SELECT
 				tmd.transactionMasterDetailID,
-
  				prCompanyID,varTransactionID,varTransactionMasterID,varComponentItemID,i2.itemID,0,
-
  				0,i2.cost * tmd.quantity * dsd.quantity, tmd.quantity * dsd.quantity ,0,0, i2.cost,0,
-
  				0,0,1,0,0,
-
- 				0,0,varWarehouseID
-
- 			FROM 
-
-				tb_transaction_master_detail tmd 
-
-				inner join tb_transaction_master tmm on 
-
-					tmd.transactionMasterID = tmm.transactionMasterID 
-
-				inner join tb_workflow_stage ws on 
-
-					ws.workflowStageID = tmm.statusID 
-
-				inner join tb_transaction tt on 
-
-					tt.transactionID = tmm.transactionID 
-
-				inner join tb_item i on 
-
-					tmd.componentItemID = i.itemID 
-
-				inner join tb_item_data_sheet ds on 
-
-					ds.itemID = i.itemID 
-
-				inner join tb_item_data_sheet_detail dsd on 
-
-					ds.itemDataSheetID = dsd.itemDataSheetID 
-
-				inner join tb_item i2 on 
-
-					i2.itemID = dsd.itemID 
-
+ 				0,0,varWarehouseID,
+				tmd.expirationDate
+ 			FROM
+				tb_transaction_master_detail tmd
+				inner join tb_transaction_master tmm on
+					tmd.transactionMasterID = tmm.transactionMasterID
+				inner join tb_workflow_stage ws on
+					ws.workflowStageID = tmm.statusID
+				inner join tb_transaction tt on
+					tt.transactionID = tmm.transactionID
+				inner join tb_item i on
+					tmd.componentItemID = i.itemID
+				inner join tb_item_data_sheet ds on
+					ds.itemID = i.itemID
+				inner join tb_item_data_sheet_detail dsd on
+					ds.itemDataSheetID = dsd.itemDataSheetID
+				inner join tb_item i2 on
+					i2.itemID = dsd.itemID
 			WHERE
-
-				tmm.isActive = 1 and 
-
-				IFNULL(tt.signInventory,0) < 0 and 
-
-				tmd.isActive = 1 and 
-
-				tmd.itemFormulatedApplied = 0 and 
-
-				ds.isActive = 1 and 
-
-				dsd.isActive = 1 and 
-
+				tmm.isActive = 1 and
+				IFNULL(tt.signInventory,0) < 0 and
+				tmd.isActive = 1 and
+				tmd.itemFormulatedApplied = 0 and
+				ds.isActive = 1 and
+				dsd.isActive = 1 and
 				(
-
-					(tmm.transactionOn BETWEEN varFechaStart and varFechaEnd) or 
-
+					(tmm.transactionOn BETWEEN varFechaStart and varFechaEnd) or
 					(
-
-							prPeriodID = 0 and 
-
-							prCycleID = 0 
-
+							prPeriodID = 0 and
+							prCycleID = 0
 					)
-
-				) and 
-
-				tt.transactionID in (19  ) and 
-
+				) and
+				tt.transactionID in (19  ) and
 				ws.aplicable = 1;
 
-				
 
-			
-
-			#guardar la relacion de la facturas con las salidas 
-
+			#guardar la relacion de la facturas con las salidas
 			insert into tb_company_component_relation(componentIDSource,componentItemIDSource,componentIDTarget,componentItemIDTarget,isActive,note)
-
-			select 
-
-				35 /*transacciones de : otras salidas*/ , 
-
+			select
+				35 /*transacciones de : otras salidas*/ ,
 				varTransactionMasterID,
-
-				48 /*transaccines de factura*/ , 
-
+				48 /*transaccines de factura*/ ,
 				k.transactionMasterDetailID,
-
 				1,
-
 				'relacion entre las salidas de materia primera vs detalle de facturas de recetas '
-
-			from 
-
+			from
 				tb_transaction_master_detail_temp k ;
 
-		
 
-				
 
-			
-
-			UPDATE tb_transaction_master_detail , tb_transaction_master_detail_temp set 
-
+			UPDATE tb_transaction_master_detail , tb_transaction_master_detail_temp set
 				tb_transaction_master_detail.itemFormulatedApplied = 1
-
-			WHERE	
-
-				tb_transaction_master_detail.transactionMasterDetailID = 
-
+			WHERE
+				tb_transaction_master_detail.transactionMasterDetailID =
 				tb_transaction_master_detail_temp.transactionMasterDetailID;
 
-				
 
-				
-
-			
 
 			INSERT INTO tb_transaction_master_detail (
-
  				companyID,transactionID,transactionMasterID,componentID,
-
-				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID	,			
-
+				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID	,
 				catalogStatusID,inventoryStatusID,isActive,quantityStock,quantiryStockInTraffic,
-
-				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,				
-
+				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,
 				componentItemID,
-
- 				cost, quantity
-
+				expirationDate,
+ 				cost,
+				quantity
  			)
-
- 			select 
-
+ 			select
 				companyID,transactionID,transactionMasterID,componentID,
-
-				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID	,		
-
+				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID	,
 				catalogStatusID,inventoryStatusID,isActive,quantityStock,quantiryStockInTraffic,
-
-				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,				
-
+				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,
 				componentItemID,
-
- 				sum(cost) as cost, sum(quantity) as quantity
-
-			from 
-
+				expirationDate,
+ 				sum(cost) as cost,
+				sum(quantity) as quantity
+			from
 				tb_transaction_master_detail_temp u
-
-			group by 
-
+			group by
 				companyID,transactionID,transactionMasterID,componentID,
-
-				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID	,			
-
+				promotionID,quantityStockUnaswared,remaingStock,inventoryWarehouseSourceID	,
 				catalogStatusID,inventoryStatusID,isActive,quantityStock,quantiryStockInTraffic,
+				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,
+				componentItemID,expirationDate;
 
-				discount,unitaryAmount,unitaryCost,unitaryPrice,amount,				
-
-				componentItemID; 
-
-				
-
-				
 
 			SET varCountTransactionMasterDetail = (
-
-			select 
-
+			select
 				count(c.transactionMasterDetailID) as count_
+			from
+				tb_transaction_master_detail c
+			where
+				c.companyID = prCompanyID and
+				c.isActive = 1 and
+				c.transactionMasterID = varTransactionMasterID and
+				c.quantity > 0
+			);
 
-			from 
 
-				tb_transaction_master_detail c 
-
-			where 
-
-				c.companyID = prCompanyID and 
-
-				c.isActive = 1 and 
-
-				c.transactionMasterID = varTransactionMasterID and 
-
-				c.quantity > 0 
-
-			); 
-
-			
-
-			
-
-			
 
 			SET varCountTransactionMasterDetail = IFNULL(varCountTransactionMasterDetail,0);
-
-			IF varCountTransactionMasterDetail = 0 THEN 
-
+			IF varCountTransactionMasterDetail = 0 THEN
 				 DELETE FROM tb_transaction_master WHERE transactionMasterID = varTransactionMasterID;
-
-		  ELSE 
-
-			   CALL pr_core_get_next_number(prCompanyID,'tb_transaction_master_otheroutput',prBranchID,0,varTransactionNumber);							 	
-
+		  ELSE
+			   CALL pr_core_get_next_number(prCompanyID,'tb_transaction_master_otheroutput',prBranchID,0,varTransactionNumber);
 			   UPDATE tb_transaction_master set transactionNumber = varTransactionNumber where transactionMasterID = varTransactionMasterID;
-
 			END IF;
 
-				
 
-			
-
-			
 
 			SET prResult = 1;
-
 			INSERT INTO tb_log(companyID,branchID,loginID,token,procedureName,code,description,createdOn)
-
 			VALUES(
-
 				prCompanyID,prBranchID,prLoginID,'',
-
 				'pr_inventory_create_transaction_output_by_formulated',
-
 				0,'Success',CURRENT_TIMESTAMP());
 
-			
-
-			
 
 			INSERT INTO tb_log(companyID,branchID,loginID,token,procedureName,code,description,createdOn)
-
 			VALUES(
-
 				prCompanyID,prBranchID,prLoginID,'',
-
 				'pr_inventory_create_transaction_output_by_formulated_transactionID',
-
 				0,varTransactionID,CURRENT_TIMESTAMP());
 
-				
 
-			
-
-			
 
 			INSERT INTO tb_log(companyID,branchID,loginID,token,procedureName,code,description,createdOn)
-
 			VALUES(
-
 				prCompanyID,prBranchID,prLoginID,'',
-
 				'pr_inventory_create_transaction_output_by_formulated_transactionMasterID',
-
 				0,varTransactionMasterID,CURRENT_TIMESTAMP());
 
-				
 
-			
 
-		
-
-		
 
 END ;;
 DELIMITER ;
@@ -27874,124 +24309,120 @@ DELIMITER ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_get_eport_list_item_expired`(IN `prUserID` INT, IN `prTokenID` VARCHAR(50), IN `prCompanyID` INT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Lista de Productos por Vencer'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Lista de Productos por Vencer'
 BEGIN
 
-	SELECT 
 
-		i.itemNumber,
-
-		case
-
-			when comp.flavorID = 309  then 
-
-				CONCAT(i.name,' ',i.barCode )
-
-			else 
-
-				i.name 
-
-		end as itemName,
-
-		ciu.name as unitMeasure,
-
-		ic.name as categoryName,
-
-		i.quantity as quantity,
-
-		i.cost as cost,
-
-		(select pp.price from tb_price pp where pp.itemID = i.itemID and pp.typePriceID = 154 limit 1) as pricePublico,
-
-		w.`name` as warehouseName,
-
-		ue.dateExpired,
-
-		ue.quantity quantityExpired ,
-
-		ue.lote ,
-
-		
-
+  SELECT
+		r2.itemNumber,
+		r2.itemName,
+		r2.unitMeasure,
+		r2.categoryName,
+		r2.quantity,
+		r2.cost,
+		r2.pricePublico,
+		r2.warehouseName,
+		r2.dateExpired ,
+		r2.lote 	,
+		r2.quantityExpired,
+		DATEDIFF(CURDATE(), r2.dateExpired) as dateExpiredInDay ,
 		(
-
-			select 
-
+			select
 					GROUP_CONCAT(concat(natp.firstName,' ',natp.lastName) SEPARATOR ', ')
+			from
+				tb_provider_item p
+				inner join tb_naturales natp on
+						natp.entityID = p.entityID
+			where
+				p.itemID = r2.itemID
+		) as proveedorName
+	from
+		(
+			SELECT
+				r.itemID,
+				r.itemNumber,
+				r.itemName,
+				r.unitMeasure,
+				r.categoryName,
+				r.quantity,
+				r.cost,
+				r.pricePublico,
+				r.warehouseName,
+				r.dateExpired ,
+				r.lote 	,
+				SUM(r.quantityExpired ) AS quantityExpired
+			FROM
+				(
+						SELECT
+							i.itemID,
+							i.itemNumber,
+							case
+								when comp.flavorID = 309  then
+									CONCAT(i.name,' ',i.barCode )
+								else
+									i.name
+							end as itemName,
+							ciu.name as unitMeasure,
+							ic.name as categoryName,
+							i.quantity as quantity,
+							i.cost as cost,
+							(select pp.price from tb_price pp where pp.itemID = i.itemID and pp.typePriceID = 154 limit 1) as pricePublico,
+							w.`name` as warehouseName,
 
-			from  
 
-				tb_provider_item p 
+							case
+								 WHEN ue.dateExpired IS NULL  THEN
+									CAST('1901-01-01' AS DATE)
+								 WHEN  ue.dateExpired < '1901-01-01' THEN
+									CAST('1901-01-01' AS DATE)
+								else
+									ue.dateExpired
+							end as dateExpired ,
 
-				inner join tb_naturales natp on 
+							ue.quantity quantityExpired ,
+							ue.lote
 
-						natp.entityID = p.entityID 
+						FROM
+							tb_item i
+							inner join tb_workflow_stage ws on
+								i.statusID = ws.workflowStageID
+							inner join tb_catalog_item ciu on
+								i.unitMeasureID = ciu.catalogItemID
+							inner join tb_item_category ic on
+								i.inventoryCategoryID = ic.inventoryCategoryID
+							inner join tb_warehouse w on
+								w.warehouseID = i.defaultWarehouseID
+							inner join tb_item_warehouse_expired ue on
+								ue.itemID = i.itemID and
+								ue.warehouseID = w.warehouseID and
+								ue.companyID = i.companyID
+							inner join tb_company comp on
+								comp.companyID = i.companyID
+						WHERE
+							i.isActive = 1 AND
+							i.companyID = prCompanyID and
+							ue.quantity > 0 and
+							IFNULL(i.isPerishable,0) = 1
+						ORDER BY
+							 ue.dateExpired asc
+				)  AS r
+			GROUP BY
+				r.itemID,
+				r.itemNumber,
+				r.itemName,
+				r.unitMeasure,
+				r.categoryName,
+				r.quantity,
+				r.cost,
+				r.pricePublico,
+				r.warehouseName,
+				r.dateExpired ,
+				r.lote
 
-			where 
+		) as r2 ;
 
-				p.itemID = i.itemID 
-
-		) as proveedorName  ,
-
-		
-
-		DATEDIFF(
-
-			CURDATE(), 
-
-			ue.dateExpired
-
-		) as dateExpiredInDay 
-
-		
-
-	FROM 
-
-		tb_item i
-
-		inner join tb_workflow_stage ws on 
-
-			i.statusID = ws.workflowStageID 
-
-		inner join tb_catalog_item ciu on 
-
-			i.unitMeasureID = ciu.catalogItemID 
-
-		inner join tb_item_category ic on 
-
-			i.inventoryCategoryID = ic.inventoryCategoryID 
-
-		inner join tb_warehouse w on 
-
-			w.warehouseID = i.defaultWarehouseID 	
-
-		inner join tb_item_warehouse_expired ue on 
-
-			ue.itemID = i.itemID and 
-
-			ue.warehouseID = w.warehouseID and 
-
-			ue.companyID = i.companyID 
-
-		inner join tb_company comp on 
-
-			comp.companyID = i.companyID 
-
-	WHERE
-
-		i.isActive = 1 AND 
-
-		i.companyID = prCompanyID and 
-
-		ue.quantity > 0 
-
-	ORDER BY 
-
-		ue.dateExpired asc ;
-
-		
 
 END ;;
 DELIMITER ;
@@ -28187,12 +24618,12 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_get_report_list_item`(IN `prUserID` INT, IN `prTokenID` VARCHAR(50), IN `prCompanyID` INT,IN `prWarehouseID` INT,IN `prCategoryID` INT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Lista de Productos'
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_get_report_list_item`(IN `prUserID` INT, IN `prTokenID` VARCHAR(50), IN `prCompanyID` INT,IN `prWarehouseID` INT,IN `prCategoryID` INT, IN prEntityIDProvider INT)
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Lista de Productos'
 BEGIN
-	SELECT 
+	SELECT
 		sub.itemNumber,
 		sub.barCode,
 		sub.itemName,
@@ -28208,17 +24639,17 @@ BEGIN
 		sub.familyName,
 		sub.isActive,
 		sub.vendors,
-		sum(sub.quantity ) as quantity 
-	FROM 
+		SUM(sub.quantity ) as quantity
+	FROM
 		(
-			SELECT 
+			SELECT
 				i.itemNumber,
 				i.barCode,
 				case
-					when comp.flavorID = 309  then 
-						concat(i.`name` , ' ' , i.barCode) 
-					else 
-						i.name 
+					when comp.flavorID = 309  then
+						concat(i.`name` , ' ' , i.barCode)
+					else
+						i.name
 				end as itemName,
 				ic.name as categoryName,
 				ciu.name as unitMeasure,
@@ -28231,55 +24662,97 @@ BEGIN
 				ciu.`name` as unidadMedidaName ,
 				IF(family.catalogItemID is null,family.`name`,family_cli.`name`) as familyName ,
 				i.isActive,
-				'1254' as vendors,  
-				iw.quantity AS quantity
-			FROM 
+				'1254' as vendors,
+				iw.quantity AS quantity,
+				(
+					select
+						GROUP_CONCAT(nat.firstName SEPARATOR ', ') AS productos
+					from
+						tb_item it
+						inner join tb_provider_item pi on
+							pi.itemID = it.itemID
+						inner join tb_provider pp on
+							pp.entityID = pi.entityID
+						inner join tb_naturales nat on
+							nat.entityID = pp.entityID
+					where
+						it.isActive = 1 and
+						pp.isActive = 1 and
+						it.itemID = i.itemID
+				) as providerName
+
+			FROM
 				tb_item i
-				inner join tb_workflow_stage ws on 
-					i.statusID = ws.workflowStageID 
-				inner join tb_catalog_item ciu on 
-					i.unitMeasureID = ciu.catalogItemID 
-				inner join tb_item_category ic on 
-					i.inventoryCategoryID = ic.inventoryCategoryID 
-				inner join tb_currency cur on 
-					cur.currencyID = i.currencyID 
-				inner join tb_company comp on 
-					comp.companyID = i.companyID 		
-				left join tb_public_catalog_detail family_cli on 
-					family_cli.publicCatalogDetailID = i.familyID 
-				left join tb_catalog_item family on 
-					family.catalogItemID = i.familyID 
-					
-				inner join tb_item_warehouse iw on 
+				inner join tb_workflow_stage ws on
+					i.statusID = ws.workflowStageID
+				inner join tb_catalog_item ciu on
+					i.unitMeasureID = ciu.catalogItemID
+				inner join tb_item_category ic on
+					i.inventoryCategoryID = ic.inventoryCategoryID
+				inner join tb_currency cur on
+					cur.currencyID = i.currencyID
+				inner join tb_company comp on
+					comp.companyID = i.companyID
+				left join tb_public_catalog_detail family_cli on
+					family_cli.publicCatalogDetailID = i.familyID
+				left join tb_catalog_item family on
+					family.catalogItemID = i.familyID
+
+				inner join tb_item_warehouse iw on
 					iw.itemID = i.itemID
 				inner join tb_warehouse w on
 					w.warehouseID = iw.warehouseID
 			WHERE
-				iw.quantity > 0 and 
-				i.isActive = 1 AND 
-				i.companyID = prCompanyID and 
+			  iw.quantity > 0 and
+				i.isActive = 1 AND
+				i.companyID = prCompanyID and
 				(
 					(
-						prWarehouseID = 0 
+						prWarehouseID = 0 and
+						iw.warehouseID IN
+						(
+							select c.warehouseID
+							from tb_user_warehouse c
+							where c.userID = prUserID
+						)
+
 					)
-					or 
+					or
 					(
-						iw.warehouseID = prWarehouseID and   prWarehouseID != 0  
+						iw.warehouseID = prWarehouseID and   prWarehouseID != 0
 					)
-				) and 
+				) and
 				(
 					(
-						prCategoryID = 0 
+						prCategoryID = 0
 					)
-					or 
+					or
 					(
-						ic.inventoryCategoryID = prCategoryID and   prCategoryID != 0  
+						ic.inventoryCategoryID = prCategoryID and   prCategoryID != 0
 					)
-				)			
-			ORDER BY 
+				)	AND
+				i.itemID IN (
+					select
+						it.itemID
+					from
+						tb_item it
+						inner join tb_provider_item pi on
+							pi.itemID = it.itemID
+						inner join tb_provider pp on
+							pp.entityID = pi.entityID
+					where
+						it.isActive = 1 and
+						pp.isActive = 1 and
+						(
+							(pp.entityID = prEntityIDProvider AND prEntityIDProvider != 0 ) or
+							(prEntityIDProvider = 0)
+						)
+
+				)
+			ORDER BY
 				w.`name` , ic.`name` , i.`name`
 		) sub
-	GROUP BY 
+	GROUP BY
 		sub.itemNumber,
 		sub.barCode,
 		sub.itemName,
@@ -28294,7 +24767,8 @@ BEGIN
 		sub.unidadMedidaName,
 		sub.familyName,
 		sub.isActive,
-		sub.vendors; 
+		sub.vendors;
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -28499,83 +24973,49 @@ DELIMITER ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_get_report_list_item_out_exists`(IN `prUserID` INT, IN `prTokenID` VARCHAR(50), IN `prCompanyID` INT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Lista de Productos'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Lista de Productos'
 BEGIN
-
-	SELECT 
-
+	SELECT
 		i.itemNumber,
-
-		case 
-
-			when comp.flavorID = 309  then 
-
+		case
+			when comp.flavorID = 309  then
 				CONCAT(i.`name`,' ',i.barCode)
-
-			else 
-
-				i.name 
-
+			else
+				i.name
 		end as itemName,
-
-		cat.`name` as categoryName, 
-
+		cat.`name` as categoryName,
 		ciu.name as unitMeasure,
-
 		ic.name as categoryName,
-
 		i.quantity as quantity,
-
 		i.cost as cost,
-
 		(select pp.price from tb_price pp where pp.itemID = i.itemID limit 1) as price,
-
 		w.`name` as warehouseName
-
-	FROM 
-
+	FROM
 		tb_item i
-
-		inner join tb_workflow_stage ws on 
-
-			i.statusID = ws.workflowStageID 
-
-		inner join tb_catalog_item ciu on 
-
-			i.unitMeasureID = ciu.catalogItemID 
-
-		inner join tb_item_category ic on 
-
-			i.inventoryCategoryID = ic.inventoryCategoryID 
-
-		inner join tb_warehouse w on 
-
-			w.warehouseID = i.defaultWarehouseID 		
-
-		inner join tb_item_category cat on 
-
-			i.inventoryCategoryID = cat.inventoryCategoryID 
-
-		inner join tb_company comp on 
-
-			comp.companyID = i.companyID 
-
-		
+		inner join tb_workflow_stage ws on
+			i.statusID = ws.workflowStageID
+		inner join tb_catalog_item ciu on
+			i.unitMeasureID = ciu.catalogItemID
+		inner join tb_item_category ic on
+			i.inventoryCategoryID = ic.inventoryCategoryID
+		inner join tb_warehouse w on
+			w.warehouseID = i.defaultWarehouseID
+		inner join tb_item_category cat on
+			i.inventoryCategoryID = cat.inventoryCategoryID
+		inner join tb_company comp on
+			comp.companyID = i.companyID
 
 	WHERE
-
-		i.isActive = 1 AND 
-
-		i.companyID = prCompanyID and 
-
-		i.quantity = 0 
-
-	ORDER BY 
-
-		ic.`name` , i.`name`; 
-
+		i.isActive = 1 AND
+		i.companyID = prCompanyID and
+		i.quantity <= 0 AND
+		w.warehouseID in (
+				select c.warehouseID from tb_user_warehouse c where c.userID = prUserID
+		)
+	ORDER BY
+		ic.`name` , i.`name`;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -28593,83 +25033,47 @@ DELIMITER ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_get_report_list_item_width_exists`(IN `prUserID` INT, IN `prTokenID` VARCHAR(50), IN `prCompanyID` INT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Lista de Productos'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Lista de Productos'
 BEGIN
-
-	SELECT 
-
+	SELECT
 		i.itemNumber,
-
-		case 
-
-			when comp.flavorID = 309  then 
-
+		case
+			when comp.flavorID = 309  then
 				CONCAT(i.`name`,' ',i.barCode)
-
-			else 
-
-				i.name 
-
+			else
+				i.name
 		end as itemName,
-
-		cat.`name` as categoryName, 
-
+		cat.`name` as categoryName,
 		ciu.name as unitMeasure,
-
 		ic.name as categoryName,
-
 		i.quantity as quantity,
-
 		i.cost as cost,
-
 		(select pp.price from tb_price pp where pp.itemID = i.itemID limit 1) as price,
-
 		w.`name` as warehouseName
-
-	FROM 
-
+	FROM
 		tb_item i
-
-		inner join tb_workflow_stage ws on 
-
-			i.statusID = ws.workflowStageID 
-
-		inner join tb_catalog_item ciu on 
-
-			i.unitMeasureID = ciu.catalogItemID 
-
-		inner join tb_item_category ic on 
-
-			i.inventoryCategoryID = ic.inventoryCategoryID 
-
-		inner join tb_warehouse w on 
-
-			w.warehouseID = i.defaultWarehouseID 		
-
-		inner join tb_item_category cat on 
-
-			i.inventoryCategoryID = cat.inventoryCategoryID 
-
-		inner join tb_company comp on 
-
-			comp.companyID = i.companyID 
-
-		
+		inner join tb_workflow_stage ws on
+			i.statusID = ws.workflowStageID
+		inner join tb_catalog_item ciu on
+			i.unitMeasureID = ciu.catalogItemID
+		inner join tb_item_category ic on
+			i.inventoryCategoryID = ic.inventoryCategoryID
+		inner join tb_warehouse w on
+			w.warehouseID = i.defaultWarehouseID
+		inner join tb_item_category cat on
+			i.inventoryCategoryID = cat.inventoryCategoryID
+		inner join tb_company comp on
+			comp.companyID = i.companyID
 
 	WHERE
-
-		i.isActive = 1 AND 
-
-		i.companyID = prCompanyID and 
-
-		i.quantity > 0 
-
-	ORDER BY 
-
-		ic.`name` , i.`name`; 
-
+		i.isActive = 1 AND
+		i.companyID = prCompanyID and
+		i.quantity > 0 and
+		w.warehouseID iN (select c.warehouseID from tb_user_warehouse c where c.userID = prUserID	)
+	ORDER BY
+		ic.`name` , i.`name`;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -28687,309 +25091,211 @@ DELIMITER ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_get_report_master_kardex`(IN `prUserID` INT, IN `prTokenID` VARCHAR(50), IN `prCompanyID` INT, IN `prWarehouseID` INT, IN `prStartOn` DATETIME, IN `prEndOn` DATETIME)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Procedimiento para obtener el karde de mercaderia'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Procedimiento para obtener el karde de mercaderia'
 BEGIN
-
 	declare minItemID int default 0;
-
 	declare maxItemID int default 0;
-
-	declare minKardexID int default 0; 
-
+	declare minKardexID int default 0;
+	declare initialKardexID int default 0;
 	declare newCost decimal(19,9)		 default 0;
-
 	declare newQuantity decimal(19,9) default 0;
-
 	declare itemName varchar(500) default '';
+	declare itemNumber varchar(50) default '';
 
-	declare itemNumber varchar(50) default ''; 
+	-- ============================================================
+	-- VARIABLES INTERNAS DE CONFIGURACION / DEPURACION
+	-- ------------------------------------------------------------
+	-- varItemID  : Si es distinto de 0, TODO el procedimiento se
+	--              enfoca unicamente en ese itemID (calculo, inserts,
+	--              recorrido y resultado final). Si es 0, procesa
+	--              todos los productos como de costumbre.
+	-- varDebugLog: Si es 1, inserta trazas de depuracion en tb_log.
+	--              Si es 0, no registra nada en el log.
+	-- ============================================================
+	declare varItemID int default 0;
+	declare varDebugLog int default 0;
 
-	 
+	-- Rango de itemID a recorrer. Si varItemID <> 0 se limita a ese producto.
+	if varItemID <> 0 then
+		set minItemID = varItemID;
+		set maxItemID = varItemID;
+	else
+		set minItemID = (select min(i.itemID) from tb_item i where i.companyID = prCompanyID and i.isActive = 1 and IFNULL(i.isServices,0) = 0 );
+		set maxItemID = (select max(i.itemID) from tb_item i where i.companyID = prCompanyID and i.isActive = 1 and IFNULL(i.isServices,0) = 0 );
+	end if;
 
-	set minItemID = (select min(i.itemID) from tb_item i where i.companyID = prCompanyID and i.isActive = 1 and IFNULL(i.isServices,0) = 0 );
+	if varDebugLog = 1 then
+		insert into tb_log (companyID,branchID,loginID,token,procedureName,code,description,createdOn)
+		values (prCompanyID,0,prUserID,IFNULL(prTokenID,'0'),'pr_inventory_get_report_master_kardex',0,
+			concat('INICIO. varItemID=',varItemID,' minItemID=',IFNULL(minItemID,-1),' maxItemID=',IFNULL(maxItemID,-1),
+				' prWarehouseID=',prWarehouseID,' prStartOn=',IFNULL(prStartOn,''),' prEndOn=',IFNULL(prEndOn,'')),now());
+	end if;
 
-	set maxItemID = (select max(i.itemID) from tb_item i where i.companyID = prCompanyID and i.isActive = 1 and IFNULL(i.isServices,0) = 0 );
+	delete  from tb_master_kardex_temp  where userID = prUserID;
 
-		
-
-  delete  from tb_master_kardex_temp  where userID = prUserID;
-
-	
-
-	
 
 	insert into tb_master_kardex_temp (
-
 				userID,tokenID,companyID,itemID,itemNumber,itemName,itemCategoryName,minKardexID,
-
 				quantityInput,costInput,quantityOutput,costOutput
-
 	)
-
-	SELECT  
-
+	SELECT
 		prUserID,
-
 		prTokenID,
-
 		prCompanyID,
-
 		i.itemID,
-
 		i.itemNumber,
-
-		i.name as itemName,
-
-		cat.`name` as categoryName,
-
+		LEFT(i.name,50) as itemName,
+		LEFT(cat.`name`,50) as categoryName,
 		MIN(k.kardexID) as kardexID,
-
 		SUM(IF(k.sign = 1,k.transactionQuantity,0)) as entrada_cantidad,
-
 		SUM(IF(k.sign = 1,k.transactionQuantity * k.transactionCost, 0)) as entrada_costo,
-
 		SUM(IF(k.sign = -1,k.transactionQuantity,0)) as salida_cantidad,
-
 		SUM(IF(k.sign = -1,k.transactionQuantity * k.transactionCost,0)) as salida_costo
-
-	FROM 
-
-		tb_kardex k 
-
-		inner join tb_item i on 
-
-			k.itemID = i.itemID and 
-
-			k.companyID = i.companyID 
-
-		inner join tb_item_category cat on 
-
-			cat.inventoryCategoryID = i.inventoryCategoryID 
-
-	where	
-
-	  IFNULL(i.isServices,0) = 0 and 
-
-		k.companyID = prCompanyID and 
-
-		k.movementOn between prStartOn and  prEndOn and 
-
-		((k.warehouseID = prWarehouseID  and prWarehouseID <> 0) or (prWarehouseID = 0))
-
-	group by 
-
+	FROM
+		tb_kardex k
+		inner join tb_item i on
+			k.itemID = i.itemID and
+			k.companyID = i.companyID
+		inner join tb_item_category cat on
+			cat.inventoryCategoryID = i.inventoryCategoryID
+	where
+	  IFNULL(i.isServices,0) = 0 and
+		k.companyID = prCompanyID and
+		k.movementOn between prStartOn and  prEndOn and
+		((k.warehouseID = prWarehouseID  and prWarehouseID <> 0) or (prWarehouseID = 0)) and
+		(varItemID = 0 or i.itemID = varItemID)
+	group by
 		prUserID,
-
 		prTokenID,
-
 		prCompanyID,
-
 		i.itemID,
-
 		i.itemNumber,
-
 		i.name;
 
+	if varDebugLog = 1 then
+		insert into tb_log (companyID,branchID,loginID,token,procedureName,code,description,createdOn)
+		values (prCompanyID,0,prUserID,IFNULL(prTokenID,'0'),'pr_inventory_get_report_master_kardex',1,
+			concat('INSERT 1 (con movimiento en rango) filas=',row_count()),now());
+	end if;
 
-
-	
 
 	insert into tb_master_kardex_temp (
-
 			userID,tokenID,companyID,itemID,itemNumber,itemName,itemCategoryName,
-
 			minKardexID,quantityInput,costInput,quantityOutput,costOutput
-
 	)
-
-	select 
-
+	select
 		prUserID,prTokenID,prCompanyID,i.itemID,i.itemNumber,
-
-		case 
-
-			when comp.flavorID = 309  then 
-
-				concat(i.name,' ',i.barCode)
-
-			else 
-
-			  concat(i.name)
-
+		case
+			when comp.flavorID = 309  then
+				LEFT(concat(i.name,' ',i.barCode),50)
+			else
+			  LEFT(concat(i.name),50)
 		end as nameItem ,
-
-		cat.`name`,0,0,0,0,0
-
-	from 
-
+		LEFT(cat.`name`,50),0,0,0,0,0
+	from
 		tb_item i
-
-		inner join tb_item_category cat on 
-
-			i.inventoryCategoryID = cat.inventoryCategoryID 
-
-		inner join tb_company comp on 
-
-			comp.companyID = i.companyID 
-
+		inner join tb_item_category cat on
+			i.inventoryCategoryID = cat.inventoryCategoryID
+		inner join tb_company comp on
+			comp.companyID = i.companyID
 	where
-
-	  IFNULL(i.isServices,0) = 0 and 
-
-		i.companyID = prCompanyID and 
-
-		i.isActive = 1 and 
-
+	  IFNULL(i.isServices,0) = 0 and
+		i.companyID = prCompanyID and
+		i.isActive = 1 and
+		(varItemID = 0 or i.itemID = varItemID) and
 		i.itemID not in (select k.itemID from tb_master_kardex_temp k where k.userID = prUserID and k.companyID = prCompanyID);
 
-		
+	if varDebugLog = 1 then
+		insert into tb_log (companyID,branchID,loginID,token,procedureName,code,description,createdOn)
+		values (prCompanyID,0,prUserID,IFNULL(prTokenID,'0'),'pr_inventory_get_report_master_kardex',2,
+			concat('INSERT 2 (sin movimiento en rango) filas=',row_count()),now());
+	end if;
 
-		
 
-			
 
-	while minItemID <= maxItemID and minItemID is not null do 	
+	while minItemID <= maxItemID and minItemID is not null do
 
-		
+				-- Reiniciar variables por cada producto
+				set newQuantity     = 0;
+				set newCost         = 0;
+				set minKardexID     = 0;
+				set initialKardexID = 0;
 
-				
+				-- 1) Determinar el kardex de referencia para el SALDO INICIAL.
+				--    El saldo inicial es SIEMPRE el ultimo movimiento ANTERIOR a la
+				--    fecha inicial del reporte (prStartOn), sin importar si el
+				--    producto tuvo o no movimiento dentro del rango de fechas.
+				set initialKardexID = (
+					select p.kardexID
+					from tb_kardex p
+					where
+						p.companyID = prCompanyID and
+						p.itemID    = minItemID and
+						p.movementOn < prStartOn and
+						(
+							(p.warehouseID = prWarehouseID and prWarehouseID <> 0) or (prWarehouseID = 0)
+						)
+					order by p.movementOn desc, p.kardexID desc
+					limit 1
+				);
 
-				if exists (
-
-					select  p.itemID from tb_master_kardex_temp p 
-
-					where p.companyID = prCompanyID and p.itemID = minItemID and userID = prUserID and p.minKardexID <> 0  
-
-				) 
-
-				then 
-
-						set newQuantity = 0;
-
-						set newCost 	 = 0;
-
-						set minKardexID 	= (
-
-																	select min(c.minKardexID) 
-
-																	from tb_master_kardex_temp c 
-
-																	where c.itemID = minItemID and c.companyID = prCompanyID and c.userID = prUserID
-
-																);
-
-						set minKardexID	= (
-
-																select max(p.kardexID) 
-
-																from tb_kardex p 
-
-																where 
-
-																	p.companyID = prCompanyID and p.itemID = minItemID 
-
-																	and p.kardexID < minKardexID and 
-
-																		(
-
-																			(p.warehouseID = prWarehouseID  and prWarehouseID <> 0) or (prWarehouseID = 0)
-
-																		)  
-
-															); 
-
-						
-
-						select 
-
-							p.newCost,p.newQuantity into newCost,newQuantity 
-
-						from 
-
-							tb_kardex p where p.kardexID = minKardexID;
-
-							
-
-						update tb_master_kardex_temp set quantityInicial =  newQuantity, costInicial = (newCost * newQuantity) 
-
-						where 
-
-							companyID = prCompanyID and itemID = minItemID and userID = prUserID;
-
-				else
-
-				
-
-						set newQuantity = 0;
-
-						set newCost 	 = 0;
-
-					
-
-						set minKardexID = (
-
-																select max(p.kardexID) 
-
-																from tb_kardex p 
-
-																where 
-
-																	p.companyID = prCompanyID and p.itemID = minItemID and p.movementOn < prStartOn and 
-
-																	(
-
-																		(p.warehouseID = prWarehouseID  and prWarehouseID <> 0) or (prWarehouseID = 0)
-
-																	) 
-
-															); 
-
-						select p.newCost,p.newQuantity into newCost,newQuantity from tb_kardex p where p.kardexID = minKardexID;
-
-						
-
-						update tb_master_kardex_temp set 
-
-							quantityInicial =  newQuantity, costInicial = (newCost * newQuantity),minKardexID = minKardexID  
-
-						where 
-
-							companyID = prCompanyID and itemID = minItemID and userID = prUserID;
-
-											
-
+				-- 2) Si existe un movimiento anterior, tomar su saldo (newQuantity/newCost).
+				if initialKardexID is not null and initialKardexID <> 0 then
+					select p.newQuantity, p.newCost
+					into newQuantity, newCost
+					from tb_kardex p
+					where p.kardexID = initialKardexID;
 				end if;
 
-				
+				-- 3) Guardar el saldo inicial y el kardex de referencia.
+				update tb_master_kardex_temp set
+					quantityInicial = newQuantity,
+					costInicial     = (newCost * newQuantity),
+					minKardexID     = IFNULL(initialKardexID, 0)
+				where
+					companyID = prCompanyID and
+					itemID    = minItemID and
+					userID    = prUserID;
 
-				set minItemID 		= (
+				if varDebugLog = 1 then
+					insert into tb_log (companyID,branchID,loginID,token,procedureName,code,description,createdOn)
+					values (prCompanyID,0,prUserID,IFNULL(prTokenID,'0'),'pr_inventory_get_report_master_kardex',3,
+						concat('WHILE itemID=',minItemID,' initialKardexID=',IFNULL(initialKardexID,0),
+							' quantityInicial=',newQuantity,' costInicial=',(newCost * newQuantity)),now());
+				end if;
 
-																select min(i.itemID) from tb_item i where i.isActive = 1 and i.companyID = prCompanyID and i.itemID > minItemID and IFNULL(i.isServices,0) = 0 
-
-														);
-
+				-- Avanzar al siguiente producto (si esta enfocado en un solo itemID, termina el ciclo)
+				if varItemID <> 0 then
+					set minItemID = null;
+				else
+					set minItemID = (
+						select min(i.itemID)
+						from tb_item i
+						where
+							i.isActive = 1 and
+							i.companyID = prCompanyID and
+							i.itemID > minItemID and
+							IFNULL(i.isServices,0) = 0
+					);
+				end if;
 	end while;
 
-		
+	if varDebugLog = 1 then
+		insert into tb_log (companyID,branchID,loginID,token,procedureName,code,description,createdOn)
+		values (prCompanyID,0,prUserID,IFNULL(prTokenID,'0'),'pr_inventory_get_report_master_kardex',9,
+			concat('FIN. Registros en temp=',(select count(*) from tb_master_kardex_temp where userID = prUserID)),now());
+	end if;
 
-	select 
-
-		* 
-
-	from 
-
-		tb_master_kardex_temp i 
-
-	where 	
-
-		userID = prUserID 
-
-	order by 
-
+	select
+		*
+	from
+		tb_master_kardex_temp i
+	where
+		userID = prUserID
+	order by
 		i.itemCategoryName,i.itemName;
-
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -30224,164 +26530,123 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_purchase_get_report_purchase_taller`(IN `prUserID` int,IN `prTokenID` varchar(50),IN `prCompanyID` int,IN `prEmployerID` varchar(150), IN prStartOn DATETIME, IN prEndOn DATETIME)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_purchase_get_report_purchase_taller`(IN `prUserID` int,IN `prTokenID` varchar(50),IN `prCompanyID` int,IN `prEmployerID` varchar(150), IN prStartOn DATETIME, IN prEndOn DATETIME , IN prCustomerCode VARCHAR(50))
 BEGIN
 
-	
 
-	
-
-		drop temporary table if exists tb_tmp_split;
-
+	drop temporary table if exists tb_tmp_split;
 	drop temporary table if exists tb_tmp_split2;
-
 	create temporary table tb_tmp_split( val char(255) );
-
 	create temporary table tb_tmp_split2( val char(255) );
-
 	set @sql = concat("insert into tb_tmp_split (val) values ('", replace(prEmployerID, ",", "'),('"),"');");
-
 	prepare stmt1 from @sql;
-
 	execute stmt1;
 
-	
+	insert into tb_tmp_split2 (val)
+	select zu.val from tb_tmp_split zu;
 
-	insert into tb_tmp_split2 (val) 
 
-	select zu.val from tb_tmp_split zu; 
 
-	
-
-	
-
-	
-
-	select 
-
-		estado.`name` as Estado,	
-
+	select
+		estado.`name` as Estado,
 		CONCAT(u.firstName) as firstName,
-
 		u.entityID ,
-
-		count(*) as Cantidad 	
-
-	from 
-
-		tb_transaction_master c 
-
-		inner join tb_naturales u on 
-
-			c.entityIDSecondary = u.entityID 
-
-		inner join tb_catalog_item estado on 
-
-			estado.catalogItemID = c.areaID 
-
-		inner join tb_employee emp on 
-
+		count(*) as Cantidad
+	from
+		tb_transaction_master c
+		inner join tb_naturales u on
+			c.entityIDSecondary = u.entityID
+		inner join tb_catalog_item estado on
+			estado.catalogItemID = c.areaID
+		inner join tb_employee emp on
 			emp.entityID = u.entityID
-
-	where 
-
-		c.transactionID = 40   and 
-
-		c.isActive = 1 and 
-
-		c.companyID = prCompanyID and 
-
-		c.createdOn between prStartOn and  prEndOn and  
-
+		inner join tb_customer cus on
+			cus.entityID = c.entityID
+	where
+		c.transactionID = 40   and
+		c.isActive = 1 and
+		c.companyID = prCompanyID and
+		c.createdOn between prStartOn and  prEndOn and
 		(
-
+		   ( prCustomerCode = '' ) or
 			 (
-
+			   prCustomerCode != ''  and
+				 cus.customerNumber = prCustomerCode
+			 )
+		) and
+		(
+			 (
 			  0 IN ( SELECT TUX.val FROM tb_tmp_split2 TUX )
-
 			 )
-
-			 or 
-
+			 or
 			 (
-
 				u.entityID IN (SELECT TU.val FROM tb_tmp_split TU )
-
 			 )
 
-			 
-
-		) 
-
-	group by 
-
+		)
+	group by
 		estado.`name`,
-
 		u.firstName,
-
-		u.entityID 
-
-	order by 
-
+		u.entityID
+	order by
 		1,2 ;
 
-		
 
-		
-
-	select 
-
+	select
 		c.transactionNumber,
-
 		c.transactionOn,
-
 		cus.customerNumber,
-
 		nat.firstName ,
-
-		ep.employeNumber, 
-
-		natp.firstName as firstNameEmployer, 
-
+		ep.employeNumber,
+		natp.firstName as firstNameEmployer,
 		c.note ,
-
 		c.reference2,
+		c.reference3,
+		c.reference1 ,
+		tmi.reference2 as modelo ,
+		tmi.referenceClientName ,
+		estado_equipo.`name` as estado_equipo ,
+		articulo.`name` as articulo ,
 
-		c.reference3 
+		(
+        SELECT
+					GROUP_CONCAT(tmd.reference1 SEPARATOR ', ')
+        FROM
+					tb_transaction_master_detail  tmd
+        WHERE
+					tmd.transactionMasterID = c.transactionMasterID
+    ) AS detalles
 
-	from 
+	from
+		tb_transaction_master c
+		inner join tb_transaction_master_info tmi on
+			tmi.transactionMasterID = c.transactionMasterID
+		inner join tb_customer cus on
+			cus.entityID = c.entityID
+		inner join tb_naturales nat on
+			cus.entityID = nat.entityID
+		inner join tb_naturales natp on
+			natp.entityID = c.entityIDSecondary
+		inner join tb_employee ep on
+			ep.entityID = natp.entityID
 
-		tb_transaction_master c 
-
-		inner join tb_customer cus on 
-
-			cus.entityID = c.entityID 
-
-		inner join tb_naturales nat on 
-
-			cus.entityID = nat.entityID  
-
-		inner join tb_naturales natp on 
-
-			natp.entityID = c.entityIDSecondary 
-
-		inner join tb_employee ep on 
-
-			ep.entityID = natp.entityID 
-
-	where 
-
-		c.transactionID = 40  and 
-
-		c.isActive = 1 and 
-
-		c.createdOn between prStartOn and  prEndOn   
-
-	order by 
-
+		inner join tb_catalog_item estado_equipo on
+			estado_equipo.catalogItemID = c.areaID
+		inner join tb_catalog_item articulo on
+			articulo.catalogItemID = tmi.routeID
+	where
+		c.transactionID = 40  and
+		c.isActive = 1 and
+		c.createdOn between prStartOn and  prEndOn   and
+		(
+		   ( prCustomerCode = '' ) or
+			 (
+			   prCustomerCode != ''  and
+				 cus.customerNumber = prCustomerCode
+			 )
+		)
+	order by
 		c.transactionMasterID desc ;
-
-
 
 END ;;
 DELIMITER ;
@@ -31164,370 +27429,213 @@ DELIMITER ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_sales_get_report_sales_detail`(IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), 	IN `prUserID` INT, IN `prStartOn` DATE, IN `prEndOn` DATE,IN prInventoryCategoryID INT, IN prWarehouse INT ,
-
-IN prUserIDCreatedBy INT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Detalle de ventas'
+IN prUserIDCreatedBy INT,  IN prTransactionCausalName VARCHAR(50))
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Detalle de ventas'
 BEGIN
 
-
-
-	DECLARE varCurrencyCompras INT DEFAULT 0;	
-
-	DECLARE varCurrencyReporte INT DEFAULT 0;	
-
-	
+	DECLARE varCurrencyCompras INT DEFAULT 0;
+	DECLARE varCurrencyReporte INT DEFAULT 0;
 
 	DECLARE currencyIDNameCompra VARCHAR(250);
-
-	DECLARE currencyIDNameReporte VARCHAR(250);	
-
-	
+	DECLARE currencyIDNameReporte VARCHAR(250);
 
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameCompra);
-
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",currencyIDNameReporte);
 
-	
+	SET varCurrencyCompras 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameCompra);
+	SET varCurrencyReporte 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameReporte);
 
-	SET varCurrencyCompras 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameCompra);		
 
-	SET varCurrencyReporte 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameReporte);		
-
-		
-
-	
-
-	select 
-
+	select
 		rx.userID,
-
 		rx.nickname,
-
 		rx.transactionNumber,
-
 		rx.employerName,
-
 		rx.tipo,
-
 		rx.transactionOn,
-
 		rx.createdOn,
-
 		DAYOFMONTH(rx.createdOn) as dayOfMonth,
-
 		rx.customerNumber,
-
 		rx.currencyName,
-
 		rx.note,
-
 		rx.legalName,
-
 		rx.zone,
-
 		rx.itemNumber,
-
 		rx.itemName,
-
 		rx.itemNameLog,
-
 		rx.phoneNumber,
-
 		rx.Agent,
-
 		rx.Commentary,
-
 		rx.nameCategory,
-
 		rx.quantity,
-
 		rx.unitaryCost,
-
 		rx.unitaryPrice,
-
+		rx.discount,
 		(rx.unitaryCost * rx.quantity) as cost,
-
 		(rx.unitaryPrice * rx.quantity) as amount,
-
 		(rx.unitaryPrice * rx.quantity) + (rx.iva * rx.quantity)  as amountConIva,
-
 		(rx.unitaryPrice * rx.quantity) - (rx.unitaryCost * rx.quantity)    as utilidad,
-
+		(((rx.unitaryPrice * rx.quantity) - (rx.unitaryCost * rx.quantity)) /  (rx.unitaryCost * rx.quantity)) * 100  as utilidad_porcentual,
 		(rx.iva) as iva,
-
 		(rx.quantity * rx.iva) as ivaTotal,
-
 		varCurrencyReporte,
-
 		rx.currencyID,
-
 		rx.exchangeRate,
-
-		rx.amountCommision 
-
-	from 
-
+		rx.amountCommision
+	from
 		(
-
-				select 
-
+				select
 					usr.userID,
-
 					usr.nickname,
-
 					tm.transactionNumber,
-
 					IFNULL(CONCAT(nat_emp.firstName,' ',nat_emp.lastName,' |',usr.nickname ),'') as employerName,
-
 					tc.name as tipo,
-
 					tm.transactionOn,
-
 					cus.customerNumber,
-
-					concat(nat_cus.firstName,' ', nat_cus.lastName) as legalName ,
-
+					case
+						when  LENGTH(tmi.referenceClientName) > 2 then
+							tmi.referenceClientName
+						else
+							concat(nat_cus.firstName,' ', nat_cus.lastName)
+					end as legalName ,
 					ci.name as zone,
-
 					i.itemNumber,
-
 					i.name as itemName,
-
 					tmd.itemNameLog,
-
 					cat.`name` as nameCategory,
-
 					cus.phoneNumber,
-
 					'' AS Agent,
-
 					'' as Commentary,
-
 					tmd.quantity as quantity,
-
 					tm.currencyID,
-
 					tm.exchangeRate,
-
 					tm.createdOn,
-
 					cur.`name` as currencyName,
-
 					tm.note as note,
 
-					
-
-					case 
-
-						when varCurrencyReporte = tm.currencyID then 
-
-							tmd.unitaryPrice 
-
-						when tm.exchangeRate > 1 then 
-
+					case
+						when varCurrencyReporte = tm.currencyID then
+							tmd.unitaryPrice
+						when tm.exchangeRate > 1 then
 							tm.exchangeRate * (tmd.unitaryPrice)
-
-						else 
-
+						else
 							(1/tm.exchangeRate) * (tmd.unitaryPrice)
-
 					end unitaryPrice,
 
-					
 
-					
 
-					
-
-					case 
-
-						when varCurrencyReporte = tm.currencyID  then 				
-
-							tmd.unitaryCost * ifnull(tmd.skuQuantity ,0) 
-
-						when tm.exchangeRate > 1 then 
-
-							tm.exchangeRate *  tmd.unitaryCost	* ifnull(tmd.skuQuantity ,0) 												
-
-						else 								
-
-						  (1/tm.exchangeRate) *   tmd.unitaryCost	* ifnull(tmd.skuQuantity ,0) 				
-
+					case
+						when varCurrencyReporte = tm.currencyID  then
+							tmd.unitaryCost * ifnull(tmd.skuQuantity ,0)
+						when tm.exchangeRate > 1 then
+							tm.exchangeRate *  tmd.unitaryCost	* ifnull(tmd.skuQuantity ,0)
+						else
+						  (1/tm.exchangeRate) *   tmd.unitaryCost	* ifnull(tmd.skuQuantity ,0)
 					end  unitaryCost ,
 
-					
 
-					
+					case
+						when varCurrencyReporte = tm.currencyID  then
+							tmd.discount
+						when tm.exchangeRate > 1 then
+							tm.exchangeRate *  tmd.discount
+						else
+						  (1/tm.exchangeRate) *   tmd.discount
+					end  discount ,
 
-					case 
 
-						when varCurrencyReporte = tm.currencyID  then 				
-
+					case
+						when varCurrencyReporte = tm.currencyID  then
 							IFNULL(tmd.tax1,0)
-
-						when tm.exchangeRate > 1 then 
-
+						when tm.exchangeRate > 1 then
 							tm.exchangeRate *  IFNULL(tmd.tax1,0)
-
-						else 								
-
+						else
 						  (1/tm.exchangeRate) *   IFNULL(tmd.tax1,0)
-
 					end as iva ,
 
-					
 
-					
-
-					case 
-
-						when varCurrencyReporte = tm.currencyID  then 				
-
+					case
+						when varCurrencyReporte = tm.currencyID  then
 							IFNULL(amountCommision,0)
-
-						when tm.exchangeRate > 1 then 
-
+						when tm.exchangeRate > 1 then
 							tm.exchangeRate *  IFNULL(amountCommision,0)
-
-						else 								
-
+						else
 						  (1/tm.exchangeRate) *   IFNULL(amountCommision,0)
+					end  as amountCommision
 
-					end  as amountCommision 
-
-					
-
-				from 
-
-					tb_transaction_master tm  					
-
-					inner join tb_transaction_master_detail tmd on 
-
-						tm.companyID = tmd.companyID and 
-
-						tm.transactionID = tmd.transactionID and 
-
-						tm.transactionMasterID = tmd.transactionMasterID 
-
-					inner join tb_currency cur on 
-
-						cur.currencyID = tm.currencyID 
-
-					inner join tb_transaction_causal tc on 
-
-						tm.transactionCausalID = tc.transactionCausalID 
-
-					inner join tb_customer cus on 
-
-						tm.entityID = cus.entityID 
-
-					inner join tb_legal l on 
-
-						cus.entityID = l.entityID 
-
-					inner join tb_naturales nat_cus on 
-
-						nat_cus.entityID   = l.entityID 
-
-					inner join tb_user usr on 
-
-						tm.createdBy = usr.userID 
-
-					inner join tb_workflow_stage ws on 
-
-						tm.statusID = ws.workflowStageID 
-
-					inner join tb_transaction_master_info tmi on 
-
-						tm.companyID = tmi.companyID and 
-
-						tm.transactionID = tmi.transactionID and 
-
-						tm.transactionMasterID = tmi.transactionMasterID 
-
-					inner join tb_catalog_item ci on 
-
-						tmi.zoneID = ci.catalogItemID 
-
-					inner join tb_item i on 
-
-						tmd.componentItemID = i.itemID 
-
-					inner join tb_item_category cat on 
-
-						cat.inventoryCategoryID = i.inventoryCategoryID 
-
-					left join tb_naturales nat_emp on 
-
-						nat_emp.entityID = tm.entityIDSecondary 
-
-				where  					
-
-					tm.companyID = prCompanyID and 
-
-					tm.createdOn between prStartOn  and concat(prEndOn,' 23:59:59')   and 
-
-					tm.isActive = 1 and 
-
-					tmd.isActive = 1 and 
-
-					ws.aplicable = 1 and 
-
-					tm.transactionID in (19 /*FACTURA*/ ) and 
-
+				from
+					tb_transaction_master tm
+					inner join tb_transaction_master_detail tmd on
+						tm.companyID = tmd.companyID and
+						tm.transactionID = tmd.transactionID and
+						tm.transactionMasterID = tmd.transactionMasterID
+					inner join tb_currency cur on
+						cur.currencyID = tm.currencyID
+					inner join tb_transaction_causal tc on
+						tm.transactionCausalID = tc.transactionCausalID
+					inner join tb_customer cus on
+						tm.entityID = cus.entityID
+					inner join tb_legal l on
+						cus.entityID = l.entityID
+					inner join tb_naturales nat_cus on
+						nat_cus.entityID   = l.entityID
+					inner join tb_user usr on
+						tm.createdBy = usr.userID
+					inner join tb_workflow_stage ws on
+						tm.statusID = ws.workflowStageID
+					inner join tb_transaction_master_info tmi on
+						tm.companyID = tmi.companyID and
+						tm.transactionID = tmi.transactionID and
+						tm.transactionMasterID = tmi.transactionMasterID
+					inner join tb_catalog_item ci on
+						tmi.zoneID = ci.catalogItemID
+					inner join tb_item i on
+						tmd.componentItemID = i.itemID
+					inner join tb_item_category cat on
+						cat.inventoryCategoryID = i.inventoryCategoryID
+					left join tb_naturales nat_emp on
+						nat_emp.entityID = tm.entityIDSecondary
+				where
+					tm.companyID = prCompanyID and
+					tm.createdOn between prStartOn  and concat(prEndOn,' 23:59:59')   and
+					tm.isActive = 1 and
+					tmd.isActive = 1 and
+					ws.aplicable = 1 and
+					tm.transactionID in (19 /*FACTURA*/ ) and
 					(
-
-						prInventoryCategoryID = 0 
-
-						or 
-
-						(prInventoryCategoryID != 0 and i.inventoryCategoryID = prInventoryCategoryID )
-
-					) and 
-
-					(
-
-						prWarehouse = 0 
-
-						or 
-
+						( UPPER(prTransactionCausalName) = UPPER('TODAS')) or
 						(
-
-							prWarehouse != 0 and 
-
-							tm.sourceWarehouseID =  prWarehouse 
-
-					  )
-
-					) and 
-
-					(
-
-						prUserIDCreatedBy = 0 
-
-						or 
-
-						(
-
-							prUserIDCreatedBy != 0 and 
-
-							prUserIDCreatedBy = tm.createdBy 
-
+						  UPPER(prTransactionCausalName) != UPPER('TODAS') and
+							UPPER(prTransactionCausalName) = UPPER(tc.`name`)
 						)
-
+					) and
+					(
+						prInventoryCategoryID = 0
+						or
+						(prInventoryCategoryID != 0 and i.inventoryCategoryID = prInventoryCategoryID )
+					) and
+					(
+						prWarehouse = 0
+						or
+						(
+							prWarehouse != 0 and
+							tm.sourceWarehouseID =  prWarehouse
+					  )
+					) and
+					(
+						prUserIDCreatedBy = 0
+						or
+						(
+							prUserIDCreatedBy != 0 and
+							prUserIDCreatedBy = tm.createdBy
+						)
 					)
-
-				order by 
-
+				order by
 					tm.transactionMasterID asc, tmd.transactionMasterDetailID asc
 
-					
-
 		) rx;
-
-		
 
 END ;;
 DELIMITER ;
@@ -31907,34 +28015,34 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_sales_get_report_sales_summary`(IN `prCompanyID` INT, 
-IN `prTokenID` VARCHAR(50), IN `prUserID` INT, 
- IN `prStartOn` DATETIME, IN `prEndOn` DATETIME, IN `prUserIDFilter` INT , 
- IN prConceptFilter VARCHAR(150), IN prWithTax1 INT ,IN `prBranchID` INT, 
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_sales_get_report_sales_summary`(IN `prCompanyID` INT,
+IN `prTokenID` VARCHAR(50), IN `prUserID` INT,
+ IN `prStartOn` DATETIME, IN `prEndOn` DATETIME, IN `prUserIDFilter` INT ,
+ IN prConceptFilter VARCHAR(150), IN prWithTax1 INT ,IN `prBranchID` INT,
  IN prWarehouseID INT, IN prEntityIDCustomer INT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Resumen de venta'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Resumen de venta'
 BEGIN
-	DECLARE varCurrencyCompras INT DEFAULT 0;	
-	DECLARE varCurrencyReporte INT DEFAULT 0;	
+	DECLARE varCurrencyCompras INT DEFAULT 0;
+	DECLARE varCurrencyReporte INT DEFAULT 0;
 	DECLARE varZoneOraria INT DEFAULT 0;
 	DECLARE currencyIDNameCompra VARCHAR(250);
-	DECLARE currencyIDNameReporte VARCHAR(250);	
+	DECLARE currencyIDNameReporte VARCHAR(250);
 	DECLARE exchangeRate_ DECIMAL(18,4) DEFAULT 0;
-	DECLARE currencyIDNameTarget VARCHAR(250);	
+	DECLARE currencyIDNameTarget VARCHAR(250);
 	DECLARE currencyIDNameSource VARCHAR(250);
-	DECLARE convert_ VARCHAR(50);	
+	DECLARE convert_ VARCHAR(50);
 	DECLARE prFlavorID INT DEFAULT 0;
 
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameCompra);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",currencyIDNameReporte);
 	CALL pr_core_get_parameter_value(prCompanyID,"CORE_ZONA_HORARIA",varZoneOraria);
-	SET varCurrencyCompras 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameCompra);		
+	SET varCurrencyCompras 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameCompra);
 	SET varCurrencyReporte 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameReporte);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameSource);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_EXTERNAL",currencyIDNameTarget);
-	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_); 
+	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_);
 	CALL pr_core_get_parameter_value(prCompanyID, "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT", convert_);
 	SET prFlavorID 								= (SELECT flavorID FROM tb_company c where c.companyID = prCompanyID);
 
@@ -31943,9 +28051,8 @@ BEGIN
 	set @sql = concat("insert into tb_tmp_split (val) values ('", replace(prConceptFilter, ",", "'),('"),"');");
 	prepare stmt1 from @sql;
 	execute stmt1;
-  
 
-	select 
+	select
 			rx.userID,
 			rx.nickname,
 			rx.currencyID,
@@ -31957,231 +28064,349 @@ BEGIN
 			rx.zone,
 			rx.statusName,
 			rx.firstName,
-      fn_translate_transaction_master_info_amounts( prCompanyID,prFlavorID,rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, 0, 0,  'CurrencyName') as currencyName,
-			GROUP_CONCAT(DISTINCT rx.categoryName ORDER BY rx.categoryName SEPARATOR ', ') as categoryName,
+			fn_translate_transaction_master_info_amounts( prCompanyID,prFlavorID,rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, 0, 0,  'CurrencyName')
+				as currencyName,
+
+			'' as categoryName,
 			'' as categorySubName,
 			rx.exchangeRate,
-			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmount, rx.receiptAmountDol,  'Amount'), DECIMAL(10,2)) as  EfectivoCordoba,
-			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmount, rx.receiptAmountDol,  'AmountExt'), DECIMAL(10,2))  as EfectivoDolares ,
-			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountCard, rx.receiptAmountCardDol,  'Amount'), DECIMAL(10,2))  as TarjetaCordoba,
-			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountCard, rx.receiptAmountCardDol,  'AmountExt'), DECIMAL(10,2))  as TarjetaDolares ,
-			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountBank, rx.receiptAmountBankDol,  'Amount'), DECIMAL(10,2))  as TansferenciaCordoba,
-			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountBank, rx.receiptAmountBankDol,  'AmountExt'), DECIMAL(10,2))  as TransferenciaDolares, 
-			avg(rx.receiptAmountPoint) as receiptAmountPoint , 
-			IFNULL(AVG(rx.discount),0) as discount, 
+			rx.transactionID,
+
+			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountCard, rx.receiptAmountCardDol, 'Amount'),    DECIMAL(10,2)) as TarjetaCordoba,
+			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountCard, rx.receiptAmountCardDol, 'AmountExt'),  DECIMAL(10,2)) as TarjetaDolares,
+			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountBank, rx.receiptAmountBankDol, 'Amount'),    DECIMAL(10,2)) as TansferenciaCordoba,
+			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountBank, rx.receiptAmountBankDol, 'AmountExt'),  DECIMAL(10,2)) as TransferenciaDolares,
+			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmount,    rx.receiptAmountDol,    'AmountExt'),  DECIMAL(10,2)) as EfectivoDolares,
+			rx.receiptAmountPoint as receiptAmountPoint,
+			IFNULL(AVG(rx.discount),0) as discount,
 			sum((rx.unitaryCost * rx.quantity)) as cost,
-			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, 
+			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_,
 			(sum((rx.unitaryPrice  * rx.quantity) +  ifnull(rx.tax2,0) )), 0,  'Convert') , DECIMAL(10,2))
 			 as totalSinIva,
-			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, 
+			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_,
 			(sum(rx.iva * rx.quantity)), 0,  'Convert'), DECIMAL(10,2)) as totalIva,
-			CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, (sum(
-				(rx.unitaryPrice * rx.quantity) + 
-				(rx.iva * rx.quantity ) + 
-				( ifnull(rx.tax2,0) * 1 ) 
-        ) - 
-        avg(rx.receiptAmountPoint)  - 
-         IFNULL(AVG(rx.discount),0)), 0,  'Convert') , DECIMAL(10,2))
-      as totalDocument,
-			sum((rx.unitaryPrice * rx.quantity) - (rx.unitaryCost * rx.quantity))    as utilidad		
+			CONVERT(
+				fn_translate_transaction_master_info_amounts(
+					prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_,
+					(
+						sum(
+								(rx.unitaryPrice * rx.quantity) +
+								(rx.iva * rx.quantity ) +
+								( ifnull(rx.tax2,0) * 1 )
+							) -
+						rx.receiptAmountPoint
+					), 0,  'Convert'
+				) , DECIMAL(10,2)
+			)  as totalDocument,
+
+			CONVERT(
+				GREATEST(
+					0,
+					CONVERT(
+						fn_translate_transaction_master_info_amounts(
+							prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_,
+							(
+								sum(
+										(rx.unitaryPrice * rx.quantity) +
+										(rx.iva * rx.quantity ) +
+										( ifnull(rx.tax2,0) * 1 )
+									) -
+								rx.receiptAmountPoint -
+								CASE
+								  WHEN rx.statusName = 'ANULADA' THEN 0
+									ELSE
+										IFNULL(AVG(rx.discount),0)
+								END
+							), 0,  'Convert'
+						) , DECIMAL(10,2)
+					)
+					-
+					CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountCard, rx.receiptAmountCardDol, 'Amount'),    DECIMAL(10,2))
+					-
+					CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmountBank, rx.receiptAmountBankDol, 'Amount'),    DECIMAL(10,2))
+					-
+					( CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, rx.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, rx.currencyID, exchangeRate_, rx.receiptAmount,    rx.receiptAmountDol,    'AmountExt'),  DECIMAL(10,2)) * rx.exchangeRate )
+				),
+				DECIMAL(10,2)
+			) as EfectivoCordoba,
+			sum((rx.unitaryPrice * rx.quantity) - (rx.unitaryCost * rx.quantity)) as utilidad
 	from
 		(
-				select 
+				select
 					usr.userID,
-					case 
-						when comp.flavorID = 306 then 
-							nat_emp.firstName 
-						else 
+					case
+						when comp.flavorID = 306 then
+							nat_emp.firstName
+						else
 							usr.nickname
-					end as nickname,				
+					end as nickname,
 					tm.transactionNumber,
 					tc.name as tipo,
 					tm.transactionOn,
-					cus.customerNumber,
-					concat(nat_cus.firstName,' ', nat_cus.lastName) as legalName ,
+
+					case
+						when tmi.referenceClientIdentifier <> '' then
+							tmi.referenceClientIdentifier
+						else
+							cus.customerNumber
+					end as customerNumber,
+
+					case
+						when tmi.referenceClientName <> '' then
+							tmi.referenceClientName
+						else
+							concat(nat_cus.firstName,' ', nat_cus.lastName)
+					end as legalName,
+
+					case
+						when tmi.referenceClientName <> '' then
+							tmi.referenceClientName
+						else
+							nat.firstName
+					end as firstName,
+
 					ci.name as zone,
-					tm.tax2 as tax2,					
-					tmi.receiptAmount,
-					tmi.receiptAmountDol,
-					tmi.receiptAmountCard,
-					tmi.receiptAmountCardDol,
-					tmi.receiptAmountBank ,
-					tmi.receiptAmountBankDol,			
-					tmi.receiptAmountPoint , 		
-					CASE 
-						WHEN 
-							ws.eliminable = 0 and 
-							tm.createdOn between prStartOn and concat(prEndOn) and 
-							tm.statusIDChangeOn between prStartOn and concat(prEndOn) THEN  
-								'ANULADA' 
-						WHEN 
-							ws.eliminable = 0 and 
-							tm.createdOn between prStartOn and concat(prEndOn) and 
-							tm.statusIDChangeOn > prEndOn THEN  
-								'POST-ANULADA' 
-						WHEN 
-							ws.eliminable = 0 and 
-							tm.createdOn < prStartOn and 
-							tm.statusIDChangeOn between prStartOn and concat(prEndOn)  THEN  
-								'DEVOLUCION' 
-						ELSE 
-							ws.name	
+					tm.tax2 as tax2,
+
+					MAX(tmi.receiptAmount)      AS receiptAmount,
+					MAX(tmi.receiptAmountDol)   AS receiptAmountDol,
+					MAX(tmi.receiptAmountCard)  AS receiptAmountCard,
+					MAX(tmi.receiptAmountCardDol) AS receiptAmountCardDol,
+					MAX(tmi.receiptAmountBank)  AS receiptAmountBank,
+					MAX(tmi.receiptAmountBankDol) AS receiptAmountBankDol,
+					MAX(tmi.receiptAmountPoint) AS receiptAmountPoint,
+
+					CASE
+						WHEN
+							ws.eliminable = 0 and
+							tm.createdOn between prStartOn and concat(prEndOn) and
+							tm.statusIDChangeOn between prStartOn and concat(prEndOn) THEN
+								'ANULADA'
+						WHEN
+							ws.eliminable = 0 and
+							tm.createdOn between prStartOn and concat(prEndOn) and
+							tm.statusIDChangeOn > prEndOn THEN
+								'POST-ANULADA'
+						WHEN
+							ws.eliminable = 0 and
+							tm.createdOn < prStartOn and
+							tm.statusIDChangeOn between prStartOn and concat(prEndOn)  THEN
+								'DEVOLUCION'
+						ELSE
+							ws.name
 					END as statusName,
-					nat.firstName ,
+
 					cu.name AS currencyName,
 					icat.`name` as categoryName,
-					CASE 
-						WHEN 
-							ws.eliminable = 0 and 
-							tm.createdOn between prStartOn and concat(prEndOn) and 
-							tm.statusIDChangeOn between prStartOn and concat(prEndOn) THEN  
+					CASE
+						WHEN
+							ws.eliminable = 0 and
+							tm.createdOn between prStartOn and concat(prEndOn) and
+							tm.statusIDChangeOn between prStartOn and concat(prEndOn) THEN
 								tmd.quantity * 0
-						WHEN 
-							ws.eliminable = 0 and 
-							tm.createdOn between prStartOn and concat(prEndOn) and 
-							tm.statusIDChangeOn > prEndOn THEN  
-								tmd.quantity 
-						WHEN 
-							ws.eliminable = 0 and 
-							tm.createdOn < prStartOn and 
-							tm.statusIDChangeOn between prStartOn and concat(prEndOn) THEN  
+						WHEN
+							ws.eliminable = 0 and
+							tm.createdOn between prStartOn and concat(prEndOn) and
+							tm.statusIDChangeOn > prEndOn THEN
+								tmd.quantity * 1
+						WHEN
+							ws.eliminable = 0 and
+							tm.createdOn < prStartOn and
+							tm.statusIDChangeOn between prStartOn and concat(prEndOn) THEN
 								tmd.quantity * -1
-						ELSE 
-							tmd.quantity 
+						ELSE
+							tmd.quantity
 					END as quantity,
 					tmd.unitaryPrice,
-					case 
-						when varCurrencyCompras = varCurrencyReporte  then 				
+					case
+						when varCurrencyCompras = varCurrencyReporte  then
 							tmd.unitaryCost
-						when tm.exchangeRate > 1 then 
-							tm.exchangeRate *  tmd.unitaryCost														
-						else 								
-						  (1/tm.exchangeRate) *   tmd.unitaryCost							
+						when tm.exchangeRate > 1 then
+							tm.exchangeRate *  tmd.unitaryCost
+						else
+						  (1/tm.exchangeRate) *   tmd.unitaryCost
 					end  unitaryCost ,
 					IFNULL(tmd.tax1,0) as  iva ,
 					IFNULL(tmd.amountCommision,0) as amountCommision,
 					tm.exchangeRate,
 					tm.discount,
 					tm.transactionID,
-					tm.currencyID 
-				from 
-					tb_transaction_master tm  					
-					inner join tb_transaction_master_detail tmd on 
-						tm.companyID = tmd.companyID and 
-						tm.transactionID = tmd.transactionID and 
-						tm.transactionMasterID = tmd.transactionMasterID 
-					inner join tb_transaction_causal tc on 
-						tm.transactionCausalID = tc.transactionCausalID 
-					inner join tb_customer cus on 
-						tm.entityID = cus.entityID 
-					INNER JOIN tb_naturales nat ON 
-						nat.entityID = cus.entityID 
-					inner join tb_legal l on 
-						cus.entityID = l.entityID 
-					inner join tb_naturales nat_cus on 
-						nat_cus.entityID   = l.entityID 
-					inner join tb_user usr on 
-						tm.createdBy = usr.userID 
-					inner join tb_branch braus on 
+					tm.currencyID
+				from
+					tb_transaction_master tm
+					inner join tb_transaction_master_detail tmd on
+						tm.companyID = tmd.companyID and
+						tm.transactionID = tmd.transactionID and
+						tm.transactionMasterID = tmd.transactionMasterID
+					inner join tb_transaction_causal tc on
+						tm.transactionCausalID = tc.transactionCausalID
+					inner join tb_customer cus on
+						tm.entityID = cus.entityID
+					INNER JOIN tb_naturales nat ON
+						nat.entityID = cus.entityID
+					inner join tb_legal l on
+						cus.entityID = l.entityID
+					inner join tb_naturales nat_cus on
+						nat_cus.entityID   = l.entityID
+					inner join tb_user usr on
+						tm.createdBy = usr.userID
+					inner join tb_branch braus on
 						braus.branchID = usr.locationID
-					inner join tb_workflow_stage ws on  
-						tm.statusID = ws.workflowStageID 
-					inner join tb_transaction_master_info tmi on 
-						tm.companyID = tmi.companyID and 
-						tm.transactionID = tmi.transactionID and 
-						tm.transactionMasterID = tmi.transactionMasterID 
-					inner join tb_catalog_item ci on 
-						tmi.zoneID = ci.catalogItemID 
-					INNER JOIN tb_currency cu ON 
-						cu.currencyID = tm.currencyID 
-					inner join tb_item it on 
-						it.itemID = tmd.componentItemID 
-					inner join tb_item_category icat on 
-						icat.inventoryCategoryID = it.inventoryCategoryID 
-					inner join tb_company comp on 
-						comp.companyID = tm.companyID 
-					left join tb_naturales nat_emp on 
-						nat_emp.entityID = tm.entityIDSecondary 
+					inner join tb_workflow_stage ws on
+						tm.statusID = ws.workflowStageID
+					inner join tb_transaction_master_info tmi on
+						tm.companyID = tmi.companyID and
+						tm.transactionID = tmi.transactionID and
+						tm.transactionMasterID = tmi.transactionMasterID
+					inner join tb_catalog_item ci on
+						tmi.zoneID = ci.catalogItemID
+					INNER JOIN tb_currency cu ON
+						cu.currencyID = tm.currencyID
+					inner join tb_item it on
+						it.itemID = tmd.componentItemID
+					inner join tb_item_category icat on
+						icat.inventoryCategoryID = it.inventoryCategoryID
+					inner join tb_company comp on
+						comp.companyID = tm.companyID
+					left join tb_naturales nat_emp on
+						nat_emp.entityID = tm.entityIDSecondary
 				where
-					tm.companyID = prCompanyID and 
-					tm.isActive = 1 and 
-					tmd.isActive = 1 and 			
+					tm.companyID = prCompanyID and
+					tm.isActive = 1 and
+					tmd.isActive = 1 and
 					(
 						 (tm.entityID = prEntityIDCustomer and prEntityIDCustomer != 0 )
-						 or 
+						 or
 						 (prEntityIDCustomer = 0)
 					)
-					and 		
+					and
 					(
 					  (tm.tax1 = 0 and prWithTax1 = -1 )
-						or 
+						or
 						(tm.tax1 > 0 and prWithTax1 = 1 )
-						or 
+						or
 						(prWithTax1 = 0)
 					)
-					and 					
+					and
 					(
 						(prConceptFilter = '-1') or
 						(
-								prConceptFilter != '-1' and 
-								it.inventoryCategoryID in 
+								prConceptFilter != '-1' and
+								it.inventoryCategoryID in
 								(
-									select val  from tb_tmp_split 
+									select val  from tb_tmp_split
 								)
-						) 
+						)
 					)
-					and 
+					and
   				(
 					  (tm.createdBy = prUserIDFilter and prUserIDFilter != 0 )
-						or 
+						or
 						(prUserIDFilter = 0)
 					)
-					and 
+					and
 					(
 						(braus.branchID = prBranchID and prBranchID != 0 )
-						or 
+						or
 						(prBranchID = 0)
 					)
-					and 
+					and
 					(
 						(tm.sourceWarehouseID = prWarehouseID and prWarehouseID != 0)
-						or 
+						or
 						(prWarehouseID = 0)
 					)
-					and 
+					and
 					(
 					(
-  							tm.transactionID = 19 and 
-								DATE_ADD(tm.createdOn, INTERVAL varZoneOraria HOUR)  between prStartOn and prEndOn and 								ws.aplicable = 1  
-							)
-							or 
-							(
-								tm.transactionID = 19 and 
-								ws.eliminable = 0 and 
-								DATE_ADD(tm.createdOn, INTERVAL varZoneOraria HOUR) between prStartOn and prEndOn  and 
-								DATE_ADD(tm.statusIDChangeOn, INTERVAL varZoneOraria HOUR) between prStartOn and prEndOn 
-							)
-							or 
-							(
-	  						tm.transactionID = 19 and 
-								ws.eliminable = 0 and 								
-								DATE_ADD(tm.createdOn, INTERVAL varZoneOraria HOUR) between prStartOn and prEndOn  and 
-								DATE_ADD(tm.statusIDChangeOn, INTERVAL varZoneOraria HOUR) > prEndOn 
-  						)
-							or 							
-							(
-								tm.transactionID = 19 and 
-								ws.eliminable = 0 and 
-								DATE_ADD(tm.createdOn, INTERVAL varZoneOraria HOUR) < prStartOn  and 
-								DATE_ADD(tm.statusIDChangeOn, INTERVAL varZoneOraria HOUR) between prStartOn and prEndOn 
-							)						
+  						tm.transactionID = 19 and
+							DATE_ADD(tm.createdOn, INTERVAL varZoneOraria HOUR)  between prStartOn and prEndOn and 				ws.aplicable = 1
+						)
+						or
+						(
+							tm.transactionID = 19 and
+							ws.eliminable = 0 and
+							DATE_ADD(tm.createdOn, INTERVAL varZoneOraria HOUR) between prStartOn and prEndOn  and
+							DATE_ADD(tm.statusIDChangeOn, INTERVAL varZoneOraria HOUR) between prStartOn and prEndOn
+						)
+						or
+						(
+	  					tm.transactionID = 19 and
+							ws.eliminable = 0 and
+							DATE_ADD(tm.createdOn, INTERVAL varZoneOraria HOUR) between prStartOn and prEndOn  and
+							DATE_ADD(tm.statusIDChangeOn, INTERVAL varZoneOraria HOUR) > prEndOn
+  					)
+						or
+						(
+							tm.transactionID = 19 and
+							ws.eliminable = 0 and
+							DATE_ADD(tm.createdOn, INTERVAL varZoneOraria HOUR) < prStartOn  and
+							DATE_ADD(tm.statusIDChangeOn, INTERVAL varZoneOraria HOUR) between prStartOn and prEndOn
+						)
 					)
-				order by 
-					tm.transactionMasterID asc 
-		) rx 
-	group by 
+				group by
+					usr.userID,
+					case
+						when comp.flavorID = 306 then
+							nat_emp.firstName
+						else
+							usr.nickname
+					end,
+					tm.transactionNumber,
+					tc.name,
+					tm.transactionOn,
+					case
+						when tmi.referenceClientIdentifier <> '' then
+							tmi.referenceClientIdentifier
+						else
+							cus.customerNumber
+					end,
+					case
+						when tmi.referenceClientName <> '' then
+							tmi.referenceClientName
+						else
+							concat(nat_cus.firstName,' ', nat_cus.lastName)
+					end,
+					case
+						when tmi.referenceClientName <> '' then
+							tmi.referenceClientName
+						else
+							nat.firstName
+					end,
+					ci.name,
+					tm.tax2,
+					CASE
+						WHEN ws.eliminable = 0 and tm.createdOn between prStartOn and concat(prEndOn) and tm.statusIDChangeOn between prStartOn and concat(prEndOn) THEN 'ANULADA'
+						WHEN ws.eliminable = 0 and tm.createdOn between prStartOn and concat(prEndOn) and tm.statusIDChangeOn > prEndOn THEN 'POST-ANULADA'
+						WHEN ws.eliminable = 0 and tm.createdOn < prStartOn and tm.statusIDChangeOn between prStartOn and concat(prEndOn) THEN 'DEVOLUCION'
+						ELSE ws.name
+					END,
+					cu.name,
+					icat.`name`,
+					CASE
+						WHEN ws.eliminable = 0 and tm.createdOn between prStartOn and concat(prEndOn) and tm.statusIDChangeOn between prStartOn and concat(prEndOn) THEN tmd.quantity * 0
+						WHEN ws.eliminable = 0 and tm.createdOn between prStartOn and concat(prEndOn) and tm.statusIDChangeOn > prEndOn THEN tmd.quantity * 1
+						WHEN ws.eliminable = 0 and tm.createdOn < prStartOn and tm.statusIDChangeOn between prStartOn and concat(prEndOn) THEN tmd.quantity * -1
+						ELSE tmd.quantity
+					END,
+					tmd.unitaryPrice,
+					case
+						when varCurrencyCompras = varCurrencyReporte then tmd.unitaryCost
+						when tm.exchangeRate > 1 then tm.exchangeRate * tmd.unitaryCost
+						else (1/tm.exchangeRate) * tmd.unitaryCost
+					end,
+					IFNULL(tmd.tax1,0),
+					IFNULL(tmd.amountCommision,0),
+					tm.exchangeRate,
+					tm.discount,
+					tm.transactionID,
+					tm.currencyID,
+					tmd.componentItemID
+		) rx
+	group by
 			rx.userID,
 			rx.nickname,
+			rx.currencyID,
 			rx.transactionNumber,
 			rx.tipo,
 			rx.transactionOn,
@@ -32192,8 +28417,14 @@ BEGIN
 			rx.firstName,
 			rx.currencyName,
 			rx.exchangeRate,
-			rx.discount,
-			rx.transactionID ;
+			rx.transactionID,
+			rx.receiptAmount,
+			rx.receiptAmountDol,
+			rx.receiptAmountCard,
+			rx.receiptAmountCardDol,
+			rx.receiptAmountBank,
+			rx.receiptAmountBankDol,
+			rx.receiptAmountPoint ;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -32211,35 +28442,35 @@ DELIMITER ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_sales_get_report_sales_summary_credit`(IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), IN `prUserID` INT, IN `prStartOn` DATETIME, IN `prEndOn` DATETIME, IN `prUserIDFilter` INT , IN prConceptFilter VARCHAR(150) ,IN `prBranchID` INT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Resumen de venta'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Resumen de venta'
 BEGIN
-	DECLARE varCurrencyCompras INT DEFAULT 0;	
+	DECLARE varCurrencyCompras INT DEFAULT 0;
 	DECLARE varCurrencyReporte INT DEFAULT 0;
 	DECLARE currencyIDNameCompra VARCHAR(250);
 	DECLARE currencyIDNameReporte VARCHAR(250);
   DECLARE exchangeRate_ DECIMAL(18,4) DEFAULT 0;
-  DECLARE currencyIDNameTarget VARCHAR(250);	
+  DECLARE currencyIDNameTarget VARCHAR(250);
   DECLARE currencyIDNameSource VARCHAR(250);
-  DECLARE convert_ VARCHAR(50);	 
-  
+  DECLARE convert_ VARCHAR(50);
+
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameCompra);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",currencyIDNameReporte);
-	SET varCurrencyCompras 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameCompra);		
-	SET varCurrencyReporte 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameReporte);		
+	SET varCurrencyCompras 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameCompra);
+	SET varCurrencyReporte 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameReporte);
   CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameSource);
   CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_EXTERNAL",currencyIDNameTarget);
-  CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_); 
-  CALL pr_core_get_parameter_value(prCompanyID, "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT", convert_);	
-  
+  CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_);
+  CALL pr_core_get_parameter_value(prCompanyID, "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT", convert_);
+
 	drop temporary table if exists tb_tmp_split;
 	create temporary table tb_tmp_split( val char(255) );
 	set @sql = concat("insert into tb_tmp_split (val) values ('", replace(prConceptFilter, ",", "'),('"),"');");
 	prepare stmt1 from @sql;
 	execute stmt1;
 
-	select 
+	select
 			rx.userID,
 			rx.nickname,
 			rx.transactionNumber,
@@ -32250,28 +28481,28 @@ BEGIN
 			rx.zone,
 			rx.statusName,
 			rx.firstName,
-			case 
-        when convert_ = 'None'  then 
+			case
+        when convert_ = 'None'  then
           rx.currencyName
-        else 
-          convert_ 
+        else
+          convert_
       end as currencyName,
 			rx.categoryName,
 			'' as categorySubName,
-      case 
-			when convert_ = 'Dolar' and rx.currencyName != 'Dolar'  then 
-				rx.receiptAmount * exchangeRate_ 
-			when convert_ = 'Cordoba' and rx.currencyName != 'Cordoba'  then 
-				rx.receiptAmount / exchangeRate_  
-			else 
+      case
+			when convert_ = 'Dolar' and rx.currencyName != 'Dolar'  then
+				rx.receiptAmount * exchangeRate_
+			when convert_ = 'Cordoba' and rx.currencyName != 'Cordoba'  then
+				rx.receiptAmount / exchangeRate_
+			else
 				rx.receiptAmount
 		end as receiptAmount,
 			sum((rx.unitaryCost * rx.quantity)) as cost,
 			sum((rx.unitaryPrice * rx.quantity)) as totalDocument,
-			sum((rx.unitaryPrice * rx.quantity) - (rx.unitaryCost * rx.quantity))    as utilidad		
+			sum((rx.unitaryPrice * rx.quantity) - (rx.unitaryCost * rx.quantity))    as utilidad
 	from
 		(
-				select 
+				select
 					usr.userID,
 					usr.nickname,
 					tm.transactionNumber,
@@ -32285,97 +28516,97 @@ BEGIN
 					cu.name AS currencyName,
 					icat.`name` as categoryName,
 					tmd.quantity,
-					tmin.receiptAmount, 
-					case 
-						when varCurrencyReporte = tm.currencyID then 
-							tmd.unitaryPrice 
-						when tm.exchangeRate > 1 then 
+					tmin.receiptAmount,
+					case
+						when varCurrencyReporte = tm.currencyID then
+							tmd.unitaryPrice
+						when tm.exchangeRate > 1 then
 							tm.exchangeRate * (tmd.unitaryPrice)
-						else 
+						else
 							(1/tm.exchangeRate) * (tmd.unitaryPrice)
 					end unitaryPrice,
-					case 
-						when varCurrencyCompras = varCurrencyReporte  then 				
+					case
+						when varCurrencyCompras = varCurrencyReporte  then
 							tmd.unitaryCost
-						when tm.exchangeRate > 1 then 
-							tm.exchangeRate *  tmd.unitaryCost														
-						else 								
-						  (1/tm.exchangeRate) *   tmd.unitaryCost							
-					end  unitaryCost 
-				from 
-					tb_transaction_master tm 
-					inner join tb_transaction_master_info  tmin on 
-						tmin.transactionMasterID = tm.transactionMasterID  
-					inner join tb_transaction_master_detail tmd on 
-						tm.companyID = tmd.companyID and 
-						tm.transactionID = tmd.transactionID and 
-						tm.transactionMasterID = tmd.transactionMasterID 
-					inner join tb_transaction_causal tc on 
-						tm.transactionCausalID = tc.transactionCausalID 
-					inner join tb_customer cus on 
-						tm.entityID = cus.entityID 
-					INNER JOIN tb_naturales nat ON 
-						nat.entityID = cus.entityID 
-					inner join tb_legal l on 
-						cus.entityID = l.entityID 
-					inner join tb_user usr on 
-						tm.createdBy = usr.userID 
-					inner join tb_branch braus on 
+						when tm.exchangeRate > 1 then
+							tm.exchangeRate *  tmd.unitaryCost
+						else
+						  (1/tm.exchangeRate) *   tmd.unitaryCost
+					end  unitaryCost
+				from
+					tb_transaction_master tm
+					inner join tb_transaction_master_info  tmin on
+						tmin.transactionMasterID = tm.transactionMasterID
+					inner join tb_transaction_master_detail tmd on
+						tm.companyID = tmd.companyID and
+						tm.transactionID = tmd.transactionID and
+						tm.transactionMasterID = tmd.transactionMasterID
+					inner join tb_transaction_causal tc on
+						tm.transactionCausalID = tc.transactionCausalID
+					inner join tb_customer cus on
+						tm.entityID = cus.entityID
+					INNER JOIN tb_naturales nat ON
+						nat.entityID = cus.entityID
+					inner join tb_legal l on
+						cus.entityID = l.entityID
+					inner join tb_user usr on
+						tm.createdBy = usr.userID
+					inner join tb_branch braus on
 						braus.branchID = usr.locationID
-					inner join tb_workflow_stage ws on  
-						tm.statusID = ws.workflowStageID 
-					inner join tb_transaction_master_info tmi on 
-						tm.companyID = tmi.companyID and 
-						tm.transactionID = tmi.transactionID and 
-						tm.transactionMasterID = tmi.transactionMasterID 
-					inner join tb_catalog_item ci on  
-						tmi.zoneID = ci.catalogItemID 
-					INNER JOIN tb_currency cu ON 
-						cu.currencyID = tm.currencyID 
-					inner join tb_item it on 
-						it.itemID = tmd.componentItemID 
-					inner join tb_item_category icat on 
-						icat.inventoryCategoryID = it.inventoryCategoryID 
-					inner join tb_company comp on 
-						tm.companyID = comp.companyID 
+					inner join tb_workflow_stage ws on
+						tm.statusID = ws.workflowStageID
+					inner join tb_transaction_master_info tmi on
+						tm.companyID = tmi.companyID and
+						tm.transactionID = tmi.transactionID and
+						tm.transactionMasterID = tmi.transactionMasterID
+					inner join tb_catalog_item ci on
+						tmi.zoneID = ci.catalogItemID
+					INNER JOIN tb_currency cu ON
+						cu.currencyID = tm.currencyID
+					inner join tb_item it on
+						it.itemID = tmd.componentItemID
+					inner join tb_item_category icat on
+						icat.inventoryCategoryID = it.inventoryCategoryID
+					inner join tb_company comp on
+						tm.companyID = comp.companyID
 				where
-					tm.companyID = prCompanyID and 
-					tm.createdOn between prStartOn and concat(prEndOn,' 23:59:59') and  
-					tc.transactionCausalID in (22,24)  and 
-					tm.isActive = 1 and 
-					tmd.isActive = 1 and 
-					ws.aplicable = 1 and 
+					tm.companyID = prCompanyID and
+					tm.createdOn between prStartOn and concat(prEndOn,' 23:59:59') and
+					tc.transactionCausalID in (22,24)  and
+					tm.isActive = 1 and
+					tmd.isActive = 1 and
+					ws.aplicable = 1 and
 					(
 							(
-								comp.flavorID != 326 
+								comp.flavorID != 326
 							)
-					)		and 
+					)		and
 					(
 					  (tm.createdBy = prUserIDFilter and prUserIDFilter != 0 )
-						or 
+						or
 						(prUserIDFilter = 0)
-					) 
-					and 
+					)
+					and
 					(
 						(braus.branchID = prBranchID and prBranchID != 0 )
-						or 
+						or
 						(prBranchID = 0)
 					)
-					and 
+					and
 					(
 						(prConceptFilter = '-1') or
 						(
-								prConceptFilter != '-1' and 
-								it.inventoryCategoryID in 
+								prConceptFilter != '-1' and
+								it.inventoryCategoryID in
 								(
-									select val  from tb_tmp_split 
+									select val  from tb_tmp_split
 								)
-						) 
+						)
 					)
-				order by 
-					tm.transactionMasterID asc 
-		) rx 
-	group by 
+				order by
+					tm.transactionMasterID asc
+		) rx
+	group by
 			rx.userID,
 			rx.nickname,
 			rx.transactionNumber,
@@ -32387,7 +28618,8 @@ BEGIN
 			rx.statusName,
 			rx.firstName,
 			rx.currencyName,
-			rx.receiptAmount ; 
+			rx.categoryName,
+			rx.receiptAmount ;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -32404,391 +28636,203 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_sales_get_report_sales_utility_summary`(IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), IN `prUserID` INT, IN `prStartOn` DATE, IN `prEndOn` DATE, IN prExpenditureClassification INT, IN prBranchID INT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Detalle de ventas'
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_sales_get_report_sales_utility_summary`(IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), IN `prUserID` INT, IN `prStartOn` DATE, IN `prEndOn` DATE, IN prExpenditureClassification INT, IN prBranchID INT, IN prWarehouseID INT)
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Detalle de ventas'
 BEGIN
 
 
-
-	DECLARE varCurrencyCompras INT DEFAULT 0;	
-
-	DECLARE varCurrencyReporte INT DEFAULT 0;	
-
-	
-
+	DECLARE varCurrencyCompras INT DEFAULT 0;
+	DECLARE varCurrencyReporte INT DEFAULT 0;
 	DECLARE currencyIDNameCompra VARCHAR(250);
-
-	DECLARE currencyIDNameReporte VARCHAR(250);	
-
-	
+	DECLARE currencyIDNameReporte VARCHAR(250);
 
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameCompra);
-
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",currencyIDNameReporte);
-
-	
-
-	SET varCurrencyCompras 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameCompra);		
-
-	SET varCurrencyReporte 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameReporte);		
-
-		
-
-	
-
-		
-
-	
+	SET varCurrencyCompras 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameCompra);
+	SET varCurrencyReporte 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameReporte);
 
 	create table tb_tmp_comision_gastos (
-
 		gastosName varchar(250),
-
-		amount decimal(19,2)		
-
+		amount decimal(19,2)
 	);
-
-	
-
-	
 
 	insert into tb_tmp_comision_gastos(gastosName,amount)
-
-	select 		
-
+	select
 		 ci.`name` as Tipo,
-
 		 tm.amount
-
-	from 
-
-		tb_transaction_master tm 
-
-		inner join tb_workflow_stage ws on 
-
-			ws.workflowStageID = tm.statusID 
-
-		inner join tb_public_catalog_detail ci on 
-
-			ci.publicCatalogDetailID = tm.priorityID 
-
-		inner join tb_public_catalog_detail ci2 on 
-
-			ci2.publicCatalogDetailID = tm.areaID 
-
+	from
+		tb_transaction_master tm
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_public_catalog_detail ci on
+			ci.publicCatalogDetailID = tm.priorityID
+		inner join tb_public_catalog_detail ci2 on
+			ci2.publicCatalogDetailID = tm.areaID
 	where
-
-		tm.transactionID = 38  and 
-
+		tm.transactionID = 38  and
 		(
-
 			(tm.branchID = prBranchID and prBranchID != 0)
-
-			or 
-
-			(prBranchID = 0 )			
-
-		) and 
-
-		tm.isActive = 1 and 
-
-		ws.aplicable = 1 and 
-
-		tm.transactionOn between prStartOn and prEndOn and 
-
+			or
+			(prBranchID = 0 )
+		) and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.transactionOn between prStartOn and prEndOn and
 		(
-
 			(
-
-				tm.classID = prExpenditureClassification and 
-
-				prExpenditureClassification != 0 
-
-			) OR 
-
+				tm.classID = prExpenditureClassification and
+				prExpenditureClassification != 0
+			) OR
 			(
-
 				prExpenditureClassification = 0
-
 			)
-
 		);
 
-	
-
-	
-
-	
-
 	create table tb_tmp_comision_venta_costo (
-
 		ventaName varchar(250),
-
 		amountVenta decimal(19,2),
-
 		amountCost decimal(19,2)
-
 	);
 
-	
+	INSERT INTO tb_tmp_comision_venta_costo (
+			ventaName,
+			amountVenta,
+			amountCost
+	)
+	SELECT
+			'venta',
+			-- Toma el valor resultante del CASE y si es 68 lo multiplica por -1
+			(
+					CASE
+							WHEN varCurrencyReporte = tm.currencyID THEN
+									tmd.unitaryPrice * tmd.quantity
+							WHEN tm.exchangeRate > 1 THEN
+									tm.exchangeRate * tmd.unitaryPrice * tmd.quantity
+							ELSE
+									(1 / tm.exchangeRate) * tmd.unitaryPrice * tmd.quantity
+					END
+			) * CASE WHEN ws.workflowStageID = 69 THEN -1 ELSE 1 END AS unitaryPrice,
 
-	
+			-- Toma el valor resultante del CASE y si es 68 lo multiplica por -1
+			(
+					CASE
+							WHEN varCurrencyCompras = varCurrencyReporte THEN
+									tmd.unitaryCost * tmd.quantity
+							WHEN tm.exchangeRate > 1 THEN
+									tm.exchangeRate * tmd.unitaryCost * tmd.quantity
+							ELSE
+									(1 / tm.exchangeRate) * tmd.unitaryCost * tmd.quantity
+					END
+			) * CASE WHEN ws.workflowStageID = 69 THEN -1 ELSE 1 END AS unitaryCost
+	FROM
+			tb_transaction_master tm
+			INNER JOIN tb_transaction_master_detail tmd ON
+					tm.companyID = tmd.companyID AND
+					tm.transactionID = tmd.transactionID AND
+					tm.transactionMasterID = tmd.transactionMasterID
+			INNER JOIN tb_transaction_causal tc ON
+					tm.transactionCausalID = tc.transactionCausalID
+			INNER JOIN tb_workflow_stage ws ON
+					tm.statusID = ws.workflowStageID
+			INNER JOIN tb_user usr ON
+					usr.userID = tm.createdBy
+			INNER JOIN tb_branch br ON
+					usr.locationID = br.branchID
+	WHERE
+			tm.transactionID in  (19,20) AND
+			(
+					(br.branchID = prBranchID AND prBranchID != 0)
+					OR (prBranchID = 0)
+			) AND
+			(
+					(tm.sourceWarehouseID = prWarehouseID AND prWarehouseID != 0)
+					OR (prWarehouseID = 0)
+			) AND
+			tm.companyID = prCompanyID AND
+			tm.createdOn BETWEEN prStartOn AND CONCAT(prEndOn, ' 23:59:59') AND
+			tm.isActive = 1 AND
+			tmd.isActive = 1 AND
+			ws.workflowStageID IN (
+					67 /* factura aplicada */ ,
+					69 /* factura de anulacion aplicada*/
+			);
 
-	insert into tb_tmp_comision_venta_costo(ventaName,amountVenta,amountCost)	
-
-	select 
-
-		'venta',		
-
-		
-
-		case 
-
-					when varCurrencyReporte = tm.currencyID then 
-
-						tmd.unitaryPrice  * tmd.quantity 
-
-					when tm.exchangeRate > 1 then 
-
-						tm.exchangeRate * (tmd.unitaryPrice) * tmd.quantity 
-
-					else 
-
-						(1/tm.exchangeRate) * (tmd.unitaryPrice) * tmd.quantity 
-
-		end unitaryPrice,
-
-					
-
-		case 
-
-					when varCurrencyCompras = varCurrencyReporte  then 				
-
-							tmd.unitaryCost * tmd.quantity
-
-					when tm.exchangeRate > 1 then 
-
-							tm.exchangeRate *  tmd.unitaryCost * tmd.quantity					
-
-					else 								
-
-						  (1/tm.exchangeRate) *   tmd.unitaryCost		* tmd.quantity				
-
-		end  unitaryCost 
-
-					
-
-					
-
-	from 
-
-		tb_transaction_master tm  					
-
-		inner join tb_transaction_master_detail tmd on 
-
-			tm.companyID = tmd.companyID and 
-
-			tm.transactionID = tmd.transactionID and 
-
-			tm.transactionMasterID = tmd.transactionMasterID 
-
-		inner join tb_transaction_causal tc on 
-
-			tm.transactionCausalID = tc.transactionCausalID 
-
-		inner join tb_workflow_stage ws on 
-
-			tm.statusID = ws.workflowStageID 
-
-		inner join tb_user usr on 
-
-			usr.userID = tm.createdBy 
-
-		inner join tb_branch br on 
-
-			usr.locationID = br.branchID 
-
-	where
-
-	  tm.transactionID = 19  and 
-
-		(
-
-			(br.branchID = prBranchID and prBranchID != 0)
-
-			or 
-
-			(prBranchID = 0 )			
-
-		) and 
-
-		tm.companyID = prCompanyID and 
-
-		tm.createdOn between prStartOn  and concat(prEndOn,' 23:59:59')   and 
-
-		tm.isActive = 1 and 
-
-		tmd.isActive = 1 and 
-
-		ws.aplicable = 1;
-
-
-
-	
 
 	create table tb_tmp_comision_report (
-
 	  orden varchar(50),
-
-		ventaName varchar(250),		
-
+		ventaName varchar(250),
 		amountVenta decimal(19,2),
-
 		amountCost decimal(19,2)
-
 	);
 
-	
-
-	
 
 	insert into tb_tmp_comision_report(orden,ventaName,amountVenta,amountCost)
-
-	select 
-
+	select
 		'001',
-
 		'01) Ventas',
-
 		0,
-
-		sum(c.amountVenta) as Venta 
-
-	from 
-
+		sum(c.amountVenta) as Venta
+	from
 		tb_tmp_comision_venta_costo c ;
 
-	
 
 	insert into tb_tmp_comision_report(orden,ventaName,amountVenta,amountCost)
-
-	select 
-
+	select
 		'002',
-
 		'02) Costo',
-
 		0,
-
-		sum(c.amountCost) as Venta 
-
-	from 
-
+		sum(c.amountCost) as Venta
+	from
 		tb_tmp_comision_venta_costo c ;
 
-		
-
-	insert into tb_tmp_comision_report(orden,ventaName,amountVenta,amountCost) values 
-
+	insert into tb_tmp_comision_report(orden,ventaName,amountVenta,amountCost) values
 	(
-
 		'003',
-
 		'03) Utilidad',
-
 		0,
-
 		(select x.amountCost from tb_tmp_comision_report x where x.orden = '001')
-
 		-
-
 		(select x.amountCost from tb_tmp_comision_report x where x.orden = '002')
-
 	) ;
 
-	
-
-		
 
 	insert into tb_tmp_comision_report(orden,ventaName,amountVenta,amountCost)
-
-	select 
-
+	select
 		'004',
-
 		'04) Gastos',
-
 		0,
-
-		sum(c.amount) as Venta 
-
-	from 
-
+		sum(c.amount) as Venta
+	from
 		tb_tmp_comision_gastos c ;
 
-		
-
-		
-
-	insert into tb_tmp_comision_report(orden,ventaName,amountVenta,amountCost) values 
-
+	insert into tb_tmp_comision_report(orden,ventaName,amountVenta,amountCost) values
 	(
-
 		'005',
-
 		'05) Utilidad Neta',
-
 		0,
-
 		(select x.amountCost from tb_tmp_comision_report x where x.orden = '001')
-
 		-
-
 		(select x.amountCost from tb_tmp_comision_report x where x.orden = '002')
-
 		-
-
 		(select x.amountCost from tb_tmp_comision_report x where x.orden = '004')
-
 	) ;
 
-	
-
-	
-
-	
-
-	select 
-
-		u.ventaName as Indicador , 
-
+	select
+		u.ventaName as Indicador ,
 		u.amountVenta as Valor ,
-
 		u.amountCost as Monto
+	from
+		tb_tmp_comision_report u
+	order by
+		u.orden;
 
-	from 
-
-		tb_tmp_comision_report u 
-
-	order by 
-
-		u.orden; 
-
-		
-
-		
 
 	drop table tb_tmp_comision_report;
-
 	drop table tb_tmp_comision_venta_costo;
-
 	drop table tb_tmp_comision_gastos;
-
 	drop table tb_tmp_comision_agente;
-
-	
 
 END ;;
 DELIMITER ;
@@ -32806,46 +28850,57 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=CURRENT_USER PROCEDURE `pr_sales_get_report_venta_de_producto`(IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), IN `prUserID` INT, IN `prStartOn` DATE, IN `prEndOn` DATE,IN prInventoryCategoryID INT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Detalle de ventas'
+CREATE DEFINER=CURRENT_USER PROCEDURE `pr_sales_get_report_venta_de_producto`(IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), IN `prUserID` INT, IN `prStartOn` DATE, IN `prEndOn` DATE,IN prInventoryCategoryID INT, IN prWarehouseID INT)
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Detalle de ventas'
 BEGIN
-	DECLARE varCurrencyCompras INT DEFAULT 0;	
-	DECLARE varCurrencyReporte INT DEFAULT 0;	
+	DECLARE varCurrencyCompras INT DEFAULT 0;
+	DECLARE varCurrencyReporte INT DEFAULT 0;
 	DECLARE currencyIDNameCompra VARCHAR(250);
-	DECLARE currencyIDNameReporte VARCHAR(250);	
+	DECLARE currencyIDNameReporte VARCHAR(250);
 
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameCompra);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",currencyIDNameReporte);
-	SET varCurrencyCompras 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameCompra);		
-	SET varCurrencyReporte 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameReporte);		
+	SET varCurrencyCompras 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameCompra);
+	SET varCurrencyReporte 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameReporte);
 
-	select 
+	select
 		rx.itemID,
 		rx.itemNumber,
 		rx.itemName,
 		ix.quantity as quantityInAllWarehouse,
-		if(fam.publicCatalogDetailID is null, famp.`name` , fam.`name` )  as family,		
-		GROUP_CONCAT(DISTINCT (CONCAT(nx.firstName," ",nx.lastName)) SEPARATOR ', <br/>') as provider,
-		sum(rx.quantity) as quantity,		
+		if(fam.publicCatalogDetailID is null, famp.`name` , fam.`name` )  as family,
+
+		(
+			select
+				GROUP_CONCAT(DISTINCT (CONCAT(nx.firstName," ",nx.lastName)) SEPARATOR ', <br/>')
+			from
+				tb_provider_item pix
+				inner join  tb_naturales nx ON
+					nx.entityID = pix.entityID
+			where
+				 pix.itemID = ix.itemID
+		) as provider,
+
+		sum(rx.quantity) as quantity,
 		sum((rx.unitaryCost * rx.quantity)) as cost,
 		sum((rx.unitaryPrice * rx.quantity)) as amount,
 		sum((rx.unitaryPrice * rx.quantity) - (rx.unitaryCost * rx.quantity))    as utilidad ,
-		ix.quantity + sum(rx.quantity)  as quantityInicial, 
+		ix.quantity + sum(rx.quantity)  as quantityInicial,
 		IFNULL(
 			round(
 				(
-					sum(rx.quantity) / 
+					sum(rx.quantity) /
 					(ix.quantity + sum(rx.quantity))
 				) * 100,
 				2
 			),
 			0
-		) as percentageSales	
-	from 
+		) as percentageSales
+	from
 		(
-				select 
+				select
 					usr.userID,
 					usr.nickname,
 					tm.transactionNumber,
@@ -32863,80 +28918,88 @@ BEGIN
 					tm.currencyID,
 					tm.exchangeRate,
 					tm.createdOn,
-					case 
-						when varCurrencyReporte = tm.currencyID then 
-							tmd.unitaryPrice 
-						when tm.exchangeRate > 1 then 
+					case
+						when varCurrencyReporte = tm.currencyID then
+							tmd.unitaryPrice
+						when tm.exchangeRate > 1 then
 							tm.exchangeRate * (tmd.unitaryPrice)
-						else 
+						else
 							(1/tm.exchangeRate) * (tmd.unitaryPrice)
 					end unitaryPrice,
-					case 
-						when varCurrencyCompras = varCurrencyReporte  then 				
+					case
+						when varCurrencyCompras = varCurrencyReporte  then
 							tmd.unitaryCost
-						when tm.exchangeRate > 1 then 
-							tm.exchangeRate *  tmd.unitaryCost														
-						else 								
-						  (1/tm.exchangeRate) *   tmd.unitaryCost							
+						when tm.exchangeRate > 1 then
+							tm.exchangeRate *  tmd.unitaryCost
+						else
+						  (1/tm.exchangeRate) *   tmd.unitaryCost
 					end  unitaryCost ,
 					IFNULL(tmd.tax1,0) as  iva ,
 					IFNULL(amountCommision,0) as amountCommision
-				from 
-					tb_transaction_master tm 
-					inner join tb_transaction_master_detail tmd on 
-						tm.companyID = tmd.companyID and 
-						tm.transactionID = tmd.transactionID and 
-						tm.transactionMasterID = tmd.transactionMasterID 
-					inner join tb_transaction_causal tc on 
-						tm.transactionCausalID = tc.transactionCausalID 
-					inner join tb_customer cus on 
-						tm.entityID = cus.entityID 
-					inner join tb_legal l on 
-						cus.entityID = l.entityID 
-					inner join tb_user usr on 
-						tm.createdBy = usr.userID 
-					inner join tb_workflow_stage ws on 
-						tm.statusID = ws.workflowStageID 
-					inner join tb_transaction_master_info tmi on 
-						tm.companyID = tmi.companyID and 
-						tm.transactionID = tmi.transactionID and 
-						tm.transactionMasterID = tmi.transactionMasterID 
-					inner join tb_catalog_item ci on 
-						tmi.zoneID = ci.catalogItemID 
-					inner join tb_item i on 
-						tmd.componentItemID = i.itemID 
-					inner join tb_item_category cat on 
-						cat.inventoryCategoryID = i.inventoryCategoryID 
-					left join tb_naturales nat_emp on 
-						nat_emp.entityID = tm.entityIDSecondary 
+				from
+					tb_transaction_master tm
+					inner join tb_transaction_master_detail tmd on
+						tm.companyID = tmd.companyID and
+						tm.transactionID = tmd.transactionID and
+						tm.transactionMasterID = tmd.transactionMasterID
+					inner join tb_transaction_causal tc on
+						tm.transactionCausalID = tc.transactionCausalID
+					inner join tb_customer cus on
+						tm.entityID = cus.entityID
+					inner join tb_legal l on
+						cus.entityID = l.entityID
+					inner join tb_user usr on
+						tm.createdBy = usr.userID
+					inner join tb_workflow_stage ws on
+						tm.statusID = ws.workflowStageID
+					inner join tb_transaction_master_info tmi on
+						tm.companyID = tmi.companyID and
+						tm.transactionID = tmi.transactionID and
+						tm.transactionMasterID = tmi.transactionMasterID
+					inner join tb_catalog_item ci on
+						tmi.zoneID = ci.catalogItemID
+					inner join tb_item i on
+						tmd.componentItemID = i.itemID
+					inner join tb_item_category cat on
+						cat.inventoryCategoryID = i.inventoryCategoryID
+					left join tb_naturales nat_emp on
+						nat_emp.entityID = tm.entityIDSecondary
 				where
-					tm.companyID = prCompanyID and 
-					tm.createdOn between prStartOn  and concat(prEndOn,' 23:59:59')   and 
-					tm.isActive = 1 and 
-					tmd.isActive = 1 and 
-					ws.aplicable = 1 and 
+					tm.companyID = prCompanyID and
+					tm.transactionOn between prStartOn  and prEndOn   and
+					tm.isActive = 1 and
+					tmd.isActive = 1 and
+					tm.transactionID in (19 /*FACTURA*/) and
+					ws.aplicable = 1 and
+					ws.workflowStageID in (67 /*APLICADA*/) and
 					(
-						prInventoryCategoryID = 0 
-						or 
+						prInventoryCategoryID = 0
+						or
 						(prInventoryCategoryID != 0 and i.inventoryCategoryID = prInventoryCategoryID )
+					) and
+					(
+						 ( tm.sourceWarehouseID = prWarehouseID and prWarehouseID != 0 )
+						 or
+						 (prWarehouseID = 0 )
 					)
-				order by 
-					tm.transactionMasterID asc, tmd.transactionMasterDetailID asc
+				order by
+					tm.transactionMasterID asc,
+					tmd.transactionMasterDetailID asc
 		) rx
-		inner join  tb_item ix on 
-			ix.itemID = rx.itemID  
-		left join tb_public_catalog_detail fam on 
-			fam.publicCatalogDetailID = ix.familyID 
-		left join tb_catalog_item famp on 
-			famp.catalogItemID = ix.familyID 
-		left join tb_provider_item pix ON pix.itemID = ix.itemID
-		LEFT JOIN tb_naturales nx ON nx.entityID = pix.entityID
-	group by 
-		rx.itemID, 
+		inner join  tb_item ix on
+			ix.itemID = rx.itemID
+		left join tb_public_catalog_detail fam on
+			fam.publicCatalogDetailID = ix.familyID
+		left join tb_catalog_item famp on
+			famp.catalogItemID = ix.familyID
+	group by
+		rx.itemID,
 		rx.itemNumber,
 		rx.itemName,
 		ix.quantity ,
-		fam.`name` ; 
+		fam.`name` ;
+
+
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -33332,10 +29395,12 @@ DELIMITER ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_transaction_revert`(IN `prCompanyID` INT, IN `prTransactionIDOriginal` INT, IN `prTransactionMasterIDOriginal` BIGINT, IN `prTransactionIDRevert` INT, IN `prTransactionMasterIDRevert` BIGINT)
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Procedimiento que se utiliza para revertir una transaccion'
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Procedimiento que se utiliza para revertir una transaccion'
 BEGIN
+
+
 
 	DECLARE transactionNumber VARCHAR(50) DEFAULT '';
 	DECLARE transactionNumberOriginal VARCHAR(50) DEFAULT '';
@@ -33349,22 +29414,25 @@ BEGIN
 	DECLARE prNewPoints INT DEFAULT 0;
 	DECLARE prTransPoints INT DEFAULT 0;
 
+  SET SESSION sql_mode = REPLACE(@@SESSION.sql_mode, 'NO_ZERO_DATE', '');
+  SET SESSION sql_mode = REPLACE(@@SESSION.sql_mode, 'NO_ZERO_IN_DATE', '');
+
 	SET transactionNumberOriginal = (
-			SELECT tm.transactionNumber 
-			FROM tb_transaction_master tm 
-			where 
-				tm.companyID = prCompanyID and 
-				tm.transactionID = prTransactionIDOriginal 
+			SELECT tm.transactionNumber
+			FROM tb_transaction_master tm
+			where
+				tm.companyID = prCompanyID and
+				tm.transactionID = prTransactionIDOriginal
 				and tm.transactionMasterID = prTransactionMasterIDOriginal limit 1);
 
 	SET branchID = (
-		SELECT tm.branchID 
-		FROM tb_transaction_master tm 
-		where 
-			tm.companyID = prCompanyID and 
-			tm.transactionID = prTransactionIDOriginal and 
+		SELECT tm.branchID
+		FROM tb_transaction_master tm
+		where
+			tm.companyID = prCompanyID and
+			tm.transactionID = prTransactionIDOriginal and
 			tm.transactionMasterID = prTransactionMasterIDOriginal limit 1);
-			
+
 	SET transactionInfoNumberOriginal = COALESCE((
 		SELECT CAST(tmi.transactionMasterInfoID AS UNSIGNED)
 		FROM tb_transaction_master_info tmi
@@ -33372,36 +29440,36 @@ BEGIN
 		LIMIT 1
 		), 0);
 
-	CALL pr_core_get_parameter_value (prCompanyID,'INVOICE_BILLING_ANULADAS',statusIDTransactionAnulada);	
-	CALL pr_core_get_workflow_stage_init (prCompanyID,"tb_transaction_master_billing_revertion","statusID",statusIDTransactionInit );		
-	CALL pr_core_get_next_number(prCompanyID,'tb_transaction_master_billing_revertion',branchID,0,transactionNumber);							 	
+	CALL pr_core_get_parameter_value (prCompanyID,'INVOICE_BILLING_ANULADAS',statusIDTransactionAnulada);
+	CALL pr_core_get_workflow_stage_init (prCompanyID,"tb_transaction_master_billing_revertion","statusID",statusIDTransactionInit );
+	CALL pr_core_get_next_number(prCompanyID,'tb_transaction_master_billing_revertion',branchID,0,transactionNumber);
 
-	INSERT INTO tb_transaction_master (	
+	INSERT INTO tb_transaction_master (
 		companyID,transactionID,transactionNumber,branchID,transactionCausalID,entityID,
 		transactionOn,statusIDChangeOn,componentID,note,sign,currencyID,currencyID2,
 		exchangeRate,reference1,reference2,reference3,reference4,statusID,amount,
 		isApplied,journalEntryID,classID,areaID,priorityID,sourceWarehouseID,
 		targetWarehouseID,createdBy,createdAt,createdOn,createdIn,isActive,
-		discount,subAmount,tax1,tax2,tax3,tax4 , entityIDSecondary, 
-		transactionOn2,descriptionReference,isTemplate,periodPay, nextVisit,numberPhone,notificationID,printerQuantity,dayExcluded 		
-	)	
-	select 
+		discount,subAmount,tax1,tax2,tax3,tax4 , entityIDSecondary,
+		transactionOn2,descriptionReference,isTemplate,periodPay, nextVisit,numberPhone,notificationID,printerQuantity,dayExcluded
+	)
+	select
 		tm.companyID,prTransactionIDRevert,transactionNumber,tm.branchID,tm.transactionCausalID,tm.entityID,
 		CURRENT_DATE(),NOW(),tm.componentID,tm.note,(tm.sign * -1),tm.currencyID,tm.currencyID2,
 		tm.exchangeRate,prTransactionIDOriginal,prTransactionMasterIDOriginal,transactionNumberOriginal,tm.reference4,statusIDTransactionInit,tm.amount,
 		1,0,tm.classID,tm.areaID,tm.priorityID,tm.targetWarehouseID,tm.sourceWarehouseID,
-		tm.createdBy,tm.createdAt,tm.createdOn,tm.createdIn,tm.isActive,
+		tm.createdBy,tm.createdAt,NOW(),tm.createdIn,tm.isActive,
 		tm.discount,tm.subAmount,tm.tax1,tm.tax2,tm.tax3,tm.tax4 , tm.entityIDSecondary   ,
-		tm.transactionOn2,tm.descriptionReference,tm.isTemplate,tm.periodPay, tm.nextVisit,tm.numberPhone,tm.notificationID,tm.printerQuantity,tm.dayExcluded 		
-	from 
+		tm.transactionOn2,tm.descriptionReference,tm.isTemplate,tm.periodPay, tm.nextVisit,tm.numberPhone,tm.notificationID,tm.printerQuantity,tm.dayExcluded
+	from
 		tb_transaction_master tm
 	where
-		tm.companyID = prCompanyID and 
-		tm.transactionID = prTransactionIDOriginal and 
+		tm.companyID = prCompanyID and
+		tm.transactionID = prTransactionIDOriginal and
 		tm.transactionMasterID = prTransactionMasterIDOriginal;
-	
 
-	SET prTransactionMasterIDRevert = LAST_INSERT_ID();	
+
+	SET prTransactionMasterIDRevert = LAST_INSERT_ID();
 
 	INSERT INTO tb_transaction_master_detail (
 			companyID,transactionID,transactionMasterID,componentID,componentItemID,
@@ -33411,9 +29479,9 @@ BEGIN
 			inventoryWarehouseSourceID,inventoryWarehouseTargetID,tax1,tax2,tax3,tax4,
 			reference4,reference5,reference6,reference7,
 			descriptionReference,exchangeRateReference,lote,itemFormulatedApplied,typePriceID,skuCatalogItemID,
-			skuQuantity,skuQuantityBySku,skuFormatoDescription,itemNameLog,amountCommision,itemNameDescriptionLog 
+			skuQuantity,skuQuantityBySku,skuFormatoDescription,itemNameLog,amountCommision,itemNameDescriptionLog
 	)
-	SELECT 
+	SELECT
 			tm.companyID,prTransactionIDRevert,prTransactionMasterIDRevert,tm.componentID,tm.componentItemID,
 			tm.promotionID,tm.amount,tm.cost,tm.quantity,tm.discount,tm.unitaryAmount,tm.unitaryCost,tm.unitaryPrice,tm.reference1,
 			tm.reference2,tm.reference3,tm.catalogStatusID,tm.inventoryStatusID,tm.isActive,tm.quantityStock,
@@ -33421,73 +29489,73 @@ BEGIN
 			tm.inventoryWarehouseTargetID,tm.inventoryWarehouseSourceID,tm.tax1,tm.tax2,tm.tax3,tm.tax4,
 			tm.reference4,tm.reference5,tm.reference6,tm.reference7,
 			tm.descriptionReference,tm.exchangeRateReference,tm.lote,tm.itemFormulatedApplied,tm.typePriceID,tm.skuCatalogItemID,
-			tm.skuQuantity,tm.skuQuantityBySku,tm.skuFormatoDescription,tm.itemNameLog,tm.amountCommision,tm.itemNameDescriptionLog 
-	FROM 
-		tb_transaction_master_detail tm 
-	WHERE 
+			tm.skuQuantity,tm.skuQuantityBySku,tm.skuFormatoDescription,tm.itemNameLog,tm.amountCommision,tm.itemNameDescriptionLog
+	FROM
+		tb_transaction_master_detail tm
+	WHERE
 		tm.companyID = prCompanyID and
-		tm.transactionID = prTransactionIDOriginal and 
-		tm.transactionMasterID = prTransactionMasterIDOriginal; 
-	
-	
+		tm.transactionID = prTransactionIDOriginal and
+		tm.transactionMasterID = prTransactionMasterIDOriginal;
+
+
 	INSERT INTO tb_transaction_master_concept (
 		companyID,transactionID,transactionMasterID,
 		componentID,componentItemID,conceptID,value,currencyID,exchangeRate )
-	select 
+	select
 		tm.companyID,prTransactionIDRevert,prTransactionMasterIDRevert,
-		tm.componentID,tm.componentItemID,tm.conceptID,tm.value,tm.currencyID,tm.exchangeRate 
-	from 
+		tm.componentID,tm.componentItemID,tm.conceptID,tm.value,tm.currencyID,tm.exchangeRate
+	from
 		tb_transaction_master_concept tm
-	WHERE 
+	WHERE
 		tm.companyID = prCompanyID and
-		tm.transactionID = prTransactionIDOriginal and 
-		tm.transactionMasterID = prTransactionMasterIDOriginal; 	
-  
-  
+		tm.transactionID = prTransactionIDOriginal and
+		tm.transactionMasterID = prTransactionMasterIDOriginal;
+
+
 	IF transactionInfoNumberOriginal > 0
-	THEN 
-  
+	THEN
+
 		/* Crear transaction_master_info_reverse	al anualr una factura*/
-		INSERT INTO tb_transaction_master_info ( companyID, transactionID, transactionMasterID, zoneID, routeID, mesaID, referenceClientName, 
-		referenceClientIdentifier, changeAmount, receiptAmountPoint, receiptAmount, receiptAmountDol, reference1, reference2, receiptAmountBank, receiptAmountBankID, 
-		receiptAmountBankReference, receiptAmountBankDol, receiptAmountBankDolID, receiptAmountBankDolReference, receiptAmountCard, receiptAmountCardBankID, 
+		INSERT INTO tb_transaction_master_info ( companyID, transactionID, transactionMasterID, zoneID, routeID, mesaID, referenceClientName,
+		referenceClientIdentifier, changeAmount, receiptAmountPoint, receiptAmount, receiptAmountDol, reference1, reference2, receiptAmountBank, receiptAmountBankID,
+		receiptAmountBankReference, receiptAmountBankDol, receiptAmountBankDolID, receiptAmountBankDolReference, receiptAmountCard, receiptAmountCardBankID,
 		receiptAmountCardBankReference, receiptAmountCardDol, receiptAmountCardBankDolID, receiptAmountCardBankDolReference)
-		SELECT tmi.companyID, prTransactionIDRevert, prTransactionMasterIDRevert, tmi.zoneID, tmi.routeID, tmi.mesaID, tmi.referenceClientName, 
-		tmi.referenceClientIdentifier, tmi.changeAmount, tmi.receiptAmountPoint, tmi.receiptAmount, tmi.receiptAmountDol, tmi.reference1, tmi.reference2, tmi.receiptAmountBank, 
-		tmi.receiptAmountBankID, tmi.receiptAmountBankReference, tmi.receiptAmountBankDol, tmi.receiptAmountBankDolID, tmi.receiptAmountBankDolReference, tmi.receiptAmountCard, tmi.receiptAmountCardBankID, 
-		tmi.receiptAmountCardBankReference, tmi.receiptAmountCardDol, tmi.receiptAmountCardBankDolID, tmi.receiptAmountCardBankDolReference 
+		SELECT tmi.companyID, prTransactionIDRevert, prTransactionMasterIDRevert, tmi.zoneID, tmi.routeID, tmi.mesaID, tmi.referenceClientName,
+		tmi.referenceClientIdentifier, tmi.changeAmount, tmi.receiptAmountPoint, tmi.receiptAmount, tmi.receiptAmountDol, tmi.reference1, tmi.reference2, tmi.receiptAmountBank,
+		tmi.receiptAmountBankID, tmi.receiptAmountBankReference, tmi.receiptAmountBankDol, tmi.receiptAmountBankDolID, tmi.receiptAmountBankDolReference, tmi.receiptAmountCard, tmi.receiptAmountCardBankID,
+		tmi.receiptAmountCardBankReference, tmi.receiptAmountCardDol, tmi.receiptAmountCardBankDolID, tmi.receiptAmountCardBankDolReference
 		FROM tb_transaction_master_info tmi
 		WHERE tmi.transactionMasterInfoID = transactionInfoNumberOriginal limit 1;
-    
-    
+
+
 		/*Se hace la reversion de puntos al anular una factura*/
-		SET prEntityID = (SELECT tm.entityID 
-		FROM tb_transaction_master tm 
+		SET prEntityID = (SELECT tm.entityID
+		FROM tb_transaction_master tm
 		where tm.companyID = prCompanyID and tm.transactionMasterID = prTransactionMasterIDOriginal limit 1);
-        
-		
-		SET prTransPoints = (SELECT 
+
+
+		SET prTransPoints = (SELECT
 		 tmi.receiptAmountPoint
 		FROM tb_transaction_master_info tmi
 		WHERE tmi.transactionMasterID = prTransactionMasterIDOriginal limit 1);
-    
+
 		SET prOldPoints = (SELECT c.balancePoint FROM tb_customer c WHERE c.entityID = prEntityID);
 		SET prNewPoints = prOldPoints+prTransPoints;
-    
-		UPDATE tb_customer SET balancePoint = prNewPoints WHERE entityID = prEntityID;  
-    
+
+		UPDATE tb_customer SET balancePoint = prNewPoints WHERE entityID = prEntityID;
+
 	END IF;
 
 	CALL pr_inventory_calculate_kardex_new_input (prCompanyID,prTransactionIDRevert,prTransactionMasterIDRevert);
 
-	UPDATE tb_transaction_master set 
-		statusID = statusIDTransactionAnulada 
-	where 
-			companyID = prCompanyID and 
-			transactionID = prTransactionIDOriginal and 
+	UPDATE tb_transaction_master set
+		statusID = statusIDTransactionAnulada
+	where
+			companyID = prCompanyID and
+			transactionID = prTransactionIDOriginal and
 			transactionMasterID = prTransactionMasterIDOriginal;
-      
-END;;
+
+END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
 /*!50003 SET character_set_client  = @saved_cs_client */ ;
@@ -34451,45 +30519,47 @@ DELIMITER ;
 /*!50003 SET character_set_results = utf8mb4 */ ;
 /*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
 DELIMITER ;;
-CREATE DEFINER=CURRENT_USER PROCEDURE `pr_sales_get_report_sales_by_payment`(IN `prCompanyID` INT, 	IN `prUserID` INT, IN `prTokenID` VARCHAR(50) , IN `prDateTimeStart` VARCHAR(50),   IN `prDateTimeFinish` VARCHAR(50) )
-    MODIFIES SQL DATA
-    SQL SECURITY INVOKER
-    COMMENT 'Detalle de ventas por metodo de pago'
+CREATE DEFINER=CURRENT_USER PROCEDURE `pr_sales_get_report_sales_by_payment`(IN `prCompanyID` INT, 	IN `prUserID` INT, IN `prTokenID` VARCHAR(50) , IN `prDateTimeStart` VARCHAR(50),   IN `prDateTimeFinish` VARCHAR(50))
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Detalle de ventas por metodo de pago'
 BEGIN
 
 	DECLARE vStart DATETIME;
 	DECLARE vEnd DATETIME;
 	DECLARE currencyIDNameCompra VARCHAR(250);
-	DECLARE currencyIDNameReporte VARCHAR(250);	
-	DECLARE currencyIDNameTarget VARCHAR(250);	
+	DECLARE currencyIDNameReporte VARCHAR(250);
+	DECLARE currencyIDNameTarget VARCHAR(250);
 	DECLARE currencyIDNameSource VARCHAR(250);
 	DECLARE exchangeRate_ DECIMAL(18,4) DEFAULT 0;
-	DECLARE convert_ VARCHAR(50);	
+	DECLARE convert_ VARCHAR(50);
 	DECLARE prFlavorID INT DEFAULT 0;
-	
- 
+
+
 
 	SET vStart = STR_TO_DATE(prDateTimeStart, '%Y-%m-%d %H:%i:%s');
 	SET vEnd   = STR_TO_DATE(prDateTimeFinish, '%Y-%m-%d %H:%i:%s');
-	
+
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameCompra);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",currencyIDNameReporte);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameSource);
 	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_EXTERNAL",currencyIDNameTarget);
-	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_); 
+	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_);
 	CALL pr_core_get_parameter_value(prCompanyID, "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT", convert_);
 	SET prFlavorID 								= (SELECT flavorID FROM tb_company c where c.companyID = prCompanyID);
 
 
 
-	SELECT 
-			COALESCE(b.name, 
-					CASE 
+	SELECT
+			COALESCE(
+				  b.name,
+					CASE
 							WHEN tipo = 'EfectivoCordoba' THEN 'EFECTIVO CORDOBA'
 							WHEN tipo = 'EfectivoDolar'   THEN 'EFECTIVO DOLAR'
 							WHEN tipo = 'Puntos'          THEN 'PUNTOS'
 					END
 			) AS Banco,
+
 
 			ROUND(SUM(CASE WHEN tipo = 'TransferenciaCordoba' THEN monto ELSE 0 END),2) AS `Transferencia Cordoba`,
 			ROUND(SUM(CASE WHEN tipo = 'TransferenciaDolar'   THEN monto ELSE 0 END),2) AS `Transferencia Dólar`,
@@ -34503,58 +30573,2183 @@ BEGIN
 			ROUND(SUM(CASE WHEN moneda = 'Cordoba' THEN monto ELSE 0 END),2) AS `Total Cordoba`,
 			ROUND(SUM(CASE WHEN moneda = 'Dolar'   THEN monto ELSE 0 END),2) AS `Total Dólar`
 
-	FROM (
-			-- Normalizamos todos los pagos
-			SELECT tmi.transactionMasterID, CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, tm.currencyID, exchangeRate_, tmi.receiptAmount, tmi.receiptAmountDol,  'Amount'), DECIMAL(10,2))  AS monto, 'EfectivoCordoba' AS tipo, 'Cordoba' AS moneda, NULL AS bankID
-			FROM tb_transaction_master_info tmi
-			INNER JOIN tb_transaction_master tm
-			ON tm.transactionMasterID = tmi.transactionMasterID
-			UNION ALL
-			SELECT tmi.transactionMasterID, CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, tm.currencyID, exchangeRate_, tmi.receiptAmount, tmi.receiptAmountDol,  'AmountExt'), DECIMAL(10,2))  AS monto,    'EfectivoDolar',   'Dolar',   NULL AS bankID
-			FROM tb_transaction_master_info tmi
-			INNER JOIN tb_transaction_master tm
-			ON tm.transactionMasterID = tmi.transactionMasterID
-			UNION ALL
-			SELECT tmi.transactionMasterID, CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, tm.currencyID, exchangeRate_, tmi.receiptAmountCard, tmi.receiptAmountCardDol,  'Amount'), DECIMAL(10,2))  AS monto,   'TarjetaCordoba',  'Cordoba', tmi.receiptAmountCardBankID
-			FROM tb_transaction_master_info tmi
-			INNER JOIN tb_transaction_master tm
-			ON tm.transactionMasterID = tmi.transactionMasterID
-			UNION ALL
-			SELECT tmi.transactionMasterID, CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, tm.currencyID, exchangeRate_, tmi.receiptAmountCard, tmi.receiptAmountCardDol,  'AmountExt'), DECIMAL(10,2))  AS monto, 'TarjetaDolar',    'Dolar',   tmi.receiptAmountCardBankDolID
-			FROM tb_transaction_master_info tmi
-			INNER JOIN tb_transaction_master tm
-			ON tm.transactionMasterID = tmi.transactionMasterID
-			UNION ALL
-			SELECT tmi.transactionMasterID, CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, tm.currencyID, exchangeRate_, tmi.receiptAmountBank, tmi.receiptAmountBankDol,  'Amount'), DECIMAL(10,2))  AS monto,   'TransferenciaCordoba','Cordoba', tmi.receiptAmountBankID
-			FROM tb_transaction_master_info tmi
-			INNER JOIN tb_transaction_master tm
-			ON tm.transactionMasterID = tmi.transactionMasterID
-			UNION ALL
-			SELECT tmi.transactionMasterID, CONVERT(fn_translate_transaction_master_info_amounts( prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra, currencyIDNameReporte, convert_, tm.currencyID, exchangeRate_, tmi.receiptAmountBank, tmi.receiptAmountBankDol,  'AmountExt'), DECIMAL(10,2))  AS monto,'TransferenciaDolar', 'Dolar',   tmi.receiptAmountBankDolID
-			FROM tb_transaction_master_info tmi
-			INNER JOIN tb_transaction_master tm
-			ON tm.transactionMasterID = tmi.transactionMasterID
-			UNION ALL
-			SELECT tmi.transactionMasterID, tmi.receiptAmountPoint, 'Puntos', 'Cordoba', NULL
-			FROM tb_transaction_master_info tmi
-			INNER JOIN tb_transaction_master tm
-			ON tm.transactionMasterID = tmi.transactionMasterID
-	) pagos
-	INNER JOIN tb_transaction_master tm 
-			ON tm.transactionMasterID = pagos.transactionMasterID
-	LEFT JOIN tb_bank b 
-			ON b.bankID = pagos.bankID
+	FROM
+		(
+				-- Normalizar monto recibido
+				SELECT
+					tmi.transactionMasterID,
+					CONVERT(
+						fn_translate_transaction_master_info_amounts(
+							prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra,
+							currencyIDNameReporte, convert_, tm.currencyID, exchangeRate_, tmi.receiptAmount,
+							tmi.receiptAmountDol,  'Amount'
+						), DECIMAL(10,2)
+					)  AS monto,
+					'EfectivoCordoba' AS tipo,
+					'Cordoba' AS moneda,
+					NULL AS bankID
+				FROM
+					tb_transaction_master_info tmi
+					INNER JOIN tb_transaction_master tm
+						ON tm.transactionMasterID = tmi.transactionMasterID
+				WHERE
+					tm.isActive = 1 and
+					tm.transactionCausalID IN (21,23) /*contado*/ and
+					tm.statusID = 67 /*aplicada*/
 
-	WHERE tm.companyID = prCompanyID and tm.isApplied = 1 
-		AND tm.isActive = 1 
+				UNION ALL
+
+				-- Normalizar monto recibido en moneda extranjera
+				SELECT
+					tmi.transactionMasterID,
+					CONVERT(
+						fn_translate_transaction_master_info_amounts(
+							prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra,
+							currencyIDNameReporte, convert_, tm.currencyID,
+							exchangeRate_, tmi.receiptAmount, tmi.receiptAmountDol,  'AmountExt'
+						), DECIMAL(10,2)
+					)  AS monto,
+					'EfectivoDolar',
+					'Dolar',
+					NULL AS bankID
+				FROM
+					tb_transaction_master_info tmi
+					INNER JOIN tb_transaction_master tm
+					ON tm.transactionMasterID = tmi.transactionMasterID
+				WHERE
+				  tm.isActive = 1 and
+					tm.transactionCausalID IN (21,23) /*contado*/ and
+					tm.statusID = 67 /*aplicada*/
+
+				UNION ALL
+
+				-- Normalizar monto recibido en tarjeta Cordoba
+				SELECT
+					tmi.transactionMasterID,
+					CONVERT(
+						fn_translate_transaction_master_info_amounts(
+							prCompanyID, prFlavorID, tmi.transactionID,
+							currencyIDNameCompra, currencyIDNameReporte,
+							convert_, tm.currencyID, exchangeRate_,
+							tmi.receiptAmountCard, tmi.receiptAmountCardDol,  'Amount'
+						), DECIMAL(10,2)
+					)  AS monto,
+					'TarjetaCordoba',  'Cordoba',
+					case
+						when tm.currencyID = 1 /*cordoba*/ then
+							tmi.receiptAmountCardBankID
+						when tm.currencyID = 2 /*dolares*/ then
+							tmi.receiptAmountCardBankDolID
+					end as bankID
+				FROM
+					tb_transaction_master_info tmi
+					INNER JOIN tb_transaction_master tm
+						ON tm.transactionMasterID = tmi.transactionMasterID
+				WHERE
+					tm.isActive = 1 and
+					tm.transactionCausalID IN (21,23) /*contado*/ and
+					tm.statusID = 67 /*aplicada*/
+
+				UNION ALL
+
+				-- Normalizar monto recibido en tarjeta Dolares
+				SELECT
+					tmi.transactionMasterID,
+					CONVERT(
+						fn_translate_transaction_master_info_amounts(
+							prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra,
+							currencyIDNameReporte, convert_, tm.currencyID, exchangeRate_,
+							tmi.receiptAmountCard, tmi.receiptAmountCardDol,  'AmountExt'
+						), DECIMAL(10,2)
+					)  AS monto,
+					'TarjetaDolar',    'Dolar',
+					case
+						when tm.currencyID = 1 /*cordoba*/ then
+							tmi.receiptAmountCardBankDolID
+						when tm.currencyID = 2 /*dolares*/ then
+							tmi.receiptAmountCardBankID
+					end as bankID
+				FROM
+					tb_transaction_master_info tmi
+					INNER JOIN tb_transaction_master tm
+						ON tm.transactionMasterID = tmi.transactionMasterID
+				WHERE
+					tm.isActive = 1 and
+					tm.transactionCausalID IN (21,23) /*contado*/ and
+					tm.statusID = 67 /*aplicada*/
+
+
+				UNION ALL
+
+				-- Normalizar monto recibido en transferencia Cordoba
+				SELECT
+					tmi.transactionMasterID,
+					CONVERT(
+						fn_translate_transaction_master_info_amounts(
+							prCompanyID, prFlavorID,
+							tmi.transactionID, currencyIDNameCompra,
+							currencyIDNameReporte, convert_,
+							tm.currencyID, exchangeRate_, tmi.receiptAmountBank, tmi.receiptAmountBankDol,  'Amount'
+						), DECIMAL(10,2)
+					)  AS monto,
+					'TransferenciaCordoba',
+					'Cordoba',
+
+					case
+						when tm.currencyID = 1 /*cordoba*/ then
+							tmi.receiptAmountBankID
+						when tm.currencyID = 2 /*dolares*/ then
+							tmi.receiptAmountBankDolID
+					end as bankID
+
+				FROM
+					tb_transaction_master_info tmi
+					INNER JOIN tb_transaction_master tm
+						ON tm.transactionMasterID = tmi.transactionMasterID
+				WHERE
+					tm.isActive = 1 and
+					tm.transactionCausalID IN (21,23) /*contado*/ and
+					tm.statusID = 67 /*aplicada*/
+
+
+				UNION ALL
+
+				-- Normalizar monto recibido en transferencia Dolares
+				SELECT
+					tmi.transactionMasterID,
+					CONVERT(
+						fn_translate_transaction_master_info_amounts(
+							prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra,
+							currencyIDNameReporte, convert_, tm.currencyID, exchangeRate_,
+							tmi.receiptAmountBank, tmi.receiptAmountBankDol,  'AmountExt'
+						), DECIMAL(10,2)
+					)  AS monto,
+					'TransferenciaDolar', 'Dolar',
+					case
+						when tm.currencyID = 1 /*cordoba*/ then
+							tmi.receiptAmountBankDolID
+						when tm.currencyID = 2 /*dolares*/ then
+							tmi.receiptAmountBankID
+					end as bankID
+				FROM
+					tb_transaction_master_info tmi
+					INNER JOIN tb_transaction_master tm
+						ON tm.transactionMasterID = tmi.transactionMasterID
+				WHERE
+					tm.isActive = 1 and
+					tm.transactionCausalID IN (21,23) /*contado*/ and
+					tm.statusID = 67 /*aplicada*/
+
+
+				UNION ALL
+
+
+				-- Normalizar monto recibido en puntos
+				SELECT
+						tmi.transactionMasterID,
+						tmi.receiptAmountPoint,
+						'Puntos', 'Cordoba',
+						NULL as bankID
+				FROM
+					tb_transaction_master_info tmi
+					INNER JOIN tb_transaction_master tm
+						ON tm.transactionMasterID = tmi.transactionMasterID
+
+		) pagos
+		INNER JOIN tb_transaction_master tm
+				ON tm.transactionMasterID = pagos.transactionMasterID
+		LEFT JOIN tb_bank b
+				ON b.bankID = pagos.bankID
+	WHERE tm.companyID = prCompanyID and tm.isApplied = 1
+		AND tm.isActive = 1
 		AND tm.transactionID = 19
+		AND pagos.monto > 0
 		AND tm.createdOn BETWEEN vStart and vEnd
+	GROUP BY
+		Banco WITH ROLLUP;
 
-	GROUP BY Banco WITH ROLLUP;
-	
-END;;	
+
+
+	SELECT
+		c.transactionNumber as Factura ,
+		cur.`name` as Moneda,
+		bank.`name` as Banco ,
+		'Tarjeta' as Tipo,
+		inf.receiptAmountCard as `C$ Tarjeta` ,
+		inf.receiptAmountCardDol as `$ Tarjeta` ,
+		inf.receiptAmountBank AS `C$ Transferencia` ,
+		inf.receiptAmountBankDol AS  `$ Transferencia` ,
+	  concat(
+			inf.receiptAmountCardBankReference	,
+			inf.receiptAmountCardBankDolReference,
+			inf.receiptAmountBankDolReference,
+			inf.receiptAmountBankReference
+		) as Referencia
+
+	FROM
+		tb_transaction_master c
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = c.statusID
+		inner join tb_currency cur on
+			cur.currencyID = c.currencyID
+		inner join tb_transaction_master_info inf on
+			inf.transactionMasterID = c.transactionMasterID
+		LEFT JOIN tb_bank bank
+			ON bank.bankID IN (
+					inf.receiptAmountBankID,
+					inf.receiptAmountBankDolID,
+					inf.receiptAmountCardBankID,
+					inf.receiptAmountCardBankDolID
+			)
+	WHERE
+		c.isActive = 1 and
+		c.transactionID = 19 /*factura*/ and
+		c.companyID = prCompanyID and
+		ws.aplicable = 1 and
+		c.createdOn BETWEEN vStart and vEnd and
+		(
+			inf.receiptAmountCard > 0 or
+			inf.receiptAmountBank > 0 or
+			inf.receiptAmountBankDol > 0 or
+			inf.receiptAmountCardDol > 0
+
+		) ;
+
+END ;;
 DELIMITER ;
 
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_box_get_report_closed_distrito4199` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_box_get_report_closed_distrito4199`(IN `prUserID` int,IN `prTokenID` varchar(150),IN `prCompanyID` int,IN `prAuthorization` int,IN `prStartOn` datetime,IN `prEndOn` datetime,IN `prUserIDFilter` int)
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'lista de abonos de los clientes'
+BEGIN
+
+		DECLARE varCurrencyCompras INT DEFAULT 0;
+	DECLARE varCurrencyReporte INT DEFAULT 0;
+	DECLARE currencyIDNameCompra VARCHAR(250);
+	DECLARE currencyIDNameReporte VARCHAR(250);
+	DECLARE exchangeRate_ DECIMAL(18,4) DEFAULT 0;
+	DECLARE amount1 DECIMAL(18,4) DEFAULT 0;
+	DECLARE amount2 DECIMAL(18,4) DEFAULT 0;
+	DECLARE amount3 DECIMAL(18,4) DEFAULT 0;
+	DECLARE amount4 DECIMAL(18,4) DEFAULT 0;
+
+	DECLARE currencyIDNameSource VARCHAR(250);
+	DECLARE currencyIDNameTarget VARCHAR(250);
+	DECLARE moneda_ VARCHAR(50);
+	DECLARE currencyID_ INT DEFAULT 0;
+	DECLARE currencyIDTarget_ INT DEFAULT 0;
+	DECLARE currencyTargetSale DECIMAL(19,9) DEFAULT 0;
+	DECLARE currencyTargetPurchase  DECIMAL(19,9) DEFAULT 0;
+	DECLARE PERMISSION_NONE INT DEFAULT -1;
+	DECLARE PERMISSION_ALL INT DEFAULT 0;
+	DECLARE PERMISSION_BRANCH INT DEFAULT 1;
+	DECLARE PERMISSION_ME INT DEFAULT 2;
+	DECLARE isAdmin_ INT DEFAULT   0;
+	DECLARE varDif DECIMAL(19,4) DEFAULT 0;
+	DECLARE varCompanyType VARCHAR(50);
+
+
+	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameCompra);
+	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",currencyIDNameReporte);
+
+	SET varCompanyType					= (SELECT c.type FROM tb_company c where c.companyID = prCompanyID);
+	SET varCurrencyCompras 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameCompra);
+	SET varCurrencyReporte 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameReporte);
+
+
+	select
+		r.isAdmin into isAdmin_
+	from
+		tb_user u
+		inner join tb_membership me on
+			u.userID = me.userID
+		inner join tb_role r on
+			me.roleID = r.roleID
+	where
+		me.userID = prUserID and r.isAdmin = 1 limit 1 ;
+
+
+	set isAdmin_ = (case when isAdmin_ is null then 0 else isAdmin_ end);
+
+
+	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameSource);
+	SET currencyID_ 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameSource);
+	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_EXTERNAL",currencyIDNameTarget);
+	SET currencyIDTarget_ 	= (SELECT currencyID FROM tb_currency where name = currencyIDNameTarget);
+	CALL pr_core_get_exchange_rate (prCompanyID,CURDATE(),currencyIDNameTarget,currencyIDNameSource,exchangeRate_);
+	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_EXCHANGE_SALE",currencyTargetSale);
+	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_EXCHANGE_PURCHASE",currencyTargetPurchase);
+
+
+	create table tb_tmp_closed (
+		substitulo varchar(250),
+		codigo varchar(50),
+		nombre varchar(150),
+		cantidad varchar(150),
+		subtotal varchar(150),
+		total decimal(19,2),
+		moneda int ,
+		tipoCambio decimal(19,2),
+		comandoProce varchar(150),
+		sumary varchar(50)
+
+	);
+
+
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'No',
+		'MinMax',
+		'Estado',
+		'001.001',
+		'PRI Y ULTI.',
+		IFNULL(min(tm.transactionMasterID),0) as min,
+		IFNULL(max(tm.transactionMasterID),0) as max,
+		0 as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+	where
+		tm.isActive = 1 and
+		tm.companyID = prCompanyID and
+		tm.transactionID = 19  and
+		tm.statusID = 67  and
+		tm.createdOn between prStartOn  and prEndOn ;
+
+	update tb_tmp_closed set
+		cantidad = IFNULL((select u.transactionNumber from tb_transaction_master u where u.transactionMasterID = cantidad ),0),
+		subtotal = IFNULL((select u.transactionNumber from tb_transaction_master u where u.transactionMasterID = subtotal ),0)
+	where
+		codigo = '001.001';
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'No',
+		'Default',
+		'Estado',
+		'001.002',
+		'TRAN. Eli',
+		IFNULL(count(tm.transactionMasterID),0) as cantidad,
+		IFNULL(sum(tm.amount),0) as subtotal,
+		IFNULL(sum(tm.amount),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+	where
+		tm.isActive = 1 and
+		tm.transactionID = 19  and
+		tm.statusID = 68  and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn ;
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'No',
+		'Default',
+		'Estado',
+		'001.003',
+		'TRAN. Reg',
+		IFNULL(count(tm.transactionMasterID),0) as cantidad,
+		IFNULL(sum(tm.amount),0) as subtotal,
+		IFNULL(sum(tm.amount),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+	where
+		tm.isActive = 1 and
+		tm.transactionID = 19  and
+		tm.statusID in ( 66  ) and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn ;
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'No',
+		'Default',
+		'Estado',
+		'001.003',
+		'TRAN. Apli',
+		IFNULL(count(tm.transactionMasterID),0) as cantidad,
+		IFNULL(sum(tm.amount),0) as subtotal,
+		IFNULL(sum(tm.amount),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+	where
+		tm.isActive = 1 and
+		tm.companyID = prCompanyID and
+		tm.transactionID = 19  and
+		tm.statusID in (67  ) and
+		tm.createdOn between prStartOn  and prEndOn ;
+
+
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'Si',
+		'Default',
+		'Apertura C$',
+		'002.001',
+		IFNULL(ci.`name`,'N/D')  as NombreDeMoneda,
+		IFNULL(sum(tmdd.quantity),0) as cantidad,
+		IFNULL(sum(tmdd.quantity * tmdd.reference1),0) as subtotal,
+		IFNULL(sum(tmdd.quantity * tmdd.reference1),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_transaction_master_denomination tmdd  on
+			tmdd.transactionMasterID = tm.transactionMasterID
+		inner join tb_catalog_item ci on
+			tmdd.catalogItemID = ci.catalogItemID
+		inner join tb_catalog_item ci2 on
+			ci2.catalogItemID = tm.areaID
+	where
+		t.transactionID = 29  and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.companyID = prCompanyID and
+		tmdd.quantity > 0 and
+		tm.currencyID = 1 and
+		ci2.`name` = 'Apertura' and
+		tm.createdOn between prStartOn  and prEndOn
+	group by
+		ci.`name`;
+
+
+
+
+
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'Si',
+		'Default',
+		'Apertura $',
+		'003.001',
+		IFNULL(ci.`name`,'N/D')  as NombreDeMoneda,
+		IFNULL(sum(tmdd.quantity),0) as cantidad,
+		IFNULL(sum(tmdd.quantity * tmdd.reference1),0) as subtotal,
+		IFNULL(sum(tmdd.quantity * tmdd.reference1),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_transaction_master_denomination tmdd  on
+			tmdd.transactionMasterID = tm.transactionMasterID
+		inner join tb_catalog_item ci on
+			tmdd.catalogItemID = ci.catalogItemID
+		inner join tb_catalog_item ci2 on
+			ci2.catalogItemID = tm.areaID
+	where
+		t.transactionID = 29  and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.companyID = prCompanyID and
+		tmdd.quantity > 0 and
+		tm.currencyID = 2 and
+		ci2.`name` = 'Apertura' and
+		tm.createdOn between prStartOn  and prEndOn
+	group by
+		ci.`name`;
+
+
+
+
+
+
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		*
+	from
+		(
+		select
+			'Si',
+			'Default',
+			concat('Formas de Pago ', case when tm.currencyID = 2 then '$' else 'C$' end  ) ,
+			'004.001',
+			concat('Efectivo ' , case when tm.currencyID = 2 then '$' else 'C$' end),
+			IFNULL(count(tmi.receiptAmount),0) as efectivo,
+			IFNULL(sum(tmi.receiptAmount),0)as transferencia,
+			IFNULL(sum(tmi.receiptAmount),0) as tarjeta,
+			1 as moneda,
+			0 as tipoCambio
+		from
+			tb_transaction t
+			inner join tb_transaction_master tm  on
+				t.transactionID = tm.transactionID
+			inner join tb_transaction_causal tmc on
+				tm.transactionCausalID = tmc.transactionCausalID
+			inner join tb_workflow_stage ws on
+				ws.workflowStageID = tm.statusID
+			inner join tb_transaction_master_info tmi on
+				tmi.transactionMasterID = tm.transactionMasterID
+		where
+			t.transactionID = 19  and
+			tmc.transactionCausalID in (23  , 21  ) and
+			tm.isActive = 1 and
+			ws.aplicable = 1 and
+			tmi.receiptAmount > 0 and
+			tm.companyID = prCompanyID and
+			tm.createdOn between prStartOn  and prEndOn
+
+		union all
+
+		select
+			'Si',
+			'Default',
+			concat('Formas de Pago ' , case when tm.currencyID = 2 then '$' else 'C$' end ),
+			'004.002',
+			concat('Tarjeta ', case when tm.currencyID = 2 then '$' else 'C$' end),
+			IFNULL(count(tmi.receiptAmountCard),0) as efectivo,
+			IFNULL(sum(tmi.receiptAmountCard),0)as transferencia,
+			IFNULL(sum(tmi.receiptAmountCard),0) as tarjeta,
+			1 as moneda,
+			0 as tipoCambio
+		from
+			tb_transaction t
+			inner join tb_transaction_master tm  on
+				t.transactionID = tm.transactionID
+			inner join tb_transaction_causal tmc on
+				tm.transactionCausalID = tmc.transactionCausalID
+			inner join tb_workflow_stage ws on
+				ws.workflowStageID = tm.statusID
+			inner join tb_transaction_master_info tmi on
+				tmi.transactionMasterID = tm.transactionMasterID
+		where
+			t.transactionID = 19  and
+			tmc.transactionCausalID in (23  , 21  ) and
+			tm.isActive = 1 and
+			ws.aplicable = 1 and
+			tmi.receiptAmountCard > 0 and
+			tm.companyID = prCompanyID and
+			tm.createdOn between prStartOn  and prEndOn
+
+		union all
+
+		select
+			'Si',
+			'Default',
+			concat('Formas de Pago ', case when tm.currencyID = 2 then '$' else 'C$' end),
+			'004.003',
+			concat('Transferencia ', case when tm.currencyID = 2 then '$' else 'C$' end ),
+			IFNULL(count(tmi.receiptAmountBank),0) as efectivo,
+			IFNULL(sum(tmi.receiptAmountBank),0)as transferencia,
+			IFNULL(sum(tmi.receiptAmountBank),0) as tarjeta,
+			1 as moneda,
+			0 as tipoCambio
+		from
+			tb_transaction t
+			inner join tb_transaction_master tm  on
+				t.transactionID = tm.transactionID
+			inner join tb_transaction_causal tmc on
+				tm.transactionCausalID = tmc.transactionCausalID
+			inner join tb_workflow_stage ws on
+				ws.workflowStageID = tm.statusID
+			inner join tb_transaction_master_info tmi on
+				tmi.transactionMasterID = tm.transactionMasterID
+		where
+			t.transactionID = 19  and
+			tmc.transactionCausalID in (23  , 21  ) and
+			tm.isActive = 1 and
+			ws.aplicable = 1 and
+			tmi.receiptAmountBank > 0 and
+			tm.companyID = prCompanyID and
+			tm.createdOn between prStartOn  and prEndOn
+	) as kl
+	where
+		kl.tarjeta > 0 ;
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		*
+	from
+		(
+			select
+				'Si',
+				'Default',
+				concat('Formas de Pago ', case when tm.currencyID = 2 then 'C$' else '$' end),
+				'005.001',
+				concat('Efectivo ', case when tm.currencyID = 2 then 'C$' else '$' end ),
+				IFNULL(count(IFNULL(tmi.receiptAmountDol,0)),0) as efectivo,
+				IFNULL(sum(IFNULL(tmi.receiptAmountDol,0)),0) as transferencia,
+				IFNULL(sum(IFNULL(tmi.receiptAmountDol,0)),0) as tarjeta,
+				1 as moneda,
+				0 as tipoCambio
+			from
+				tb_transaction t
+				inner join tb_transaction_master tm  on
+					t.transactionID = tm.transactionID
+				inner join tb_transaction_causal tmc on
+					tm.transactionCausalID = tmc.transactionCausalID
+				inner join tb_workflow_stage ws on
+					ws.workflowStageID = tm.statusID
+				inner join tb_transaction_master_info tmi on
+					tmi.transactionMasterID = tm.transactionMasterID
+			where
+				t.transactionID = 19  and
+				tmc.transactionCausalID in (23  , 21  ) and
+				tm.isActive = 1 and
+				ws.aplicable = 1 and
+				tmi.receiptAmountDol > 0 and
+				tm.companyID = prCompanyID and
+				tm.createdOn between prStartOn  and prEndOn
+
+			union all
+
+			select
+				'Si',
+				'Default',
+				concat('Formas de Pago ', case when tm.currencyID = 2 then 'C$' else '$' end),
+				'005.002',
+				concat('Tarjeta ',case when tm.currencyID = 2 then 'C$' else '$' end),
+				IFNULL(count(IFNULL(tmi.receiptAmountCardDol,0)),0) as efectivo,
+				IFNULL(sum(IFNULL(tmi.receiptAmountCardDol,0)),0) as transferencia,
+				IFNULL(sum(IFNULL(tmi.receiptAmountCardDol,0)),0) as tarjeta,
+				1 as moneda,
+				0 as tipoCambio
+			from
+				tb_transaction t
+				inner join tb_transaction_master tm  on
+					t.transactionID = tm.transactionID
+				inner join tb_transaction_causal tmc on
+					tm.transactionCausalID = tmc.transactionCausalID
+				inner join tb_workflow_stage ws on
+					ws.workflowStageID = tm.statusID
+				inner join tb_transaction_master_info tmi on
+					tmi.transactionMasterID = tm.transactionMasterID
+			where
+				t.transactionID = 19  and
+				tmc.transactionCausalID in (23  , 21  ) and
+				tm.isActive = 1 and
+				ws.aplicable = 1 and
+				tmi.receiptAmountCardDol > 0 and
+				tm.companyID = prCompanyID and
+				tm.createdOn between prStartOn  and prEndOn
+
+			union all
+
+			select
+				'Si',
+				'Default',
+				concat('Formas de Pago ',case when tm.currencyID = 2 then 'C$' else '$' end),
+				'005.003',
+				concat('Transferencia ',case when tm.currencyID = 2 then 'C$' else '$' end),
+				IFNULL(count(IFNULL(tmi.receiptAmountBankDol,0)),0) as efectivo,
+				IFNULL(sum(IFNULL(tmi.receiptAmountBankDol,0)),0) as transferencia,
+				IFNULL(sum(IFNULL(tmi.receiptAmountBankDol,0)),0) as tarjeta,
+				1 as moneda,
+				0 as tipoCambio
+			from
+				tb_transaction t
+				inner join tb_transaction_master tm  on
+					t.transactionID = tm.transactionID
+				inner join tb_transaction_causal tmc on
+					tm.transactionCausalID = tmc.transactionCausalID
+				inner join tb_workflow_stage ws on
+					ws.workflowStageID = tm.statusID
+				inner join tb_transaction_master_info tmi on
+					tmi.transactionMasterID = tm.transactionMasterID
+			where
+				t.transactionID = 19  and
+				tmc.transactionCausalID in (23  , 21  ) and
+				tm.isActive = 1 and
+				ws.aplicable = 1 and
+				tmi.receiptAmountBankDol > 0 and
+				tm.companyID = prCompanyID and
+				tm.createdOn between prStartOn  and prEndOn
+	) as kl
+ where
+	kl.tarjeta > 0 ;
+
+
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'No',
+		'Default',
+		'Operaciones',
+		'006.001',
+		concat('Vent Cred ',case when tm.currencyID = 1 then 'C$' else '$' end),
+		IFNULL(count(tm.transactionMasterID),0) as cantidad,
+		IFNULL(sum(tm.amount),0) as subtotal,
+		IFNULL(sum(tm.amount),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+	where
+		t.transactionID = 19  and
+		tmc.transactionCausalID in (22  , 24  ) and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn ;
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'No',
+		'Default',
+		'Operaciones',
+		'006.002',
+		concat('Vent Cont ',case when tm.currencyID = 1 then 'C$' else '$' end),
+		IFNULL(count(tm.transactionMasterID),0) as cantidad,
+		IFNULL(sum(tm.amount),0) as subtotal,
+		IFNULL(sum(tm.amount),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+	where
+		t.transactionID = 19  and
+		tmc.transactionCausalID in (23  , 21  ) and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn ;
+
+
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'No',
+		'Default',
+		'Operaciones',
+		'006.003',
+		'Abonos C$',
+		IFNULL(count(tm.transactionMasterID),0) as cantidad,
+		IFNULL(sum(tmi.receiptAmount),0) as subtotal,
+		IFNULL(sum(tmi.receiptAmount),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_master_info tmi on
+			tm.transactionMasterID = tmi.transactionMasterID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_company com on
+			com.companyID = t.companyID
+	where
+		tm.transactionID = 23 and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn and
+		tmi.receiptAmount > 0 ;
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'No',
+		'Default',
+		'Operaciones',
+		'006.004',
+		'Abonos $',
+		IFNULL(count(tm.transactionMasterID),0) as cantidad,
+		IFNULL(sum(tmi.receiptAmountDol),0) as subtotal,
+		IFNULL(sum(tmi.receiptAmountDol),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_master_info tmi on
+			tm.transactionMasterID = tmi.transactionMasterID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_company com on
+			com.companyID = t.companyID
+	where
+		tm.transactionID = 23 and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn and
+		tmi.receiptAmountDol > 0 ;
+
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'No',
+		'Default',
+		'Operaciones',
+		'006.005',
+		'Ing. Efectivo C$',
+		IFNULL(count(tm.transactionMasterID),0) as cantidad,
+		IFNULL(sum(tm.amount),0) as subtotal,
+		IFNULL(sum(tm.amount),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_catalog_item ci2 on
+			ci2.catalogItemID = tm.areaID
+	where
+		t.transactionID = 29  and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.currencyID = 1 and
+		ci2.`name` != 'Apertura' and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn ;
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'No',
+		'Default',
+		'Operaciones',
+		'006.006',
+		'Ing. Efectivo $',
+		IFNULL(count(tm.transactionMasterID),0) as cantidad,
+		IFNULL(sum(tm.amount),0) as subtotal,
+		IFNULL(sum(tm.amount),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_catalog_item ci2 on
+			ci2.catalogItemID = tm.areaID
+	where
+		t.transactionID = 29  and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.currencyID = 2 and
+		ci2.`name` != 'Apertura' and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn ;
+
+
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'No',
+		'Default',
+		'Operaciones',
+		'006.007',
+		'Primas C$',
+		IFNULL(count(tm.transactionMasterID),0) as cantidad,
+		IFNULL(
+		sum(
+			tmi.receiptAmount +
+			tmi.receiptAmountDol +
+			tmi.receiptAmountBank +
+			tmi.receiptAmountBankDol +
+			tmi.receiptAmountCard +
+			tmi.receiptAmountCardDol
+		),
+		0) as subtotal,
+		IFNULL(
+		sum(
+			tmi.receiptAmount +
+			tmi.receiptAmountDol +
+			tmi.receiptAmountBank +
+			tmi.receiptAmountBankDol +
+			tmi.receiptAmountCard +
+			tmi.receiptAmountCardDol
+		),
+		0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_transaction_master_info tmi on
+			tmi.transactionMasterID = tm.transactionMasterID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+	where
+		t.transactionID = 19  and
+		tmc.transactionCausalID in (22  , 24  ) and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn ;
+
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'No',
+		'Default',
+		'Operaciones',
+		'006.008',
+		'Egr. Efectivo C$',
+		IFNULL(count(tm.transactionMasterID),0) as cantidad,
+		IFNULL(sum(tm.amount),0) as subtotal,
+		IFNULL(sum(tm.amount),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_catalog_item ci2 on
+			ci2.catalogItemID = tm.areaID
+	where
+		t.transactionID = 30  and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.currencyID = 1 and
+		ci2.`name` != 'Cierre' and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn ;
+
+
+
+
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'No',
+		'Default',
+		'Operaciones',
+		'006.009',
+		'Egr. Efectivo $',
+		IFNULL(count(tm.transactionMasterID),0) as cantidad,
+		IFNULL(sum(tm.amount),0) as subtotal,
+		IFNULL(sum(tm.amount),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_catalog_item ci2 on
+			ci2.catalogItemID = tm.areaID
+	where
+		t.transactionID = 30  and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.currencyID = 2 and
+		ci2.`name` != 'Cierre' and
+		tm.companyID = prCompanyID and
+		tm.createdOn between prStartOn  and prEndOn ;
+
+
+
+
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'Si',
+		'Default',
+		'Cierre C$',
+		'007.001',
+		IFNULL(ci.`name`,'N/D')  as NombreDeMoneda,
+		IFNULL(sum(tmdd.quantity),0) as cantidad,
+		IFNULL(sum(tmdd.quantity * tmdd.reference1),0) as subtotal,
+		IFNULL(sum(tmdd.quantity * tmdd.reference1),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_transaction_master_denomination tmdd  on
+			tmdd.transactionMasterID = tm.transactionMasterID
+		inner join tb_catalog_item ci on
+			tmdd.catalogItemID = ci.catalogItemID
+		inner join tb_catalog_item ci2 on
+			ci2.catalogItemID = tm.areaID
+	where
+		t.transactionID = 30  and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.companyID = prCompanyID and
+		tmdd.quantity > 0 and
+		tm.currencyID = 1 and
+		ci2.`name` = 'Cierre' and
+		tm.createdOn between prStartOn  and prEndOn
+	group by
+		ci.`name`;
+
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+	select
+		'Si',
+		'Default',
+		'Cierre $',
+		'008.001',
+		IFNULL(ci.`name`,'N/D')  as NombreDeMoneda,
+		IFNULL(sum(tmdd.quantity),0) as cantidad,
+		IFNULL(sum(tmdd.quantity * tmdd.reference1),0) as subtotal,
+		IFNULL(sum(tmdd.quantity * tmdd.reference1),0) as total,
+		1 as moneda,
+		0 as tipoCambio
+	from
+		tb_transaction t
+		inner join tb_transaction_master tm  on
+			t.transactionID = tm.transactionID
+		inner join tb_transaction_causal tmc on
+			tm.transactionCausalID = tmc.transactionCausalID
+		inner join tb_workflow_stage ws on
+			ws.workflowStageID = tm.statusID
+		inner join tb_transaction_master_denomination tmdd  on
+			tmdd.transactionMasterID = tm.transactionMasterID
+		inner join tb_catalog_item ci on
+			tmdd.catalogItemID = ci.catalogItemID
+		inner join tb_catalog_item ci2 on
+			ci2.catalogItemID = tm.areaID
+	where
+		t.transactionID = 30  and
+		tm.isActive = 1 and
+		ws.aplicable = 1 and
+		tm.companyID = prCompanyID and
+		tmdd.quantity > 0 and
+		tm.currencyID = 2 and
+		ci2.`name` = 'Cierre' and
+		tm.createdOn between prStartOn  and prEndOn
+	group by
+		ci.`name`;
+
+
+
+
+
+
+
+	IF varCompanyType != "galmcuts" THEN
+
+		SET varDif = 0;
+
+		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Vent Cont C$' );
+		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Apertura C$' );
+		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Abonos C$' );
+		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Primas C$' );
+		SET varDif = varDif - (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'EGR. Efectivo C$' );
+		SET varDif = varDif - (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Cierre C$' );
+		insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+		values ('No','Default','Diferencia','009.001','Dif C$',0,ifnull(varDif,0),ifnull(varDif,0),1,0);
+
+
+
+		SET varDif = 0;
+
+
+
+		SET varDif = varDif + (select ifnull(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Vent Cont $' );
+		SET varDif = varDif + (select ifnull(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Apertura $' );
+		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Abonos $' );
+		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Primas $' );
+		SET varDif = varDif - (select ifnull(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'EGR. Efectivo $' );
+		SET varDif = varDif - (select ifnull(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Cierre $' );
+
+		insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+		values ('No','Default','Diferencia','009.002','Dif $',0,ifnull(varDif,0),ifnull(varDif,0),1,0);
+
+	end if;
+
+
+	IF varCompanyType = "galmcuts" THEN
+
+		SET varDif = 0;
+
+		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Vent Cont C$' );
+		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Apertura C$' );
+		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Abonos C$' );
+		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Primas C$' );
+		SET varDif = varDif - (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'EGR. Efectivo C$' );
+		SET varDif = varDif - (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Cierre C$' );
+		insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+		values ('No','Default','Saldo Final Caja','009.001','C$',0,ifnull(varDif,0),ifnull(varDif,0),1,0);
+
+
+
+		SET varDif = 0;
+
+
+
+		SET varDif = varDif + (select ifnull(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Vent Cont $' );
+		SET varDif = varDif + (select ifnull(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Apertura $' );
+		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Abonos $' );
+		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Primas $' );
+		SET varDif = varDif - (select ifnull(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'EGR. Efectivo $' );
+		SET varDif = varDif - (select ifnull(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Cierre $' );
+
+		insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
+		values ('No','Default','Saldo Final Caja','009.002','$',0,ifnull(varDif,0),ifnull(varDif,0),1,0);
+
+	end if;
+
+
+	insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,moneda,tipoCambio,cantidad,subtotal,total)
+	select
+		z.sumary,
+		z.comandoProces,
+		z.subtitulo,
+		z.codigo,
+		z.nombre,
+		z.moneda,
+		z.tipoCambio,
+		sum(z.cantidad) as cantidad,
+		sum(z.subtotal) as subtotal,
+		sum(z.total) as total
+	from
+		(
+			select
+				'Si' as sumary,
+				'Default' as comandoProces,
+				'Detalle de Venta' as subtitulo,
+				'010.001' as codigo,
+
+				case
+					when cat.`name` = 'AUTO_LAVADO' then
+						concat('<span style="color:red" >',i.`name`,'</span>')
+					else
+						i.`name`
+				end  as nombre,
+
+				td.quantity as cantidad,
+				td.amount as subtotal,
+				td.amount as total,
+				1 as moneda,
+				0 as tipoCambio
+			from
+				tb_transaction t
+				inner join tb_transaction_master tm  on
+					t.transactionID = tm.transactionID
+				inner join tb_transaction_master_detail td on
+					td.transactionMasterID = tm.transactionMasterID
+				inner join tb_item i on
+					td.componentItemID = i.itemID
+				inner join tb_item_category  cat on
+					cat.inventoryCategoryID = i.inventoryCategoryID
+				inner join tb_transaction_causal tmc on
+					tm.transactionCausalID = tmc.transactionCausalID
+				inner join tb_workflow_stage ws on
+					ws.workflowStageID = tm.statusID
+			where
+				t.transactionID = 19  and
+				tm.isActive = 1 and
+				ws.aplicable = 1 and
+				td.isActive = 1 and
+				tm.companyID = prCompanyID and
+				tm.createdOn between prStartOn  and prEndOn
+			order by
+				cat.`name`,i.`name`
+		) z
+	group by
+		z.sumary,
+		z.comandoProces,
+		z.subtitulo,
+		z.codigo,
+		z.nombre,
+		z.moneda,
+		z.tipoCambio;
+
+
+
+	SET amount1 = (select k.total from  tb_tmp_closed k where  k.nombre = 'Vent Cont C$');
+	SET amount2 = (select k.total from  tb_tmp_closed k where  k.nombre = 'Efectivo $'  and k.substitulo = 'Formas de Pago $');
+	SET amount3 = (select k.total from  tb_tmp_closed k where  k.nombre = 'Efectivo C$' and k.substitulo = 'Formas de Pago C$');
+	SET amount4 = (select k.total from  tb_tmp_closed k where  k.nombre = 'Tarjeta C$' and k.substitulo = 'Formas de Pago C$');
+	SET amount1 = IFNULL(amount1,0);
+	SET amount2 = IFNULL(amount2,0);
+	SET amount3 = IFNULL(amount3,0);
+	SET amount4 = IFNULL(amount4,0);
+
+
+	UPDATE tb_tmp_closed set
+		total = amount1 -  (amount2 * 36.5) - amount4,
+		subtotal = amount1 -  (amount2 * 36.5) - amount4
+	WHERE
+		nombre = 'Efectivo C$' and
+		substitulo = 'Formas de Pago C$';
+
+
+
+
+
+
+	select
+		sumary,
+		comandoProce,
+		substitulo,
+		codigo,
+		nombre,
+		cantidad,
+		subtotal,
+		total,
+		moneda,
+		tipoCambio
+	from
+		tb_tmp_closed
+	order by
+		codigo asc ;
+
+
+	drop table tb_tmp_closed;
+
+
+
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_core_clear_data` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_core_clear_data`(IN `prCompanyID` INT,
+	IN `prBranchID` INT,
+	IN `prLoginID` INT,
+	OUT `prResult` INT)
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Procedimiento para limpiar los datos '
+LBL_PROCEDURE:
+BEGIN
+
+		#Limpiar tablas de fechas de expiracion
+		DELETE FROM tb_item_warehouse_expired WHERE quantity <= 0;
+		DELETE FROM tb_item_warehouse_expired WHERE dateExpired is NULL;
+		DELETE FROM tb_item_warehouse_expired WHERE dateExpired < '1900-01-01';
+		DELETE e
+		FROM tb_item_warehouse_expired AS e
+		INNER JOIN tb_item_warehouse AS ws
+				ON ws.itemID = e.itemID
+			  AND ws.warehouseID = e.warehouseID
+		WHERE ws.quantity <= 0;
+
+		#Actualizar las cantidades generales
+		UPDATE tb_item d
+		JOIN (
+				SELECT
+						ws.itemID,
+						SUM(ws.quantity) AS quantity
+				FROM tb_item_warehouse ws
+				GROUP BY ws.itemID
+		) o
+				ON d.itemID = o.itemID
+		SET d.quantity = o.quantity;
+
+
+		SET prResult = 1;
+		INSERT INTO tb_log(companyID,branchID,loginID,token,procedureName,code,description,createdOn)
+		VALUES(
+			prCompanyID,prBranchID,prLoginID,'',
+			'pr_core_clear_data',
+			0,0,CURRENT_TIMESTAMP());
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_inventory_get_report_ratation` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_inventory_get_report_ratation`(IN `prUserID` INT,
+	IN `prTokenID` VARCHAR(50),
+	IN `prCompanyID` INT,
+	IN `prWarehouseID` INT,
+	IN `prStartOn` DATETIME,
+	IN `prEndOn` DATETIME,
+	IN prCantDayEvaluate INT)
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Procedimiento para calcular la rotacion de inventario'
+BEGIN
+	 DECLARE  varCompanyType varchar(150) default '';
+
+	 #Obtener la compania
+	 SET varCompanyType = (select c.type from tb_company c where c.companyID = prCompanyID);
+
+	 #calcular el kardex
+	 CALL pr_inventory_get_report_master_kardex(prUserID,prTokenID,prCompanyID,prWarehouseID,prStartOn,prEndOn);
+
+
+	select
+			re.itemID,
+			re.itemNumber,
+			re.itemName,
+			re.cantidad_venta,
+			re.quantity_actual,
+			CONCAT(
+				ROUND(
+					CASE
+						WHEN varCompanyType in ( 'globalpro' , 'farma_ley' ) THEN
+							re.quantity_actual / (re.cantidad_venta / 3)
+						ELSE
+							re.rotacion
+					END,
+					2
+				),
+				CASE
+					WHEN varCompanyType in ( 'globalpro' , 'farma_ley' ) THEN ' meses'
+					ELSE ' veces'
+				END
+			) AS rotacion,
+
+			CONCAT(
+				FORMAT(
+					CASE
+						WHEN varCompanyType in ( 'globalpro' , 'farma_ley' ) THEN
+							(re.quantity_actual / (re.cantidad_venta / 3)) * 30
+						ELSE
+							re.rotacion_dia
+					END,
+					2
+				),
+				' días'
+			) AS rotacion_dia
+
+	from
+		(
+			select
+				ii.itemID ,
+				ii.itemNumber,
+				ii.`name` as itemName,
+				ifnull(venta.cantidad_venta,0) as cantidad_venta,
+				ifnull(ii.quantity,0) as quantity_actual,
+				round(ifnull(ifnull(venta.cantidad_venta,0) / ifnull(ii.quantity,0),0),4) as rotacion ,
+				round(ifnull(prCantDayEvaluate / ifnull(ifnull(venta.cantidad_venta,0) / ifnull(ii.quantity,0),0),0),4) as rotacion_dia
+			from
+				tb_item ii
+				left join (
+							select
+								i.itemID,
+								ifnull(sum(tmd.quantity),0) as cantidad_venta
+							from
+								tb_item i
+								inner join tb_transaction_master_detail tmd on
+									tmd.componentItemID = i.itemID
+								inner join tb_transaction_master tm on
+									tm.transactionMasterID = tmd.transactionMasterID
+							where
+								i.isActive = 1 and
+								tm.isActive = 1 and
+								tmd.isActive = 1 and
+								tm.transactionID = 19 /*factura*/ and
+								tm.statusID in (67 /*aplicadas*/) and
+								tm.createdOn between  prStartOn and prEndOn
+							group by
+								i.itemID
+				) venta on
+					ii.itemID  = venta.itemID
+				left join (
+						select
+							 i.itemID,
+							 i.itemNumber,
+							 i.itemName,
+							 ifnull(i.quantityInicial,0) as quantityInicial,
+							 ifnull(i.quantityInput,0) as quantityInput,
+							 ifnull(i.quantityOutput,0) as quantityOutput ,
+							 (ifnull(i.quantityInicial,0) +  ifnull(i.quantityInput,0) - ifnull(i.quantityOutput,0)) as quantityFinal,
+
+							 (
+								ifnull(i.quantityInicial,0) +
+								(ifnull(i.quantityInicial,0) +  ifnull(i.quantityInput,0) - ifnull(i.quantityOutput,0))
+							 ) / 2  as quantityPrimedio
+						from
+							tb_master_kardex_temp i
+						where
+							i.userID = prUserID
+				) invento on
+					ii.itemID = invento.itemID
+		) re
+	order by
+		re.rotacion_dia desc ;
+
+
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_sales_get_report_sales_by_payment_v2` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_sales_get_report_sales_by_payment_v2`(IN `prCompanyID` INT,
+	IN `prUserID` INT,
+	IN `prTokenID` VARCHAR(50),
+	IN `prDateTimeStart` VARCHAR(50),
+	IN `prDateTimeFinish` VARCHAR(50))
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Detalle de ventas por metodo de pago - OPTIMIZADO v2'
+BEGIN
+
+	DECLARE vStart DATETIME;
+	DECLARE vEnd DATETIME;
+	DECLARE currencyIDNameCompra VARCHAR(250);
+	DECLARE currencyIDNameReporte VARCHAR(250);
+	DECLARE currencyIDNameTarget VARCHAR(250);
+	DECLARE currencyIDNameSource VARCHAR(250);
+	DECLARE exchangeRate_ DECIMAL(18,4) DEFAULT 0;
+	DECLARE convert_ VARCHAR(50);
+	DECLARE prFlavorID INT DEFAULT 0;
+
+	SET vStart = STR_TO_DATE(prDateTimeStart, '%Y-%m-%d %H:%i:%s');
+	SET vEnd   = STR_TO_DATE(prDateTimeFinish, '%Y-%m-%d %H:%i:%s');
+
+	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameCompra);
+	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",currencyIDNameReporte);
+	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameSource);
+	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_EXTERNAL",currencyIDNameTarget);
+	CALL pr_core_get_exchange_rate(prCompanyID, CURDATE(), currencyIDNameTarget, currencyIDNameSource, exchangeRate_);
+	CALL pr_core_get_parameter_value(prCompanyID, "ACCOUNTING_CURRENCY_NAME_REPORT_CONVERT", convert_);
+	SET prFlavorID = (SELECT flavorID FROM tb_company c WHERE c.companyID = prCompanyID);
+
+	/* ==========================================================
+	   SELECT 1: Resumen por forma de pago
+	   SIN UNION ALL NI TABLA TEMPORAL - un solo pase con CROSS JOIN
+	   de tipos de pago y CASE para calcular montos
+	   ========================================================== */
+	SELECT
+		COALESCE(
+			b.name,
+			CASE
+				WHEN tipo = 'EfectivoCordoba' THEN 'EFECTIVO CORDOBA'
+				WHEN tipo = 'EfectivoDolar'   THEN 'EFECTIVO DOLAR'
+				WHEN tipo = 'Puntos'          THEN 'PUNTOS'
+			END
+		) AS Banco,
+		ROUND(SUM(CASE WHEN tipo = 'TransferenciaCordoba' THEN monto ELSE 0 END),2) AS `Transferencia Cordoba`,
+		ROUND(SUM(CASE WHEN tipo = 'TransferenciaDolar'   THEN monto ELSE 0 END),2) AS `Transferencia Dolar`,
+		ROUND(SUM(CASE WHEN tipo = 'TarjetaCordoba'       THEN monto ELSE 0 END),2) AS `Tarjeta Cordoba`,
+		ROUND(SUM(CASE WHEN tipo = 'TarjetaDolar'         THEN monto ELSE 0 END),2) AS `Tarjeta Dolar`,
+		ROUND(SUM(CASE WHEN tipo = 'EfectivoCordoba'      THEN monto ELSE 0 END),2) AS `Efectivo Cordoba`,
+		ROUND(SUM(CASE WHEN tipo = 'EfectivoDolar'        THEN monto ELSE 0 END),2) AS `Efectivo Dolar`,
+		ROUND(SUM(CASE WHEN tipo = 'Puntos'               THEN monto ELSE 0 END),2) AS Puntos,
+		ROUND(SUM(CASE WHEN moneda = 'Cordoba' THEN monto ELSE 0 END),2) AS `Total Cordoba`,
+		ROUND(SUM(CASE WHEN moneda = 'Dolar'   THEN monto ELSE 0 END),2) AS `Total Dolar`
+	FROM (
+		SELECT sub.tipo, sub.moneda, sub.monto, sub.bankID
+		FROM (
+			SELECT
+				tmi.transactionMasterID,
+				tp.tipo,
+				tp.moneda,
+				CASE tp.tipo
+					WHEN 'EfectivoCordoba' THEN
+						CONVERT(fn_translate_transaction_master_info_amounts(
+							prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra,
+							currencyIDNameReporte, convert_, tm.currencyID, exchangeRate_,
+							tmi.receiptAmount, tmi.receiptAmountDol, 'Amount'
+						), DECIMAL(10,2))
+					WHEN 'EfectivoDolar' THEN
+						CONVERT(fn_translate_transaction_master_info_amounts(
+							prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra,
+							currencyIDNameReporte, convert_, tm.currencyID,
+							exchangeRate_, tmi.receiptAmount, tmi.receiptAmountDol, 'AmountExt'
+						), DECIMAL(10,2))
+					WHEN 'TarjetaCordoba' THEN
+						CONVERT(fn_translate_transaction_master_info_amounts(
+							prCompanyID, prFlavorID, tmi.transactionID,
+							currencyIDNameCompra, currencyIDNameReporte,
+							convert_, tm.currencyID, exchangeRate_,
+							tmi.receiptAmountCard, tmi.receiptAmountCardDol, 'Amount'
+						), DECIMAL(10,2))
+					WHEN 'TarjetaDolar' THEN
+						CONVERT(fn_translate_transaction_master_info_amounts(
+							prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra,
+							currencyIDNameReporte, convert_, tm.currencyID, exchangeRate_,
+							tmi.receiptAmountCard, tmi.receiptAmountCardDol, 'AmountExt'
+						), DECIMAL(10,2))
+					WHEN 'TransferenciaCordoba' THEN
+						CONVERT(fn_translate_transaction_master_info_amounts(
+							prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra,
+							currencyIDNameReporte, convert_, tm.currencyID, exchangeRate_,
+							tmi.receiptAmountBank, tmi.receiptAmountBankDol, 'Amount'
+						), DECIMAL(10,2))
+					WHEN 'TransferenciaDolar' THEN
+						CONVERT(fn_translate_transaction_master_info_amounts(
+							prCompanyID, prFlavorID, tmi.transactionID, currencyIDNameCompra,
+							currencyIDNameReporte, convert_, tm.currencyID, exchangeRate_,
+							tmi.receiptAmountBank, tmi.receiptAmountBankDol, 'AmountExt'
+						), DECIMAL(10,2))
+					WHEN 'Puntos' THEN
+						tmi.receiptAmountPoint
+				END AS monto,
+				CASE tp.tipo
+					WHEN 'TarjetaCordoba' THEN
+						CASE WHEN tm.currencyID = 1 THEN tmi.receiptAmountCardBankID
+							 WHEN tm.currencyID = 2 THEN tmi.receiptAmountCardBankDolID
+						END
+					WHEN 'TarjetaDolar' THEN
+						CASE WHEN tm.currencyID = 1 THEN tmi.receiptAmountCardBankDolID
+							 WHEN tm.currencyID = 2 THEN tmi.receiptAmountCardBankID
+						END
+					WHEN 'TransferenciaCordoba' THEN
+						CASE WHEN tm.currencyID = 1 THEN tmi.receiptAmountBankID
+							 WHEN tm.currencyID = 2 THEN tmi.receiptAmountBankDolID
+						END
+					WHEN 'TransferenciaDolar' THEN
+						CASE WHEN tm.currencyID = 1 THEN tmi.receiptAmountBankDolID
+							 WHEN tm.currencyID = 2 THEN tmi.receiptAmountBankID
+						END
+					ELSE NULL
+				END AS bankID
+			FROM tb_transaction_master tm
+			INNER JOIN tb_transaction_master_info tmi
+				ON tmi.transactionMasterID = tm.transactionMasterID
+			CROSS JOIN (
+				SELECT 'EfectivoCordoba' AS tipo, 'Cordoba' AS moneda
+				UNION ALL SELECT 'EfectivoDolar',         'Dolar'
+				UNION ALL SELECT 'TarjetaCordoba',        'Cordoba'
+				UNION ALL SELECT 'TarjetaDolar',          'Dolar'
+				UNION ALL SELECT 'TransferenciaCordoba',  'Cordoba'
+				UNION ALL SELECT 'TransferenciaDolar',    'Dolar'
+				UNION ALL SELECT 'Puntos',                'Cordoba'
+			) tp
+			WHERE tm.companyID = prCompanyID
+			  AND tm.isActive = 1
+			  AND tm.isApplied = 1
+			  AND tm.transactionID = 19
+			  AND tm.transactionCausalID IN (21,23)
+			  AND tm.statusID = 67
+			  AND tm.createdOn BETWEEN vStart AND vEnd
+		) sub
+		WHERE sub.monto > 0
+	) pagos
+	LEFT JOIN tb_bank b ON b.bankID = pagos.bankID
+	GROUP BY Banco WITH ROLLUP;
+
+
+	/* ==========================================================
+	   SELECT 2: Detalle facturas con tarjeta/transferencia
+	   ========================================================== */
+	SELECT
+		c.transactionNumber AS Factura,
+		cur.`name` AS Moneda,
+		bank.`name` AS Banco,
+		'Tarjeta' AS Tipo,
+		inf.receiptAmountCard AS `C$ Tarjeta`,
+		inf.receiptAmountCardDol AS `$ Tarjeta`,
+		inf.receiptAmountBank AS `C$ Transferencia`,
+		inf.receiptAmountBankDol AS `$ Transferencia`,
+		CONCAT(
+			COALESCE(inf.receiptAmountCardBankReference,''),
+			COALESCE(inf.receiptAmountCardBankDolReference,''),
+			COALESCE(inf.receiptAmountBankDolReference,''),
+			COALESCE(inf.receiptAmountBankReference,'')
+		) AS Referencia
+	FROM tb_transaction_master c
+	INNER JOIN tb_currency cur ON cur.currencyID = c.currencyID
+	INNER JOIN tb_transaction_master_info inf ON inf.transactionMasterID = c.transactionMasterID
+	LEFT JOIN tb_bank bank ON bank.bankID = COALESCE(
+		NULLIF(inf.receiptAmountCardBankID, 0),
+		NULLIF(inf.receiptAmountCardBankDolID, 0),
+		NULLIF(inf.receiptAmountBankID, 0),
+		NULLIF(inf.receiptAmountBankDolID, 0)
+	)
+	WHERE c.companyID = prCompanyID
+	  AND c.isActive = 1
+	  AND c.transactionID = 19
+	  AND c.isApplied = 1
+	  AND c.transactionCausalID IN (21,23)
+	  AND c.statusID = 67
+	  AND c.createdOn BETWEEN vStart AND vEnd
+	  AND (
+		inf.receiptAmountCard > 0 OR
+		inf.receiptAmountBank > 0 OR
+		inf.receiptAmountBankDol > 0 OR
+		inf.receiptAmountCardDol > 0
+	  );
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_sales_get_report_sales_detail_commission_byreference` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_sales_get_report_sales_detail_commission_byreference`(IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), IN `prUserID` INT, IN `prStartOn` DATE, IN `prEndOn` DATE,IN prInventoryCategoryID INT, IN prWarehouse INT, IN prUserIDSales INT, IN prText VARCHAR(50), IN prEmployerID INT)
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Detalle de ventas'
+BEGIN
+
+	DECLARE varCurrencyCompras INT DEFAULT 0;
+	DECLARE varCurrencyReporte INT DEFAULT 0;
+
+	DECLARE currencyIDNameCompra VARCHAR(250);
+	DECLARE currencyIDNameReporte VARCHAR(250);
+
+	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameCompra);
+	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",currencyIDNameReporte);
+
+	SET varCurrencyCompras 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameCompra);
+	SET varCurrencyReporte 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameReporte);
+
+
+	select
+		rx.userID,
+		rx.nickname,
+		rx.transactionNumber,
+		rx.employerName,
+		rx.tipo,
+		rx.transactionOn,
+		rx.createdOn,
+		DAYOFMONTH(rx.createdOn) as dayOfMonth,
+		rx.customerNumber,
+		rx.currencyName,
+		rx.note,
+		rx.legalName,
+		rx.zone,
+		rx.itemNumber,
+		rx.itemName,
+		rx.itemNameLog,
+		rx.phoneNumber,
+		rx.Agent,
+		rx.Commentary,
+		rx.nameCategory,
+		rx.quantity,
+		rx.unitaryCost,
+		rx.unitaryPrice,
+		(rx.unitaryCost * rx.quantity) as cost,
+		(rx.unitaryPrice * rx.quantity) as amount,
+		(rx.unitaryPrice * rx.quantity) + (rx.iva * rx.quantity)  as amountConIva,
+		(rx.unitaryPrice * rx.quantity) - (rx.unitaryCost * rx.quantity)    as utilidad,
+		(rx.iva) as iva,
+		(rx.quantity * rx.iva) as ivaTotal,
+		varCurrencyReporte,
+		rx.currencyID,
+		rx.exchangeRate,
+		rx.amountCommision
+	from
+		(
+				select
+					usr.userID,
+					usr.nickname,
+					tm.transactionNumber,
+					IFNULL(CONCAT(nat_emp.firstName,' ',nat_emp.lastName),'') as employerName,
+					tc.name as tipo,
+					tm.transactionOn,
+					cus.customerNumber,
+					concat(nat_cus.firstName,' ', nat_cus.lastName) as legalName ,
+					ci.name as zone,
+					i.itemNumber,
+					i.name as itemName,
+					tmd.itemNameLog,
+					cat.`name` as nameCategory,
+					cus.phoneNumber,
+					'' AS Agent,
+					'' as Commentary,
+					tmd.quantity,
+					tm.currencyID,
+					tm.exchangeRate,
+					tm.createdOn,
+					cur.`name` as currencyName,
+					tm.note as note,
+
+					case
+						when varCurrencyReporte = tm.currencyID then
+							tmd.unitaryPrice
+						when tm.exchangeRate > 1 then
+							tm.exchangeRate * (tmd.unitaryPrice)
+						else
+							(1/tm.exchangeRate) * (tmd.unitaryPrice)
+					end unitaryPrice,
+
+
+
+					case
+						when varCurrencyReporte = tm.currencyID  then
+							tmd.unitaryCost
+						when tm.exchangeRate > 1 then
+							tm.exchangeRate *  tmd.unitaryCost
+						else
+						  (1/tm.exchangeRate) *   tmd.unitaryCost
+					end  unitaryCost ,
+
+
+					case
+						when varCurrencyReporte = tm.currencyID  then
+							IFNULL(tmd.tax1,0)
+						when tm.exchangeRate > 1 then
+							tm.exchangeRate *  IFNULL(tmd.tax1,0)
+						else
+						  (1/tm.exchangeRate) *   IFNULL(tmd.tax1,0)
+					end as iva ,
+
+
+					case
+						when varCurrencyReporte = tm.currencyID  then
+							IFNULL(amountCommision,0)
+						when tm.exchangeRate > 1 then
+							tm.exchangeRate *  IFNULL(amountCommision,0)
+						else
+						  (1/tm.exchangeRate) *   IFNULL(amountCommision,0)
+					end  as amountCommision
+
+				from
+					tb_transaction_master tm
+					inner join tb_transaction_master_detail tmd on
+						tm.companyID = tmd.companyID and
+						tm.transactionID = tmd.transactionID and
+						tm.transactionMasterID = tmd.transactionMasterID
+					inner join tb_transaction_master_detail_references tmdr on
+						tmd.transactionMasterDetailID = tmdr.transactionMasterDetailID
+
+					inner join tb_currency cur on
+						cur.currencyID = tm.currencyID
+					inner join tb_transaction_causal tc on
+						tm.transactionCausalID = tc.transactionCausalID
+					inner join tb_customer cus on
+						tm.entityID = cus.entityID
+					inner join tb_legal l on
+						cus.entityID = l.entityID
+					inner join tb_naturales nat_cus on
+						nat_cus.entityID   = l.entityID
+					inner join tb_user usr on
+						tm.createdBy = usr.userID
+					inner join tb_workflow_stage ws on
+						tm.statusID = ws.workflowStageID
+					inner join tb_transaction_master_info tmi on
+						tm.companyID = tmi.companyID and
+						tm.transactionID = tmi.transactionID and
+						tm.transactionMasterID = tmi.transactionMasterID
+					inner join tb_catalog_item ci on
+						tmi.zoneID = ci.catalogItemID
+					inner join tb_item i on
+						tmd.componentItemID = i.itemID
+					inner join tb_item_category cat on
+						cat.inventoryCategoryID = i.inventoryCategoryID
+					inner join tb_naturales nat_emp on
+						nat_emp.entityID = tmdr.sales
+				where
+					tm.companyID = prCompanyID and
+					tm.createdOn between prStartOn  and concat(prEndOn,' 23:59:59')   and
+					tm.isActive = 1 and
+					tmd.isActive = 1 and
+					ws.aplicable = 1 and
+					(
+						prInventoryCategoryID = 0
+						or
+						(prInventoryCategoryID != 0 and i.inventoryCategoryID = prInventoryCategoryID )
+					) and
+					(
+						prWarehouse = 0
+						or
+						(
+							prWarehouse != 0 and
+							tm.sourceWarehouseID =  prWarehouse
+					  )
+					)
+				order by
+					tm.transactionMasterID asc, tmd.transactionMasterDetailID asc
+
+		) rx;
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP PROCEDURE IF EXISTS `pr_sales_get_report_sales_detail_out_of_range` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` PROCEDURE `pr_sales_get_report_sales_detail_out_of_range`(IN `prCompanyID` INT, IN `prTokenID` VARCHAR(50), 	IN `prUserID` INT, IN `prStartOn` DATE, IN `prEndOn` DATE,IN prInventoryCategoryID INT, IN prWarehouse INT ,
+IN prUserIDCreatedBy INT,  IN prTransactionCausalName VARCHAR(50))
+  MODIFIES SQL DATA
+  SQL SECURITY INVOKER
+  COMMENT 'Detalle de ventas'
+BEGIN
+
+	DECLARE varCurrencyCompras INT DEFAULT 0;
+	DECLARE varCurrencyReporte INT DEFAULT 0;
+
+	DECLARE currencyIDNameCompra VARCHAR(250);
+	DECLARE currencyIDNameReporte VARCHAR(250);
+
+	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_FUNCTION",currencyIDNameCompra);
+	CALL pr_core_get_parameter_value(prCompanyID,"ACCOUNTING_CURRENCY_NAME_REPORT",currencyIDNameReporte);
+
+	SET varCurrencyCompras 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameCompra);
+	SET varCurrencyReporte 			= (SELECT currencyID FROM tb_currency where name = currencyIDNameReporte);
+
+
+	SELECT
+			rx.transactionOn ,
+			rx.transactionNumber,
+			rx.currencyName,
+			rx.createdByName,
+			rx.causalName,
+			rx.firstName,
+			rx.productNumber,
+			rx.productName,
+			round(rx.transactionQuantity,2) as transactionQuantity,
+
+			round(rx.transactionPrice,2) as transactionPrice,
+			round(rx.transactionPrice1,2) as transactionPrice1,
+			round(rx.transactionDifPrice,2) as transactionDifPrice,
+			round((rx.transactionDifPrice *  rx.transactionQuantity ),2) as transactionDifPriceTotal
+	FROM
+		(
+				select
+					tm.transactionOn ,
+					tm.transactionNumber,
+					cur.name as currencyName,
+					usr.nickname as createdByName,
+					tc.`name` as causalName,
+					vender_tecnico.firstName,
+					i.itemNumber as productNumber,
+					i.`name` as productName,
+					tmd.quantity as transactionQuantity,
+
+					case
+						when varCurrencyReporte = tm.currencyID then
+							tmd.unitaryPrice
+						when tm.exchangeRate > 1 then
+							tm.exchangeRate * (tmd.unitaryPrice)
+						else
+							(1/tm.exchangeRate) * (tmd.unitaryPrice)
+					end transactionPrice,
+
+
+					case
+						when varCurrencyReporte = tm.currencyID then
+							tmdr.precio1
+						when tm.exchangeRate > 1 then
+							tm.exchangeRate * (tmdr.precio1)
+						else
+							(1/tm.exchangeRate) * (tmdr.precio1)
+					end transactionPrice1,
+
+
+					(
+						case
+							when varCurrencyReporte = tm.currencyID then
+								tmd.unitaryPrice
+							when tm.exchangeRate > 1 then
+								tm.exchangeRate * (tmd.unitaryPrice)
+							else
+								(1/tm.exchangeRate) * (tmd.unitaryPrice)
+						end
+						-
+						case
+							when varCurrencyReporte = tm.currencyID then
+								tmdr.precio1
+							when tm.exchangeRate > 1 then
+								tm.exchangeRate * (tmdr.precio1)
+							else
+								(1/tm.exchangeRate) * (tmdr.precio1)
+						end
+					) transactionDifPrice
+
+
+				from
+					tb_transaction_master tm
+					inner join tb_currency cur on
+						cur.currencyID = tm.currencyID
+					inner join tb_transaction_causal tc on
+						tm.transactionCausalID = tc.transactionCausalID
+					inner join tb_customer cus on
+						tm.entityID = cus.entityID
+					inner join tb_legal l on
+						cus.entityID = l.entityID
+					inner join tb_naturales nat_cus on
+						nat_cus.entityID   = l.entityID
+					inner join tb_user usr on
+						tm.createdBy = usr.userID
+					inner join tb_workflow_stage ws on
+						tm.statusID = ws.workflowStageID
+
+
+					inner join tb_transaction_master_detail tmd on
+						tm.companyID = tmd.companyID and
+						tm.transactionID = tmd.transactionID and
+						tm.transactionMasterID = tmd.transactionMasterID
+					inner join tb_transaction_master_detail_references tmdr on
+								tmdr.transactionMasterDetailID = tmd.transactionMasterDetailID
+
+					inner join tb_naturales vender_tecnico on
+						vender_tecnico.entityID = tmdr.sales
+					inner join tb_item i on
+						tmd.componentItemID = i.itemID
+					inner join tb_item_category cat on
+						cat.inventoryCategoryID = i.inventoryCategoryID
+
+				where
+					tm.companyID = prCompanyID and
+					tm.createdOn between prStartOn  and concat(prEndOn,' 23:59:59')   and
+					tm.isActive = 1 and
+					tmd.isActive = 1 and
+					ws.aplicable = 1 and
+					tm.transactionID in (19 /*FACTURA*/ ) and
+					(
+						( UPPER(prTransactionCausalName) = UPPER('TODAS')) or
+						(
+						  UPPER(prTransactionCausalName) != UPPER('TODAS') and
+							UPPER(prTransactionCausalName) = UPPER(tc.`name`)
+						)
+					) and
+					(
+						prInventoryCategoryID = 0
+						or
+						(prInventoryCategoryID != 0 and i.inventoryCategoryID = prInventoryCategoryID )
+					) and
+					(
+						prWarehouse = 0
+						or
+						(
+							prWarehouse != 0 and
+							tm.sourceWarehouseID =  prWarehouse
+					  )
+					) and
+					(
+						prUserIDCreatedBy = 0
+						or
+						(
+							prUserIDCreatedBy != 0 and
+							prUserIDCreatedBy = tm.createdBy
+						)
+					)
+				order by
+					tm.transactionMasterID asc, tmd.transactionMasterDetailID asc
+		) rx
+	where
+		rx.transactionDifPrice != 0 ;
+
+
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP FUNCTION IF EXISTS `fn_get_nombre_del_dia` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `fn_get_nombre_del_dia`(fecha DATE)
+ RETURNS varchar(20) CHARSET utf8mb4 COLLATE utf8mb4_general_ci
+  DETERMINISTIC
+BEGIN
+    DECLARE nombre_dia VARCHAR(20);
+
+    -- Aseguramos que el idioma sea español
+    SET lc_time_names = 'es_ES';
+
+    -- Obtenemos el nombre del día en español
+    SET nombre_dia = DAYNAME(fecha);
+
+    -- Reemplazamos tildes por letras sin acento
+    SET nombre_dia = REPLACE(nombre_dia, 'á', 'a');
+    SET nombre_dia = REPLACE(nombre_dia, 'é', 'e');
+    SET nombre_dia = REPLACE(nombre_dia, 'í', 'i');
+    SET nombre_dia = REPLACE(nombre_dia, 'ó', 'o');
+    SET nombre_dia = REPLACE(nombre_dia, 'ú', 'u');
+
+    RETURN nombre_dia;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'NO_ZERO_IN_DATE,NO_ZERO_DATE,NO_ENGINE_SUBSTITUTION' */ ;
+/*!50003 DROP FUNCTION IF EXISTS `fn_get_number_phone` */;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+DELIMITER ;;
+CREATE DEFINER=`root`@`localhost` FUNCTION `fn_get_number_phone`(prCompanyID INT,
+    prPhone VARCHAR(255))
+ RETURNS varchar(50) CHARSET utf8mb4 COLLATE utf8mb4_general_ci
+  DETERMINISTIC
+BEGIN
+    DECLARE vResult VARCHAR(255);
+
+    -- 1. Quitar espacios y caracteres + ( ) #
+    SET vResult = REGEXP_REPLACE(prPhone, '[\\s\\+\\(\\)\\#]', '');
+
+    -- 2. Si contiene ".us"
+    IF LOCATE('.us', vResult) > 0 THEN
+
+        -- dejar solo números
+        SET vResult = REGEXP_REPLACE(vResult, '[^0-9]', '');
+
+        -- si tiene 11 dígitos y empieza con 505 quitar el 505
+        IF LENGTH(vResult) = 11 AND LEFT(vResult,3) = '505' THEN
+            SET vResult = SUBSTRING(vResult,4);
+        END IF;
+		ELSE
+
+        -- si no contiene .us, validar directamente
+        IF LENGTH(vResult) = 11 AND LEFT(vResult,3) = '505' THEN
+            SET vResult = SUBSTRING(vResult,4);
+        END IF;
+
+    END IF;
+
+    RETURN vResult;
+END ;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 --
 -- Final view structure for view `vw_contabilidad_comprobantes`
 --
@@ -34586,7 +32781,199 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `vw_cxc_customer_list_real_estate` AS select `c`.`entityID` AS `entityID`,case when `ws`.`name` = 'NO CERRADO' then concat(' <span style="font-weight: bold;color:red" >',`c`.`customerNumber`,'</span>') when `ws`.`name` = 'CERRADO' then concat(' <span style="font-weight: bold;color:#00FF00" >',`c`.`customerNumber`,'</span>') when `ws`.`name` = 'PROCESO DE CIERRE' then concat(' <span style="font-weight: bold;color:#00FF00" >',`c`.`customerNumber`,'</span>') else `c`.`customerNumber` end AS `Codigo`,`c`.`dateContract` AS `Contacto`,case when `ws`.`name` = 'NO CERRADO' then concat(' <span style="font-weight: bold;color:red" >',cast(`c`.`modifiedOn` as date),'</span>') when `ws`.`name` = 'CERRADO' then concat(' <span style="font-weight: bold;color:#00FF00" >',cast(`c`.`modifiedOn` as date),'</span>') when `ws`.`name` = 'PROCESO DE CIERRE' then concat(' <span style="font-weight: bold;color:#00FF00" >',cast(`c`.`modifiedOn` as date),'</span>') else cast(`c`.`modifiedOn` as date) end AS `Modificacion`,case when `ws`.`name` = 'NO CERRADO' then concat(' <span style="font-weight: bold;color:red" >',`nat`.`firstName`,'</span>') when `ws`.`name` = 'CERRADO' then concat(' <span style="font-weight: bold;color:#00FF00" >',`nat`.`firstName`,'</span>') when `ws`.`name` = 'PROCESO DE CIERRE' then concat(' <span style="font-weight: bold;color:#00FF00" >',`nat`.`firstName`,'</span>') else `nat`.`firstName` end AS `Cliente`,case when `ws`.`name` = 'NO CERRADO' then concat(' <span style="font-weight: bold;color:red" >',`sex`.`name`,'</span>') when `ws`.`name` = 'CERRADO' then concat(' <span style="font-weight: bold;color:#00FF00" >',`sex`.`name`,'</span>') when `ws`.`name` = 'PROCESO DE CIERRE' then concat(' <span style="font-weight: bold;color:#00FF00" >',`sex`.`name`,'</span>') else `sex`.`name` end AS `Sexo`,case when `ws`.`name` = 'NO CERRADO' then concat(' <span style="font-weight: bold;color:red" >',ifnull((select min(`ue`.`email`) from `tb_entity_email` `ue` where `ue`.`entityID` = `c`.`entityID`),''),'</span>') when `ws`.`name` = 'CERRADO' then concat(' <span style="font-weight: bold;color:#00FF00" >',ifnull((select min(`ue`.`email`) from `tb_entity_email` `ue` where `ue`.`entityID` = `c`.`entityID`),''),'</span>') when `ws`.`name` = 'PROCESO DE CIERRE' then concat(' <span style="font-weight: bold;color:#00FF00" >',ifnull((select min(`ue`.`email`) from `tb_entity_email` `ue` where `ue`.`entityID` = `c`.`entityID`),''),'</span>') else ifnull((select min(`ue`.`email`) from `tb_entity_email` `ue` where `ue`.`entityID` = `c`.`entityID`),'') end AS `Email`,case when `ws`.`name` = 'ACTIVO' then concat(' <span style="font-weight: bold;color:#000000" >',`ws`.`name`,'</span>') when `ws`.`name` = 'INACTIVO' then concat(' <span style="font-weight: bold;color:red" >',`ws`.`name`,'</span>') when `ws`.`name` = 'NO CERRADO' then concat(' <span style="font-weight: bold;color:red" >',`ws`.`name`,'</span>') when `ws`.`name` = 'CERRADO' then concat(' <span style="font-weight: bold;color:#00FF00" >',`ws`.`name`,'</span>') when `ws`.`name` = 'EN CONTACTACION' then concat(' <span style="font-weight: bold;color:#000000" >',`ws`.`name`,'</span>') when `ws`.`name` = 'SEGUIMIENTO' then concat(' <span style="font-weight: bold;color:yellow" >',`ws`.`name`,'</span>') when `ws`.`name` = 'PROCESO DE CIERRE' then concat(' <span style="font-weight: bold;color:#00FF00" >',`ws`.`name`,'</span>') else concat(' <span style="font-weight: bold;color:" >',`ws`.`name`,'</span>') end AS `Estado`,case when `ws`.`name` = 'NO CERRADO' then concat(' <span style="font-weight: bold;color:red" >',`clas`.`name`,'</span>') when `ws`.`name` = 'CERRADO' then concat(' <span style="font-weight: bold;color:#00FF00" >',`clas`.`name`,'</span>') when `ws`.`name` = 'PROCESO DE CIERRE' then concat(' <span style="font-weight: bold;color:#00FF00" >',`clas`.`name`,'</span>') else `clas`.`name` end AS `Clasificacion`,case when `ws`.`name` = 'NO CERRADO' then concat(' <span style="font-weight: bold;color:red" >',`cat`.`name`,'</span>') when `ws`.`name` = 'CERRADO' then concat(' <span style="font-weight: bold;color:#00FF00" >',`cat`.`name`,'</span>') when `ws`.`name` = 'PROCESO DE CIERRE' then concat(' <span style="font-weight: bold;color:#00FF00" >',`cat`.`name`,'</span>') else `cat`.`name` end AS `Categoria`,case when `ws`.`name` = 'NO CERRADO' then concat(' <span style="font-weight: bold;color:red" >',`c`.`budget`,'</span>') when `ws`.`name` = 'CERRADO' then concat(' <span style="font-weight: bold;color:#00FF00" >',`c`.`budget`,'</span>') when `ws`.`name` = 'PROCESO DE CIERRE' then concat(' <span style="font-weight: bold;color:#00FF00" >',`c`.`budget`,'</span>') else `c`.`budget` end AS `Presupuesto`,case when `ws`.`name` = 'NO CERRADO' then concat(' <span style="font-weight: bold;color:red" >',`c`.`phoneNumber`,'</span>') when `ws`.`name` = 'CERRADO' then concat(' <span style="font-weight: bold;color:#00FF00" >',`c`.`phoneNumber`,'</span>') when `ws`.`name` = 'PROCESO DE CIERRE' then concat(' <span style="font-weight: bold;color:#00FF00" >',`c`.`phoneNumber`,'</span>') else `c`.`phoneNumber` end AS `Telefono`,case when `ws`.`name` = 'NO CERRADO' then concat(' <span style="font-weight: bold;color:red" >',`c`.`location`,'</span>') when `ws`.`name` = 'CERRADO' then concat(' <span style="font-weight: bold;color:#00FF00" >',`c`.`location`,'</span>') when `ws`.`name` = 'PROCESO DE CIERRE' then concat(' <span style="font-weight: bold;color:#00FF00" >',`c`.`location`,'</span>') else `c`.`location` end AS `Ubicacion Interes`,case when `ws`.`name` = 'NO CERRADO' then concat(' <span style="font-weight: bold;color:red" >',ifnull(`agent`.`firstName`,'N/D'),'</span>') when `ws`.`name` = 'CERRADO' then concat(' <span style="font-weight: bold;color:#00FF00" >',ifnull(`agent`.`firstName`,'N/D'),'</span>') when `ws`.`name` = 'PROCESO DE CIERRE' then concat(' <span style="font-weight: bold;color:#00FF00" >',ifnull(`agent`.`firstName`,'N/D'),'</span>') else ifnull(`agent`.`firstName`,'N/D') end AS `Agente`,case when `ws`.`name` = 'NO CERRADO' then concat(' <span style="font-weight: bold;color:red" >',`c`.`reference1`,'</span>') when `ws`.`name` = 'CERRADO' then concat(' <span style="font-weight: bold;color:#00FF00" >',`c`.`reference1`,'</span>') when `ws`.`name` = 'PROCESO DE CIERRE' then concat(' <span style="font-weight: bold;color:#00FF00" >',`c`.`reference1`,'</span>') else `c`.`reference1` end AS `Encuentra 24`,case when `ws`.`name` = 'NO CERRADO' then concat(' <span style="font-weight: bold;color:red" >',`c`.`reference2`,'</span>') when `ws`.`name` = 'CERRADO' then concat(' <span style="font-weight: bold;color:#00FF00" >',`c`.`reference2`,'</span>') when `ws`.`name` = 'PROCESO DE CIERRE' then concat(' <span style="font-weight: bold;color:#00FF00" >',`c`.`reference2`,'</span>') else `c`.`reference2` end AS `Mensaje`,case when `ws`.`name` = 'NO CERRADO' then concat(' <span style="font-weight: bold;color:red" >',`c`.`reference3`,'</span>') when `ws`.`name` = 'CERRADO' then concat(' <span style="font-weight: bold;color:#00FF00" >',`c`.`reference3`,'</span>') when `ws`.`name` = 'PROCESO DE CIERRE' then concat(' <span style="font-weight: bold;color:#00FF00" >',`c`.`reference3`,'</span>') else `c`.`reference3` end AS `Comentario 1`,case when `ws`.`name` = 'NO CERRADO' then concat(' <span style="font-weight: bold;color:red" >',`c`.`reference4`,'</span>') when `ws`.`name` = 'CERRADO' then concat(' <span style="font-weight: bold;color:#00FF00" >',`c`.`reference4`,'</span>') when `ws`.`name` = 'PROCESO DE CIERRE' then concat(' <span style="font-weight: bold;color:#00FF00" >',`c`.`reference4`,'</span>') else `c`.`reference4` end AS `Comentario 2`,case when `ws`.`name` = 'NO CERRADO' then concat(' <span style="font-weight: bold;color:red" >',`c`.`reference5`,'</span>') when `ws`.`name` = 'CERRADO' then concat(' <span style="font-weight: bold;color:#00FF00" >',`c`.`reference5`,'</span>') when `ws`.`name` = 'PROCESO DE CIERRE' then concat(' <span style="font-weight: bold;color:#00FF00" >',`c`.`reference5`,'</span>') else `c`.`reference5` end AS `Ubicacion`,case when `ws`.`name` = 'NO CERRADO' then concat(' <span style="font-weight: bold;color:red" >',`cont`.`name`,'</span>') when `ws`.`name` = 'CERRADO' then concat(' <span style="font-weight: bold;color:#00FF00" >',`cont`.`name`,'</span>') when `ws`.`name` = 'PROCESO DE CIERRE' then concat(' <span style="font-weight: bold;color:#00FF00" >',`cont`.`name`,'</span>') else `cont`.`name` end AS `Forma de contacto` from (((((((`tb_customer` `c` join `tb_workflow_stage` `ws` on(`ws`.`workflowStageID` = `c`.`statusID`)) join `tb_naturales` `nat` on(`c`.`entityID` = `nat`.`entityID`)) join `tb_catalog_item` `sex` on(`sex`.`catalogItemID` = `c`.`sexoID`)) join `tb_catalog_item` `clas` on(`clas`.`catalogItemID` = `c`.`clasificationID`)) join `tb_catalog_item` `cat` on(`cat`.`catalogItemID` = `c`.`categoryID`)) join `tb_catalog_item` `cont` on(`cont`.`catalogItemID` = `c`.`formContactID`)) left join `tb_naturales` `agent` on(`agent`.`entityID` = `c`.`entityContactID`)) where `c`.`isActive` = 1 and `c`.`companyID` = 2 order by `c`.`createdOn` desc */;
+/*!50001 VIEW `vw_cxc_customer_list_real_estate` AS SELECT
+	`c`.`entityID` AS `entityID`,
+CASE
+
+		WHEN `ws`.`name` = 'NO CERRADO' THEN
+		concat( ' <span style="font-weight: bold;color:red" >', `c`.`customerNumber`, '</span>' )
+	WHEN `ws`.`name` = 'CERRADO' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `c`.`customerNumber`, '</span>' )
+	WHEN `ws`.`name` = 'PROCESO DE CIERRE' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `c`.`customerNumber`, '</span>' ) ELSE `c`.`customerNumber`
+END AS `Codigo`,
+`c`.`dateContract` AS `Contacto`,
+CASE
+
+		WHEN `ws`.`name` = 'NO CERRADO' THEN
+		concat( ' <span style="font-weight: bold;color:red" >', cast( `c`.`modifiedOn` AS DATE ), '</span>' )
+	WHEN `ws`.`name` = 'CERRADO' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', cast( `c`.`modifiedOn` AS DATE ), '</span>' )
+	WHEN `ws`.`name` = 'PROCESO DE CIERRE' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', cast( `c`.`modifiedOn` AS DATE ), '</span>' ) ELSE cast( `c`.`modifiedOn` AS DATE )
+END AS `Modificacion`,
+CASE
+
+		WHEN `ws`.`name` = 'NO CERRADO' THEN
+		concat( ' <span style="font-weight: bold;color:red" >', `nat`.`firstName`, '</span>' )
+	WHEN `ws`.`name` = 'CERRADO' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `nat`.`firstName`, '</span>' )
+	WHEN `ws`.`name` = 'PROCESO DE CIERRE' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `nat`.`firstName`, '</span>' ) ELSE `nat`.`firstName`
+END AS `Cliente`,
+CASE
+
+		WHEN `ws`.`name` = 'NO CERRADO' THEN
+		concat( ' <span style="font-weight: bold;color:red" >', `sex`.`name`, '</span>' )
+	WHEN `ws`.`name` = 'CERRADO' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `sex`.`name`, '</span>' )
+	WHEN `ws`.`name` = 'PROCESO DE CIERRE' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `sex`.`name`, '</span>' ) ELSE `sex`.`name`
+END AS `Sexo`,
+CASE
+
+		WHEN `ws`.`name` = 'NO CERRADO' THEN
+		concat( ' <span style="font-weight: bold;color:red" >', ifnull(( SELECT min( `ue`.`email` ) FROM `tb_entity_email` `ue` WHERE `ue`.`entityID` = `c`.`entityID` ), '' ), '</span>' )
+	WHEN `ws`.`name` = 'CERRADO' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', ifnull(( SELECT min( `ue`.`email` ) FROM `tb_entity_email` `ue` WHERE `ue`.`entityID` = `c`.`entityID` ), '' ), '</span>' )
+	WHEN `ws`.`name` = 'PROCESO DE CIERRE' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', ifnull(( SELECT min( `ue`.`email` ) FROM `tb_entity_email` `ue` WHERE `ue`.`entityID` = `c`.`entityID` ), '' ), '</span>' ) ELSE ifnull(( SELECT min( `ue`.`email` ) FROM `tb_entity_email` `ue` WHERE `ue`.`entityID` = `c`.`entityID` ), '' )
+END AS `Email`,
+CASE
+
+		WHEN `ws`.`name` = 'ACTIVO' THEN
+		concat( ' <span style="font-weight: bold;color:#000000" >', `ws`.`name`, '</span>' )
+	WHEN `ws`.`name` = 'INACTIVO' THEN
+	concat( ' <span style="font-weight: bold;color:red" >', `ws`.`name`, '</span>' )
+	WHEN `ws`.`name` = 'NO CERRADO' THEN
+	concat( ' <span style="font-weight: bold;color:red" >', `ws`.`name`, '</span>' )
+	WHEN `ws`.`name` = 'CERRADO' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `ws`.`name`, '</span>' )
+	WHEN `ws`.`name` = 'EN CONTACTACION' THEN
+	concat( ' <span style="font-weight: bold;color:#000000" >', `ws`.`name`, '</span>' )
+	WHEN `ws`.`name` = 'SEGUIMIENTO' THEN
+	concat( ' <span style="font-weight: bold;color:yellow" >', `ws`.`name`, '</span>' )
+	WHEN `ws`.`name` = 'PROCESO DE CIERRE' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `ws`.`name`, '</span>' ) ELSE concat( ' <span style="font-weight: bold;color:" >', `ws`.`name`, '</span>' )
+END AS `Estado`,
+CASE
+
+		WHEN `ws`.`name` = 'NO CERRADO' THEN
+		concat( ' <span style="font-weight: bold;color:red" >', `clas`.`name`, '</span>' )
+	WHEN `ws`.`name` = 'CERRADO' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `clas`.`name`, '</span>' )
+	WHEN `ws`.`name` = 'PROCESO DE CIERRE' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `clas`.`name`, '</span>' ) ELSE `clas`.`name`
+END AS `Clasificacion`,
+CASE
+
+		WHEN `ws`.`name` = 'NO CERRADO' THEN
+		concat( ' <span style="font-weight: bold;color:red" >', `cat`.`name`, '</span>' )
+	WHEN `ws`.`name` = 'CERRADO' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `cat`.`name`, '</span>' )
+	WHEN `ws`.`name` = 'PROCESO DE CIERRE' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `cat`.`name`, '</span>' ) ELSE `cat`.`name`
+END AS `Categoria`,
+CASE
+
+		WHEN `ws`.`name` = 'NO CERRADO' THEN
+		concat( ' <span style="font-weight: bold;color:red" >', `c`.`budget`, '</span>' )
+	WHEN `ws`.`name` = 'CERRADO' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `c`.`budget`, '</span>' )
+	WHEN `ws`.`name` = 'PROCESO DE CIERRE' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `c`.`budget`, '</span>' ) ELSE `c`.`budget`
+END AS `Presupuesto`,
+CASE
+
+		WHEN `ws`.`name` = 'NO CERRADO' THEN
+		concat( ' <span style="font-weight: bold;color:red" >', `c`.`phoneNumber`, '</span>' )
+	WHEN `ws`.`name` = 'CERRADO' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `c`.`phoneNumber`, '</span>' )
+	WHEN `ws`.`name` = 'PROCESO DE CIERRE' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `c`.`phoneNumber`, '</span>' ) ELSE `c`.`phoneNumber`
+END AS `Telefono`,
+CASE
+
+		WHEN `ws`.`name` = 'NO CERRADO' THEN
+		concat( ' <span style="font-weight: bold;color:red" >', `c`.`location`, '</span>' )
+	WHEN `ws`.`name` = 'CERRADO' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `c`.`location`, '</span>' )
+	WHEN `ws`.`name` = 'PROCESO DE CIERRE' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `c`.`location`, '</span>' ) ELSE `c`.`location`
+END AS `Ubicacion Interes`,
+CASE
+
+		WHEN `ws`.`name` = 'NO CERRADO' THEN
+		concat( ' <span style="font-weight: bold;color:red" >', ifnull( `agent`.`firstName`, 'N/D' ), '</span>' )
+	WHEN `ws`.`name` = 'CERRADO' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', ifnull( `agent`.`firstName`, 'N/D' ), '</span>' )
+	WHEN `ws`.`name` = 'PROCESO DE CIERRE' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', ifnull( `agent`.`firstName`, 'N/D' ), '</span>' ) ELSE ifnull( `agent`.`firstName`, 'N/D' )
+END AS `Agente`,
+CASE
+
+		WHEN `ws`.`name` = 'NO CERRADO' THEN
+		concat( ' <span style="font-weight: bold;color:red" >', `c`.`reference1`, '</span>' )
+	WHEN `ws`.`name` = 'CERRADO' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `c`.`reference1`, '</span>' )
+	WHEN `ws`.`name` = 'PROCESO DE CIERRE' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `c`.`reference1`, '</span>' ) ELSE `c`.`reference1`
+END AS `Encuentra 24`,
+CASE
+
+		WHEN `ws`.`name` = 'NO CERRADO' THEN
+		concat( ' <span style="font-weight: bold;color:red" >', `c`.`reference2`, '</span>' )
+	WHEN `ws`.`name` = 'CERRADO' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `c`.`reference2`, '</span>' )
+	WHEN `ws`.`name` = 'PROCESO DE CIERRE' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `c`.`reference2`, '</span>' ) ELSE `c`.`reference2`
+END AS `Mensaje`,
+CASE
+
+		WHEN `ws`.`name` = 'NO CERRADO' THEN
+		concat( ' <span style="font-weight: bold;color:red" >', `c`.`reference3`, '</span>' )
+	WHEN `ws`.`name` = 'CERRADO' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `c`.`reference3`, '</span>' )
+	WHEN `ws`.`name` = 'PROCESO DE CIERRE' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `c`.`reference3`, '</span>' ) ELSE `c`.`reference3`
+END AS `Comentario 1`,
+CASE
+
+		WHEN `ws`.`name` = 'NO CERRADO' THEN
+		concat( ' <span style="font-weight: bold;color:red" >', `c`.`reference4`, '</span>' )
+	WHEN `ws`.`name` = 'CERRADO' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `c`.`reference4`, '</span>' )
+	WHEN `ws`.`name` = 'PROCESO DE CIERRE' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `c`.`reference4`, '</span>' ) ELSE `c`.`reference4`
+END AS `Comentario 2`,
+CASE
+
+		WHEN `ws`.`name` = 'NO CERRADO' THEN
+		concat( ' <span style="font-weight: bold;color:red" >', `c`.`reference5`, '</span>' )
+	WHEN `ws`.`name` = 'CERRADO' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `c`.`reference5`, '</span>' )
+	WHEN `ws`.`name` = 'PROCESO DE CIERRE' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `c`.`reference5`, '</span>' ) ELSE `c`.`reference5`
+END AS `Ubicacion`,
+CASE
+
+		WHEN `ws`.`name` = 'NO CERRADO' THEN
+		concat( ' <span style="font-weight: bold;color:red" >', `cont`.`name`, '</span>' )
+	WHEN `ws`.`name` = 'CERRADO' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `cont`.`name`, '</span>' )
+	WHEN `ws`.`name` = 'PROCESO DE CIERRE' THEN
+	concat( ' <span style="font-weight: bold;color:#00FF00" >', `cont`.`name`, '</span>' ) ELSE `cont`.`name`
+END AS `Forma de contacto` ,
+
+sb_cat.`name`  as `Sub Categoria` ,
+sb_cat.catalogItemID as subCategoryID
+
+FROM
+	((((((((
+								    `tb_customer` `c`
+								  JOIN `tb_workflow_stage` `ws` ON ( `ws`.`workflowStageID` = `c`.`statusID` ))
+							  JOIN `tb_naturales` `nat` ON ( `c`.`entityID` = `nat`.`entityID` ))
+						  JOIN `tb_catalog_item` `sex` ON ( `sex`.`catalogItemID` = `c`.`sexoID` ))
+					  JOIN `tb_catalog_item` `clas` ON ( `clas`.`catalogItemID` = `c`.`clasificationID` ))
+				  JOIN `tb_catalog_item` `cat` ON ( `cat`.`catalogItemID` = `c`.`categoryID` ))
+				JOIN `tb_catalog_item` `sb_cat` ON ( `sb_cat`.`catalogItemID` = `c`.subCategoryID ))
+			JOIN `tb_catalog_item` `cont` ON ( `cont`.`catalogItemID` = `c`.`formContactID` ))
+	LEFT JOIN `tb_naturales` `agent` ON ( `agent`.`entityID` = `c`.`entityContactID` ))
+WHERE
+	`c`.`isActive` = 1
+	AND `c`.`companyID` = 2
+ORDER BY
+	`c`.`createdOn` DESC */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;
@@ -34712,7 +33099,124 @@ DELIMITER ;
 /*!50001 SET collation_connection      = utf8mb4_general_ci */;
 /*!50001 CREATE ALGORITHM=UNDEFINED */
 /*!50013 DEFINER=`root`@`localhost` SQL SECURITY DEFINER */
-/*!50001 VIEW `vw_inventory_list_item_real_estate` AS select `i`.`itemID` AS `Codigo interno`,concat('<a href="[[BASE_URL]]','/app_inventory_item/edit/companyID/',`i`.`companyID`,'/itemID/',`i`.`itemID`,'" ',' target="_blank" >',`i`.`itemID`,'</a>') AS `itemID`,date_format(`i`.`createdOn`,'%Y-%m-%d') AS `createdOn`,`i`.`itemNumber` AS `Codigo`,`i`.`name` AS `Nombre`,`i`.`barCode` AS `Pagina Web Url`,concat('',`i`.`barCode`,'') AS `Pagina Web`,if(ifnull(`i`.`isPerishable`,0) = 0,'No','Si') AS `Amueblado`,`i`.`capacity` AS `Aires`,`i`.`quantityMin` AS `Niveles`,`i`.`quantityMax` AS `Hora de visita`,`i`.`factorBox` AS `Baños`,`i`.`factorProgram` AS `Habitaciones`,`cat`.`name` AS `Diseño de propiedad`,`tipo`.`name` AS `Tipo de casa`,`pro`.`name` AS `Proposito`,'Dolares' AS `Moneda`,date_format(`i`.`createdOn`,'%Y-%m-%d') AS `Fecha de enlistamiento`,date_format(`i`.`modifiedOn`,'%Y-%m-%d') AS `Fecha de actualizacion`,(select `ii`.`price` from `tb_price` `ii` where `ii`.`itemID` = `i`.`itemID` and `ii`.`typePriceID` = 154 limit 1) AS `Precio Venta`,(select `ii`.`price` from `tb_price` `ii` where `ii`.`itemID` = `i`.`itemID` and `ii`.`typePriceID` = 155 limit 1) AS `Precio Renta`,if(ifnull(`i`.`isServices`,0) = 0,'No','Si') AS `Disponible`,`i`.`reference1` AS `Area de contruccion M2`,`i`.`reference2` AS `Area de terreno V2`,`i`.`reference3` AS `ID Encuentra 24`,if(ifnull(`i`.`realStateRoomBatchServices`,0) = 0,'No','Si') AS `Baño de servicio`,if(ifnull(`i`.`realStateRooBatchVisit`,0) = 0,'No','Si') AS `Baño de visita`,if(ifnull(`i`.`realStateRoomServices`,0) = 0,'No','Si') AS `Cuarto de servicio`,if(ifnull(`i`.`realStateWallInCloset`,0) = 0,'No','Si') AS `Walk in closet`,if(ifnull(`i`.`realStatePiscinaPrivate`,0) = 0,'No','Si') AS `Piscina privada`,if(ifnull(`i`.`realStateClubPiscina`,0) = 0,'No','Si') AS `Area club con piscina`,if(ifnull(`i`.`realStateAceptanMascota`,0) = 0,'No','Si') AS `Acepta mascota`,if(ifnull(`i`.`realStateContractCorrentaje`,0) = 0,'No','Si') AS `Corretaje`,if(ifnull(`i`.`realStatePlanReference`,0) = 0,'No','Si') AS `Plan de referido`,`i`.`realStateLinkYoutube` AS `Link Youtube Url`,concat('<a href="',`i`.`realStateLinkYoutube`,'"  target="_blank" >',`i`.`realStateLinkYoutube`,'</a>') AS `Link Youtube`,`i`.`realStateLinkPaginaWeb` AS `Pagina Web Link Url`,concat('<a href="',`i`.`realStateLinkPaginaWeb`,'" target="_blank" >',`i`.`realStateLinkPaginaWeb`,'</a>') AS `Pagina Web Link`,`i`.`realStateLinkPhontos` AS `Foto Url`,concat('<a href="',`i`.`realStateLinkPhontos`,'" target="_blank" >',`i`.`realStateLinkPhontos`,'</a>') AS `Foto`,`i`.`realStateLinkGoogleMaps` AS `Google Url`,concat('<a href="',`i`.`realStateLinkGoogleMaps`,'" target="_blank" >',`i`.`realStateLinkGoogleMaps`,'</a>') AS `Google`,`i`.`realStateLinkOther` AS `Otros Link Url`,concat('<a href="',`i`.`realStateLinkOther`,'"  target="_blank" >',`i`.`realStateLinkOther`,'</a>') AS `Otros Link`,`i`.`realStateStyleKitchen` AS `Estilo de cocina`,ifnull(`nat`.`firstName`,'N/D') AS `Agente`,`i`.`realStateReferenceZone` AS `Zona`,`i`.`realStateReferenceCondominio` AS `Condominio`,`i`.`realStateReferenceUbicacion` AS `Ubicacion`,`excl`.`name` AS `Exclusividad de agente`,`country`.`name` AS `Pais`,`state`.`name` AS `Estado`,`city`.`name` AS `Ciudad`,ifnull(`i`.`realStatePhone`,'') AS `Telefono`,`i`.`isActive` AS `isActive` from (((((((((`tb_item` `i` join `tb_item_category` `cat` on(`cat`.`inventoryCategoryID` = `i`.`inventoryCategoryID`)) join `tb_catalog_item` `tipo` on(`tipo`.`catalogItemID` = `i`.`familyID`)) join `tb_catalog_item` `pro` on(`pro`.`catalogItemID` = `i`.`displayID`)) join `tb_currency` `cur` on(`cur`.`currencyID` = `i`.`currencyID`)) left join `tb_naturales` `nat` on(`nat`.`entityID` = `i`.`realStateEmployerAgentID`)) join `tb_catalog_item` `excl` on(`excl`.`catalogItemID` = `i`.`realStateGerenciaExclusive`)) join `tb_catalog_item` `country` on(`country`.`catalogItemID` = `i`.`realStateCountryID`)) join `tb_catalog_item` `state` on(`state`.`catalogItemID` = `i`.`realStateStateID`)) join `tb_catalog_item` `city` on(`city`.`catalogItemID` = `i`.`realStateCityID`)) where `i`.`companyID` = 2 order by `i`.`createdOn` desc */;
+/*!50001 VIEW `vw_inventory_list_item_real_estate` AS SELECT
+	i.itemID AS `Codigo interno`,
+	CONCAT( '<a href="[[BASE_URL]]/app_inventory_item/edit/companyID/', i.companyID, '/itemID/', i.itemID, '" target="_blank">', i.itemID, '</a>' ) AS `itemID`,
+	DATE_FORMAT( i.createdOn, '%Y-%m-%d' ) AS `createdOn`,
+	i.itemNumber AS `Codigo`,
+	i.NAME AS `Nombre`,
+	i.barCode AS `Pagina Web Url`,
+	CONCAT( '', i.barCode, '' ) AS `Pagina Web`,
+IF
+	( IFNULL( i.isPerishable, 0 ) = 0, 'No', 'Si' ) AS `Amueblado`,
+	i.capacity AS `Aires`,
+	i.quantityMin AS `Niveles`,
+	i.quantityMax AS `Hora de visita`,
+	i.factorBox AS `Baños`,
+	i.factorProgram AS `Habitaciones`,
+	cat.NAME AS `Diseño de propiedad`,
+	tipo.NAME AS `Tipo de casa`,
+	pro.NAME AS `Proposito`,
+	'Dolares' AS `Moneda`,
+	DATE_FORMAT( i.createdOn, '%Y-%m-%d' ) AS `Fecha de enlistamiento`,
+	DATE_FORMAT( i.modifiedOn, '%Y-%m-%d' ) AS `Fecha de actualizacion`,
+	( SELECT ii.price FROM tb_price ii WHERE ii.itemID = i.itemID AND ii.typePriceID = 154 LIMIT 1 ) AS `Precio Venta`,
+	( SELECT ii.price FROM tb_price ii WHERE ii.itemID = i.itemID AND ii.typePriceID = 155 LIMIT 1 ) AS `Precio Renta`,
+IF
+	( IFNULL( i.isServices, 0 ) = 0, 'No', 'Si' ) AS `Disponible`,
+	i.reference1 AS `Area de contruccion M2`,
+	i.reference2 AS `Area de terreno V2`,
+	i.reference3 AS `ID Encuentra 24`,
+IF
+	( IFNULL( i.realStateRoomBatchServices, 0 ), 'Si', 'No' ) AS `Baño de servicio`,
+IF
+	( IFNULL( i.realStateRooBatchVisit, 0 ), 'Si', 'No' ) AS `Baño de visita`,
+IF
+	( IFNULL( i.realStateRoomServices, 0 ), 'Si', 'No' ) AS `Cuarto de servicio`,
+IF
+	( IFNULL( i.realStateWallInCloset, 0 ), 'Si', 'No' ) AS `Walk in closet`,
+IF
+	( IFNULL( i.realStatePiscinaPrivate, 0 ), 'Si', 'No' ) AS `Piscina privada`,
+IF
+	( IFNULL( i.realStateClubPiscina, 0 ), 'Si', 'No' ) AS `Area club con piscina`,
+IF
+	( IFNULL( i.realStateAceptanMascota, 0 ), 'Si', 'No' ) AS `Acepta mascota`,
+IF
+	( IFNULL( i.realStateContractCorrentaje, 0 ), 'Si', 'No' ) AS `Corretaje`,
+IF
+	( IFNULL( i.realStatePlanReference, 0 ), 'Si', 'No' ) AS `Plan de referido`,
+	i.realStateLinkYoutube AS `Link Youtube Url`,
+	CONCAT( '<a href="', i.realStateLinkYoutube, '" target="_blank">', i.realStateLinkYoutube, '</a>' ) AS `Link Youtube`,
+	i.realStateLinkPaginaWeb AS `Pagina Web Link Url`,
+	CONCAT( '<a href="', i.realStateLinkPaginaWeb, '" target="_blank">', i.realStateLinkPaginaWeb, '</a>' ) AS `Pagina Web Link`,
+	i.realStateLinkPhontos AS `Foto Url`,
+	CONCAT( '<a href="', i.realStateLinkPhontos, '" target="_blank">', i.realStateLinkPhontos, '</a>' ) AS `Foto`,
+	i.realStateLinkGoogleMaps AS `Google Url`,
+	CONCAT( '<a href="', i.realStateLinkGoogleMaps, '" target="_blank">', i.realStateLinkGoogleMaps, '</a>' ) AS `Google`,
+	i.realStateLinkOther AS `Otros Link Url`,
+	CONCAT( '<a href="', i.realStateLinkOther, '" target="_blank">', i.realStateLinkOther, '</a>' ) AS `Otros Link`,
+	i.realStateStyleKitchen AS `Estilo de cocina`,
+	IFNULL( nat.firstName, 'N/D' ) AS `Agente`,
+	nat.entityID as entityIDAgente,
+	i.realStateReferenceZone AS `Zona`,
+	i.realStateReferenceCondominio AS `Condominio`,
+	i.realStateReferenceUbicacion AS `Ubicacion`,
+	excl.NAME AS `Exclusividad de agente`,
+	country.NAME AS `Pais`,
+	state.NAME AS `Estado`,
+	city.NAME AS `Ciudad`,
+	IFNULL( i.realStatePhone, '' ) AS `Telefono`,
+	i.isActive AS `isActive`,
+	ws.NAME AS `Estado propiedad`,
+	ws.workflowStageID AS `Estado propiedad ID`,
+	cambioEstado.fechaVendidoRentado AS `Fecha de vendido o rentado`,
+CASE
+
+		WHEN cambioEstado.fechaVendidoRentado IS NULL THEN
+		DATEDIFF(
+			i.createdOn,
+		now()) ELSE DATEDIFF( cambioEstado.fechaVendidoRentado, i.createdOn )
+	END AS `Tasa de conversion vendido o rentado`
+FROM
+	tb_item i
+	JOIN tb_workflow_stage ws ON ws.workflowStageID = i.statusID
+	JOIN tb_item_category cat ON cat.inventoryCategoryID = i.inventoryCategoryID
+	JOIN tb_catalog_item tipo ON tipo.catalogItemID = i.familyID
+	JOIN tb_catalog_item pro ON pro.catalogItemID = i.displayID
+	JOIN tb_currency cur ON cur.currencyID = i.currencyID
+	LEFT JOIN tb_naturales nat ON nat.entityID = i.realStateEmployerAgentID
+	JOIN tb_catalog_item excl ON excl.catalogItemID = i.realStateGerenciaExclusive
+	JOIN tb_catalog_item country ON country.catalogItemID = i.realStateCountryID
+	JOIN tb_catalog_item state ON state.catalogItemID = i.realStateStateID
+	JOIN tb_catalog_item city ON city.catalogItemID = i.realStateCityID
+	LEFT JOIN (
+	SELECT
+		xc.elementItemID AS itemID,
+		xc.modifiedOn AS fechaVendidoRentado
+	FROM
+		tb_component_audit xc
+		INNER JOIN (
+		SELECT
+			c.elementItemID,
+			max( c.componentAuditID ) AS componentAuditID
+		FROM
+			tb_component_audit c
+		WHERE
+			c.elementID = 81
+
+		GROUP BY
+			c.elementItemID
+		) max ON max.componentAuditID = xc.componentAuditID
+		INNER JOIN tb_component_audit_detail xcc ON xcc.componentAuditID = xc.componentAuditID
+	WHERE
+		xcc.fieldID = 144 # and
+# xcc.newValue in (209 ,  210 )
+
+	) AS cambioEstado ON cambioEstado.itemID = i.itemID
+WHERE
+	i.companyID = 2
+ORDER BY
+	i.createdOn DESC */;
 /*!50001 SET character_set_client      = @saved_cs_client */;
 /*!50001 SET character_set_results     = @saved_cs_results */;
 /*!50001 SET collation_connection      = @saved_col_connection */;

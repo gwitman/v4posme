@@ -51,3 +51,12 @@ claude-agents/posme-pruebas.md
 claude-agents/posme-rutas.md
 claude-agents/posme-vistas.md
 claude-commands/cambio.md
+
+# Credenciales locales de base de datos para Claude (no versionar)
+.posme_claude.cnf
+
+# Cache de resultados de PHPUnit
+.phpunit.result.cache
+
+# Carpetas de respaldo de vistas (app/Views/<pantalla>/backup_*)
+/app/Views/*/backup_*/

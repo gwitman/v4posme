@@ -79,8 +79,17 @@ class app_cxc_api extends _BaseController {
 			//Redireccionar datos
 			$plantID					= /*inicio get post*/ $this->request->getPost("plantID");			
 			$frecuencyID				= /*inicio get post*/ $this->request->getPost("frecuencyID");			
-			$numberPay					= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("numberPay"));
-			$interestYear				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("interestYear"));	
+			$numberPay					= trim((string)/*inicio get post*/ $this->request->getPost("numberPay"));
+			//Defensa: plazo con exactamente una coma y ningun punto (ej. "50,666") => la coma es el separador decimal
+			if(substr_count($numberPay,",") == 1 && strpos($numberPay,".") === false)
+				$numberPay				= str_replace(",",".",$numberPay);
+			else
+				$numberPay				= helper_StringToNumber($numberPay);
+
+			if(!is_numeric($numberPay) || (float)$numberPay <= 0)
+			throw new \Exception("EL NUMERO DE PAGOS DEBE SER MAYOR A 0");
+
+			$interestYear				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("interestYear"));
 			$amount						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("amount"));
 			$dayExcluded				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("dayExcluded"));
 			
@@ -115,7 +124,7 @@ class app_cxc_api extends _BaseController {
 				$interestYear,								/*interes anual*/
 				$numberPay,									/*numero de pagos*/	
 				$periodPay->sequence,						/*frecuencia de pago en dia*/
-				date("Y-m-d"),								/*fecha del credito*/	
+				date_format(date_create(helper_getDate()),"Y-m-d"),	/*fecha del credito*/
 				$plantID 									/*tipo de amortizacion*/,
 				$objCatalogItem_DiasNoCobrables,
 				$objCatalogItem_DiasFeriados365,

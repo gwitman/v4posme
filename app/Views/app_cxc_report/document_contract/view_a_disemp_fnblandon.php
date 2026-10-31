@@ -239,7 +239,7 @@
 	<?php echo $objFirstDetail["cuota"]; ?> dolares pagaderos</span> <span style="font-family:'Times New Roman'; font-size:11pt;">&nbsp;&nbsp;
 	</span> <span style="font-family:'Times New Roman'; font-size:11pt;">en cuotas <?php echo $objFirstDetail["period"]; ?> de 
 	</span> <span style="font-family:'Times New Roman'; font-size:11pt;">&nbsp;&nbsp;&nbsp;</span> 
-	<span style="font-family:'Times New Roman'; font-size:11pt;"><?php echo round($objFirstDetail["cuota"] / $objFirstDetail["term"],2) ; ?> 
+	<span style="font-family:'Times New Roman'; font-size:11pt;"><?php echo round(isset($objFirstDetail["montoCuotaLocal"]) ? $objFirstDetail["montoCuotaLocal"] : $objFirstDetail["cuota"] / $objFirstDetail["term"],2) ; ?>
 	d&oacute;lares, o su equivalente en moneda nacional al tipo de cambio paralelo conforme al</span> 
 	<span style="font-family:'Times New Roman'; font-size:11pt;">&nbsp;&nbsp;</span> 
 	<span style="font-family:'Times New Roman'; font-size:11pt;">Sistema bancario nacional. El CONTRATANTE acuerda efectuar los pagos 
@@ -263,7 +263,7 @@
 	de los beneficios de esta venta al cr&eacute;dito. Para la cancelaci&oacute;n del valor 
 	nominal arriba indicado las partes que suscriben el presente contrato que EL CONTRATANTE 
 	entregar&aacute; <?php echo $objFirstDetail["term"]; ?> cuotas cada una con un valor de US$ 
-	<?php echo round($objFirstDetail["cuota"] / $objFirstDetail["term"],2) ; ?> d&oacute;lares 
+	<?php echo round(isset($objFirstDetail["montoCuotaLocal"]) ? $objFirstDetail["montoCuotaLocal"] : $objFirstDetail["cuota"] / $objFirstDetail["term"],2) ; ?> d&oacute;lares
 	de Estados Unidos de Am&eacute;rica o su equivalente en moneda nacional al tipo de cambio del 
 	sistema bancario nacional.</span>
 </p>

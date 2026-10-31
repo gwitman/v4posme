@@ -49,7 +49,7 @@
 								hubicada en esta ciudad, la forma de pago es <?php echo $objFirstDetail["period"]; ?>.
 								de  <b><?php echo $objFirstDetail["term"]; ?> 
 								cuotas </b>
-								de <b>C$ <?php echo sprintf("%01.2f",$objFirstDetail["cuota"] / $objFirstDetail["term"]); ?></b>  
+								de <b>C$ <?php echo sprintf("%01.2f",isset($objFirstDetail["montoCuotaLocal"]) ? $objFirstDetail["montoCuotaLocal"] : $objFirstDetail["cuota"] / $objFirstDetail["term"]); ?></b>
 								
 								Reconozco en favor del ACREDOR el pago de una tasa de interes corriente y una tasa de interes 
 								moratorio conforme a la ley de la materia que regula a este tipo de instituciones Micro financieras.

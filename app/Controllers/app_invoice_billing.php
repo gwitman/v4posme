@@ -1866,11 +1866,15 @@ class app_invoice_billing extends _BaseController {
 					$objCustomerCreditDocument["balance"] 				= $amountTotal;
 					$objCatalogItemDayExclude 							= $this->Catalog_Item_Model->get_rowByCatalogItemID($objCustomerCreditLine->dayExcluded);
 				
+					//Plazo para la tabla de amortizacion (puede llevar decimales); el documento guarda el entero hacia arriba
+					$plazoAmortizacion 									= $objCustomerCreditDocument["term"];
 					if($objParameterAmortizationDuranteFactura == "true" &&  $objTMNew["currencyID"] == 1 /*cordoba*/)
 					{
 						
 						$amountTotal 										= $amountTotalBackupTm;
-						$objCustomerCreditDocument["term"] 					= $objTMNew["reference2"];
+						$plazoAmortizacion 									= $objTMNew["reference2"];
+						$objCustomerCreditDocument["term"] 					= (int)ceil((float)helper_StringToNumber($objTMNew["reference2"]));
+						$objCustomerCreditDocument["termDecimal"] 			= (float)helper_StringToNumber($objTMNew["reference2"]);
 						$objCustomerCreditDocument["interes"] 				= /*inicio get post*/ $this->request->getPost("txtFixedExpenses");
 						$objCustomerCreditDocument["amount"] 				= 	$amountTotal - 
 																				$objTMInfoNew["receiptAmountPoint"] - 
@@ -1889,7 +1893,9 @@ class app_invoice_billing extends _BaseController {
 					if($objParameterAmortizationDuranteFactura == "true" &&  $objTMNew["currencyID"] == 2 /*dolares*/)
 					{
 						$amountTotal 										= $amountTotalBackupTm;
-						$objCustomerCreditDocument["term"] 					= $objTMNew["reference2"];
+						$plazoAmortizacion 									= $objTMNew["reference2"];
+						$objCustomerCreditDocument["term"] 					= (int)ceil((float)helper_StringToNumber($objTMNew["reference2"]));
+						$objCustomerCreditDocument["termDecimal"] 			= (float)helper_StringToNumber($objTMNew["reference2"]);
 						$objCustomerCreditDocument["interes"] 				= /*inicio get post*/ $this->request->getPost("txtFixedExpenses");
 						$objCustomerCreditDocument["amount"] 				= 	$amountTotal - 
 																				$objTMInfoNew["receiptAmountPoint"] - 
@@ -1943,9 +1949,9 @@ class app_invoice_billing extends _BaseController {
 					$this->financial_amort->amort(
 						$objCustomerCreditDocument["amount"], 		/*monto*/
 						$objCustomerCreditDocument["interes"],		/*interes anual*/
-						$objCustomerCreditDocument["term"],			/*numero de pagos*/	
+						$plazoAmortizacion,							/*numero de pagos*/
 						$periodPay->sequence,						/*frecuencia de pago en dia*/
-						$objTMNew["transactionOn2"], 				/*fecha del credito*/	
+						$objTMNew["transactionOn2"],				/*fecha del credito*/	
 						$objCustomerCreditLine->typeAmortization 	/*tipo de amortizacion*/,
 						$objCatalogItem_DiasNoCobrables,
 						$objCatalogItem_DiasFeriados365,
@@ -3120,11 +3126,15 @@ class app_invoice_billing extends _BaseController {
 					log_message("error","[insertElementMobil] amountTotal: ".$amountTotal);
 					log_message("error","[insertElementMobil] objTM[exchangeRate]: ".$objTM["exchangeRate"]);
 
+					//Plazo para la tabla de amortizacion (puede llevar decimales); el documento guarda el entero hacia arriba
+					$plazoAmortizacion 									= $objCustomerCreditDocument["term"];
 					if($objParameterAmortizationDuranteFactura == "true" &&  $objTM["currencyID"] == 1 /*cordoba*/)
 					{
 						
 						
-						$objCustomerCreditDocument["term"] 					= $objTM["reference2"];
+						$plazoAmortizacion 									= $objTM["reference2"];
+						$objCustomerCreditDocument["term"] 					= (int)ceil((float)helper_StringToNumber($objTM["reference2"]));
+						$objCustomerCreditDocument["termDecimal"] 			= (float)helper_StringToNumber($objTM["reference2"]);
 						$objCustomerCreditDocument["interes"] 				= $transactionMaster->FixedExpenses;
 						$objCustomerCreditDocument["amount"] 				= 	$amountTotal - 
 																				$objTMInfo["receiptAmountPoint"] - 
@@ -3142,7 +3152,9 @@ class app_invoice_billing extends _BaseController {
 					
 					if($objParameterAmortizationDuranteFactura == "true" &&  $objTM["currencyID"] == 2 /*dolares*/)
 					{
-						$objCustomerCreditDocument["term"] 					= $objTM["reference2"];
+						$plazoAmortizacion 									= $objTM["reference2"];
+						$objCustomerCreditDocument["term"] 					= (int)ceil((float)helper_StringToNumber($objTM["reference2"]));
+						$objCustomerCreditDocument["termDecimal"] 			= (float)helper_StringToNumber($objTM["reference2"]);
 						$objCustomerCreditDocument["interes"] 				= $transactionMaster->FixedExpenses;
 						$objCustomerCreditDocument["amount"] 				= 	$amountTotal - 
 																				$objTMInfo["receiptAmountPoint"] - 
@@ -3209,7 +3221,7 @@ class app_invoice_billing extends _BaseController {
 					$this->financial_amort->amort(
 						$objCustomerCreditDocument["amount"], 		/*monto*/
 						$objCustomerCreditDocument["interes"],		/*interes anual*/
-						$objCustomerCreditDocument["term"],			/*numero de pagos*/	
+						$plazoAmortizacion,							/*numero de pagos*/
 						$periodPay->sequence,						/*frecuencia de pago en dia*/
 						$objTM["transactionOn2"], 				/*fecha del credito*/	
 						$objCustomerCreditLine->typeAmortization 	/*tipo de amortizacion*/,

@@ -133,7 +133,8 @@ class core_web_amortization {
 		
 		
 		//Cancel Document
-		if($amount >= $objCustomerCreditDocument->balance){
+		//Tolerancia de medio centavo por saldos con mas de 2 decimales
+		if((float)$amount >= (float)$objCustomerCreditDocument->balance - 0.005){
 			$objCustomerCreditDocumentNew["balance"]	= 0;
 			$objCustomerCreditDocumentNew["statusID"]	= $documentCancel;
 			$Customer_Credit_Document_Model->update_app_posme($objCustomerCreditDocument->customerCreditDocumentID,$objCustomerCreditDocumentNew);
@@ -156,56 +157,88 @@ class core_web_amortization {
 		$Customer_Credit_Amortization_Model = new Customer_Credit_Amortization_Model();
 		$Customer_Credit_Line_Model = new Customer_Credit_Line_Model();		
 		$Catalog_Item_Model		= new Catalog_Item_Model();
-		$financial_amort 	= new financial_amort();
 		$core_web_catalog 	= new core_web_catalog();
-		
+
 		date_default_timezone_set(APP_TIMEZONE);
-		
-		
+
+
 		$objCustomerCreditDocument					= $Customer_Credit_Document_Model->get_rowByPK($customerCreditDocumentID);
 		$objListCustomerCreditDocumentAmortization 	= $Customer_Credit_Amortization_Model->get_rowByDocumentAndVinculable($customerCreditDocumentID);
 		$objCustomerCreditLine						= $Customer_Credit_Line_Model->get_rowByPK($objCustomerCreditDocument->customerCreditLineID);
+		//TODO: usa periodPay y typeAmortization de la linea de credito y no los del documento (comportamiento existente)
 		$periodPay 									= $Catalog_Item_Model->get_rowByCatalogItemID($objCustomerCreditLine->periodPay);
 		$numCuotas									= count($objListCustomerCreditDocumentAmortization);
 		$totalCapital								= $objCustomerCreditDocument->balance - $amount;
 		//obtener el primer registro
 		//$creditAmortizationIDMin					= array_reduce($objListCustomerCreditDocumentAmortization,function($v,$w){if (!$v)$v = $w->creditAmortizationID;if ($v > $w->creditAmortizationID){ $v = $w->creditAmortizationID;} return $v;});
 		$dateApplyFirst 							= $objListCustomerCreditDocumentAmortization[0]->dateApply;
-		
-		
-		$objCatalogItem_DiasNoCobrables 		= $core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES",$companyID);		
+
+		//Plazo decimal del documento (0 = sin fraccion) y si la ultima cuota del documento sigue pendiente
+		$termDecimal								= isset($objCustomerCreditDocument->termDecimal) ? (float)$objCustomerCreditDocument->termDecimal : 0;
+		$ultimaCuotaPendiente						= false;
+		if($termDecimal > 0)
+		{
+			$objUltimaCuota							= $Customer_Credit_Amortization_Model->get_rowLastByDocument($customerCreditDocumentID);
+			if(is_array($objUltimaCuota))
+				$objUltimaCuota						= $objUltimaCuota ? $objUltimaCuota[0] : null;
+
+			if($objUltimaCuota && $objListCustomerCreditDocumentAmortization)
+			foreach($objListCustomerCreditDocumentAmortization as $itemPendiente){
+				if($itemPendiente->creditAmortizationID == $objUltimaCuota->creditAmortizationID)
+					$ultimaCuotaPendiente			= true;
+			}
+		}
+
+		$objCatalogItem_DiasNoCobrables 		= $core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES",$companyID);
 		$objCatalogItem_DiasFeriados365 		= $core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_365",$companyID);
 		$objCatalogItem_DiasFeriados366 		= $core_web_catalog->getCatalogAllItemByNameCatalogo("CXC_NO_COBRABLES_FERIADOS_366",$companyID);
-			
-		$financial_amort->amort(
-						$totalCapital, 											/*monto*/
-						$objCustomerCreditDocument->interes,					/*interes anual*/
-						$numCuotas,												/*numero de pagos*/	
-						$periodPay->sequence,									/*frecuencia de pago en dia*/
-						$objCustomerCreditDocument->dateOn,						/*fecha del credito*/	
-						$objCustomerCreditLine->typeAmortization 				/*tipo de amortizacion*/,
-						$objCatalogItem_DiasNoCobrables,
-						$objCatalogItem_DiasFeriados365,
-						$objCatalogItem_DiasFeriados366
-					);
-		
-		//Recalcular Tabla de Amortizacion		
-		$tableAmortization 	= $financial_amort->getTable();		
+
+		//Recalcular Tabla de Amortizacion
+		$resultAbono		= $this->calcularTablaAbonoCapital(
+								$objCustomerCreditDocument->balance,
+								$amount,
+								$objCustomerCreditDocument->interes,
+								$numCuotas,
+								$termDecimal,
+								$ultimaCuotaPendiente,
+								$periodPay->sequence,
+								$objCustomerCreditDocument->dateOn,
+								$objCustomerCreditLine->typeAmortization,
+								$objCatalogItem_DiasNoCobrables,
+								$objCatalogItem_DiasFeriados365,
+								$objCatalogItem_DiasFeriados366
+							);
+		$tableAmortization 	= $resultAbono["table"];
+
+		//TODO: en Aleman (195) la fila 0 de la tabla no se mapea (se usa detail[$key+1]) (comportamiento existente)
 		if($objListCustomerCreditDocumentAmortization)
 		foreach($objListCustomerCreditDocumentAmortization as $key => $itemAmortization){
-		
+
 			$itemAmortizationNew	= null;
 			//si es el primer registro , registrar que realizo un abono al capital
 			if($dateApplyFirst == $itemAmortization->dateApply){
 					$itemAmortizationNew["shareCapital"]	= $amount;
 			}
-			
+
+			//La tabla recalculada tiene menos filas que cuotas pendientes (ej. la cuota fraccionaria quedo < 0.01): cuota en 0
+			if(!isset($tableAmortization["detail"][$key+1]))
+			{
+				$itemAmortizationNew["balanceEnd"]			= 0;
+				$itemAmortizationNew["capital"]				= 0;
+				$itemAmortizationNew["interest"]			= 0;
+				$itemAmortizationNew["share"]				= 0;
+				$itemAmortizationNew["remaining"]			= 0;
+				$Customer_Credit_Amortization_Model->update_app_posme($itemAmortization->creditAmortizationID,$itemAmortizationNew);
+				continue;
+			}
+
 			$itemAmortizationNew["balanceStart"]			= $tableAmortization["detail"][$key+1]["saldoInicial"];
 			$itemAmortizationNew["balanceEnd"]				= $tableAmortization["detail"][$key+1]["saldo"];
 			$itemAmortizationNew["capital"]					= $tableAmortization["detail"][$key+1]["principal"];
 			$itemAmortizationNew["interest"]				= $tableAmortization["detail"][$key+1]["interes"];
 			$itemAmortizationNew["share"]					= $itemAmortizationNew["interest"] + $itemAmortizationNew["capital"];
-			$itemAmortizationNew["remaining"]				= $itemAmortizationNew["share"];			
+			//TODO: remaining = share sobrescribe pagos parciales de la cuota (comportamiento existente)
+			$itemAmortizationNew["remaining"]				= $itemAmortizationNew["share"];
 			$Customer_Credit_Amortization_Model->update_app_posme($itemAmortization->creditAmortizationID,$itemAmortizationNew);		
 		}
 		
@@ -213,7 +246,45 @@ class core_web_amortization {
 		$objCustomerCreditDocumentNew				= null;
 		$objCustomerCreditDocumentNew["balance"]	= $totalCapital;
 		$Customer_Credit_Document_Model->update_app_posme($objCustomerCreditDocument->customerCreditDocumentID,$objCustomerCreditDocumentNew);
-		
+
+   }
+   /**
+    * Calcula (sin base de datos) la tabla de amortizacion recalculada para un abono a capital.
+    * Plazo = numero de cuotas pendientes; si el documento tiene plazo decimal (termDecimal > 0 con fraccion)
+    * y su ultima cuota sigue pendiente, la ultima cuota conserva el prorrateo: plazo = (pendientes - 1) + fraccion.
+    *
+    * @return array ["plazo" => plazo usado, "totalCapital" => capital recalculado, "table" => resultado de getTable()]
+    */
+   function calcularTablaAbonoCapital($balance,$amount,$interes,$numCuotasPendientes,$termDecimal,$ultimaCuotaPendiente,$periodPaySequence,$dateOn,$typeAmortization,$objCatalogItem_DiasNoCobrables,$objCatalogItem_DiasFeriados365,$objCatalogItem_DiasFeriados366){
+		//Un abono a capital mayor al saldo del documento se rechaza (igual al saldo si se permite)
+		if((float)$amount > (float)$balance + 0.005)
+			throw new \Exception(sprintf("EL ABONO A CAPITAL (%s) ES MAYOR AL SALDO DEL DOCUMENTO (%s)",number_format((float)$amount,2,'.',','),number_format((float)$balance,2,'.',',')));
+
+		$financial_amort 	= new financial_amort();
+		$totalCapital		= $balance - $amount;
+		$plazo				= $numCuotasPendientes;
+		$fraccion			= $financial_amort->getFraccionPlazo((float)$termDecimal);
+
+		if((float)$termDecimal > 0 && $fraccion > 0 && $ultimaCuotaPendiente && $numCuotasPendientes >= 1)
+			$plazo			= ($numCuotasPendientes - 1) + $fraccion;
+
+		$financial_amort->amort(
+						$totalCapital, 											/*monto*/
+						$interes,												/*interes anual*/
+						$plazo,													/*numero de pagos*/
+						$periodPaySequence,										/*frecuencia de pago en dia*/
+						$dateOn,												/*fecha del credito*/
+						$typeAmortization 										/*tipo de amortizacion*/,
+						$objCatalogItem_DiasNoCobrables,
+						$objCatalogItem_DiasFeriados365,
+						$objCatalogItem_DiasFeriados366
+					);
+
+		return array(
+			"plazo"			=> $plazo,
+			"totalCapital"	=> $totalCapital,
+			"table"			=> $financial_amort->getTable()
+		);
    }
    function changeStatus($companyID,$customerCreditDocumentID){
 	    $core_web_parameter = new core_web_parameter();
