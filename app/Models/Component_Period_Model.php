@@ -59,6 +59,10 @@ class Component_Period_Model extends Model  {
    }
    function get_rowByCompanyIDFecha($companyID,$dateStart)
    {
+		$db 	= db_connect();
+		
+		//Se compara solo la fecha: endOn se guarda a las 00:00:00 del ultimo dia
+		//y un documento de ese dia con hora quedaria fuera del periodo
 		$sql = "
 		SELECT
 			componentPeriodID, companyID, componentID, number, name, description, startOn, endOn, statusID, isActive, createdBy, createdOn, createdAt, createdIn
@@ -67,7 +71,9 @@ class Component_Period_Model extends Model  {
 		WHERE					
 			isActive 	= 1 and
 			companyID	= $companyID  and 			
-			'$dateStart' between  startOn and endOn
+			DATE('$dateStart') between DATE(startOn) and DATE(endOn)
+		ORDER BY
+			startOn DESC
 		";
 		
 		

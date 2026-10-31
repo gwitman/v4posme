@@ -9148,7 +9148,7 @@ BEGIN
 
 					SET varReference2 					= (SELECT CONCAT(IFNULL(trevert.reference1,'N/D'),'-',IFNULL(trevert.reference2,'N/D'),'-',IFNULL(trevert.reference3,'N/D'))    FROM tb_transaction_master  trevert inner join tb_transaction_master tm on 	trevert.reference1 = tm.transactionID and 		trevert.reference2 = tm.transactionMasterID and 		trevert.reference3 = tm.transactionNumber where 	 trevert.isActive = 1 and 	 trevert.journalEntryID = 0 and 	 trevert.transactionID = prTransactionID and 	 trevert.companyID = prCompanyID and 	 trevert.transactionMasterID =  varIDMin);					
 
-					SET varCycleID 						= (select c.componentCycleID from tb_accounting_cycle c where c.isActive = 1 and c.companyID = prCompanyID and c.componentID = varComponentID and statusID != varStatusIDClosedCycle AND  varTransactionOn between c.startOn and c.endOn LIMIT 1);
+					SET varCycleID 						= (select c.componentCycleID from tb_accounting_cycle c where c.isActive = 1 and c.companyID = prCompanyID and c.componentID = varComponentID and statusID != varStatusIDClosedCycle AND  DATE(varTransactionOn) between DATE(c.startOn) and DATE(c.endOn) LIMIT 1);
 
 					
 
@@ -27967,7 +27967,7 @@ BEGIN
 				ds.isActive = 1 and 
 				dsd.isActive = 1 and 
 				(
-					(tmm.transactionOn BETWEEN varFechaStart and varFechaEnd) or 
+					(tmm.transactionOn >= varFechaStart and tmm.transactionOn < DATE(varFechaEnd) + INTERVAL 1 DAY) or 
 					(
 							prPeriodID = 0 and 
 							prCycleID = 0 
