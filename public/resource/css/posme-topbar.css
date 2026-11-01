@@ -141,6 +141,42 @@
 	white-space		: nowrap;
 }
 
+/* ---------- Nombre de la empresa con mas cuerpo (solo PC) ----------
+ * Una sola fila: empresa + usuario | etiqueta + licencia, para que el nombre use todo el alto */
+@media (min-width: 1025px) {
+	#header.pm-topbar .navbar .pm-topbar-brand {
+		flex-direction	: row;
+		align-items		: center;
+		justify-content	: flex-start;
+		gap				: 16px;
+		padding			: 0 8px 0 14px;
+	}
+	#header.pm-topbar .pm-topbar-linea {
+		gap				: 14px;
+	}
+	#header.pm-topbar .pm-topbar-empresa {
+		font-size		: 28px;		/* respaldo para navegadores sin clamp() */
+		font-size		: clamp(28px, 2.65vw, 36px);
+		font-weight		: 800;
+		line-height		: 1;
+		letter-spacing	: 0.3px;
+	}
+	/* etiqueta del sistema / sucursal a la par, en otro color */
+	#header.pm-topbar .pm-topbar-sub {
+		color			: #FFD166;
+	}
+	/* si falta espacio se recorta primero la etiqueta, no el nombre de la empresa */
+	#header.pm-topbar .pm-topbar-linea:first-child {
+		flex			: 0 1 auto;
+	}
+	#header.pm-topbar .pm-topbar-sub {
+		flex			: 0 1000 auto;
+		padding-left	: 16px;
+		border-left		: 1px solid rgba(255, 255, 255, 0.35);
+		font-size		: 12px;
+	}
+}
+
 /* ---------- Botones de la derecha (escritorio / tablet) ---------- */
 @media (min-width: 768px) {
 	/* width auto: el tema/BS le dan 100% y dejaba la marca en 8px */

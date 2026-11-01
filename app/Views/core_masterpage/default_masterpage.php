@@ -110,7 +110,7 @@
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/genyx-app-init.js"></script>
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/is-loading-master/jquery.isloading.min.js"></script>
 	<!-- Barra superior moderna / responsive (#header.pm-topbar). Al final para ganar a theme-genyx/app_css.php -->
-	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-topbar.css?v=1" rel="stylesheet" />
+	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-topbar.css?v=5" rel="stylesheet" />
 
 
 </head>
