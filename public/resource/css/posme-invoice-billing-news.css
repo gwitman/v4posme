@@ -227,36 +227,67 @@
 }
 
 /* ======================================================================
- * Pestanas (pill)
+ * Pestanas (Informacion / Referencias / Info de Credito / Mas)
+ * Misma altura (44px), radio (10px) y fuente que los botones de las botoneras
+ * ("Botoneras: altura uniforme"); .hidden de getBehavio sigue ganando.
  * ====================================================================== */
 #rowCssPrincipal #myTab {
+	display			: flex;
+	flex-wrap		: wrap;
+	gap				: 6px;
 	border-bottom	: none;
 	margin-bottom	: 14px;
 }
+/* clearfix de .nav (display:table) no debe ocupar un hueco del flex */
+#rowCssPrincipal #myTab::before,
+#rowCssPrincipal #myTab::after {
+	display			: none;
+}
 #rowCssPrincipal #myTab > li {
-	margin			: 0 6px 6px 0;
+	float			: none;
+	margin			: 0;
 }
 #rowCssPrincipal #myTab > li > a {
-	background-color: #E2E8F0;
-	color			: #0F172A;
-	border			: none;
-	border-radius	: 999px;
-	padding			: 8px 16px;
+	display			: inline-flex;
+	align-items		: center;
+	justify-content	: center;
+	gap				: 6px;
+	box-sizing		: border-box;
+	height			: 44px;
+	min-width		: 96px;
+	margin			: 0;
+	padding			: 0 18px;
+	background-color: #FFFFFF;
+	color			: #334155;
+	border			: 1px solid #CBD5E1;
+	border-radius	: 10px;
+	box-shadow		: 0 1px 2px rgba(15, 23, 42, 0.06);
+	font-size		: 13px;
 	font-weight		: 600;
-	margin-right	: 0;
+	line-height		: 1.15;
+	transition		: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 #rowCssPrincipal #myTab > li > a:hover,
-#rowCssPrincipal #myTab > li > a:focus {
-	background-color: #CBD5E1;
+#rowCssPrincipal #myTab > li > a:focus,
+#rowCssPrincipal #myTab > li.open > a {
+	background-color: #F1F5F9;
 	color			: #0F172A;
-	border			: none;
+	border			: 1px solid #94A3B8;
 }
 #rowCssPrincipal #myTab > li.active > a,
 #rowCssPrincipal #myTab > li.active > a:hover,
 #rowCssPrincipal #myTab > li.active > a:focus {
 	background-color: #2563EB;
 	color			: #FFFFFF;
-	border			: none;
+	border			: 1px solid #2563EB;
+	box-shadow		: 0 2px 6px rgba(37, 99, 235, 0.35);
+}
+#rowCssPrincipal #myTab > li > a:focus-visible {
+	outline			: none;
+	box-shadow		: 0 0 0 3px #93C5FD;
+}
+#rowCssPrincipal #myTab > li > a .caret {
+	margin			: 0;
 }
 #rowCssPrincipal #myTab .dropdown-menu {
 	border-radius	: 10px;
@@ -1389,15 +1420,9 @@ body [class*="modal-content-customer1-"] .btn-block + .btn-block {
 	#rowCssPrincipal > .col-lg-12 > .panel > .panel-heading {
 		padding			: 8px 16px;
 	}
+	/* Pestanas: conservan los 44px de las botoneras (antes 5px de padding = ~30px de alto) */
 	#rowCssPrincipal #myTab {
 		margin-bottom	: 8px;
-	}
-	#rowCssPrincipal #myTab > li {
-		margin			: 0 4px 4px 0;
-	}
-	#rowCssPrincipal #myTab > li > a {
-		padding			: 5px 14px;
-		font-size		: 13px;
 	}
 
 	/* Iteracion 5: el detalle ocupa todo el ancho; el cobro es un panel flotante a la derecha
