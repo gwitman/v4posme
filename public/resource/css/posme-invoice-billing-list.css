@@ -1,0 +1,539 @@
+/* ==========================================================================
+ * posme - Lista de facturas (app_invoice_billing/index)
+ * Feature: rediseno-factura-index
+ *
+ * Misma paleta solida que la pantalla de facturacion (posme-invoice-billing-news.css),
+ * sin degradados. Solo se carga en esta pantalla (list_head.php) y todo va acotado a
+ * .pm-list-*, #ListView y #ListView_wrapper.
+ *
+ * Paleta: fondo #EEF2F7, tarjeta #FFF, borde #D9E1EC, texto #0F172A, cabecera #0F172A,
+ *         primario #2563EB, nuevo #F97316, duplicar #D97706, peligro #DC2626, vistas #334155.
+ *
+ * Estructura (list_head.php / list_footer.php):
+ *   #heading.pm-list-heading
+ *   .pm-list > .pm-list-barra#pmListBarra
+ *       form.pm-list-busqueda (#datepicker > #txtStartOn, .pm-list-buscar > #txtSearchTransaction + #btnSearchTransaction)
+ *       .pm-list-acciones (#btnView, #btnDuplicar, #btnEdit, #btnEliminar, #btnNuevo)
+ *   .panel.pm-list-panel > .panel-body > #ListView_wrapper > table#ListView   (useMobile != 1)
+ *   Telefono (<= 767px): cada fila de #ListView es una tarjeta; las etiquetas salen de
+ *   data-label (las pone posme-invoice-billing-list.js a partir de los encabezados visibles).
+ * ========================================================================== */
+
+/* ---------- Encabezado ---------- */
+#heading.pm-list-heading {
+	background-color: #0F172A;
+	background-image: none;
+	color			: #FFFFFF;
+	border			: none;
+	border-radius	: 14px;
+	padding			: 10px 18px;
+	margin			: 0 0 12px 0;
+}
+#heading.pm-list-heading h1 {
+	color			: #FFFFFF;
+	font-family		: 'Open Sans', 'Segoe UI', Arial, sans-serif;
+	font-size		: 20px;
+	font-weight		: 600;
+	line-height		: 1.3;
+	margin			: 0;
+	text-transform	: uppercase;
+}
+
+/* ---------- Barra: fecha + busqueda + acciones ---------- */
+.pm-list {
+	font-family		: 'Open Sans', 'Segoe UI', Arial, sans-serif;
+	color			: #0F172A;
+}
+.pm-list-barra {
+	display			: flex;
+	flex-wrap		: wrap;
+	align-items		: center;
+	justify-content	: space-between;
+	gap				: 10px;
+	background-color: #FFFFFF;
+	border			: 1px solid #D9E1EC;
+	border-radius	: 14px;
+	padding			: 10px 12px;
+	margin-bottom	: 12px;
+	box-shadow		: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+.pm-list-busqueda {
+	display			: flex;
+	flex-wrap		: wrap;
+	align-items		: center;
+	gap				: 8px;
+	flex			: 1 1 420px;
+	margin			: 0;
+	min-width		: 0;
+}
+.pm-list-busqueda .form-control {
+	height			: 44px;
+	border			: 1px solid #CBD5E1;
+	border-radius	: 10px;
+	background-color: #FFFFFF;
+	background-image: none;		/* el tema pone un degradado en input[type=text] */
+	color			: #0F172A;
+	font-size		: 15px;
+	box-shadow		: none;
+	padding			: 6px 12px;
+}
+.pm-list-busqueda .form-control:focus {
+	border-color	: #2563EB;
+	box-shadow		: 0 0 0 3px #BFDBFE;
+	outline			: none;
+}
+/* Fecha */
+.pm-list-busqueda .pm-list-fecha {
+	display			: flex;
+	flex			: 0 0 200px;
+	width			: 200px;
+	margin			: 0;
+}
+.pm-list-busqueda .pm-list-fecha .form-control {
+	flex			: 1 1 auto;
+	width			: auto;
+	min-width		: 0;
+	border-radius	: 10px 0 0 10px;
+}
+.pm-list-busqueda .pm-list-fecha .input-group-addon {
+	display			: flex;
+	align-items		: center;
+	width			: auto;
+	height			: 44px;
+	padding			: 0 12px;
+	border			: 1px solid #CBD5E1;
+	border-left		: none;
+	border-radius	: 0 10px 10px 0;
+	background-color: #F1F5F9;
+	background-image: none;
+	color			: #334155;
+	cursor			: pointer;
+}
+/* Fecha nativa (telefono / tactil): sin addon del calendario */
+.pm-list-nativo .pm-list-busqueda .pm-list-fecha .input-group-addon {
+	display			: none;
+}
+.pm-list-nativo .pm-list-busqueda .pm-list-fecha .form-control {
+	border-radius	: 10px;
+}
+/* Busqueda por numero */
+.pm-list-busqueda .pm-list-buscar {
+	display			: flex;
+	flex			: 1 1 220px;
+	min-width		: 0;
+	max-width		: 360px;
+}
+.pm-list-busqueda .pm-list-buscar .form-control {
+	flex			: 1 1 auto;
+	width			: auto;
+	min-width		: 0;
+	border-radius	: 10px 0 0 10px;
+}
+.pm-list-busqueda #btnSearchTransaction {
+	flex			: 0 0 auto;
+	height			: 44px;
+	min-width		: 48px;
+	padding			: 0 14px;
+	border			: 1px solid #2563EB;
+	border-radius	: 0 10px 10px 0;
+	background-color: #2563EB;
+	background-image: none;
+	color			: #FFFFFF;
+	box-shadow		: none;
+	text-shadow		: none;
+}
+.pm-list-busqueda #btnSearchTransaction:hover,
+.pm-list-busqueda #btnSearchTransaction:focus {
+	background-color: #1D4ED8;
+	border-color	: #1D4ED8;
+	outline			: none;
+}
+.pm-list-busqueda #btnSearchTransaction i {
+	color			: #FFFFFF;
+}
+
+/* Acciones */
+.pm-list-acciones {
+	display			: flex;
+	flex-wrap		: wrap;
+	gap				: 8px;
+	flex			: 0 1 auto;
+}
+.pm-list-acciones .btn {
+	display			: inline-flex;
+	align-items		: center;
+	justify-content	: center;
+	gap				: 6px;
+	height			: 44px;
+	padding			: 0 16px;
+	margin			: 0;
+	border			: 1px solid transparent;
+	border-radius	: 10px;
+	background-image: none;
+	color			: #FFFFFF;
+	font-size		: 13px;
+	font-weight		: 700;
+	letter-spacing	: 0.3px;
+	text-transform	: uppercase;
+	text-shadow		: none;
+	box-shadow		: none;
+	white-space		: nowrap;
+}
+.pm-list-acciones .btn i {
+	color			: #FFFFFF;
+	margin			: 0;
+}
+.pm-list-acciones .btn:focus-visible {
+	outline			: none;
+	box-shadow		: 0 0 0 3px #BFDBFE;
+}
+.pm-list-acciones .btn.hidden {
+	display			: none;
+}
+.pm-list-acciones .pm-btn-vistas			{ background-color: #334155; border-color: #334155; }
+.pm-list-acciones .pm-btn-vistas:hover		{ background-color: #1E293B; border-color: #1E293B; color: #FFFFFF; }
+.pm-list-acciones .pm-btn-duplicar			{ background-color: #D97706; border-color: #D97706; }
+.pm-list-acciones .pm-btn-duplicar:hover	{ background-color: #B45309; border-color: #B45309; color: #FFFFFF; }
+.pm-list-acciones .pm-btn-editar			{ background-color: #2563EB; border-color: #2563EB; }
+.pm-list-acciones .pm-btn-editar:hover		{ background-color: #1D4ED8; border-color: #1D4ED8; color: #FFFFFF; }
+.pm-list-acciones .pm-btn-eliminar			{ background-color: #DC2626; border-color: #DC2626; }
+.pm-list-acciones .pm-btn-eliminar:hover	{ background-color: #B91C1C; border-color: #B91C1C; color: #FFFFFF; }
+.pm-list-acciones .pm-btn-nuevo				{ background-color: #F97316; border-color: #F97316; }
+.pm-list-acciones .pm-btn-nuevo:hover		{ background-color: #EA580C; border-color: #EA580C; color: #FFFFFF; }
+
+/* ---------- Panel de la tabla (useMobile != 1) ---------- */
+.pm-list-panel {
+	background-color: #FFFFFF;
+	border			: 1px solid #D9E1EC;
+	border-radius	: 14px;
+	box-shadow		: 0 1px 3px rgba(15, 23, 42, 0.06);
+	overflow		: hidden;
+}
+/* El encabezado "..." del panel no aporta: la barra ya identifica la pantalla */
+.pm-list-panel > .panel-heading {
+	display			: none;
+}
+.pm-list-panel > .panel-body {
+	padding			: 12px;
+}
+
+/* ---------- DataTables (#ListView) ---------- */
+#ListView_wrapper {
+	font-family		: 'Open Sans', 'Segoe UI', Arial, sans-serif;
+	color			: #0F172A;
+}
+#ListView_wrapper .dataTables_length label,
+#ListView_wrapper .dataTables_filter label,
+#ListView_wrapper .dataTables_info {
+	color			: #475569;
+	font-size		: 13px;
+	font-weight		: 600;
+}
+#ListView_wrapper .dataTables_filter input {
+	height			: 38px;
+	border			: 1px solid #CBD5E1;
+	border-radius	: 10px;
+	background-color: #FFFFFF;
+	background-image: none;
+	color			: #0F172A;
+	padding			: 4px 10px;
+	box-shadow		: none;
+}
+#ListView_wrapper .dataTables_filter input:focus {
+	border-color	: #2563EB;
+	box-shadow		: 0 0 0 3px #BFDBFE;
+	outline			: none;
+}
+
+#ListView {
+	width			: 100%;
+	margin			: 0;
+	background-color: #FFFFFF;
+	border			: 1px solid #D9E1EC;
+	border-collapse	: separate;
+	border-spacing	: 0;
+	border-radius	: 12px;
+	overflow		: hidden;
+}
+#ListView > thead > tr > th {
+	background-color: #0F172A;
+	background-image: none;		/* el tema pone un patron claro en .table thead y flechas oscuras en .sorting */
+	color			: #FFFFFF;
+	border			: none;
+	border-right	: 1px solid #1E293B;
+	box-shadow		: none;
+	padding			: 10px 12px;
+	font-size		: 12px;
+	font-weight		: 700;
+	letter-spacing	: 0.3px;
+	text-transform	: uppercase;
+	text-align		: left;
+	white-space		: nowrap;
+	vertical-align	: middle;
+	cursor			: pointer;
+}
+#ListView > thead > tr > th:last-child {
+	border-right	: none;
+}
+#ListView > thead > tr > th.sorting::after,
+#ListView > thead > tr > th.sorting_asc::after,
+#ListView > thead > tr > th.sorting_desc::after {
+	display			: inline-block;
+	margin-left		: 6px;
+	font-size		: 10px;
+	color			: #94A3B8;
+}
+#ListView > thead > tr > th.sorting::after		{ content: "\21C5"; }
+#ListView > thead > tr > th.sorting_asc::after	{ content: "\25B2"; color: #FFFFFF; }
+#ListView > thead > tr > th.sorting_desc::after	{ content: "\25BC"; color: #FFFFFF; }
+
+#ListView > tbody > tr > td {
+	background-color: #FFFFFF;
+	background-image: none;
+	border			: none;
+	border-top		: 1px solid #E2E8F0;
+	box-shadow		: none;
+	padding			: 9px 12px;
+	font-size		: 14px;
+	color			: #0F172A;
+	vertical-align	: middle;
+}
+#ListView > tbody > tr:nth-child(even) > td {
+	background-color: #F8FAFC;
+}
+#ListView > tbody > tr {
+	cursor			: pointer;
+}
+#ListView > tbody > tr:hover > td {
+	background-color: #EFF6FF;
+}
+/* Fila seleccionada (genyx-fn.js: fnTableSelectedRow -> .row-selected) */
+#ListView > tbody > tr.row-selected > td {
+	background-color: #DBEAFE;
+	color			: #0F172A;
+}
+#ListView > tbody > tr.row-selected > td:first-child {
+	box-shadow		: inset 4px 0 0 #2563EB;
+}
+#ListView > tbody > tr > td.dataTables_empty {
+	text-align		: center;
+	color			: #64748B;
+	padding			: 24px 12px;
+}
+
+/* Paginacion */
+#ListView_wrapper .dataTables_paginate ul > li > a,
+#ListView_wrapper .dataTables_paginate ul > li > span {
+	min-width		: 38px;
+	height			: 38px;
+	line-height		: 36px;
+	padding			: 0 12px;
+	margin-left		: 4px;
+	border			: 1px solid #D9E1EC;
+	border-radius	: 10px;
+	background-color: #FFFFFF;
+	background-image: none;
+	color			: #0F172A;
+	font-weight		: 600;
+	text-align		: center;
+	box-shadow		: none;
+}
+#ListView_wrapper .dataTables_paginate ul > li > a:hover,
+#ListView_wrapper .dataTables_paginate ul > li > a:focus {
+	background-color: #EFF6FF;
+	border-color	: #93C5FD;
+}
+#ListView_wrapper .dataTables_paginate ul > li.active > a,
+#ListView_wrapper .dataTables_paginate ul > li.active > span {
+	background-color: #2563EB;
+	border-color	: #2563EB;
+	color			: #FFFFFF;
+}
+#ListView_wrapper .dataTables_paginate ul > li.disabled > a,
+#ListView_wrapper .dataTables_paginate ul > li.disabled > span {
+	background-color: #F1F5F9;
+	color			: #94A3B8;
+}
+
+/* Vista previa de la factura (INVOICE_SHOW_PREVIEW_INLIST) */
+.pm-list-preview .iframePreviewPdf {
+	border			: 1px solid #D9E1EC;
+	border-radius	: 14px;
+	overflow		: hidden;
+}
+
+/* ---------- Tablet: la tabla se desplaza de lado si no cabe ---------- */
+@media (min-width: 768px) and (max-width: 1199px) {
+	.pm-list-panel > .panel-body {
+		overflow-x		: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+	.pm-list-acciones .btn {
+		padding			: 0 12px;
+	}
+}
+
+/* ---------- Telefono ---------- */
+@media (max-width: 767px) {
+	#heading.pm-list-heading {
+		border-radius	: 12px;
+		padding			: 8px 14px;
+	}
+	#heading.pm-list-heading h1 {
+		font-size		: 16px;
+	}
+	.pm-list-barra {
+		flex-direction	: column;
+		align-items		: stretch;
+		padding			: 10px;
+	}
+	.pm-list-busqueda {
+		flex			: 0 0 auto;
+		flex-direction	: column;
+		align-items		: stretch;
+	}
+	.pm-list-busqueda .pm-list-fecha,
+	.pm-list-busqueda .pm-list-buscar {
+		flex			: 0 0 auto;
+		width			: 100%;
+		max-width		: none;
+	}
+	.pm-list-busqueda .form-control {
+		font-size		: 16px;		/* evita el zoom de iOS al enfocar */
+	}
+	.pm-list-acciones {
+		display					: grid;
+		grid-template-columns	: repeat(2, minmax(0, 1fr));
+		gap						: 8px;
+	}
+	.pm-list-acciones .btn {
+		width			: 100%;
+		padding			: 0 8px;
+	}
+	.pm-list-acciones .pm-btn-nuevo {
+		grid-column		: 1 / -1;
+		order			: -1;
+		height			: 48px;
+		font-size		: 15px;
+	}
+
+	/* El panel sigue blanco: la pagina de fondo es oscura y los controles de DataTables no se leerian */
+	.pm-list-panel {
+		border-radius	: 12px;
+		overflow		: visible;
+	}
+	.pm-list-panel > .panel-body {
+		padding			: 10px;
+	}
+	/* app.css (movil) los deja inline-block y centrados */
+	#ListView_wrapper .dataTables_length,
+	#ListView_wrapper .dataTables_filter {
+		display			: block;
+		float			: none;
+		width			: 100%;
+		text-align		: left;
+		margin-bottom	: 8px;
+	}
+	#ListView_wrapper .dataTables_length label {
+		display			: flex;
+		align-items		: center;
+		gap				: 8px;
+		margin			: 0;
+	}
+	#ListView_wrapper .dataTables_filter label {
+		display			: block;
+		margin			: 0;
+	}
+	#ListView_wrapper .row > [class*="col-"] {
+		text-align		: left;
+	}
+	#ListView_wrapper .dataTables_filter label,
+	#ListView_wrapper .dataTables_filter input {
+		width			: 100%;
+	}
+	#ListView_wrapper .dataTables_filter input {
+		height			: 44px;
+		font-size		: 16px;
+		margin			: 4px 0 0 0;
+	}
+	#ListView_wrapper .dataTables_info,
+	#ListView_wrapper .dataTables_paginate {
+		float			: none;
+		text-align		: center;
+	}
+
+	/* Cada fila es una tarjeta */
+	#ListView {
+		display			: block;
+		width			: 100% !important;	/* useMobile=1 / DataTables ponen width inline */
+		border			: none;
+		border-radius	: 0;
+		background-color: transparent;
+		overflow		: visible;
+	}
+	#ListView > thead {
+		display			: none;
+	}
+	#ListView > tbody {
+		display			: block;
+	}
+	#ListView > tbody > tr {
+		display			: block;
+		position		: relative;
+		background-color: #FFFFFF;
+		border			: 1px solid #D9E1EC;
+		border-radius	: 12px;
+		padding			: 8px 12px;
+		margin			: 0 0 10px 0;
+		box-shadow		: 0 1px 3px rgba(15, 23, 42, 0.06);
+	}
+	#ListView > tbody > tr > td,
+	#ListView > tbody > tr:nth-child(even) > td,
+	#ListView > tbody > tr:hover > td {
+		display			: flex;
+		justify-content	: space-between;
+		align-items		: center;
+		gap				: 10px;
+		width			: 100%;
+		background-color: transparent;
+		border			: none;
+		border-top		: 1px dashed #E2E8F0;
+		padding			: 6px 0;
+		font-size		: 14px;
+		text-align		: right;
+		overflow-wrap	: anywhere;
+	}
+	#ListView > tbody > tr > td:first-child {
+		border-top		: none;
+		font-size		: 15px;
+		font-weight		: 700;
+	}
+	#ListView > tbody > tr > td[data-label]::before {
+		content			: attr(data-label);
+		flex			: 0 0 auto;
+		max-width		: 45%;
+		color			: #64748B;
+		font-size		: 12px;
+		font-weight		: 700;
+		text-transform	: uppercase;
+		text-align		: left;
+	}
+	#ListView > tbody > tr > td.dataTables_empty {
+		display			: block;
+		text-align		: center;
+	}
+	#ListView > tbody > tr.row-selected {
+		border-color	: #2563EB;
+		box-shadow		: 0 0 0 2px #2563EB;
+		background-color: #EFF6FF;
+	}
+	#ListView > tbody > tr.row-selected > td,
+	#ListView > tbody > tr.row-selected > td:first-child {
+		background-color: transparent;
+		box-shadow		: none;
+	}
+
+	.pm-list-preview {
+		display			: none;
+	}
+}

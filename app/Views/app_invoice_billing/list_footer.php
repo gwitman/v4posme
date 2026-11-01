@@ -7,7 +7,7 @@
 		if($iframePreviewReport != "" )
 		{
 			?>
-				<div class="col-lg-5">	
+				<div class="col-lg-5 pm-list-preview">	
 					<?php echo $iframePreviewReport; ?>									
 				</div>
 			<?php 

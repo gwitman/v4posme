@@ -1,6 +1,13 @@
 				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/sweetalert2/sweetalert2.min.css" rel="stylesheet" />			
 				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/datepicker/datepicker.css" rel="stylesheet" />
-				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/datepicker/bootstrap-datepicker.js"></script> 
+				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/datepicker/bootstrap-datepicker.js"></script>
+				<!-- Rediseño pantalla nueva factura: estilos y controles nativos (sin select2) -->
+				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-invoice-billing-news.css?v=8" rel="stylesheet" />
+				<script>
+					var pmUseMobile 				= '<?php echo $useMobile; ?>';
+					var pmOcultarPickerNextVisit 	= '<?php echo getBehavio($company->type,"app_invoice_billing","controlNextVisitOcultarPicker",'false'); ?>';
+				</script>
+				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme-invoice-billing-news.js?v=5"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/moment.min.js"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/mask/jquery.mask.min.js"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jLinq-2.2.1.js"></script>
@@ -17,10 +24,12 @@
 						display: none;
 					}
 					input:focus {
-						
-					  color			:black;					  
+
+					  color			:black;
 					  font-weight	: bold;
-					  background	: 	#00cb72;
+					  border-color	: #2563EB;
+					  box-shadow	: 0 0 0 3px #BFDBFE;
+					  outline		: none;
 					  
 					  /*width		: 100%;*/
 					  /*padding		: 0px 50px;*/
@@ -70,6 +79,6 @@
 					}
 				</style>
 				
-				<div id="heading" class="page-header"  >
-							<h1><i class="icon20  i-bag-2"></i> Agregar <?php echo getBehavio($company->type,"app_invoice_billing","labelTitlePageNew","Factura"); ?> </h1>
+				<div id="heading" class="page-header pm-heading"  >
+							<h1><i class="icon20  i-bag-2"></i> Agregar <span class="pm-heading-title"><?php echo getBehavio($company->type,"app_invoice_billing","labelTitlePageNew","Factura"); ?></span> </h1>
 				</div> 

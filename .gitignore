@@ -60,3 +60,6 @@ claude-commands/cambio.md
 
 # Carpetas de respaldo de vistas (app/Views/<pantalla>/backup_*)
 /app/Views/*/backup_*/
+
+# Respaldos locales de los cambios de rediseno (respaldos/<cambio>_<fecha>)
+/respaldos/

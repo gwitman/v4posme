@@ -388,10 +388,16 @@ class core_web_view {
 		
 		
    }
+   //Estilo moderno y responsive de las grillas (table.pm-grid): CSS y JS compartidos.
+   //Va con cada grilla (el navegador los cachea y posme-grid.js se inicializa una sola vez)
+   function renderGreedAssets(){
+		return "<link href='".APP_URL_RESOURCE_CSS_JS."/resource/css/posme-grid.css?v=1' rel='stylesheet' />".
+			   "<script src='".APP_URL_RESOURCE_CSS_JS."/resource/js/posme-grid.js?v=1'></script>";
+   }
    function renderGreed($data,$idTable = null,$functionSelected = NULL,$displayLength = 350,$formatAjax = false,$parameterAjax=null){
 		
 		$table = "";
-		$table = $table."<table  id='".$idTable."' cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered table-hover' style='display:none' >";
+		$table = $table."<table  id='".$idTable."' cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered table-hover pm-grid' style='display:none' >";
 			//crear el encabezado
 			$table = $table."<thead>";
 			$table = $table."<tr>";
@@ -488,7 +494,7 @@ class core_web_view {
 			}
 			
 			//agregar el totale
-			$rowSummary = "<tr>";
+			$rowSummary = "<tr class='pm-grid-total'>";
 			if($agregarLineaSuma == true)
 			{
 				foreach($cabezera3 AS $key => $fieldDisplay)
@@ -521,7 +527,7 @@ class core_web_view {
 				}
 			}
 			$rowSummary = $rowSummary."</tr>";
-			if($rowSummary == "<tr></tr>")
+			if($rowSummary == "<tr class='pm-grid-total'></tr>")
 			$rowSummary  = "";
 		
 			$table = $table."<tbody>".$rowSummary.$body."</tbody>";
@@ -665,7 +671,7 @@ class core_web_view {
 		</script>";
 		
 		//Resultado
-		$resultGreed		=	$table;
+		$resultGreed		=	$this->renderGreedAssets().$table;
 		$resultGreedMoreJS	=   $resultGreed.$js;
 		return $resultGreedMoreJS;
 		
@@ -731,7 +737,7 @@ class core_web_view {
    function renderGreedMobile($data,$idTable = null,$functionSelected = NULL,$displayLength = 350){
 		
 		$table = "";
-		$table = $table."<table  id='".$idTable."' cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered table-hover' style='display:none' >";
+		$table = $table."<table  id='".$idTable."' cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered table-hover pm-grid' style='display:none' >";
 			//crear el encabezado
 			$table = $table."<thead>";
 			$table = $table."<tr>";
@@ -828,7 +834,7 @@ class core_web_view {
 			}
 			
 			//agregar el totale
-			$rowSummary = "<tr>";
+			$rowSummary = "<tr class='pm-grid-total'>";
 			if($agregarLineaSuma == true)
 			{
 				foreach($cabezera3 AS $key => $fieldDisplay)
@@ -861,7 +867,7 @@ class core_web_view {
 				}
 			}
 			$rowSummary = $rowSummary."</tr>";
-			if($rowSummary == "<tr></tr>")
+			if($rowSummary == "<tr class='pm-grid-total'></tr>")
 			$rowSummary  = "";
 		
 			$table = $table."<tbody>".$rowSummary.$body."</tbody>";
@@ -909,7 +915,7 @@ class core_web_view {
 		</script>";
 		
 		//Resultado
-		$resultGreed		=	$table;
+		$resultGreed		=	$this->renderGreedAssets().$table;
 		$resultGreedMoreJS	=   $resultGreed.$js;
 		return $resultGreedMoreJS;
 		
@@ -917,7 +923,7 @@ class core_web_view {
    
    function renderGreedWithHtmlInFild($data,$idTable = null,$functionSelected = NULL,$displayLength = 350){
 		$table = "";
-		$table = $table."<table  id='".$idTable."' cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered table-hover' style='display:none' >";
+		$table = $table."<table  id='".$idTable."' cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered table-hover pm-grid' style='display:none' >";
 			//crear el encabezado
 			$table = $table."<thead>";
 			$table = $table."<tr>";
@@ -1003,7 +1009,7 @@ class core_web_view {
 		 
 		
 		
-		$resultGreed		=	$table;
+		$resultGreed		=	$this->renderGreedAssets().$table;
 		$resultGreedMoreJS	=   $resultGreed.$js;
 		return $resultGreedMoreJS;
 	
@@ -1011,7 +1017,7 @@ class core_web_view {
 	function renderGreedWithHtmlInFildMobile($data,$idTable = null,$functionSelected = NULL,$displayLength = 350){
 		
 		$table = "";
-		$table = $table."<table  id='".$idTable."'    cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered table-hover' style='display:none' >";
+		$table = $table."<table  id='".$idTable."'    cellpadding='0' cellspacing='0' border='0' class='table table-striped table-bordered table-hover pm-grid' style='display:none' >";
 			//crear el encabezado
 			$table = $table."<thead>";
 			$table = $table."<tr>";
@@ -1096,7 +1102,7 @@ class core_web_view {
 		 
 		
 		
-		$resultGreed		=	$table;
+		$resultGreed		=	$this->renderGreedAssets().$table;
 		$resultGreedMoreJS	=   $resultGreed.$js;
 		return $resultGreedMoreJS;
 	

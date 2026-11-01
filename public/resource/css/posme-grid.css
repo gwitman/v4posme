@@ -1,0 +1,302 @@
+/* ==========================================================================
+ * posme - Grillas (table.pm-grid)
+ * Feature: rediseno-grid
+ *
+ * Lo generan core_web_view::renderGreed, renderGreedMobile, renderGreedWithHtmlInFild y
+ * renderGreedWithHtmlInFildMobile (DataTables 1.9.4). Misma paleta solida que la pantalla de
+ * facturacion, sin degradados. Solo en pantalla: la impresion queda como antes.
+ *
+ * Paleta: tarjeta #FFF, borde #D9E1EC, texto #0F172A, cabecera #0F172A, primario #2563EB,
+ *         seleccion #DBEAFE, total #DCFCE7 / #14532D.
+ *
+ * Especificidad: "table.pm-grid.table" (0,2,x) para ganar a bootstrap/genyx
+ * (".table-striped > tbody > tr:nth-child(odd) > td") sin !important.
+ * Las pantallas con estilo propio por id (ej. #ListView en app_invoice_billing/index) siguen mandando.
+ *
+ * Estructura:
+ *   div.dataTables_wrapper.pm-grid-wrapper (clase la pone posme-grid.js)
+ *       .dataTables_length / .dataTables_filter / table.pm-grid / .dataTables_info / .dataTables_paginate
+ *   table.pm-grid > tbody > tr.pm-grid-total (fila de totales de summaryColumns, si existe)
+ *   Telefono (<= 767px): cada fila es una tarjeta; etiquetas en td[data-label] (posme-grid.js).
+ * ========================================================================== */
+@media screen {
+
+	/* ---------- Tabla ---------- */
+	table.pm-grid.table {
+		width			: 100%;
+		margin			: 0 0 8px 0;
+		background-color: #FFFFFF;
+		border			: 1px solid #D9E1EC;
+		border-collapse	: separate;
+		border-spacing	: 0;
+		border-radius	: 12px;
+		overflow		: hidden;
+		font-family		: 'Open Sans', 'Segoe UI', Arial, sans-serif;
+		color			: #0F172A;
+	}
+	table.pm-grid.table > thead {
+		background-image: none;		/* genyx: patron claro en .table thead */
+	}
+	table.pm-grid.table > thead > tr > th {
+		background-color: #0F172A;
+		background-image: none;		/* genyx/DataTables: patron y flechas oscuras (.sorting) */
+		color			: #FFFFFF;
+		border			: none;
+		border-right	: 1px solid #1E293B;
+		box-shadow		: none;
+		text-shadow		: none;
+		padding			: 10px 12px;
+		font-size		: 12px;
+		font-weight		: 700;
+		letter-spacing	: 0.3px;
+		text-transform	: uppercase;
+		text-align		: left;
+		white-space		: nowrap;
+		vertical-align	: middle;
+	}
+	table.pm-grid.table > thead > tr > th:last-child {
+		border-right	: none;
+	}
+	table.pm-grid.table > thead > tr > th.sorting,
+	table.pm-grid.table > thead > tr > th.sorting_asc,
+	table.pm-grid.table > thead > tr > th.sorting_desc {
+		cursor			: pointer;
+	}
+	table.pm-grid.table > thead > tr > th.sorting::after,
+	table.pm-grid.table > thead > tr > th.sorting_asc::after,
+	table.pm-grid.table > thead > tr > th.sorting_desc::after {
+		display			: inline-block;
+		margin-left		: 6px;
+		font-size		: 10px;
+		color			: #94A3B8;
+	}
+	table.pm-grid.table > thead > tr > th.sorting::after		{ content: "\21C5"; }
+	table.pm-grid.table > thead > tr > th.sorting_asc::after	{ content: "\25B2"; color: #FFFFFF; }
+	table.pm-grid.table > thead > tr > th.sorting_desc::after	{ content: "\25BC"; color: #FFFFFF; }
+
+	table.pm-grid.table > tbody > tr > td {
+		background-color: #FFFFFF;
+		background-image: none;
+		border			: none;
+		border-top		: 1px solid #E2E8F0;
+		box-shadow		: none;
+		padding			: 9px 12px;
+		font-size		: 14px;
+		color			: #0F172A;
+		vertical-align	: middle;
+	}
+	table.pm-grid.table > tbody > tr:nth-child(even) > td {
+		background-color: #F8FAFC;
+	}
+	table.pm-grid.table > tbody > tr {
+		cursor			: pointer;
+	}
+	table.pm-grid.table > tbody > tr:hover > td {
+		background-color: #EFF6FF;
+	}
+	/* Fila seleccionada (genyx-fn.js: fnTableSelectedRow / fnTableSelectedRowMultiSelect) */
+	table.pm-grid.table > tbody > tr.row-selected > td {
+		background-color: #DBEAFE;
+		color			: #0F172A;
+	}
+	table.pm-grid.table > tbody > tr.row-selected > td:first-child {
+		box-shadow		: inset 4px 0 0 #2563EB;
+	}
+	/* Fila de totales (summaryColumns) */
+	table.pm-grid.table > tbody > tr.pm-grid-total > td {
+		background-color: #DCFCE7;
+		color			: #14532D;
+		font-weight		: 700;
+		border-top		: 2px solid #86EFAC;
+	}
+	table.pm-grid.table > tbody > tr > td.dataTables_empty {
+		text-align		: center;
+		color			: #64748B;
+		padding			: 24px 12px;
+		cursor			: default;
+	}
+
+	/* ---------- Filtro, cantidad, informacion y paginacion ---------- */
+	.pm-grid-wrapper {
+		font-family		: 'Open Sans', 'Segoe UI', Arial, sans-serif;
+		color			: #0F172A;
+	}
+	.pm-grid-wrapper .dataTables_length label,
+	.pm-grid-wrapper .dataTables_filter label,
+	.pm-grid-wrapper .dataTables_info {
+		color			: #475569;
+		font-size		: 13px;
+		font-weight		: 600;
+	}
+	.pm-grid-wrapper .dataTables_filter input {
+		height			: 38px;
+		min-width		: 180px;
+		border			: 1px solid #CBD5E1;
+		border-radius	: 10px;
+		background-color: #FFFFFF;
+		background-image: none;		/* genyx: degradado en input[type=text] */
+		color			: #0F172A;
+		padding			: 4px 10px;
+		box-shadow		: none;
+	}
+	.pm-grid-wrapper .dataTables_filter input:focus {
+		border-color	: #2563EB;
+		box-shadow		: 0 0 0 3px #BFDBFE;
+		outline			: none;
+	}
+	.pm-grid-wrapper .dataTables_paginate ul > li > a,
+	.pm-grid-wrapper .dataTables_paginate ul > li > span {
+		min-width		: 38px;
+		height			: 38px;
+		line-height		: 36px;
+		padding			: 0 12px;
+		margin-left		: 4px;
+		border			: 1px solid #D9E1EC;
+		border-radius	: 10px;
+		background-color: #FFFFFF;
+		background-image: none;
+		color			: #0F172A;
+		font-weight		: 600;
+		text-align		: center;
+		box-shadow		: none;
+	}
+	.pm-grid-wrapper .dataTables_paginate ul > li > a:hover,
+	.pm-grid-wrapper .dataTables_paginate ul > li > a:focus {
+		background-color: #EFF6FF;
+		border-color	: #93C5FD;
+	}
+	.pm-grid-wrapper .dataTables_paginate ul > li.active > a,
+	.pm-grid-wrapper .dataTables_paginate ul > li.active > span {
+		background-color: #2563EB;
+		border-color	: #2563EB;
+		color			: #FFFFFF;
+	}
+	.pm-grid-wrapper .dataTables_paginate ul > li.disabled > a,
+	.pm-grid-wrapper .dataTables_paginate ul > li.disabled > span {
+		background-color: #F1F5F9;
+		color			: #94A3B8;
+	}
+}
+
+/* ---------- Tablet: la tabla se desplaza de lado si no cabe ---------- */
+@media screen and (min-width: 768px) and (max-width: 1199px) {
+	.pm-grid-wrapper {
+		overflow-x		: auto;
+		-webkit-overflow-scrolling: touch;
+	}
+}
+
+/* ---------- Telefono: cada fila es una tarjeta ---------- */
+@media screen and (max-width: 767px) {
+	/* app.css (movil) deja filtro y cantidad inline-block y centrados */
+	.pm-grid-wrapper .dataTables_length,
+	.pm-grid-wrapper .dataTables_filter {
+		display			: block;
+		float			: none;
+		width			: 100%;
+		text-align		: left;
+		margin-bottom	: 8px;
+	}
+	.pm-grid-wrapper .row > [class*="col-"] {
+		text-align		: left;
+	}
+	.pm-grid-wrapper .dataTables_filter label {
+		display			: block;
+		width			: 100%;
+		margin			: 0;
+	}
+	.pm-grid-wrapper .dataTables_filter input {
+		width			: 100%;
+		height			: 44px;
+		font-size		: 16px;		/* evita el zoom de iOS al enfocar */
+		margin			: 4px 0 0 0;
+	}
+	.pm-grid-wrapper .dataTables_info,
+	.pm-grid-wrapper .dataTables_paginate {
+		float			: none;
+		text-align		: center;
+	}
+
+	table.pm-grid.table {
+		display			: block;
+		width			: 100% !important;	/* DataTables / pantallas ponen width inline */
+		border			: none;
+		border-radius	: 0;
+		background-color: transparent;
+		overflow		: visible;
+	}
+	table.pm-grid.table > thead {
+		display			: none;
+	}
+	table.pm-grid.table > tbody {
+		display			: block;
+	}
+	table.pm-grid.table > tbody > tr {
+		display			: block;
+		position		: relative;
+		background-color: #FFFFFF;
+		border			: 1px solid #D9E1EC;
+		border-radius	: 12px;
+		padding			: 8px 12px;
+		margin			: 0 0 10px 0;
+		box-shadow		: 0 1px 3px rgba(15, 23, 42, 0.06);
+	}
+	table.pm-grid.table > tbody > tr > td,
+	table.pm-grid.table > tbody > tr:nth-child(even) > td,
+	table.pm-grid.table > tbody > tr:hover > td {
+		display			: flex;
+		justify-content	: space-between;
+		align-items		: center;
+		gap				: 10px;
+		width			: auto !important;	/* formatColumns puede traer width inline */
+		background-color: transparent;
+		border			: none;
+		border-top		: 1px dashed #E2E8F0;
+		padding			: 6px 0;
+		font-size		: 14px;
+		text-align		: right;
+		overflow-wrap	: anywhere;
+	}
+	table.pm-grid.table > tbody > tr > td:first-child {
+		border-top		: none;
+		font-size		: 15px;
+		font-weight		: 700;
+	}
+	table.pm-grid.table > tbody > tr > td[data-label]::before {
+		content			: attr(data-label);
+		flex			: 0 0 auto;
+		max-width		: 45%;
+		color			: #64748B;
+		font-size		: 12px;
+		font-weight		: 700;
+		text-transform	: uppercase;
+		text-align		: left;
+	}
+	table.pm-grid.table > tbody > tr > td.dataTables_empty {
+		display			: block;
+		text-align		: center;
+	}
+	table.pm-grid.table > tbody > tr.row-selected {
+		border-color	: #2563EB;
+		box-shadow		: 0 0 0 2px #2563EB;
+		background-color: #EFF6FF;
+	}
+	table.pm-grid.table > tbody > tr.row-selected > td,
+	table.pm-grid.table > tbody > tr.row-selected > td:first-child {
+		background-color: transparent;
+		box-shadow		: none;
+	}
+	/* Total: tarjeta verde */
+	table.pm-grid.table > tbody > tr.pm-grid-total {
+		background-color: #DCFCE7;
+		border-color	: #86EFAC;
+	}
+	table.pm-grid.table > tbody > tr.pm-grid-total > td {
+		background-color: transparent;
+		color			: #14532D;
+		border-top		: 1px dashed #86EFAC;
+	}
+	table.pm-grid.table > tbody > tr.pm-grid-total > td:first-child {
+		border-top		: none;
+	}
+}

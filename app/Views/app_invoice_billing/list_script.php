@@ -33,7 +33,9 @@
 		}
 		
 		
-		$('#txtStartOn').datepicker({format:"yyyy-mm-dd"});		
+		//Telefono/tactil: fecha nativa (posme-invoice-billing-list.js), sin datepicker de jQuery
+		if(!window.pmListNativo)
+		$('#txtStartOn').datepicker({format:"yyyy-mm-dd"});
 		$('#modalDialogClaveMesero').on('shown.bs.modal', function () {
 			$('#txtClaveMesero').focus();
 		});
@@ -247,7 +249,7 @@
 			<div class="modal fade" id="modalDeleteCommentList" tabindex="-1" role="dialog" aria-hidden="true">
 				<div class="modal-dialog modal-dialog-centered" role="document" style="max-width:440px;margin-top:12vh;">
 					<div class="modal-content" style="border:none;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);">
-						<div style="background:linear-gradient(135deg,#ff5f6d 0%,#d63031 100%);padding:22px 24px;color:#fff;position:relative;">
+						<div style="background:#DC2626;padding:22px 24px;color:#fff;position:relative;">
 							<div style="display:flex;align-items:center;gap:12px;">
 								<div style="width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:22px;">&#9888;</div>
 								<div>
@@ -264,7 +266,7 @@
 						</div>
 						<div style="padding:16px 24px;background:#f8f9fa;display:flex;justify-content:flex-end;gap:10px;">
 							<button type="button" data-dismiss="modal" id="btnCancelDeleteList" style="border:none;background:#e9ecef;color:#495057;padding:10px 20px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;transition:background .2s;">Cancelar</button>
-							<button type="button" id="btnConfirmDeleteList" style="border:none;background:linear-gradient(135deg,#ff5f6d 0%,#d63031 100%);color:#fff;padding:10px 22px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(214,48,49,.3);">Confirmar anulación</button>
+							<button type="button" id="btnConfirmDeleteList" style="border:none;background:#DC2626;color:#fff;padding:10px 22px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(214,48,49,.3);">Confirmar anulación</button>
 						</div>
 					</div>
 				</div>

@@ -1,0 +1,2171 @@
+/*
+ * posme-invoice-billing-news.css
+ * Rediseño visual de la pantalla "Nueva factura" (app_invoice_billing/add -> vistas news_*).
+ * Se carga solo desde news_head.php. Reglas acotadas a #rowCssPrincipal, #heading, .pm-*,
+ * sidebars de la pantalla y modales .modal-content-customer1-* / #modalDeleteCommentNews.
+ *
+ * Paleta (solo colores solidos):
+ *   fondo #EEF2F7 | tarjeta #FFFFFF | borde #D9E1EC | texto #0F172A | secundario #64748B
+ *   oscuro #0F172A | primario #2563EB (#1D4ED8) | registrar #F97316 (#EA580C)
+ *   exito #16A34A (#15803D) | peligro #DC2626 | info #0891B2 | cocina/bar #7C3AED | inverse #334155
+ *
+ * Reglas de convivencia:
+ *   - Nunca se fuerza display con !important (la clase .hidden de BS3 debe seguir ganando).
+ *   - No se usa transform/filter/will-change en .sidebar ni en sus ancestros.
+ *   - Los estilos inline que pone el JS (background-color:#eee al bloquear pago,
+ *     display:block en celdas con useMobile=1) no se sobrescriben.
+ */
+
+/* ======================================================================
+ * Base
+ * ====================================================================== */
+.pm-invoice-news body {
+	background-color: #EEF2F7;
+}
+
+#rowCssPrincipal {
+	font-family		: 'Open Sans', 'Segoe UI', Arial, sans-serif;
+	font-size		: 14px;
+	color			: #0F172A;
+}
+
+#rowCssPrincipal .txt-numeric,
+#rowCssPrincipal .txtQuantity,
+#rowCssPrincipal .txtPrice,
+#rowCssPrincipal .txtSubTotal,
+#rowCssPrincipal #table-resumen input,
+#rowCssPrincipal #table-resumen-pago input,
+#pmBarraMovil .pm-barra-movil-monto {
+	font-variant-numeric: tabular-nums;
+}
+
+/* ======================================================================
+ * Cabecera
+ * ====================================================================== */
+#heading.pm-heading {
+	background-color: #0F172A;
+	color			: #FFFFFF;
+	border			: none;
+	border-radius	: 14px;
+	padding			: 14px 20px;
+	margin-bottom	: 12px;
+}
+#heading.pm-heading h1 {
+	color			: #FFFFFF;
+	font-size		: 22px;
+	font-weight		: 600;
+	margin			: 0;
+	line-height		: 1.3;
+}
+#heading.pm-heading h1 i {
+	color			: #F97316;
+}
+/* Iteracion 3: la barra "Agregar Factura" se oculta (el HTML se conserva). No es sticky ni entra en --pm-top. */
+#heading.pm-heading {
+	display			: none;
+}
+
+#rowCssPrincipal > .col-lg-12 > .panel {
+	background-color: #FFFFFF;
+	border			: 1px solid #D9E1EC;
+	border-radius	: 14px;
+	box-shadow		: 0 1px 3px rgba(15, 23, 42, 0.08);
+	overflow		: visible;
+}
+#rowCssPrincipal > .col-lg-12 > .panel > .panel-heading {
+	background-color: #0F172A;
+	background-image: none;
+	color			: #FFFFFF;
+	border			: none;
+	border-radius	: 14px 14px 0 0;
+	padding			: 12px 18px;
+}
+#rowCssPrincipal > .col-lg-12 > .panel > .panel-heading h4,
+#rowCssPrincipal > .col-lg-12 > .panel > .panel-heading .icon,
+#rowCssPrincipal > .col-lg-12 > .panel > .panel-heading .icon i {
+	color			: #FFFFFF;
+	font-weight		: 600;
+}
+/* Sin icono a la izquierda: el tema reserva 50px para el (.panel .panel-heading h4) */
+#rowCssPrincipal > .col-lg-12 > .panel > .panel-heading h4 {
+	padding-left	: 0;
+}
+#rowCssPrincipal #invoice-num {
+	display			: inline-block;
+	background-color: #F97316;
+	color			: #FFFFFF;
+	border-radius	: 999px;
+	padding			: 2px 12px;
+	margin-left		: 6px;
+	font-family		: Consolas, 'Courier New', monospace;
+	font-size		: 15px;
+	letter-spacing	: 1px;
+	font-variant-numeric: tabular-nums;
+}
+
+#rowCssPrincipal .page-header {
+	border-bottom	: 1px solid #D9E1EC;
+	margin			: 0 0 12px 0;
+	padding-bottom	: 6px;
+}
+#rowCssPrincipal .page-header h3,
+#rowCssPrincipal #labelTitleDetalle {
+	font-size		: 16px;
+	font-weight		: 600;
+	color			: #0F172A;
+	text-transform	: uppercase;
+	letter-spacing	: 0.5px;
+	margin			: 8px 0;
+}
+
+/* ======================================================================
+ * Formularios
+ * ====================================================================== */
+#rowCssPrincipal .form-group {
+	margin-bottom	: 12px;
+}
+#rowCssPrincipal .control-label {
+	font-weight		: 600;
+	color			: #0F172A;
+}
+#rowCssPrincipal label {
+	font-weight		: 600;
+}
+
+#rowCssPrincipal .form-control,
+#rowCssPrincipal select,
+#rowCssPrincipal input[type="text"],
+#rowCssPrincipal input[type="date"],
+#rowCssPrincipal input[type="number"],
+#rowCssPrincipal input[type="txtCustomerDescription"],
+#rowCssPrincipal textarea {
+	border			: 1px solid #D9E1EC;
+	border-radius	: 10px;
+	color			: #0F172A;
+	box-shadow		: none;
+	font-size		: 14px;
+	max-width		: 100%;
+}
+#rowCssPrincipal input.form-control,
+#rowCssPrincipal select {
+	height			: 40px;
+	padding			: 6px 10px;
+}
+#rowCssPrincipal select {
+	width			: 100%;
+	background-color: #FFFFFF;
+	line-height		: 1.4;
+	cursor			: pointer;
+}
+#rowCssPrincipal .form-control[readonly],
+#rowCssPrincipal .form-control[disabled] {
+	background-color: #F8FAFC;
+	color			: #334155;
+}
+
+/* Foco (reemplaza el fondo verde anterior) */
+#rowCssPrincipal input:focus,
+#rowCssPrincipal select:focus,
+#rowCssPrincipal textarea:focus {
+	border-color	: #2563EB;
+	box-shadow		: 0 0 0 3px #BFDBFE;
+	outline			: none;
+}
+
+/* Grupos con boton (cliente) */
+#rowCssPrincipal .input-group .form-control:first-child {
+	border-radius	: 10px 0 0 10px;
+}
+#rowCssPrincipal .input-group-btn > .btn {
+	min-height		: 40px;
+	border-radius	: 0;
+}
+#rowCssPrincipal .input-group-btn:last-child > .btn {
+	border-radius	: 0 10px 10px 0;
+}
+#rowCssPrincipal .input-group-addon {
+	border-color	: #D9E1EC;
+	background-color: #F8FAFC;
+	border-radius	: 0 10px 10px 0;
+}
+
+/* Controles tactiles: 44px */
+.pm-native #rowCssPrincipal input.form-control,
+.pm-native #rowCssPrincipal select,
+.pm-native #rowCssPrincipal #tb_transaction_master_detail input[type="text"],
+.pm-native #rowCssPrincipal #table-resumen input[type="text"],
+.pm-native #rowCssPrincipal #table-resumen-pago input[type="text"] {
+	min-height		: 44px;
+	font-size		: 16px;
+}
+.pm-native #rowCssPrincipal input.form-control,
+.pm-native #rowCssPrincipal select {
+	height			: 44px;
+}
+
+/* Fecha nativa: el addon del calendario sobra (datepicker desactivado) */
+.pm-native .input-group.date .input-group-addon {
+	display			: none;
+}
+.pm-native .input-group.date {
+	width			: 100%;
+}
+.pm-native #rowCssPrincipal .input-group.date .form-control {
+	border-radius	: 10px;
+}
+
+/* Labels arriba del campo en <992px */
+@media (max-width: 991px) {
+	#rowCssPrincipal .form-horizontal .control-label,
+	#rowCssPrincipal.form-horizontal .control-label,
+	#rowCssPrincipal .control-label {
+		display			: block;
+		text-align		: left;
+		padding-top		: 0;
+		margin-bottom	: 4px;
+	}
+}
+
+/* ======================================================================
+ * Pestanas (pill)
+ * ====================================================================== */
+#rowCssPrincipal #myTab {
+	border-bottom	: none;
+	margin-bottom	: 14px;
+}
+#rowCssPrincipal #myTab > li {
+	margin			: 0 6px 6px 0;
+}
+#rowCssPrincipal #myTab > li > a {
+	background-color: #E2E8F0;
+	color			: #0F172A;
+	border			: none;
+	border-radius	: 999px;
+	padding			: 8px 16px;
+	font-weight		: 600;
+	margin-right	: 0;
+}
+#rowCssPrincipal #myTab > li > a:hover,
+#rowCssPrincipal #myTab > li > a:focus {
+	background-color: #CBD5E1;
+	color			: #0F172A;
+	border			: none;
+}
+#rowCssPrincipal #myTab > li.active > a,
+#rowCssPrincipal #myTab > li.active > a:hover,
+#rowCssPrincipal #myTab > li.active > a:focus {
+	background-color: #2563EB;
+	color			: #FFFFFF;
+	border			: none;
+}
+#rowCssPrincipal #myTab .dropdown-menu {
+	border-radius	: 10px;
+	border-color	: #D9E1EC;
+}
+
+/* ======================================================================
+ * Scanner
+ * ====================================================================== */
+#rowCssPrincipal #txtScanerCodigo {
+	height			: 56px;
+	border			: 2px solid #2563EB;
+	border-radius	: 12px;
+	background-color: #ECFDF5;
+	font-size		: 18px;
+	font-weight		: 600;
+	padding			: 8px 16px;
+	margin			: 4px 0 16px 0;
+}
+#rowCssPrincipal #txtScanerCodigo:focus {
+	border-color	: #2563EB;
+	box-shadow		: 0 0 0 3px #BFDBFE;
+}
+
+/* ======================================================================
+ * Botones
+ * ====================================================================== */
+#rowCssPrincipal .btn,
+#pmBarraMovil .btn,
+#modalDeleteCommentNews .btn,
+body [class*="modal-content-customer1-"] .btn {
+	border-radius	: 10px;
+	min-height		: 44px;
+	font-weight		: 600;
+	text-transform	: uppercase;
+	background-image: none;
+	text-shadow		: none;
+	box-shadow		: none;
+}
+#rowCssPrincipal .btn-block + .btn-block {
+	margin-top		: 6px;
+}
+
+#rowCssPrincipal .btn-primary,
+body [class*="modal-content-customer1-"] .btn-primary {
+	background-color: #2563EB;
+	border-color	: #2563EB;
+	color			: #FFFFFF;
+}
+#rowCssPrincipal .btn-primary:hover,
+#rowCssPrincipal .btn-primary:focus,
+body [class*="modal-content-customer1-"] .btn-primary:hover {
+	background-color: #1D4ED8;
+	border-color	: #1D4ED8;
+	color			: #FFFFFF;
+}
+#rowCssPrincipal .btn-warning,
+body [class*="modal-content-customer1-"] .btn-warning {
+	background-color: #F97316;
+	border-color	: #F97316;
+	color			: #FFFFFF;
+}
+#rowCssPrincipal .btn-warning:hover,
+#rowCssPrincipal .btn-warning:focus,
+body [class*="modal-content-customer1-"] .btn-warning:hover {
+	background-color: #EA580C;
+	border-color	: #EA580C;
+	color			: #FFFFFF;
+}
+#rowCssPrincipal .btn-success,
+body [class*="modal-content-customer1-"] .btn-success {
+	background-color: #16A34A;
+	border-color	: #16A34A;
+	color			: #FFFFFF;
+}
+#rowCssPrincipal .btn-success:hover,
+#rowCssPrincipal .btn-success:focus,
+body [class*="modal-content-customer1-"] .btn-success:hover {
+	background-color: #15803D;
+	border-color	: #15803D;
+	color			: #FFFFFF;
+}
+#rowCssPrincipal .btn-danger,
+body [class*="modal-content-customer1-"] .btn-danger {
+	background-color: #DC2626;
+	border-color	: #DC2626;
+	color			: #FFFFFF;
+}
+#rowCssPrincipal .btn-danger:hover,
+#rowCssPrincipal .btn-danger:focus,
+body [class*="modal-content-customer1-"] .btn-danger:hover {
+	background-color: #B91C1C;
+	border-color	: #B91C1C;
+	color			: #FFFFFF;
+}
+#rowCssPrincipal .btn-info,
+body [class*="modal-content-customer1-"] .btn-info {
+	background-color: #0891B2;
+	border-color	: #0891B2;
+	color			: #FFFFFF;
+}
+#rowCssPrincipal .btn-info:hover,
+#rowCssPrincipal .btn-info:focus,
+body [class*="modal-content-customer1-"] .btn-info:hover {
+	background-color: #0E7490;
+	border-color	: #0E7490;
+	color			: #FFFFFF;
+}
+#rowCssPrincipal .btn-inverse {
+	background-color: #334155;
+	border-color	: #334155;
+	color			: #FFFFFF;
+}
+#rowCssPrincipal .btn-inverse:hover,
+#rowCssPrincipal .btn-inverse:focus {
+	background-color: #1E293B;
+	border-color	: #1E293B;
+	color			: #FFFFFF;
+}
+#rowCssPrincipal .btn-default,
+body [class*="modal-content-customer1-"] .btn-default {
+	background-color: #FFFFFF;
+	border			: 1px solid #D9E1EC;
+	color			: #0F172A;
+}
+#rowCssPrincipal .btn-default:hover,
+body [class*="modal-content-customer1-"] .btn-default:hover {
+	background-color: #F1F5F9;
+	color			: #0F172A;
+}
+
+/* Nueva factura = exito; cocina/bar = violeta */
+#rowCssPrincipal #btnNew.btn {
+	background-color: #16A34A;
+	border-color	: #16A34A;
+	color			: #FFFFFF;
+}
+#rowCssPrincipal #btnNew.btn:hover {
+	background-color: #15803D;
+	border-color	: #15803D;
+}
+#rowCssPrincipal #btnFooter.btn,
+#rowCssPrincipal #btnBar.btn {
+	background-color: #7C3AED;
+	border-color	: #7C3AED;
+	color			: #FFFFFF;
+}
+#rowCssPrincipal #btnFooter.btn:hover,
+#rowCssPrincipal #btnBar.btn:hover {
+	background-color: #6D28D9;
+	border-color	: #6D28D9;
+}
+
+#rowCssPrincipal .dropdown-menu {
+	border-radius	: 10px;
+	border-color	: #D9E1EC;
+	box-shadow		: 0 4px 12px rgba(15, 23, 42, 0.12);
+}
+#rowCssPrincipal .dropdown-menu > li > a {
+	padding			: 10px 16px;
+	font-weight		: 600;
+}
+
+/* Botonera: escritorio en flujo normal; de 992 a 1199 los col-lg-2 quedarian apilados, se usa rejilla de 4 */
+@media (max-width: 1199px) {
+	#rowCssPrincipal #rowBotoneraFacturaFila1,
+	#rowCssPrincipal #rowBotoneraFacturaFila2,
+	#rowCssPrincipal #rowBotoneraFacturaFila3,
+	#rowCssPrincipal #rowBotoneraFacturaFila4 {
+		display					: grid;
+		grid-template-columns	: repeat(4, minmax(0, 1fr));
+		gap						: 8px;
+		margin					: 0 0 8px 0;
+	}
+	#rowCssPrincipal #rowBotoneraFacturaFila1::before,
+	#rowCssPrincipal #rowBotoneraFacturaFila1::after,
+	#rowCssPrincipal #rowBotoneraFacturaFila2::before,
+	#rowCssPrincipal #rowBotoneraFacturaFila2::after,
+	#rowCssPrincipal #rowBotoneraFacturaFila3::before,
+	#rowCssPrincipal #rowBotoneraFacturaFila3::after,
+	#rowCssPrincipal #rowBotoneraFacturaFila4::before,
+	#rowCssPrincipal #rowBotoneraFacturaFila4::after {
+		display			: none;
+	}
+	#rowCssPrincipal #rowBotoneraFacturaFila2 > br,
+	#rowCssPrincipal #rowBotoneraFacturaFila3 > br {
+		display			: none;
+	}
+	#rowCssPrincipal #rowBotoneraFacturaFila4 > #workflowLink,
+	#rowCssPrincipal #rowBotoneraFacturaFila4 > #divPanelOpenCash {
+		display			: contents;
+	}
+	#rowCssPrincipal [id^="rowBotoneraFacturaFila"] .col {
+		float			: none;
+		width			: auto;
+		padding			: 0;
+		min-width		: 0;
+	}
+	/* Celdas vacias (boton oculto con .hidden): no ocupan lugar en la rejilla */
+	#rowCssPrincipal [id^="rowBotoneraFacturaFila"] .col:not(:has(.btn:not(.hidden))),
+	#rowCssPrincipal [id^="rowBotoneraFacturaFila"] .col:has(> .btn-group.hidden:only-child) {
+		display			: none;
+	}
+	#rowCssPrincipal [id^="rowBotoneraFacturaFila"] .btn-block + .btn-block {
+		margin-top		: 0;
+	}
+}
+@media (max-width: 991px) {
+	#rowCssPrincipal #rowBotoneraFacturaFila1,
+	#rowCssPrincipal #rowBotoneraFacturaFila2,
+	#rowCssPrincipal #rowBotoneraFacturaFila3,
+	#rowCssPrincipal #rowBotoneraFacturaFila4 {
+		grid-template-columns	: repeat(3, minmax(0, 1fr));
+	}
+}
+@media (max-width: 767px) {
+	#rowCssPrincipal #rowBotoneraFacturaFila1,
+	#rowCssPrincipal #rowBotoneraFacturaFila2,
+	#rowCssPrincipal #rowBotoneraFacturaFila3,
+	#rowCssPrincipal #rowBotoneraFacturaFila4 {
+		grid-template-columns	: repeat(2, minmax(0, 1fr));
+	}
+	/* Iteracion 3: tamano de los botones de botonera centralizado en "Botoneras: altura uniforme" (final del archivo) */
+}
+#rowCssPrincipal #workflowLink .btn {
+	white-space		: normal;
+}
+
+/* ======================================================================
+ * Tabla de detalle
+ * ====================================================================== */
+#rowCssPrincipal .table > thead > tr > td,
+#rowCssPrincipal .table > tbody > tr > td,
+#rowCssPrincipal .table > tfoot > tr > td,
+#rowCssPrincipal .table > tbody > tr > th {
+	padding			: 8px;
+	vertical-align	: middle;
+	border-color	: #D9E1EC;
+}
+#rowCssPrincipal #tb_transaction_master_detail {
+	background-color: #FFFFFF;
+	border-color	: #D9E1EC;
+	margin-bottom	: 12px;
+}
+#rowCssPrincipal #tb_transaction_master_detail > thead > tr > th {
+	background-color: #0F172A;
+	color			: #FFFFFF;
+	font-weight		: 600;
+	font-size		: 13px;
+	text-transform	: uppercase;
+	border-color	: #1E293B;
+	padding			: 10px 8px;
+	vertical-align	: middle;
+}
+#rowCssPrincipal #tb_transaction_master_detail > tbody > tr:nth-child(even) > td {
+	background-color: #F8FAFC;
+}
+#rowCssPrincipal #tb_transaction_master_detail input[type="text"] {
+	width			: 100%;
+	height			: 36px;
+	padding			: 4px 8px;
+	border			: 1px solid #D9E1EC;
+	border-radius	: 8px;
+	background-color: #FFFFFF;
+}
+#rowCssPrincipal #tb_transaction_master_detail input[readonly] {
+	background-color: #F1F5F9;
+}
+#rowCssPrincipal #tb_transaction_master_detail input.pm-item-name {
+	font-weight		: 600;
+	color			: #0F172A;
+	text-overflow	: ellipsis;
+	white-space		: nowrap;
+	overflow		: hidden;
+}
+#rowCssPrincipal #tb_transaction_master_detail .btn {
+	min-height		: 36px;
+	min-width		: 36px;
+	padding			: 6px 8px;
+	margin			: 2px;
+}
+.pm-native #rowCssPrincipal #tb_transaction_master_detail .btn {
+	min-height		: 44px;
+	min-width		: 44px;
+}
+#rowCssPrincipal #tb_transaction_master_detail .label-sku {
+	border-radius	: 8px;
+	display			: block;
+}
+
+/* Tablet: desplazamiento horizontal (el wrapper esta por fuera del <table>) */
+@media (min-width: 768px) and (max-width: 991px) {
+	#rowCssPrincipal .pm-table-wrap {
+		overflow-x					: auto;
+		-webkit-overflow-scrolling	: touch;
+		border-radius				: 10px;
+	}
+	#rowCssPrincipal .pm-table-wrap #tb_transaction_master_detail {
+		min-width		: 900px;
+	}
+}
+
+/*
+ * Telefono: cada fila es una tarjeta (solo CSS, sin tocar celdas ni su orden en el DOM).
+ * Orden real de columnas (thead / columnasTableDetail), nth-child base 1:
+ *   1 check | 2 transactionMasterDetailID* | 3 itemID* | 4 Codigo | 5 Descripcion | 6 U/M (sku)
+ *   7 Cantidad | 8 Precio | 9 Total | 10 Iva* | 11 skuQuantityBySku* | 12 unitaryPriceInvidual*
+ *   13 Accion | 14..18 ocultas* | 19 Peso (segun INVOICE_SHOW_FIELD_PESO) | 20..27 ocultas*
+ *   (* = td.hidden, se excluyen solas de la rejilla)
+ */
+@media (max-width: 767px) {
+	#rowCssPrincipal .pm-table-wrap {
+		overflow		: visible;
+	}
+	#rowCssPrincipal #tb_transaction_master_detail,
+	#rowCssPrincipal #tb_transaction_master_detail > tbody {
+		display			: block;
+		width			: 100%;
+		border			: none;
+		background-color: transparent;
+	}
+	#rowCssPrincipal #tb_transaction_master_detail > thead {
+		display			: none;
+	}
+	#rowCssPrincipal #tb_transaction_master_detail > tbody > tr {
+		display					: grid;
+		grid-template-columns	: repeat(6, minmax(0, 1fr));
+		gap						: 6px 8px;
+		background-color		: #FFFFFF;
+		border					: 1px solid #D9E1EC;
+		border-radius			: 12px;
+		padding					: 10px;
+		margin-bottom			: 10px;
+		box-shadow				: 0 1px 2px rgba(15, 23, 42, 0.06);
+	}
+	#rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td {
+		border			: none;
+		padding			: 0;
+		min-width		: 0;
+		background-color: transparent;
+		grid-column		: span 6;
+	}
+	#rowCssPrincipal #tb_transaction_master_detail > tbody > tr:nth-child(even) > td {
+		background-color: transparent;
+	}
+	#rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td.dataTables_empty {
+		display			: none;
+	}
+	#rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(1) {
+		order			: 1;
+		grid-column		: span 1;
+		min-height		: 44px;
+	}
+	#rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(5) {
+		order			: 2;
+		grid-column		: span 5;
+	}
+	#rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(4) {
+		order			: 3;
+		grid-column		: span 3;
+	}
+	#rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(6) {
+		order			: 4;
+		grid-column		: span 3;
+	}
+	#rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(7) {
+		order			: 5;
+		grid-column		: span 2;
+	}
+	#rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(8) {
+		order			: 6;
+		grid-column		: span 2;
+	}
+	#rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(9) {
+		order			: 7;
+		grid-column		: span 2;
+	}
+	#rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(19) {
+		order			: 8;
+		grid-column		: span 6;
+	}
+	#rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(13) {
+		order			: 9;
+		grid-column		: span 6;
+		text-align		: right;
+	}
+	#rowCssPrincipal #tb_transaction_master_detail input.pm-item-name {
+		white-space		: normal;
+		height			: auto;
+		min-height		: 44px;
+		font-size		: 16px;
+	}
+	/* Etiquetas de cada dato (en useMobile=1 ya existen badges/labels propios) */
+	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(4)::before,
+	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(6)::before,
+	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(7)::before,
+	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(8)::before,
+	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(9)::before,
+	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(19)::before {
+		display			: block;
+		font-size		: 11px;
+		font-weight		: 600;
+		color			: #64748B;
+		text-transform	: uppercase;
+		margin-bottom	: 2px;
+	}
+	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(4)::before  { content: "Código"; }
+	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(6)::before  { content: "U/M"; }
+	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(7)::before  { content: "Cantidad"; }
+	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(8)::before  { content: "Precio"; }
+	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(9)::before  { content: "Total"; }
+	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(19)::before { content: "Peso"; }
+}
+
+/* ======================================================================
+ * Pago
+ * ====================================================================== */
+#rowCssPrincipal #divPaymentOption,
+#rowCssPrincipal #panelResumenFactura,
+#rowCssPrincipal #panelResumenFacturaTool {
+	margin-bottom	: 12px;
+}
+#rowCssPrincipal #table-resumen {
+	background-color: #FFFFFF;
+	border-radius	: 12px;
+}
+#rowCssPrincipal #table-resumen > tbody > tr > th {
+	font-weight		: 600;
+	color			: #0F172A;
+	white-space		: nowrap;
+	vertical-align	: middle;
+}
+#rowCssPrincipal #table-resumen input[type="text"],
+#rowCssPrincipal #panelResumenFacturaTool input[type="text"] {
+	width			: 100%;
+	height			: 40px;
+	padding			: 6px 10px;
+}
+#rowCssPrincipal #table-resumen select {
+	min-width		: 110px;
+}
+#rowCssPrincipal #table-resumen #txtChangeAmount {
+	font-size		: 22px;
+	font-weight		: 700;
+	color			: #F97316;
+	border-color	: #FDBA74;
+}
+
+@media (max-width: 767px) {
+	#rowCssPrincipal #table-resumen,
+	#rowCssPrincipal #table-resumen > tbody {
+		display			: block;
+		width			: 100%;
+		border			: none;
+	}
+	#rowCssPrincipal #table-resumen > tbody > tr:not(.hidden) {
+		display					: grid;
+		grid-template-columns	: repeat(2, minmax(0, 1fr));
+		gap						: 6px 8px;
+		padding					: 8px 0;
+		border-bottom			: 1px solid #D9E1EC;
+	}
+	#rowCssPrincipal #table-resumen > tbody > tr > th,
+	#rowCssPrincipal #table-resumen > tbody > tr > td {
+		border			: none;
+		padding			: 0;
+		min-width		: 0;
+	}
+	#rowCssPrincipal #table-resumen > tbody > tr > th,
+	#rowCssPrincipal #table-resumen > tbody > tr > td:nth-child(2) {
+		grid-column		: span 2;
+	}
+	#rowCssPrincipal #table-resumen input[type="text"],
+	#rowCssPrincipal #table-resumen select {
+		min-height		: 44px;
+		font-size		: 16px;
+	}
+}
+
+/* ======================================================================
+ * Resumen / totales
+ * ====================================================================== */
+#rowCssPrincipal #divPanelShowSummaryNumber {
+	margin-bottom	: 12px;
+}
+#rowCssPrincipal #divPanelShowSummaryNumber .page-header {
+	background-color: #0F172A;
+	border			: none;
+	border-radius	: 14px 14px 0 0;
+	margin			: 0;
+	padding			: 10px 16px;
+}
+#rowCssPrincipal #divPanelShowSummaryNumber .page-header h3 {
+	color			: #FFFFFF;
+	margin			: 0;
+}
+#rowCssPrincipal #table-resumen-pago {
+	background-color: #0F172A;
+	border			: none;
+	border-radius	: 0 0 14px 14px;
+	overflow		: hidden;
+	width			: 100%;
+}
+#rowCssPrincipal #table-resumen-pago > tbody > tr > th,
+#rowCssPrincipal #table-resumen-pago > tbody > tr > td {
+	background-color: #0F172A;
+	color			: #E2E8F0;
+	border-color	: #1E293B;
+	padding			: 8px 14px;
+	vertical-align	: middle;
+	font-weight		: 700;
+	opacity			: 1;
+}
+/* Iteracion 3: etiquetas (SubTotal, IVA, % Desc, Desc, Serv, TOTAL) legibles: contraste AA sobre #0F172A */
+#rowCssPrincipal #table-resumen-pago > tbody > tr > th {
+	font-size		: 13px;
+	text-shadow		: none;
+}
+/* Iteracion 4: theme-genyx/css/app.css pone en ".table tbody tr th" una imagen clara (furley_bg2.png)
+ * que background-color no anula: las etiquetas quedaban claras sobre fondo claro. */
+#rowCssPrincipal #table-resumen-pago > tbody > tr > th,
+#rowCssPrincipal #table-resumen-pago > tbody > tr > td,
+#rowCssPrincipal #table-resumen > tbody > tr > th,
+#rowCssPrincipal #table-resumen > tbody > tr > td {
+	background-image	: none;
+	box-shadow			: none;
+}
+#rowCssPrincipal #table-resumen-pago > tbody > tr > th {
+	color			: #F1F5F9;
+}
+#rowCssPrincipal #table-resumen-pago > tbody > tr.pm-fila-total > th {
+	color			: #FFFFFF;
+}
+#rowCssPrincipal #table-resumen-pago input {
+	width			: 100%;
+	background-color: #FFFFFF;
+	background-image: none;	/* theme-genyx/css/app.css pone un degradado en input[type=text] */
+	border			: none;
+	color			: #0F172A;	/* fondo blanco: valores en negro (SubTotal, IVA, % Desc, Desc, % Serv) */
+	text-align		: right !important;
+	font-size		: 16px;
+	font-weight		: 600;
+	box-shadow		: none;
+}
+#rowCssPrincipal #table-resumen-pago input:not([readonly]) {
+	background-color: #FFFFFF;
+	border			: 1px solid #94A3B8;
+	border-radius	: 8px;
+	padding			: 4px 8px;
+}
+#rowCssPrincipal #table-resumen-pago input:focus {
+	color			: #0F172A;
+	box-shadow		: 0 0 0 3px #1D4ED8;
+}
+#rowCssPrincipal #table-resumen-pago tr:last-child > th {
+	color			: #FFFFFF;
+	font-size		: 16px;
+}
+#rowCssPrincipal #table-resumen-pago #txtTotal {
+	font-size		: 34px;
+	font-weight		: 700;
+	color			: #15803D;
+	height			: auto;
+	line-height		: 1.2;
+}
+@media (min-width: 1200px) {
+	#rowCssPrincipal #table-resumen-pago #txtTotal {
+		font-size		: 38px;
+	}
+}
+#txtTotalAlternativo {
+	font-variant-numeric: tabular-nums;
+}
+
+/* ======================================================================
+ * Sidebars (zona / mesa / categorias / pago)
+ * El fondo inline es blanco: se requiere !important solo para el color.
+ * ====================================================================== */
+#mySidebar,
+#mySidebarFactura,
+#mySidebarZona,
+#mySidebarMesa {
+	background-color: #EEF2F7 !important;
+}
+#mySidebarZona .custom-table-zalones > tbody > tr > td,
+#mySidebarMesa .custom-table-mesas > tbody > tr > td {
+	border-radius	: 12px;
+}
+@media (max-width: 767px) {
+	#mySidebarZona .custom-table-zalones,
+	#mySidebarMesa .custom-table-mesas {
+		table-layout	: fixed;
+		width			: 100%;
+	}
+	#mySidebarZona td.container-overlay,
+	#mySidebarMesa td.container-overlay {
+		width			: 33.333%;
+		height			: calc((100vw - 80px) / 3);
+		aspect-ratio	: 1 / 1;
+	}
+	#mySidebarZona .text-overlay,
+	#mySidebarMesa .text-overlay {
+		font-size		: 13px;
+		white-space		: normal;
+	}
+}
+
+/* ======================================================================
+ * Modales
+ * ====================================================================== */
+body [class*="modal-content-customer1-"] {
+	border-radius	: 14px;
+}
+body [class*="modal-content-customer1-"] .btn + .btn,
+body [class*="modal-content-customer1-"] .btn-block + .btn-block {
+	margin-top		: 8px;
+}
+#modalDeleteCommentNews #btnConfirmDeleteNews:hover {
+	background-color: #B91C1C;
+}
+#modalDeleteCommentNews #txtDeleteCommentNews:focus {
+	border-color	: #2563EB;
+	box-shadow		: 0 0 0 3px #BFDBFE;
+}
+
+/* ======================================================================
+ * Barra fija inferior (telefono)
+ * ====================================================================== */
+#pmBarraMovil {
+	display			: none;
+}
+@media (max-width: 767px) {
+	#pmBarraMovil:not(.pm-barra-oculta) {
+		display			: flex;
+		position		: fixed;
+		left			: 0;
+		right			: 0;
+		bottom			: 0;
+		z-index			: 990;
+		align-items		: center;
+		justify-content	: space-between;
+		gap				: 12px;
+		background-color: #0F172A;
+		color			: #FFFFFF;
+		padding			: 10px 12px;
+		padding-bottom	: calc(10px + env(safe-area-inset-bottom, 0px));
+		box-shadow		: 0 -2px 8px rgba(15, 23, 42, 0.25);
+		font-family		: 'Open Sans', 'Segoe UI', Arial, sans-serif;
+	}
+	body.modal-open #pmBarraMovil {
+		display			: none;
+	}
+	#rowCssPrincipal {
+		padding-bottom	: 84px;
+	}
+}
+#pmBarraMovil .pm-barra-movil-total {
+	display			: flex;
+	flex-direction	: column;
+	min-width		: 0;
+	line-height		: 1.1;
+}
+#pmBarraMovil .pm-barra-movil-label {
+	font-size		: 11px;
+	font-weight		: 600;
+	color			: #CBD5E1;
+	letter-spacing	: 1px;
+}
+#pmBarraMovil .pm-barra-movil-monto {
+	font-size		: 24px;
+	font-weight		: 700;
+	color			: #22C55E;
+	white-space		: nowrap;
+	overflow		: hidden;
+	text-overflow	: ellipsis;
+}
+#pmBarraMovil .pm-barra-movil-btn {
+	flex			: 0 0 auto;
+	min-height		: 48px;
+	min-width		: 140px;
+	padding			: 0 18px;
+	border			: none;
+	border-radius	: 10px;
+	background-color: #F97316;
+	color			: #FFFFFF;
+	font-size		: 15px;
+	font-weight		: 700;
+	text-transform	: uppercase;
+	cursor			: pointer;
+}
+#pmBarraMovil .pm-barra-movil-btn:hover,
+#pmBarraMovil .pm-barra-movil-btn:focus {
+	background-color: #EA580C;
+	outline			: none;
+}
+
+/* ======================================================================
+ * ITERACION 2: pantalla compacta, cobro siempre visible
+ *
+ * Estructura (news_body.php, todo dentro de form#form-new-invoice > .panel-body):
+ *   .pm-layout#pmLayout
+ *     .pm-col-main#pmColMain
+ *       .pm-barra-captura#pmBarraCaptura   sticky: #txtScanerCodigo + #rowBotoneraFacturaFila1
+ *       .pm-botonera-movil                  solo useMobile=1
+ *       #panelContainterDetailInvoice > .pm-table-wrap (scroll propio, thead sticky)
+ *     aside.pm-col-cobro#pmColCobro
+ *       .pm-cobro-cabecera (#pmBtnCobroExpandir, #pmBtnCobroCerrar)
+ *       .pm-cobro-cuerpo > #divPanelShowSummaryNumber + .pm-cobro-pagos#pmCobroPagos(#divPaymentOption, #pmBtnMasPagos)
+ *       #rowBotoneraFacturaFila2, Fila3, Fila4
+ *   div.pm-panel-aux#pmPanelAux (iteracion 3, hermano de .pm-layout): #panelResumenFacturaTool, #panelResumenFactura
+ *
+ *   >=1200      : dos columnas (68/32); cobro sticky a la derecha.
+ *   768..1199   : una columna; el aside es una barra fija inferior compacta
+ *                 (TOTAL, Recibido, CAMBIO, REGISTRAR) que se expande como hoja.
+ *   <=767       : el aside solo aparece como hoja inferior (boton COBRAR de #pmBarraMovil).
+ *
+ * Clases en <html> (JS): pm-superpuesto (sidebar/modal abierto), pm-sin-cobro
+ * (una personalizacion movio el cobro a las sidebars), pm-cobro-hoja-abierta.
+ * Variables (JS): --pm-top, --pm-tabla-max, --pm-cobro-alto.
+ * Nunca se fuerza display visible con !important: .hidden de BS3 sigue ganando.
+ * ====================================================================== */
+
+/* ---------- Compactacion general ---------- */
+#rowCssPrincipal .pm-layout br[id^="saltoDeLineaFila"] {
+	display			: none;
+}
+#rowCssPrincipal > .col-lg-12 > .panel > form > .panel-body {
+	padding			: 10px 12px;
+}
+#rowCssPrincipal #labelTitleDetalle {
+	margin			: 4px 0;
+	font-size		: 13px;
+}
+#rowCssPrincipal .pm-col-main #tb_transaction_master_detail {
+	margin-bottom	: 0;
+}
+
+/* ---------- Barra de captura (sticky) ---------- */
+#rowCssPrincipal .pm-barra-captura {
+	position		: sticky;
+	top				: var(--pm-top, 0px);
+	z-index			: 30;
+	display			: flex;
+	flex-wrap		: wrap;
+	align-items		: center;
+	gap				: 8px;
+	background-color: #FFFFFF;
+	padding			: 6px 0;
+	margin-bottom	: 6px;
+	border-bottom	: 1px solid #D9E1EC;
+}
+#rowCssPrincipal .pm-barra-captura #txtScanerCodigo {
+	flex			: 1 1 260px;
+	width			: auto;
+	min-width		: 0;
+	height			: 44px;
+	margin			: 0;
+	padding			: 6px 12px;
+	font-size		: 17px;
+}
+#rowCssPrincipal .pm-barra-captura #rowBotoneraFacturaFila1 {
+	flex					: 0 1 auto;
+	display					: grid;
+	grid-auto-flow			: column;
+	grid-auto-columns		: minmax(0, auto);
+	gap						: 6px;
+	margin					: 0;
+}
+#rowCssPrincipal .pm-barra-captura #rowBotoneraFacturaFila1::before,
+#rowCssPrincipal .pm-barra-captura #rowBotoneraFacturaFila1::after {
+	display			: none;
+}
+#rowCssPrincipal .pm-barra-captura #rowBotoneraFacturaFila1 > .col {
+	float			: none;
+	width			: auto;
+	padding			: 0;
+	min-width		: 0;
+}
+#rowCssPrincipal .pm-barra-captura #rowBotoneraFacturaFila1 > .col:not(:has(.btn:not(.hidden))),
+#rowCssPrincipal .pm-barra-captura #rowBotoneraFacturaFila1 > .col:has(> .btn-group.hidden:only-child) {
+	display			: none;
+}
+/* Iteracion 3: alto/padding/fuente de #rowBotoneraFacturaFila1 .btn en "Botoneras: altura uniforme" */
+#rowCssPrincipal .pm-barra-captura .dropdown-menu {
+	z-index			: 40;
+}
+
+/* Botonera de useMobile=1 (arriba del detalle) */
+#rowCssPrincipal .pm-botonera-movil {
+	margin-bottom	: 6px;
+}
+#rowCssPrincipal .pm-botonera-movil > br {
+	display			: none;
+}
+#rowCssPrincipal .pm-botonera-movil > .row {
+	margin-bottom	: 6px;
+}
+
+/* ---------- Tabla de detalle: thead sticky y filas compactas (>=768) ---------- */
+@media (min-width: 768px) {
+	#rowCssPrincipal .pm-col-main .pm-table-wrap {
+		overflow				: auto;
+		-webkit-overflow-scrolling: touch;
+		max-height				: var(--pm-tabla-max, calc(100vh - 220px));
+		min-height				: 220px;
+		border					: 1px solid #D9E1EC;
+		border-radius			: 10px;
+		background-color		: #FFFFFF;
+	}
+	#rowCssPrincipal .pm-col-main .pm-table-wrap #tb_transaction_master_detail > thead > tr > th {
+		position		: sticky;
+		top				: 0;
+		z-index			: 3;
+		padding			: 6px;
+		font-size		: 12px;
+	}
+	#rowCssPrincipal .pm-table-wrap #tb_transaction_master_detail > tbody > tr > td {
+		padding			: 4px 6px;
+	}
+	#rowCssPrincipal .pm-table-wrap #tb_transaction_master_detail input[type="text"] {
+		height			: 32px;
+		padding			: 2px 6px;
+	}
+	.pm-native #rowCssPrincipal .pm-table-wrap #tb_transaction_master_detail input[type="text"] {
+		height			: 38px;
+		min-height		: 38px;
+		font-size		: 15px;
+	}
+	#rowCssPrincipal .pm-table-wrap #tb_transaction_master_detail .btn {
+		min-height		: 32px;
+		min-width		: 32px;
+		padding			: 4px 6px;
+		margin			: 1px;
+	}
+	.pm-native #rowCssPrincipal .pm-table-wrap #tb_transaction_master_detail .btn {
+		min-height		: 38px;
+		min-width		: 38px;
+	}
+}
+/* Con una sidebar/modal abierto, nada de lo sticky queda por encima (las .sidebar no tienen z-index) */
+.pm-superpuesto #rowCssPrincipal .pm-barra-captura,
+.pm-superpuesto #rowCssPrincipal .pm-col-main .pm-table-wrap #tb_transaction_master_detail > thead > tr > th,
+.pm-superpuesto #rowCssPrincipal .pm-col-cobro {
+	z-index			: 0;
+}
+
+/* ---------- Atajos (debajo del detalle) ---------- */
+#rowCssPrincipal .pm-col-main #panelResumenFacturaTool,
+#rowCssPrincipal .pm-col-main #panelResumenFactura {
+	margin-top		: 8px;
+	margin-bottom	: 0;
+	font-size		: 12px;
+}
+#rowCssPrincipal .pm-col-main #panelResumenFacturaTool .page-header h3,
+#rowCssPrincipal .pm-col-main #panelResumenFactura .page-header h3,
+#rowCssPrincipal .pm-col-main #panelResumenFactura h3 {
+	font-size		: 13px;
+	margin			: 4px 0;
+}
+#rowCssPrincipal .pm-col-main #panelResumenFactura .list-unstyled > li {
+	line-height		: 1.5;
+}
+
+/* ======================================================================
+ * Panel de cobro (contenido, todas las resoluciones)
+ * ====================================================================== */
+#rowCssPrincipal .pm-col-cobro .pm-cobro-cabecera {
+	display			: none;
+}
+#rowCssPrincipal .pm-col-cobro #divPanelShowSummaryNumber,
+#rowCssPrincipal .pm-col-cobro #divPaymentOption {
+	float			: none;
+	width			: auto;
+	padding			: 0;
+	margin			: 0 0 8px 0;
+	min-height		: 0;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen,
+#rowCssPrincipal .pm-col-cobro #table-resumen-pago {
+	width			: 100% !important;	/* useMobile=1 pone width inline = ancho de ventana */
+	max-width		: 100%;
+	margin			: 0;
+}
+
+/* Resumen: SubTotal/IVA/Desc/Serv en rejilla de 3 y TOTAL grande */
+#rowCssPrincipal .pm-col-cobro #divPanelShowSummaryNumber .page-header {
+	padding			: 6px 12px;
+}
+#rowCssPrincipal .pm-col-cobro #divPanelShowSummaryNumber .page-header h3 {
+	font-size		: 12px;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen-pago {
+	display			: block;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen-pago > tbody {
+	display					: grid;
+	grid-template-columns	: repeat(3, minmax(0, 1fr));
+	background-color		: #0F172A;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen-pago > tbody > tr:not(.hidden) {
+	display			: flex;
+	flex-direction	: column;
+	justify-content	: flex-end;
+	min-width		: 0;
+	padding			: 4px 8px;
+	border-bottom	: 1px solid #1E293B;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen-pago > tbody > tr > th,
+#rowCssPrincipal .pm-col-cobro #table-resumen-pago > tbody > tr > td {
+	display			: block;
+	padding			: 0;
+	border			: none;
+	min-width		: 0;
+	background-color: transparent;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen-pago > tbody > tr > th {
+	font-size		: 13px;
+	font-weight		: 700;
+	color			: #E2E8F0;
+	line-height		: 1.2;
+	white-space		: normal;	/* hasta 2 lineas antes que recortar la etiqueta */
+	overflow-wrap	: anywhere;
+	margin-bottom	: 2px;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen-pago input {
+	text-align		: right !important;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen-pago input {
+	height			: 26px;
+	padding			: 0 2px;
+	font-size		: 14px;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen-pago input:not([readonly]) {
+	padding			: 0 6px;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen-pago > tbody > tr.pm-fila-total:not(.hidden) {
+	grid-column		: 1 / -1;
+	flex-direction	: row;
+	align-items		: center;
+	justify-content	: space-between;
+	gap				: 8px;
+	padding			: 6px 12px;
+	border-bottom	: none;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen-pago > tbody > tr.pm-fila-total > th {
+	flex			: 0 0 auto;
+	font-size		: 17px;
+	color			: #FFFFFF;
+	overflow		: visible;
+	white-space		: nowrap;
+	margin-bottom	: 0;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen-pago > tbody > tr.pm-fila-total > td {
+	flex			: 1 1 auto;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen-pago #txtTotal {
+	height			: auto;
+	font-size		: 32px;
+	line-height		: 1.15;
+}
+
+/* Pago: Recibido C$ / Recibido $ grandes, CAMBIO destacado; extras en "Mas formas de pago" */
+#rowCssPrincipal .pm-col-cobro #divPaymentOption > .page-header {
+	display			: none;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen {
+	display			: block;
+	border			: none;
+	background-color: transparent;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen > tbody {
+	display			: flex;
+	flex-direction	: column;
+	gap				: 6px;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen > tbody > tr:not(.hidden) {
+	display					: grid;
+	grid-template-columns	: 92px minmax(0, 1fr) minmax(0, 1fr);
+	gap						: 4px 6px;
+	align-items				: center;
+	padding					: 0;
+	border					: none;
+	order					: 5;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen > tbody > tr.pm-fila-recibido		{ order: 1; }
+#rowCssPrincipal .pm-col-cobro #table-resumen > tbody > tr.pm-fila-recibido-ext	{ order: 2; }
+#rowCssPrincipal .pm-col-cobro #table-resumen > tbody > tr.pm-pago-extra			{ order: 3; }
+#rowCssPrincipal .pm-col-cobro #table-resumen > tbody > tr.pm-fila-cambio		{ order: 4; }
+#rowCssPrincipal .pm-col-cobro #table-resumen > tbody > tr > th,
+#rowCssPrincipal .pm-col-cobro #table-resumen > tbody > tr > td {
+	display			: block;
+	padding			: 0;
+	border			: none;
+	min-width		: 0 !important;	/* hay un min-width:100px inline en la celda del banco */
+	background-color: transparent;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen > tbody > tr > th {
+	grid-column		: 1 / 2;
+	font-size		: 12px;
+	line-height		: 1.2;
+	white-space		: normal;
+	color			: #334155;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen > tbody > tr > td:nth-child(2) {
+	grid-column		: 2 / -1;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen > tbody > tr > td:nth-child(3) {
+	grid-column		: 2 / 3;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen > tbody > tr > td:nth-child(4) {
+	grid-column		: 3 / 4;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen input[type="text"],
+#rowCssPrincipal .pm-col-cobro #table-resumen select {
+	width			: 100%;
+	min-width		: 0;
+	height			: 36px;
+	min-height		: 36px;
+	padding			: 4px 8px;
+	font-size		: 15px;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen > tbody > tr.pm-fila-recibido input[type="text"],
+#rowCssPrincipal .pm-col-cobro #table-resumen > tbody > tr.pm-fila-recibido-ext input[type="text"] {
+	height			: 46px;
+	font-size		: 22px;
+	font-weight		: 700;
+	border-color	: #93C5FD;
+}
+#rowCssPrincipal .pm-col-cobro #table-resumen > tbody > tr.pm-fila-recibido > th,
+#rowCssPrincipal .pm-col-cobro #table-resumen > tbody > tr.pm-fila-recibido-ext > th,
+#rowCssPrincipal .pm-col-cobro #table-resumen > tbody > tr.pm-fila-cambio > th {
+	font-size		: 13px;
+	color			: #0F172A;
+}
+/* Iteracion 3: CAMBIO con la misma caja que Recibido C$ / Recibido $ (alto, padding, fuente); se destaca solo por color */
+#rowCssPrincipal .pm-col-cobro #table-resumen > tbody > tr.pm-fila-cambio #txtChangeAmount {
+	height			: 46px;
+	min-height		: 36px;
+	padding			: 4px 8px;
+	font-size		: 22px;
+	font-weight		: 700;
+	color			: #EA580C;
+	background-color: #FFF7ED;
+	border			: 1px solid #FB923C;
+	box-shadow		: inset 0 0 0 1px #FDBA74;
+}
+/* Colapsado: las filas extra no se ocultan con .hidden, sino con la clase propia del contenedor */
+#rowCssPrincipal .pm-col-cobro .pm-cobro-pagos.pm-collapsed #table-resumen > tbody > tr.pm-pago-extra {
+	display			: none;
+}
+#rowCssPrincipal .pm-col-cobro .pm-btn-mas-pagos {
+	display			: block;
+	width			: 100%;
+	margin			: 0 0 8px 0;
+	padding			: 6px 10px;
+	min-height		: 34px;
+	border			: 1px dashed #94A3B8;
+	border-radius	: 10px;
+	background-color: #FFFFFF;
+	color			: #1D4ED8;
+	font-size		: 13px;
+	font-weight		: 600;
+	text-align		: center;
+	cursor			: pointer;
+}
+#rowCssPrincipal .pm-col-cobro .pm-btn-mas-pagos:hover,
+#rowCssPrincipal .pm-col-cobro .pm-btn-mas-pagos:focus {
+	background-color: #EFF6FF;
+	outline			: none;
+}
+
+/* Botonera de acciones en rejilla de 2 (REGISTRAR a todo el ancho) */
+#rowCssPrincipal .pm-col-cobro [id^="rowBotoneraFacturaFila"] {
+	display					: grid;
+	grid-template-columns	: repeat(2, minmax(0, 1fr));
+	gap						: 6px;
+	margin					: 0 0 6px 0;
+}
+#rowCssPrincipal .pm-col-cobro [id^="rowBotoneraFacturaFila"]::before,
+#rowCssPrincipal .pm-col-cobro [id^="rowBotoneraFacturaFila"]::after,
+#rowCssPrincipal .pm-col-cobro [id^="rowBotoneraFacturaFila"] > br {
+	display			: none;
+}
+#rowCssPrincipal .pm-col-cobro #rowBotoneraFacturaFila4 > #workflowLink,
+#rowCssPrincipal .pm-col-cobro #rowBotoneraFacturaFila4 > #divPanelOpenCash {
+	display			: contents;
+}
+#rowCssPrincipal .pm-col-cobro [id^="rowBotoneraFacturaFila"] .col {
+	float			: none;
+	width			: auto;
+	padding			: 0;
+	min-width		: 0;
+}
+#rowCssPrincipal .pm-col-cobro [id^="rowBotoneraFacturaFila"] .col:not(:has(.btn:not(.hidden))),
+#rowCssPrincipal .pm-col-cobro [id^="rowBotoneraFacturaFila"] .col:has(> .btn-group.hidden:only-child) {
+	display			: none;
+}
+/* Iteracion 3: alto/padding/fuente de los botones del panel de cobro en "Botoneras: altura uniforme" */
+#rowCssPrincipal .pm-col-cobro [id^="rowBotoneraFacturaFila"] .btn-block + .btn-block {
+	margin-top		: 0;
+}
+#rowCssPrincipal .pm-col-cobro #registrarFacturaNueva {
+	grid-column		: 1 / -1;
+}
+/* REGISTRAR/APLICAR: misma altura que el resto (iteracion 3); se destaca por ancho completo, color y peso */
+#rowCssPrincipal .pm-col-cobro #registrarFacturaNueva .btn {
+	font-weight		: 700;
+}
+
+/* Sin panel de cobro (personalizacion de restaurante lo movio a las sidebars). Dos ids: gana a las reglas por resolucion */
+.pm-sin-cobro #rowCssPrincipal #pmColCobro {
+	display			: none;
+}
+
+/* ======================================================================
+ * Escritorio >= 1200: dos columnas, cobro sticky a la derecha
+ * ====================================================================== */
+@media (min-width: 1200px) {
+	#heading.pm-heading {
+		padding			: 8px 16px;
+		margin-bottom	: 8px;
+	}
+	#heading.pm-heading h1 {
+		font-size		: 18px;
+	}
+	#rowCssPrincipal > .col-lg-12 > .panel > .panel-heading {
+		padding			: 8px 16px;
+	}
+	#rowCssPrincipal #myTab {
+		margin-bottom	: 8px;
+	}
+	#rowCssPrincipal #myTab > li {
+		margin			: 0 4px 4px 0;
+	}
+	#rowCssPrincipal #myTab > li > a {
+		padding			: 5px 14px;
+		font-size		: 13px;
+	}
+
+	/* Iteracion 5: el detalle ocupa todo el ancho; el cobro es un panel flotante a la derecha
+	 * que se abre con #pmBtnCobroFlotante (html.pm-cobro-flotante-abierto). Cerrado queda fuera
+	 * de la ventana con "right" (sin display:none ni transform) para que .focus() sobre
+	 * #txtReceiptAmount siga funcionando: el JS abre el panel al recibir el foco. */
+	#rowCssPrincipal .pm-layout {
+		display					: grid;
+		grid-template-columns	: minmax(0, 1fr);
+		gap						: 14px;
+		align-items				: start;
+	}
+	#rowCssPrincipal .pm-col-main {
+		min-width		: 0;
+	}
+	#rowCssPrincipal .pm-col-cobro {
+		position		: fixed;
+		right			: -480px;
+		bottom			: 88px;
+		z-index			: 970;	/* debajo del boton flotante (975), sidebars y modales */
+		width			: 420px;
+		max-width		: calc(100vw - 32px);
+		max-height		: calc(100vh - var(--pm-top, 0px) - 104px);
+		overflow-y		: auto;
+		overscroll-behavior: contain;
+		min-width		: 0;
+		background-color: #F8FAFC;
+		border			: 1px solid #D9E1EC;
+		border-radius	: 14px;
+		padding			: 10px;
+		box-shadow		: none;
+		transition		: right 0.2s ease;
+	}
+	.pm-cobro-flotante-abierto #rowCssPrincipal .pm-col-cobro {
+		right			: 16px;
+		box-shadow		: 0 8px 28px rgba(15, 23, 42, 0.28);
+	}
+	/* Sin panel de cobro (restaurante) o con sidebar/modal abierto: el panel no se muestra */
+	.pm-sin-cobro #rowCssPrincipal .pm-col-cobro,
+	.pm-superpuesto #rowCssPrincipal .pm-col-cobro,
+	body.modal-open #rowCssPrincipal .pm-col-cobro {
+		right			: -480px;
+		box-shadow		: none;
+	}
+	/* Cabecera del panel: titulo + Cerrar (el boton "Mas" es solo de tablet) */
+	#rowCssPrincipal .pm-col-cobro .pm-cobro-cabecera {
+		display			: flex;
+		align-items		: center;
+		justify-content	: space-between;
+		gap				: 8px;
+		position		: sticky;
+		top				: -10px;
+		z-index			: 2;
+		background-color: #F8FAFC;
+		margin			: -10px -10px 8px -10px;
+		padding			: 8px 10px;
+		border-bottom	: 1px solid #D9E1EC;
+	}
+	#rowCssPrincipal .pm-col-cobro .pm-cobro-titulo {
+		flex			: 1 1 auto;
+		font-size		: 15px;
+		font-weight		: 700;
+		text-transform	: uppercase;
+		letter-spacing	: 0.5px;
+		color			: #0F172A;
+	}
+	#rowCssPrincipal .pm-col-cobro #pmBtnCobroExpandir {
+		display			: none;
+	}
+	@media (prefers-reduced-motion: reduce) {
+		#rowCssPrincipal .pm-col-cobro {
+			transition		: none;
+		}
+	}
+	#rowCssPrincipal #labelTitleDetalle {
+		display			: none;
+	}
+	#rowCssPrincipal .pm-barra-captura #txtScanerCodigo {
+		height			: 40px;
+	}
+	/* Controles de cabecera compactos (no tactil) */
+	.pm-invoice-news:not(.pm-native) #rowCssPrincipal .tab-content input.form-control,
+	.pm-invoice-news:not(.pm-native) #rowCssPrincipal .tab-content select {
+		height			: 34px;
+		padding			: 4px 8px;
+		font-size		: 13px;
+	}
+	.pm-invoice-news:not(.pm-native) #rowCssPrincipal .tab-content .input-group-btn > .btn {
+		min-height		: 34px;
+		padding			: 4px 10px;
+		font-size		: 12px;
+	}
+}
+
+/* ======================================================================
+ * Cabecera compacta (>= 992): campos de las pestanas en rejilla, label arriba
+ * ====================================================================== */
+@media (min-width: 992px) {
+	#rowCssPrincipal .tab-content > .tab-pane > .row {
+		display					: grid;
+		grid-template-columns	: repeat(auto-fill, minmax(180px, 1fr));
+		gap						: 6px 12px;
+		margin					: 0;
+	}
+	#rowCssPrincipal .tab-content > .tab-pane > .row::before,
+	#rowCssPrincipal .tab-content > .tab-pane > .row::after,
+	#rowCssPrincipal .tab-content > .tab-pane > .row .form-group::before,
+	#rowCssPrincipal .tab-content > .tab-pane > .row .form-group::after {
+		display			: none;
+	}
+	#rowCssPrincipal .tab-content > .tab-pane > .row > [id^="divInformacion"] {
+		display			: contents;
+	}
+	#rowCssPrincipal .tab-content > .tab-pane > .row .form-group {
+		margin			: 0;
+		min-width		: 0;
+	}
+	#rowCssPrincipal .tab-content > .tab-pane > .row .form-group.pm-campo-ancho {
+		grid-column		: span 2;
+	}
+	#rowCssPrincipal .tab-content > .tab-pane > .row .form-group > .control-label,
+	#rowCssPrincipal .tab-content > .tab-pane > .row .form-group > [class*="col-"] {
+		float			: none;
+		width			: auto;
+		padding			: 0;
+	}
+	#rowCssPrincipal .tab-content > .tab-pane > .row .form-group > .control-label {
+		display			: block;
+		text-align		: left;
+		padding-top		: 0;
+		margin-bottom	: 2px;
+		font-size		: 11px;
+		color			: #64748B;
+		text-transform	: uppercase;
+		letter-spacing	: 0.3px;
+		white-space		: nowrap;
+		overflow		: hidden;
+		text-overflow	: ellipsis;
+	}
+	#rowCssPrincipal .tab-content > .tab-pane > .row .form-group > br {
+		display			: none;
+	}
+	#rowCssPrincipal .tab-content > .tab-pane > .row .form-group .btn-block {
+		margin-top		: 4px;
+	}
+}
+
+/* ======================================================================
+ * Tablet 768..1199: barra fija inferior de cobro (compacta) + hoja expandida
+ * ====================================================================== */
+@media (min-width: 768px) and (max-width: 1199px) {
+	.pm-invoice-news:not(.pm-sin-cobro) #rowCssPrincipal {
+		padding-bottom	: calc(var(--pm-cobro-alto, 120px) + 12px);
+	}
+	#rowCssPrincipal .pm-col-cobro {
+		position		: fixed;
+		left			: 0;
+		right			: 0;
+		bottom			: 0;
+		z-index			: 980;
+		background-color: #0F172A;
+		color			: #FFFFFF;
+		box-shadow		: 0 -2px 10px rgba(15, 23, 42, 0.3);
+		padding			: 8px 12px;
+		padding-bottom	: calc(8px + env(safe-area-inset-bottom, 0px));
+	}
+	/* --- Compacto: TOTAL | Recibido | CAMBIO | REGISTRAR | Mas --- */
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) {
+		display			: flex;
+		align-items		: flex-end;
+		gap				: 10px;
+	}
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) .pm-cobro-cabecera {
+		display			: flex;
+		order			: 3;
+		flex			: 0 0 auto;
+	}
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) .pm-cobro-titulo,
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #pmBtnCobroCerrar {
+		display			: none;
+	}
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) .pm-cobro-cuerpo {
+		order			: 1;
+		flex			: 1 1 auto;
+		display			: flex;
+		align-items		: flex-end;
+		gap				: 10px;
+		min-width		: 0;
+	}
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #divPanelShowSummaryNumber,
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #divPaymentOption {
+		margin			: 0;
+	}
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #divPanelShowSummaryNumber {
+		flex			: 0 1 260px;
+		min-width		: 160px;
+	}
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) .pm-cobro-pagos {
+		flex			: 1 1 auto;
+		min-width		: 0;
+	}
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #divPanelShowSummaryNumber .page-header,
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #table-resumen-pago > tbody > tr:not(.pm-fila-total),
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #table-resumen > tbody > tr:not(.pm-fila-recibido):not(.pm-fila-cambio),
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) .pm-btn-mas-pagos {
+		display			: none;
+	}
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #table-resumen-pago > tbody {
+		display			: block;
+		background-color: transparent;
+	}
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #table-resumen-pago,
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #table-resumen-pago > tbody > tr > th,
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #table-resumen-pago > tbody > tr > td {
+		background-color: transparent;
+		border-radius	: 0;
+	}
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #table-resumen-pago > tbody > tr.pm-fila-total:not(.hidden) {
+		flex-direction	: column;
+		align-items		: stretch;
+		gap				: 0;
+		padding			: 0;
+	}
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #table-resumen-pago > tbody > tr.pm-fila-total > th {
+		font-size		: 14px;
+		font-weight		: 700;
+		color			: #FFFFFF;
+	}
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #table-resumen-pago #txtTotal {
+		font-size		: 28px;
+		text-align		: right !important;
+		padding			: 0;
+	}
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #table-resumen > tbody {
+		flex-direction	: row;
+		gap				: 10px;
+	}
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #table-resumen > tbody > tr.pm-fila-recibido:not(.hidden),
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #table-resumen > tbody > tr.pm-fila-cambio:not(.hidden) {
+		flex					: 1 1 0;
+		min-width				: 0;
+		grid-template-columns	: minmax(0, 1fr);
+		gap						: 2px;
+	}
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #table-resumen > tbody > tr > th,
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #table-resumen > tbody > tr > td:nth-child(2) {
+		grid-column		: 1 / -1;
+	}
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #table-resumen > tbody > tr > th {
+		font-size		: 11px;
+		color			: #CBD5E1;
+	}
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #table-resumen > tbody > tr.pm-fila-recibido input[type="text"],
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #table-resumen > tbody > tr.pm-fila-cambio #txtChangeAmount {
+		height			: 44px;
+		min-height		: 44px;
+		font-size		: 20px;
+	}
+	/* Botones: en compacto solo REGISTRAR/APLICAR y los de workflow */
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #rowBotoneraFacturaFila2 {
+		order			: 2;
+		flex			: 0 0 auto;
+		display			: block;
+		margin			: 0;
+	}
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #registrarFacturaNueva {
+		width			: 180px;
+	}
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #rowBotoneraFacturaFila4 {
+		order			: 2;
+		flex			: 0 1 auto;
+		display			: flex;
+		gap				: 6px;
+		margin			: 0;
+	}
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #rowBotoneraFacturaFila3 {
+		display			: none;
+	}
+	/*
+	 * news_script.php pone display inline (block/none) en estas celdas; para no forzar display con
+	 * !important se sacan del flujo y se vuelven invisibles (visibility tambien evita el foco).
+	 */
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #rowBotoneraFacturaFila2 > .col:not(#registrarFacturaNueva),
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #rowBotoneraFacturaFila4 > :not(#workflowLink) {
+		position		: absolute !important;
+		visibility		: hidden !important;
+		pointer-events	: none;
+		width			: 1px;
+		height			: 1px;
+		overflow		: hidden;
+		left			: 0;
+		bottom			: 0;
+	}
+	/* Iteracion 3: REGISTRAR y workflow con la altura uniforme de botonera (44px) */
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) #rowBotoneraFacturaFila4 #workflowLink > .col {
+		min-width		: 130px;
+	}
+
+	/* Tabla: deja libre la barra inferior */
+	#rowCssPrincipal .pm-col-main .pm-table-wrap {
+		min-height		: 200px;
+	}
+}
+
+/* Botones de la cabecera del panel de cobro (tablet/telefono) */
+#rowCssPrincipal .pm-col-cobro .pm-cobro-btn {
+	min-height		: 44px;
+	min-width		: 72px;
+	padding			: 6px 14px;
+	border			: 1px solid #334155;
+	border-radius	: 10px;
+	background-color: #1E293B;
+	color			: #FFFFFF;
+	font-size		: 14px;
+	font-weight		: 700;
+	text-transform	: uppercase;
+	cursor			: pointer;
+}
+#rowCssPrincipal .pm-col-cobro .pm-cobro-btn:hover,
+#rowCssPrincipal .pm-col-cobro .pm-cobro-btn:focus {
+	background-color: #334155;
+	outline			: none;
+}
+
+/* ======================================================================
+ * Hoja inferior (tablet expandido y telefono)
+ * ====================================================================== */
+#pmCobroFondo {
+	display			: none;
+}
+@media (max-width: 1199px) {
+	#rowCssPrincipal .pm-col-cobro.pm-cobro-abierto {
+		display			: block;
+		position		: fixed;
+		left			: 0;
+		right			: 0;
+		bottom			: 0;
+		z-index			: 1000;
+		max-height		: 80vh;
+		overflow-y		: auto;
+		-webkit-overflow-scrolling: touch;
+		overscroll-behavior: contain;
+		background-color: #F8FAFC;
+		color			: #0F172A;
+		border-radius	: 16px 16px 0 0;
+		box-shadow		: 0 -4px 16px rgba(15, 23, 42, 0.35);
+		padding			: 0 12px 12px 12px;
+		padding-bottom	: calc(12px + env(safe-area-inset-bottom, 0px));
+	}
+	#rowCssPrincipal .pm-col-cobro.pm-cobro-abierto .pm-cobro-cabecera {
+		display			: flex;
+		position		: sticky;
+		top				: 0;
+		z-index			: 2;
+		align-items		: center;
+		justify-content	: space-between;
+		gap				: 8px;
+		background-color: #F8FAFC;
+		padding			: 10px 0;
+		margin-bottom	: 4px;
+		border-bottom	: 1px solid #D9E1EC;
+	}
+	#rowCssPrincipal .pm-col-cobro.pm-cobro-abierto .pm-cobro-titulo {
+		flex			: 1 1 auto;
+		font-size		: 16px;
+		font-weight		: 700;
+		text-transform	: uppercase;
+		letter-spacing	: 0.5px;
+	}
+	#rowCssPrincipal .pm-col-cobro.pm-cobro-abierto [id^="rowBotoneraFacturaFila"] {
+		grid-template-columns	: repeat(3, minmax(0, 1fr));
+	}
+	.pm-cobro-hoja-abierta #pmCobroFondo {
+		display			: block;
+		position		: fixed;
+		top				: 0;
+		left			: 0;
+		right			: 0;
+		bottom			: 0;
+		z-index			: 995;
+		background-color: rgba(15, 23, 42, 0.45);
+	}
+	/* Sidebar o modal abierto: barra/hoja de cobro fuera */
+	.pm-superpuesto #rowCssPrincipal #pmColCobro,
+	.pm-superpuesto #pmCobroFondo,
+	body.modal-open #rowCssPrincipal #pmColCobro,
+	body.modal-open #pmCobroFondo {
+		display			: none;
+	}
+}
+
+/* ======================================================================
+ * Telefono <= 767
+ * ====================================================================== */
+@media (max-width: 767px) {
+	#rowCssPrincipal .pm-col-cobro:not(.pm-cobro-abierto) {
+		display			: none;
+	}
+	#rowCssPrincipal .pm-col-cobro.pm-cobro-abierto {
+		max-height		: 85vh;
+	}
+	#rowCssPrincipal .pm-col-cobro.pm-cobro-abierto #pmBtnCobroExpandir {
+		display			: none;
+	}
+	#rowCssPrincipal .pm-col-cobro.pm-cobro-abierto [id^="rowBotoneraFacturaFila"] {
+		grid-template-columns	: repeat(2, minmax(0, 1fr));
+	}
+	#rowCssPrincipal .pm-col-cobro #table-resumen-pago > tbody {
+		grid-template-columns	: repeat(2, minmax(0, 1fr));
+	}
+
+	/* Barra de captura: escaner a todo el ancho y botones de producto en 4 columnas */
+	#rowCssPrincipal .pm-barra-captura {
+		gap				: 6px;
+		padding			: 6px 0;
+	}
+	#rowCssPrincipal .pm-barra-captura #txtScanerCodigo {
+		flex			: 1 1 100%;
+		height			: 44px;
+		font-size		: 16px;
+	}
+	#rowCssPrincipal .pm-barra-captura #rowBotoneraFacturaFila1 {
+		flex					: 1 1 100%;
+		grid-auto-flow			: row;
+		grid-template-columns	: repeat(4, minmax(0, 1fr));
+		gap						: 4px;
+	}
+	/* Iteracion 3: botones de Fila1 con la altura uniforme de botonera */
+
+	/* Tarjetas de producto mas compactas */
+	#rowCssPrincipal .pm-table-wrap #tb_transaction_master_detail > tbody > tr {
+		gap				: 4px 6px;
+		padding			: 6px 8px;
+		margin-bottom	: 6px;
+		border-radius	: 10px;
+	}
+	#rowCssPrincipal .pm-table-wrap #tb_transaction_master_detail > tbody > tr > td:nth-child(1) {
+		min-height		: 32px;
+	}
+	#rowCssPrincipal .pm-table-wrap #tb_transaction_master_detail input.pm-item-name {
+		min-height		: 36px;
+		font-size		: 15px;
+	}
+	.pm-native #rowCssPrincipal .pm-table-wrap #tb_transaction_master_detail input[type="text"] {
+		height			: 38px;
+		min-height		: 38px;
+		font-size		: 15px;
+	}
+	#rowCssPrincipal .pm-table-wrap #tb_transaction_master_detail .btn,
+	.pm-native #rowCssPrincipal .pm-table-wrap #tb_transaction_master_detail .btn {
+		min-height		: 38px;
+		min-width		: 38px;
+		padding			: 4px 8px;
+		margin			: 1px;
+	}
+	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal .pm-table-wrap #tb_transaction_master_detail > tbody > tr > td::before {
+		font-size		: 10px;
+		margin-bottom	: 1px;
+	}
+
+	/* Barra inferior: TOTAL + CAMBIO + COBRAR */
+	#pmBarraMovil:not(.pm-barra-oculta) {
+		gap				: 8px;
+		padding			: 8px 10px;
+		padding-bottom	: calc(8px + env(safe-area-inset-bottom, 0px));
+	}
+	#rowCssPrincipal {
+		padding-bottom	: 76px;
+	}
+}
+#pmBarraMovil .pm-barra-movil-cambio {
+	flex			: 1 1 auto;
+}
+#pmBarraMovil .pm-barra-movil-monto-cambio {
+	font-size		: 20px;
+	color			: #FDBA74;
+}
+#pmBarraMovil .pm-barra-movil-btn {
+	min-width		: 120px;
+}
+
+/* ======================================================================
+ * ITERACION 3
+ * ====================================================================== */
+
+/* ---------- Botoneras: altura uniforme (#rowBotoneraFacturaFila1..4, incluye #workflowLink y botones inyectados) ----------
+ * Todos los .btn de las botoneras: 44px de alto fijo (40px no alcanzaba el minimo tactil), icono + texto centrados
+ * con inline-flex. El texto largo se parte hasta en 2 lineas dentro de la misma altura (13px * 1.15 = 2 lineas en
+ * ~30px + 8px de padding); lo que exceda se recorta (overflow hidden) en vez de crecer.
+ * Causas de la diferencia de REGRESAR (#btnBackRegresar, HTML del ajuste de empresa "botonRegresarDuplcado"):
+ * puede venir como <button> o <a> sin btn-block, con <br> dentro de la celda o con margenes propios; se neutralizan
+ * aqui (ancho 100%, margen 0, font heredada, <br> oculto). No se fuerza display con !important (.hidden sigue ganando).
+ */
+#rowCssPrincipal [id^="rowBotoneraFacturaFila"] .btn {
+	display			: inline-flex;
+	align-items		: center;
+	justify-content	: center;
+	gap				: 6px;
+	box-sizing		: border-box;
+	float			: none;
+	width			: 100%;
+	height			: 44px;
+	min-height		: 44px;
+	margin			: 0;
+	padding			: 4px 8px;
+	font-family		: inherit;
+	font-size		: 13px;
+	line-height		: 1.15;
+	white-space		: normal;
+	text-align		: center;
+	vertical-align	: middle;
+	overflow		: hidden;
+}
+#rowCssPrincipal [id^="rowBotoneraFacturaFila"] .btn > i,
+#rowCssPrincipal [id^="rowBotoneraFacturaFila"] .btn > .caret {
+	flex			: 0 0 auto;
+	margin			: 0;
+}
+#rowCssPrincipal [id^="rowBotoneraFacturaFila"] br {
+	display			: none;
+}
+#rowCssPrincipal [id^="rowBotoneraFacturaFila"] .btn-group {
+	display			: flex;
+	width			: 100%;
+	margin			: 0;
+	vertical-align	: middle;
+}
+#rowCssPrincipal [id^="rowBotoneraFacturaFila"] .btn-group > .btn {
+	flex			: 1 1 auto;
+	border-radius	: 10px;
+}
+#rowCssPrincipal [id^="rowBotoneraFacturaFila"] .btn + .btn {
+	margin-top		: 0;
+}
+/* REGISTRAR / APLICAR: misma altura, se destaca por tamano de letra */
+#rowCssPrincipal #registrarFacturaNueva .btn {
+	font-size		: 16px;
+	font-weight		: 700;
+}
+@media (max-width: 767px) {
+	#rowCssPrincipal [id^="rowBotoneraFacturaFila"] .btn {
+		padding			: 4px 6px;
+		font-size		: 12px;
+		gap				: 4px;
+	}
+	#rowCssPrincipal #registrarFacturaNueva .btn {
+		font-size		: 15px;
+	}
+}
+
+/* ---------- Panel flotante izquierdo: Ayuda / Herramientas (#pmPanelAux) ----------
+ * Fuera de .pm-layout, dentro del form y antes de #mySidebar (no es ancestro de ninguna .sidebar).
+ * El transform se aplica SOLO sobre #pmPanelAux (no contiene sidebars ni elementos fixed).
+ * Cerrado: desplazado a la izquierda dejando visible solo la pestana (#pmPanelAuxAsa, 32px).
+ * Abierto: hover (dispositivos con puntero fino), foco de teclado dentro, o clase pm-aux-abierto (tactil, JS).
+ */
+/* Iteracion 4: pestana anclada abajo a la izquierda, por encima de la barra inferior de cada dispositivo */
+#pmPanelAux {
+	--pm-aux-bottom	: 16px;
+	position		: fixed;
+	left			: 0;
+	bottom			: var(--pm-aux-bottom);
+	z-index			: 960;	/* debajo de barra de cobro (980), barra movil (990), hoja (1000) y modales BS3 (1040+) */
+	display			: flex;
+	align-items		: flex-end;
+	max-width		: 100vw;
+	transform		: translateX(calc(-100% + 32px));
+	transition		: transform 0.2s ease;
+	font-family		: 'Open Sans', 'Segoe UI', Arial, sans-serif;
+}
+@media (min-width: 768px) and (max-width: 1199px) {
+	.pm-invoice-news:not(.pm-sin-cobro) #pmPanelAux {
+		--pm-aux-bottom	: calc(var(--pm-cobro-alto, 120px) + 12px);
+	}
+}
+@media (max-width: 767px) {
+	#pmPanelAux {
+		--pm-aux-bottom	: calc(84px + env(safe-area-inset-bottom, 0px));
+	}
+}
+#pmPanelAux.pm-aux-abierto {
+	transform		: translateX(0);
+}
+/* Regla aparte: un navegador sin :has() descarta solo esta */
+#pmPanelAux:has(:focus-visible) {
+	transform		: translateX(0);
+}
+@media (hover: hover) and (pointer: fine) {
+	#pmPanelAux:hover {
+		transform		: translateX(0);
+	}
+}
+@media (prefers-reduced-motion: reduce) {
+	#pmPanelAux {
+		transition		: none;
+	}
+}
+/* Sidebar/modal abierto u hoja de cobro: el panel no se muestra */
+.pm-superpuesto #pmPanelAux,
+.pm-cobro-hoja-abierta #pmPanelAux,
+body.modal-open #pmPanelAux {
+	display			: none;
+}
+#pmPanelAux .pm-panel-aux-cuerpo {
+	flex			: 0 0 auto;
+	width			: 300px;
+	max-width		: calc(100vw - 48px);
+	max-height		: calc(100vh - var(--pm-top, 0px) - var(--pm-aux-bottom, 16px) - 16px);
+	overflow-y		: auto;
+	-webkit-overflow-scrolling: touch;
+	overscroll-behavior: contain;
+	box-sizing		: border-box;
+	padding			: 10px 12px;
+	background-color: #FFFFFF;
+	border			: 1px solid #D9E1EC;
+	border-left		: none;
+	border-radius	: 0 12px 0 0;
+	box-shadow		: 2px 4px 14px rgba(15, 23, 42, 0.18);
+	color			: #0F172A;
+	font-size		: 13px;
+}
+#pmPanelAux .pm-panel-aux-asa {
+	flex			: 0 0 32px;
+	width			: 32px;
+	min-height		: 150px;
+	margin			: 0;
+	padding			: 12px 0;
+	border			: none;
+	border-radius	: 0 10px 10px 0;
+	background-color: #0F172A;
+	color			: #FFFFFF;
+	cursor			: pointer;
+	box-shadow		: 2px 2px 8px rgba(15, 23, 42, 0.25);
+	display			: flex;
+	align-items		: center;
+	justify-content	: center;
+}
+#pmPanelAux .pm-panel-aux-asa:hover,
+#pmPanelAux .pm-panel-aux-asa:focus {
+	background-color: #1E293B;
+	outline			: none;
+}
+#pmPanelAux .pm-panel-aux-asa:focus-visible {
+	box-shadow		: 0 0 0 3px #93C5FD;
+}
+#pmPanelAux .pm-panel-aux-asa-texto {
+	writing-mode	: vertical-rl;
+	font-size		: 12px;
+	font-weight		: 700;
+	letter-spacing	: 1px;
+	text-transform	: uppercase;
+	white-space		: nowrap;
+}
+/* Bloques movidos (conservan ids, clases col-* y .hidden de getBehavio; solo se anula la rejilla BS3) */
+#rowCssPrincipal #pmPanelAux #panelResumenFacturaTool,
+#rowCssPrincipal #pmPanelAux #panelResumenFactura {
+	float			: none;
+	width			: auto;
+	min-height		: 0;
+	padding			: 0;
+	margin			: 0 0 10px 0;
+	font-size		: 13px;
+}
+#rowCssPrincipal #pmPanelAux #panelResumenFactura {
+	margin-bottom	: 0;
+}
+#rowCssPrincipal #pmPanelAux .page-header {
+	margin			: 0 0 6px 0;
+	padding-bottom	: 4px;
+}
+#rowCssPrincipal #pmPanelAux .page-header h3,
+#rowCssPrincipal #pmPanelAux #panelResumenFactura h3 {
+	font-size		: 13px;
+	margin			: 4px 0;
+}
+#rowCssPrincipal #pmPanelAux #panelResumenFactura .list-unstyled {
+	margin			: 0;
+}
+#rowCssPrincipal #pmPanelAux #panelResumenFactura .list-unstyled > li {
+	line-height		: 1.5;
+}
+#rowCssPrincipal #pmPanelAux #panelResumenFacturaTool table {
+	width			: 100%;
+	margin			: 0;
+}
+#rowCssPrincipal #pmPanelAux #panelResumenFacturaTool th {
+	width			: 38% !important;	/* hay width:200px inline */
+	font-size		: 12px;
+	white-space		: normal;
+}
+#rowCssPrincipal #pmPanelAux #panelResumenFacturaTool .btn {
+	min-height		: 40px;
+}
+
+/* ---------- Boton flotante de cobro (#pmBtnCobroFlotante, iteracion 5) ----------
+ * Solo escritorio >= 1200: abajo a la derecha, refleja el TOTAL y abre/cierra el panel de cobro.
+ * Lo crea el JS fuera del form (type=button). Tablet/telefono siguen con barra inferior y hoja.
+ */
+#pmBtnCobroFlotante {
+	display			: none;
+}
+@media (min-width: 1200px) {
+	#pmBtnCobroFlotante {
+		position		: fixed;
+		right			: 16px;
+		bottom			: 16px;
+		z-index			: 975;
+		display			: inline-flex;
+		align-items		: center;
+		gap				: 12px;
+		min-height		: 60px;
+		max-width		: calc(100vw - 32px);
+		margin			: 0;
+		padding			: 8px 20px 8px 16px;
+		border			: 2px solid #15803D;
+		border-radius	: 16px;
+		background-color: #16A34A;
+		color			: #FFFFFF;
+		font-family		: 'Open Sans', 'Segoe UI', Arial, sans-serif;
+		box-shadow		: 0 6px 18px rgba(15, 23, 42, 0.30);
+		cursor			: pointer;
+		text-align		: left;
+	}
+	#pmBtnCobroFlotante:hover,
+	#pmBtnCobroFlotante:focus {
+		background-color: #15803D;
+		outline			: none;
+	}
+	#pmBtnCobroFlotante:focus-visible {
+		box-shadow		: 0 0 0 3px #BBF7D0, 0 6px 18px rgba(15, 23, 42, 0.30);
+	}
+	.pm-cobro-flotante-abierto #pmBtnCobroFlotante {
+		background-color: #0F172A;
+		border-color	: #0F172A;
+	}
+	.pm-cobro-flotante-abierto #pmBtnCobroFlotante:hover,
+	.pm-cobro-flotante-abierto #pmBtnCobroFlotante:focus {
+		background-color: #1E293B;
+	}
+	.pm-sin-cobro #pmBtnCobroFlotante,
+	.pm-superpuesto #pmBtnCobroFlotante,
+	body.modal-open #pmBtnCobroFlotante {
+		display			: none;
+	}
+}
+#pmBtnCobroFlotante .pm-cobro-flotante-icono {
+	flex			: 0 0 auto;
+	font-size		: 22px;
+	line-height		: 1;
+}
+#pmBtnCobroFlotante .pm-cobro-flotante-texto {
+	display			: flex;
+	flex-direction	: column;
+	min-width		: 0;
+}
+#pmBtnCobroFlotante .pm-cobro-flotante-etiqueta {
+	font-size		: 11px;
+	font-weight		: 700;
+	letter-spacing	: 1px;
+	text-transform	: uppercase;
+	line-height		: 1.2;
+	color			: #DCFCE7;
+}
+#pmBtnCobroFlotante .pm-cobro-flotante-monto {
+	font-size		: 26px;
+	font-weight		: 800;
+	line-height		: 1.1;
+	white-space		: nowrap;
+	overflow		: hidden;
+	text-overflow	: ellipsis;
+	font-variant-numeric: tabular-nums;
+}
+.pm-cobro-flotante-abierto #pmBtnCobroFlotante .pm-cobro-flotante-etiqueta {
+	color			: #CBD5E1;
+}

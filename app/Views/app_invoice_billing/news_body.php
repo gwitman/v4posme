@@ -239,7 +239,6 @@ echo helper_getHtmlOfPageLanding();
 		<div class="panel panel-default">						
 			<!-- titulo de comprobante-->
 			<div class="panel-heading">				
-				<div class="icon"><i class="icon20 i-file"></i></div> 
 				<h4>FACTURA:#<span class="invoice-num" id="invoice-num">00000000</span></h4>
 			</div>
 			<!-- /titulo de comprobante-->
@@ -273,7 +272,7 @@ echo helper_getHtmlOfPageLanding();
 					<div class="tab-content">
 						<div class="tab-pane fade in active" id="home">	
 							<div class="row">										
-								<div class="col-lg-6" id="divInformacionLeft" >
+								<div class="col-lg-6 col-md-6" id="divInformacionLeft" >
 								
 										<input type="hidden" name="txtUserID" value="<?= $userID; ?>">
 										<input type="hidden" id="txtCompanyID" name="txtCompanyID" value="">
@@ -282,8 +281,8 @@ echo helper_getHtmlOfPageLanding();
 										<input type="hidden" id="txtCodigoMesero" name="txtCodigoMesero" value="<?= $codigoMesero;  ?>">
 
 										<div class="form-group <?= getBehavio($company->type,"app_invoice_billing","divTxtFecha","") ?>">
-											<label class="col-lg-4 control-label" for="txtDate">Fecha</label>
-											<div class="col-lg-8">
+											<label class="col-lg-4 col-md-4 control-label" for="txtDate">Fecha</label>
+											<div class="col-lg-8 col-md-8">
 												<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
 													<input size="16"  class="form-control" type="text" name="txtDate" id="txtDate" >
 													<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
@@ -293,24 +292,24 @@ echo helper_getHtmlOfPageLanding();
 										
 									
 										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divTxtCambio",""); ?> ">
-												<label class="col-lg-4 control-label" for="normal">Cambio</label>
-												<div class="col-lg-8">
+												<label class="col-lg-4 col-md-4 control-label" for="normal">Cambio</label>
+												<div class="col-lg-8 col-md-8">
 													<input class="form-control"   type="text" disabled="disabled" name="txtExchangeRate" id="txtExchangeRate" value="<?php echo $exchangeRate; ?>">
 												</div>
 										</div>
 										
 										
 										<div class="form-group" id="divNote" >
-											<label class="col-lg-4 control-label" for="txtNote"><?php echo getBehavio($company->type,"app_invoice_billing","divTxtDescripcion","Descripcion"); ?></label>
-											<div class="col-lg-8">										
+											<label class="col-lg-4 col-md-4 control-label" for="txtNote"><?php echo getBehavio($company->type,"app_invoice_billing","divTxtDescripcion","Descripcion"); ?></label>
+											<div class="col-lg-8 col-md-8">										
 												<input class="form-control"   type="text" name="txtNote" id="txtNote" value="<?php echo getBehavio($company->type,"app_invoice_billing","divTxtValueComment","sin comentario."); ?>">
 											</div>
 										</div>
 										
 										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divTxtMoneda",""); ?> " id="divMoneda" >
-											<label class="col-lg-4 control-label" for="txtCurrencyID">Moneda</label>
-											<div class="col-lg-8">
-												<select name="txtCurrencyID" id="txtCurrencyID"  class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
+											<label class="col-lg-4 col-md-4 control-label" for="txtCurrencyID">Moneda</label>
+											<div class="col-lg-8 col-md-8">
+												<select name="txtCurrencyID" id="txtCurrencyID"  class="pm-select">
 														<?php
 														$count = 0;
 														if($listCurrency)
@@ -328,11 +327,11 @@ echo helper_getHtmlOfPageLanding();
 										
 									
 								</div>
-								<div class="col-lg-6" id="divInformacionRight" >
+								<div class="col-lg-6 col-md-6" id="divInformacionRight" >
 								
 									<div class="form-group <?= getBehavio($company->type,"app_invoice_billing","divTxtCliente","") ?>">
-										<label class="col-lg-4 control-label" for="buttons"><?php echo getBehavio($company->type,"app_invoice_billing","divTxtClienteBeneficiarioPrincipal","Cliente"); ?></label>
-										<div class="col-lg-8">
+										<label class="col-lg-4 col-md-4 control-label" for="buttons"><?php echo getBehavio($company->type,"app_invoice_billing","divTxtClienteBeneficiarioPrincipal","Cliente"); ?></label>
+										<div class="col-lg-8 col-md-8">
 											<div class="input-group">
 												<input type="hidden" id="txtCustomerID" name="txtCustomerID" value="<?php echo $objCustomerDefault->entityID;  ?>">
 												<input class="form-control" readonly id="txtCustomerDescription" type="txtCustomerDescription" value="<?php echo $objNaturalDefault != null ? strtoupper($objCustomerDefault->customerNumber . " ". $objNaturalDefault->firstName . " ". $objNaturalDefault->lastName ) : strtoupper($objCustomerDefault->customerNumber." ".$objLegalDefault->comercialName); ?>">
@@ -354,8 +353,8 @@ echo helper_getHtmlOfPageLanding();
 									</div>
 									
 									<div class="form-group  <?php echo getBehavio($company->type,"app_invoice_billing","divTxtCliente2",""); ?>  " id="divBeneficiario" >
-											<label class="col-lg-4 control-label" for="txtReferenceClientName"><?php echo getBehavio($company->type,"app_invoice_billing","divTxtClienteBeneficiario","Cliente"); ?></label>
-											<div class="col-lg-8">
+											<label class="col-lg-4 col-md-4 control-label" for="txtReferenceClientName"><?php echo getBehavio($company->type,"app_invoice_billing","divTxtClienteBeneficiario","Cliente"); ?></label>
+											<div class="col-lg-8 col-md-8">
 												<input class="form-control"   type="text" name="txtReferenceClientName" id="txtReferenceClientName" value="">
 											</div>
 									</div>
@@ -364,16 +363,16 @@ echo helper_getHtmlOfPageLanding();
 									</div>
 									
 									<div class="form-group   <?php echo getBehavio($company->type,"app_invoice_billing","divTxtCedula2",""); ?> "  id="divCedula"  >
-											<label class="col-lg-4 control-label" for="txtReferenceClientIdentifier"><?php echo getBehavio($company->type,"app_invoice_billing","divTxtCedulaBeneficiario","Cedula"); ?></label>
-											<div class="col-lg-8">
+											<label class="col-lg-4 col-md-4 control-label" for="txtReferenceClientIdentifier"><?php echo getBehavio($company->type,"app_invoice_billing","divTxtCedulaBeneficiario","Cedula"); ?></label>
+											<div class="col-lg-8 col-md-8">
 												<input class="form-control"   type="text" name="txtReferenceClientIdentifier" id="txtReferenceClientIdentifier" value="">
 											</div>
 									</div>
 									
 									<div class="form-group <?= getBehavio($company->type,"app_invoice_billing","divTxtCausalID",""); ?>" id="divTipoFactura" >
-										<label class="col-lg-4 control-label" for="txtCausalID">Tipo</label>
-										<div class="col-lg-8">
-											<select name="txtCausalID" id="txtCausalID" class="<?php echo ($useMobile == "1" ? "" : "select2"); ?>">
+										<label class="col-lg-4 col-md-4 control-label" for="txtCausalID">Tipo</label>
+										<div class="col-lg-8 col-md-8">
+											<select name="txtCausalID" id="txtCausalID" class="pm-select">
 													<?php
 													$count = 0;
 													if($objCaudal)
@@ -391,9 +390,9 @@ echo helper_getHtmlOfPageLanding();
 
 
 									<div class="form-group hidden" id="divLineaCredit">
-										<label class="col-lg-4 control-label" for="txtCustomerCreditLineID">Línea de Crédito</label>
-										<div class="col-lg-8">
-											<select name="txtCustomerCreditLineID" id="txtCustomerCreditLineID" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>" > 
+										<label class="col-lg-4 col-md-4 control-label" for="txtCustomerCreditLineID">Línea de Crédito</label>
+										<div class="col-lg-8 col-md-8">
+											<select name="txtCustomerCreditLineID" id="txtCustomerCreditLineID" class="pm-select" > 
 											</select>
 										</div>
 									</div>
@@ -404,12 +403,12 @@ echo helper_getHtmlOfPageLanding();
 						</div>
 						<div class="tab-pane fade" id="profile">
 							<div class="row">
-								<div class="col-lg-6" id="divInformacionLeftZone" >
+								<div class="col-lg-6 col-md-6" id="divInformacionLeftZone" >
 									<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divTxtZone",""); ?>" id="divZone"  >
-										<label class="col-lg-4 control-label" for="txtZoneID"><?php echo getBehavio($company->type,"app_invoice_billing","divLabelZone","Zona"); ?></label>
-										<div class="col-lg-8">
+										<label class="col-lg-4 col-md-4 control-label" for="txtZoneID"><?php echo getBehavio($company->type,"app_invoice_billing","divLabelZone","Zona"); ?></label>
+										<div class="col-lg-8 col-md-8">
 										
-											<select name="txtZoneID" id="txtZoneID" class="select2">																
+											<select name="txtZoneID" id="txtZoneID" class="pm-select">																
 													<?php
 													$count = 0;
 													if($objListZone)
@@ -440,9 +439,9 @@ echo helper_getHtmlOfPageLanding();
 									
 										
 									<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divPrecio",""); ?>  " id="divPrice">
-										<label class="col-lg-4 control-label" for="txtTypePriceID">Precio</label>
-										<div class="col-lg-8">
-											<select name="txtTypePriceID" id="txtTypePriceID" class="select2">															
+										<label class="col-lg-4 col-md-4 control-label" for="txtTypePriceID">Precio</label>
+										<div class="col-lg-8 col-md-8">
+											<select name="txtTypePriceID" id="txtTypePriceID" class="pm-select">															
 													<?php
 													$count = 0;
 													if($objListTypePrice)
@@ -459,9 +458,9 @@ echo helper_getHtmlOfPageLanding();
 									</div>
 									
 									<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divBodegaHidden",""); ?> " id="divBodega" >
-										<label class="col-lg-4 control-label" for="txtWarehouseID">Bodega</label>
-										<div class="col-lg-8">
-											<select name="txtWarehouseID" id="txtWarehouseID" class="select2">															
+										<label class="col-lg-4 col-md-4 control-label" for="txtWarehouseID">Bodega</label>
+										<div class="col-lg-8 col-md-8">
+											<select name="txtWarehouseID" id="txtWarehouseID" class="pm-select">															
 													<?php
 													$count 	= 0;
 													$find	= false;
@@ -487,18 +486,18 @@ echo helper_getHtmlOfPageLanding();
 									</div>
 								</div>
 								
-								<div class="col-lg-6" id="divInformacionRightZone"  >										
+								<div class="col-lg-6 col-md-6" id="divInformacionRightZone"  >										
 									<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divHiddenReference",""); ?> " id="divReferencia">
-										<label class="col-lg-4 control-label" for="txtReference3"><?php echo getBehavio($company->type,"app_invoice_billing","lblReferencia","Referencia"); ?></label>
-										<div class="col-lg-8">
+										<label class="col-lg-4 col-md-4 control-label" for="txtReference3"><?php echo getBehavio($company->type,"app_invoice_billing","lblReferencia","Referencia"); ?></label>
+										<div class="col-lg-8 col-md-8">
 											<input class="form-control"  type="text"  name="txtReference3" id="txtReference3" value="<?php echo getBehavio($company->type,"app_invoice_billing","valueReferencia","Predeterminado"); ?>">
 										</div>
 									</div>
 									
 									<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divHiddenEmployer",""); ?> " id="divVendedor">
-										<label class="col-lg-4 control-label" for="txtEmployeeID"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionVendedor","Vendedor"); ?></label>
-										<div class="col-lg-8">
-											<select name="txtEmployeeID" id="txtEmployeeID" class="select2">															
+										<label class="col-lg-4 col-md-4 control-label" for="txtEmployeeID"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionVendedor","Vendedor"); ?></label>
+										<div class="col-lg-8 col-md-8">
+											<select name="txtEmployeeID" id="txtEmployeeID" class="pm-select">															
 													<?php
 													$count					= 0;
 													$employerDefault 		= "true"; //$objParameterINVOICE_BILLING_EMPLOYEE_DEFAULT;
@@ -520,8 +519,8 @@ echo helper_getHtmlOfPageLanding();
 									</div>
 									
 									<div class="form-group" id="divTrasuctionPhone"  >
-											<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionPhone","Telefono"); ?></label>
-											<div class="col-lg-8">
+											<label class="col-lg-4 col-md-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionPhone","Telefono"); ?></label>
+											<div class="col-lg-8 col-md-8">
 												<input class="form-control"  type="text"  name="txtNumberPhone" id="txtNumberPhone" value="">												
 											</div>
 									</div>	
@@ -529,9 +528,9 @@ echo helper_getHtmlOfPageLanding();
 								
 									
 									<div class="form-group  <?php echo getBehavio($company->type,"app_invoice_billing","divMesa",""); ?>" id="divMesa" >
-										<label class="col-lg-4 control-label" for="txtMesaID"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionMesa","Mesa"); ?></label>
-										<div class="col-lg-8">
-											<select name="txtMesaID" id="txtMesaID" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>">
+										<label class="col-lg-4 col-md-4 control-label" for="txtMesaID"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionMesa","Mesa"); ?></label>
+										<div class="col-lg-8 col-md-8">
+											<select name="txtMesaID" id="txtMesaID" class="pm-select">
 													<?php
 													$count = 0;
 													if($objListMesa)
@@ -562,8 +561,8 @@ echo helper_getHtmlOfPageLanding();
 									</div>
 									
 									<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divNextVisitHidden",""); ?> " id="divSiguienteVisita">
-										<label class="col-lg-4 control-label" for="txtNextVisit">Siguiente Visita</label>
-										<div class="col-lg-8">
+										<label class="col-lg-4 col-md-4 control-label" for="txtNextVisit">Siguiente Visita</label>
+										<div class="col-lg-8 col-md-8">
 
 										    <?php
 											echo  getBehavio(
@@ -588,10 +587,10 @@ echo helper_getHtmlOfPageLanding();
 						
 						<div class="tab-pane fade" id="credit">
 							<div class="row">
-									<div class="col-lg-6" id="divInformacionLeftReference" >
+									<div class="col-lg-6 col-md-6" id="divInformacionLeftReference" >
 										<div class="form-group">
-											<label class="col-lg-4 control-label" for="txtDateFirst">Primer Pago</label>
-											<div class="col-lg-8">
+											<label class="col-lg-4 col-md-4 control-label" for="txtDateFirst">Primer Pago</label>
+											<div class="col-lg-8 col-md-8">
 												<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
 													<input size="16"  class="form-control" type="text" name="txtDateFirst" id="txtDateFirst" value=""      >
 													<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
@@ -600,17 +599,17 @@ echo helper_getHtmlOfPageLanding();
 										</div>
 										
 										<div class="form-group <?php echo $objParameterINVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE=="true" ? "" : "hidden"; ?>  ">
-											<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","txtTermReference","Plazo ó Referencia2"); ?></label>
-											<div class="col-lg-8">
+											<label class="col-lg-4 col-md-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_invoice_billing","txtTermReference","Plazo ó Referencia2"); ?></label>
+											<div class="col-lg-8 col-md-8">
 												<input class="form-control"  type="text"  name="txtReference2" id="txtReference2" value="<?php echo  $objParameterCXC_PLAZO_DEFAULT; ?>">												
 											</div>
 										</div>	
 										
 										
 										<div class="form-group <?php echo $objParameterINVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE=="true" ? "" : "hidden"; ?> ">
-												<label class="col-lg-4 control-label" for="txtPeriodPay">Frecuencia</label>
-												<div class="col-lg-8">													
-													<select name="txtPeriodPay" id="txtPeriodPay" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>">	
+												<label class="col-lg-4 col-md-4 control-label" for="txtPeriodPay">Frecuencia</label>
+												<div class="col-lg-8 col-md-8">													
+													<select name="txtPeriodPay" id="txtPeriodPay" class="pm-select">	
 															<?php
 															$index = -1;
 															if($objListPay)
@@ -628,9 +627,9 @@ echo helper_getHtmlOfPageLanding();
 										
 										
 										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divProviderCredit",""); ?> ">
-												<label class="col-lg-4 control-label" for="txtReference1">Proveedor de Credito</label>
-												<div class="col-lg-8">													
-													<select name="txtReference1" id="txtReference1" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>">
+												<label class="col-lg-4 col-md-4 control-label" for="txtReference1">Proveedor de Credito</label>
+												<div class="col-lg-8 col-md-8">													
+													<select name="txtReference1" id="txtReference1" class="pm-select">
 															<?php
 															$index = -1;
 															if($listProvider)
@@ -647,9 +646,9 @@ echo helper_getHtmlOfPageLanding();
 										</div>
 										
 										<div class="form-group <?php echo $objParameterINVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE=="true" ? "" : "hidden"; ?> ">
-												<label class="col-lg-4 control-label" for="txtDayExcluded">Dias Excluidos</label>
-												<div class="col-lg-8">												
-													<select name="txtDayExcluded" id="txtDayExcluded" class="<?php echo ($useMobile == "1" ? "" : "select2");  ?>">		
+												<label class="col-lg-4 col-md-4 control-label" for="txtDayExcluded">Dias Excluidos</label>
+												<div class="col-lg-8 col-md-8">												
+													<select name="txtDayExcluded" id="txtDayExcluded" class="pm-select">		
 															<?php
 															$index = -1;
 															if($objListDayExcluded)
@@ -666,18 +665,18 @@ echo helper_getHtmlOfPageLanding();
 										</div>
 										
 									</div>
-									<div class="col-lg-6" id="divInformacionRightReference"  >
+									<div class="col-lg-6 col-md-6" id="divInformacionRightReference"  >
 									
 										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divApplied","hidden"); ?>  ">
-											<label class="col-lg-4 control-label" for="txtIsApplied">Aplicado</label>
-											<div class="col-lg-8">
+											<label class="col-lg-4 col-md-4 control-label" for="txtIsApplied">Aplicado</label>
+											<div class="col-lg-8 col-md-8">
 												<input type="checkbox" disabled data-on-color="success" data-off-color="warning"  name="txtIsApplied" id="txtIsApplied" value="1" >
 											</div>
 											<br/>	
 										</div>
 										<div class="form-group " id="divFixedExpenses">
-												<label class="col-lg-4 control-label" for="txtFixedExpenses"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionExpenseLabel","% Interes."); ?></label>
-												<div class="col-lg-8">
+												<label class="col-lg-4 col-md-4 control-label" for="txtFixedExpenses"><?php echo getBehavio($company->type,"app_invoice_billing","txtTraductionExpenseLabel","% Interes."); ?></label>
+												<div class="col-lg-8 col-md-8">
 													<input class="form-control"   type="text" name="txtFixedExpenses" id="txtFixedExpenses" value="0">
 													
 												</div>
@@ -685,8 +684,8 @@ echo helper_getHtmlOfPageLanding();
 										
 									
 										<div  id="divPanelExoneracion" class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divApplyExoneracion",""); ?> ">
-											<label class="col-lg-4 control-label" id="txtLabelApplyExoneracion" for="txtCheckApplyExoneracion">Aplica exoneración?</label>
-											<div class="col-lg-8">
+											<label class="col-lg-4 col-md-4 control-label" id="txtLabelApplyExoneracion" for="txtCheckApplyExoneracion">Aplica exoneración?</label>
+											<div class="col-lg-8 col-md-8">
                                                 <div class="switch" data-on="success" data-off="warning">
                                                     <input class="toggle controls-row" type="checkbox"  id="txtCheckApplyExoneracion" name="txtCheckApplyExoneracion" />
                                                     <input type="hidden" id="txtCheckApplyExoneracionValue"  name="txtCheckApplyExoneracionValue" value="0" />
@@ -695,15 +694,15 @@ echo helper_getHtmlOfPageLanding();
 										</div>
 										
 										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divExoneracion",""); ?>">
-											<label class="col-lg-4 control-label" for="txtLayFirstLineProtocolo">Codigo de exoneración.</label>
-											<div class="col-lg-8">
+											<label class="col-lg-4 col-md-4 control-label" for="txtLayFirstLineProtocolo">Codigo de exoneración.</label>
+											<div class="col-lg-8 col-md-8">
 												<input class="form-control"   type="text" name="txtLayFirstLineProtocolo" id="txtLayFirstLineProtocolo" value="">
 											</div>
 										</div>
 										
 										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divDesembolsoEfectivo",""); ?> ">
-											<label class="col-lg-4 control-label" for="txtCheckDeEfectivo" id="txtLabelIsDesembolsoEfectivo">Es un desembolso en efectivo?</label>
-											<div class="col-lg-8">
+											<label class="col-lg-4 col-md-4 control-label" for="txtCheckDeEfectivo" id="txtLabelIsDesembolsoEfectivo">Es un desembolso en efectivo?</label>
+											<div class="col-lg-8 col-md-8">
                                                 <div class="switch" data-on="success" data-off="warning">
                                                     <input class="toggle controls-row" type="checkbox" id="txtCheckDeEfectivo" />
                                                     <input type="hidden" name="txtCheckDeEfectivoValue" id="txtCheckDeEfectivoValue" value="0" />
@@ -712,8 +711,8 @@ echo helper_getHtmlOfPageLanding();
 										</div>
 										
 										<div class="form-group <?php echo getBehavio($company->type,"app_invoice_billing","divReportSinRiesgo",""); ?>">
-											<label class="col-lg-4 control-label" for="txtCheckReportSinRiesgo" id="txtLabelIsReportSinRiesgo">Reportar a SinRiesgo</label>
-											<div class="col-lg-8">
+											<label class="col-lg-4 col-md-4 control-label" for="txtCheckReportSinRiesgo" id="txtLabelIsReportSinRiesgo">Reportar a SinRiesgo</label>
+											<div class="col-lg-8 col-md-8">
                                                 <div class="switch" data-on="success" data-off="warning">
                                                     <input class="toggle controls-row" type="checkbox" id="txtCheckReportSinRiesgo" name="txtCheckReportSinRiesgo" />
                                                     <input type="hidden" name="txtCheckReportSinRiesgoValue" id="txtCheckReportSinRiesgoValue" value="0" />
@@ -733,13 +732,117 @@ echo helper_getHtmlOfPageLanding();
 							</div>						
 						</div>
 
-						<div class="tab-pane fade" id="dropdown-file">							
-						</div>    
+						<div class="tab-pane fade" id="dropdown-file">
+						</div>
 					</div>
 					<br/>
+
+					<!-- Rediseño v2: dos columnas en escritorio (detalle | cobro). Todo sigue dentro de form#form-new-invoice. Logica en posme-invoice-billing-news.js -->
+					<div class="pm-layout" id="pmLayout">
+					<div class="pm-col-main" id="pmColMain">
+
+					<!-- Barra de captura fija (sticky): escaner + botones de producto -->
+					<div class="pm-barra-captura" id="pmBarraCaptura">
+						<br id="saltoDeLineaFila6" />
+						<br id="saltoDeLineaFila7" />
+						<input class="form-control <?php echo getBehavio($company->type,"app_invoice_billing","txtScanerBarCode",""); ?>  "  type="text"  name="txtScanerCodigo" id="txtScanerCodigo" value="" >
+
+						<?php if($useMobile != "1")	{ ?>
+								<div class="row" id="rowBotoneraFacturaFila1">
+									<div class="col col-lg-2">
+										<a href="javascript:void(0);" class="btn btn-flat btn-info   btn-block hidden btn-comando-factura" id="btnNewItem" ><i class="icon16 i-plus"></i> AGREGAR PRO</a>
+									</div>
+									<div class="col col-lg-2">
+										<a href="javascript:void(0);" class="btn btn-flat btn-danger  btn-block hidden btn-comando-factura" id="btnDeleteItem" ><i class="icon16 i-remove"></i> ELIMINAR PRO</a>
+									</div>
+									<div class="col col-lg-2">
+										<div class="btn-group  btn-block">
+											<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block hidden btn-comando-factura" data-toggle="dropdown" id="btnGroupdProducto"  ><i class="icon16 i-box"></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunConfiguracion","PRODUCTO"); ?>  <span class="caret"></span></button>
+											<ul class="dropdown-menu">
+												<li class="<?= getBehavio($company->type,"app_invoice_billing","btnNewItemCatalog",""); ?>"><a href="javascript:void(0);" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>
+												<li><a href="javascript:void(0);" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>
+											</ul>
+										</div>
+									</div>
+									<div class="col col-lg-2">
+										<div class="btn-group btn-block  hidden btn-comando-factura ">
+											<button  type="button" class="btn btn-flat btn-inverse dropdown-toggle btn-block" data-toggle="dropdown"><i class="icon16 i-pencil"></i> SELECCION <span class="caret"></span></button>
+											<ul class="dropdown-menu">
+												<li><a href="javascript:void(0);" id="btnBack"  >REGRESAR</a></li>
+												<li><a href="javascript:void(0);" id="btnSelectInvoice"  >SELECCIONAR</a></li>
+												<li><a href="javascript:void(0);" id="btnLinkPayment"  > LINK DE PAGO</a></li>
+											</ul>
+										</div>
+									</div>
+
+								</div>
+						<?php } ?>
+					</div><!-- End .pm-barra-captura  -->
+
+					<?php if($useMobile == "1")	{ ?>
+					<!-- Botonera de la version movil (useMobile=1): arriba del detalle para que no se desplace al agregar filas -->
+					<div class="pm-botonera-movil">
+							<div class="row">
+									<div class="col col-lg-6 col-md-6 col-sm-6 col-xs-6">
+										<div class="btn-group  btn-block hidden btn-comando-factura">
+											<button type="button" class="btn btn-flat btn-info dropdown-toggle  btn-block" data-toggle="dropdown">PRO <span class="caret"></span></button>
+											<ul class="dropdown-menu">
+													<li><a href="javascript:void(0);" id="btnNewItem" >AGREGAR PRO</a></li>
+													<li><a href="javascript:void(0);" id="btnDeleteItem" >ELIMINAR PRO</a></li>
+											</ul>
+										</div>
+									</div>
+									<div class="col col-lg-6 col-md-6 col-sm-6 col-xs-6">
+										<div class="btn-group  btn-block hidden btn-comando-factura">
+											<button type="button" class="btn btn-flat btn-danger dropdown-toggle  btn-block" data-toggle="dropdown">FAC <span class="caret"></span></button>
+											<ul class="dropdown-menu">
+												<li><a href="javascript:void(0);" id="btnBack" >REGRESAR</a></li>
+												<li><a href="<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>" id="btnNew">NUEVA FAC</a></li>
+												<li class="showPanelEdicion"><a href="javascript:void(0);" id="btnDelete">ELIMINAR FAC</a></li>
+												<li class="showPanelEdicion"><a href="javascript:void(0);" id="btnPrinter">IMPRIMIR</a></li>
+												<li><a href="javascript:void(0);" id="btnSelectInvoice"  > SELECCIONAR</a></li>
+												<li><a href="javascript:void(0);" id="btnLinkPayment"  > LINK DE PAGO</a></li>
+											</ul>
+										</div>
+									</div>
+							</div>
+
+							</br>
+							<div class="row" >
+									<div class="col col-lg-6 col-md-6 col-sm-6 col-xs-6">
+										<div class="btn-group  btn-block hidden btn-comando-factura">
+											<button type="button" class="btn btn-flat btn-primary dropdown-toggle  btn-block" data-toggle="dropdown">SALV <span class="caret"></span></button>
+											<!-- Se añadiran de forma dinamica-->
+											<ul class="dropdown-menu" id="linkMobile">
+												<li><a href="javascript:void(0);"  id="btnFooterMobile">COCINA</a></li>
+												<li><a href="javascript:void(0);"  id="btnBarMobile">BAR</a></li>
+											</ul>
+										</div>
+									</div>
+							</div>
+							<br/>
+							<div class="row <?php echo getBehavio($company->type,"app_invoice_billing","divPanelBtnMasMobileD","" ) ?> ">
+									<div class="col col-lg-6 col-md-6 col-sm-6 col-xs-6">
+										<div class="btn-group  btn-block hidden btn-comando-factura">
+											<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block" data-toggle="dropdown">MAS <span class="caret"></span></button>
+											<ul class="dropdown-menu">
+													<li><a href="javascript:void(0);" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>
+													<li><a href="javascript:void(0);" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>
+											</ul>
+										</div>
+									</div>
+							</div>
+
+							<br/>
+							<br/>
+							<br/>
+					</div><!-- End .pm-botonera-movil  -->
+					<?php } ?>
+
 					<div class="row" id="panelContainterDetailInvoice" >
 						<div class="col-lg-12">
 							<h3 id="labelTitleDetalle" >Detalle:</h3>
+							<div class="pm-table-wrap">
 							<table id="tb_transaction_master_detail" class="<?= $useMobile=="1" ? '' : 'table table-bordered' ?>"  >
 								<thead>
 									<tr>
@@ -776,7 +879,8 @@ echo helper_getHtmlOfPageLanding();
 								<tbody id="body_tb_transaction_master_detail">
 								</tbody>
 							</table>
-							
+							</div><!-- End .pm-table-wrap  -->
+
 						</div><!-- End .col-lg-12  --> 
 					</div><!-- End .row-fluid  -->
 					<?php
@@ -793,219 +897,69 @@ echo helper_getHtmlOfPageLanding();
 					<input class="form-control"  type="hidden"  name="txtStatusID" id="txtStatusID" value="<?php echo $valueWorkflowFirst; ?>" >
 					
 					<br id="saltoDeLineaFila0" />
-					
-					<?php if($useMobile != "1")	{ ?>								
-							<div class="row" id="rowBotoneraFacturaFila1">
-								<div class="col col-lg-2">
-									<a href="javascript:void(0);" class="btn btn-flat btn-info   btn-block hidden btn-comando-factura" id="btnNewItem" ><i class="icon16 i-plus"></i> AGREGAR PRO</a>
-								</div>
-								<div class="col col-lg-2">
-									<a href="javascript:void(0);" class="btn btn-flat btn-danger  btn-block hidden btn-comando-factura" id="btnDeleteItem" ><i class="icon16 i-remove"></i> ELIMINAR PRO</a>					
-								</div>
-								<div class="col col-lg-2">
-									<div class="btn-group  btn-block">
-										<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block hidden btn-comando-factura" data-toggle="dropdown" id="btnGroupdProducto"  ><i class="icon16 i-box"></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunConfiguracion","PRODUCTO"); ?>  <span class="caret"></span></button>
-										<ul class="dropdown-menu">
-											<li class="<?= getBehavio($company->type,"app_invoice_billing","btnNewItemCatalog",""); ?>"><a href="javascript:void(0);" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>
-											<li><a href="javascript:void(0);" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>											
-										</ul>
-									</div>
-								</div>
-								<div class="col col-lg-2">
-									<div class="btn-group btn-block  hidden btn-comando-factura ">
-										<button  type="button" class="btn btn-flat btn-inverse dropdown-toggle btn-block" data-toggle="dropdown"><i class="icon16 i-pencil"></i> SELECCION <span class="caret"></span></button>
-										<ul class="dropdown-menu">
-											<li><a href="javascript:void(0);" id="btnBack"  >REGRESAR</a></li>
-											<li><a href="javascript:void(0);" id="btnSelectInvoice"  >SELECCIONAR</a></li>
-											<li><a href="javascript:void(0);" id="btnLinkPayment"  > LINK DE PAGO</a></li>
-										</ul>
-									</div>
-								</div>
-								
-							</div>
-							
-							<div class="row" id="rowBotoneraFacturaFila2">
-								<br id="saltoDeLineaFila2" />
-								<div class="col col-lg-2">
-									<a href="#" class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNew"><i class="icon16 i-checkmark-4"></i> NUEVA FAC</a>
-								</div>
-								
-								<div class="col col-lg-2" id="registrarFacturaNueva">									
-									<?php 
-									if ($objParameterInvoiceAutoApply == "true"){
-										?>
-										<a href="javascript:void(0);" class="btn btn-warning  btn-block hidden btn-comando-factura" id="btnAcept"><i class="icon16 i-checkmark-4"></i>
-										<?php echo getBehavio($company->type,"core_web_language_workflowstage","billing_APLICAR","APLICAR" ) ?>
-										</a>
-										<?php
-									}
-									else{
-										?>
-										<a href="javascript:void(0);" class="btn btn-warning  btn-block hidden btn-comando-factura" id="btnAcept"><i class="icon16 i-checkmark-4"></i>
-										<?php echo getBehavio($company->type,"core_web_language_workflowstage","billing_REGISTRAR","REGISTRAR") ?>
-										</a>
-										<?php 
-									}
-									?>								
-								</div>
-								
-								<div class="col col-lg-2 showPanelEdicion">
-									<a href="javascript:void(0);" class="btn btn-flat btn-danger btn-block hidden btn-comando-factura" id="btnDelete"><i class="icon16 i-remove "></i> ELIMINAR FAC</a>
-								</div>
-								<div class="col col-lg-2 showPanelEdicion">
-									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnPrinter"><i class="icon16 i-print "></i> IMPRIMIR</a>
-								</div>								
-								<div class="col col-lg-2 showComandoDeCocina">
-									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnFooter"><i class="icon16 i-print "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunCocina","COCINA"); ?></a>
-								</div>
-								<div class="col col-lg-2" id="showCommandBar">
-									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnBar"><i class="icon16 i-print "></i> BAR</a>
-								</div>
-								
-								
-								
-								
-							</div>      
-							
-							<div class="row" id="rowBotoneraFacturaFila3">			
-								<br id="saltoDeLineaFila3" />					
-								<div class="col col-lg-2 showRestaurante">
-									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnOptionPago"><i class="icon16 i-arrow-down-12 "></i> PROCESAR PAGO</a>
-								</div>
-								<div class="col col-lg-2 showRestaurante">
-									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunVerDetalle","DETALLE"); ?>  </a>									
-								</div>		
-							</div>
-						
-							<div class="row" id="rowBotoneraFacturaFila4">
-								<div id="workflowLink">
-								</div>
-								<div id="divPanelOpenCash">
-									<div class="col col-lg-2">
-										<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnAbrirCaja"><i class="icon16 i-print "></i> ABRIR CAJA</a>
-									</div>									
-								</div>
-								<?php echo getBahavioSession($company->type,'app_invoice_billing','botonRegresarDuplcado','',$objListCompanyPageSetting) ?>								
-							</div>
 
-						<?php
-					}
-					else{
-						?>
-						
-						<div class="row">
-								<div class="col col-lg-6 col-md-6 col-sm-6 col-xs-6">
-									<div class="btn-group  btn-block hidden btn-comando-factura">
-										<button type="button" class="btn btn-flat btn-info dropdown-toggle  btn-block" data-toggle="dropdown">PRO <span class="caret"></span></button>
-										<ul class="dropdown-menu">
-												<li><a href="javascript:void(0);" id="btnNewItem" >AGREGAR PRO</a></li>
-												<li><a href="javascript:void(0);" id="btnDeleteItem" >ELIMINAR PRO</a></li>											
-										</ul>
-									</div>
-								</div>
-								<div class="col col-lg-6 col-md-6 col-sm-6 col-xs-6">
-									<div class="btn-group  btn-block hidden btn-comando-factura">
-										<button type="button" class="btn btn-flat btn-danger dropdown-toggle  btn-block" data-toggle="dropdown">FAC <span class="caret"></span></button>
-										<ul class="dropdown-menu">											
-											<li><a href="javascript:void(0);" id="btnBack" >REGRESAR</a></li>
-											<li><a href="<?php echo base_url(); ?>/app_invoice_billing/add/codigoMesero/<?php echo $codigoMesero; ?>" id="btnNew">NUEVA FAC</a></li>
-											<li class="showPanelEdicion"><a href="javascript:void(0);" id="btnDelete">ELIMINAR FAC</a></li>		
-											<li class="showPanelEdicion"><a href="javascript:void(0);" id="btnPrinter">IMPRIMIR</a></li>	
-											<li><a href="javascript:void(0);" id="btnSelectInvoice"  > SELECCIONAR</a></li>
-											<li><a href="javascript:void(0);" id="btnLinkPayment"  > LINK DE PAGO</a></li>
-										</ul>
-									</div>
-								</div>
-						</div>
-						
-						</br>
-						<div class="row" >
-								<div class="col col-lg-6 col-md-6 col-sm-6 col-xs-6">
-									<div class="btn-group  btn-block hidden btn-comando-factura">
-										<button type="button" class="btn btn-flat btn-primary dropdown-toggle  btn-block" data-toggle="dropdown">SALV <span class="caret"></span></button>
-										<!-- Se añadiran de forma dinamica-->
-										<ul class="dropdown-menu" id="linkMobile"> 
-											<li><a href="javascript:void(0);"  id="btnFooterMobile">COCINA</a></li>
-											<li><a href="javascript:void(0);"  id="btnBarMobile">BAR</a></li>
-										</ul>
-									</div>
-								</div>
-						</div>
-						<br/>												
-						<div class="row <?php echo getBehavio($company->type,"app_invoice_billing","divPanelBtnMasMobileD","" ) ?> ">
-								<div class="col col-lg-6 col-md-6 col-sm-6 col-xs-6">
-									<div class="btn-group  btn-block hidden btn-comando-factura">
-										<button type="button" class="btn btn-flat btn-success dropdown-toggle  btn-block" data-toggle="dropdown">MAS <span class="caret"></span></button>
-										<ul class="dropdown-menu">											
-												<li><a href="javascript:void(0);" id="btnNewItemCatalog" >NUEVO PRODUCTO</a></li>						
-												<li><a href="javascript:void(0);" id="btnRefreshDataCatalogo" >ACTUALIZAR CATALOGO</a></li>
-										</ul>
-									</div>
-								</div>							
-						</div>
-						
-						<br/>	
-						<br/>	
-						<br/>	
-						<?php
-					}
-					?>
-					
-					
-					
-					<br id="saltoDeLineaFila6" />
-					<br id="saltoDeLineaFila7" />
-					<input class="form-control <?php echo getBehavio($company->type,"app_invoice_billing","txtScanerBarCode",""); ?>  "  type="text"  name="txtScanerCodigo" id="txtScanerCodigo" value="" >
-					
 
-					<div class="row">
-						
-						<div class="col-lg-3 <?php echo getBehavio($company->type,"app_invoice_billing","panelResumenFacturaTool",""); ?>   " id="panelResumenFacturaTool" >
+					<!-- Rediseño v3: atajos (#panelResumenFactura) y calculadora (#panelResumenFacturaTool) se movieron al panel flotante izquierdo #pmPanelAux (despues de .pm-layout) -->
+					</div><!-- End .pm-col-main  -->
+
+					<!-- Panel de cobro: escritorio = columna derecha sticky; tablet = barra fija inferior expandible; telefono = hoja inferior (boton COBRAR) -->
+					<aside class="pm-col-cobro" id="pmColCobro" aria-label="Cobro">
+						<div class="pm-cobro-cabecera">
+							<span class="pm-cobro-titulo">Cobro</span>
+							<button type="button" class="pm-cobro-btn" id="pmBtnCobroExpandir" aria-expanded="false">Más</button>
+							<button type="button" class="pm-cobro-btn pm-cobro-btn-cerrar" id="pmBtnCobroCerrar">Cerrar</button>
+						</div>
+						<div class="pm-cobro-cuerpo">
+						<div class="col-lg-4 col-md-6 col-sm-12 <?php echo getBehavio($company->type,"app_invoice_billing","panelSummaryInvoice",""); ?> " id="divPanelShowSummaryNumber"  >
 							<div class="page-header">
-								<h3>Tool Calcular Monto sin Iva</h3>
+								<h3>Resumen</h3>
 							</div>
-							<table class="<?php echo $useMobile == "1" ? "" : "table table-bordered "  ?>"  >
+							<table class="<?php echo $useMobile == "1" ? "" : "table table-bordered "  ?>" id="table-resumen-pago" >
 								<tbody>
-									<tr>
-										<th style="width:200px;text-align:left;" >01) MONTO</th>
+									<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">
+										<th style="text-align:left;" >SUB TOTAL</th>
 										<td >
-											<input type="text" id="txtToolMontoConIva" name="txtToolMontoConIva"  class="col-lg-12" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
+											<input type="text" id="txtSubTotal" name="txtSubTotal" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
 									</tr>
-									<tr>
-										<th style="text-align:left">02) </th>
+									<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">
+										<th style="text-align:left">IVA</th>
 										<td >
-											<a href="javascript:void(0);" class="btn btn-warning  btn-block" id="txtToolCalcular"><i class="icon16 i-checkmark-4"></i> CALCULAR</a>
+											<input type="text" id="txtIva" name="txtIva" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
 									</tr>
+									<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">
+										<th style="text-align:left;">% DESC</th>
+										<td>
+											<input type="text" id="txtPorcentajeDescuento" name="txtPorcentajeDescuento" <?= getBehavio($company->type,"app_invoice_billing","attributeTxtPorcentageDescuento","readonly"); ?> class="col-lg-12 txt-numeric" inputmode="decimal" value="0" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>" />
+										</td>
+									</tr>
+									<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">
+										<th style="text-align:left;">DESC</th>
+										<td>
+											<input type="text" id="txtDescuento" name="txtDescuento"   <?= getBehavio($company->type,"app_invoice_billing","attributeTxtDescuento","readonly"); ?>   class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>" />
+										</td>
+									</tr>
+									<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">
+										<th style="text-align:left;">% SERV</th>
+										<td>
+											<input type="text" id="txtServices" name="txtServices" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>" />
+										</td>
+									</tr>
+
 									<tr>
-										<th style="text-align:left">03) MONTO SIN IVA</th>
+										<th style="text-align:left">TOTAL</th>
 										<td >
-											<input type="text" id="txtToolMontoSinIva" name="txtToolMontoSinIva"  class="col-lg-12" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
+											<input type="text" id="txtTotal" name="txtTotal" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
 									</tr>
 								</tbody>
 							</table>
 						</div>
-						
-						
-						
-						<div class="col-lg-3 col-sm-12 <?php echo getBehavio($company->type,"app_invoice_billing","panelResumenFactura",""); ?>   " id="panelResumenFactura" >
-							<div class="page-header">
-								<h3 id="labelRef" >Ref.</h4>
-							</div>
-							<ul class="list-unstyled">
-								<li><h3>CC: <span class="red-smooth">*</span></h3></li>
-								<li><i class="icon16 i-arrow-right-3"></i>Resumen de la factura</li>
-								<li><i class="icon16 i-arrow-right-3"></i>Scaner: Control + k = Nuevo</li>
-								<li><i class="icon16 i-arrow-right-3"></i>Scaner: Control + i = Abrir caja</li>
-								<li><i class="icon16 i-arrow-right-3"></i>Ingreso Dolares: Control + b = Subir</li>
-								
-							</ul>
 
-						</div>
-						
-						<div class="col-lg-5 col-sm-12  <?php echo getBehavio($company->type,"app_invoice_billing","divPanelPagosIncome",""); ?> " id="divPaymentOption" >
+						<!-- Pago: Recibido / Cambio siempre visibles; tarjeta, transferencia y puntos en "Mas formas de pago" (clase pm-collapsed, no .hidden) -->
+						<div class="pm-cobro-pagos pm-collapsed" id="pmCobroPagos">
+						<div class="col-lg-5 col-md-6 col-sm-12  <?php echo getBehavio($company->type,"app_invoice_billing","divPanelPagosIncome",""); ?> " id="divPaymentOption" >
 							<div class="page-header">
 								<h3>Pago</h3>
 							</div>
@@ -1015,32 +969,32 @@ echo helper_getHtmlOfPageLanding();
 								
 									
 									<tr>
-										<th style="text-align:left" >01) CAMBIO</th>
+										<th style="text-align:left" >CAMBIO</th>
 										<td >
-											<input type="text" id="txtChangeAmount" name="txtChangeAmount" readonly class="col-lg-12" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
+											<input type="text" id="txtChangeAmount" name="txtChangeAmount" readonly class="col-lg-12" value="" style="text-align:<?php echo $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
 									</tr>								
 									<tr>
-										<th style="text-align:left">02) MON.</th>
+										<th style="text-align:left">MON.</th>
 										<td >
-											<input type="text" id="txtReceiptAmount" name="txtReceiptAmount"  class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
+											<input type="text" id="txtReceiptAmount" name="txtReceiptAmount"  class="col-lg-12 txt-numeric" inputmode="decimal" value="" style="text-align:<?php echo $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
 										
 									</tr>
 									
 									<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionAmountReceiptExtranjera",""); ?>" >
-										<th style="text-align:left" >03) MON. EXT.</th>
+										<th style="text-align:left" >MON. EXT.</th>
 										<td >
-											<input type="text" id="txtReceiptAmountDol" name="txtReceiptAmountDol"  class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
+											<input type="text" id="txtReceiptAmountDol" name="txtReceiptAmountDol"  class="col-lg-12 txt-numeric" inputmode="decimal" value="" style="text-align:<?php echo $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
 										
 									</tr>
 									
 									
 									<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionPaymentExtrasTarjeta",""); ?>" >
-										<th style="text-align:left">04) Tarjeta. Nac.</th>
+										<th style="text-align:left">TARJETA. NAC.</th>
 										<td>
-											<input type="text" id="txtReceiptAmountTarjeta" name="txtReceiptAmountTarjeta"   class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
+											<input type="text" id="txtReceiptAmountTarjeta" name="txtReceiptAmountTarjeta"   class="col-lg-12 txt-numeric" inputmode="decimal" value="" style="text-align:<?php echo $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
 										<td style="min-width: 100px;">
 											<select name="txtReceiptAmountTarjeta_BankID" id="txtReceiptAmountTarjeta_BankID"  class="">
@@ -1062,9 +1016,9 @@ echo helper_getHtmlOfPageLanding();
 										</td>
 									</tr>
 									<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionPaymentExtrasTarjeta",""); ?>" >
-										<th style="text-align:left">05) Tarjeta. Ext.</th>
+										<th style="text-align:left">TARJETA. EXT.</th>
 										<td>
-											<input type="text" id="txtReceiptAmountTarjetaDol" name="txtReceiptAmountTarjetaDol"   class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
+											<input type="text" id="txtReceiptAmountTarjetaDol" name="txtReceiptAmountTarjetaDol"   class="col-lg-12 txt-numeric" inputmode="decimal" value="" style="text-align:<?php echo $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
 										<td>
 											<select name="txtReceiptAmountTarjetaDol_BankID" id="txtReceiptAmountTarjetaDol_BankID"  class="">
@@ -1087,9 +1041,9 @@ echo helper_getHtmlOfPageLanding();
 									</tr>
 									
 									<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionPaymentExtras",""); ?>" >
-										<th style="text-align:left">06) TRANS. Nac.</th>
+										<th style="text-align:left">TRANS. NAC.</th>
 										<td >
-											<input type="text" id="txtReceiptAmountBank" name="txtReceiptAmountBank"  class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
+											<input type="text" id="txtReceiptAmountBank" name="txtReceiptAmountBank"  class="col-lg-12 txt-numeric" inputmode="decimal" value="" style="text-align:<?php echo $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
 										<td>
 											<select name="txtReceiptAmountBank_BankID" id="txtReceiptAmountBank_BankID"  class="">
@@ -1111,9 +1065,9 @@ echo helper_getHtmlOfPageLanding();
 										</td>
 									</tr>
 									<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionPaymentExtras",""); ?>" >
-										<th style="text-align:left">07) TRANS. Ext.</th>
+										<th style="text-align:left">TRANS. EXT.</th>
 										<td >
-											<input type="text" id="txtReceiptAmountBankDol" name="txtReceiptAmountBankDol"  class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
+											<input type="text" id="txtReceiptAmountBankDol" name="txtReceiptAmountBankDol"  class="col-lg-12 txt-numeric" inputmode="decimal" value="" style="text-align:<?php echo $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
 										<td>										
 											<select name="txtReceiptAmountBankDol_BankID" id="txtReceiptAmountBankDol_BankID"  class="">
@@ -1136,9 +1090,9 @@ echo helper_getHtmlOfPageLanding();
 									</tr>
 									
 									<tr class="<?php echo getBehavio($company->type,"app_invoice_billing","rowOptionPaymentExtras",""); ?>" >
-										<th style="text-align:left" >08) Pt</th>
+										<th style="text-align:left" >PT</th>
 										<td >
-											<input type="text" id="txtReceiptAmountPoint" name="txtReceiptAmountPoint"  class="col-lg-12 txt-numeric" value="" style="text-align:<?php $useMobile != "1" ? "right" : "left"  ?>"/>
+											<input type="text" id="txtReceiptAmountPoint" name="txtReceiptAmountPoint"  class="col-lg-12 txt-numeric" inputmode="decimal" value="" style="text-align:<?php echo $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>								
 									</tr>
 									
@@ -1146,55 +1100,135 @@ echo helper_getHtmlOfPageLanding();
 								</tbody>
 							</table>
 						</div>
-						
-						<div class="col-lg-4 col-sm-12 <?php echo getBehavio($company->type,"app_invoice_billing","panelSummaryInvoice",""); ?> " id="divPanelShowSummaryNumber"  >
-							<div class="page-header">
-								<h3>Resumen</h3>
+							<button type="button" class="pm-btn-mas-pagos hidden" id="pmBtnMasPagos" aria-expanded="false">Más formas de pago</button>
+						</div><!-- End .pm-cobro-pagos  -->
+						</div><!-- End .pm-cobro-cuerpo  -->
+
+						<!-- Botonera de acciones (REGISTRAR/APLICAR, NUEVA, IMPRIMIR, ELIMINAR, COCINA, BAR, workflow, abrir caja) -->
+						<?php if($useMobile != "1")	{ ?>
+							<div class="row" id="rowBotoneraFacturaFila2">
+								<br id="saltoDeLineaFila2" />
+								<div class="col col-lg-2">
+									<a href="#" class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNew"><i class="icon16 i-checkmark-4"></i> NUEVA FAC</a>
+								</div>
+
+								<div class="col col-lg-2" id="registrarFacturaNueva">
+									<?php
+									if ($objParameterInvoiceAutoApply == "true"){
+										?>
+										<a href="javascript:void(0);" class="btn btn-warning  btn-block hidden btn-comando-factura" id="btnAcept"><i class="icon16 i-checkmark-4"></i>
+										<?php echo getBehavio($company->type,"core_web_language_workflowstage","billing_APLICAR","APLICAR" ) ?>
+										</a>
+										<?php
+									}
+									else{
+										?>
+										<a href="javascript:void(0);" class="btn btn-warning  btn-block hidden btn-comando-factura" id="btnAcept"><i class="icon16 i-checkmark-4"></i>
+										<?php echo getBehavio($company->type,"core_web_language_workflowstage","billing_REGISTRAR","REGISTRAR") ?>
+										</a>
+										<?php
+									}
+									?>
+								</div>
+
+								<div class="col col-lg-2 showPanelEdicion">
+									<a href="javascript:void(0);" class="btn btn-flat btn-danger btn-block hidden btn-comando-factura" id="btnDelete"><i class="icon16 i-remove "></i> ELIMINAR FAC</a>
+								</div>
+								<div class="col col-lg-2 showPanelEdicion">
+									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnPrinter"><i class="icon16 i-print "></i> IMPRIMIR</a>
+								</div>
+								<div class="col col-lg-2 showComandoDeCocina">
+									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnFooter"><i class="icon16 i-print "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunCocina","COCINA"); ?></a>
+								</div>
+								<div class="col col-lg-2" id="showCommandBar">
+									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnBar"><i class="icon16 i-print "></i> BAR</a>
+								</div>
+
 							</div>
-							<table class="<?php echo $useMobile == "1" ? "" : "table table-bordered "  ?>" id="table-resumen-pago" >
+
+							<div class="row" id="rowBotoneraFacturaFila3">
+								<br id="saltoDeLineaFila3" />
+								<div class="col col-lg-2 showRestaurante">
+									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnOptionPago"><i class="icon16 i-arrow-down-12 "></i> PROCESAR PAGO</a>
+								</div>
+								<div class="col col-lg-2 showRestaurante">
+									<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block btn-comando-factura" id="btnVeDetalleFactura"><i class="icon16 i-accessibility "></i> <?php echo getBehavio($company->type,"app_invoice_billing","lablBotunVerDetalle","DETALLE"); ?>  </a>
+								</div>
+							</div>
+
+							<div class="row" id="rowBotoneraFacturaFila4">
+								<div id="workflowLink">
+								</div>
+								<div id="divPanelOpenCash">
+									<div class="col col-lg-2">
+										<a href="javascript:void(0);" class="btn btn-flat btn-primary btn-block hidden btn-comando-factura" id="btnAbrirCaja"><i class="icon16 i-print "></i> ABRIR CAJA</a>
+									</div>
+								</div>
+								<?php echo getBahavioSession($company->type,'app_invoice_billing','botonRegresarDuplcado','',$objListCompanyPageSetting) ?>
+							</div>
+						<?php } ?>
+					</aside><!-- End .pm-col-cobro  -->
+					</div><!-- End .pm-layout  -->
+
+					<!--
+						Rediseño v3: panel flotante izquierdo (Ayuda / Herramientas).
+						Dentro de form#form-new-invoice (los txtTool* tienen name) y ANTES de #mySidebar: no es ancestro de ninguna sidebar.
+						Oculto a la izquierda dejando visible la pestaña #pmPanelAuxAsa; hover (escritorio) o toque (tactil, clase pm-aux-abierto).
+						Logica en posme-invoice-billing-news.js (seccion 7).
+					-->
+					<div class="pm-panel-aux" id="pmPanelAux">
+						<div class="pm-panel-aux-cuerpo" id="pmPanelAuxCuerpo">
+
+						<div class="col-lg-3 <?php echo getBehavio($company->type,"app_invoice_billing","panelResumenFacturaTool",""); ?>   " id="panelResumenFacturaTool" >
+							<div class="page-header">
+								<h3>Tool Calcular Monto sin Iva</h3>
+							</div>
+							<table class="<?php echo $useMobile == "1" ? "" : "table table-bordered "  ?>"  >
 								<tbody>
-									<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">
-										<th style="text-align:left;" >01) SUB TOTAL</th>
-										<td >
-											<input type="text" id="txtSubTotal" name="txtSubTotal" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>"/>
-										</td>
-									</tr>
-									<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">
-										<th style="text-align:left">02) IVA</th>
-										<td >
-											<input type="text" id="txtIva" name="txtIva" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>"/>
-										</td>
-									</tr>
-									<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">
-										<th style="text-align:left;"><?= getBehavio($company->type,"app_invoice_billing","divLabelNumDescuston","03)"); ?> % DESC</th>
-										<td>
-											<input type="text" id="txtPorcentajeDescuento" name="txtPorcentajeDescuento" <?= getBehavio($company->type,"app_invoice_billing","attributeTxtPorcentageDescuento","readonly"); ?> class="col-lg-12 txt-numeric" value="0" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>" />
-										</td>
-									</tr>
-									<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">
-										<th style="text-align:left;">04) DESC</th>
-										<td>
-											<input type="text" id="txtDescuento" name="txtDescuento"   <?= getBehavio($company->type,"app_invoice_billing","attributeTxtDescuento","readonly"); ?>   class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>" />
-										</td>
-									</tr>
-									<tr class="<?= getBehavio($company->type,"app_invoice_billing","divHiddeValue",""); ?>">
-										<th style="text-align:left;">05) % SERV</th>
-										<td>
-											<input type="text" id="txtServices" name="txtServices" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>" />
-										</td>
-									</tr>
-									
 									<tr>
-										<th style="text-align:left"><?= getBehavio($company->type,"app_invoice_billing","divTxtTotal","06)"); ?> TOTAL</th>
+										<th style="width:200px;text-align:left;" >MONTO</th>
 										<td >
-											<input type="text" id="txtTotal" name="txtTotal" readonly class="col-lg-12" value="" style="text-align:<?= $useMobile != "1" ? "right" : "left"  ?>"/>
+											<input type="text" id="txtToolMontoConIva" name="txtToolMontoConIva"  class="col-lg-12" value="" style="text-align:<?php echo $useMobile != "1" ? "right" : "left"  ?>"/>
+										</td>
+									</tr>
+									<tr>
+										<th style="text-align:left"></th>
+										<td >
+											<a href="javascript:void(0);" class="btn btn-warning  btn-block" id="txtToolCalcular"><i class="icon16 i-checkmark-4"></i> CALCULAR</a>
+										</td>
+									</tr>
+									<tr>
+										<th style="text-align:left">MONTO SIN IVA</th>
+										<td >
+											<input type="text" id="txtToolMontoSinIva" name="txtToolMontoSinIva"  class="col-lg-12" value="" style="text-align:<?php echo $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
 									</tr>
 								</tbody>
 							</table>
 						</div>
-						
-					</div><!-- End .row-fluid  -->                                       
+
+
+
+						<div class="col-lg-3 col-sm-12 <?php echo getBehavio($company->type,"app_invoice_billing","panelResumenFactura",""); ?>   " id="panelResumenFactura" >
+							<div class="page-header">
+								<h3 id="labelRef" >Ref.</h4>
+							</div>
+							<ul class="list-unstyled">
+								<li><h3>CC: <span class="red-smooth">*</span></h3></li>
+								<li><i class="icon16 i-arrow-right-3"></i>Resumen de la factura</li>
+								<li><i class="icon16 i-arrow-right-3"></i>Scaner: Control + k = Nuevo</li>
+								<li><i class="icon16 i-arrow-right-3"></i>Scaner: Control + i = Abrir caja</li>
+								<li><i class="icon16 i-arrow-right-3"></i>Ingreso Dolares: Control + b = Subir</li>
+
+							</ul>
+
+						</div>
+
+						</div><!-- End .pm-panel-aux-cuerpo  -->
+						<button type="button" class="pm-panel-aux-asa" id="pmPanelAuxAsa" aria-controls="pmPanelAuxCuerpo" aria-expanded="false" title="Ayuda y herramientas">
+							<span class="pm-panel-aux-asa-texto">Ayuda / Herramientas</span>
+						</button>
+					</div><!-- End .pm-panel-aux  -->                                       
 				</div>
 			
 				
@@ -1412,13 +1446,13 @@ echo helper_getHtmlOfPageLanding();
                 <div class="form-group">
                     <label class="col-md-4 control-label" for="selectPrecio">Precios:</label>
                     <div class="col-md-8">
-                        <select class="select2" id="selectPrecio"></select>
+                        <select class="pm-select" id="selectPrecio"></select>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-md-4 control-label" for="selectVendedor">Vendedor:</label>
                     <div class="col-md-8">
-                        <select class="select2" id="selectVendedor">
+                        <select class="pm-select" id="selectVendedor">
                             <?php
                             $count					= 0;
                             $employerDefault 		= "true"; //$objParameterINVOICE_BILLING_EMPLOYEE_DEFAULT;
@@ -1546,6 +1580,19 @@ echo helper_getHtmlOfPageLanding();
 	<!-- End #email  -->
 </div>
 <!-- End .row-fluid  -->
+
+<!-- Rediseño: barra fija inferior para telefono (<=767px): total + cambio + COBRAR (abre el panel de cobro como hoja inferior). Sin inputs. Logica en posme-invoice-billing-news.js -->
+<div id="pmBarraMovil" class="pm-barra-movil">
+	<div class="pm-barra-movil-total">
+		<span class="pm-barra-movil-label">TOTAL</span>
+		<span class="pm-barra-movil-monto" id="pmBarraMovilMonto">0.00</span>
+	</div>
+	<div class="pm-barra-movil-total pm-barra-movil-cambio">
+		<span class="pm-barra-movil-label">CAMBIO</span>
+		<span class="pm-barra-movil-monto pm-barra-movil-monto-cambio" id="pmBarraMovilCambio">0.00</span>
+	</div>
+	<button type="button" class="pm-barra-movil-btn" id="pmBarraMovilRegistrar">COBRAR</button>
+</div>
 <?php echo getBehavio($company->type,"app_invoice_billing","divTraslateElement",""); ?>  
 
 <?php echo getBahavioDB($company->type,"app_invoice_billing","divTraslateElement",""); ?>  

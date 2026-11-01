@@ -124,7 +124,7 @@
 
 	const Toast = Swal.mixin({
 		toast				: true,
-		position			: "bottom-end",
+		position			: "bottom-start",
 		showConfirmButton	: false,
 		timer				: 15000,
 		customClass			: {
@@ -140,7 +140,7 @@
 
 	const ToastSuccess = Swal.mixin({
 		toast				: true,
-		position			: "bottom-end",
+		position			: "bottom-start",
 		showConfirmButton	: false,
 		timer				: 15000,
 		customClass			: {
@@ -948,7 +948,7 @@
 		<div class="modal fade" id="modalDeleteCommentNews" tabindex="-1" role="dialog" aria-hidden="true">
 			<div class="modal-dialog modal-dialog-centered" role="document" style="max-width:440px;margin-top:12vh;">
 				<div class="modal-content" style="border:none;border-radius:16px;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25);">
-					<div style="background:linear-gradient(135deg,#ff5f6d 0%,#d63031 100%);padding:22px 24px;color:#fff;position:relative;">
+					<div style="background:#DC2626;padding:22px 24px;color:#fff;position:relative;">
 						<div style="display:flex;align-items:center;gap:12px;">
 							<div style="width:44px;height:44px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:22px;">&#9888;</div>
 							<div>
@@ -965,7 +965,7 @@
 					</div>
 					<div style="padding:16px 24px;background:#f8f9fa;display:flex;justify-content:flex-end;gap:10px;">
 						<button type="button" data-dismiss="modal" id="btnCancelDeleteNews" style="border:none;background:#e9ecef;color:#495057;padding:10px 20px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;transition:background .2s;">Cancelar</button>
-						<button type="button" id="btnConfirmDeleteNews" style="border:none;background:linear-gradient(135deg,#ff5f6d 0%,#d63031 100%);color:#fff;padding:10px 22px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(214,48,49,.3);">Confirmar anulación</button>
+						<button type="button" id="btnConfirmDeleteNews" style="border:none;background:#DC2626;color:#fff;padding:10px 22px;border-radius:9px;font-size:13.5px;font-weight:600;cursor:pointer;box-shadow:0 4px 12px rgba(214,48,49,.3);">Confirmar anulación</button>
 					</div>
 				</div>
 			</div>
@@ -1753,6 +1753,9 @@
 				backgroundColor : "" },100);
 			}
 			fnGetConcept(objRow.itemID,"ALL");
+			//Rediseño: la capa visual desplaza la tabla hasta la fila actualizada (sin mover el foco)
+			if(typeof window.pmDesplazarFilaDetalle === "function")
+			window.pmDesplazarFilaDetalle(objind_, false);
 		}
 		//Agregar
 		else{
@@ -1789,7 +1792,7 @@
 					objRow.price = priceDefault;
 				}
 				
-				objTableDetail.fnAddData([
+				var filaNueva = [
 					objRow.checked,
 					objRow.transactionMasterDetailID,
 					objRow.itemID,
@@ -1817,16 +1820,48 @@
 					objRow.skuRatio,
 					objRow.discount,
 					objRow.commisionBank
-				]);
-				
+				];
+
+				//Rediseño: el producto nuevo se inserta AL INICIO de la tabla.
+				//Orden DOM == orden de datos (bSort=false): se reconstruye la tabla con la fila nueva primero.
+				//Antes se pasan a los datos los valores que viven en los inputs de cada fila
+				//(check, descripcion, cantidad, precio, peso) para no perder lo escrito.
+				var filasDom = $("#body_tb_transaction_master_detail > tr");
+				for(var iFila = 0; iFila < filasDom.length; iFila++){
+					var posFila = objTableDetail.fnGetPosition(filasDom[iFila]);
+					if(posFila === null || posFila === undefined || posFila < 0)
+						continue;
+					var dataFila = objTableDetail.fnGetData(posFila);
+					if(!dataFila)
+						continue;
+					var $filaDom 		= $(filasDom[iFila]);
+					var $chkFila 		= $filaDom.find("input.classCheckedDetail");
+					var $nombreFila 	= $filaDom.find("input[name='txtTransactionDetailName[]']");
+					var $cantidadFila 	= $filaDom.find("input.txtQuantity");
+					var $precioFila 	= $filaDom.find("input.txtPrice");
+					var $pesoFila 		= $filaDom.find("input.txtDetailLote");
+					if($chkFila.length > 0) 	dataFila[0] 								= $chkFila.is(":checked");
+					if($nombreFila.length > 0) 	dataFila[columnasTableDetail.descripcion] 	= $nombreFila.val();
+					if($cantidadFila.length > 0) dataFila[columnasTableDetail.cantidad] 	= $cantidadFila.val();
+					if($precioFila.length > 0) 	dataFila[columnasTableDetail.precio] 		= $precioFila.val();
+					if($pesoFila.length > 0) 	dataFila[18] 								= $pesoFila.val();
+				}
+
+				var dataActual = objTableDetail.fnGetData().slice();
+				objTableDetail.fnClearTable(false);
+				objTableDetail.fnAddData([filaNueva].concat(dataActual));
+
 				fnGetConcept(objRow.itemID,"ALL");
 				refreschChecked();
 				if(varUseMobile != "1"){
-					$("#body_tb_transaction_master_detail tr")[objTableDetail.fnGetData().length - 1].animate({
+					$("#body_tb_transaction_master_detail tr")[0].animate({
 					backgroundColor : "#4eacc8" },100);
-					$("#body_tb_transaction_master_detail tr")[objTableDetail.fnGetData().length - 1].animate({
+					$("#body_tb_transaction_master_detail tr")[0].animate({
 					backgroundColor : "" },100);
 				}
+				//Rediseño: la capa visual lleva la tabla al inicio (sin mover el foco)
+				if(typeof window.pmDesplazarFilaDetalle === "function")
+				window.pmDesplazarFilaDetalle(0, true);
 			});
 		}
 
@@ -2631,6 +2666,10 @@
 
 				let getData 	= objTableDetail.fnGetData();
 				var x_			= getData.filter(item => item[2] === conceptItemID);
+				//Rediseño: los productos nuevos se insertan al inicio y desplazan los indices;
+				//se vuelve a ubicar la fila por itemID al momento de aplicar el concepto
+				if(x_.length > 0)
+				objind_ 		= fnGetPosition(x_,getData);
 				var cantidad    = x_[0][columnasTableDetail.cantidad];
 				var precio    	= x_[0][columnasTableDetail.precio];
 
@@ -2696,16 +2735,17 @@
 	function refreschChecked()
 	{
 
-		if(varUseMobile === "0")
-		{
-			var cantidaRow = $(".txtItemSelected").length;
-			for(var i = 0 ; i < cantidaRow; i++)
-			{
-				var x = $($(".txtItemSelected")[i]).find("a").length;
-				if(x === 0 )
-					$($(".txtItemSelected")[i]).select2();
-			}
-		}
+		//Rediseño: sin select2 en esta pantalla, el combo .txtItemSelected ya no se genera en las filas
+		//if(varUseMobile === "0")
+		//{
+		//	var cantidaRow = $(".txtItemSelected").length;
+		//	for(var i = 0 ; i < cantidaRow; i++)
+		//	{
+		//		var x = $($(".txtItemSelected")[i]).find("a").length;
+		//		if(x === 0 )
+		//			$($(".txtItemSelected")[i]).select2();
+		//	}
+		//}
 
 
 		$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect, .skuStyleNormal').uniform();
@@ -2722,7 +2762,7 @@
 		$(".custom-table-zalones").find("td").removeClass("selected");
 		$(cell).addClass("selected");
 		$("#txtZoneID").val( catalogItemIDZone );
-		$("#txtZoneID").select2();
+		//$("#txtZoneID").select2(); //Rediseño: select nativo
 		$(".custom-table-mesas").find("td").addClass("hidden");
 		$(".custom-table-mesas").find('td[data-parent="'+catalogItemIDZone+'"]').removeClass("hidden");
 		var sidebar = $("#mySidebarZona");
@@ -2736,7 +2776,7 @@
 		$(".custom-table-mesas").find("td").removeClass("selected");
 		$(cell).addClass("selected");
 		$("#txtMesaID").val( $(cell).data("value") );
-		$("#txtMesaID").select2();
+		//$("#txtMesaID").select2(); //Rediseño: select nativo
 
 	}
 
@@ -2745,7 +2785,7 @@
 		$(".custom-table-mesas").find("td").removeClass("selected");
 		$(cell).addClass("selected");
 		$("#txtMesaID").val( $(cell).data("value") );
-		$("#txtMesaID").select2();
+		//$("#txtMesaID").select2(); //Rediseño: select nativo
 		if(value !== 0 && value !== 'undefined'){
 			transactionMasterID = value;
 			mostrarModal("ModalIrMesaDocumentDialogCustom");
@@ -3678,12 +3718,13 @@
 		});
 
 		//Refresh Control
-		if(varUseMobile !== "1")
-		{
-			$("#txtCustomerCreditLineID").select2();
-			$("#txtCausalID").select2();
-			$("#txtPeriodPay").select2();
-		}
+		//Rediseño: selects nativos, sin select2
+		//if(varUseMobile !== "1")
+		//{
+		//	$("#txtCustomerCreditLineID").select2();
+		//	$("#txtCausalID").select2();
+		//	$("#txtPeriodPay").select2();
+		//}
 
 		refreschChecked();
 		if(varParameterINVOICE_BILLING_SELECTITEM === "true")
@@ -4295,18 +4336,9 @@
 							{
 
 
+								//Rediseño: ya no se genera el combo txtItemSelected (una sola opcion, el backend no lo lee)
+								//el nombre del producto se muestra siempre en el input de texto
 								var classHiddenTex 		= "";
-								var classHiddenSelect 	= "";
-								if(varParameterINVOICE_BILLING_SELECTITEM == "true")
-								{
-									classHiddenTex 		= "hidden";
-									classHiddenSelect 	= "";
-								}
-								else
-								{
-									classHiddenTex 		= "";
-									classHiddenSelect 	= "hidden";
-								}
 								let strFiled 		= "";
 								if (varUseMobile === "1")
 								{
@@ -4315,15 +4347,10 @@
 								}
 								else
 								{
-									strFiled 		+= '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"  class="col-lg-12 '+classHiddenTex+'" style="text-align:left; <?php echo $useMobile == "1" ? 'width: 100%;' : '' ?>" value="'+full[4]+'" '+NameStatus+' />';
+									strFiled 		+= '<input type="text" name="txtTransactionDetailName[]" id="txtTransactionDetailName'+full[2]+'"  class="col-lg-12 pm-item-name '+classHiddenTex+'" style="text-align:left; <?php echo $useMobile == "1" ? 'width: 100%;' : '' ?>" value="'+full[4]+'" title="'+String(full[4]).replace(/"/g,'&quot;')+'" '+NameStatus+' />';
 								}
-								
-								let strFiledSelecte = "<select  name='txtItemSelected' class='<?php echo($useMobile == "1" ? "" : "select2"); ?> txtItemSelected "+classHiddenSelect+" ' >";
-								strFiledSelecte		= strFiledSelecte+"<option value='"+full[2]+"' selected data-itemid='"+full[2]+"' data-codigo='"+full[3]+"' data-name='"+full[4].replace("'","").replace("'","") +"' data-unidadmedida='"+full[5]+"' data-cantidad='"+full[6]+"' data-precio='"+full[7]+"' data-barra='"+full[3]+"'  data-description='"+full[4].replace("'","").replace("'","") + "'    >"+ full[4].replace("'","").replace("'","")  +"</option>";
-								strFiledSelecte		= strFiledSelecte+"</select>";
 
-								strFiledSelecte 	=  strFiled + strFiledSelecte ;
-								return strFiledSelecte;
+								return strFiled;
 
 
 							}
