@@ -1,0 +1,394 @@
+/* ==========================================================================
+ * posme-choose-view.css
+ * Ventana de seleccion paginada (core_view/showviewbynamepaginate): estilo moderno y responsive.
+ * Todo cuelga de html.pm-choose (lo agrega posme-choose-view.js): no afecta otras pantallas.
+ * Ids, clases y handlers de core_web_view::renderGreedPaginate se conservan.
+ * Telefono (<=767px): cada fila es una tarjeta "COLUMNA  valor" (td[data-label]).
+ * ========================================================================== */
+
+html.pm-choose body {
+	background-color: #F1F5F9;
+	color			: #0F172A;
+	font-family		: 'Open Sans', 'Segoe UI', Arial, sans-serif;
+	font-size		: 13px;
+}
+/* default_widgetchoose: <div style="background:#fff"> envuelve head + body */
+html.pm-choose body > div {
+	background		: #F1F5F9 !important;
+	padding			: 0 12px 16px;
+}
+
+/* ---------- Barra superior (Refresh / Nuevo / Cancelar / Aceptar) ---------- */
+.pm-choose .pm-choose-barra {
+	position		: sticky;
+	top				: 0;
+	z-index			: 20;
+	margin			: 0 -12px 12px;
+	background-color: #FFFFFF;
+	border-bottom	: 1px solid #D9E1EC;
+	box-shadow		: 0 2px 8px rgba(15, 23, 42, 0.06);
+}
+.pm-choose .pm-choose-barra #email {
+	float			: none;
+	padding			: 10px 12px;
+}
+/* Con #email: el tema (app.css "#email .email-bar" / "#email .email-bar .btn") fija height 36px, borde y degradado */
+.pm-choose #email .email-bar {
+	float			: none;
+	height			: auto;
+	margin			: 0;
+	padding			: 0;
+	border			: none;
+	background		: none;
+}
+.pm-choose #email .email-bar .btn-group {
+	float			: none !important;
+	display			: flex;
+	flex-wrap		: wrap;
+	justify-content	: flex-end;
+	gap				: 8px;
+	margin			: 0;
+}
+.pm-choose #email .email-bar .btn-group > .btn {
+	float			: none;
+	display			: inline-flex;
+	align-items		: center;
+	justify-content	: center;
+	gap				: 6px;
+	height			: auto;
+	min-height		: 40px;
+	margin			: 0 !important;
+	padding			: 8px 16px;
+	line-height		: 1.4;
+	border			: 1px solid transparent;
+	border-radius	: 8px !important;
+	background-image: none;
+	box-shadow		: none;
+	text-shadow		: none;
+	font-size		: 13px;
+	font-weight		: 600;
+	transition		: background-color 0.15s ease, border-color 0.15s ease;
+}
+.pm-choose .pm-choose-barra #btnPopupAceptar {
+	background-color: #16A34A;
+	border-color	: #16A34A;
+	color			: #FFFFFF;
+}
+.pm-choose .pm-choose-barra #btnPopupAceptar:hover,
+.pm-choose .pm-choose-barra #btnPopupAceptar:focus {
+	background-color: #15803D;
+	border-color	: #15803D;
+}
+.pm-choose .pm-choose-barra #btnPopupCancelar {
+	background-color: #FFFFFF;
+	border-color	: #CBD5E1;
+	color			: #334155;
+}
+.pm-choose .pm-choose-barra #btnPopupCancelar:hover,
+.pm-choose .pm-choose-barra #btnPopupCancelar:focus {
+	background-color: #F1F5F9;
+}
+.pm-choose .pm-choose-barra #btnSearchServer {
+	background-color: #EEF2FF;
+	border-color	: #C7D2FE;
+	color			: #3730A3;
+}
+.pm-choose .pm-choose-barra #btnSearchServer:hover,
+.pm-choose .pm-choose-barra #btnSearchServer:focus {
+	background-color: #E0E7FF;
+}
+.pm-choose .pm-choose-barra #btnPopupNuevo {
+	background-color: #FFFFFF;
+	border-color	: #86EFAC;
+	color			: #15803D;
+}
+.pm-choose .pm-choose-barra #btnPopupNuevo:hover,
+.pm-choose .pm-choose-barra #btnPopupNuevo:focus {
+	background-color: #F0FDF4;
+}
+.pm-choose .pm-choose-barra .btn:focus-visible {
+	outline			: none;
+	box-shadow		: 0 0 0 3px #93C5FD;
+}
+
+/* ---------- Contenedor de la tabla y filtro ---------- */
+.pm-choose .dataTables_wrapper {
+	overflow-x		: auto;
+	padding			: 12px;
+	background-color: #FFFFFF;
+	border			: 1px solid #D9E1EC;
+	border-radius	: 12px;
+	box-shadow		: 0 1px 3px rgba(15, 23, 42, 0.06);
+}
+.pm-choose .dataTables_length {
+	display			: none;
+}
+.pm-choose .dataTables_wrapper .row > [class*="col-"] {
+	float			: none;
+	width			: 100%;
+}
+.pm-choose .dataTables_filter {
+	float			: none;
+	width			: 100%;
+	margin			: 0 0 12px;
+	text-align		: left;
+}
+.pm-choose .dataTables_filter label {
+	display			: flex;
+	align-items		: center;
+	gap				: 8px;
+	width			: 100%;
+	margin			: 0;
+	color			: #475569;
+	font-weight		: 600;
+}
+.pm-choose .dataTables_filter input {
+	flex			: 1 1 auto;
+	width			: auto !important;
+	min-width		: 0;
+	height			: 42px;
+	margin			: 0 !important;
+	padding			: 8px 12px;
+	border			: 1px solid #CBD5E1;
+	border-radius	: 10px;
+	background-color: #FFFFFF;
+	box-shadow		: none;
+	color			: #0F172A;
+	font-size		: 15px;
+}
+.pm-choose .dataTables_filter input:focus {
+	outline			: none;
+	border-color	: #3B82F6;
+	box-shadow		: 0 0 0 3px rgba(59, 130, 246, 0.2);
+}
+
+/* ---------- Tabla (escritorio / tablet) ---------- */
+.pm-choose #ListView {
+	width			: 100% !important;
+	margin			: 0 !important;
+	border			: none;
+	border-collapse	: separate;
+	border-spacing	: 0;
+}
+.pm-choose #ListView > thead > tr > th {
+	padding			: 10px 12px;
+	border			: none;
+	border-bottom	: 2px solid #E2E8F0;
+	background-color: #F8FAFC;
+	color			: #475569;
+	font-size		: 12px;
+	font-weight		: 700;
+	letter-spacing	: 0.3px;
+	text-transform	: uppercase;
+	white-space		: nowrap;
+}
+.pm-choose #ListView > tbody > tr > td {
+	padding			: 10px 12px;
+	border			: none;
+	border-bottom	: 1px solid #EEF2F6;
+	background-color: #FFFFFF;
+	color			: #0F172A;
+	vertical-align	: middle;
+	cursor			: pointer;
+}
+.pm-choose #ListView > tbody > tr:nth-child(odd) > td {
+	background-color: #FCFDFE;
+}
+@media (hover: hover) {
+	.pm-choose #ListView > tbody > tr:hover > td {
+		background-color: #F1F5F9;
+	}
+}
+/* Fila seleccionada (fnTableSelectedRow / fnTableSelectedRowMultiSelect / flechas del filtro) */
+.pm-choose #ListView > tbody > tr.row-selected > td {
+	background-color: #DBEAFE !important;
+	color			: #0F172A !important;
+}
+.pm-choose #ListView > tbody > tr.row-selected > td:first-child {
+	box-shadow		: inset 3px 0 0 #2563EB;
+}
+/* Fila de totales de renderGreedPaginate */
+.pm-choose #ListView > tbody > tr.pm-choose-total > td {
+	border-bottom	: 2px solid #E2E8F0;
+	background-color: #F8FAFC;
+	color			: #334155;
+	font-weight		: 700;
+	cursor			: default;
+}
+.pm-choose #ListView > tbody > tr > td.dataTables_empty {
+	padding			: 24px 12px;
+	color			: #64748B;
+	text-align		: center;
+	cursor			: default;
+}
+
+/* ---------- Paginacion del servidor (.btnPaginateServer) ---------- */
+.pm-choose .pagination {
+	display			: flex;
+	flex-wrap		: wrap;
+	justify-content	: center;
+	gap				: 6px;
+	margin			: 16px 0 0;
+}
+.pm-choose .pagination > li > a.btnPaginateServer {
+	float			: none;
+	display			: inline-flex;
+	align-items		: center;
+	justify-content	: center;
+	min-width		: 44px;
+	height			: 44px;
+	margin			: 0;
+	padding			: 0 14px !important;
+	border			: 1px solid #CBD5E1;
+	border-radius	: 10px !important;
+	background-color: #FFFFFF;
+	background-image: none;
+	box-shadow		: none;
+	text-shadow		: none;
+	color			: #334155;
+	font-size		: 14px !important;
+	font-weight		: 600;
+}
+.pm-choose .pagination > li > a.btnPaginateServer:hover,
+.pm-choose .pagination > li > a.btnPaginateServer:focus {
+	background-color: #F1F5F9;
+	color			: #0F172A;
+}
+.pm-choose .pagination > li.active > a.btnPaginateServer {
+	background-color: #2563EB;
+	border-color	: #2563EB;
+	color			: #FFFFFF;
+}
+
+/* ==========================================================================
+ * Telefono: barra en 2 columnas y filas como tarjetas
+ * ========================================================================== */
+@media (max-width: 767px) {
+	html.pm-choose body > div {
+		padding			: 0 8px 16px;
+	}
+	.pm-choose .pm-choose-barra {
+		margin			: 0 -8px 10px;
+	}
+	.pm-choose .pm-choose-barra #email {
+		padding			: 8px;
+	}
+	.pm-choose #email .email-bar .btn-group {
+		display					: grid;
+		grid-template-columns	: repeat(2, minmax(0, 1fr));
+		gap						: 6px;
+	}
+	.pm-choose #email .email-bar .btn-group > .btn {
+		min-height		: 44px;
+		padding			: 8px;
+	}
+	/* Sin "Nuevo" quedan 3 botones: Aceptar ocupa toda la fila */
+	.pm-choose .pm-choose-barra #btnPopupAceptar:nth-child(odd) {
+		grid-column		: 1 / -1;
+	}
+
+	.pm-choose .dataTables_wrapper {
+		overflow-x		: visible;
+		padding			: 0;
+		border			: none;
+		background-color: transparent;
+		box-shadow		: none;
+	}
+	.pm-choose .dataTables_filter {
+		margin-bottom	: 10px;
+	}
+	.pm-choose .dataTables_filter label > span {
+		display			: none;
+	}
+	.pm-choose .dataTables_filter input {
+		height			: 46px;
+		font-size		: 16px; /* evita el zoom automatico de iOS */
+	}
+
+	.pm-choose #ListView,
+	.pm-choose #ListView > tbody {
+		display			: block;
+	}
+	.pm-choose #ListView > thead {
+		display			: none;
+	}
+	.pm-choose #ListView > tbody > tr {
+		display			: block;
+		margin			: 0 0 10px;
+		padding			: 6px 0;
+		border			: 1px solid #D9E1EC;
+		border-radius	: 12px;
+		background-color: #FFFFFF;
+		box-shadow		: 0 1px 3px rgba(15, 23, 42, 0.06);
+		overflow		: hidden;
+	}
+	.pm-choose #ListView > tbody > tr > td,
+	.pm-choose #ListView > tbody > tr:nth-child(odd) > td {
+		position		: relative;
+		display			: block;
+		width			: auto !important;
+		min-height		: 30px;
+		padding			: 6px 12px 6px calc(38% + 12px);
+		border			: none;
+		background-color: transparent;
+		text-align		: left !important;
+		word-wrap		: break-word;
+		overflow-wrap	: anywhere;
+	}
+	.pm-choose #ListView > tbody > tr > td::before {
+		content			: attr(data-label);
+		position		: absolute;
+		top				: 8px;
+		left			: 12px;
+		width			: calc(38% - 12px);
+		color			: #64748B;
+		font-size		: 11px;
+		font-weight		: 700;
+		letter-spacing	: 0.3px;
+		line-height		: 1.3;
+		text-transform	: uppercase;
+		overflow-wrap	: anywhere;
+	}
+	.pm-choose #ListView > tbody > tr > td:not([data-label])::before,
+	.pm-choose #ListView > tbody > tr > td[data-label=""]::before {
+		display			: none;
+	}
+	.pm-choose #ListView > tbody > tr > td:not([data-label]),
+	.pm-choose #ListView > tbody > tr > td[data-label=""] {
+		padding-left	: 12px;
+	}
+	/* Primer dato visible como titulo de la tarjeta */
+	.pm-choose #ListView > tbody > tr > td:first-child {
+		font-size		: 14px;
+		font-weight		: 700;
+	}
+
+	.pm-choose #ListView > tbody > tr.row-selected {
+		border-color	: #2563EB;
+		background-color: #EFF6FF;
+		box-shadow		: 0 0 0 2px rgba(37, 99, 235, 0.35);
+	}
+	.pm-choose #ListView > tbody > tr.row-selected > td {
+		background-color: transparent !important;
+	}
+	.pm-choose #ListView > tbody > tr.row-selected > td:first-child {
+		box-shadow		: none;
+	}
+	.pm-choose #ListView > tbody > tr.pm-choose-total {
+		border-style	: dashed;
+		background-color: #F8FAFC;
+		box-shadow		: none;
+	}
+	.pm-choose #ListView > tbody > tr.pm-choose-total > td {
+		border			: none;
+		background-color: transparent;
+	}
+	.pm-choose #ListView > tbody > tr > td.dataTables_empty {
+		padding			: 24px 12px;
+		text-align		: center !important;
+	}
+
+	.pm-choose .pagination {
+		margin-top		: 12px;
+	}
+}

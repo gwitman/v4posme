@@ -478,6 +478,7 @@ class core_view extends _BaseController {
 			$dataView["autoclose"] 				= $autoclose;
 			$dataView["multiselect"] 			= $multiselect;
 			$dataView["urlRedictWhenEmpty"] 	= str_replace("__","/",$urlRedictWhenEmpty);
+			$dataView["estiloModerno"] 			= "1"; //Estilo moderno/responsive (posme-choose-view.css/js), solo en la version paginada
 
 			//Renderizar Resultado
 			$dataSession["message"]	= "";

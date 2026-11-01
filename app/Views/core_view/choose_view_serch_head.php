@@ -1,4 +1,9 @@
-	<div class="row">  
+	<?php if(isset($estiloModerno) && $estiloModerno == "1"){ ?>
+	<!-- Estilo moderno/responsive de la seleccion paginada (core_view/showviewbynamepaginate). Solo clases y data-label: no cambia ids ni handlers -->
+	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-choose-view.css?v=2" rel="stylesheet" />
+	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme-choose-view.js?v=1"></script>
+	<?php } ?>
+	<div class="row">
 		<div id="email" class="col-lg-12">
 		<div class="email-bar" style="width:100%">				
 				<div class="btn-group pull-right">
