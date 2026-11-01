@@ -109,40 +109,48 @@
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/genyx-fn.js"></script>
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/genyx-app-init.js"></script>
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/is-loading-master/jquery.isloading.min.js"></script>
-		
+	<!-- Barra superior moderna / responsive (#header.pm-topbar). Al final para ganar a theme-genyx/app_css.php -->
+	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-topbar.css?v=1" rel="stylesheet" />
+
 
 </head>
 
 <body <?php echo getBehavio($company->type, "default_masterpage", "backgroundImage", ""); ?>>
 
-	<header id="header">
+	<header id="header" class="pm-topbar">
 		<nav class="navbar navbar-default navbar-fixed-top" role="navigation">
 
-			<a class="navbar-brand" href="javascript:void(0);" style="color:#fff">
-				<?php echo $company->name; ?>
-				<span class="badge badge-success"> (usuario: <?php echo $user->nickname; ?>)</span>
-
-				<?php
-				if ($parameterLabelSistem != "") {
-					echo "</br>";
-					echo $parameterLabelSistem;
-				}
-				?>
-				<?php echo $mensajeLogin ?>
+			<a class="navbar-brand pm-topbar-brand" href="javascript:void(0);">
+				<span class="pm-topbar-linea">
+					<span class="pm-topbar-empresa"><?php echo $company->name; ?></span>
+					<span class="pm-topbar-usuario" title="usuario: <?php echo $user->nickname; ?>">
+						<span class="pm-topbar-avatar"><?php echo mb_strtoupper(mb_substr($user->nickname, 0, 1)); ?></span>
+						<span class="pm-topbar-usuario-nombre"><?php echo $user->nickname; ?></span>
+					</span>
+				</span>
+				<?php if ($parameterLabelSistem != "" || $mensajeLogin != "") { ?>
+				<span class="pm-topbar-linea pm-topbar-sub">
+					<?php if ($parameterLabelSistem != "") { ?><span class="pm-topbar-etiqueta"><?php echo $parameterLabelSistem; ?></span><?php } ?>
+					<?php echo $mensajeLogin ?>
+				</span>
+				<?php } ?>
 			</a>
 
-			<button type="button" class="navbar-toggle btn-danger" data-toggle="collapse" data-target="#navbar-to-collapse">
+			<button type="button" class="navbar-toggle pm-topbar-toggle" data-toggle="collapse" data-target="#navbar-to-collapse" aria-label="Abrir menu" aria-controls="navbar-to-collapse">
 				<span class="sr-only">Toggle Derecho Menu</span>
-				<i class="icon16 i-arrow-8"></i>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+				<span class="icon-bar"></span>
 			</button>
 
 			<div class="collapse navbar-collapse" id="navbar-to-collapse">
 				<ul class="nav navbar-nav pull-right">
 				
 					<li class="dropdown">	
-						<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown">		
-							<i class="icon24 i-IE"></i>									
-						</a>	
+						<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" title="Tramites">
+							<i class="icon24 i-IE"></i>
+							<span class="pm-topbar-texto">Tramites</span>
+						</a>
 						<ul class="dropdown-menu" role="menu">
 							<li role="presentation" >
 								<a href="javascript:void(0);" class="" id="link-tramites" >

@@ -133,13 +133,14 @@ class core_web_error {
 		}
 		
 		if($objListErrorCount > $counter )
-		$item	.= '<li role="presentation"><a href="'.site_url().'core_notification/index" class=""><i class="icon16 i-bell-2"></i> ......... </a></li>';
+		$item	.= '<li role="presentation"><a href="'.site_url().'/core_notification/index" class=""><i class="icon16 i-bell-2"></i> ......... </a></li>';
 	
 		
 		$html				=  "<li class='divider-vertical'></li>";
 		$html				.= '<li class="dropdown">';
-		$html				.= '	<a href="#" class="dropdown-toggle" data-toggle="dropdown">';
+		$html				.= '	<a href="javascript:void(0);" class="dropdown-toggle" data-toggle="dropdown" title="Notificaciones">';
 		$html				.= '		<i class="icon24 i-bell-2"></i>';
+		$html				.= '		<span class="pm-topbar-texto">Notificaciones</span>';
 		$html				.= '		<span class="notification red">'.$objListErrorCount.'</span>';
 		$html				.= '	</a>';
 		$html				.= '	<ul class="dropdown-menu" role="menu">';		

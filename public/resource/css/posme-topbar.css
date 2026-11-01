@@ -1,0 +1,450 @@
+/* ==========================================================================
+ * posme-topbar.css
+ * Barra superior del sistema (core_masterpage/default_masterpage.php): moderna y responsive.
+ * Todo cuelga de #header.pm-topbar; se carga al final del <head> para ganar a
+ * theme-genyx/css/app_css.php (degradado, sombras negras, posiciones absolutas).
+ *
+ * Estructura (sin cambios de ids / data-toggle / enlaces):
+ *   header#header.pm-topbar > nav.navbar.navbar-fixed-top
+ *       [button#resBtn]            lo inyecta jquery.genyxAdmin.js en <= 1024px (menu lateral)
+ *       a.navbar-brand.pm-topbar-brand   empresa + chip de usuario / etiqueta + aviso de licencia
+ *       button.navbar-toggle.pm-topbar-toggle   (<= 767px) abre #navbar-to-collapse
+ *       div#navbar-to-collapse > ul.navbar-nav > li.dropdown (Tramites, Notificaciones, Seguridad)
+ *   .pm-topbar-texto: nombre del boton, visible solo en el panel del telefono
+ *
+ * Color de marca: #006E98 (solido). Alto: 50px (el contenido de las pantallas no se mueve).
+ * ========================================================================== */
+
+#header.pm-topbar {
+	height			: 50px;
+}
+
+/* ---------- Barra ---------- */
+#header.pm-topbar .navbar {
+	display			: flex;
+	align-items		: center;
+	gap				: 8px;
+	height			: 50px;
+	min-height		: 50px;
+	margin			: 0;
+	padding			: 0 12px;
+	border			: none;
+	border-radius	: 0;
+	background		: #006E98;
+	background-image: none;
+	filter			: none;
+	box-shadow		: 0 2px 8px rgba(15, 23, 42, 0.18);
+	font-family		: 'Open Sans', 'Segoe UI', Arial, sans-serif;
+}
+#header.pm-topbar .navbar::before,
+#header.pm-topbar .navbar::after {
+	display			: none;
+}
+
+/* ---------- Marca: empresa + usuario ---------- */
+#header.pm-topbar .navbar .pm-topbar-brand {
+	position		: static;
+	left			: auto;
+	float			: none;
+	flex			: 1 1 auto;
+	min-width		: 0;
+	height			: 50px;
+	display			: flex;
+	flex-direction	: column;
+	justify-content	: center;
+	gap				: 3px;
+	margin			: 0;
+	padding			: 0 4px;
+	color			: #FFFFFF;
+	text-decoration	: none;
+	overflow		: hidden;
+}
+#header.pm-topbar .navbar .pm-topbar-brand:hover,
+#header.pm-topbar .navbar .pm-topbar-brand:focus {
+	color			: #FFFFFF;
+	text-decoration	: none;
+}
+#header.pm-topbar .pm-topbar-linea {
+	display			: flex;
+	align-items		: center;
+	gap				: 10px;
+	min-width		: 0;
+	line-height		: 1.2;
+}
+#header.pm-topbar .pm-topbar-empresa {
+	min-width		: 0;
+	overflow		: hidden;
+	text-overflow	: ellipsis;
+	white-space		: nowrap;
+	font-size		: 16px;
+	font-weight		: 700;
+	letter-spacing	: 0.2px;
+}
+#header.pm-topbar .pm-topbar-usuario {
+	flex			: 0 0 auto;
+	display			: inline-flex;
+	align-items		: center;
+	gap				: 6px;
+	height			: 24px;
+	padding			: 0 10px 0 3px;
+	border			: 1px solid rgba(255, 255, 255, 0.25);
+	border-radius	: 999px;
+	background-color: rgba(255, 255, 255, 0.14);
+	font-size		: 12px;
+	font-weight		: 600;
+	white-space		: nowrap;
+}
+#header.pm-topbar .pm-topbar-avatar {
+	display			: inline-flex;
+	align-items		: center;
+	justify-content	: center;
+	width			: 18px;
+	height			: 18px;
+	border-radius	: 50%;
+	background-color: #FFFFFF;
+	color			: #006E98;
+	font-size		: 11px;
+	font-weight		: 800;
+}
+#header.pm-topbar .pm-topbar-sub {
+	gap				: 6px;
+	overflow		: hidden;
+	white-space		: nowrap;
+	color			: rgba(255, 255, 255, 0.85);
+	font-size		: 11px;
+	font-weight		: 600;
+}
+#header.pm-topbar .pm-topbar-etiqueta {
+	min-width		: 0;
+	overflow		: hidden;
+	text-overflow	: ellipsis;
+}
+/* Aviso de licencia / creditos (core_web_permission::getLicenseMessage) */
+#header.pm-topbar .pm-topbar-sub .badge {
+	flex			: 0 0 auto;
+	padding			: 2px 8px;
+	border-radius	: 999px;
+	background-color: #DC2626;
+	color			: #FFFFFF;
+	font-size		: 10px;
+	font-weight		: 700;
+	text-shadow		: none;
+}
+
+/* Nombre del boton: oculto en escritorio (queda para lectores de pantalla) */
+#header.pm-topbar .pm-topbar-texto {
+	position		: absolute;
+	width			: 1px;
+	height			: 1px;
+	overflow		: hidden;
+	clip			: rect(0, 0, 0, 0);
+	white-space		: nowrap;
+}
+
+/* ---------- Botones de la derecha (escritorio / tablet) ---------- */
+@media (min-width: 768px) {
+	/* width auto: el tema/BS le dan 100% y dejaba la marca en 8px */
+	#header.pm-topbar .navbar .navbar-collapse {
+		flex			: 0 0 auto;
+		display			: flex !important;
+		align-items		: center;
+		width			: auto !important;
+		margin-left		: auto !important;
+		height			: 50px !important;
+		margin			: 0;
+		padding			: 0;
+		border			: none;
+		box-shadow		: none;
+	}
+	#header.pm-topbar .navbar .navbar-nav {
+		float			: none !important;
+		display			: flex;
+		align-items		: center;
+		gap				: 6px;
+		margin			: 0;
+	}
+	#header.pm-topbar .navbar .navbar-nav > li {
+		float			: none;
+		margin			: 0;
+	}
+	#header.pm-topbar .navbar .navbar-nav > li > a {
+		position		: relative;
+		float			: none;
+		display			: inline-flex;
+		align-items		: center;
+		justify-content	: center;
+		width			: 40px;
+		height			: 40px;
+		margin			: 0;
+		padding			: 0 !important;
+		border-radius	: 10px;
+		background		: transparent;
+		color			: #FFFFFF;
+		line-height		: 1;
+		transition		: background-color 0.15s ease;
+	}
+	#header.pm-topbar .navbar .navbar-nav > li > a:hover,
+	#header.pm-topbar .navbar .navbar-nav > li > a:focus,
+	#header.pm-topbar .navbar .navbar-nav > li.open > a,
+	#header.pm-topbar .navbar .navbar-nav > li.open > a:hover,
+	#header.pm-topbar .navbar .navbar-nav > li.open > a:focus {
+		background		: rgba(255, 255, 255, 0.18);
+		color			: #FFFFFF;
+	}
+	#header.pm-topbar .navbar .navbar-nav > li > a > i {
+		margin			: 0;
+		color			: #FFFFFF;
+	}
+
+	/* Desplegables */
+	#header.pm-topbar .navbar .navbar-nav > li > .dropdown-menu {
+		left			: auto;
+		right			: 0;
+		min-width		: 230px;
+		margin-top		: 6px;
+		padding			: 6px;
+		border			: 1px solid #D9E1EC;
+		border-radius	: 12px;
+		background		: #FFFFFF;
+		box-shadow		: 0 10px 30px rgba(15, 23, 42, 0.18);
+	}
+}
+#header.pm-topbar .navbar .navbar-nav > li.divider-vertical {
+	display			: none;
+}
+
+/* Contador de notificaciones (core_web_error::get_error) */
+#header.pm-topbar .navbar .navbar-nav > li > a .notification {
+	position		: absolute;
+	top				: 3px;
+	right			: 1px;
+	min-width		: 18px;
+	height			: 18px;
+	margin			: 0;
+	padding			: 0 5px;
+	border			: 2px solid #006E98;
+	border-radius	: 999px;
+	background		: #DC2626;
+	box-shadow		: none;
+	color			: #FFFFFF;
+	font-size		: 10px;
+	font-weight		: 700;
+	line-height		: 14px;
+	text-align		: center;
+	text-shadow		: none;
+}
+/* Sin las flechas del tema (.notification:before/:after) */
+#header.pm-topbar .navbar .navbar-nav > li > a .notification::before,
+#header.pm-topbar .navbar .navbar-nav > li > a .notification::after {
+	display			: none;
+}
+
+/* Opciones de los desplegables (escritorio y telefono) */
+#header.pm-topbar .dropdown-menu::before,
+#header.pm-topbar .dropdown-menu::after {
+	display			: none;
+}
+#header.pm-topbar .dropdown-menu > li {
+	margin			: 0;
+	border			: none;
+	background		: transparent;
+}
+#header.pm-topbar .dropdown-menu > li > a {
+	display			: flex;
+	align-items		: center;
+	gap				: 10px;
+	min-height		: 40px;
+	padding			: 8px 12px;
+	border-radius	: 8px;
+	background		: transparent;
+	color			: #0F172A;
+	font-size		: 13px;
+	font-weight		: 600;
+	text-shadow		: none;
+	white-space		: nowrap;
+}
+#header.pm-topbar .dropdown-menu > li > a:hover,
+#header.pm-topbar .dropdown-menu > li > a:focus {
+	background		: #E6F4F9;
+	background-image: none;
+	color			: #006E98;
+}
+#header.pm-topbar .dropdown-menu > li > a > i {
+	flex			: 0 0 16px;
+	margin			: 0;
+	color			: #006E98;
+}
+
+/* ---------- Boton del menu lateral (#resBtn, lo inyecta genyxAdmin en <= 1024px) ---------- */
+@media (max-width: 1024px) {
+	#header.pm-topbar #resBtn {
+		position		: static;
+		order			: -1;
+		flex			: 0 0 auto;
+		display			: inline-flex;
+		align-items		: center;
+		justify-content	: center;
+		width			: 40px;
+		height			: 40px;
+		margin			: 0;
+		padding			: 0;
+		border			: none;
+		border-radius	: 10px;
+		background		: rgba(255, 255, 255, 0.14);
+		background-image: none;
+		box-shadow		: none;
+		color			: #FFFFFF;
+	}
+	#header.pm-topbar #resBtn:hover,
+	#header.pm-topbar #resBtn:focus {
+		background		: rgba(255, 255, 255, 0.24);
+	}
+	#header.pm-topbar #resBtn i {
+		margin			: 0;
+		color			: #FFFFFF;
+	}
+}
+
+/* ==========================================================================
+ * Telefono (<= 767px): marca compacta + boton de menu + panel a todo el ancho
+ * ========================================================================== */
+@media (max-width: 767px) {
+	#header.pm-topbar .navbar {
+		padding			: 0 8px;
+		gap				: 6px;
+	}
+	#header.pm-topbar .pm-topbar-empresa {
+		font-size		: 15px;
+	}
+	#header.pm-topbar .pm-topbar-linea {
+		gap				: 8px;
+	}
+	/* Usuario: solo la inicial */
+	#header.pm-topbar .pm-topbar-usuario {
+		padding			: 0 3px;
+	}
+	#header.pm-topbar .pm-topbar-usuario-nombre {
+		display			: none;
+	}
+	#header.pm-topbar .pm-topbar-sub {
+		font-size		: 10px;
+	}
+
+	/* Boton del menu (hamburguesa) */
+	#header.pm-topbar .navbar .pm-topbar-toggle {
+		position		: static;
+		order			: 2;
+		flex			: 0 0 auto;
+		display			: inline-flex;
+		flex-direction	: column;
+		align-items		: center;
+		justify-content	: center;
+		gap				: 4px;
+		width			: 44px;
+		height			: 40px;
+		margin			: 0;
+		padding			: 0;
+		border			: none;
+		border-radius	: 10px;
+		background		: rgba(255, 255, 255, 0.14);
+		background-image: none;
+		box-shadow		: none;
+	}
+	#header.pm-topbar .navbar .pm-topbar-toggle:hover,
+	#header.pm-topbar .navbar .pm-topbar-toggle:focus {
+		background		: rgba(255, 255, 255, 0.24);
+	}
+	#header.pm-topbar .navbar .pm-topbar-toggle .icon-bar {
+		display			: block;
+		width			: 20px;
+		height			: 2px;
+		margin			: 0;
+		border-radius	: 1px;
+		background-color: #FFFFFF;
+	}
+
+	/* Panel desplegable bajo la barra */
+	#header.pm-topbar .navbar .navbar-collapse {
+		position		: absolute;
+		top				: 50px;
+		left			: 0;
+		right			: 0;
+		max-height		: calc(100vh - 50px);
+		overflow-y		: auto;
+		margin			: 0;
+		padding			: 8px 12px 12px;
+		border			: none;
+		border-bottom	: 1px solid #D9E1EC;
+		background		: #FFFFFF;
+		box-shadow		: 0 12px 24px rgba(15, 23, 42, 0.18);
+	}
+	#header.pm-topbar .navbar .navbar-nav {
+		float			: none !important;
+		display			: flex;
+		flex-direction	: column;
+		gap				: 4px;
+		margin			: 0;
+	}
+	#header.pm-topbar .navbar .navbar-nav > li {
+		float			: none;
+		margin			: 0;
+	}
+	#header.pm-topbar .navbar .navbar-nav > li > a {
+		position		: relative;
+		float			: none;
+		display			: flex;
+		align-items		: center;
+		gap				: 12px;
+		width			: 100%;
+		height			: 48px;
+		margin			: 0;
+		padding			: 0 12px !important;
+		border-radius	: 10px;
+		background		: transparent;
+		color			: #0F172A;
+		font-size		: 14px;
+		font-weight		: 600;
+		line-height		: 1.2;
+	}
+	#header.pm-topbar .navbar .navbar-nav > li > a:hover,
+	#header.pm-topbar .navbar .navbar-nav > li > a:focus,
+	#header.pm-topbar .navbar .navbar-nav > li.open > a,
+	#header.pm-topbar .navbar .navbar-nav > li.open > a:hover,
+	#header.pm-topbar .navbar .navbar-nav > li.open > a:focus {
+		background		: #E6F4F9;
+		color			: #006E98;
+	}
+	#header.pm-topbar .navbar .navbar-nav > li > a > i {
+		flex			: 0 0 24px;
+		margin			: 0;
+		color			: #006E98;
+	}
+	/* En el panel el nombre del boton se ve */
+	#header.pm-topbar .navbar .navbar-nav > li > a .pm-topbar-texto {
+		position		: static;
+		width			: auto;
+		height			: auto;
+		overflow		: visible;
+		clip			: auto;
+	}
+	#header.pm-topbar .navbar .navbar-nav > li > a .notification {
+		position		: static;
+		margin-left		: auto;
+		border-color	: #FFFFFF;
+	}
+	/* Desplegable abierto dentro del panel (BS3 lo deja position:static en <= 767px) */
+	#header.pm-topbar .navbar .navbar-nav .open .dropdown-menu {
+		margin			: 2px 0 6px 18px;
+		padding			: 4px 0 4px 8px;
+		border			: none;
+		border-left		: 2px solid #D9E1EC;
+		border-radius	: 0;
+		background		: transparent;
+		box-shadow		: none;
+	}
+	#header.pm-topbar .navbar .navbar-nav .open .dropdown-menu > li > a {
+		min-height		: 44px;
+		padding			: 8px 12px;
+		white-space		: normal;
+	}
+}
