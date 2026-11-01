@@ -2050,7 +2050,7 @@ body.modal-open #pmPanelAux {
 }
 #pmPanelAux .pm-panel-aux-cuerpo {
 	flex			: 0 0 auto;
-	width			: 300px;
+	width			: 440px;	/* la lista de atajos cabe en una linea ("Ingreso Dolares: Control + a = ...") */
 	max-width		: calc(100vw - 48px);
 	max-height		: calc(100vh - var(--pm-top, 0px) - var(--pm-aux-bottom, 16px) - 16px);
 	overflow-y		: auto;
