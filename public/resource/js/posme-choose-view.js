@@ -1,7 +1,10 @@
 /**
  * posme-choose-view.js
- * Estilo moderno / responsive de la ventana de seleccion paginada (core_view/showviewbynamepaginate).
- * Lo carga core_view/choose_view_serch_head.php solo cuando $estiloModerno == "1".
+ * Estilo moderno / responsive de las ventanas de seleccion de core_view.
+ *   - showviewbynamepaginate: core_view/choose_view_serch_head.php (si $estiloModerno == "1")
+ *     -> barra + tabla (html.pm-choose pm-choose-tabla)
+ *   - chooseview: core_view/choose_view_head.php con data-tabla="0"
+ *     -> solo barra (html.pm-choose); la tabla ya la estiliza posme-grid (renderGreed)
  *
  * Solo agrega clases y atributos (data-label, placeholder). NO reemplaza ni mueve nodos y NO toca
  * los handlers de core_web_view::renderGreedPaginate:
@@ -17,9 +20,12 @@
 	'use strict';
 
 	var ID_TABLA = 'ListView';
+	//data-tabla="0" en el <script>: solo la barra (la tabla trae su propio estilo)
+	var scriptActual 	= document.currentScript;
+	var conTabla 		= !(scriptActual && scriptActual.getAttribute('data-tabla') === '0');
 
 	//Antes del primer pintado: evita el "salto" de estilos
-	document.documentElement.className += ' pm-choose';
+	document.documentElement.className += conTabla ? ' pm-choose pm-choose-tabla' : ' pm-choose';
 
 	if (!$) {
 		return;
@@ -66,6 +72,9 @@
 
 	function iniciar() {
 		$('#email').parent('.row').addClass('pm-choose-barra');
+		if (!conTabla) {
+			return;
+		}
 		$('#' + ID_TABLA + '_filter').find('input').attr('placeholder', 'Buscar...');
 
 		etiquetar();

@@ -1,7 +1,10 @@
 /* ==========================================================================
  * posme-choose-view.css
- * Ventana de seleccion paginada (core_view/showviewbynamepaginate): estilo moderno y responsive.
- * Todo cuelga de html.pm-choose (lo agrega posme-choose-view.js): no afecta otras pantallas.
+ * Ventanas de seleccion de core_view: estilo moderno y responsive.
+ *   html.pm-choose        pagina + barra de botones (showviewbynamepaginate y chooseview)
+ *   html.pm-choose-tabla  tabla #ListView, filtro y paginacion: solo showviewbynamepaginate
+ *                         (chooseview usa renderGreed, que ya trae table.pm-grid / posme-grid.css)
+ * Las clases las agrega posme-choose-view.js: no afecta otras pantallas.
  * Ids, clases y handlers de core_web_view::renderGreedPaginate se conservan.
  * Telefono (<=767px): cada fila es una tarjeta "COLUMNA  valor" (td[data-label]).
  * ========================================================================== */
@@ -112,7 +115,7 @@ html.pm-choose body > div {
 }
 
 /* ---------- Contenedor de la tabla y filtro ---------- */
-.pm-choose .dataTables_wrapper {
+.pm-choose-tabla .dataTables_wrapper {
 	overflow-x		: auto;
 	padding			: 12px;
 	background-color: #FFFFFF;
@@ -120,20 +123,20 @@ html.pm-choose body > div {
 	border-radius	: 12px;
 	box-shadow		: 0 1px 3px rgba(15, 23, 42, 0.06);
 }
-.pm-choose .dataTables_length {
+.pm-choose-tabla .dataTables_length {
 	display			: none;
 }
-.pm-choose .dataTables_wrapper .row > [class*="col-"] {
+.pm-choose-tabla .dataTables_wrapper .row > [class*="col-"] {
 	float			: none;
 	width			: 100%;
 }
-.pm-choose .dataTables_filter {
+.pm-choose-tabla .dataTables_filter {
 	float			: none;
 	width			: 100%;
 	margin			: 0 0 12px;
 	text-align		: left;
 }
-.pm-choose .dataTables_filter label {
+.pm-choose-tabla .dataTables_filter label {
 	display			: flex;
 	align-items		: center;
 	gap				: 8px;
@@ -142,7 +145,7 @@ html.pm-choose body > div {
 	color			: #475569;
 	font-weight		: 600;
 }
-.pm-choose .dataTables_filter input {
+.pm-choose-tabla .dataTables_filter input {
 	flex			: 1 1 auto;
 	width			: auto !important;
 	min-width		: 0;
@@ -156,21 +159,21 @@ html.pm-choose body > div {
 	color			: #0F172A;
 	font-size		: 15px;
 }
-.pm-choose .dataTables_filter input:focus {
+.pm-choose-tabla .dataTables_filter input:focus {
 	outline			: none;
 	border-color	: #3B82F6;
 	box-shadow		: 0 0 0 3px rgba(59, 130, 246, 0.2);
 }
 
 /* ---------- Tabla (escritorio / tablet) ---------- */
-.pm-choose #ListView {
+.pm-choose-tabla #ListView {
 	width			: 100% !important;
 	margin			: 0 !important;
 	border			: none;
 	border-collapse	: separate;
 	border-spacing	: 0;
 }
-.pm-choose #ListView > thead > tr > th {
+.pm-choose-tabla #ListView > thead > tr > th {
 	padding			: 10px 12px;
 	border			: none;
 	border-bottom	: 2px solid #E2E8F0;
@@ -182,7 +185,7 @@ html.pm-choose body > div {
 	text-transform	: uppercase;
 	white-space		: nowrap;
 }
-.pm-choose #ListView > tbody > tr > td {
+.pm-choose-tabla #ListView > tbody > tr > td {
 	padding			: 10px 12px;
 	border			: none;
 	border-bottom	: 1px solid #EEF2F6;
@@ -191,31 +194,31 @@ html.pm-choose body > div {
 	vertical-align	: middle;
 	cursor			: pointer;
 }
-.pm-choose #ListView > tbody > tr:nth-child(odd) > td {
+.pm-choose-tabla #ListView > tbody > tr:nth-child(odd) > td {
 	background-color: #FCFDFE;
 }
 @media (hover: hover) {
-	.pm-choose #ListView > tbody > tr:hover > td {
+	.pm-choose-tabla #ListView > tbody > tr:hover > td {
 		background-color: #F1F5F9;
 	}
 }
 /* Fila seleccionada (fnTableSelectedRow / fnTableSelectedRowMultiSelect / flechas del filtro) */
-.pm-choose #ListView > tbody > tr.row-selected > td {
+.pm-choose-tabla #ListView > tbody > tr.row-selected > td {
 	background-color: #DBEAFE !important;
 	color			: #0F172A !important;
 }
-.pm-choose #ListView > tbody > tr.row-selected > td:first-child {
+.pm-choose-tabla #ListView > tbody > tr.row-selected > td:first-child {
 	box-shadow		: inset 3px 0 0 #2563EB;
 }
 /* Fila de totales de renderGreedPaginate */
-.pm-choose #ListView > tbody > tr.pm-choose-total > td {
+.pm-choose-tabla #ListView > tbody > tr.pm-choose-total > td {
 	border-bottom	: 2px solid #E2E8F0;
 	background-color: #F8FAFC;
 	color			: #334155;
 	font-weight		: 700;
 	cursor			: default;
 }
-.pm-choose #ListView > tbody > tr > td.dataTables_empty {
+.pm-choose-tabla #ListView > tbody > tr > td.dataTables_empty {
 	padding			: 24px 12px;
 	color			: #64748B;
 	text-align		: center;
@@ -223,14 +226,14 @@ html.pm-choose body > div {
 }
 
 /* ---------- Paginacion del servidor (.btnPaginateServer) ---------- */
-.pm-choose .pagination {
+.pm-choose-tabla .pagination {
 	display			: flex;
 	flex-wrap		: wrap;
 	justify-content	: center;
 	gap				: 6px;
 	margin			: 16px 0 0;
 }
-.pm-choose .pagination > li > a.btnPaginateServer {
+.pm-choose-tabla .pagination > li > a.btnPaginateServer {
 	float			: none;
 	display			: inline-flex;
 	align-items		: center;
@@ -249,12 +252,12 @@ html.pm-choose body > div {
 	font-size		: 14px !important;
 	font-weight		: 600;
 }
-.pm-choose .pagination > li > a.btnPaginateServer:hover,
-.pm-choose .pagination > li > a.btnPaginateServer:focus {
+.pm-choose-tabla .pagination > li > a.btnPaginateServer:hover,
+.pm-choose-tabla .pagination > li > a.btnPaginateServer:focus {
 	background-color: #F1F5F9;
 	color			: #0F172A;
 }
-.pm-choose .pagination > li.active > a.btnPaginateServer {
+.pm-choose-tabla .pagination > li.active > a.btnPaginateServer {
 	background-color: #2563EB;
 	border-color	: #2563EB;
 	color			: #FFFFFF;
@@ -287,32 +290,32 @@ html.pm-choose body > div {
 		grid-column		: 1 / -1;
 	}
 
-	.pm-choose .dataTables_wrapper {
+	.pm-choose-tabla .dataTables_wrapper {
 		overflow-x		: visible;
 		padding			: 0;
 		border			: none;
 		background-color: transparent;
 		box-shadow		: none;
 	}
-	.pm-choose .dataTables_filter {
+	.pm-choose-tabla .dataTables_filter {
 		margin-bottom	: 10px;
 	}
-	.pm-choose .dataTables_filter label > span {
+	.pm-choose-tabla .dataTables_filter label > span {
 		display			: none;
 	}
-	.pm-choose .dataTables_filter input {
+	.pm-choose-tabla .dataTables_filter input {
 		height			: 46px;
 		font-size		: 16px; /* evita el zoom automatico de iOS */
 	}
 
-	.pm-choose #ListView,
-	.pm-choose #ListView > tbody {
+	.pm-choose-tabla #ListView,
+	.pm-choose-tabla #ListView > tbody {
 		display			: block;
 	}
-	.pm-choose #ListView > thead {
+	.pm-choose-tabla #ListView > thead {
 		display			: none;
 	}
-	.pm-choose #ListView > tbody > tr {
+	.pm-choose-tabla #ListView > tbody > tr {
 		display			: block;
 		margin			: 0 0 10px;
 		padding			: 6px 0;
@@ -322,8 +325,8 @@ html.pm-choose body > div {
 		box-shadow		: 0 1px 3px rgba(15, 23, 42, 0.06);
 		overflow		: hidden;
 	}
-	.pm-choose #ListView > tbody > tr > td,
-	.pm-choose #ListView > tbody > tr:nth-child(odd) > td {
+	.pm-choose-tabla #ListView > tbody > tr > td,
+	.pm-choose-tabla #ListView > tbody > tr:nth-child(odd) > td {
 		position		: relative;
 		display			: block;
 		width			: auto !important;
@@ -335,7 +338,7 @@ html.pm-choose body > div {
 		word-wrap		: break-word;
 		overflow-wrap	: anywhere;
 	}
-	.pm-choose #ListView > tbody > tr > td::before {
+	.pm-choose-tabla #ListView > tbody > tr > td::before {
 		content			: attr(data-label);
 		position		: absolute;
 		top				: 8px;
@@ -349,46 +352,46 @@ html.pm-choose body > div {
 		text-transform	: uppercase;
 		overflow-wrap	: anywhere;
 	}
-	.pm-choose #ListView > tbody > tr > td:not([data-label])::before,
-	.pm-choose #ListView > tbody > tr > td[data-label=""]::before {
+	.pm-choose-tabla #ListView > tbody > tr > td:not([data-label])::before,
+	.pm-choose-tabla #ListView > tbody > tr > td[data-label=""]::before {
 		display			: none;
 	}
-	.pm-choose #ListView > tbody > tr > td:not([data-label]),
-	.pm-choose #ListView > tbody > tr > td[data-label=""] {
+	.pm-choose-tabla #ListView > tbody > tr > td:not([data-label]),
+	.pm-choose-tabla #ListView > tbody > tr > td[data-label=""] {
 		padding-left	: 12px;
 	}
 	/* Primer dato visible como titulo de la tarjeta */
-	.pm-choose #ListView > tbody > tr > td:first-child {
+	.pm-choose-tabla #ListView > tbody > tr > td:first-child {
 		font-size		: 14px;
 		font-weight		: 700;
 	}
 
-	.pm-choose #ListView > tbody > tr.row-selected {
+	.pm-choose-tabla #ListView > tbody > tr.row-selected {
 		border-color	: #2563EB;
 		background-color: #EFF6FF;
 		box-shadow		: 0 0 0 2px rgba(37, 99, 235, 0.35);
 	}
-	.pm-choose #ListView > tbody > tr.row-selected > td {
+	.pm-choose-tabla #ListView > tbody > tr.row-selected > td {
 		background-color: transparent !important;
 	}
-	.pm-choose #ListView > tbody > tr.row-selected > td:first-child {
+	.pm-choose-tabla #ListView > tbody > tr.row-selected > td:first-child {
 		box-shadow		: none;
 	}
-	.pm-choose #ListView > tbody > tr.pm-choose-total {
+	.pm-choose-tabla #ListView > tbody > tr.pm-choose-total {
 		border-style	: dashed;
 		background-color: #F8FAFC;
 		box-shadow		: none;
 	}
-	.pm-choose #ListView > tbody > tr.pm-choose-total > td {
+	.pm-choose-tabla #ListView > tbody > tr.pm-choose-total > td {
 		border			: none;
 		background-color: transparent;
 	}
-	.pm-choose #ListView > tbody > tr > td.dataTables_empty {
+	.pm-choose-tabla #ListView > tbody > tr > td.dataTables_empty {
 		padding			: 24px 12px;
 		text-align		: center !important;
 	}
 
-	.pm-choose .pagination {
+	.pm-choose-tabla .pagination {
 		margin-top		: 12px;
 	}
 }
