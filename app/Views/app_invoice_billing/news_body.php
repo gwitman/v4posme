@@ -1216,9 +1216,17 @@ echo helper_getHtmlOfPageLanding();
 							<ul class="list-unstyled">
 								<li><h3>CC: <span class="red-smooth">*</span></h3></li>
 								<li><i class="icon16 i-arrow-right-3"></i>Resumen de la factura</li>
-								<li><i class="icon16 i-arrow-right-3"></i>Scaner: Control + k = Nuevo</li>
+								<li><strong>Atajos de teclado</strong></li>
+								<li><i class="icon16 i-arrow-right-3"></i>Scaner vacio: Enter = Abrir cobro (Cordobas)</li>
+								<li><i class="icon16 i-arrow-right-3"></i>Scaner: ++texto + Enter = Buscar producto</li>
+								<li><i class="icon16 i-arrow-right-3"></i>Scaner: Control + k = Nueva factura</li>
 								<li><i class="icon16 i-arrow-right-3"></i>Scaner: Control + i = Abrir caja</li>
-								<li><i class="icon16 i-arrow-right-3"></i>Ingreso Dolares: Control + b = Subir</li>
+								<li><i class="icon16 i-arrow-right-3"></i>Scaner: Control + m = Reimprimir factura anterior</li>
+								<li><i class="icon16 i-arrow-right-3"></i>Ingreso Cordobas: Enter = Pasar a Dolares</li>
+								<li><i class="icon16 i-arrow-right-3"></i>Ingreso Dolares: Enter = Registrar factura</li>
+								<li><i class="icon16 i-arrow-right-3"></i>Ingreso Dolares: Control + a = Registrar y aplicar</li>
+								<li><i class="icon16 i-arrow-right-3"></i>Ingreso Dolares: Control + b = Regresar al scaner</li>
+								<li><i class="icon16 i-arrow-right-3"></i>Cobro abierto: Esc = Cerrar cobro</li>
 
 							</ul>
 

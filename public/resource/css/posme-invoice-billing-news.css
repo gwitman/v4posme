@@ -90,6 +90,24 @@
 #rowCssPrincipal > .col-lg-12 > .panel > .panel-heading h4 {
 	padding-left	: 0;
 }
+/* Telefono: la barra "FACTURA:#" ocupa todo el ancho del dispositivo, igual que #pmBarraMovil,
+ * pero NO es fija: se desplaza con la pagina. Los margenes negativos (50% - 50vw) la sacan del
+ * padding simetrico de .col-lg-12 / borde de .panel hasta los bordes de la ventana. */
+@media (max-width: 767px) {
+	#rowCssPrincipal > .col-lg-12 > .panel > .panel-heading {
+		position		: static;
+		margin-left		: calc(50% - 50vw);
+		margin-right	: calc(50% - 50vw);
+		border-radius	: 0;
+		padding			: 12px;
+		padding-left	: calc(12px + env(safe-area-inset-left, 0px));
+		padding-right	: calc(12px + env(safe-area-inset-right, 0px));
+	}
+	#rowCssPrincipal > .col-lg-12 > .panel {
+		border-top		: none;
+		border-radius	: 0 0 14px 14px;
+	}
+}
 #rowCssPrincipal #invoice-num {
 	display			: inline-block;
 	background-color: #F97316;
