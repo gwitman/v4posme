@@ -1176,7 +1176,7 @@ echo helper_getHtmlOfPageLanding();
 						Oculto a la izquierda dejando visible la pestaña #pmPanelAuxAsa; hover (escritorio) o toque (tactil, clase pm-aux-abierto).
 						Logica en posme-invoice-billing-news.js (seccion 7).
 					-->
-					<div class="pm-panel-aux" id="pmPanelAux">
+					<div id="pmPanelAux" class="pm-panel-aux <?php echo $useMobile == "1" ? "pm-aux-movil" : ""; ?>">
 						<div class="pm-panel-aux-cuerpo" id="pmPanelAuxCuerpo">
 
 						<div class="col-lg-3 <?php echo getBehavio($company->type,"app_invoice_billing","panelResumenFacturaTool",""); ?>   " id="panelResumenFacturaTool" >

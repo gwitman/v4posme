@@ -1969,10 +1969,14 @@ body [class*="modal-content-customer1-"] .btn-block + .btn-block {
 		--pm-aux-bottom	: calc(var(--pm-cobro-alto, 120px) + 12px);
 	}
 }
+/* Telefono (ancho) o sesion movil (useMobile=1, clase pm-aux-movil): el panel no se muestra */
 @media (max-width: 767px) {
 	#pmPanelAux {
-		--pm-aux-bottom	: calc(84px + env(safe-area-inset-bottom, 0px));
+		display			: none;
 	}
+}
+#pmPanelAux.pm-aux-movil {
+	display			: none;
 }
 #pmPanelAux.pm-aux-abierto {
 	transform		: translateX(0);
