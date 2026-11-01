@@ -22,10 +22,13 @@
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/chart-google/loader.js"></script>				
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jLinq-2.2.1.js"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jquery.number.min.js"></script>				
-				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/is-loading-master/style.css" rel="stylesheet" /> 	
+				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/is-loading-master/style.css" rel="stylesheet" />
+				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-dashboard.css?v=1" rel="stylesheet" />
+				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme-dashboard.js?v=1"></script>
 				
 				
 				
+				<div class="pm-dash">
 				<div id="heading" class="page-header">
 							<h1><i class="icon20 i-dashboard"></i> 
 								Dashboard
@@ -37,7 +40,7 @@
 					 <div class="col-lg-6">	
 
 
-						<div style="height:395px">								
+						<div class="pm-logo-box" style="height:395px">								
 							<img class="img-featured" style="width:400px;height:200px" src="<?php echo base_url();?>/resource/img/logos/logo-micro-finanza.png">													
 						</div><!-- End .panel-body -->
 					
@@ -113,10 +116,11 @@
 							</div><!-- End .widget -->		
 					</div>
 				</div>
-				
-				
-				
-				<script>	
+				</div><!-- End .pm-dash -->
+
+
+
+				<script>
 					//https://www.w3schools.com/js/js_graphics_google_chart.asp
 					
 					var objTransactionMaster 				 	= JSON.parse('<?php echo json_encode($objListVentas); ?>');	

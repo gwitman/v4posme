@@ -20,8 +20,11 @@
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/chart-google/loader.js"></script>				
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jLinq-2.2.1.js"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jquery.number.min.js"></script>				
-				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/is-loading-master/style.css" rel="stylesheet" /> 
+				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/is-loading-master/style.css" rel="stylesheet" />
+				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-dashboard.css?v=1" rel="stylesheet" />
+				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme-dashboard.js?v=1"></script>
 
+				<div class="pm-dash">
 				<div id="heading" class="page-header">
 							<h1><i class="icon20 i-dashboard"></i> 
 								Dashboard								
@@ -135,31 +138,32 @@
 								<?php 
 								$totalGeneral = 0;
 								echo '<style>
-									table {
+									.pm-dash table {
 										border-collapse: collapse;
 										width: 100%;
 										font-family: Arial, sans-serif;
 									}
-									th, td {
+									.pm-dash th, .pm-dash td {
 										padding: 10px;
 										text-align: left;
 										border-bottom: 1px solid #ddd;
 									}
-									th {
+									.pm-dash th {
 										background-color: #f4f4f4;
 									}
-									tr:hover {
+									.pm-dash tr:hover {
 										background-color: #f1f1f1;
 									}
-									tfoot td {
+									.pm-dash tfoot td {
 										font-weight: bold;
 										background-color: #f9f9f9;
 									}
-									td.total, th.total {
+									.pm-dash td.total, .pm-dash th.total {
 										text-align: right;
 									}
 								</style>';
 
+								echo '<div class="table-responsive">';
 								echo '<table>';
 									echo '<thead>
 											<tr>
@@ -198,6 +202,7 @@
 											</tr>
 										  </tfoot>";
 									echo '</table>';
+								echo '</div>';
 
 								?>
 
@@ -277,8 +282,9 @@
 						
 					</div>
 				</div>
+				</div><!-- End .pm-dash -->
 
-				<script>	
+				<script>
 					// https://www.w3schools.com/js/js_graphics_google_chart.asp	
 					var objVentasCreditoMensuales			 		= JSON.parse('<?php echo json_encode($objListVentasCreditoMensuales); ?>');	
 					var objVentasDeContadoMesActual		 			= JSON.parse('<?php echo json_encode($objListVentasContadoMesActual); ?>');	

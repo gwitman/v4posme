@@ -22,10 +22,13 @@
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/chart-google/loader.js"></script>				
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jLinq-2.2.1.js"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jquery.number.min.js"></script>				
-				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/is-loading-master/style.css" rel="stylesheet" /> 	
+				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/is-loading-master/style.css" rel="stylesheet" />
+				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-dashboard.css?v=1" rel="stylesheet" />
+				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme-dashboard.js?v=1"></script>
 				
 				
 				
+				<div class="pm-dash">
 				<div id="heading" class="page-header">
 							<h1><i class="icon20 i-dashboard"></i> 
 								Dashboard
@@ -35,7 +38,9 @@
 				
 				<div class="row"  >
 					 <div class="col-lg-6">		
-						<img class="img-featured" style="width:400px;height:200px" src="<?php echo base_url();?>/resource/img/logos/logo-micro-finanza.jpg">													
+						<div class="panel pm-logo-card"><div class="panel-body">
+						<img class="img-featured" style="width:400px;height:200px" src="<?php echo base_url();?>/resource/img/logos/logo-micro-finanza.jpg">
+						</div></div>
 					</div>
 					<div class="col-lg-6">	
 						<div class="panel" style="margin-bottom:20px;">
@@ -50,6 +55,7 @@
 							</div><!-- End .panel-body -->
 						</div><!-- End .widget -->
 					</div>
+					<div class="clearfix visible-lg"></div>
 					<div class="col-lg-6">		
 						<div class="panel" style="margin-bottom:20px;">
 							<div class="panel-heading">
@@ -92,10 +98,11 @@
 						</div><!-- End .widget -->
 					</div>
 				</div>
-				
-				
-				
-				<script>	
+				</div><!-- End .pm-dash -->
+
+
+
+				<script>
 					//https://www.w3schools.com/js/js_graphics_google_chart.asp
 					
 					var objStatusTaller						 = JSON.parse('<?php echo json_encode(array_unique(array_map(function($elem){ return $elem->name; }, $objListEstados )));  ?>');

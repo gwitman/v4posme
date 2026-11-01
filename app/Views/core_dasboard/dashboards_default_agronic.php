@@ -20,8 +20,11 @@
 			<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/chart-google/loader.js"></script>				
 			<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jLinq-2.2.1.js"></script>
 			<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jquery.number.min.js"></script>				
-			<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/is-loading-master/style.css" rel="stylesheet" /> 
+			<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/is-loading-master/style.css" rel="stylesheet" />
+			<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-dashboard.css?v=1" rel="stylesheet" />
+			<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme-dashboard.js?v=1"></script>
 
+			<div class="pm-dash">
 			<div id="heading" class="page-header">
 						<h1><i class="icon20 i-dashboard"></i> 
 							Dashboard								
@@ -98,9 +101,9 @@
 						</div>
 					</div>
 					
-					<div class="panel" style="margin-bottom:20px;">
+					<div class="panel pm-kpi" style="margin-bottom:20px;">
 						<div class="panel-heading">
-							<div class="icon"><i class="icon20 i-quotes-left"></i></div> 
+							<div class="icon"><i class="icon20 i-quotes-left"></i></div>
 							<h4>Tipo de cambio</h4>
 							<a href="#" class="minimize"></a>
 						</div>
@@ -134,8 +137,9 @@
 					</div>
 				</div>
 			</div>
+			</div><!-- End .pm-dash -->
 
-			<script>	
+			<script>
 				var objPagosMensuales 						= JSON.parse('<?php echo json_encode($objPagosMensuales); ?>');	
 				var objVentasCreditoMensuales				= JSON.parse('<?php echo json_encode($objListVentasCreditoMensuales); ?>');	
 				var objVentasDeContadoMesActual				= JSON.parse('<?php echo json_encode($objListVentasContadoMesActual); ?>');	

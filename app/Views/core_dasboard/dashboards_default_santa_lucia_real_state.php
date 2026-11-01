@@ -1,3 +1,5 @@
+<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-dashboard.css?v=1" rel="stylesheet" />
+<div class="pm-dash">
 <div id="heading" class="page-header">
     <h1><i class="icon20 i-dashboard"></i>
         Dashboard
@@ -11,3 +13,4 @@
              src="<?php echo base_url(); ?>/resource/img/logos/logo-micro-finanza.png">
     </div>
 </div>
+</div><!-- End .pm-dash -->
