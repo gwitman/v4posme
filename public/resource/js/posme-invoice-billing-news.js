@@ -840,4 +840,30 @@
 		$(window).on('load', actualizarVisibilidadAux);
 	});
 
+	/* ------------------------------------------------------------------
+	 * 8. Sin autocompletado del navegador en los campos de la pantalla
+	 *    autocomplete="off" en form#form-new-invoice (tambien en news_body.php)
+	 *    y en cada input/textarea: los existentes al cargar y los que se
+	 *    agregan despues (filas del detalle, sidebars, modales) al recibir
+	 *    el foco, antes de que el navegador muestre sugerencias.
+	 * ------------------------------------------------------------------ */
+	var SELECTOR_SIN_AUTOCOMPLETAR = 'input:not([type="hidden"]):not([type="checkbox"]):not([type="radio"]):not([type="button"]):not([type="submit"]), textarea';
+
+	function quitarAutocompletado() {
+		$('#form-new-invoice').attr('autocomplete', 'off');
+		$(SELECTOR_SIN_AUTOCOMPLETAR).attr('autocomplete', 'off');
+	}
+
+	$(function () {
+		quitarAutocompletado();
+		//Despues del ready de news_script.php y de las personalizaciones
+		window.setTimeout(quitarAutocompletado, 0);
+	});
+
+	$(document).on('focusin', SELECTOR_SIN_AUTOCOMPLETAR, function () {
+		if (this.getAttribute('autocomplete') !== 'off') {
+			this.setAttribute('autocomplete', 'off');
+		}
+	});
+
 })(window.jQuery, window, document);

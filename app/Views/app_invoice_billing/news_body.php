@@ -244,7 +244,7 @@ echo helper_getHtmlOfPageLanding();
 			<!-- /titulo de comprobante-->
 				
 			<!-- body -->	
-			<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form" >
+			<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form" autocomplete="off" >
 				<div class="panel-body printArea"> 				
 					<div id="panelComandoAlternativa2">
 					</div>
@@ -1109,7 +1109,7 @@ echo helper_getHtmlOfPageLanding();
 							<div class="row" id="rowBotoneraFacturaFila2">
 								<br id="saltoDeLineaFila2" />
 								<div class="col col-lg-2">
-									<a href="#" class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNew"><i class="icon16 i-checkmark-4"></i> NUEVA FAC</a>
+									<a href="javascript:void(0);" class="btn btn-flat btn-info btn-block hidden btn-comando-factura" id="btnNew"><i class="icon16 i-checkmark-4"></i> NUEVA FAC</a>
 								</div>
 
 								<div class="col col-lg-2" id="registrarFacturaNueva">

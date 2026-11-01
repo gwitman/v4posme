@@ -7,7 +7,7 @@
 					var pmUseMobile 				= '<?php echo $useMobile; ?>';
 					var pmOcultarPickerNextVisit 	= '<?php echo getBehavio($company->type,"app_invoice_billing","controlNextVisitOcultarPicker",'false'); ?>';
 				</script>
-				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme-invoice-billing-news.js?v=6"></script>
+				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme-invoice-billing-news.js?v=7"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/moment.min.js"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/mask/jquery.mask.min.js"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jLinq-2.2.1.js"></script>

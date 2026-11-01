@@ -2271,11 +2271,11 @@
         let objListWorkflowStage 	= data.objListWorkflowStage;
 		$('#linkMobile').empty();
 		if(varParameterShowComandoDeCocina === "true"){
-			$('#linkMobile').append('<li><a href="#"  id="btnFooter">COCINA</a></li>');
+			$('#linkMobile').append('<li><a href="javascript:void(0);"  id="btnFooter">COCINA</a></li>');
 		}
 		if(objParameterINVOICE_BILLING_SHOW_COMMAND_BAR == "true"){
 			$('#showCommandBar').show();
-			$('#linkMobile').append('<li><a href="#"  id="btnBar">BAR</a></li>');
+			$('#linkMobile').append('<li><a href="javascript:void(0);"  id="btnBar">BAR</a></li>');
 		}
         if(objListWorkflowStage.length > 0){
 			$("#workflowLink").empty();
@@ -2284,11 +2284,11 @@
                 let ws 				= objListWorkflowStage[w];
                 let buttonClass 	= w === 0 ? 'btn-comando-factura' : 'btnAceptAplicar btn-comando-factura';
                 let buttonHtml 		= '<div class="col col-lg-2">'+
-                    '<a href="#" class="btn btn-flat btn-warning btnAcept btn-block '+ buttonClass +'" data-valueworkflow="'+ ws.workflowStageID+ '">' +
+                    '<a href="javascript:void(0);" class="btn btn-flat btn-warning btnAcept btn-block '+ buttonClass +'" data-valueworkflow="'+ ws.workflowStageID+ '">' +
                         '<i class="icon16 i-checkmark-4"></i> ' + nameWorkflow.trim() +
                     '</a>'+
                 '</div>';
-				$('#linkMobile').append('<li><a href="#" class="btnAcept "' + buttonClass + '" data-valueworkflow="' + ws.workflowStageID + '"> ' + nameWorkflow.trim() + '</a></li>');
+				$('#linkMobile').append('<li><a href="javascript:void(0);" class="btnAcept ' + buttonClass + '" data-valueworkflow="' + ws.workflowStageID + '"> ' + nameWorkflow.trim() + '</a></li>');
                 $("#workflowLink").append(buttonHtml);
             }
         }
