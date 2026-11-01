@@ -1,17 +1,25 @@
 
 
 
-<div class="row"> 
-	<div id="email" class="col-lg-12">
-	
+<div class="pv2 pinv pinv-item pinv-form pv2-has-mbar">
+
+	<!-- encabezado y acciones -->
+	<div class="pv2-card pv2-header">
+		<div class="pv2-header-info">
+			<div class="pv2-header-icon"><i class="icon20 i-cube-3"></i></div>
+			<div>
+				<p class="pv2-header-title">Nuevo producto <span class="pv2-chip">Nuevo</span></p>
+				<p class="pv2-header-sub">Codigo #<span class="invoice-num">00000000</span> &middot; se asigna al guardar</p>
+			</div>
+		</div>
 		<!-- botonera -->
-		<div class="email-bar" style="border-left:1px solid #c9c9c9">                                
-			<div class="btn-group pull-right">        
+		<!-- acciones -->                                
+			<div class="pv2-actions">        
 				<?php 
 					if($callback == "false")
 					{
 						?>
-						<a href="<?php echo base_url(); ?>/app_inventory_item/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>                                    
+						<a href="<?php echo base_url(); ?>/app_inventory_item/index" id="btnBack" class="btn btn-default" ><i class="icon16 i-rotate"></i> Atras</a>                                    
 						<?php
 					}
 					else{
@@ -19,43 +27,27 @@
 						<?php
 					}
 				?>                            									
-				<a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+				<a href="#" class="btn btn-primary pv2-hide-xs" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
 			</div>
 		</div> 
 		<!-- /botonera -->
-	</div>
-	<!-- End #email  -->
-</div>
-<!-- End .row-fluid  -->
-
-<div class="row">
-	<div class="col-lg-12">
-		<div class="panel panel-default">
+	<!-- /encabezado y acciones -->
 					
-			<!-- titulo de comprobante-->
-			<div class="panel-heading">
-					<div class="icon"><i class="icon20 i-file"></i></div> 
-					<h4>NUMERO:#<span class="invoice-num">00000000</span></h4>
-			</div>
+			<!-- titulo de comprobante: ahora en el encabezado pv2 --> 
 			<!-- /titulo de comprobante-->
 			
 			<!-- body -->	
 			<form id="form-new-account-journal" name="form-new-account-journal" class="form-horizontal" role="form">
-			<div class="panel-body printArea"> 
+			<div class="printArea"> 
 			
 				<ul id="myTab" class="nav nav-tabs">
 					<li class="active"><a href="#home" data-toggle="tab">Informacion</a></li>
 					<li class="<?php echo getBehavio($company->type,"app_inventory_item","menuBodegaReferencias",""); ?>" ><a href="#profile" data-toggle="tab">Referencias</a></li>
 					<li class="<?php echo getBehavio($company->type,"app_inventory_item","menuBodegaPestana",""); ?>" ><a href="#warehouse" data-toggle="tab">Bodegas</a></li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas<b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li><a href="#dropdown" data-toggle="tab">Comentario</a></li>
-							<li><a href="#dropdown-file" data-toggle="tab">Archivos</a></li>
-							<li><a id="btnPrice" href="#price" data-toggle="tab">Precios</a></li>
-							<li><a href="#sku" data-toggle="tab">Sku</a></li>
-						 </ul>
-					</li>
+					<li><a href="#dropdown" data-toggle="tab">Comentario</a></li>
+					<li><a href="#dropdown-file" data-toggle="tab">Archivos</a></li>
+					<li><a id="btnPrice" href="#price" data-toggle="tab">Precios</a></li>
+					<li><a href="#sku" data-toggle="tab">Sku</a></li>
 				</ul>
 				
 				<div class="tab-content">
@@ -63,6 +55,9 @@
 						<div class="row">										
 						<div class="col-lg-6">
 								
+						<div class="pv2-card">
+								<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-cube-3"></i></span> Datos generales</p>
+
 								<div class="form-group">
 										<label class="col-lg-4 control-label text-primary" for="normal">*Nombre</label>
 										<div class="col-lg-8">
@@ -235,8 +230,11 @@
                                         </div>
                                     </div>
                                 </div>
+						</div><!-- /pv2-card -->
 						</div>
 						<div class="col-lg-6">
+						<div class="pv2-card">
+								<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-tag"></i></span> Clasificacion, bodega y moneda</p>
 						
 								<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","divTxtEstado",""); ?> ">
 									<label class="col-lg-4 control-label" for="selectFilter">*Estado</label>
@@ -458,6 +456,7 @@
 								
 								
 								
+						</div><!-- /pv2-card -->
 						</div>
 						</div>
 						<div class="row" id="divContainerRowPersonalization">
@@ -468,6 +467,8 @@
 					
 							<div class="row">	
 								<div class="col-lg-6">
+								<div class="pv2-card">
+									<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-bookmark"></i></span> Referencias</p>
 									<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldEquiposMarca",""); ?> " id="panelDivMarca" >
 											<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Marca",""); ?></label>
 											<div class="col-lg-8">
@@ -604,13 +605,16 @@
 									<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldInmobiliaria","hidden"); ?> ">
 											<label class="col-lg-4 control-label" for="normal">Estilo de cocina</label>
 											<div class="col-lg-8">
-												<input class="form-control"  type="text"  name="txtRealStateStyleKitchen" id="txtRealStateStyleKitchen" value="">												
+												<input class="form-control"  type="text"  name="txtRealStateStyleKitchen" id="txtRealStateStyleKitchen" value="">
 											</div>
-									</div>		
-									
-								</div>
+									</div>
+
+								</div><!-- /pv2-card -->
 								
+								</div>
 								<div class="col-lg-6">
+								<div class="pv2-card">
+										<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-location"></i></span> Ubicacion y agente</p>
 										<div class="form-group <?php echo getBehavio($company->type,"app_inventory_item","fieldExclusiveGerencia","hidden"); ?> ">
 											<label class="col-lg-4 control-label" for="selectFilter">Exclusividad con la agencia</label>
 											<div class="col-lg-8">
@@ -698,22 +702,28 @@
 															<i aria-hidden="true" class="i-search-5"></i>
 															buscar
 														</button>
-													</span>											
+													</span>
 												</div>
 											</div>
 										</div>
-										
-										
+
+
+								</div><!-- /pv2-card -->
 								</div>
 							
 							
 							</div>
 					
 					</div>
-					<div class="tab-pane fade" id="warehouse">
-						<br/>
-						<a href="#" class="btn btn-flat btn-info" id="btnNewDetailWarehouse" >Agregar</a>
-						<a href="#" class="btn btn-flat btn-danger" id="btnDeleteDetailWarehouse" >Eliminar</a>									
+					<div class="tab-pane fade pv2-card" id="warehouse">
+						<div class="pv2-detail-head">
+							<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-office"></i></span> Bodegas del producto</p>
+							<div class="pv2-actions">
+								<a href="#" class="btn btn-default btn-sm" id="btnDeleteDetailWarehouse" ><i class="icon16 i-remove"></i> Quitar seleccionada</a>
+								<a href="#" class="btn btn-primary btn-sm" id="btnNewDetailWarehouse" ><i class="icon16 i-plus"></i> Agregar bodega</a>
+							</div>
+						</div>
+						<p class="pv2-help pinv-item-help">Elige la bodega y sus minimos/maximos en la fila <b>Agregar</b>; toca una fila para seleccionarla.</p>									
 						<script type="text/template"  id="tmpl_row_warehouse">
 							<tr class="row_warehouse">
 								<td>
@@ -737,17 +747,18 @@
 						
 						<div class="row">
 							<div class="col-lg-12">
-								<table class="table table-bordered">
+								<div class="pinv-itable-wrap">
+								<table class="table table-bordered pinv-itable pinv-itable-warehouse">
 									<thead>
-									  <tr>															
+									  <tr>
 										<th>Bodega</th>
 										<th>Cantidad</th>
 										<th>Minimo</th>
 										<th>Maximo</th>
 									  </tr>
 									</thead>
-									<tbody id="body_detail_warehouse">	
-										<tr>
+									<tbody id="body_detail_warehouse">
+										<tr class="pinv-row-add">
 											<td>
 												<select name="txtTempWarehouseID" id="txtTempWarehouseID" class="select2">
 														<option></option>
@@ -787,18 +798,20 @@
 													</td>
 												</tr>
 												<?php
-											}																
+											}
 										}
 										?>
 									</tbody>
 								</table>
+								</div><!-- /pinv-itable-wrap -->
 								
 							</div><!-- End .col-lg-12  --> 
 						</div><!-- End .row-fluid  -->
 						
 					</div>
-					<div class="tab-pane fade" id="dropdown">
-						
+					<div class="tab-pane fade pv2-card" id="dropdown">
+							<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-pencil"></i></span> Comentario</p>
+
 							<div class="form-group">
 								<label class="col-lg-4 control-label" for="normal"><?php echo getBehavio($company->type,"app_inventory_item","Descripcion",""); ?></label>
 								<div class="col-lg-8">
@@ -807,13 +820,17 @@
 							</div>
 						
 					</div>
-					<div class="tab-pane fade" id="dropdown-file">
-						
+					<div class="tab-pane fade pv2-card" id="dropdown-file">
+						<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-attachment"></i></span> Archivos</p>
+						<p class="pv2-help">Podras adjuntar archivos despues de guardar el producto.</p>
+
 					</div>										
-					<div class="tab-pane fade" id="price">
+					<div class="tab-pane fade pv2-card" id="price">
+						<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-coin"></i></span> Precios</p>
 						<div class="row">
 							<div class="col-lg-12">
-								<table class="table table-bordered" id="tblPrecios" >
+								<div class="pinv-itable-wrap">
+								<table class="table table-bordered pinv-itable pinv-itable-price" id="tblPrecios" >
 									<thead>
 									  <tr>																													  	
 										<th>Tipo de Precio</th>
@@ -845,15 +862,21 @@
 										?>
 									</tbody>
 								</table>
-								
-							</div><!-- End .col-lg-12  --> 
+								</div><!-- /pinv-itable-wrap -->
+
+							</div><!-- End .col-lg-12  -->
 						</div><!-- End .row-fluid  -->
 					</div>
-				
-					<div class="tab-pane fade" id="sku">
-						<br/>
-						<a href="#" class="btn btn-flat btn-info" id="btnNewDetailSku" >Agregar</a>
-						<a href="#" class="btn btn-flat btn-danger" id="btnDeleteDetailSku" >Eliminar</a>									
+
+					<div class="tab-pane fade pv2-card" id="sku">
+						<div class="pv2-detail-head">
+							<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-stack"></i></span> Presentaciones (SKU)</p>
+							<div class="pv2-actions">
+								<a href="#" class="btn btn-default btn-sm" id="btnDeleteDetailSku" ><i class="icon16 i-remove"></i> Quitar seleccionado</a>
+								<a href="#" class="btn btn-primary btn-sm" id="btnNewDetailSku" ><i class="icon16 i-plus"></i> Agregar SKU</a>
+							</div>
+						</div>
+						<p class="pv2-help pinv-item-help">Completa la fila <b>Agregar</b> y toca <b>Agregar SKU</b>. Marca uno como predeterminado.</p>									
 						<script type="text/template" id="tmpl_row_sku">
 							<tr class="">
 								<td>
@@ -879,17 +902,18 @@
 						
 						<div class="row">
 							<div class="col-lg-12">
-								<table class="table table-bordered">
+								<div class="pinv-itable-wrap">
+								<table class="table table-bordered pinv-itable pinv-itable-sku">
 									<thead>
-										<tr>															
+										<tr>
 											<th>Sku</th>
 											<th>Cantidad</th>
 											<th>Precio</th>
 											<th>Predeterminado</th>
 										</tr>
 									</thead>
-									<tbody id="body_detail_sku">	
-										<tr>
+									<tbody id="body_detail_sku">
+										<tr class="pinv-row-add">
 											<td>
 												<select name="txtTempSkuID" id="txtTempSkuID" class="select2">
 														<option></option>
@@ -936,21 +960,29 @@
 											}		
 											$indexc++;
 										}
-										?>															
+										?>
 									</tbody>
 								</table>
-								
-							</div><!-- End .col-lg-12  --> 
+								</div><!-- /pinv-itable-wrap -->
+
+							</div><!-- End .col-lg-12  -->
 						</div><!-- End .row-fluid  -->
-						
+
 					</div>
-				</div>    
-		 
+				</div>
+
 			</div>
 			</form>
 			<!-- /body -->
+
+	<!-- barra inferior (telefono) -->
+	<div class="pv2-mbar">
+		<div class="pv2-mbar-info">
+			<p class="pv2-mbar-label">Nuevo producto</p>
+			<p class="pv2-mbar-total">Sin guardar</p>
 		</div>
+		<a href="#" class="btn btn-primary" id="btnAceptMobile"><i class="icon16 i-checkmark-4"></i> Guardar</a>
 	</div>
 </div>
-					
+
 <?php echo getBehavio($company->type,"app_inventory_item","divTraslate",""); ?>

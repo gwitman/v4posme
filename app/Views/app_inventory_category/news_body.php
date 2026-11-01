@@ -1,65 +1,44 @@
-					<div class="row"> 
-                        <div id="email" class="col-lg-12">
-                        
-                        	<!-- botonera -->
-                            <div class="email-bar" style="border-left:1px solid #c9c9c9">                                
-                                <div class="btn-group pull-right">                                    
-									<a href="<?php echo base_url(); ?>/app_inventory_category/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>                                    
-                                    <a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>                                    
-                                </div>
-                            </div> 
-                            <!-- /botonera -->
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-lg-12">
-							<!-- widget -->
-							<div class="panel panel-default">
-								<!-- panel widget -->
-                                <div class="panel-heading">
-	                                  <div class="icon"><i class="icon20 i-cube"></i></div> 
-	                                  <h4>Formulario de Datos</h4>
-	                                  <a href="#" class="minimize"></a>
-                                </div>
-                                <!-- /panel widget -->
-								<!-- body widget -->
-                                <div class="panel-body noPadding">
-									<!-- body -->
-									<div class="email-wrapper" style="padding:15px 15px 15px 15px;padding-left:15px">
-										<div class="row">
-											<div class="email-content col-lg-12">
-												<!-- formulario -->
-												<form id="form-new-account-type" name="form-new-rol" class="form-horizontal" role="form">
-													<fieldset>		
-														
-														<div class="form-group">
-																<label class="col-lg-2 control-label" for="normal">Nombre</label>
-																<div class="col-lg-4">
-																	<input class="form-control"  type="text" name="txtName" id="txtName" value="">												
-																</div>
-														</div>
-														
-														
-														
-														<div class="form-group">
-															<label class="col-lg-2 control-label" for="normal">Direccion</label>
-															<div class="col-lg-10">
-																<textarea class="form-control" id="txtDescription" name="txtDescription" rows="3"></textarea>
-															</div>
-														</div>
-														
-														
-													</fieldset> 
-												</form>
-												<!-- /formulario -->
-											</div>
-										</div><!-- End .row-fluid  -->                            
-									</div>
-									<!-- /body -->
-                                </div>
-							</div>
-							
-                        </div>
-                        <!-- End #email  -->
-                    </div>
-                    <!-- End .row-fluid  -->
+<div class="pv2 pinv pv2-has-mbar">
+
+	<!-- encabezado y acciones -->
+	<div class="pv2-card pv2-header">
+		<div class="pv2-header-info">
+			<div class="pv2-header-icon"><i class="icon20 i-dice"></i></div>
+			<div>
+				<p class="pv2-header-title">Nueva categoría <span class="pv2-chip">Nuevo</span></p>
+				<p class="pv2-header-sub">Agrupa tus productos por categoría</p>
+			</div>
+		</div>
+		<div class="pv2-actions">
+			<a href="<?php echo base_url(); ?>/app_inventory_category/index" id="btnBack" class="btn btn-default" ><i class="icon16 i-rotate"></i> Atras</a>
+			<a href="#" class="btn btn-primary pv2-hide-xs" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+		</div>
+	</div>
+	<!-- /encabezado y acciones -->
+
+	<!-- formulario -->
+	<form id="form-new-account-type" name="form-new-rol" role="form" autocomplete="off">
+		<div class="pv2-card">
+			<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-cube"></i></span> Datos de la categoría</p>
+			<div class="row">
+				<div class="col-xs-12 col-sm-6 form-group">
+					<label class="pv2-label" for="txtName">Nombre</label>
+					<input class="form-control"  type="text" name="txtName" id="txtName" value="">
+				</div>
+				<div class="col-xs-12 form-group">
+					<label class="pv2-label" for="txtDescription">Descripción</label>
+					<textarea class="form-control" id="txtDescription" name="txtDescription" rows="3"></textarea>
+				</div>
+			</div>
+		</div>
+	</form>
+	<!-- /formulario -->
+
+	<!-- barra inferior (telefono) -->
+	<div class="pv2-mbar">
+		<div class="pv2-mbar-info">
+			<p class="pv2-mbar-label">Nueva categoría</p>
+		</div>
+		<a href="#" class="btn btn-primary" id="btnAceptMobile"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+	</div>
+</div>

@@ -1,7 +1,8 @@
 				<!-- ./ page heading -->
 				<script>					
 					
-					$(document).ready(function(){					
+					$(document).ready(function(){
+						if(window.pv2BindMobileBar){ pv2BindMobileBar(); }
 						//Regresar a la lista
 						$(document).on("click","#btnBack",function(){
 								fnWaitOpen();

@@ -243,8 +243,9 @@
 					$("#txtTransactionNumberTemplate").val("");
 					$("#labelTransactionNumberTemplate").val("");
 		});
-		
-		
+
+		//Rediseno inventario: etiquetas de celdas, contador, estado vacio y barra del telefono
+		if(window.PosmeInv){ PosmeInv.initDetail({table:"#tb_transaction_master_detail", totalSelector:null}); }
 	});
 	
 	//Funciones

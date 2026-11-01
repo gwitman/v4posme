@@ -1,6 +1,7 @@
 <script>	 				
 	
 	$(document).ready(function(){
+		if(window.pv2BindMobileBar){ pv2BindMobileBar(); }
 		//Regresar
 		$(document).on("click","#btnBack",function(){
 				fnWaitOpen();

@@ -1,0 +1,455 @@
+/* ==========================================================================
+ * posme-inventory.css
+ * Rediseno de las pantallas de inventario (app_inventory_*).
+ *
+ * Depende de la capa generica app/Views/core_template/posme_v2_style.php
+ * (variables --pv2-*, .pv2-card, .pv2-header, .pv2-actions, .pv2-mbar ...).
+ * Todo lo de este archivo vive bajo el prefijo  .pv2.pinv  (contenedor raiz
+ * de la pantalla) para no afectar ninguna otra pantalla del sistema.
+ *
+ * Organizacion (cada agente escribe SOLO dentro de su bloque):
+ *   == COMUN ==                         utilidades compartidas (contador, estado vacio, pestanas, botones)
+ *   == DETALLE TRANSACCION (DataTables) == tabla #tb_transaction_master_detail (PC y telefono)
+ *   == CATALOGOS ==                     categorias, bodegas, recetas, etc.
+ *   == PRODUCTO ==                      app_inventory_item (news/edit)
+ *   == POPUPS ==                        popup_masinformacion_*, popup_addconcept_*, etc.
+ *
+ * REGLA DE ORO: todo se resuelve por CSS. Nunca se exige envolver los inputs
+ * de las celdas del detalle (los scripts usan $(this).parent().parent() y
+ * fnGetPosition sobre el <tr>).
+ *
+ * Contrato con posme-inventory.js (PosmeInv):
+ *   td[data-label]          -> lo escribe PosmeInv.labelTable() desde los <th>
+ *   tr.pinv-row-empty       -> fila "No data" de DataTables (td.dataTables_empty)
+ *   table.pinv-has-emptybox -> la pantalla tiene un .pinv-empty propio
+ *   .pinv-count / .pinv-empty / .pv2-mbar-total -> los actualiza PosmeInv.initDetail()
+ * ========================================================================== */
+
+
+/* == COMUN == */
+
+/* Contador de productos junto al titulo del detalle */
+.pv2.pinv .pinv-count { display:inline-block; font-size:12px; background:var(--pv2-accent-bg); color:var(--pv2-accent); border-radius:20px; padding:1px 9px; font-weight:700; margin-left:4px; vertical-align:middle; }
+
+/* Estado vacio del detalle (lo muestra/oculta PosmeInv) */
+.pv2.pinv .pinv-empty { text-align:center; color:var(--pv2-muted); padding:22px 10px; border:1px dashed var(--pv2-border); border-radius:10px; margin-top:10px; font-size:14px; }
+.pv2.pinv .pinv-empty i { display:block; margin:0 auto 6px; color:var(--pv2-accent); font-size:22px; }
+
+/* Etiquetas de formulario: en las tarjetas pv2 la etiqueta va arriba del campo */
+.pv2.pinv .pv2-card .form-group .pv2-label { padding-top:0; }
+.pv2.pinv .pinv-check { display:flex; align-items:center; gap:8px; min-height:38px; margin:0; font-weight:600; color:#1f2933; cursor:pointer; }
+.pv2.pinv .pinv-check div.checker { margin:0; }
+
+/* Pestanas Comentario / Archivos dentro de una tarjeta */
+.pv2.pinv #myTab { border-bottom:1px solid var(--pv2-border); margin-bottom:12px; }
+.pv2.pinv #myTab > li > a { border-radius:8px 8px 0 0; color:var(--pv2-muted); font-weight:600; }
+.pv2.pinv #myTab > li.active > a,
+.pv2.pinv #myTab > li.active > a:hover,
+.pv2.pinv #myTab > li.active > a:focus { color:var(--pv2-accent); border-color:var(--pv2-border) var(--pv2-border) #fff; }
+.pv2.pinv .tab-content { padding-top:2px; }
+
+/* Botones de la cabecera del detalle */
+.pv2.pinv .pv2-detail-head .pv2-actions { width:auto; }
+
+/* Area de impresion: sin bordes extra del tema */
+.pv2.pinv .printArea { padding:0; }
+
+
+/* == DETALLE TRANSACCION (DataTables) == */
+
+/* ---------- PC ---------- */
+.pv2.pinv .pinv-table-wrap { overflow-x:auto; border-radius:10px; border:1px solid var(--pv2-border); }
+.pv2.pinv .dataTables_wrapper { position:relative; }
+.pv2.pinv #tb_transaction_master_detail { width:100% !important; margin:0 !important; border:0; border-collapse:collapse; background:#fff; }
+.pv2.pinv #tb_transaction_master_detail thead th,
+.pv2.pinv .dataTables_scrollHead thead th { font-size:12px; font-weight:700; color:#fff; padding:10px; background:linear-gradient(135deg, var(--pv2-accent) 0%, var(--pv2-accent-2) 100%); border:0 !important; white-space:nowrap; vertical-align:middle; }
+.pv2.pinv .dataTables_scrollHead { border-radius:10px 10px 0 0; }
+.pv2.pinv #tb_transaction_master_detail tbody td { padding:7px 10px; border:0; border-top:1px solid var(--pv2-border); vertical-align:middle; font-size:14px; background:#fff; }
+.pv2.pinv #tb_transaction_master_detail tbody tr:nth-child(even) td { background:var(--pv2-soft); }
+.pv2.pinv #tb_transaction_master_detail tbody tr:hover td { background:var(--pv2-accent-bg); }
+.pv2.pinv #tb_transaction_master_detail td.dataTables_empty { text-align:center; color:var(--pv2-muted); padding:18px 10px; }
+.pv2.pinv #tb_transaction_master_detail.pinv-has-emptybox tr.pinv-row-empty { display:none; }
+
+/* Inputs de celda (cantidad, costo, precio, lote...) redondeados.
+   Se neutraliza el padding/float de .col-lg-12 que traen los mRender. */
+.pv2.pinv #tb_transaction_master_detail tbody td input[type="text"],
+.pv2.pinv #tb_transaction_master_detail tbody td input[type="number"],
+.pv2.pinv #tb_transaction_master_detail tbody td select { height:34px; border:1px solid #d5dae0; border-radius:8px; padding:4px 10px; font-size:14px; background:#fff; box-shadow:none; min-width:80px; }
+.pv2.pinv #tb_transaction_master_detail tbody td input.col-lg-12 { float:none; width:100%; padding-left:10px; padding-right:10px; }
+.pv2.pinv #tb_transaction_master_detail tbody td input[type="text"]:focus,
+.pv2.pinv #tb_transaction_master_detail tbody td input[type="number"]:focus { border-color:var(--pv2-accent); box-shadow:0 0 0 3px rgba(57,73,171,.15); outline:0; }
+.pv2.pinv #tb_transaction_master_detail tbody td input[readonly] { background:var(--pv2-soft); }
+.pv2.pinv #tb_transaction_master_detail tbody td .btn { border-radius:8px; }
+.pv2.pinv #tb_transaction_master_detail tbody td .btnMasInformcion { white-space:nowrap; }
+
+/* La clase .hidden (sClass de DataTables) SIEMPRE gana */
+.pv2.pinv #tb_transaction_master_detail th.hidden,
+.pv2.pinv #tb_transaction_master_detail td.hidden,
+.pv2.pinv .dataTables_scrollHead th.hidden,
+.pv2.pinv #tb_transaction_master_detail .hidden { display:none !important; }
+
+/* ---------- Telefono: cada fila es una tarjeta ---------- */
+@media (max-width:767px) {
+	.pv2.pinv .pinv-table-wrap { border:0; overflow:visible; border-radius:0; }
+
+	/* sin cabecera (ni la original ni la clonada por sScrollY) */
+	.pv2.pinv #tb_transaction_master_detail thead,
+	.pv2.pinv .dataTables_scrollHead { display:none !important; }
+	.pv2.pinv .dataTables_scrollBody { height:auto !important; max-height:none !important; overflow:visible !important; }
+	.pv2.pinv .dataTables_scroll,
+	.pv2.pinv .dataTables_wrapper { overflow:visible; }
+
+	.pv2.pinv #tb_transaction_master_detail,
+	.pv2.pinv #tb_transaction_master_detail tbody { display:block; width:100% !important; background:transparent; }
+
+	.pv2.pinv #tb_transaction_master_detail tbody tr { display:block; position:relative; border:1px solid var(--pv2-border); border-radius:12px; padding:10px 12px 10px 50px; margin-bottom:10px; background:#fff; box-shadow:0 1px 3px rgba(16,24,40,.05); }
+	.pv2.pinv #tb_transaction_master_detail tbody tr td,
+	.pv2.pinv #tb_transaction_master_detail tbody tr:nth-child(even) td,
+	.pv2.pinv #tb_transaction_master_detail tbody tr:hover td { background:transparent; }
+
+	.pv2.pinv #tb_transaction_master_detail tbody tr td { display:flex !important; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px 10px; width:auto !important; border:0; padding:4px 0; font-size:14px; text-align:right; word-break:break-word; min-height:28px; }
+	.pv2.pinv #tb_transaction_master_detail tbody tr td[data-label]:before { content:attr(data-label); flex:0 0 auto; max-width:45%; font-size:12px; color:var(--pv2-muted); font-weight:600; text-align:left; }
+	.pv2.pinv #tb_transaction_master_detail tbody tr td[data-label=""]:before { display:none; }
+
+	/* primera columna (checkbox) arriba a la izquierda, sin envolverla */
+	.pv2.pinv #tb_transaction_master_detail tbody tr td:first-child { position:absolute; top:10px; left:12px; padding:0; min-height:0; width:auto !important; }
+	.pv2.pinv #tb_transaction_master_detail tbody tr td:first-child:before { display:none; }
+	/* solo checkbox nativo (si uniform lo envolvio, se respeta su tamano) */
+	.pv2.pinv #tb_transaction_master_detail tbody tr td:first-child > input[type="checkbox"] { width:22px; height:22px; margin:0; }
+
+	/* inputs de cantidad / costo / precio: grandes para el dedo, 16px evita el zoom de iOS */
+	.pv2.pinv #tb_transaction_master_detail tbody td input[type="text"],
+	.pv2.pinv #tb_transaction_master_detail tbody td input[type="number"],
+	.pv2.pinv #tb_transaction_master_detail tbody td select { height:44px; font-size:16px; flex:1 1 55%; max-width:60%; width:auto; min-width:0; text-align:right; }
+	.pv2.pinv #tb_transaction_master_detail tbody td input.col-lg-12 { width:auto; }
+
+	/* boton "Mas informacion" a todo el ancho */
+	.pv2.pinv #tb_transaction_master_detail tbody td .btnMasInformcion { display:block; width:100%; min-height:44px; line-height:30px; margin-top:4px; }
+	.pv2.pinv #tb_transaction_master_detail tbody td:has(.btnMasInformcion):before { display:none; }
+
+	/* insignias decorativas dentro de las celdas: fuera en telefono */
+	.pv2.pinv #tb_transaction_master_detail tbody td .badge-inverse { display:none !important; }
+
+	/* fila vacia de DataTables */
+	.pv2.pinv #tb_transaction_master_detail tbody tr.pinv-row-empty { padding:0; border-style:dashed; box-shadow:none; }
+	.pv2.pinv #tb_transaction_master_detail tbody tr td.dataTables_empty { display:block !important; text-align:center; padding:16px 10px; }
+	.pv2.pinv #tb_transaction_master_detail tbody tr td.dataTables_empty:before { display:none; }
+	.pv2.pinv #tb_transaction_master_detail.pinv-has-emptybox tbody tr.pinv-row-empty { display:none !important; }
+
+	/* .hidden SIEMPRE gana, tambien sobre display:flex !important */
+	.pv2.pinv #tb_transaction_master_detail tbody tr td.hidden,
+	.pv2.pinv #tb_transaction_master_detail tbody tr .hidden,
+	.pv2.pinv #tb_transaction_master_detail tbody tr.hidden { display:none !important; }
+}
+
+/* ---------- Transacciones (otherinput, transferinput, transferoutput, requestgeneral) ---------- */
+/* Importar detalle desde archivo (requestgeneral edit): nombre del archivo + boton */
+.pv2.pinv .pinv-fileimport { margin:0 0 12px; padding:10px 12px; background:var(--pv2-soft); border:1px dashed var(--pv2-border); border-radius:10px; }
+.pv2.pinv .pinv-fileimport .pv2-label { margin-bottom:6px; }
+.pv2.pinv .pinv-fileimport-row { display:flex; align-items:center; gap:6px; max-width:420px; }
+.pv2.pinv .pinv-fileimport-row .form-control { flex:1 1 auto; min-width:0; }
+.pv2.pinv .pinv-fileimport-row .btn { flex:0 0 auto; height:38px; border-radius:8px; display:inline-flex; align-items:center; gap:4px; }
+@media (max-width:767px) {
+	.pv2.pinv .pinv-fileimport-row { max-width:none; }
+	.pv2.pinv .pinv-fileimport-row .btn { height:44px; }
+}
+
+
+/* == COMPRAS / AJUSTE == */
+/* app_inventory_inputunpost y app_inventory_ajuste (news / edit). Raiz: .pv2.pinv.pinv-compra */
+
+/* Subtitulo dentro de una tarjeta (Proveedor / Referencias) */
+.pv2.pinv .pinv-subtitle { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.3px; color:var(--pv2-muted); margin:4px 0 8px; }
+
+/* Busquedas con boton Quitar / Buscar (proveedor, plantilla, linea de credito) */
+.pv2.pinv .pinv-search .input-group-btn .btn { border-radius:0; padding-left:12px; padding-right:12px; }
+.pv2.pinv .pinv-search .input-group-btn:last-child .btn { border-radius:0 8px 8px 0; }
+.pv2.pinv .pinv-search .input-group-btn .btn i { margin-right:3px; }
+
+/* Resumen (sub total, descuento, IVA, ISC, total) */
+.pv2.pinv .pinv-summary-row { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:5px 0; border-bottom:1px solid var(--pv2-border); }
+.pv2.pinv .pinv-summary-row label { margin:0; font-size:13px; font-weight:600; color:var(--pv2-muted); flex:0 0 auto; }
+.pv2.pinv .pinv-summary-row .form-control { flex:0 1 60%; max-width:60%; text-align:right; font-variant-numeric:tabular-nums; font-weight:600; }
+.pv2.pinv .pinv-summary-row .form-control[readonly] { border-color:transparent; background:transparent; box-shadow:none; }
+.pv2.pinv .pinv-summary .pv2-total { margin-top:10px; }
+
+/* Importar (solo edit): boton + extension en linea */
+.pv2.pinv .pinv-import { display:inline-flex; align-items:center; gap:6px; }
+.pv2.pinv .pinv-import .form-control { width:80px; height:30px; font-size:13px; padding:4px 8px; }
+
+/* Insignias "Cantidad / Costo / Precio" del modo movil antiguo: la etiqueta ya la da el diseno */
+.pv2.pinv.pinv-compra #tb_transaction_master_detail tbody td .badge-inverse { display:none !important; }
+
+/* PC / tableta: el modo movil antiguo (varUseMobile=1) pone inline td display:block y th display:none.
+   Se restablece la tabla normal; .hidden sigue ganando porque se excluye con :not(.hidden). */
+@media (min-width:768px) {
+	.pv2.pinv.pinv-compra #tb_transaction_master_detail thead th:not(.hidden),
+	.pv2.pinv.pinv-compra .dataTables_scrollHead thead th:not(.hidden),
+	.pv2.pinv.pinv-compra #tb_transaction_master_detail tbody td:not(.hidden) { display:table-cell !important; }
+}
+
+@media (max-width:767px) {
+	/* en telefono los botones de busqueda solo muestran el icono */
+	.pv2.pinv .pinv-search .pinv-btn-text { display:none; }
+	.pv2.pinv .pinv-search .input-group-btn .btn { min-width:46px; }
+	.pv2.pinv .pinv-summary-row .form-control { height:44px; font-size:16px; }
+	.pv2.pinv .pinv-import { display:flex; width:100%; }
+	.pv2.pinv .pinv-import .btn { flex:1 1 auto; }
+	.pv2.pinv .pinv-import .form-control { height:44px; font-size:16px; width:90px; }
+}
+
+
+/* == CATALOGOS == */
+
+/* Formularios simples (categoria, bodega): ayuda bajo el campo y textarea comoda */
+.pv2.pinv .pv2-card .form-group .pv2-help { margin:4px 0 0; font-size:12px; color:var(--pv2-muted); }
+.pv2.pinv .pv2-card textarea.form-control { resize:vertical; min-height:80px; }
+.pv2.pinv #txtClearItemID,
+.pv2.pinv #txtSearchItemID { height:34px; }
+
+/* Receta: tabla #tb_item_data_sheet_detail con el mismo aspecto que el detalle de transacciones */
+.pv2.pinv #tb_item_data_sheet_detail { width:100% !important; margin:0 !important; border:0; border-collapse:collapse; background:#fff; }
+.pv2.pinv #tb_item_data_sheet_detail thead th { font-size:12px; font-weight:700; color:#fff; padding:10px; background:linear-gradient(135deg, var(--pv2-accent) 0%, var(--pv2-accent-2) 100%); border:0 !important; white-space:nowrap; vertical-align:middle; }
+.pv2.pinv #tb_item_data_sheet_detail tbody td { padding:7px 10px; border:0; border-top:1px solid var(--pv2-border); vertical-align:middle; font-size:14px; background:#fff; }
+.pv2.pinv #tb_item_data_sheet_detail tbody tr:nth-child(even) td { background:var(--pv2-soft); }
+.pv2.pinv #tb_item_data_sheet_detail tbody tr:hover td { background:var(--pv2-accent-bg); }
+.pv2.pinv #tb_item_data_sheet_detail td.dataTables_empty { text-align:center; color:var(--pv2-muted); padding:18px 10px; }
+.pv2.pinv #tb_item_data_sheet_detail.pinv-has-emptybox tr.pinv-row-empty { display:none; }
+.pv2.pinv #tb_item_data_sheet_detail tbody td input[type="text"] { height:34px; border:1px solid #d5dae0; border-radius:8px; padding:4px 10px; font-size:14px; background:#fff; box-shadow:none; min-width:80px; }
+.pv2.pinv #tb_item_data_sheet_detail tbody td input.col-lg-12 { float:none; width:100%; padding-left:10px; padding-right:10px; }
+.pv2.pinv #tb_item_data_sheet_detail tbody td input[type="text"]:focus { border-color:var(--pv2-accent); box-shadow:0 0 0 3px rgba(57,73,171,.15); outline:0; }
+.pv2.pinv #tb_item_data_sheet_detail th.hidden,
+.pv2.pinv #tb_item_data_sheet_detail td.hidden,
+.pv2.pinv #tb_item_data_sheet_detail .hidden { display:none !important; }
+
+@media (max-width:767px) {
+	/* telefono: cada insumo es una tarjeta */
+	.pv2.pinv #tb_item_data_sheet_detail thead { display:none !important; }
+	.pv2.pinv #tb_item_data_sheet_detail,
+	.pv2.pinv #tb_item_data_sheet_detail tbody { display:block; width:100% !important; background:transparent; }
+	.pv2.pinv #tb_item_data_sheet_detail tbody tr { display:block; position:relative; border:1px solid var(--pv2-border); border-radius:12px; padding:10px 12px 10px 50px; margin-bottom:10px; background:#fff; box-shadow:0 1px 3px rgba(16,24,40,.05); }
+	.pv2.pinv #tb_item_data_sheet_detail tbody tr td,
+	.pv2.pinv #tb_item_data_sheet_detail tbody tr:nth-child(even) td,
+	.pv2.pinv #tb_item_data_sheet_detail tbody tr:hover td { background:transparent; }
+	.pv2.pinv #tb_item_data_sheet_detail tbody tr td { display:flex !important; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px 10px; width:auto !important; border:0; padding:4px 0; font-size:14px; text-align:right; word-break:break-word; min-height:28px; }
+	.pv2.pinv #tb_item_data_sheet_detail tbody tr td[data-label]:before { content:attr(data-label); flex:0 0 auto; max-width:45%; font-size:12px; color:var(--pv2-muted); font-weight:600; text-align:left; }
+	.pv2.pinv #tb_item_data_sheet_detail tbody tr td[data-label=""]:before { display:none; }
+	.pv2.pinv #tb_item_data_sheet_detail tbody tr td:first-child { position:absolute; top:10px; left:12px; padding:0; min-height:0; width:auto !important; }
+	.pv2.pinv #tb_item_data_sheet_detail tbody tr td:first-child:before { display:none; }
+	.pv2.pinv #tb_item_data_sheet_detail tbody tr td:first-child > input[type="checkbox"] { width:22px; height:22px; margin:0; }
+	.pv2.pinv #tb_item_data_sheet_detail tbody td input[type="text"] { height:44px; font-size:16px; flex:1 1 55%; max-width:60%; width:auto; min-width:0; text-align:right; }
+	.pv2.pinv #tb_item_data_sheet_detail tbody td input.col-lg-12 { width:auto; }
+	.pv2.pinv #tb_item_data_sheet_detail tbody tr.pinv-row-empty { padding:0; border-style:dashed; box-shadow:none; }
+	.pv2.pinv #tb_item_data_sheet_detail tbody tr td.dataTables_empty { display:block !important; text-align:center; padding:16px 10px; }
+	.pv2.pinv #tb_item_data_sheet_detail tbody tr td.dataTables_empty:before { display:none; }
+	.pv2.pinv #tb_item_data_sheet_detail.pinv-has-emptybox tbody tr.pinv-row-empty { display:none !important; }
+	.pv2.pinv #tb_item_data_sheet_detail tbody tr td.hidden,
+	.pv2.pinv #tb_item_data_sheet_detail tbody tr .hidden,
+	.pv2.pinv #tb_item_data_sheet_detail tbody tr.hidden { display:none !important; }
+
+	/* producto de la receta: botones Quitar/Buscar tactiles */
+	.pv2.pinv #txtClearItemID,
+	.pv2.pinv #txtSearchItemID { height:44px; }
+	.pv2.pinv #txtItemIDDescription { height:44px; font-size:16px; }
+}
+
+
+/* == PRODUCTO == */
+
+/* Raices: .pv2.pinv.pinv-item (app_inventory_item news/edit)
+           .pv2.pinv.pinv-concept (popup_addconcept)
+           .pinv-form = formulario con etiqueta arriba del campo.
+   El DOM de cada campo NO cambia: div.form-group > label.col-lg-4 + div.col-lg-8 > input
+   (las personalizaciones usan $('#txtX').parent().parent()). Todo se ajusta por CSS. */
+
+/* ---------- formulario: etiqueta arriba ---------- */
+.pv2.pinv.pinv-form .form-group { margin-left:0; margin-right:0; }
+.pv2.pinv.pinv-form .form-group:before,
+.pv2.pinv.pinv-form .form-group:after { display:none; }
+.pv2.pinv.pinv-form .form-group > .control-label,
+.pv2.pinv.pinv-form .form-group > [class*="col-lg-"],
+.pv2.pinv.pinv-form .form-group > [class*="col-md-"],
+.pv2.pinv.pinv-form .form-group > [class*="col-sm-"] { float:none; width:auto; padding-left:0; padding-right:0; }
+.pv2.pinv.pinv-form .form-group > .control-label { display:block; text-align:left; padding-top:0; margin:0 0 4px; font-size:12px; font-weight:600; color:var(--pv2-muted); }
+.pv2.pinv.pinv-form .form-group > .control-label.text-primary { color:var(--pv2-accent); }
+.pv2.pinv.pinv-form .form-group .badge.badge-inverse { display:block; background:transparent; color:var(--pv2-muted); font-size:11px; font-weight:400; padding:0; margin-top:4px; text-align:left; white-space:normal; border-radius:0; line-height:1.4; }
+.pv2.pinv.pinv-form .form-group select:not(.select2):not(.form-control) { width:100%; height:38px; border:1px solid #d5dae0; border-radius:8px; padding:4px 10px; background:#fff; }
+
+/* casillas (Perecedero, Facturable, Servicio...): casilla + texto en linea, como fichas */
+.pv2.pinv.pinv-form .form-group:has(> div > input[type="checkbox"]),
+.pv2.pinv.pinv-form .form-group:has(> div > .checker) { display:inline-flex; flex-direction:row-reverse; align-items:center; justify-content:flex-end; gap:8px; vertical-align:top; min-width:46%; margin:0 8px 10px 0; padding:6px 12px; border:1px solid var(--pv2-border); border-radius:10px; background:var(--pv2-soft); }
+.pv2.pinv.pinv-form .form-group:has(> div > input[type="checkbox"]) > .control-label,
+.pv2.pinv.pinv-form .form-group:has(> div > .checker) > .control-label { margin:0; font-size:13px; color:#1f2933; }
+.pv2.pinv.pinv-form .form-group:has(> div > input[type="checkbox"]) > div,
+.pv2.pinv.pinv-form .form-group:has(> div > .checker) > div { flex:0 0 auto; }
+.pv2.pinv.pinv-form .form-group div.checker { margin:0; }
+/* .hidden de getBehavio SIEMPRE gana */
+.pv2.pinv.pinv-form .form-group.hidden { display:none !important; }
+
+/* contenedores de traslado vacios no ocupan espacio */
+.pv2.pinv.pinv-item #divTraslateElemento1:empty,
+.pv2.pinv.pinv-item #divTraslateElemento2:empty { display:none; }
+
+/* codigo de barra en imagen */
+.pv2.pinv.pinv-item #btnPrinterCode { max-width:100%; height:auto; border:1px solid var(--pv2-border); border-radius:8px; padding:4px; background:#fff; cursor:pointer; }
+
+/* encabezado: menu Imprimir */
+.pv2.pinv.pinv-item .pv2-header .pinv-item-print > .dropdown-menu { border-radius:10px; }
+.pv2.pinv.pinv-item .pv2-header .pinv-item-print > .dropdown-menu > li > a { padding:9px 16px; }
+
+/* pestanas de contenido como tarjeta (Bodegas, Precios, SKU, Proveedores...) */
+.pv2.pinv.pinv-item .tab-content > .tab-pane.pv2-card { margin-bottom:14px; }
+.pv2.pinv.pinv-item .pinv-item-help { margin:0 0 10px; }
+.pv2.pinv.pinv-item .pv2-detail-head .pv2-actions .btn i { margin-right:2px; }
+
+/* ---------- tablas internas (PC) ---------- */
+.pv2.pinv.pinv-item .pinv-itable-wrap { overflow-x:auto; border:1px solid var(--pv2-border); border-radius:10px; }
+.pv2.pinv.pinv-item table.pinv-itable { width:100% !important; margin:0 !important; border:0; border-collapse:collapse; background:#fff; }
+.pv2.pinv.pinv-item table.pinv-itable thead th { font-size:12px; font-weight:700; color:#fff; padding:10px; background:linear-gradient(135deg, var(--pv2-accent) 0%, var(--pv2-accent-2) 100%); border:0 !important; white-space:nowrap; vertical-align:middle; }
+.pv2.pinv.pinv-item table.pinv-itable tbody td { padding:8px 10px; border:0; border-top:1px solid var(--pv2-border); vertical-align:middle; font-size:14px; background:#fff; }
+.pv2.pinv.pinv-item table.pinv-itable tbody tr:hover td { background:var(--pv2-soft); }
+.pv2.pinv.pinv-item table.pinv-itable tbody tr.row-selected td { background:var(--pv2-accent-bg); }
+.pv2.pinv.pinv-item table.pinv-itable tbody tr.pinv-row-add td { background:var(--pv2-accent-bg); border-top:0; }
+.pv2.pinv.pinv-item table.pinv-itable tbody td input[type="text"]:not(.form-control) { height:34px; width:100%; min-width:70px; border:1px solid #d5dae0; border-radius:8px; padding:4px 10px; font-size:14px; background:#fff; box-shadow:none; }
+.pv2.pinv.pinv-item table.pinv-itable tbody td input.col-lg-12 { float:none; padding-left:10px; padding-right:10px; }
+.pv2.pinv.pinv-item table.pinv-itable tbody td input[type="text"]:focus { border-color:var(--pv2-accent); box-shadow:0 0 0 3px rgba(57,73,171,.15); outline:0; }
+.pv2.pinv.pinv-item table.pinv-itable td.dataTables_empty { text-align:center; color:var(--pv2-muted); padding:18px 10px; }
+.pv2.pinv.pinv-item table.pinv-itable th.hidden,
+.pv2.pinv.pinv-item table.pinv-itable td.hidden { display:none !important; }
+/* la tabla de precios trasladada por personalizacion a la pestana Informacion */
+.pv2.pinv.pinv-item #divContainerRowPersonalization > table.pinv-itable { border:1px solid var(--pv2-border); border-radius:10px; overflow:hidden; margin-bottom:14px !important; }
+
+/* ---------- popup Agregar concepto ---------- */
+.pv2.pinv.pinv-concept { padding:10px 12px 0; }
+.pv2.pinv.pinv-concept .pv2-actions .btn { min-height:44px; padding:10px 22px; font-size:15px; display:inline-flex; align-items:center; gap:6px; }
+.pv2.pinv.pinv-concept .form-control { height:44px; font-size:16px; }
+
+/* ---------- Telefono ---------- */
+@media (max-width:767px) {
+	/* casillas a todo el ancho, tactiles */
+	.pv2.pinv.pinv-form .form-group:has(> div > input[type="checkbox"]),
+	.pv2.pinv.pinv-form .form-group:has(> div > .checker) { display:flex; width:100%; min-height:48px; margin-right:0; }
+	.pv2.pinv.pinv-form .form-group select:not(.select2):not(.form-control) { height:44px; font-size:16px; }
+
+	/* acciones del encabezado: Eliminar / Imprimir comparten la fila */
+	.pv2.pinv.pinv-item .pv2-header .pinv-item-print { display:flex; flex:1 1 auto; }
+	.pv2.pinv.pinv-item .pv2-header .pinv-item-print > .btn { flex:1 1 auto; }
+
+	/* tablas -> tarjetas (data-label lo pone PosmeInv.labelTable) */
+	.pv2.pinv.pinv-item .pinv-itable-wrap { border:0; overflow:visible; border-radius:0; }
+	.pv2.pinv.pinv-item table.pinv-itable thead { display:none !important; }
+	.pv2.pinv.pinv-item table.pinv-itable,
+	.pv2.pinv.pinv-item table.pinv-itable tbody { display:block; width:100% !important; background:transparent; border:0 !important; }
+	.pv2.pinv.pinv-item .dataTables_wrapper { overflow:visible; }
+
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr { display:block; position:relative; border:1px solid var(--pv2-border); border-radius:12px; padding:6px 0; margin-bottom:10px; background:#fff; box-shadow:0 1px 3px rgba(16,24,40,.05); }
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr td,
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr:hover td,
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr.row-selected td { background:transparent; }
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr td { display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:4px 10px; border:0; padding:5px 12px; min-height:32px; font-size:14px; text-align:right; word-break:break-word; }
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr td[data-label]:before { content:attr(data-label); flex:0 0 auto; max-width:45%; font-size:12px; color:var(--pv2-muted); font-weight:600; text-align:left; }
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr td[data-label=""]:before { display:none; }
+	/* primera celda (nombre de bodega / sku / tipo de precio) como titulo de la tarjeta */
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr:not(.pinv-row-add) td:first-child { font-weight:700; font-size:15px; color:#1f2933; }
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr.row-selected { border-color:var(--pv2-accent); box-shadow:0 0 0 3px rgba(57,73,171,.15); }
+
+	/* inputs de celda grandes (16px evita el zoom de iOS) */
+	.pv2.pinv.pinv-item table.pinv-itable tbody td input[type="text"] { height:44px; font-size:16px; flex:1 1 55%; max-width:60%; width:auto; min-width:0; text-align:right; }
+	.pv2.pinv.pinv-item table.pinv-itable tbody td input[type="checkbox"] { width:22px; height:22px; margin:0; }
+
+	/* fila de captura: tarjeta "Agregar" con etiqueta arriba de cada campo */
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr.pinv-row-add { border:2px dashed var(--pv2-accent); background:var(--pv2-accent-bg); box-shadow:none; padding:8px 0 4px; }
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr.pinv-row-add:before { content:"Agregar"; display:block; padding:0 12px 4px; font-size:13px; font-weight:700; color:var(--pv2-accent); text-transform:uppercase; letter-spacing:.3px; }
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr.pinv-row-add td { display:block; text-align:left; }
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr.pinv-row-add td[data-label]:before { display:block; max-width:none; margin-bottom:4px; }
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr.pinv-row-add td:empty { display:none; }
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr.pinv-row-add td input[type="text"] { width:100%; max-width:none; text-align:left; }
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr.pinv-row-add td:has(> input[type="checkbox"]),
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr.pinv-row-add td:has(> .checker) { display:flex; align-items:center; justify-content:space-between; }
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr.pinv-row-add td:has(> input[type="checkbox"]):before,
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr.pinv-row-add td:has(> .checker):before { margin-bottom:0; }
+
+	/* Proveedores / Conceptos: la casilla de marcar arriba a la derecha */
+	.pv2.pinv.pinv-item table.pinv-itable-check tbody tr { padding-right:44px; }
+	.pv2.pinv.pinv-item table.pinv-itable-check tbody tr td:first-child { position:absolute; top:10px; right:12px; padding:0; min-height:0; }
+	.pv2.pinv.pinv-item table.pinv-itable-check tbody tr td:first-child:before { display:none; }
+	.pv2.pinv.pinv-item table.pinv-itable-check tbody tr:not(.pinv-row-add) td:nth-child(2) { font-weight:400; font-size:14px; }
+
+	/* fila "sin datos" de DataTables */
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr.pinv-row-empty { padding:0; border-style:dashed; box-shadow:none; }
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr.pinv-row-empty td { position:static; display:block; text-align:center; padding:16px 10px; }
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr.pinv-row-empty td:before { display:none; }
+
+	/* .hidden SIEMPRE gana */
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr td.hidden,
+	.pv2.pinv.pinv-item table.pinv-itable tbody tr.hidden { display:none !important; }
+
+	/* popup de concepto en pantalla chica */
+	.pv2.pinv.pinv-concept { padding:8px 8px 0; }
+}
+
+
+/* == POPUPS == */
+/* Ventanas emergentes (core_masterpage/default_popup): popup_masinformacion_item_*, popup_addconcept_*...
+   Uso generico:
+     head:  <div class="pv2 pinv pinv-popup"><div class="pinv-popup-bar">
+              <div class="pinv-popup-title"><span class="pv2-ico">..</span><span>Titulo</span></div>
+              <div class="pinv-popup-actions"> #btnPopupCancelar (btn-default) / #btnPopupAceptar (btn-primary) </div>
+            </div></div>
+     body:  <div class="main pv2 pinv pinv-popup"> ... <form> <div class="pv2-card"> campos </div> </form> </div>
+   Si el body conserva section#content / #main_content del tema, se les quita el margen del menu lateral. */
+.pv2.pinv.pinv-popup { padding:12px 12px 0; background:#fff; }
+.pv2.pinv.pinv-popup + .pv2.pinv.pinv-popup { padding-top:0; }
+.pv2.pinv.pinv-popup #content { margin:0 !important; padding:0; }
+.pv2.pinv.pinv-popup #content .wrapper { float:none; width:auto; margin:0; }
+.pv2.pinv.pinv-popup #content .wrapper > .container-fluid,
+.pv2.pinv.pinv-popup #main_content { padding:0; }
+.pv2.pinv.pinv-popup form { margin:0; }
+
+/* barra superior: titulo + botones */
+.pv2.pinv .pinv-popup-bar { display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; padding:10px 12px; margin-bottom:12px; background:#fff; border:1px solid var(--pv2-border); border-radius:12px; box-shadow:0 1px 3px rgba(16,24,40,.05); }
+.pv2.pinv .pinv-popup-title { display:flex; align-items:center; gap:8px; min-width:0; font-size:15px; font-weight:700; color:#1f2933; }
+.pv2.pinv .pinv-popup-title .pv2-ico { width:28px; height:28px; border-radius:8px; background:var(--pv2-accent-bg); color:var(--pv2-accent); display:inline-flex; align-items:center; justify-content:center; flex:0 0 28px; }
+.pv2.pinv .pinv-popup-actions { display:flex; gap:6px; flex-wrap:wrap; }
+.pv2.pinv .pinv-popup-actions .btn { border-radius:8px; display:inline-flex; align-items:center; justify-content:center; gap:4px; min-width:110px; }
+.pv2.pinv .pinv-popup-actions .btn-primary { background:var(--pv2-accent); border-color:var(--pv2-accent); font-weight:700; }
+
+/* campos de la ventana */
+.pv2.pinv.pinv-popup .pv2-card { margin-bottom:12px; }
+.pv2.pinv.pinv-popup .input-group-addon { border-radius:8px 0 0 8px; background:var(--pv2-soft); border-color:#d5dae0; color:var(--pv2-muted); }
+.pv2.pinv.pinv-popup .input-group.date .input-group-addon { border-radius:0 8px 8px 0; }
+.pv2.pinv.pinv-popup .input-group-addon:first-child + .form-control { border-radius:0 8px 8px 0; }
+.pv2.pinv.pinv-popup .input-group.date .form-control { border-radius:8px 0 0 8px; }
+.pv2.pinv.pinv-popup .form-control[readonly] { background:#fff; cursor:pointer; }
+
+@media (max-width:767px) {
+	.pv2.pinv.pinv-popup { padding:8px 8px 0; }
+	/* botones grandes a todo el ancho */
+	.pv2.pinv .pinv-popup-bar { padding:10px; margin-bottom:10px; }
+	.pv2.pinv .pinv-popup-title { width:100%; font-size:14px; }
+	.pv2.pinv .pinv-popup-actions { width:100%; flex-wrap:nowrap; }
+	.pv2.pinv .pinv-popup-actions .btn { flex:1 1 50%; min-height:48px; font-size:16px; min-width:0; }
+	.pv2.pinv.pinv-popup .input-group-addon { min-width:44px; font-size:16px; }
+}
+
+
+/* == TELEFONO COMUN (pestanas, botones, barra inferior) == */
+@media (max-width:767px) {
+	/* pestanas con scroll horizontal */
+	.pv2.pinv #myTab { display:flex; flex-wrap:nowrap; overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; white-space:nowrap; }
+	.pv2.pinv #myTab > li { float:none; flex:0 0 auto; }
+	.pv2.pinv #myTab > li > a { padding:12px 14px; }
+	/* si una pantalla conserva el menu "Mas" desplegable, se abre como hoja inferior (no lo recorta el scroll) */
+	.pv2.pinv #myTab > li.dropdown > .dropdown-menu { position:fixed; top:auto; bottom:84px; left:12px; right:12px; border-radius:12px; }
+	.pv2.pinv #myTab > li.dropdown > .dropdown-menu > li > a { padding:12px 16px; }
+
+	/* botones tactiles de 44px */
+	.pv2.pinv .pv2-actions .btn,
+	.pv2.pinv .pv2-detail-head .btn { min-height:44px; display:inline-flex; align-items:center; justify-content:center; gap:4px; }
+	.pv2.pinv .pv2-detail-head .pv2-actions { width:100%; }
+	.pv2.pinv .pinv-check { min-height:44px; }
+
+	/* barra inferior: siempre por encima del contenido */
+	.pv2.pinv .pv2-mbar { z-index:1030; }
+	.pv2.pinv .pv2-mbar .btn { min-height:46px; }
+}

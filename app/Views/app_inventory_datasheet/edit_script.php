@@ -196,8 +196,8 @@
 						});
 						
 						refreschChecked();
-						
-						
+						if(window.PosmeInv){ PosmeInv.initDetail({table:"#tb_item_data_sheet_detail", totalSelector:null, unitSingular:'insumo', unitPlural:'insumos'}); }
+
 					});
 					function validateForm(){
 						var result 				= true;

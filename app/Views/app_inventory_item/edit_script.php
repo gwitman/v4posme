@@ -479,6 +479,16 @@
 			});
 		});
 
+		//Interfaz pv2: tablas como tarjetas en telefono y barra inferior
+		if(window.PosmeInv){
+			PosmeInv.labelTable('#tblPrecios');
+			PosmeInv.labelTable('.pinv-itable-warehouse');
+			PosmeInv.labelTable('#tblItemSku');
+			PosmeInv.labelTable('#table_provider');
+			PosmeInv.labelTable('#table_concept');
+		}
+		if(window.pv2BindMobileBar){ pv2BindMobileBar(); }
+
 	});
 
 	function onCompleteEmployee(objResponse)

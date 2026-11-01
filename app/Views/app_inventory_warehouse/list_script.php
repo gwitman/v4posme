@@ -55,6 +55,33 @@
 			fnWaitOpen();
 			window.location	= "<?php echo base_url(); ?>/app_inventory_warehouse/add";
 		});
+
+		//Buscar bodega: filtra la tabla del lado del cliente
+		function fnFiltrarBodegas(){
+			var valor = $("#txtSearchWarehouse").val();
+			if(typeof objTableListView != "undefined" && objTableListView && typeof objTableListView.fnFilter == "function"){
+				objTableListView.fnFilter(valor);
+			}
+			else{
+				var texto = $.trim(valor).toLowerCase();
+				$("#ListView tbody tr").each(function(){
+					$(this).toggle(texto == "" || $(this).text().toLowerCase().indexOf(texto) != -1);
+				});
+			}
+		}
+		$(document).on("click","#btnSearchWarehouse",function(e){
+			e.preventDefault();
+			fnFiltrarBodegas();
+		});
+		$(document).on("keyup","#txtSearchWarehouse",function(e){
+			fnFiltrarBodegas();
+		});
+		$(document).on("keydown","#txtSearchWarehouse",function(e){
+			if((e.keyCode || e.which) == 13){
+				e.preventDefault();
+				fnFiltrarBodegas();
+			}
+		});
 	});
 	
 	function fn_aceptCallback(data){

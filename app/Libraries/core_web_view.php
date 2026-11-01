@@ -680,7 +680,7 @@ class core_web_view {
     function renderGreedJson($data, $idTable = null, $functionSelected = NULL, $displayLength = 350)
     {
         // Crear el HTML para la tabla
-        $table = "<table id='" . $idTable . "' class='table table-striped table-bordered table-hover'>";
+        $table = "<table id='" . $idTable . "' class='table table-striped table-bordered table-hover pm-grid'>";
 
         // Crear el encabezado
         $table .= "<thead><tr>";
@@ -711,7 +711,9 @@ class core_web_view {
             }, $cabezera3)) . "
                 ],
             });
-            objTable" . $idTable . " = table; 
+            objTable" . $idTable . " = table;
+            // DataTables 2.x: el evento draw puede no burbujear al document, se refresca el estilo pm-grid aqui
+            table.on('draw', function(){ if(window.pmGrid && window.pmGrid.refrescar){ window.pmGrid.refrescar(); } });
             // Configuración para manejar los eventos de clic
             $('#" . $idTable . "').on('click', 'tr', function(event) {
                 " . $functionSelected . "(this, event);
@@ -731,8 +733,8 @@ class core_web_view {
             });
         </script>";
 
-        // Devuelve el HTML y JS generados
-        return $table . $js;
+        // Devuelve el HTML y JS generados (con los assets de pm-grid, igual que renderGreed)
+        return $this->renderGreedAssets() . $table . $js;
     }
    function renderGreedMobile($data,$idTable = null,$functionSelected = NULL,$displayLength = 350){
 		

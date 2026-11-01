@@ -55,6 +55,33 @@
 			fnWaitOpen();
 			window.location	= "<?php echo base_url(); ?>/app_inventory_category/add";
 		});
+
+		//Buscar categoria: filtra la tabla del lado del cliente
+		function fnFiltrarCategorias(){
+			var valor = $("#txtSearchCategory").val();
+			if(typeof objTableListView != "undefined" && objTableListView && typeof objTableListView.fnFilter == "function"){
+				objTableListView.fnFilter(valor);
+			}
+			else{
+				var texto = $.trim(valor).toLowerCase();
+				$("#ListView tbody tr").each(function(){
+					$(this).toggle(texto == "" || $(this).text().toLowerCase().indexOf(texto) != -1);
+				});
+			}
+		}
+		$(document).on("click","#btnSearchCategory",function(e){
+			e.preventDefault();
+			fnFiltrarCategorias();
+		});
+		$(document).on("keyup","#txtSearchCategory",function(e){
+			fnFiltrarCategorias();
+		});
+		$(document).on("keydown","#txtSearchCategory",function(e){
+			if((e.keyCode || e.which) == 13){
+				e.preventDefault();
+				fnFiltrarCategorias();
+			}
+		});
 	});
 	
 	function fn_aceptCallback(data){
