@@ -2,7 +2,7 @@
 				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/datepicker/datepicker.css" rel="stylesheet" />
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/datepicker/bootstrap-datepicker.js"></script>
 				<!-- Rediseño pantalla nueva factura: estilos y controles nativos (sin select2) -->
-				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-invoice-billing-news.css?v=9" rel="stylesheet" />
+				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-invoice-billing-news.css?v=10" rel="stylesheet" />
 				<script>
 					var pmUseMobile 				= '<?php echo $useMobile; ?>';
 					var pmOcultarPickerNextVisit 	= '<?php echo getBehavio($company->type,"app_invoice_billing","controlNextVisitOcultarPicker",'false'); ?>';

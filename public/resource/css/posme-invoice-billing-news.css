@@ -1043,6 +1043,10 @@ body [class*="modal-content-customer1-"] .btn-block + .btn-block {
 #rowCssPrincipal .pm-barra-captura .dropdown-menu {
 	z-index			: 40;
 }
+/* Tactil: BS3 inserta .dropdown-backdrop (z-index 990) junto al menu; debe quedar DEBAJO del menu o se "come" el toque */
+#rowCssPrincipal .pm-barra-captura .dropdown-backdrop {
+	z-index			: 35;
+}
 
 /* Botonera de useMobile=1 (arriba del detalle) */
 #rowCssPrincipal .pm-botonera-movil {
