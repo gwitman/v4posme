@@ -1,174 +1,113 @@
-					<div class="row"> 
-                        <div id="email" class="col-lg-12">
-                            <div class="email-bar" style="border-left:1px solid #c9c9c9">                                
-                                <div class="btn-group pull-right">                                    
-									<a href="<?php echo base_url(); ?>/core_role/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>                                    
-                                    <a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>
-                                    <a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>                                    
-                                </div>
-                            </div> 
+					<?php
+						//Tipos de app disponibles (vacio = default); se agrega el valor real del rol si no esta
+						$typeAppActual	= ($objRole->typeApp === null) ? "" : $objRole->typeApp;
+						$tiposApp		= array();
+						if($typeAppActual === "") $tiposApp[] = "";
+						if($listMenuElement)
+						foreach($listMenuElement as $m){
+							$t = ($m->typeApp === null || $m->typeApp === "") ? "default" : $m->typeApp;
+							if(!in_array($t,$tiposApp,true)) $tiposApp[] = $t;
+						}
+						if(!in_array($typeAppActual,$tiposApp,true)) $tiposApp[] = $typeAppActual;
+					?>
+					<div class="pm-role" id="pmRole">
+					<form id="form-new-rol" name="form-new-rol" method="POST" action="<?php echo base_url(); ?>/core_role/save" role="form" autocomplete="off">
+						<input type="hidden" name="companyID" id="companyID" value="<?php echo htmlspecialchars($objRole->companyID);?>" />
+						<input type="hidden" name="branchID" id="branchID" value="<?php echo htmlspecialchars($objRole->branchID);?>" />
+						<input type="hidden" name="roleID" id="roleID" value="<?php echo htmlspecialchars($objRole->roleID);?>" />
+
+						<!-- barra de acciones -->
+						<div class="pm-role-barra">
+							<div class="pm-role-barra-titulo"><?php echo htmlspecialchars($objRole->name); ?></div>
+							<div class="pm-role-barra-botones">
+								<a href="<?php echo base_url(); ?>/core_role/index" id="btnBack" class="btn btn-default"><i class="icon16 i-arrow-left-2"></i> Regresar</a>
+								<button type="button" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</button>
+								<button type="button" class="btn btn-primary pm-role-guardar" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</button>
+							</div>
 						</div>
+
+						<!-- avisos -->
+						<div class="alert alert-info pm-role-aviso">Los cambios en el menú se ven cuando el usuario vuelve a iniciar sesión.</div>
+						<?php if(!empty($isOwnRole)){ ?>
+						<div class="alert alert-warning pm-role-aviso">Estás editando tu propio rol: si quitas el acceso a Roles perderás acceso a esta pantalla.</div>
+						<?php } ?>
+						<?php if($objRole->isAdmin == 1){ ?>
+						<div class="alert alert-warning pm-role-aviso">Este rol es administrador: tiene acceso a todo, los permisos de abajo no se aplican.</div>
+						<?php } ?>
+
+						<!-- datos del rol -->
+						<div class="pm-role-card">
+							<div class="pm-role-card-head">
+								<h4 class="pm-role-card-titulo"><i class="icon16 i-shield"></i>Datos del rol</h4>
+							</div>
+							<div class="pm-role-card-body">
+								<div class="pm-role-datos">
+									<div class="pm-role-campo">
+										<label for="txtName">Nombre <span class="pm-role-req">*</span></label>
+										<input class="form-control" type="text" name="txtName" id="txtName" value="<?php echo htmlspecialchars($objRole->name);?>" maxlength="250">
+									</div>
+									<div class="pm-role-campo">
+										<label for="txtUrlDefault">Url por defecto <span class="pm-role-req">*</span></label>
+										<input class="form-control" type="text" name="txtUrlDefault" id="txtUrlDefault" value="<?php echo htmlspecialchars($objRole->urlDefault);?>" placeholder="core_dashboards/index">
+									</div>
+									<div class="pm-role-campo">
+										<label for="txtTypeApp">Tipo de app</label>
+										<select class="form-control" name="txtTypeApp" id="txtTypeApp">
+											<?php foreach($tiposApp as $t){ ?>
+											<option value="<?php echo htmlspecialchars($t); ?>" <?php echo ($t === $typeAppActual) ? 'selected="selected"' : ''; ?>><?php echo ($t === "") ? "default (sin valor)" : htmlspecialchars($t); ?></option>
+											<?php } ?>
+										</select>
+									</div>
+									<div class="pm-role-campo pm-role-campo-ancho">
+										<label for="txtDescription">Descripción <span class="pm-role-req">*</span></label>
+										<textarea class="form-control" id="txtDescription" name="txtDescription" rows="2"><?php echo htmlspecialchars($objRole->description);?></textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- permisos por pantalla -->
+						<div class="pm-role-card">
+							<div class="pm-role-card-head">
+								<h4 class="pm-role-card-titulo"><i class="icon16 i-grid-2"></i>Permisos por pantalla</h4>
+							</div>
+							<div class="pm-role-card-body">
+								<div class="pm-role-herramientas">
+									<input type="text" class="form-control pm-role-buscar" id="pmRoleBuscar" placeholder="Buscar pantalla…" autocomplete="off">
+									<label class="pm-role-solo"><input type="checkbox" id="pmRoleSoloAcceso"> Solo con acceso</label>
+									<button type="button" class="btn btn-default" id="pmRoleTotal" title="Acceso total a las pantallas visibles">Acceso total</button>
+									<button type="button" class="btn btn-default" id="pmRoleVer" title="Solo ver en las pantallas visibles">Solo ver</button>
+									<button type="button" class="btn btn-default" id="pmRoleQuitar" title="Quitar acceso a las pantallas visibles">Quitar todo</button>
+								</div>
+								<div class="pm-role-contador" id="pmRoleContador"></div>
+								<div class="pm-role-conservados" id="pmRoleConservados" style="display:none"></div>
+								<div id="pmRoleGrupos"></div>
+								<div class="pm-role-vacio" id="pmRoleSinResultados" style="display:none">No hay pantallas que coincidan con el filtro.</div>
+							</div>
+						</div>
+
+						<!-- autorizaciones -->
+						<div class="pm-role-card">
+							<div class="pm-role-card-head">
+								<h4 class="pm-role-card-titulo"><i class="icon16 i-key"></i>Autorizaciones</h4>
+								<div>
+									<button type="button" class="btn btn-default btn-sm" id="pmRoleAutTodas">Marcar todas</button>
+									<button type="button" class="btn btn-default btn-sm" id="pmRoleAutNinguna">Ninguna</button>
+								</div>
+							</div>
+							<div class="pm-role-card-body">
+								<div class="pm-role-auts" id="pmRoleAutorizaciones"></div>
+							</div>
+						</div>
+
+						<!-- campos del POST (se generan al guardar) -->
+						<div id="pmRolePost" style="display:none"></div>
+
+						<!-- barra fija inferior (telefono) -->
+						<div class="pm-role-barra-movil">
+							<span class="pm-role-barra-movil-txt" id="pmRoleContadorMovil"></span>
+							<button type="button" class="btn btn-primary pm-role-guardar"><i class="icon16 i-checkmark-4"></i> Guardar</button>
+						</div>
+
+					</form>
 					</div>
-					<div class="row">
-						<div class="col-lg-12">
-							<div class="panel panel-default">
-                                <div class="panel-heading">
-                                  <div class="icon"><i class="icon20 i-cube"></i></div> 
-                                  <h4>Formulario de Datos</h4>
-                                  <a href="#" class="minimize"></a>
-                                </div><!-- End .panel-heading -->
-                                <div class="panel-body noPadding">
-                                    <ul id="myTab" class="nav nav-tabs">
-                                        <li class="active"><a href="#home1" data-toggle="tab">Informacion General</a></li>
-                                        <li><a href="#profile1" data-toggle="tab">Autorizaciones</a></li>
-                                    </ul>
-									<form id="form-new-rol" name="form-new-rol" class="form-horizontal" role="form">
-                                    <div class="tab-content">
-                                        <div class="tab-pane fade in active" id="home1">
-				                            <div class="email-wrapper" style="padding:15px 15px 15px 15px;padding-left:15px">
-				                                <div class="row">
-				                                    <div class="email-content col-lg-12">
-				                                       
-															<fieldset>			
-																<div class="form-group">
-																		<label class="col-lg-2 control-label" for="normal">Nombre</label>
-																		<div class="col-lg-10">
-																			<input class="form-control"  type="text" name="txtName" id="txtName" value="<?php echo $objRole->name;?>">												
-																			<input type="hidden" name="companyID" id="companyID" value="<?php echo $objRole->companyID;?>" />
-																			<input type="hidden" name="branchID" id="branchID" value="<?php echo $objRole->branchID;?>" />
-																			<input type="hidden" name="roleID" id="roleID" value="<?php echo $objRole->roleID;?>" />
-																		</div>
-																</div>
-																
-																<div class="form-group">
-																		<label class="col-lg-2 control-label" for="normal">Url Default</label>
-																		<div class="col-lg-10">
-																			<input class="form-control"  type="text" name="txtUrlDefault" id="txtUrlDefault" value="<?php echo $objRole->urlDefault;?>">												
-																		</div>
-																</div>
-																<div class="form-group">
-																		<label class="col-lg-2 control-label" for="normal">Tipo App</label>
-																		<div class="col-lg-10">
-																			<input class="form-control"  type="text" name="txtTypeApp" id="txtTypeApp" value="<?php echo $objRole->typeApp;?>">												
-																		</div>
-																</div>						
-																<div class="form-group">
-																	<label class="col-lg-2 control-label" for="normal">Descripcion</label>
-																	<div class="col-lg-10">
-																		<textarea class="form-control" id="txtDescription" name="txtDescription" rows="3"><?php echo $objRole->description;?></textarea>
-																	</div>
-																</div>
-				
-													
-																<hr /> 
-																
-																<a href="#" class="btn btn-flat btn-info" id="btnNewDetail" >Agregar</a>
-																<a href="#" class="btn btn-flat btn-danger" id="btnDeleteDetail" >Eliminar</a>									
-													
-																<table id="ListElement" class="table table-striped">
-																	<thead>
-																		<tr>
-																			<th style="width:15%">Orden</th>
-																			<th style="width:15%">Elemento</th>
-																			<th style="width:17%">Seleccion</th>
-																			<th style="width:17%">Insercion</th>
-																			<th style="width:17%">Eliminacion</th>
-																			<th style="width:17%">Edicion</th>
-																		</tr>
-																	</thead>
-																	<tbody id="tbody_detail">	
-																		<?php
-																		$descriptionSelected[-1] = "No puede ver ningun registro";
-																		$descriptionSelected[0] = "Puede ver todos los registros";
-																		$descriptionSelected[1] = "Puede ver todos los registros de la sucursal unicamente";
-																		$descriptionSelected[2] = "Puede ver unicamente los registros creados por el";
-																		
-																		$descriptionEdited[-1] = "No pude editar ningun registro";
-																		$descriptionEdited[0] = "Puede editar todos los registros";
-																		$descriptionEdited[1] = "Puede editar todos los registros de la sucursal";
-																		$descriptionEdited[2] = "Puede editar unicamente los registros creados por el";
-																		
-																		$descriptionInserted[-1] = "No pude insertar ningun registro";
-																		$descriptionInserted[0] = "Puede insertar todos los registros";
-																		$descriptionInserted[1] = "Puede insertar todos los registros de la sucursal";
-																		$descriptionInserted[2] = "Puede insertar unicamente los registros creados por el";
-																		
-																		
-																		$descriptionDeleted[-1] = "No puede eliminar ningun registro";
-																		$descriptionDeleted[0] = "Puede eliminar todos los registros";
-																		$descriptionDeleted[1] = "Puede eliminar todos los registros de la sucursal";
-																		$descriptionDeleted[2] = "Puede eliminar unicamente los registros creados por el";
-																		 
-																		if($objUserPermission)
-																		foreach($objUserPermission as $item){
-																			echo "<tr>";
-																				echo "<td>";
-																						echo $item->orden;
-																				echo "</td>";
-																				echo "<td>";
-																						echo "<span>";
-																						echo $item->display." === ".$item->typeApp;
-																						echo '<input type="hidden" id="txtElementID"  name="txtElementID[]" value="'.$item->elementID.'" />';
-																						echo '<input type="hidden" id="txtSelectedID" name="txtSelectedID['.$item->elementID.']" value="'.$item->selected.'" />';
-																						echo '<input type="hidden" id="txtInsertedID" name="txtInsertedID['.$item->elementID.']" value="'.$item->inserted.'" />';
-																						echo '<input type="hidden" id="txtDeletedID"  name="txtDeletedID['.$item->elementID.']" value="'.$item->deleted.'" />';
-																						echo '<input type="hidden" id="txtEditedID"   name="txtEditedID['.$item->elementID.']" value="'.$item->edited.'" />';
-																						echo "</span>";
-																				echo "</td>";																	
-																				echo "<td>";
-																						echo $descriptionSelected[$item->selected];
-																				echo "</td>";
-																				echo "<td>";
-																						echo $descriptionInserted[$item->inserted];
-																				echo "</td>";
-																				echo "<td>";
-																						echo $descriptionDeleted[$item->deleted];
-																				echo "</td>";
-																				echo "<td>";
-																						echo $descriptionEdited[$item->edited];
-																				echo "</td>";
-																			echo "</tr>";
-																		}
-																		?>
-																	</tbody>
-																</table>
-															  
-															</fieldset> 
-														
-				                                    </div>
-				                                </div><!-- End .row-fluid  -->                            
-				                            </div>
-				                        </div>
-	                                    <div class="tab-pane fade" id="profile1">
-	                                            	<a href="#" class="btn btn-flat btn-info" id="btnNewDetailAutorization" >Agregar</a>
-													<a href="#" class="btn btn-flat btn-danger" id="btnDeleteDetailAutorization" >Eliminar</a>									
-										
-													<table id="ListElementAutorization" class="table table-striped">
-														<thead>
-															<tr>
-																<th>Autorizaciones</th>															
-															</tr>
-														</thead>
-														<tbody id="tbody_detail_autorization">
-																	<?php 
-																		if($listComponentAutoriation)
-																		foreach($listComponentAutoriation as $i){
-																			echo "<tr>";																			
-																				echo "<td>";
-																					    echo "<span>";
-																						echo "<input type='hidden' name='txtComponentAutorizationID[]' value='".$i->componentAutorizationID."' />";
-																						echo $i->name;
-																						echo "</span>";
-																				echo "</td>";
-																			echo "</tr>";
-																		}
-																	?>																				
-														</tbody>
-													</table>
-	                                    </div>
-                                    </div> 
-                                    </form>   
-                                </div><!-- End .panel-body -->
-                            </div><!-- End .widget -->                            
-                        </div><!-- End #email  -->
-                    </div>

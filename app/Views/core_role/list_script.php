@@ -55,6 +55,33 @@
 			fnWaitOpen();
 			window.location	= "<?php echo base_url(); ?>/core_role/add";
 		});
+
+		//Buscar rol: filtra la tabla del lado del cliente
+		function fnFiltrarRoles(){
+			var valor = $("#txtSearchRole").val();
+			if(typeof objTableListView != "undefined" && objTableListView && typeof objTableListView.fnFilter == "function"){
+				objTableListView.fnFilter(valor);
+			}
+			else{
+				var texto = $.trim(valor).toLowerCase();
+				$("#ListView tbody tr").each(function(){
+					$(this).toggle(texto == "" || $(this).text().toLowerCase().indexOf(texto) != -1);
+				});
+			}
+		}
+		$(document).on("click","#btnSearchRole",function(e){
+			e.preventDefault();
+			fnFiltrarRoles();
+		});
+		$(document).on("keyup","#txtSearchRole",function(e){
+			fnFiltrarRoles();
+		});
+		$(document).on("keydown","#txtSearchRole",function(e){
+			if((e.keyCode || e.which) == 13){
+				e.preventDefault();
+				fnFiltrarRoles();
+			}
+		});
 	});
 	
 	function fn_aceptCallback(data){

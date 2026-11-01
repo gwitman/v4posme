@@ -1,0 +1,554 @@
+/* ==========================================================================
+ * posme-role.css
+ * core_role/add y core_role/edit: datos del rol, matriz de permisos por
+ * pantalla agrupada por modulo y autorizaciones.
+ * Todas las reglas cuelgan de .pm-role (no afecta otras pantallas).
+ * Telefono (<=767px): filas como tarjetas, selects 2x2 de 44px y barra
+ * fija inferior con contador + Guardar.
+ * ========================================================================== */
+
+.pm-role {
+	color			: #0F172A;
+	font-size		: 13px;
+	padding-bottom	: 16px;
+}
+.pm-role *,
+.pm-role *:before,
+.pm-role *:after {
+	box-sizing		: border-box;
+}
+
+/* ---------- Barra superior de acciones ---------- */
+.pm-role .pm-role-barra {
+	display			: flex;
+	flex-wrap		: wrap;
+	align-items		: center;
+	justify-content	: space-between;
+	margin			: 0 0 12px;
+	padding			: 10px 12px;
+	background-color: #FFFFFF;
+	border			: 1px solid #E2E8F0;
+	border-radius	: 12px;
+	box-shadow		: 0 2px 8px rgba(15, 23, 42, 0.06);
+}
+.pm-role .pm-role-barra-titulo {
+	font-size		: 15px;
+	font-weight		: 700;
+	color			: #006E98;
+	margin			: 4px 8px 4px 0;
+}
+.pm-role .pm-role-barra-botones {
+	display			: flex;
+	flex-wrap		: wrap;
+	justify-content	: flex-end;
+	margin			: -4px;
+}
+.pm-role .btn {
+	border-radius	: 8px;
+	font-weight		: 600;
+	background-image: none;
+	text-shadow		: none;
+	box-shadow		: none;
+}
+.pm-role .pm-role-barra-botones .btn {
+	display			: inline-flex;
+	align-items		: center;
+	justify-content	: center;
+	min-height		: 40px;
+	margin			: 4px;
+	padding			: 8px 16px;
+	font-size		: 13px;
+}
+.pm-role .pm-role-barra-botones .btn i {
+	margin-right	: 6px;
+}
+.pm-role .btn-primary {
+	background-color: #006E98;
+	border-color	: #006E98;
+	color			: #FFFFFF;
+}
+.pm-role .btn-primary:hover,
+.pm-role .btn-primary:focus {
+	background-color: #005A7D;
+	border-color	: #005A7D;
+	color			: #FFFFFF;
+}
+.pm-role .btn-default {
+	background-color: #FFFFFF;
+	border-color	: #CBD5E1;
+	color			: #334155;
+}
+.pm-role .btn-default:hover,
+.pm-role .btn-default:focus {
+	background-color: #F1F5F9;
+	color			: #0F172A;
+}
+
+/* ---------- Avisos ---------- */
+.pm-role .pm-role-aviso {
+	margin			: 0 0 8px;
+	padding			: 8px 12px;
+	border-radius	: 8px;
+	font-size		: 13px;
+}
+
+/* ---------- Tarjetas ---------- */
+.pm-role .pm-role-card {
+	margin			: 0 0 12px;
+	background-color: #FFFFFF;
+	border			: 1px solid #E2E8F0;
+	border-radius	: 12px;
+	box-shadow		: 0 2px 8px rgba(15, 23, 42, 0.06);
+}
+.pm-role .pm-role-card-head {
+	display			: flex;
+	flex-wrap		: wrap;
+	align-items		: center;
+	justify-content	: space-between;
+	padding			: 12px 16px;
+	border-bottom	: 1px solid #E2E8F0;
+}
+.pm-role .pm-role-card-titulo {
+	margin			: 0;
+	font-size		: 15px;
+	font-weight		: 700;
+	color			: #0F172A;
+}
+.pm-role .pm-role-card-titulo i {
+	margin-right	: 6px;
+	color			: #006E98;
+}
+.pm-role .pm-role-card-body {
+	padding			: 14px 16px;
+}
+
+/* ---------- Datos del rol (2 columnas en PC) ---------- */
+.pm-role .pm-role-datos {
+	display			: flex;
+	flex-wrap		: wrap;
+	margin			: 0 -8px;
+}
+.pm-role .pm-role-campo {
+	width			: 50%;
+	padding			: 0 8px;
+	margin-bottom	: 12px;
+}
+.pm-role .pm-role-campo-ancho {
+	width			: 100%;
+}
+.pm-role .pm-role-campo label {
+	display			: block;
+	margin-bottom	: 4px;
+	font-weight		: 600;
+	color			: #334155;
+}
+.pm-role .pm-role-campo .pm-role-req {
+	color			: #DC2626;
+}
+.pm-role .form-control {
+	border-radius	: 8px;
+	border-color	: #CBD5E1;
+	box-shadow		: none;
+}
+.pm-role input.form-control,
+.pm-role select.form-control {
+	height			: 40px;
+}
+.pm-role .form-control:focus {
+	border-color	: #006E98;
+	box-shadow		: 0 0 0 3px rgba(0, 110, 152, 0.15);
+}
+
+/* ---------- Barra de la matriz ---------- */
+.pm-role .pm-role-herramientas {
+	display			: flex;
+	flex-wrap		: wrap;
+	align-items		: center;
+	margin			: 0 -4px 8px;
+}
+.pm-role .pm-role-herramientas > * {
+	margin			: 4px;
+}
+.pm-role .pm-role-buscar {
+	flex			: 1 1 220px;
+	min-width		: 180px;
+}
+.pm-role .pm-role-solo {
+	display			: inline-flex;
+	align-items		: center;
+	min-height		: 40px;
+	margin-bottom	: 0;
+	padding			: 0 10px;
+	border			: 1px solid #CBD5E1;
+	border-radius	: 8px;
+	background-color: #FFFFFF;
+	font-weight		: 600;
+	cursor			: pointer;
+	white-space		: nowrap;
+}
+.pm-role .pm-role-solo input {
+	margin			: 0 6px 0 0;
+}
+.pm-role .pm-role-herramientas .btn {
+	min-height		: 40px;
+	padding			: 8px 14px;
+}
+.pm-role .pm-role-contador {
+	margin			: 0 0 8px;
+	font-weight		: 600;
+	color			: #006E98;
+}
+.pm-role .pm-role-conservados {
+	margin			: 0 0 8px;
+	color			: #64748B;
+	font-style		: italic;
+}
+.pm-role .pm-role-vacio {
+	padding			: 18px 12px;
+	text-align		: center;
+	color			: #64748B;
+	background-color: #F8FAFC;
+	border			: 1px dashed #CBD5E1;
+	border-radius	: 10px;
+}
+
+/* ---------- Grupos (modulos) ---------- */
+.pm-role .pm-role-grupo {
+	margin			: 0 0 10px;
+	border			: 1px solid #E2E8F0;
+	border-radius	: 10px;
+	overflow		: hidden;
+}
+.pm-role .pm-role-grupo-head {
+	display			: flex;
+	flex-wrap		: wrap;
+	align-items		: center;
+	justify-content	: space-between;
+	padding			: 4px 8px;
+	background-color: #F1F5F9;
+}
+.pm-role .pm-role-grupo-con .pm-role-grupo-head {
+	background-color: #E6F3F8;
+}
+.pm-role .pm-role-grupo-toggle {
+	display			: inline-flex;
+	align-items		: center;
+	flex			: 1 1 auto;
+	min-height		: 40px;
+	padding			: 4px;
+	border			: none;
+	background		: none;
+	text-align		: left;
+	font-size		: 14px;
+	font-weight		: 700;
+	color			: #0F172A;
+	cursor			: pointer;
+}
+.pm-role .pm-role-grupo-toggle i {
+	margin-right	: 6px;
+	color			: #006E98;
+}
+.pm-role .pm-role-flecha {
+	display			: inline-block;
+	width			: 0;
+	height			: 0;
+	margin-right	: 8px;
+	border-left		: 5px solid transparent;
+	border-right	: 5px solid transparent;
+	border-top		: 6px solid #475569;
+	transition		: transform 0.15s ease;
+}
+.pm-role .pm-role-grupo-cerrado .pm-role-flecha {
+	transform		: rotate(-90deg);
+}
+.pm-role .pm-role-grupo-cuenta {
+	margin-left		: 8px;
+	padding			: 2px 8px;
+	border-radius	: 10px;
+	background-color: #FFFFFF;
+	border			: 1px solid #CBD5E1;
+	font-size		: 12px;
+	font-weight		: 600;
+	color			: #334155;
+}
+.pm-role .pm-role-grupo-acciones .btn {
+	min-height		: 34px;
+	margin			: 2px;
+	padding			: 6px 10px;
+	font-size		: 12px;
+}
+.pm-role .pm-role-grupo-cerrado .pm-role-grupo-body {
+	display			: none;
+}
+/* al buscar se muestran todos los grupos abiertos */
+.pm-role.pm-role-buscando .pm-role-grupo-cerrado .pm-role-grupo-body {
+	display			: block;
+}
+
+/* ---------- Filas (pantallas) ---------- */
+.pm-role .pm-role-fila {
+	display			: flex;
+	flex-wrap		: wrap;
+	align-items		: center;
+	padding			: 6px 10px;
+	border-top		: 1px solid #EEF2F7;
+	background-color: #FFFFFF;
+}
+.pm-role .pm-role-fila-sin .pm-role-fila-nombre,
+.pm-role .pm-role-fila-sin .pm-role-niveles {
+	opacity			: 0.5;
+}
+.pm-role .pm-role-fila-nombre {
+	flex			: 1 1 220px;
+	min-width		: 160px;
+	padding			: 4px 8px 4px 0;
+}
+.pm-role .pm-role-nombre {
+	font-weight		: 600;
+	margin-right	: 6px;
+}
+.pm-role .pm-role-tipo {
+	display			: inline-block;
+	padding			: 1px 7px;
+	border-radius	: 10px;
+	font-size		: 11px;
+	font-weight		: 600;
+	background-color: #E2E8F0;
+	color			: #475569;
+	white-space		: nowrap;
+}
+.pm-role .pm-role-tipo-4 { background-color: #EDE9FE; color: #5B21B6; }
+.pm-role .pm-role-tipo-5 { background-color: #E0F2FE; color: #075985; }
+.pm-role .pm-role-tipo-6 { background-color: #FEF3C7; color: #92400E; }
+.pm-role .pm-role-tipo-8 { background-color: #F1F5F9; color: #475569; }
+
+/* Interruptor Acceso */
+.pm-role .pm-role-switch {
+	display			: inline-flex;
+	align-items		: center;
+	flex			: 0 0 110px;
+	min-height		: 40px;
+	margin			: 0;
+	cursor			: pointer;
+	font-weight		: 600;
+	position		: relative;
+}
+.pm-role .pm-role-switch input {
+	position		: absolute;
+	opacity			: 0;
+	width			: 1px;
+	height			: 1px;
+	margin			: 0;
+}
+.pm-role .pm-role-switch-ui {
+	position		: relative;
+	display			: inline-block;
+	width			: 40px;
+	height			: 22px;
+	margin-right	: 6px;
+	border-radius	: 11px;
+	background-color: #CBD5E1;
+	transition		: background-color 0.15s ease;
+}
+.pm-role .pm-role-switch-ui:after {
+	content			: '';
+	position		: absolute;
+	top				: 3px;
+	left			: 3px;
+	width			: 16px;
+	height			: 16px;
+	border-radius	: 50%;
+	background-color: #FFFFFF;
+	box-shadow		: 0 1px 2px rgba(0, 0, 0, 0.2);
+	transition		: left 0.15s ease;
+}
+.pm-role .pm-role-switch input:checked + .pm-role-switch-ui {
+	background-color: #006E98;
+}
+.pm-role .pm-role-switch input:checked + .pm-role-switch-ui:after {
+	left			: 21px;
+}
+.pm-role .pm-role-switch input:focus + .pm-role-switch-ui {
+	box-shadow		: 0 0 0 3px rgba(0, 110, 152, 0.25);
+}
+
+/* 4 selects */
+.pm-role .pm-role-niveles {
+	display			: flex;
+	flex			: 0 0 auto;
+	flex-wrap		: nowrap;
+}
+.pm-role .pm-role-nivel {
+	display			: block;
+	width			: 112px;
+	margin			: 0 0 0 6px;
+	font-weight		: 400;
+}
+.pm-role .pm-role-nivel-txt {
+	display			: block;
+	font-size		: 11px;
+	color			: #64748B;
+	line-height		: 1.3;
+}
+.pm-role select.pm-role-sel {
+	height			: 34px;
+	padding			: 4px 6px;
+	font-size		: 13px;
+}
+.pm-role select.pm-role-sel[disabled] {
+	background-color: #F8FAFC;
+	cursor			: not-allowed;
+}
+
+.pm-role .pm-role-oculta {
+	display			: none !important;
+}
+
+/* ---------- Autorizaciones ---------- */
+.pm-role .pm-role-auts {
+	display			: flex;
+	flex-wrap		: wrap;
+	margin			: 0 -4px;
+}
+.pm-role .pm-role-aut {
+	display			: flex;
+	align-items		: center;
+	width			: 33.333%;
+	min-height		: 40px;
+	margin			: 0;
+	padding			: 4px;
+	font-weight		: 400;
+	cursor			: pointer;
+}
+.pm-role .pm-role-aut input {
+	margin			: 0 8px 0 4px;
+	width			: 18px;
+	height			: 18px;
+}
+.pm-role .pm-role-card-head .btn {
+	min-height		: 36px;
+	margin			: 2px 0 2px 6px;
+}
+
+/* ---------- Barra fija inferior (solo telefono) ---------- */
+.pm-role .pm-role-barra-movil {
+	display			: none;
+}
+
+/* ---------- PC mediano ---------- */
+@media (max-width: 1199px) {
+	.pm-role .pm-role-nivel {
+		width		: 100px;
+	}
+	.pm-role .pm-role-aut {
+		width		: 50%;
+	}
+}
+
+/* ---------- Telefono ---------- */
+@media (max-width: 767px) {
+	.pm-role {
+		padding-bottom	: 84px;
+	}
+	.pm-role .pm-role-barra {
+		padding		: 8px;
+	}
+	.pm-role .pm-role-barra-botones {
+		width		: 100%;
+	}
+	.pm-role .pm-role-barra-botones .btn {
+		flex		: 1 1 0;
+		min-height	: 44px;
+	}
+	.pm-role .pm-role-card-body {
+		padding		: 12px;
+	}
+	.pm-role .pm-role-campo {
+		width		: 100%;
+	}
+	.pm-role .form-control,
+	.pm-role select.pm-role-sel {
+		font-size	: 16px;
+	}
+	.pm-role input.form-control,
+	.pm-role select.form-control {
+		height		: 44px;
+	}
+	.pm-role .pm-role-buscar {
+		flex		: 1 1 100%;
+	}
+	.pm-role .pm-role-herramientas .btn {
+		flex		: 1 1 0;
+		min-height	: 44px;
+		padding		: 8px 6px;
+	}
+	.pm-role .pm-role-grupo-acciones {
+		display		: flex;
+		width		: 100%;
+		padding-bottom: 4px;
+	}
+	.pm-role .pm-role-grupo-acciones .btn {
+		flex		: 1 1 0;
+		min-height	: 40px;
+	}
+	.pm-role .pm-role-fila {
+		margin		: 8px;
+		padding		: 10px;
+		border		: 1px solid #E2E8F0;
+		border-radius: 10px;
+	}
+	.pm-role .pm-role-fila-nombre {
+		flex		: 1 1 auto;
+		min-width	: 0;
+		width		: calc(100% - 120px);
+	}
+	.pm-role .pm-role-switch {
+		flex		: 0 0 auto;
+		min-height	: 44px;
+	}
+	.pm-role .pm-role-niveles {
+		flex		: 1 1 100%;
+		flex-wrap	: wrap;
+		margin		: 4px -4px 0;
+	}
+	.pm-role .pm-role-nivel {
+		width		: 50%;
+		margin		: 0;
+		padding		: 4px;
+	}
+	.pm-role .pm-role-nivel-txt {
+		font-size	: 12px;
+	}
+	.pm-role select.pm-role-sel {
+		height		: 44px;
+	}
+	.pm-role .pm-role-aut {
+		width		: 100%;
+		min-height	: 44px;
+	}
+	.pm-role .pm-role-barra-movil {
+		display			: flex;
+		align-items		: center;
+		justify-content	: space-between;
+		position		: fixed;
+		left			: 0;
+		right			: 0;
+		bottom			: 0;
+		z-index			: 1030;
+		padding			: 8px 12px;
+		padding-bottom	: calc(8px + env(safe-area-inset-bottom));
+		background-color: #FFFFFF;
+		border-top		: 1px solid #E2E8F0;
+		box-shadow		: 0 -2px 10px rgba(15, 23, 42, 0.10);
+	}
+	.pm-role .pm-role-barra-movil-txt {
+		font-weight		: 600;
+		color			: #006E98;
+		margin-right	: 10px;
+	}
+	.pm-role .pm-role-barra-movil .btn {
+		min-height		: 46px;
+		padding			: 10px 22px;
+		font-size		: 15px;
+	}
+}

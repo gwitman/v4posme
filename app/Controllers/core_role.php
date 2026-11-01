@@ -98,10 +98,32 @@ class core_role extends _BaseController {
 						
 			
 			 
+			//Permisos enviados: un solo registro por elemento y niveles validos (-1,0,1,2)
+			$listPermission			= array();
+			$listNivelValido		= array(PERMISSION_NONE,PERMISSION_ALL,PERMISSION_BRANCH,PERMISSION_ME);
+			$elementIDArray			= /*inicio get post*/ $this->request->getPost("txtElementID");
+			$txtSelectedIDArray		= /*inicio get post*/ $this->request->getPost("txtSelectedID");
+			$txtInsertedIDArray		= /*inicio get post*/ $this->request->getPost("txtInsertedID");
+			$txtDeletedIDArray		= /*inicio get post*/ $this->request->getPost("txtDeletedID");
+			$txtEditedIDArray		= /*inicio get post*/ $this->request->getPost("txtEditedID");
+			if($elementIDArray)
+			foreach($elementIDArray as $key => $value){
+				$elementID = intval($value);
+				if($elementID <= 0 || array_key_exists($elementID,$listPermission))
+				continue;
+
+				$nivel = array();
+				foreach(array("selected" => $txtSelectedIDArray,"inserted" => $txtInsertedIDArray,"deleted" => $txtDeletedIDArray,"edited" => $txtEditedIDArray) as $flag => $arrayFlag){
+					$valueFlag		= ($arrayFlag && isset($arrayFlag[$value])) ? intval($arrayFlag[$value]) : PERMISSION_NONE;
+					$nivel[$flag]	= in_array($valueFlag,$listNivelValido,true) ? $valueFlag : PERMISSION_NONE;
+				}
+				$listPermission[$elementID] = $nivel;
+			}
+
 			//Nuevo Registro
 			$companyID 	= /*inicio get post*/ $this->request->getPost("companyID");
 			$branchID 	= /*inicio get post*/ $this->request->getPost("branchID");
-			$roleID		= /*inicio get post*/ $this->request->getPost("roleID");		
+			$roleID		= /*inicio get post*/ $this->request->getPost("roleID");
 			if((!$companyID && !$branchID   && !$roleID) && $this->validation->withRequest($this->request)->run() == true ){
 					
 					//PERMISO SOBRE LA FUNCION
@@ -137,24 +159,18 @@ class core_role extends _BaseController {
 					//Eliminar Elementos
 					$this->User_Permission_Model->delete_ByRole($companyID,$branchID,$roleID);
 					
-					//Insert Elementos 
-					$elementIDArray			= /*inicio get post*/ $this->request->getPost("txtElementID");
-					$txtSelectedIDArray		= /*inicio get post*/ $this->request->getPost("txtSelectedID");
-					$txtInsertedIDArray		= /*inicio get post*/ $this->request->getPost("txtInsertedID");
-					$txtDeletedIDArray		= /*inicio get post*/ $this->request->getPost("txtDeletedID");
-					$txtEditedIDArray		= /*inicio get post*/ $this->request->getPost("txtEditedID");
-					if($elementIDArray)
-					foreach($elementIDArray as $key => $value){
+					//Insert Elementos
+					foreach($listPermission as $elementID => $nivel){
 							$objUserPermission["companyID"]		= $companyID;
 							$objUserPermission["branchID"]		= $branchID;
 							$objUserPermission["roleID"]		= $roleID;
-							$objUserPermission["elementID"]		= $value;							
-							$objUserPermission["selected"]		= $txtSelectedIDArray[$value];
-							$objUserPermission["inserted"]		= $txtInsertedIDArray[$value];
-							$objUserPermission["deleted"]		= $txtDeletedIDArray[$value];
-							$objUserPermission["edited"]		= $txtEditedIDArray[$value];
+							$objUserPermission["elementID"]		= $elementID;
+							$objUserPermission["selected"]		= $nivel["selected"];
+							$objUserPermission["inserted"]		= $nivel["inserted"];
+							$objUserPermission["deleted"]		= $nivel["deleted"];
+							$objUserPermission["edited"]		= $nivel["edited"];
 							$this->User_Permission_Model->insert_app_posme($objUserPermission);
-					} 
+					}
 					
 					//Insertar Autorizaciones
 					$listsComponentAutorizationID = /*inicio get post*/ $this->request->getPost("txtComponentAutorizationID");
@@ -173,9 +189,9 @@ class core_role extends _BaseController {
 						$this->response->redirect(base_url()."/".'core_role/edit/companyID/'.$companyID."/branchID/".$branchID."/roleID/".$roleID);						
 					}
 					else{
-						$db->transRollback();						
-						$this->core_web_notification->set_message(true,$this->db->_error_message());
-						$this->response->redirect(base_url()."/".'core_role/add');	
+						$db->transRollback();
+						$this->core_web_notification->set_message(true,$db->error()["message"]);
+						$this->response->redirect(base_url()."/".'core_role/add');
 					}				
 					 
 			} 
@@ -196,7 +212,14 @@ class core_role extends _BaseController {
 					}	 
 										
 					//PERMISO SOBRE EL REGISTRO
+					//El rol debe ser de la empresa de la sesion
+					if ($companyID != $dataSession["user"]->companyID)
+					throw new \Exception(NOT_EDIT);
+
 					$objOld = $this->Role_Model->get_rowByPK($companyID,$branchID,$roleID);
+					if (!$objOld)
+					throw new \Exception(NOT_EDIT);
+
 					if ($resultPermission 	== PERMISSION_ME && ($objOld->createdBy != $dataSession["user"]->userID))
 					throw new \Exception(NOT_EDIT);
 			
@@ -208,29 +231,23 @@ class core_role extends _BaseController {
 					$obj["description"] 	= /*inicio get post*/ $this->request->getPost("txtDescription");
 					$obj["urlDefault"] 		= /*inicio get post*/ $this->request->getPost("txtUrlDefault");
 					$obj["typeApp"] 		= /*inicio get post*/ $this->request->getPost("txtTypeApp");
-					$obj["isAdmin"] 		= false;
+					$obj["isAdmin"] 		= $objOld->isAdmin;	//conservar: antes se forzaba false y el rol perdia el administrador
 					$obj["isActive"] 		= true;
 					$result 				= $this->Role_Model->update_app_posme($companyID,$branchID,$roleID,$obj);
-					
+
 					//Eliminar Elementos
 					$this->User_Permission_Model->delete_ByRole($companyID,$branchID,$roleID);
-					
-					//Insert Elementos  
-					$elementIDArray			= /*inicio get post*/ $this->request->getPost("txtElementID");
-					$txtSelectedIDArray		= /*inicio get post*/ $this->request->getPost("txtSelectedID");
-					$txtInsertedIDArray		= /*inicio get post*/ $this->request->getPost("txtInsertedID");
-					$txtDeletedIDArray		= /*inicio get post*/ $this->request->getPost("txtDeletedID");
-					$txtEditedIDArray		= /*inicio get post*/ $this->request->getPost("txtEditedID");
-					if($elementIDArray)
-					foreach($elementIDArray as $key => $value){
+
+					//Insert Elementos
+					foreach($listPermission as $elementID => $nivel){
 							$objUserPermission["companyID"]		= $companyID;
 							$objUserPermission["branchID"]		= $branchID;
 							$objUserPermission["roleID"]		= $roleID;
-							$objUserPermission["elementID"]		= $value;							
-							$objUserPermission["selected"]		= $txtSelectedIDArray[$value];
-							$objUserPermission["inserted"]		= $txtInsertedIDArray[$value];
-							$objUserPermission["deleted"]		= $txtDeletedIDArray[$value];
-							$objUserPermission["edited"]		= $txtEditedIDArray[$value];
+							$objUserPermission["elementID"]		= $elementID;
+							$objUserPermission["selected"]		= $nivel["selected"];
+							$objUserPermission["inserted"]		= $nivel["inserted"];
+							$objUserPermission["deleted"]		= $nivel["deleted"];
+							$objUserPermission["edited"]		= $nivel["edited"];
 							$this->User_Permission_Model->insert_app_posme($objUserPermission);
 					}
 					
@@ -255,8 +272,8 @@ class core_role extends _BaseController {
 						$this->core_web_notification->set_message(false,SUCCESS);
 					}
 					else{
-						$db->transRollback();						
-						$this->core_web_notification->set_message(true,$this->db->_error_message());
+						$db->transRollback();
+						$this->core_web_notification->set_message(true,$db->error()["message"]);
 					}
 					$this->response->redirect(base_url()."/".'core_role/edit/companyID/'.$companyID."/branchID/".$branchID."/roleID/".$roleID);
 			}  
@@ -317,18 +334,22 @@ class core_role extends _BaseController {
 			$branchID	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"branchID");//--finuri
 			$roleID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"roleID");//--finuri
 			if((!$companyID || !$branchID ||  !$roleID))
-			{ 
-				$this->response->redirect(base_url()."/".'core_role/add');	
-			} 		
-			
-			
-			//Obtener el Registro			
+			{
+				return redirect()->to(base_url()."/".'core_role/add');
+			}
+
+
+			//Obtener el Registro
 			$datView["objRole"]	 					= $this->Role_Model->get_rowByPK($companyID,$branchID,$roleID);
 			//Obtener los Permisos
 			$datView["objUserPermission"]			= $this->User_Permission_Model->get_rowByCompanyIDyBranchIDyRoleID($companyID,$branchID,$roleID);
 			//Obtener las Autorization
 			$datView["listComponentAutoriation"]	= $this->Role_Autorization_Model->get_rowByRoleAutorization($companyID,$branchID,$roleID);
-			
+			//Matriz de permisos: todas las pantallas y todas las autorizaciones de la empresa
+			$datView["listMenuElement"]				= $this->Menu_Element_Model->get_rowByCompanyIDForRole($dataSession["user"]->companyID);
+			$datView["listComponentAutorizationAll"]= $this->Component_Autorization_Model->get_rowByCompanyID($dataSession["user"]->companyID);
+			$datView["isOwnRole"]					= ($dataSession["role"]->roleID == $roleID);
+
 			
 			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -377,12 +398,16 @@ class core_role extends _BaseController {
 			 
 			}	  
 			 
-			//Renderizar Resultado 
+			//Matriz de permisos: todas las pantallas y todas las autorizaciones de la empresa
+			$datView["listMenuElement"]				= $this->Menu_Element_Model->get_rowByCompanyIDForRole($dataSession["user"]->companyID);
+			$datView["listComponentAutorizationAll"]= $this->Component_Autorization_Model->get_rowByCompanyID($dataSession["user"]->companyID);
+
+			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
-			$dataSession["head"]			= /*--inicio view*/ view('core_role/news_head');//--finview
-			$dataSession["body"]			= /*--inicio view*/ view('core_role/news_body');//--finview
-			$dataSession["script"]			= /*--inicio view*/ view('core_role/news_script');//--finview
+			$dataSession["head"]			= /*--inicio view*/ view('core_role/news_head',$datView);//--finview
+			$dataSession["body"]			= /*--inicio view*/ view('core_role/news_body',$datView);//--finview
+			$dataSession["script"]			= /*--inicio view*/ view('core_role/news_script',$datView);//--finview
 			$dataSession["footer"]			= "";
 			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r
 			
@@ -435,15 +460,19 @@ class core_role extends _BaseController {
 			if($dataViewID == null){				
 				$targetComponentID			= 0;	
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
-				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);
 			}
 			//Otra vista
-			else{									
+			else{
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
-				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter);
 			}
+
+			//En telefono la lista se dibuja como en abonos (app_box_share)
+			if( $this->request->getUserAgent()->isMobile() )
+			$dataViewRender				= $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow");
+			else
+			$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			 
 			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);

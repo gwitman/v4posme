@@ -72,6 +72,34 @@ class Menu_Element_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
    
+   //Pantallas de la empresa para la matriz de permisos de core_role (add / edit)
+   //Incluye el tipo de menu para agrupar; solo los elementos de los componentes de la empresa
+   function get_rowByCompanyIDForRole($companyID){
+		$db 	= db_connect();
+		$sql = "";
+		$sql = sprintf("
+						select
+							distinct
+							x.elementID,x.menuElementID,x.parentMenuElementID,
+							x.display,x.address,x.orden,x.icon,x.nivel,
+							x.typeMenuElementID,ifnull(x.typeApp,'') as typeApp
+						from
+							tb_menu_element x
+							inner join  tb_element e on e.elementID = x.elementID
+							inner join  tb_component_element ce on e.elementID = ce.elementID
+							inner join  tb_company_component cco on ce.componentID = cco.componentID
+						where
+							x.companyID = %d
+							and x.isActive = 1
+							and cco.companyID = %d
+						order by
+							x.typeApp asc, x.orden asc, x.menuElementID asc
+						",$companyID,$companyID);
+
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+
    function get_rowByUserID($companyID,$userID,$typeApp){
 	   $db 	= db_connect(); 	
 		$sql = "";

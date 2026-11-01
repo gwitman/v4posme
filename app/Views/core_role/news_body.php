@@ -1,123 +1,104 @@
 					<!-- body -->
-					<div class="row">
-						<!-- row --> 
-                        <div id="email" class="col-lg-12">
-                        
-                        	<!-- row-botonera-->							
-                            <div class="email-bar" style="border-left:1px solid #c9c9c9">                                
-                                <div class="btn-group pull-right">                                    
-									<a href="<?php echo base_url(); ?>/core_role/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>                                    
-                                    <a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>                                    
-                                </div>
-                            </div> 							
-							<!-- /row-botonera-->
+					<?php
+						//Tipos de app disponibles (vacio = default)
+						$typeAppActual	= "default";
+						$tiposApp		= array();
+						if($listMenuElement)
+						foreach($listMenuElement as $m){
+							$t = ($m->typeApp === null || $m->typeApp === "") ? "default" : $m->typeApp;
+							if(!in_array($t,$tiposApp,true)) $tiposApp[] = $t;
+						}
+						if(!in_array($typeAppActual,$tiposApp,true)) $tiposApp[] = $typeAppActual;
+					?>
+					<div class="pm-role" id="pmRole">
+					<form id="form-new-rol" name="form-new-rol" method="POST" action="<?php echo base_url(); ?>/core_role/save" role="form" autocomplete="off">
+
+						<!-- barra de acciones -->
+						<div class="pm-role-barra">
+							<div class="pm-role-barra-titulo">Nuevo rol</div>
+							<div class="pm-role-barra-botones">
+								<a href="<?php echo base_url(); ?>/core_role/index" id="btnBack" class="btn btn-default"><i class="icon16 i-arrow-left-2"></i> Regresar</a>
+								<button type="button" class="btn btn-primary pm-role-guardar" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</button>
+							</div>
 						</div>
+
+						<!-- avisos -->
+						<div class="alert alert-info pm-role-aviso">Los cambios en el menú se ven cuando el usuario vuelve a iniciar sesión.</div>
+
+						<!-- datos del rol -->
+						<div class="pm-role-card">
+							<div class="pm-role-card-head">
+								<h4 class="pm-role-card-titulo"><i class="icon16 i-shield"></i>Datos del rol</h4>
+							</div>
+							<div class="pm-role-card-body">
+								<div class="pm-role-datos">
+									<div class="pm-role-campo">
+										<label for="txtName">Nombre <span class="pm-role-req">*</span></label>
+										<input class="form-control" type="text" name="txtName" id="txtName" value="" maxlength="250">
+									</div>
+									<div class="pm-role-campo">
+										<label for="txtUrlDefault">Url por defecto <span class="pm-role-req">*</span></label>
+										<input class="form-control" type="text" name="txtUrlDefault" id="txtUrlDefault" value="" placeholder="core_dashboards/index">
+									</div>
+									<div class="pm-role-campo">
+										<label for="txtTypeApp">Tipo de app</label>
+										<select class="form-control" name="txtTypeApp" id="txtTypeApp">
+											<?php foreach($tiposApp as $t){ ?>
+											<option value="<?php echo htmlspecialchars($t); ?>" <?php echo ($t === $typeAppActual) ? 'selected="selected"' : ''; ?>><?php echo htmlspecialchars($t); ?></option>
+											<?php } ?>
+										</select>
+									</div>
+									<div class="pm-role-campo pm-role-campo-ancho">
+										<label for="txtDescription">Descripción <span class="pm-role-req">*</span></label>
+										<textarea class="form-control" id="txtDescription" name="txtDescription" rows="2"></textarea>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<!-- permisos por pantalla -->
+						<div class="pm-role-card">
+							<div class="pm-role-card-head">
+								<h4 class="pm-role-card-titulo"><i class="icon16 i-grid-2"></i>Permisos por pantalla</h4>
+							</div>
+							<div class="pm-role-card-body">
+								<div class="pm-role-herramientas">
+									<input type="text" class="form-control pm-role-buscar" id="pmRoleBuscar" placeholder="Buscar pantalla…" autocomplete="off">
+									<label class="pm-role-solo"><input type="checkbox" id="pmRoleSoloAcceso"> Solo con acceso</label>
+									<button type="button" class="btn btn-default" id="pmRoleTotal" title="Acceso total a las pantallas visibles">Acceso total</button>
+									<button type="button" class="btn btn-default" id="pmRoleVer" title="Solo ver en las pantallas visibles">Solo ver</button>
+									<button type="button" class="btn btn-default" id="pmRoleQuitar" title="Quitar acceso a las pantallas visibles">Quitar todo</button>
+								</div>
+								<div class="pm-role-contador" id="pmRoleContador"></div>
+								<div class="pm-role-conservados" id="pmRoleConservados" style="display:none"></div>
+								<div id="pmRoleGrupos"></div>
+								<div class="pm-role-vacio" id="pmRoleSinResultados" style="display:none">No hay pantallas que coincidan con el filtro.</div>
+							</div>
+						</div>
+
+						<!-- autorizaciones -->
+						<div class="pm-role-card">
+							<div class="pm-role-card-head">
+								<h4 class="pm-role-card-titulo"><i class="icon16 i-key"></i>Autorizaciones</h4>
+								<div>
+									<button type="button" class="btn btn-default btn-sm" id="pmRoleAutTodas">Marcar todas</button>
+									<button type="button" class="btn btn-default btn-sm" id="pmRoleAutNinguna">Ninguna</button>
+								</div>
+							</div>
+							<div class="pm-role-card-body">
+								<div class="pm-role-auts" id="pmRoleAutorizaciones"></div>
+							</div>
+						</div>
+
+						<!-- campos del POST (se generan al guardar) -->
+						<div id="pmRolePost" style="display:none"></div>
+
+						<!-- barra fija inferior (telefono) -->
+						<div class="pm-role-barra-movil">
+							<span class="pm-role-barra-movil-txt" id="pmRoleContadorMovil"></span>
+							<button type="button" class="btn btn-primary pm-role-guardar"><i class="icon16 i-checkmark-4"></i> Guardar</button>
+						</div>
+
+					</form>
 					</div>
-					<div class="row">
-						<div class="col-lg-12">
-							<!-- widget -->
-							<div class="panel panel-default">
-								<!-- panel widget -->
-                                <div class="panel-heading">
-	                                  <div class="icon"><i class="icon20 i-cube"></i></div> 
-	                                  <h4>Formulario de Datos</h4>
-	                                  <a href="#" class="minimize"></a>
-                                </div>
-                                <!-- /panel widget -->
-								<!-- body widget -->
-                                <div class="panel-body noPadding">
-                                
-                                	<!-- tab widget -->
-                                    <ul id="myTab" class="nav nav-tabs">
-                                        <li class="active"><a href="#home1" data-toggle="tab">Informacion General</a></li>
-                                        <li><a href="#profile1" data-toggle="tab">Autorizaciones</a></li>
-                                    </ul>
-                                    <!-- /tab widget -->
-                                    
-                                    <!-- body widget form -->
-									<form id="form-new-rol" name="form-new-rol" class="form-horizontal" role="form">
-                                    <div class="tab-content">
-                                    	<!-- tab home widget -->
-                                        <div class="tab-pane fade in active" id="home1">
-                                            <div class="email-wrapper" style="padding:15px 15px 15px 15px;padding-left:15px">
-                                            	<!-- row widget 1 -->
-				                                <div class="row">
-				                                    <div class="email-content col-lg-12">				                                        
-															<fieldset>			
-																<div class="form-group">
-																		<label class="col-lg-2 control-label" for="normal">Nombre</label>
-																		<div class="col-lg-10">
-																			<input class="form-control"  type="text" name="txtName" id="txtName" value="">												
-																		</div>
-																</div>
-																<div class="form-group">
-																		<label class="col-lg-2 control-label" for="normal">Url Default</label>
-																		<div class="col-lg-10">
-																			<input class="form-control"  type="text" name="txtUrlDefault" id="txtUrlDefault" value="">												
-																		</div>
-																</div>		
-																<div class="form-group">
-																		<label class="col-lg-2 control-label" for="normal">Tipo App</label>
-																		<div class="col-lg-10">
-																			<input class="form-control"  type="text" name="txtTypeApp" id="txtTypeApp" value="default">												
-																		</div>
-																</div>																		
-																<div class="form-group">
-																	<label class="col-lg-2 control-label" for="normal">Descripcion</label>
-																	<div class="col-lg-10">
-																		<textarea class="form-control" id="txtDescription" name="txtDescription" rows="3"></textarea>
-																	</div>
-																</div>
-																<hr />
-																<a href="#" class="btn btn-flat btn-info" id="btnNewDetail" >Agregar</a>
-																<a href="#" class="btn btn-flat btn-danger" id="btnDeleteDetail" >Eliminar</a>									
-																<table id="ListElement" class="table table-striped">
-																	<thead>
-																		<tr>
-																			<th>Orden</th>
-																			<th>Elemento</th>
-																			<th>Seleccion</th>
-																			<th>Insercion</th>
-																			<th>Eliminacion</th>
-																			<th>Edicion</th>
-																		</tr>
-																	</thead>
-																	<tbody id="tbody_detail">																				
-																	</tbody>
-																</table>															  
-															</fieldset>
-				                                    </div>
-				                                </div>
-				                                <!-- /row widget 1 -->                            
-				                            </div>
-                                        </div>
-                                        <!-- /tab home widget -->
-                                        
-                                        <!-- /tab profile1 widget -->
-                                        <div class="tab-pane fade" id="profile1">
-                                            	<a href="#" class="btn btn-flat btn-info" id="btnNewDetailAutorization" >Agregar</a>
-												<a href="#" class="btn btn-flat btn-danger" id="btnDeleteDetailAutorization" >Eliminar</a>									
-									
-												<table id="ListElementAutorization" class="table table-striped">
-													<thead>
-														<tr>
-															<th>Autorizaciones</th>															
-														</tr>
-													</thead>
-													<tbody id="tbody_detail_autorization">																				
-													</tbody>
-												</table>
-                                        </div>
-                                        <!-- /tab profile1 widget -->
-                                        
-                                    </div> 
-                                    </form>
-                                    <!-- /body widget form -->  
-                                </div>
-                                <!-- /body widget -->
-                            </div>
-                            <!-- /widget -->                            
-                        </div>
-                        <!-- /row  -->
-                    </div>
-                    <!-- /body  -->
+					<!-- /body  -->
