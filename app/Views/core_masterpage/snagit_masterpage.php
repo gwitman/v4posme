@@ -844,5 +844,6 @@
 	
 	
 
+  <?php echo helper_getHtmlAiChatWidget(); ?>
   </body>
 </html>

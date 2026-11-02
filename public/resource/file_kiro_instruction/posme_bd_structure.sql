@@ -217,6 +217,77 @@ CREATE TABLE `tb_accounting_period`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 33 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
+-- Table structure for tb_ai_auditoria_sql
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_ai_auditoria_sql`;
+CREATE TABLE tb_ai_auditoria_sql (
+    auditoriaID    INT NOT NULL AUTO_INCREMENT,
+    companyID      INT NOT NULL,
+    userID         INT NOT NULL,
+    herramienta    VARCHAR(60) NOT NULL,
+    sqlParametros  TEXT NULL,
+    filas          INT NOT NULL DEFAULT 0,
+    ms             INT NOT NULL DEFAULT 0,
+    error          VARCHAR(1000) NULL,
+    createdOn      DATETIME NOT NULL,
+    PRIMARY KEY (auditoriaID),
+    KEY IDX_AI_AUDITORIA_001 (companyID, createdOn)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+-- ----------------------------
+-- Table structure for tb_ai_conversacion
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_ai_conversacion`;
+CREATE TABLE tb_ai_conversacion (
+    conversacionID INT NOT NULL AUTO_INCREMENT,
+    companyID      INT NOT NULL,
+    userID         INT NOT NULL,
+    isActive       TINYINT(1) NOT NULL DEFAULT 1,
+    createdOn      DATETIME NOT NULL,
+    updatedOn      DATETIME NULL,
+    PRIMARY KEY (conversacionID),
+    KEY IDX_AI_CONVERSACION_001 (companyID, userID, isActive)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+-- ----------------------------
+-- Table structure for tb_ai_mensaje
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_ai_mensaje`;
+CREATE TABLE tb_ai_mensaje (
+    mensajeID      INT NOT NULL AUTO_INCREMENT,
+    conversacionID INT NOT NULL,
+    companyID      INT NOT NULL,
+    userID         INT NOT NULL,
+    rol            VARCHAR(20) NOT NULL COMMENT 'user | assistant',
+    contenidoJson  MEDIUMTEXT NULL COMMENT 'texto del mensaje (JSON con texto y metadatos)',
+    tokensIn       INT NOT NULL DEFAULT 0,
+    tokensOut      INT NOT NULL DEFAULT 0,
+    createdOn      DATETIME NOT NULL,
+    PRIMARY KEY (mensajeID),
+    KEY IDX_AI_MENSAJE_001 (conversacionID),
+    KEY IDX_AI_MENSAJE_002 (companyID, userID, rol, createdOn)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+-- ----------------------------
+-- Table structure for tb_ai_uso
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_ai_uso`;
+CREATE TABLE tb_ai_uso (
+    usoID            INT NOT NULL AUTO_INCREMENT,
+    companyID        INT NOT NULL,
+    userID           INT NOT NULL,
+    periodo          CHAR(7) NOT NULL COMMENT 'YYYY-MM',
+    inputTokens      BIGINT NOT NULL DEFAULT 0,
+    outputTokens     BIGINT NOT NULL DEFAULT 0,
+    cacheReadTokens  BIGINT NOT NULL DEFAULT 0,
+    cacheWriteTokens BIGINT NOT NULL DEFAULT 0,
+    solicitudes      INT NOT NULL DEFAULT 0,
+    updatedOn        DATETIME NULL,
+    PRIMARY KEY (usoID),
+    UNIQUE KEY UK_AI_USO_001 (companyID, userID, periodo)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
+
+-- ----------------------------
 -- Table structure for tb_bank
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_bank`;
@@ -3625,6 +3696,422 @@ CREATE TABLE `tb_workflow_stage_relation`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 1386 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
+-- View structure for ai_v_monedas (asistente IA Jordania)
+-- ----------------------------
+DROP VIEW IF EXISTS `ai_v_monedas`;
+CREATE VIEW ai_v_monedas AS
+SELECT
+    cur.currencyID AS moneda_id,
+    cur.name       AS moneda,
+    cur.simbol     AS simbolo
+FROM tb_currency AS cur
+WHERE cur.isActive = 1;
+
+-- ----------------------------
+-- View structure for ai_v_sucursales (asistente IA Jordania)
+-- ----------------------------
+DROP VIEW IF EXISTS `ai_v_sucursales`;
+CREATE VIEW ai_v_sucursales AS
+SELECT
+    b.branchID AS sucursal_id,
+    b.name     AS sucursal,
+    b.address  AS direccion
+FROM tb_branch AS b
+WHERE b.companyID = (SELECT ai_company())
+    AND b.isActive = 1;
+
+-- ----------------------------
+-- View structure for ai_v_usuarios (asistente IA Jordania)
+-- ----------------------------
+DROP VIEW IF EXISTS `ai_v_usuarios`;
+CREATE VIEW ai_v_usuarios AS
+SELECT
+    u.userID   AS usuario_id,
+    u.nickname AS usuario,
+    u.branchID AS sucursal_id,
+    b.name     AS sucursal
+FROM tb_user AS u
+    LEFT JOIN tb_branch AS b ON b.companyID = u.companyID AND b.branchID = u.branchID
+WHERE u.companyID = (SELECT ai_company())
+    AND u.isActive = 1;
+
+-- ----------------------------
+-- View structure for ai_v_clientes (asistente IA Jordania)
+-- ----------------------------
+DROP VIEW IF EXISTS `ai_v_clientes`;
+CREATE VIEW ai_v_clientes AS
+SELECT
+    c.customerID                                                         AS cliente_id,
+    c.entityID                                                           AS entidad_id,
+    c.customerNumber                                                     AS codigo,
+    TRIM(CONCAT(IFNULL(n.firstName, ''), ' ', IFNULL(n.lastName, '')))  AS nombre,
+    l.comercialName                                                      AS nombre_comercial,
+    c.identification                                                     AS identificacion,
+    c.phoneNumber                                                        AS telefono,
+    c.address                                                            AS direccion,
+    c.currencyID                                                         AS moneda_id,
+    cur.name                                                             AS moneda,
+    c.branchID                                                           AS sucursal_id,
+    ws.name                                                              AS estado,
+    c.birthDate                                                          AS fecha_nacimiento,
+    c.createdOn                                                          AS fecha_creacion
+FROM tb_customer AS c
+    LEFT JOIN tb_naturales AS n          ON n.entityID = c.entityID AND n.companyID = c.companyID
+    LEFT JOIN tb_legal AS l              ON l.entityID = c.entityID AND l.companyID = c.companyID
+    LEFT JOIN tb_currency AS cur         ON cur.currencyID = c.currencyID
+    LEFT JOIN tb_workflow_stage AS ws    ON ws.workflowStageID = c.statusID
+WHERE c.companyID = (SELECT ai_company())
+    AND c.isActive = 1;
+
+-- ----------------------------
+-- View structure for ai_v_productos (asistente IA Jordania)
+-- ----------------------------
+DROP VIEW IF EXISTS `ai_v_productos`;
+CREATE VIEW ai_v_productos AS
+SELECT
+    i.itemID              AS producto_id,
+    i.itemNumber          AS codigo,
+    i.barCode             AS codigo_barras,
+    i.name                AS nombre,
+    cat.name              AS categoria,
+    i.quantity            AS existencia_total,
+    i.quantityMin         AS existencia_minima,
+    i.quantityMax         AS existencia_maxima,
+    i.cost                AS costo,
+    (
+        SELECT MAX(p.price)
+        FROM tb_price AS p
+        WHERE p.companyID = i.companyID
+            AND p.itemID = i.itemID
+            AND p.typePriceID = 154
+            AND p.listPriceID = (
+                SELECT CAST(cp.value AS UNSIGNED)
+                FROM tb_company_parameter AS cp
+                    INNER JOIN tb_parameter AS pa ON pa.parameterID = cp.parameterID
+                WHERE cp.companyID = i.companyID
+                    AND pa.name = 'INVOICE_DEFAULT_PRICELIST'
+                LIMIT 1
+            )
+    )                     AS precio_publico,
+    i.isServices          AS es_servicio,
+    i.dateLastUse         AS fecha_ultimo_movimiento,
+    i.createdOn           AS fecha_creacion
+FROM tb_item AS i
+    LEFT JOIN tb_item_category AS cat ON cat.companyID = i.companyID AND cat.inventoryCategoryID = i.inventoryCategoryID
+WHERE i.companyID = (SELECT ai_company())
+    AND i.isActive = 1;
+
+-- ----------------------------
+-- View structure for ai_v_inventario (asistente IA Jordania)
+-- ----------------------------
+DROP VIEW IF EXISTS `ai_v_inventario`;
+CREATE VIEW ai_v_inventario AS
+SELECT
+    i.itemID        AS producto_id,
+    i.itemNumber    AS codigo,
+    i.name          AS producto,
+    w.warehouseID   AS bodega_id,
+    w.name          AS bodega,
+    w.branchID      AS sucursal_id,
+    iw.quantity     AS existencia,
+    iw.quantityMin  AS existencia_minima,
+    iw.cost         AS costo
+FROM tb_item_warehouse AS iw
+    INNER JOIN tb_item AS i      ON i.companyID = iw.companyID AND i.itemID = iw.itemID
+    INNER JOIN tb_warehouse AS w ON w.companyID = iw.companyID AND w.warehouseID = iw.warehouseID
+WHERE iw.companyID = (SELECT ai_company())
+    AND i.isActive = 1
+    AND w.isActive = 1;
+
+-- ----------------------------
+-- View structure for ai_v_ventas (asistente IA Jordania)
+-- ----------------------------
+DROP VIEW IF EXISTS `ai_v_ventas`;
+CREATE VIEW ai_v_ventas AS
+SELECT
+    tm.transactionMasterID                                    AS factura_id,
+    tm.transactionNumber                                      AS numero,
+    tm.transactionOn                                          AS fecha,
+    DATE(tm.transactionOn)                                    AS dia,
+    tm.createdOn                                              AS fecha_registro,
+    tm.branchID                                               AS sucursal_id,
+    b.name                                                    AS sucursal,
+    c.customerID                                              AS cliente_id,
+    c.customerNumber                                          AS cliente_codigo,
+    CASE
+        WHEN LENGTH(tmi.referenceClientName) > 2 THEN tmi.referenceClientName
+        ELSE TRIM(CONCAT(IFNULL(n.firstName, ''), ' ', IFNULL(n.lastName, '')))
+    END                                                       AS cliente_nombre,
+    tc.name                                                   AS tipo_pago,
+    tm.currencyID                                             AS moneda_id,
+    cur.name                                                  AS moneda,
+    tm.exchangeRate                                           AS tipo_cambio,
+    tm.subAmount                                              AS subtotal,
+    tm.discount                                               AS descuento,
+    tm.tax1                                                   AS impuesto,
+    tm.amount                                                 AS total,
+    tmi.receiptAmount                                         AS recibido_efectivo,
+    tmi.receiptAmountDol                                      AS recibido_efectivo_dolares,
+    tmi.receiptAmountCard                                     AS recibido_tarjeta,
+    tmi.receiptAmountCardDol                                  AS recibido_tarjeta_dolares,
+    tmi.receiptAmountBank                                     AS recibido_transferencia,
+    tmi.receiptAmountBankDol                                  AS recibido_transferencia_dolares,
+    tmi.changeAmount                                          AS cambio,
+    ws.name                                                   AS estado,
+    IF(ws.aplicable = 1, 1, 0)                                AS es_valida,
+    tm.createdBy                                              AS usuario_id,
+    u.nickname                                                AS usuario,
+    tm.note                                                   AS nota
+FROM tb_transaction_master AS tm
+    LEFT JOIN tb_transaction_master_info AS tmi ON tmi.companyID = tm.companyID AND tmi.transactionID = tm.transactionID AND tmi.transactionMasterID = tm.transactionMasterID
+    LEFT JOIN tb_workflow_stage AS ws           ON ws.workflowStageID = tm.statusID
+    LEFT JOIN tb_transaction_causal AS tc       ON tc.companyID = tm.companyID AND tc.transactionID = tm.transactionID AND tc.transactionCausalID = tm.transactionCausalID
+    LEFT JOIN tb_customer AS c                  ON c.companyID = tm.companyID AND c.entityID = tm.entityID
+    LEFT JOIN tb_naturales AS n                 ON n.companyID = tm.companyID AND n.entityID = tm.entityID
+    LEFT JOIN tb_branch AS b                    ON b.companyID = tm.companyID AND b.branchID = tm.branchID
+    LEFT JOIN tb_currency AS cur                ON cur.currencyID = tm.currencyID
+    LEFT JOIN tb_user AS u                      ON u.userID = tm.createdBy
+WHERE tm.companyID = (SELECT ai_company())
+    AND tm.transactionID = 19
+    AND tm.isActive = 1;
+
+-- ----------------------------
+-- View structure for ai_v_ventas_detalle (asistente IA Jordania)
+-- ----------------------------
+DROP VIEW IF EXISTS `ai_v_ventas_detalle`;
+CREATE VIEW ai_v_ventas_detalle AS
+SELECT
+    tm.transactionMasterID                        AS factura_id,
+    tm.transactionNumber                          AS numero,
+    tm.transactionOn                              AS fecha,
+    DATE(tm.transactionOn)                        AS dia,
+    tm.branchID                                   AS sucursal_id,
+    tm.entityID                                   AS cliente_entidad_id,
+    ws.name                                       AS estado,
+    IF(ws.aplicable = 1, 1, 0)                    AS es_valida,
+    tmd.componentItemID                           AS producto_id,
+    i.itemNumber                                  AS producto_codigo,
+    IFNULL(NULLIF(tmd.itemNameLog, ''), i.name)   AS producto,
+    cat.name                                      AS categoria,
+    tmd.quantity                                  AS cantidad,
+    tmd.unitaryPrice                              AS precio_unitario,
+    tmd.unitaryPrice * tmd.quantity               AS subtotal,
+    tmd.discount                                  AS descuento,
+    tmd.tax1                                      AS impuesto,
+    tmd.amount                                    AS total,
+    tmd.cost                                      AS costo,
+    (tmd.unitaryPrice * tmd.quantity) - tmd.cost  AS utilidad,
+    tm.currencyID                                 AS moneda_id,
+    tm.exchangeRate                               AS tipo_cambio,
+    tm.createdBy                                  AS usuario_id
+FROM tb_transaction_master_detail AS tmd
+    INNER JOIN tb_transaction_master AS tm ON tm.companyID = tmd.companyID AND tm.transactionID = tmd.transactionID AND tm.transactionMasterID = tmd.transactionMasterID
+    LEFT JOIN tb_workflow_stage AS ws      ON ws.workflowStageID = tm.statusID
+    LEFT JOIN tb_item AS i                 ON i.companyID = tmd.companyID AND i.itemID = tmd.componentItemID
+    LEFT JOIN tb_item_category AS cat      ON cat.companyID = i.companyID AND cat.inventoryCategoryID = i.inventoryCategoryID
+WHERE tmd.companyID = (SELECT ai_company())
+    AND tmd.transactionID = 19
+    AND tmd.isActive = 1
+    AND tm.isActive = 1;
+
+-- ----------------------------
+-- View structure for ai_v_creditos (asistente IA Jordania)
+-- ----------------------------
+DROP VIEW IF EXISTS `ai_v_creditos`;
+CREATE VIEW ai_v_creditos AS
+SELECT
+    d.customerCreditDocumentID                                           AS documento_id,
+    d.documentNumber                                                     AS numero_documento,
+    c.customerID                                                         AS cliente_id,
+    c.customerNumber                                                     AS cliente_codigo,
+    TRIM(CONCAT(IFNULL(n.firstName, ''), ' ', IFNULL(n.lastName, '')))  AS cliente_nombre,
+    d.dateOn                                                             AS fecha,
+    d.amount                                                             AS monto,
+    d.interes                                                            AS tasa_interes,
+    d.term                                                               AS plazo,
+    d.balance                                                            AS saldo,
+    d.currencyID                                                         AS moneda_id,
+    cur.name                                                             AS moneda,
+    ws.name                                                              AS estado,
+    IF(ws.vinculable = 1, 1, 0)                                          AS vigente
+FROM tb_customer_credit_document AS d
+    LEFT JOIN tb_workflow_stage AS ws ON ws.workflowStageID = d.statusID
+    LEFT JOIN tb_customer AS c        ON c.companyID = d.companyID AND c.entityID = d.entityID
+    LEFT JOIN tb_naturales AS n       ON n.companyID = d.companyID AND n.entityID = d.entityID
+    LEFT JOIN tb_currency AS cur      ON cur.currencyID = d.currencyID
+WHERE d.companyID = (SELECT ai_company())
+    AND d.isActive = 1;
+
+-- ----------------------------
+-- View structure for ai_v_cuotas (asistente IA Jordania)
+-- ----------------------------
+DROP VIEW IF EXISTS `ai_v_cuotas`;
+CREATE VIEW ai_v_cuotas AS
+SELECT
+    a.creditAmortizationID                                               AS cuota_id,
+    d.customerCreditDocumentID                                           AS documento_id,
+    d.documentNumber                                                     AS numero_documento,
+    c.customerID                                                         AS cliente_id,
+    TRIM(CONCAT(IFNULL(n.firstName, ''), ' ', IFNULL(n.lastName, '')))  AS cliente_nombre,
+    a.sequence                                                           AS numero_cuota,
+    a.dateApply                                                          AS fecha_vencimiento,
+    a.share                                                              AS cuota,
+    a.capital                                                            AS capital,
+    a.interest                                                           AS interes,
+    a.remaining                                                          AS saldo_pendiente,
+    wsa.name                                                             AS estado,
+    IF(a.remaining > 0 AND a.dateApply < CURDATE() AND IFNULL(wsa.vinculable, 1) = 1, 1, 0) AS vencida,
+    IF(a.remaining > 0 AND a.dateApply < CURDATE() AND IFNULL(wsa.vinculable, 1) = 1, DATEDIFF(CURDATE(), a.dateApply), 0) AS dias_mora,
+    d.currencyID                                                         AS moneda_id,
+    IF(wsd.vinculable = 1, 1, 0)                                         AS documento_vigente
+FROM tb_customer_credit_amoritization AS a
+    INNER JOIN tb_customer_credit_document AS d ON d.customerCreditDocumentID = a.customerCreditDocumentID
+    LEFT JOIN tb_workflow_stage AS wsa          ON wsa.workflowStageID = a.statusID
+    LEFT JOIN tb_workflow_stage AS wsd          ON wsd.workflowStageID = d.statusID
+    LEFT JOIN tb_customer AS c                  ON c.companyID = d.companyID AND c.entityID = d.entityID
+    LEFT JOIN tb_naturales AS n                 ON n.companyID = d.companyID AND n.entityID = d.entityID
+WHERE d.companyID = (SELECT ai_company())
+    AND d.isActive = 1
+    AND a.isActive = 1;
+
+-- ----------------------------
+-- View structure for ai_v_abonos (asistente IA Jordania)
+-- ----------------------------
+DROP VIEW IF EXISTS `ai_v_abonos`;
+CREATE VIEW ai_v_abonos AS
+SELECT
+    tm.transactionMasterID                                               AS abono_id,
+    tm.transactionNumber                                                 AS numero,
+    t.name                                                               AS tipo,
+    tm.transactionOn                                                     AS fecha,
+    DATE(tm.transactionOn)                                               AS dia,
+    c.customerID                                                         AS cliente_id,
+    TRIM(CONCAT(IFNULL(n.firstName, ''), ' ', IFNULL(n.lastName, '')))  AS cliente_nombre,
+    tmd.reference1                                                       AS numero_documento,
+    tmd.amount                                                           AS monto,
+    tm.amount                                                            AS total_abono,
+    tm.currencyID                                                        AS moneda_id,
+    ws.name                                                              AS estado,
+    IF(ws.aplicable = 1, 1, 0)                                           AS es_valido,
+    tm.branchID                                                          AS sucursal_id,
+    tm.createdBy                                                         AS usuario_id,
+    u.nickname                                                           AS usuario
+FROM tb_transaction_master AS tm
+    INNER JOIN tb_transaction_master_detail AS tmd ON tmd.companyID = tm.companyID AND tmd.transactionID = tm.transactionID AND tmd.transactionMasterID = tm.transactionMasterID AND tmd.isActive = 1
+    LEFT JOIN tb_transaction AS t                  ON t.companyID = tm.companyID AND t.transactionID = tm.transactionID
+    LEFT JOIN tb_workflow_stage AS ws              ON ws.workflowStageID = tm.statusID
+    LEFT JOIN tb_customer AS c                     ON c.companyID = tm.companyID AND c.entityID = tm.entityID
+    LEFT JOIN tb_naturales AS n                    ON n.companyID = tm.companyID AND n.entityID = tm.entityID
+    LEFT JOIN tb_user AS u                         ON u.userID = tm.createdBy
+WHERE tm.companyID = (SELECT ai_company())
+    AND tm.transactionID IN (23, 24, 25)
+    AND tm.isActive = 1;
+
+-- ----------------------------
+-- View structure for ai_v_proveedores (asistente IA Jordania)
+-- ----------------------------
+DROP VIEW IF EXISTS `ai_v_proveedores`;
+CREATE VIEW ai_v_proveedores AS
+SELECT
+    p.providerID                                                                       AS proveedor_id,
+    p.entityID                                                                         AS entidad_id,
+    p.providerNumber                                                                   AS codigo,
+    IFNULL(NULLIF(l.comercialName, ''), TRIM(CONCAT(IFNULL(n.firstName, ''), ' ', IFNULL(n.lastName, '')))) AS nombre,
+    p.numberIdentification                                                             AS identificacion,
+    p.currencyID                                                                       AS moneda_id,
+    p.balanceCor                                                                       AS saldo_cordobas,
+    p.balanceDol                                                                       AS saldo_dolares
+FROM tb_provider AS p
+    LEFT JOIN tb_legal AS l     ON l.companyID = p.companyID AND l.entityID = p.entityID
+    LEFT JOIN tb_naturales AS n ON n.companyID = p.companyID AND n.entityID = p.entityID
+WHERE p.companyID = (SELECT ai_company())
+    AND p.isActive = 1;
+
+-- ----------------------------
+-- View structure for ai_v_compras (asistente IA Jordania)
+-- ----------------------------
+DROP VIEW IF EXISTS `ai_v_compras`;
+CREATE VIEW ai_v_compras AS
+SELECT
+    tm.transactionMasterID                                    AS compra_id,
+    tm.transactionNumber                                      AS numero,
+    tm.transactionOn                                          AS fecha,
+    DATE(tm.transactionOn)                                    AS dia,
+    p.providerID                                              AS proveedor_id,
+    IFNULL(NULLIF(l.comercialName, ''), TRIM(CONCAT(IFNULL(n.firstName, ''), ' ', IFNULL(n.lastName, '')))) AS proveedor,
+    tm.reference1                                             AS referencia,
+    tmd.componentItemID                                       AS producto_id,
+    IFNULL(NULLIF(tmd.itemNameLog, ''), i.name)               AS producto,
+    tmd.quantity                                              AS cantidad,
+    tmd.unitaryCost                                           AS costo_unitario,
+    tmd.cost                                                  AS costo_total,
+    tm.amount                                                 AS total_compra,
+    tm.currencyID                                             AS moneda_id,
+    ws.name                                                   AS estado,
+    IF(ws.aplicable = 1, 1, 0)                                AS es_valida,
+    tm.branchID                                               AS sucursal_id
+FROM tb_transaction_master AS tm
+    INNER JOIN tb_transaction_master_detail AS tmd ON tmd.companyID = tm.companyID AND tmd.transactionID = tm.transactionID AND tmd.transactionMasterID = tm.transactionMasterID AND tmd.isActive = 1
+    LEFT JOIN tb_workflow_stage AS ws              ON ws.workflowStageID = tm.statusID
+    LEFT JOIN tb_provider AS p                     ON p.companyID = tm.companyID AND p.entityID = tm.entityID
+    LEFT JOIN tb_legal AS l                        ON l.companyID = tm.companyID AND l.entityID = tm.entityID
+    LEFT JOIN tb_naturales AS n                    ON n.companyID = tm.companyID AND n.entityID = tm.entityID
+    LEFT JOIN tb_item AS i                         ON i.companyID = tmd.companyID AND i.itemID = tmd.componentItemID
+WHERE tm.companyID = (SELECT ai_company())
+    AND tm.transactionID = 21
+    AND tm.isActive = 1;
+
+-- ----------------------------
+-- View structure for ai_v_gastos (asistente IA Jordania)
+-- ----------------------------
+DROP VIEW IF EXISTS `ai_v_gastos`;
+CREATE VIEW ai_v_gastos AS
+SELECT
+    tm.transactionMasterID      AS gasto_id,
+    tm.transactionNumber        AS numero,
+    tm.transactionOn            AS fecha,
+    DATE(tm.transactionOn)      AS dia,
+    tm.note                     AS concepto,
+    tm.reference1               AS referencia,
+    tm.amount                   AS monto,
+    tm.currencyID               AS moneda_id,
+    ws.name                     AS estado,
+    IF(ws.aplicable = 1, 1, 0)  AS es_valido,
+    tm.branchID                 AS sucursal_id,
+    u.nickname                  AS usuario
+FROM tb_transaction_master AS tm
+    LEFT JOIN tb_workflow_stage AS ws ON ws.workflowStageID = tm.statusID
+    LEFT JOIN tb_user AS u            ON u.userID = tm.createdBy
+WHERE tm.companyID = (SELECT ai_company())
+    AND tm.transactionID = 38
+    AND tm.isActive = 1;
+
+-- ----------------------------
+-- View structure for ai_v_caja_movimientos (asistente IA Jordania)
+-- ----------------------------
+DROP VIEW IF EXISTS `ai_v_caja_movimientos`;
+CREATE VIEW ai_v_caja_movimientos AS
+SELECT
+    tm.transactionMasterID                          AS movimiento_id,
+    IF(tm.transactionID = 29, 'INGRESO', 'EGRESO')  AS tipo,
+    tm.transactionNumber                            AS numero,
+    tm.transactionOn                                AS fecha,
+    DATE(tm.transactionOn)                          AS dia,
+    tm.note                                         AS concepto,
+    tm.amount                                       AS monto,
+    tm.currencyID                                   AS moneda_id,
+    ws.name                                         AS estado,
+    IF(ws.aplicable = 1, 1, 0)                      AS es_valido,
+    tm.branchID                                     AS sucursal_id,
+    u.nickname                                      AS usuario
+FROM tb_transaction_master AS tm
+    LEFT JOIN tb_workflow_stage AS ws ON ws.workflowStageID = tm.statusID
+    LEFT JOIN tb_user AS u            ON u.userID = tm.createdBy
+WHERE tm.companyID = (SELECT ai_company())
+    AND tm.transactionID IN (29, 30)
+    AND tm.isActive = 1;
+
+-- ----------------------------
 -- View structure for vw_contabilidad_comprobantes
 -- ----------------------------
 DROP VIEW IF EXISTS `vw_contabilidad_comprobantes`;
@@ -4016,6 +4503,12 @@ CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_sin_riesgo_reporte_cr
 -- ----------------------------
 DROP VIEW IF EXISTS `vw_transaccion_master_concept_232425`;
 CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_transaccion_master_concept_232425` AS select `tm`.`transactionMasterID` AS `transactionMasterID`,`t`.`name` AS `Descripcion`,`tm`.`createdOn` AS `Fecha`,`tm`.`transactionNumber` AS `Documento`,`cur`.`name` AS `Moneda`,`tc`.`name` AS `Concepto`,`tmd`.`value` AS `Valor`,`comp`.`name` AS `Componente`,`td`.`componentItemID` AS `componentItemID`,`td`.`reference1` AS `Referencia1` from ((((((`tb_transaction_master` `tm` join `tb_transaction` `t` on(`tm`.`transactionID` = `t`.`transactionID`)) join `tb_transaction_master_detail` `td` on(`tm`.`transactionMasterID` = `td`.`transactionMasterID`)) join `tb_transaction_master_concept` `tmd` on(`td`.`transactionMasterID` = `tmd`.`transactionMasterID` and `td`.`componentItemID` = `tmd`.`componentItemID`)) join `tb_currency` `cur` on(`tm`.`currencyID` = `cur`.`currencyID`)) join `tb_transaction_concept` `tc` on(`tmd`.`conceptID` = `tc`.`conceptID`)) join `tb_component` `comp` on(`comp`.`componentID` = `td`.`componentID`)) where `tm`.`companyID` = 2 and `tm`.`isActive` = 1 and `tm`.`transactionID` in (23,24,25) ;
+
+-- ----------------------------
+-- Function structure for ai_company (asistente IA Jordania: puente para filtrar vistas ai_v_* por @ai_company_id)
+-- ----------------------------
+DROP FUNCTION IF EXISTS ai_company;
+CREATE FUNCTION ai_company() RETURNS INT DETERMINISTIC NO SQL RETURN @ai_company_id;
 
 -- ----------------------------
 -- Function structure for fn_calculate_exchange_rate

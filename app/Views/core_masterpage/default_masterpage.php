@@ -280,6 +280,7 @@
 	?>
 	
 
+<?php echo helper_getHtmlAiChatWidget(); ?>
 </body>
 <script>
 	var varCoreUserName 	= '<?php echo $user->nickname; ?>';

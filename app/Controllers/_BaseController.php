@@ -41,6 +41,8 @@ use App\Libraries\core_web_transaction_master_detail;
 use App\Libraries\core_web_view;
 use App\Libraries\core_web_workflow;
 use App\Libraries\core_web_whatsap;
+use App\Libraries\core_web_ai;
+use App\Libraries\core_web_ai_tools;
 use App\Libraries\core_web_pagadito\core_web_pagadito;
 
 
@@ -153,6 +155,7 @@ use App\Models\Cash_Box_Session_Model;
 use App\Models\Cash_Box_Model;
 use App\Models\Log_Session_Model;
 use App\Models\Customer_Conversation_Model;
+use App\Models\Ai_Chat_Model;
 
 use App\Models\Transaction_Master_Concept_Model;
 use App\Models\Transaction_Master_Detail_Credit_Model;
@@ -279,6 +282,8 @@ abstract class _BaseController extends Controller
     protected $core_web_view;
     protected $core_web_workflow;
     protected $core_web_whatsap;
+    protected $core_web_ai;
+    protected $core_web_ai_tools;
     protected $core_web_pagadito;
 
 
@@ -387,6 +392,7 @@ abstract class _BaseController extends Controller
     protected $Transaction_Causal_Model;
     protected $Public_Catalog_Model;
 	protected $Customer_Conversation_Model;
+	protected $Ai_Chat_Model;
     protected $Public_Catalog_Detail_Model;
     protected $Cash_Box_User_Model;
     protected $Cash_Box_Session_Model;
@@ -461,6 +467,8 @@ abstract class _BaseController extends Controller
         $this->core_web_view= new core_web_view();
         $this->core_web_workflow = new core_web_workflow();
         $this->core_web_whatsap = new core_web_whatsap();
+        $this->core_web_ai = new core_web_ai();
+        $this->core_web_ai_tools = new core_web_ai_tools();
         $this->core_web_pagadito = new core_web_pagadito();
 
         $this->financial_amort = new financial_amort();
@@ -574,6 +582,7 @@ abstract class _BaseController extends Controller
         $this->Transaction_Causal_Model= new Transaction_Causal_Model();
         $this->Public_Catalog_Model = new Public_Catalog_Model();
 		$this->Customer_Conversation_Model = new Customer_Conversation_Model();
+		$this->Ai_Chat_Model = new Ai_Chat_Model();
         $this->Public_Catalog_Detail_Model = new Public_Catalog_Detail_Model();
         $this->Cash_Box_User_Model = new Cash_Box_User_Model();
         $this->Cash_Box_Session_Model = new Cash_Box_Session_Model();

@@ -2332,6 +2332,52 @@ function helper_validarPremioLoto($notif, $objTMDR, $objItem, $item,$typeCompany
 }
 
 
+/**
+ * HTML del widget del asistente IA "Jordania" para incluir en los masterpages.
+ * Solo se imprime si el usuario tiene acceso al menu_element "Asistente IA" y la empresa
+ * tiene AI_ASSISTANT_ENABLED = true. En cualquier otro caso (o ante un error) devuelve ""
+ * para que la pantalla nunca se afecte.
+ *
+ * @return string HTML del widget o cadena vacia.
+ */
+function helper_getHtmlAiChatWidget()
+{
+    try {
+        $dataSession = session()->get();
+        if (empty($dataSession["user"]) || empty($dataSession["role"])) {
+            return "";
+        }
+        if (!\App\Libraries\core_web_ai::tieneAccesoAsistente($dataSession)) {
+            return "";
+        }
+
+        // Primero los parametros cargados en sesion (sin consultar la BD); si no esta, se consulta
+        $habilitado = null;
+        if (!empty($dataSession["companyParameter"]) && is_array($dataSession["companyParameter"])) {
+            $parametro = helper_getParameterFiltered($dataSession["companyParameter"], "AI_ASSISTANT_ENABLED");
+            if ($parametro && isset($parametro->value)) {
+                $habilitado = in_array(strtolower(trim((string) $parametro->value)), ["true", "1", "si", "yes"]);
+            }
+        }
+        if ($habilitado === null) {
+            $ai         = new \App\Libraries\core_web_ai();
+            $habilitado = $ai->estaHabilitado((int) $dataSession["user"]->companyID);
+        }
+        if (!$habilitado) {
+            return "";
+        }
+
+        return view("app_ai_chat/widget", [
+            "aiUrlBase"     => rtrim(base_url(), "/"),
+            "aiUrlResource" => APP_URL_RESOURCE_CSS_JS,
+        ]);
+    } catch (\Throwable $ex) {
+        log_message("error", "helper_getHtmlAiChatWidget: " . $ex->getMessage());
+        return "";
+    }
+}
+
+
 ?>
 
 

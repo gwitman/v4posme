@@ -1,0 +1,381 @@
+/*
+ * Widget del asistente IA "Jordania".
+ * Paleta tomada de la pantalla de ABONOS (share_v2_style.php). Todas las clases usan el prefijo jdn-
+ * para no chocar con Bootstrap 3 (default_masterpage) ni Bootstrap 5 (snagit_masterpage).
+ */
+.jdn-root {
+    --jdn-accent: #2f6fb5;
+    --jdn-accent-bg: #eaf2fb;
+    --jdn-texto: #1f2933;
+    --jdn-muted: #6b7280;
+    --jdn-borde: #e3e6ea;
+    --jdn-suave: #f6f7f9;
+    --jdn-bad: #c62828;
+    --jdn-bad-bg: #fdecec;
+    --jdn-warn: #8a5a00;
+    --jdn-warn-bg: #fdf3dc;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1.45;
+    color: var(--jdn-texto);
+}
+
+.jdn-root *,
+.jdn-root *::before,
+.jdn-root *::after {
+    box-sizing: border-box;
+}
+
+/* Boton flotante */
+.jdn-boton {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 10500;
+    width: 56px;
+    height: 56px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--jdn-accent);
+    box-shadow: 0 4px 14px rgba(31, 41, 51, 0.25);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.15s ease, background 0.15s ease;
+}
+
+.jdn-boton:hover {
+    transform: translateY(-2px);
+}
+
+.jdn-boton:focus-visible,
+.jdn-icono:focus-visible,
+.jdn-enviar:focus-visible,
+.jdn-chip:focus-visible {
+    outline: 3px solid rgba(47, 111, 181, 0.4);
+    outline-offset: 2px;
+}
+
+.jdn-root.jdn-sin-conexion .jdn-boton {
+    background: #9aa1aa;
+    box-shadow: none;
+}
+
+/* Avatar con la inicial (sin imagenes externas) */
+.jdn-avatar {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    border-radius: 50%;
+    background: var(--jdn-accent-bg);
+    color: var(--jdn-accent);
+    font-weight: 700;
+    font-size: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.jdn-avatar-boton {
+    width: 56px;
+    height: 56px;
+    flex-basis: 56px;
+    background: transparent;
+    color: #fff;
+    font-size: 24px;
+}
+
+/* Panel */
+.jdn-panel {
+    position: fixed;
+    right: 20px;
+    bottom: 88px;
+    z-index: 10501;
+    width: 380px;
+    max-width: calc(100vw - 24px);
+    height: 520px;
+    max-height: calc(100vh - 110px);
+    background: #fff;
+    border: 1px solid var(--jdn-borde);
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(31, 41, 51, 0.2);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.jdn-panel[hidden] {
+    display: none;
+}
+
+.jdn-encabezado {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--jdn-borde);
+    background: #fff;
+}
+
+.jdn-titulo {
+    flex: 1 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.jdn-titulo strong {
+    font-size: 15px;
+}
+
+.jdn-titulo small {
+    color: var(--jdn-muted);
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.jdn-root.jdn-sin-conexion .jdn-titulo small {
+    color: var(--jdn-bad);
+}
+
+.jdn-icono {
+    width: 36px;
+    height: 36px;
+    border: 1px solid var(--jdn-borde);
+    border-radius: 6px;
+    background: #fff;
+    color: var(--jdn-muted);
+    font-size: 18px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.jdn-icono:hover {
+    background: var(--jdn-suave);
+}
+
+/* Mensajes */
+.jdn-mensajes {
+    flex: 1 1 auto;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 12px;
+    background: var(--jdn-suave);
+}
+
+.jdn-fila {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+}
+
+.jdn-fila-usuario {
+    justify-content: flex-end;
+}
+
+.jdn-burbuja {
+    max-width: 85%;
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: #fff;
+    border: 1px solid var(--jdn-borde);
+    word-wrap: break-word;
+    overflow-wrap: anywhere;
+}
+
+.jdn-fila-usuario .jdn-burbuja {
+    background: var(--jdn-accent);
+    border-color: var(--jdn-accent);
+    color: #fff;
+    white-space: pre-wrap;
+}
+
+.jdn-burbuja-error {
+    background: var(--jdn-bad-bg);
+    border-color: #f3c5c5;
+    color: var(--jdn-bad);
+}
+
+.jdn-nombre {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--jdn-accent);
+    margin-bottom: 2px;
+}
+
+.jdn-burbuja p {
+    margin: 0 0 6px;
+}
+
+.jdn-burbuja p:last-child {
+    margin-bottom: 0;
+}
+
+.jdn-burbuja ul,
+.jdn-burbuja ol {
+    margin: 4px 0 6px;
+    padding-left: 20px;
+}
+
+.jdn-burbuja h4 {
+    font-size: 14px;
+    margin: 6px 0 4px;
+}
+
+.jdn-burbuja code {
+    background: var(--jdn-suave);
+    padding: 0 4px;
+    border-radius: 4px;
+    font-size: 12px;
+}
+
+/* Tablas: desplazamiento horizontal solo dentro de la burbuja */
+.jdn-tabla-contenedor {
+    max-width: 100%;
+    overflow-x: auto;
+    margin: 4px 0 6px;
+}
+
+.jdn-tabla {
+    border-collapse: collapse;
+    font-size: 12px;
+    width: 100%;
+}
+
+.jdn-tabla th,
+.jdn-tabla td {
+    border: 1px solid var(--jdn-borde);
+    padding: 4px 6px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.jdn-tabla th {
+    background: var(--jdn-accent-bg);
+}
+
+.jdn-escribiendo {
+    color: var(--jdn-muted);
+    font-style: italic;
+}
+
+/* Sugerencias */
+.jdn-sugerencias {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    padding: 0 12px 8px;
+    background: var(--jdn-suave);
+}
+
+.jdn-sugerencias:empty {
+    display: none;
+}
+
+.jdn-chip {
+    border: 1px solid #c9dcf1;
+    background: var(--jdn-accent-bg);
+    color: var(--jdn-accent);
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 12px;
+    text-align: left;
+    cursor: pointer;
+}
+
+.jdn-chip:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* Formulario */
+.jdn-form {
+    display: flex;
+    gap: 8px;
+    padding: 10px 12px;
+    border-top: 1px solid var(--jdn-borde);
+    background: #fff;
+    margin: 0;
+}
+
+.jdn-input {
+    flex: 1 1 auto;
+    min-height: 38px;
+    max-height: 110px;
+    resize: none;
+    border: 1px solid var(--jdn-borde);
+    border-radius: 6px;
+    padding: 8px 10px;
+    font: inherit;
+    font-size: 16px; /* 16px evita el zoom automatico en iOS */
+    color: var(--jdn-texto);
+}
+
+.jdn-input:focus {
+    outline: none;
+    border-color: var(--jdn-accent);
+    box-shadow: 0 0 0 2px rgba(47, 111, 181, 0.15);
+}
+
+.jdn-input:disabled {
+    background: var(--jdn-suave);
+}
+
+.jdn-enviar {
+    width: 44px;
+    min-height: 38px;
+    border: 0;
+    border-radius: 6px;
+    background: var(--jdn-accent);
+    color: #fff;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+.jdn-enviar:disabled {
+    background: #9aa1aa;
+    cursor: not-allowed;
+}
+
+.jdn-aviso {
+    padding: 4px 12px 8px;
+    font-size: 11px;
+    color: var(--jdn-muted);
+    text-align: center;
+    background: #fff;
+}
+
+/* Movil: panel a pantalla completa */
+@media (max-width: 576px) {
+    .jdn-boton {
+        right: 14px;
+        bottom: 14px;
+    }
+
+    .jdn-panel {
+        right: 0;
+        bottom: 0;
+        width: 100vw;
+        max-width: 100vw;
+        height: 100%;
+        max-height: 100%;
+        border-radius: 0;
+        border: 0;
+    }
+
+    .jdn-burbuja {
+        max-width: 90%;
+    }
+}
+
+@media print {
+    .jdn-root {
+        display: none !important;
+    }
+}
