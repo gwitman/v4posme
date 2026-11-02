@@ -93,27 +93,237 @@ function fnShowMessageError(message) {
     "</div>";
   $("#main_content").prepend(_error);
 }
-function fnShowNotification(message, type, time) {
-  var widthPantalla = window.innerWidth * 0.75;
-  if (widthPantalla >= 600) widthPantalla = 550;
+/*
+ * Notificaciones tipo "toast" de posMe (reemplaza a jGrowl en fnShowNotification).
+ * - JavaScript puro: no depende de jQuery ni de jGrowl; el CSS se inserta una sola vez.
+ * - Paleta de la pantalla de ABONOS: verde exito, rojo error, ambar atencion, azul informacion.
+ * - Computadora: arriba a la derecha. Telefono: arriba a todo el ancho (no choca con las barras inferiores).
+ * - Barra de tiempo, pausa al pasar el mouse / tocar, boton cerrar, maximo 4 visibles
+ *   y los mensajes repetidos se agrupan con un contador (x2, x3...).
+ */
+var PosmeToast = {
+  MAX_VISIBLES: 4,
+  DURACION_MAXIMA: 10000,
+  TIPOS: {
+    success: { titulo: "Listo", icono: "&#10003;", rol: "status" },
+    error: { titulo: "Error", icono: "&#10005;", rol: "alert" },
+    warning: { titulo: "Atención", icono: "!", rol: "status" },
+    info: { titulo: "Información", icono: "i", rol: "status" },
+  },
 
-  widthPantalla = widthPantalla + "px";
-  setTimeout(function () {
-    $.jGrowl("<i class='icon16 i-info'></i>" + message, {
-      group: type,
-      position: "bottom-left",
-      sticky: false,
-      life: time,
-      closeTemplate: '<i class="icon16 i-close-2"></i>',
-      animateOpen: {
-        width: "show",
-        height: "show",
-      },
-      beforeOpen: function (e, m, o) {
-        $(e).width(widthPantalla).height("50px");
-      },
+  /**
+   * Normaliza el tipo recibido; cualquier valor desconocido se trata como "info".
+   * @param {string} type Tipo enviado por la pantalla (success, error, warning, info...).
+   * @return {string} Tipo valido.
+   */
+  tipo: function (type) {
+    var t = (type || "").toString().toLowerCase().trim();
+    if (t === "danger") t = "error";
+    if (t === "warn" || t === "alert") t = "warning";
+    return PosmeToast.TIPOS.hasOwnProperty(t) ? t : "info";
+  },
+
+  /**
+   * Calcula cuanto tiempo se muestra la notificacion.
+   * Sin tiempo: exito/info 4s, error/atencion 7s. Con tiempo: se respeta con un maximo de 10s.
+   * @param {string} tipo Tipo ya normalizado.
+   * @param {number} time Tiempo en milisegundos enviado por la pantalla (opcional).
+   * @return {number} Duracion en milisegundos.
+   */
+  duracion: function (tipo, time) {
+    var ms = parseInt(time, 10);
+    if (isNaN(ms) || ms <= 0) {
+      return tipo === "error" || tipo === "warning" ? 7000 : 4000;
+    }
+    return Math.min(Math.max(ms, 1500), PosmeToast.DURACION_MAXIMA);
+  },
+
+  /**
+   * Clave para detectar mensajes repetidos (mismo tipo y mismo texto).
+   * @return {string}
+   */
+  clave: function (tipo, message) {
+    return tipo + "|" + (message === undefined || message === null ? "" : String(message)).replace(/\s+/g, " ").trim();
+  },
+
+  // Inserta el CSS de las notificaciones una sola vez
+  insertarEstilo: function () {
+    if (document.getElementById("pmToastStyle")) return;
+    var css =
+      "#pmToastStack{position:fixed;top:16px;right:16px;z-index:100000;display:flex;flex-direction:column;gap:10px;width:380px;max-width:calc(100vw - 32px);pointer-events:none;font-family:'Segoe UI',Roboto,'Open Sans',Arial,sans-serif;}" +
+      ".pm-toast{pointer-events:auto;position:relative;display:flex;align-items:flex-start;gap:12px;padding:12px 40px 14px 14px;background:#FFFFFF;border:1px solid #E3E6EA;border-left:5px solid var(--pmt-color);border-radius:12px;box-shadow:0 10px 30px rgba(16,24,40,.16);overflow:hidden;opacity:0;transform:translateX(24px);transition:opacity .22s ease,transform .22s ease;}" +
+      ".pm-toast.is-visible{opacity:1;transform:none;}" +
+      ".pm-toast.is-saliendo{opacity:0;transform:translateX(24px);}" +
+      ".pm-toast-success{--pmt-color:#2E7D32;--pmt-bg:#EAF5EA;}" +
+      ".pm-toast-error{--pmt-color:#C62828;--pmt-bg:#FDECEC;}" +
+      ".pm-toast-warning{--pmt-color:#B26A00;--pmt-bg:#FDF3DC;}" +
+      ".pm-toast-info{--pmt-color:#1565C0;--pmt-bg:#E8F1FC;}" +
+      ".pm-toast-icono{flex:0 0 28px;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:var(--pmt-bg);color:var(--pmt-color);font-weight:800;font-size:14px;line-height:1;}" +
+      ".pm-toast-cuerpo{flex:1 1 auto;min-width:0;}" +
+      ".pm-toast-titulo{margin:0 0 2px;font-size:14px;font-weight:700;color:#1F2933;line-height:1.3;}" +
+      ".pm-toast-contador{display:inline-block;margin-left:6px;padding:0 7px;border-radius:20px;background:var(--pmt-bg);color:var(--pmt-color);font-size:11px;font-weight:700;vertical-align:middle;}" +
+      ".pm-toast-texto{margin:0;font-size:13px;color:#475569;line-height:1.45;word-break:break-word;max-height:40vh;overflow-y:auto;}" +
+      ".pm-toast-cerrar{position:absolute;top:8px;right:8px;width:28px;height:28px;border:0;border-radius:8px;background:transparent;color:#6B7280;font-size:18px;line-height:1;cursor:pointer;}" +
+      ".pm-toast-cerrar:hover,.pm-toast-cerrar:focus{background:#F1F5F9;color:#1F2933;outline:0;}" +
+      ".pm-toast-barra{position:absolute;left:0;bottom:0;height:3px;width:100%;background:var(--pmt-color);opacity:.35;transform-origin:left center;}" +
+      "@media (max-width:767px){#pmToastStack{top:8px;left:8px;right:8px;width:auto;max-width:none;}" +
+      ".pm-toast{transform:translateY(-16px);}.pm-toast.is-saliendo{transform:translateY(-16px);}" +
+      ".pm-toast-titulo{font-size:15px;}.pm-toast-texto{font-size:14px;}.pm-toast-cerrar{width:40px;height:40px;top:4px;right:4px;}}" +
+      "@media print{#pmToastStack{display:none !important;}}";
+    var style = document.createElement("style");
+    style.id = "pmToastStyle";
+    style.appendChild(document.createTextNode(css));
+    (document.head || document.documentElement).appendChild(style);
+  },
+
+  // Contenedor de las notificaciones (se crea al primer uso)
+  contenedor: function () {
+    var stack = document.getElementById("pmToastStack");
+    if (!stack) {
+      stack = document.createElement("div");
+      stack.id = "pmToastStack";
+      document.body.appendChild(stack);
+    }
+    return stack;
+  },
+
+  // Cierra una notificacion con animacion
+  cerrar: function (toast) {
+    if (!toast || toast.getAttribute("data-cerrando") === "1") return;
+    toast.setAttribute("data-cerrando", "1");
+    clearTimeout(toast._pmTimer);
+    toast.classList.add("is-saliendo");
+    setTimeout(function () {
+      if (toast.parentNode) toast.parentNode.removeChild(toast);
+    }, 230);
+  },
+
+  // Programa el cierre y anima la barra con el tiempo restante
+  iniciarTiempo: function (toast) {
+    var barra = toast.querySelector(".pm-toast-barra");
+    clearTimeout(toast._pmTimer);
+    toast._pmInicio = Date.now();
+    if (barra) {
+      var fraccion = toast._pmRestante / toast._pmDuracion;
+      barra.style.transition = "none";
+      barra.style.transform = "scaleX(" + fraccion + ")";
+      void barra.offsetWidth;
+      barra.style.transition = "transform " + toast._pmRestante + "ms linear";
+      barra.style.transform = "scaleX(0)";
+    }
+    toast._pmTimer = setTimeout(function () {
+      PosmeToast.cerrar(toast);
+    }, toast._pmRestante);
+  },
+
+  // Pausa el cierre (mouse encima o toque)
+  pausar: function (toast) {
+    if (toast.getAttribute("data-cerrando") === "1") return;
+    clearTimeout(toast._pmTimer);
+    toast._pmRestante = Math.max(toast._pmRestante - (Date.now() - toast._pmInicio), 800);
+    var barra = toast.querySelector(".pm-toast-barra");
+    if (barra) {
+      barra.style.transition = "none";
+      barra.style.transform = "scaleX(" + toast._pmRestante / toast._pmDuracion + ")";
+    }
+  },
+
+  /**
+   * Muestra una notificacion.
+   * @param {string} message Texto o HTML del mensaje (el servidor envia </br> en listas).
+   * @param {string} type    success | error | warning | info.
+   * @param {number} time    Milisegundos (opcional).
+   * @return {HTMLElement} La notificacion creada o la existente si el mensaje se repitio.
+   */
+  mostrar: function (message, type, time) {
+    var tipo = PosmeToast.tipo(type);
+    var config = PosmeToast.TIPOS[tipo];
+    var duracion = PosmeToast.duracion(tipo, time);
+    var clave = PosmeToast.clave(tipo, message);
+
+    PosmeToast.insertarEstilo();
+    var stack = PosmeToast.contenedor();
+
+    // Mensaje repetido: se reutiliza la tarjeta, aumenta el contador y se reinicia el tiempo
+    var hijos = stack.children;
+    for (var i = 0; i < hijos.length; i++) {
+      if (hijos[i].getAttribute("data-clave") === clave && hijos[i].getAttribute("data-cerrando") !== "1") {
+        var repetido = hijos[i];
+        var veces = parseInt(repetido.getAttribute("data-veces"), 10) + 1;
+        repetido.setAttribute("data-veces", veces);
+        repetido.querySelector(".pm-toast-contador").textContent = "×" + veces;
+        repetido.querySelector(".pm-toast-contador").style.display = "inline-block";
+        repetido._pmDuracion = duracion;
+        repetido._pmRestante = duracion;
+        PosmeToast.iniciarTiempo(repetido);
+        return repetido;
+      }
+    }
+
+    var toast = document.createElement("div");
+    toast.className = "pm-toast pm-toast-" + tipo;
+    toast.setAttribute("role", config.rol);
+    toast.setAttribute("aria-live", config.rol === "alert" ? "assertive" : "polite");
+    toast.setAttribute("data-clave", clave);
+    toast.setAttribute("data-veces", "1");
+    toast.innerHTML =
+      '<span class="pm-toast-icono" aria-hidden="true">' + config.icono + "</span>" +
+      '<div class="pm-toast-cuerpo">' +
+      '<p class="pm-toast-titulo">' + config.titulo + '<span class="pm-toast-contador" style="display:none"></span></p>' +
+      '<div class="pm-toast-texto"></div>' +
+      "</div>" +
+      '<button type="button" class="pm-toast-cerrar" aria-label="Cerrar notificación">&times;</button>' +
+      '<span class="pm-toast-barra" aria-hidden="true"></span>';
+    // El mensaje se inserta como HTML para conservar los saltos (</br>) que envia el servidor
+    toast.querySelector(".pm-toast-texto").innerHTML = message === undefined || message === null ? "" : String(message);
+
+    toast.querySelector(".pm-toast-cerrar").addEventListener("click", function () {
+      PosmeToast.cerrar(toast);
     });
-  }, 250);
+    toast.addEventListener("mouseenter", function () {
+      PosmeToast.pausar(toast);
+    });
+    toast.addEventListener("mouseleave", function () {
+      if (toast.getAttribute("data-cerrando") !== "1") PosmeToast.iniciarTiempo(toast);
+    });
+    toast.addEventListener("touchstart", function () {
+      PosmeToast.pausar(toast);
+    }, { passive: true });
+    toast.addEventListener("touchend", function () {
+      if (toast.getAttribute("data-cerrando") !== "1") PosmeToast.iniciarTiempo(toast);
+    });
+
+    // Maximo 4 visibles: se cierran las mas antiguas
+    var activos = [];
+    for (var j = 0; j < stack.children.length; j++) {
+      if (stack.children[j].getAttribute("data-cerrando") !== "1") activos.push(stack.children[j]);
+    }
+    while (activos.length >= PosmeToast.MAX_VISIBLES) {
+      PosmeToast.cerrar(activos.shift());
+    }
+
+    stack.appendChild(toast);
+    toast._pmDuracion = duracion;
+    toast._pmRestante = duracion;
+    void toast.offsetWidth;
+    toast.classList.add("is-visible");
+    PosmeToast.iniciarTiempo(toast);
+    return toast;
+  },
+};
+
+/**
+ * Muestra una notificacion (usada por todas las pantallas y por los mensajes del servidor).
+ * Firma original conservada: fnShowNotification(mensaje, tipo, tiempoEnMs).
+ */
+function fnShowNotification(message, type, time) {
+  if (document.body) {
+    PosmeToast.mostrar(message, type, time);
+  } else {
+    document.addEventListener("DOMContentLoaded", function () {
+      PosmeToast.mostrar(message, type, time);
+    });
+  }
 }
 function fnShowConfirm(title_, body_, callback_) {
   var template =
