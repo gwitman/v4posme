@@ -1,55 +1,24 @@
-<div class="row"> 
-	<div class="col-lg-12">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<div class="icon"><i class="icon20 i-tags-2"></i></div> 
-					<h4>GRAFICO DE VENTA</h4>
-					<a href="#" class="minimize"></a>
-					<div class="w-right" style="margin-right:20px">
-						<button id="print-btn-report" class="btn btn-primary btn-full tip" title="Ver Reporte" rel="panel-body"><i class="icon20 i-file gap-right0"></i></button>
-					</div>
-				</div>
-				<!-- End .panel-heading -->
-			
-				<div class="panel-body">
-					<form class="form-horizontal pad15 pad-bottom0" role="form">											
-						<div class="form-group">
-							<label class="col-lg-6 control-label" for="selectFilter">Fecha Inicial y Final</label>
-							<div class="col-lg-6"> 
-								<div class="col-lg-6">
-										<div id="datepicker" class="input-group date" data-date="<?php echo $objStartOn; ?>" data-date-format="yyyy-mm-dd">
-											<input size="16"  class="form-control" type="text" name="txtStartOn" id="txtStartOn" value="<?php echo $objStartOn; ?>">
-											<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
-										</div>
-								</div>
-								<div class="col-lg-6">
-										<div id="datepicker_v2" class="input-group date" data-date="<?php echo $objEndOn; ?>" data-date-format="yyyy-mm-dd">
-											<input size="16"  class="form-control" type="text" name="txtEndOn" id="txtEndOn" value="<?php echo $objEndOn; ?>">
-											<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
-										</div>
-								</div>													
-							</div>
-						</div>
-					</form>
-				</div><!-- End .panel-body -->
-			</div><!-- End .widget -->	
-	<div>
-<div>
+<?php helper_getHtmlOfReportFilterOpen("Gráfico de venta", "📈", "Ventas"); ?>
 
+	<div class="prf-field">
+		<label class="pv2-label" for="txtStartOn">Fecha inicial</label>
+		<input class="form-control" type="text" name="txtStartOn" id="txtStartOn" value="<?php echo $objStartOn; ?>" autocomplete="off">
+	</div>
 
-<div class="row"> 
-	<div class="col-lg-6">
-		<div id="grafico1" style="height:400px" ></div>
+	<div class="prf-field">
+		<label class="pv2-label" for="txtEndOn">Fecha final</label>
+		<input class="form-control" type="text" name="txtEndOn" id="txtEndOn" value="<?php echo $objEndOn; ?>" autocomplete="off">
 	</div>
-	<div class="col-lg-6">
-		<div id="grafico2" style="height:400px"  ></div>
-	</div>
-</div>
-<div class="row"> 
-	<div class="col-lg-6">
-		<div id="grafico3" style="height:400px" ></div>
-	</div>
-	<div class="col-lg-6">
-		<div id="grafico4" style="height:800px"  ></div>
+
+<?php helper_getHtmlOfReportFilterClose(); ?>
+
+<div class="pv2 prf">
+	<div class="pv2-card">
+		<div class="prf-charts">
+			<div id="grafico1" class="prf-chart"></div>
+			<div id="grafico2" class="prf-chart"></div>
+			<div id="grafico3" class="prf-chart"></div>
+			<div id="grafico4" class="prf-chart is-wide"></div>
+		</div>
 	</div>
 </div>

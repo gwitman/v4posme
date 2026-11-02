@@ -1,0 +1,476 @@
+/* ==========================================================================
+   posMe - Pantallas de filtros de reportes (prefijo .prf)
+   --------------------------------------------------------------------------
+   Estilo de referencia: pantalla de ABONOS (capa .pv2 de
+   app/Views/core_template/posme_v2_style.php, variables --pv2-*).
+   Se carga desde app/Views/core_masterpage/default_report.php.
+   Todo esta acotado a .prf para no alterar las pantallas de filtros que
+   aun no se han migrado.
+   Markup generado por helper_getHtmlOfReportFilterOpen()/Close().
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Contenedor general
+   -------------------------------------------------------------------------- */
+/* Nota: no se define overflow aqui; en telefono posme_v2_style ya recorta
+   el desborde horizontal de .pv2 con overflow-x:clip (respeta el sticky). */
+.prf {
+    padding: 14px;
+    max-width: 100%;
+}
+
+.prf .prf-header {
+    margin-bottom: 14px;
+}
+
+.prf .prf-header .pv2-header-icon {
+    font-size: 22px;
+    line-height: 1;
+}
+
+.prf .prf-card {
+    margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Cuadricula de campos: 3 columnas en PC, 2 en tableta y 1 en telefono
+   -------------------------------------------------------------------------- */
+.prf .prf-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px 16px;
+    align-items: start;
+}
+
+/* Campo: etiqueta arriba y control a todo el ancho */
+.prf .prf-field {
+    min-width: 0;
+    margin: 0;
+}
+
+.prf .prf-field > .pv2-label {
+    min-height: 16px;
+}
+
+/* El campo ocupa toda la fila (textos largos, rangos, checks, etc.) */
+.prf .prf-field.is-wide,
+.prf .prf-section,
+.prf .prf-checks,
+.prf .prf-empty,
+.prf .prf-charts {
+    grid-column: 1 / -1;
+}
+
+/* Controles dentro del campo: siempre al 100% del ancho disponible.
+   Se usa el hijo directo (>) para no tocar los inputs internos de select2
+   (.select2-focusser / .select2-input). */
+.prf .prf-field .form-control,
+.prf .prf-field > input[type="text"],
+.prf .prf-field > input[type="date"],
+.prf .prf-field > input[type="number"],
+.prf .prf-field > input[type="email"],
+.prf .prf-field > input[type="search"],
+.prf .prf-field > textarea,
+.prf .prf-field .input-group.date > input {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    min-height: 38px;
+    height: 38px;
+    padding: 6px 12px;
+    font-size: 14px;
+    color: #1f2933;
+    background-color: #fff;
+    border: 1px solid #d5dae0;
+    border-radius: 8px;
+    box-shadow: none;
+}
+
+.prf .prf-field > textarea,
+.prf .prf-field textarea.form-control {
+    height: auto;
+    min-height: 76px;
+}
+
+.prf .prf-field .form-control:focus,
+.prf .prf-field > input:focus,
+.prf .prf-field > textarea:focus {
+    border-color: var(--pv2-accent);
+    box-shadow: 0 0 0 3px rgba(57, 73, 171, .15);
+    outline: 0;
+}
+
+.prf .prf-field .form-control[readonly],
+.prf .prf-field .form-control[disabled],
+.prf .prf-field > input[readonly],
+.prf .prf-field > input[disabled] {
+    background-color: var(--pv2-soft);
+}
+
+/* Combos nativos (sin select2) y combos envueltos por uniform */
+.prf .prf-field select.form-control {
+    width: 100%;
+    max-width: 100%;
+    /* espacio para la flecha propia definida en posme_v2_style */
+    padding-right: 34px;
+}
+
+.prf .prf-field div.selector,
+.prf .prf-field div.selector span,
+.prf .prf-field div.selector select {
+    width: 100% !important;
+    max-width: 100%;
+}
+
+/* Fecha nativa: algunos navegadores moviles la colapsan sin estas reglas */
+.prf .prf-field input[type="date"].form-control,
+.prf .prf-field > input[type="date"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    line-height: 1.4;
+}
+
+.prf .prf-field input[type="date"]::-webkit-date-and-time-value {
+    text-align: left;
+}
+
+/* Si la vista conserva el envoltorio .input-group.date del tema se aplana */
+.prf .prf-field .input-group.date {
+    display: flex;
+    width: 100%;
+}
+
+.prf .prf-field .input-group.date .form-control {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* Lista de seleccion multiple */
+.prf .prf-field select[multiple] {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    min-height: 120px;
+    padding: 6px;
+    background-image: none;
+    border: 1px solid #d5dae0;
+    border-radius: 8px;
+}
+
+/* --------------------------------------------------------------------------
+   Ajustes de select2 3.x (solo PC; en telefono se usa el combo nativo)
+   -------------------------------------------------------------------------- */
+.prf .select2-container {
+    width: 100% !important;
+    max-width: 100%;
+}
+
+.prf .select2-container .select2-choice {
+    height: 38px;
+    line-height: 36px;
+    border: 1px solid #d5dae0;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: none;
+    filter: none;
+}
+
+.prf .select2-container .select2-choice div {
+    border-radius: 0 8px 8px 0;
+    background: transparent;
+    border-left: 0;
+}
+
+.prf .select2-container .select2-choice abbr {
+    top: 12px;
+}
+
+.prf .select2-container-active .select2-choice,
+.prf .select2-dropdown-open .select2-choice {
+    border-color: var(--pv2-accent);
+    box-shadow: 0 0 0 3px rgba(57, 73, 171, .15);
+}
+
+.prf .select2-dropdown-open .select2-choice {
+    border-radius: 8px 8px 0 0;
+}
+
+.prf .select2-container-multi .select2-choices {
+    min-height: 38px;
+    border: 1px solid #d5dae0;
+    border-radius: 8px;
+    background: #fff;
+}
+
+/* --------------------------------------------------------------------------
+   Titulo de seccion (reemplaza los <hr> de las pantallas antiguas)
+   -------------------------------------------------------------------------- */
+.prf .prf-section {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 6px 0 0;
+    padding: 0 0 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--pv2-accent);
+    text-transform: uppercase;
+    letter-spacing: .3px;
+    border-bottom: 1px solid var(--pv2-border);
+}
+
+/* --------------------------------------------------------------------------
+   Grupo de casillas (checks) con area tactil de 44px
+   -------------------------------------------------------------------------- */
+.prf .prf-checks {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px 16px;
+}
+
+.prf .prf-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    margin: 0;
+    padding: 6px 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1f2933;
+    background: var(--pv2-soft);
+    border: 1px solid var(--pv2-border);
+    border-radius: 10px;
+    cursor: pointer;
+    min-width: 0;
+}
+
+.prf .prf-check input[type="checkbox"],
+.prf .prf-check input[type="radio"] {
+    flex: 0 0 auto;
+    width: 20px;
+    height: 20px;
+    margin: 0;
+    cursor: pointer;
+}
+
+/* uniform envuelve los checks en div.checker: se alinea sin margenes */
+.prf .prf-check div.checker,
+.prf .prf-check div.radio {
+    flex: 0 0 auto;
+    margin: 0;
+}
+
+.prf .prf-check span.prf-check-text {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+/* --------------------------------------------------------------------------
+   Texto de solo lectura + botones Buscar / Limpiar
+   -------------------------------------------------------------------------- */
+.prf .prf-input-group {
+    display: flex;
+    align-items: stretch;
+    gap: 6px;
+    width: 100%;
+    min-width: 0;
+}
+
+.prf .prf-input-group > .form-control,
+.prf .prf-input-group > input[type="text"] {
+    flex: 1 1 auto;
+    min-width: 0;
+    width: auto;
+}
+
+.prf .prf-input-group > .btn {
+    flex: 0 0 auto;
+    min-height: 38px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* --------------------------------------------------------------------------
+   Estado vacio: "Este reporte no requiere filtros"
+   -------------------------------------------------------------------------- */
+.prf .prf-empty {
+    text-align: center;
+    color: var(--pv2-muted);
+    padding: 26px 12px;
+    border: 1px dashed var(--pv2-border);
+    border-radius: 10px;
+    background: var(--pv2-soft);
+}
+
+.prf .prf-empty-icon {
+    display: block;
+    margin: 0 auto 6px;
+    font-size: 26px;
+    line-height: 1;
+}
+
+.prf .prf-empty-title {
+    margin: 0 0 2px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1f2933;
+}
+
+.prf .prf-empty-sub {
+    margin: 0;
+    font-size: 12px;
+}
+
+/* --------------------------------------------------------------------------
+   Pie con el boton "Ver reporte"
+   -------------------------------------------------------------------------- */
+.prf .prf-foot {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--pv2-border);
+}
+
+.prf .prf-btn-ver {
+    min-height: 40px;
+    padding: 8px 22px;
+    font-size: 14px;
+    font-weight: 700;
+    border-radius: 8px;
+    background: var(--pv2-accent);
+    border-color: var(--pv2-accent);
+    color: #fff;
+}
+
+.prf .prf-btn-ver:hover,
+.prf .prf-btn-ver:focus {
+    background: var(--pv2-accent-2);
+    border-color: var(--pv2-accent-2);
+    color: #fff;
+}
+
+/* --------------------------------------------------------------------------
+   Graficos (sales_detail_format_chart): 2 columnas en PC, 1 en telefono.
+   Cada .prf-chart define su alto relativo a la pantalla, sin px fijos de ancho.
+   -------------------------------------------------------------------------- */
+.prf .prf-charts {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 14px;
+}
+
+.prf .prf-chart {
+    min-width: 0;
+    width: 100%;
+    min-height: 300px;
+    height: 50vh;
+    background: #fff;
+    border: 1px solid var(--pv2-border);
+    border-radius: 12px;
+    padding: 8px;
+}
+
+.prf .prf-chart.is-wide {
+    grid-column: 1 / -1;
+    height: 70vh;
+}
+
+/* ===================== Tableta (<= 991px) ===================== */
+@media (max-width: 991px) {
+    .prf .prf-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .prf .prf-checks {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+/* ===================== Telefono (<= 767px) ===================== */
+@media (max-width: 767px) {
+    .prf {
+        padding: 8px;
+        /* espacio para que el pie fijo no tape el ultimo campo */
+        padding-bottom: 12px;
+    }
+
+    .prf .prf-grid,
+    .prf .prf-checks,
+    .prf .prf-charts {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .prf .prf-field .form-control,
+    .prf .prf-field > input[type="text"],
+    .prf .prf-field > input[type="date"],
+    .prf .prf-field > input[type="number"],
+    .prf .prf-field > input[type="email"],
+    .prf .prf-field > input[type="search"] {
+        min-height: 44px;
+        height: 44px;
+        font-size: 16px;
+    }
+
+    .prf .prf-input-group > .btn {
+        min-height: 44px;
+    }
+
+    .prf .prf-chart,
+    .prf .prf-chart.is-wide {
+        height: 60vh;
+        min-height: 260px;
+    }
+
+    /* Pie pegado abajo con el boton a todo el ancho */
+    .prf .prf-foot {
+        position: -webkit-sticky;
+        position: sticky;
+        bottom: 0;
+        z-index: 20;
+        margin: 16px -12px -12px;
+        padding: 10px 12px;
+        background: #fff;
+        border-top: 1px solid var(--pv2-border);
+        border-radius: 0 0 12px 12px;
+        box-shadow: 0 -2px 10px rgba(0, 0, 0, .06);
+    }
+
+    .prf .prf-btn-ver {
+        width: 100%;
+        min-height: 46px;
+        font-size: 16px;
+    }
+
+    .prf input,
+    .prf select,
+    .prf textarea {
+        scroll-margin-bottom: 90px;
+    }
+}
+
+/* ===================== Tableta/telefono tactil =====================
+   La clase html.prf-native la agrega posme-report-filter.js cuando el
+   dispositivo es tactil: controles con altura comoda para el dedo. */
+html.prf-native .prf .prf-field .form-control,
+html.prf-native .prf .prf-field > input[type="text"],
+html.prf-native .prf .prf-field > input[type="date"],
+html.prf-native .prf .prf-field > input[type="number"] {
+    min-height: 44px;
+    height: 44px;
+    font-size: 16px;
+}
+
+html.prf-native .prf .prf-input-group > .btn,
+html.prf-native .prf .prf-btn-ver {
+    min-height: 44px;
+}

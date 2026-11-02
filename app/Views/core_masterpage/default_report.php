@@ -41,7 +41,11 @@
 
 		<!-- Custom stylesheets ( Put your own changes here ) -->
 		<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/custom.css" rel="stylesheet" /> 
-		<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/genyx-app.css" rel="stylesheet" /> 
+		<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/genyx-app.css" rel="stylesheet" />
+
+		<!-- Filtros de reportes estilo ABONOS (todo acotado a .pv2 / .prf) -->
+		<?php echo view('core_template/posme_v2_style'); ?>
+		<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-report-filter.css?v=1" rel="stylesheet" />
 
 		
 		<!--[if IE 8]>
@@ -100,6 +104,9 @@
 					<?php echo $body;?>
 				</div>			
 	</body>
+	<!-- Controles nativos en telefono/tableta para .prf (despues de bootstrap-datepicker del view_head y antes del view_script) -->
+	<?php echo view('core_template/posme_v2_common'); ?>
+	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme-report-filter.js?v=1"></script>
 	<?php echo $script;?>
 	
 </html>

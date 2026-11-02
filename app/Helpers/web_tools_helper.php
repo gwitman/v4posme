@@ -1060,6 +1060,64 @@ function helper_getHtmlOfPageListReportHeader($titulo, $icono = "📊")
 }
 
 /**
+ * Imprime la apertura de la pantalla de filtros de un reporte con el estilo de
+ * la pantalla de ABONOS (pv2): encabezado con titulo/modulo, inicio del
+ * formulario de filtros y apertura de la cuadricula .prf-grid.
+ * No carga posme_v2_style: lo incluye la masterpage default_report.
+ * Debe cerrarse con helper_getHtmlOfReportFilterClose().
+ *
+ * @param string $titulo Nombre del reporte (ej. "Reporte de pagos").
+ * @param string $icono  Emoji o texto corto que representa al reporte.
+ * @param string $modulo Nombre del modulo (ej. "Clientes"); opcional.
+ * @return void Imprime el HTML directamente.
+ */
+function helper_getHtmlOfReportFilterOpen($titulo, $icono = "📊", $modulo = "")
+{
+	$titulo = htmlspecialchars($titulo, ENT_QUOTES, 'UTF-8');
+	$icono  = htmlspecialchars($icono, ENT_QUOTES, 'UTF-8');
+	$modulo = htmlspecialchars($modulo, ENT_QUOTES, 'UTF-8');
+
+	// Subtitulo: si no hay modulo solo se muestra la instruccion
+	$subtitulo = ($modulo === "") ? "Complete los filtros y presione Ver reporte" : $modulo . " &middot; complete los filtros y presione Ver reporte";
+	?>
+	<div class="pv2 prf">
+		<div class="pv2-card pv2-header prf-header">
+			<div class="pv2-header-info">
+				<div class="pv2-header-icon" aria-hidden="true"><?php echo $icono; ?></div>
+				<div>
+					<p class="pv2-header-title"><?php echo $titulo; ?></p>
+					<p class="pv2-header-sub"><?php echo $subtitulo; ?></p>
+				</div>
+			</div>
+		</div>
+		<form class="pv2-card prf-card" autocomplete="off" onsubmit="$('#print-btn-report').trigger('click');return false;">
+			<p class="pv2-card-title"><span class="pv2-ico">&#9881;</span> Filtros</p>
+			<div class="prf-grid">
+	<?php
+}
+
+/**
+ * Imprime el cierre de la pantalla de filtros de un reporte: cierra la
+ * cuadricula .prf-grid, agrega el boton #print-btn-report y cierra el
+ * formulario y el contenedor abiertos por helper_getHtmlOfReportFilterOpen().
+ *
+ * @param string $textoBoton Texto del boton que genera el reporte.
+ * @return void Imprime el HTML directamente.
+ */
+function helper_getHtmlOfReportFilterClose($textoBoton = "Ver reporte")
+{
+	$textoBoton = htmlspecialchars($textoBoton, ENT_QUOTES, 'UTF-8');
+	?>
+			</div>
+			<div class="prf-foot">
+				<button type="button" id="print-btn-report" class="btn btn-primary prf-btn-ver">&#128196; <?php echo $textoBoton; ?></button>
+			</div>
+		</form>
+	</div>
+	<?php
+}
+
+/**
  * Imprime el CSS de las paginas indice de reportes: cuadricula responsive de
  * tarjetas (4/3 columnas en computadora, 2 en tableta y 1 en telefono) con la
  * paleta de la pantalla de ABONOS (variables --pv2-*).
