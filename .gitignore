@@ -63,3 +63,6 @@ claude-commands/cambio.md
 
 # Respaldos locales de los cambios de rediseno (respaldos/<cambio>_<fecha>)
 /respaldos/
+build/logs/logfile.xml
+build/logs/testdox.html
+build/logs/testdox.txt
