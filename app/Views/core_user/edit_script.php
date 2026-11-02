@@ -184,4 +184,9 @@
 		var tmp1 = $.tmpl('<span><input type="hidden" name="txtDetailCashBoxID[]" value="${txtDetailCashBoxID}" /> ${txtDetailCashBoxName}</span>', data).html();
 		objTableListBox.fnAddData([tmp1]);
 	}
+	//Telefono: boton Guardar en la barra inferior y combos nativos (sin select2). En PC no cambia nada
+	$(document).ready(function(){
+		if(window.pv2BindMobileBar){ pv2BindMobileBar(); }
+		PosmeInv.mobileSelects();
+	});
 </script>

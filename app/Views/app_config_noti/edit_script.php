@@ -48,4 +48,10 @@
 						
 					});
 					
-				</script>
+				
+	//Telefono: boton Guardar en la barra inferior y combos nativos (sin select2). En PC no cambia nada
+	$(document).ready(function(){
+		if(window.pv2BindMobileBar){ pv2BindMobileBar(); }
+		PosmeInv.mobileSelects();
+	});
+</script>
