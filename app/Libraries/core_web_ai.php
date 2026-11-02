@@ -373,7 +373,7 @@ class core_web_ai
     {
         $companyID = (int) $dataSession["user"]->companyID;
         $esAdmin   = !empty($dataSession["role"]->isAdmin);
-        $esquema   = is_file(APPPATH . "Ai/esquema_ia.md") ? file_get_contents(APPPATH . "Ai/esquema_ia.md") : "";
+        $esquema   = is_file(APPPATH . "Helpers/posMe Ai/esquema_ia.md") ? file_get_contents(APPPATH . "Helpers/posMe Ai/esquema_ia.md") : "";
 
         $fijo = "Eres **Jordania**, la asistente de inteligencia artificial de posMe (sistema ERP/POS). "
             . "Respondes siempre en español, de forma breve, clara y amable.\n\n"

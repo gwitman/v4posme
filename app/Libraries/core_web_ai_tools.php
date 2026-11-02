@@ -867,7 +867,7 @@ class core_web_ai_tools
     private function buscarEnManual($input)
     {
         $texto = (string) ($input["texto"] ?? "");
-        $ruta  = APPPATH . "Ai/manual_posme.md";
+        $ruta  = APPPATH . "Helpers/posMe Ai/manual_posme.md";
         if (!is_file($ruta)) {
             return ["error" => "El manual no esta disponible"];
         }
