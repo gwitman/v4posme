@@ -2044,7 +2044,10 @@ class app_inventory_item extends _BaseController
 
                 if ($this->request->getUserAgent()->isMobile()) {
                     //$dataViewRender			= $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow");
-                    $dataViewRender = $this->core_web_view->renderGreedWithHtmlInFildMobile($dataViewData, 'ListView', "fnTableSelectedRow");
+                    //Esta pantalla carga DataTables 2.2.2 (datatable_V2_2_2): renderGreedWithHtmlInFildMobile usa la API 1.9
+                    //(fnSetColumnVis) que ya no existe y la lista no se mostraba. renderGreedJson es compatible con DataTables 2
+                    //y con list_script (objTableListView.row().data()); en telefono pm-grid muestra cada fila como tarjeta.
+                    $dataViewRender = $this->core_web_view->renderGreedJson($dataViewData, 'ListView', "fnTableSelectedRow");
                 } else {
                     //$dataViewRender			= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
                     $dataViewRender = $this->core_web_view->renderGreedJson($dataViewData, 'ListView', "fnTableSelectedRow");

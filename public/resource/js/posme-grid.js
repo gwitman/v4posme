@@ -39,7 +39,9 @@
 		}
 		$tabla.children('tbody').children('tr').each(function () {
 			$(this).children('td').each(function (i) {
-				if ((' ' + this.className + ' ').indexOf(' dataTables_empty ') >= 0) {
+				//Fila "sin datos": dataTables_empty (DataTables 1.9) o dt-empty (DataTables 2)
+				var clases = ' ' + this.className + ' ';
+				if (clases.indexOf(' dataTables_empty ') >= 0 || clases.indexOf(' dt-empty ') >= 0) {
 					return;
 				}
 				var titulo = titulos[i] || '';
@@ -51,7 +53,8 @@
 	}
 
 	function preparar(tabla) {
-		var $envoltura = $(tabla).closest('.dataTables_wrapper');
+		//Contenedor: .dataTables_wrapper (DataTables 1.9) o .dt-container (DataTables 2, renderGreedJson)
+		var $envoltura = $(tabla).closest('.dataTables_wrapper, .dt-container');
 		if ($envoltura.length > 0 && !$envoltura.hasClass('pm-grid-wrapper')) {
 			$envoltura.addClass('pm-grid-wrapper');
 		}

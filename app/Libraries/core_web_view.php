@@ -391,8 +391,8 @@ class core_web_view {
    //Estilo moderno y responsive de las grillas (table.pm-grid): CSS y JS compartidos.
    //Va con cada grilla (el navegador los cachea y posme-grid.js se inicializa una sola vez)
    function renderGreedAssets(){
-		return "<link href='".APP_URL_RESOURCE_CSS_JS."/resource/css/posme-grid.css?v=1' rel='stylesheet' />".
-			   "<script src='".APP_URL_RESOURCE_CSS_JS."/resource/js/posme-grid.js?v=1'></script>";
+		return "<link href='".APP_URL_RESOURCE_CSS_JS."/resource/css/posme-grid.css?v=2' rel='stylesheet' />".
+			   "<script src='".APP_URL_RESOURCE_CSS_JS."/resource/js/posme-grid.js?v=2'></script>";
    }
    function renderGreed($data,$idTable = null,$functionSelected = NULL,$displayLength = 350,$formatAjax = false,$parameterAjax=null){
 		

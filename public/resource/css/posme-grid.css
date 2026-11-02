@@ -300,3 +300,194 @@
 		border-top		: none;
 	}
 }
+
+
+/* ==========================================================================
+ * DataTables 2.x (core_web_view::renderGreedJson, ej. app_inventory_item/index)
+ *
+ * DataTables 2 genera otra estructura que la 1.9:
+ *   div.dt-container.pm-grid-wrapper
+ *       div.row.dt-layout-row  > div.dt-layout-cell.dt-layout-start > div.dt-length (select + label)
+ *                              > div.dt-layout-cell.dt-layout-end   > div.dt-search (label + input)
+ *       div.row.dt-layout-row.dt-layout-table > div.dt-layout-cell.col-12.col-sm-12 > table.pm-grid
+ *       div.row.dt-layout-row  > div.dt-info / div.dt-paging > ul.pagination > li.page-item > a.page-link
+ *   fila sin datos: td.dt-empty
+ *
+ * Todas las reglas van dentro de .dt-container o td.dt-empty, que DataTables 1.9 no genera:
+ * las grillas de la version 1.9 (renderGreed, renderGreedMobile, ...) no cambian.
+ * ========================================================================== */
+@media screen {
+
+	/* ---------- Buscador ---------- */
+	.pm-grid-wrapper.dt-container div.dt-search label,
+	.pm-grid-wrapper.dt-container div.dt-length label,
+	.pm-grid-wrapper.dt-container div.dt-info {
+		color			: #475569;
+		font-size		: 13px;
+		font-weight		: 600;
+	}
+	.pm-grid-wrapper.dt-container div.dt-search input {
+		height			: 38px;
+		min-width		: 180px;
+		border			: 1px solid #CBD5E1;
+		border-radius	: 10px;
+		background-color: #FFFFFF;
+		background-image: none;		/* genyx: degradado en los input */
+		color			: #0F172A;
+		padding			: 4px 10px;
+		box-shadow		: none;
+		font-size		: 14px;
+	}
+	.pm-grid-wrapper.dt-container div.dt-search input:focus,
+	.pm-grid-wrapper.dt-container div.dt-length select:focus {
+		border-color	: #2563EB;
+		box-shadow		: 0 0 0 3px #BFDBFE;
+		outline			: none;
+	}
+
+	/* ---------- Cantidad de elementos ---------- */
+	.pm-grid-wrapper.dt-container div.dt-length select {
+		height			: 38px;
+		min-width		: 76px;
+		border			: 1px solid #CBD5E1;
+		border-radius	: 10px;
+		background-color: #FFFFFF;
+		background-image: none;
+		color			: #0F172A;
+		padding			: 4px 8px;
+		box-shadow		: none;
+		font-size		: 14px;
+		font-weight		: 600;
+	}
+
+	/* ---------- Paginacion ---------- */
+	.pm-grid-wrapper.dt-container div.dt-paging ul.pagination {
+		display			: flex;
+		flex-wrap		: wrap;
+		gap				: 4px;
+		margin			: 0;
+	}
+	.pm-grid-wrapper.dt-container div.dt-paging ul.pagination > li > a,
+	.pm-grid-wrapper.dt-container div.dt-paging ul.pagination > li > span {
+		float			: none;
+		display			: inline-block;
+		min-width		: 38px;
+		height			: 38px;
+		line-height		: 36px;
+		padding			: 0 12px;
+		margin			: 0;
+		border			: 1px solid #D9E1EC;
+		border-radius	: 10px;
+		background-color: #FFFFFF;
+		background-image: none;
+		color			: #0F172A;
+		font-weight		: 600;
+		text-align		: center;
+		box-shadow		: none;
+	}
+	.pm-grid-wrapper.dt-container div.dt-paging ul.pagination > li > a:hover,
+	.pm-grid-wrapper.dt-container div.dt-paging ul.pagination > li > a:focus {
+		background-color: #EFF6FF;
+		border-color	: #93C5FD;
+	}
+	.pm-grid-wrapper.dt-container div.dt-paging ul.pagination > li.active > a,
+	.pm-grid-wrapper.dt-container div.dt-paging ul.pagination > li.active > span {
+		background-color: #2563EB;
+		border-color	: #2563EB;
+		color			: #FFFFFF;
+	}
+	.pm-grid-wrapper.dt-container div.dt-paging ul.pagination > li.disabled > a,
+	.pm-grid-wrapper.dt-container div.dt-paging ul.pagination > li.disabled > span {
+		background-color: #F1F5F9;
+		color			: #94A3B8;
+	}
+
+	/* ---------- Fila sin datos ---------- */
+	table.pm-grid.table > tbody > tr > td.dt-empty {
+		text-align		: center;
+		color			: #64748B;
+		padding			: 24px 12px;
+		cursor			: default;
+	}
+}
+
+/* ---------- Telefono (DataTables 2) ---------- */
+@media screen and (max-width: 767px) {
+
+	/* Bootstrap 3 no tiene col-12 y col-sm-12 empieza en 768px: la celda de la tabla
+	   quedaba como elemento flex sin ancho y se encogia al contenido */
+	.pm-grid-wrapper.dt-container div.dt-layout-row {
+		display			: block;
+		margin			: 0 0 10px 0;
+	}
+	.pm-grid-wrapper.dt-container div.dt-layout-row div.dt-layout-cell {
+		display			: block;
+		width			: 100%;
+		padding-left	: 0;
+		padding-right	: 0;
+		margin			: 0;
+		text-align		: left;
+	}
+	.pm-grid-wrapper.dt-container div.dt-layout-row div.dt-layout-cell > * {
+		margin			: 0 0 8px 0;
+	}
+
+	/* Buscador a todo el ancho */
+	.pm-grid-wrapper.dt-container div.dt-search {
+		text-align		: left;
+	}
+	.pm-grid-wrapper.dt-container div.dt-search label {
+		display			: block;
+		margin			: 0 0 4px 0;
+	}
+	.pm-grid-wrapper.dt-container div.dt-search input {
+		display			: block;
+		width			: 100%;
+		min-width		: 0;
+		height			: 44px;
+		margin			: 0;
+		font-size		: 16px;		/* evita el zoom de iOS al enfocar */
+	}
+
+	/* Cantidad de elementos: select nativo + texto en una fila */
+	.pm-grid-wrapper.dt-container div.dt-length {
+		display			: flex;
+		align-items		: center;
+		gap				: 8px;
+		text-align		: left;
+	}
+	.pm-grid-wrapper.dt-container div.dt-length select {
+		height			: 44px;
+		margin			: 0;
+		font-size		: 16px;
+	}
+
+	/* Informacion y paginacion centradas, botones tactiles */
+	.pm-grid-wrapper.dt-container div.dt-info {
+		white-space		: normal;
+		text-align		: center;
+	}
+	.pm-grid-wrapper.dt-container div.dt-paging ul.pagination {
+		justify-content	: center;
+	}
+	.pm-grid-wrapper.dt-container div.dt-paging ul.pagination > li > a,
+	.pm-grid-wrapper.dt-container div.dt-paging ul.pagination > li > span {
+		min-width		: 40px;
+		height			: 40px;
+		line-height		: 38px;
+		padding			: 0 10px;
+	}
+
+	/* Tarjetas a todo el ancho */
+	.pm-grid-wrapper.dt-container table.pm-grid.table {
+		margin			: 0;
+	}
+	.pm-grid-wrapper.dt-container table.pm-grid.table > colgroup {
+		display			: none;
+	}
+	table.pm-grid.table > tbody > tr > td.dt-empty {
+		display			: block;
+		text-align		: center;
+		border-top		: none;
+	}
+}
