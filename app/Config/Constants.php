@@ -229,3 +229,10 @@ define('DB_BDNAME_BIOMETRIC',"biometric");
 define('DB_BDNAME_SHEMA',"information_schema");
 define('PHONE_POSME','50587125827');
 define('GENERAR_LOG_INFO_OF_DB',false);
+
+//ASISTENTE IA JORDANIA (secretos: completar solo en el servidor, no subir valores reales al repositorio)
+define('AI_API_KEY', '');                    //Clave de la API de Anthropic (sk-ant-...)
+define('AI_READONLY_HOSTNAME', 'localhost'); //Servidor MySQL del usuario de solo lectura
+define('AI_READONLY_USERNAME', '');          //Usuario MySQL de solo lectura (solo SELECT sobre vistas ai_v_*)
+define('AI_READONLY_PASSWORD', '');          //Contrasena del usuario de solo lectura
+define('AI_READONLY_DATABASE', '');          //Base de datos del usuario de solo lectura (vacio = DB_BDNAME)

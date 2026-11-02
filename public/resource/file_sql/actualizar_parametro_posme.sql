@@ -1,6 +1,106 @@
 /*BD:	dbs3obkhhc1pgu:posme*/
 /*servidor:	siteground*/
 
+
+-- 1. AI_ASSISTANT_ENABLED: true = habilitado / false = deshabilitado
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'true'
+WHERE p.name = 'AI_ASSISTANT_ENABLED'
+    AND cp.companyID = 2;
+
+-- 2. AI_MODEL: claude-haiku-5-5 (economico) o claude-sonnet-5-5
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'claude-haiku-5-5'
+WHERE p.name = 'AI_MODEL'
+    AND cp.companyID = 2;
+
+-- 3. AI_MAX_TOKENS: 256 a 8192
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '1024'
+WHERE p.name = 'AI_MAX_TOKENS'
+    AND cp.companyID = 2;
+
+-- 4. AI_MAX_TOOL_ITERATIONS: 1 a 12
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '6'
+WHERE p.name = 'AI_MAX_TOOL_ITERATIONS'
+    AND cp.companyID = 2;
+
+-- 5. AI_HISTORY_MESSAGES: 0 a 40
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '8'
+WHERE p.name = 'AI_HISTORY_MESSAGES'
+    AND cp.companyID = 2;
+
+-- 6. AI_QUOTA_COMPANY_MONTH: tokens por mes; 0 = sin limite
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '2000000'
+WHERE p.name = 'AI_QUOTA_COMPANY_MONTH'
+    AND cp.companyID = 2;
+
+-- 7. AI_QUOTA_USER_MONTH: tokens por mes; 0 = sin limite
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '0'
+WHERE p.name = 'AI_QUOTA_USER_MONTH'
+    AND cp.companyID = 2;
+
+-- 8. AI_RATE_PER_MINUTE: 0 = sin limite
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '6'
+WHERE p.name = 'AI_RATE_PER_MINUTE'
+    AND cp.companyID = 2;
+
+-- 9. AI_MAX_QUESTION_LENGTH: caracteres
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '1000'
+WHERE p.name = 'AI_MAX_QUESTION_LENGTH'
+    AND cp.companyID = 2;
+
+-- 10. AI_API_KEY: SECRETO: reemplazar por la clave real
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = ''
+WHERE p.name = 'AI_API_KEY'
+    AND cp.companyID = 2;
+
+-- 11. AI_READONLY_HOSTNAME: servidor MySQL
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'localhost'
+WHERE p.name = 'AI_READONLY_HOSTNAME'
+    AND cp.companyID = 2;
+
+-- 12. AI_READONLY_USERNAME: SECRETO: reemplazar por el usuario real
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = ''
+WHERE p.name = 'AI_READONLY_USERNAME'
+    AND cp.companyID = 2;
+
+-- 13. AI_READONLY_PASSWORD: SECRETO: reemplazar por la contrasena real
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = ''
+WHERE p.name = 'AI_READONLY_PASSWORD'
+    AND cp.companyID = 2;
+
+-- 14. AI_READONLY_DATABASE: vacio = la misma base de la aplicacion
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = ''
+WHERE p.name = 'AI_READONLY_DATABASE'
+    AND cp.companyID = 2;
+	
+	
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "true" 
 WHERE 

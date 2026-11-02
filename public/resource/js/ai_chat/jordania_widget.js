@@ -506,7 +506,7 @@
 
     function ajustarAltura() {
         el.input.style.height = 'auto';
-        el.input.style.height = Math.min(el.input.scrollHeight, 110) + 'px';
+        el.input.style.height = Math.max(76, Math.min(el.input.scrollHeight, 160)) + 'px';
     }
 
     function registrarError(e) {
@@ -552,13 +552,7 @@
                 ev.preventDefault();
                 try { enviar(el.input.value); } catch (e) { registrarError(e); }
             });
-            el.input.addEventListener('keydown', function (ev) {
-                // Enter envia; Shift+Enter hace salto de linea
-                if (ev.key === 'Enter' && !ev.shiftKey && !ev.isComposing) {
-                    ev.preventDefault();
-                    try { enviar(el.input.value); } catch (e) { registrarError(e); }
-                }
-            });
+            // Enter hace salto de linea (multilinea); la pregunta solo se envia con el boton Enviar
             el.input.addEventListener('input', ajustarAltura);
             document.addEventListener('keydown', function (ev) {
                 if (ev.key === 'Escape' && estado.abierto) {

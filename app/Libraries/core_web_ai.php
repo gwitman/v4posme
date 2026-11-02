@@ -24,7 +24,7 @@ class core_web_ai
     const TIMEOUT          = 60;
     const INTERNET_MINUTOS = 5;
 
-    /** Parametros de empresa con secretos: nunca se envian al navegador. */
+    /** Parametros de empresa con secretos (versiones anteriores; hoy estan en Constants.php): nunca se envian al navegador. */
     const PARAMETROS_SECRETOS = ["AI_API_KEY", "AI_READONLY_USERNAME", "AI_READONLY_PASSWORD"];
 
     /** Mensajes amigables por codigo de error. */
@@ -93,7 +93,7 @@ class core_web_ai
     }
 
     /**
-     * API key de la empresa (parametro AI_API_KEY).
+     * API key de Anthropic (constante AI_API_KEY de app/Config/Constants.php).
      *
      * @param int $companyID Empresa de la sesion.
      * @return string

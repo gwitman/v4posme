@@ -26,18 +26,18 @@
     box-sizing: border-box;
 }
 
-/* Boton flotante */
+/* Boton flotante: separado de la esquina para no tapar otros botones flotantes del sistema */
 .jdn-boton {
     position: fixed;
-    right: 20px;
+    right: 96px;
     bottom: 20px;
     z-index: 10500;
     width: 56px;
     height: 56px;
     padding: 0;
-    border: 0;
+    border: 2px solid var(--jdn-accent);
     border-radius: 50%;
-    background: var(--jdn-accent);
+    background: #fff;
     box-shadow: 0 4px 14px rgba(31, 41, 51, 0.25);
     cursor: pointer;
     display: flex;
@@ -59,8 +59,22 @@
 }
 
 .jdn-root.jdn-sin-conexion .jdn-boton {
-    background: #9aa1aa;
+    border-color: #9aa1aa;
     box-shadow: none;
+}
+
+.jdn-root.jdn-sin-conexion .jdn-logo-boton {
+    filter: grayscale(1);
+    opacity: 0.6;
+}
+
+/* Logo de posMe dentro del boton */
+.jdn-logo-boton {
+    display: block;
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    pointer-events: none;
 }
 
 /* Avatar con la inicial (sin imagenes externas) */
@@ -90,7 +104,7 @@
 /* Panel */
 .jdn-panel {
     position: fixed;
-    right: 20px;
+    right: 96px;
     bottom: 88px;
     z-index: 10501;
     width: 380px;
@@ -297,6 +311,7 @@
 /* Formulario */
 .jdn-form {
     display: flex;
+    align-items: flex-end;
     gap: 8px;
     padding: 10px 12px;
     border-top: 1px solid var(--jdn-borde);
@@ -306,9 +321,11 @@
 
 .jdn-input {
     flex: 1 1 auto;
-    min-height: 38px;
-    max-height: 110px;
+    min-height: 76px;  /* tres lineas visibles */
+    max-height: 160px;
     resize: none;
+    line-height: 1.35;
+    overflow-y: auto;
     border: 1px solid var(--jdn-borde);
     border-radius: 6px;
     padding: 8px 10px;
@@ -354,7 +371,7 @@
 /* Movil: panel a pantalla completa */
 @media (max-width: 576px) {
     .jdn-boton {
-        right: 14px;
+        right: 80px;
         bottom: 14px;
     }
 
