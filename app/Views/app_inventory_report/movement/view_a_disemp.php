@@ -7,6 +7,7 @@
 		<meta name="application-name" 	content="dsemp" /> 
 		
 		
+		<?php echo helper_reporteGeneralCreateStyle(); ?>
 		<style>
 		
 			table, td, tr, th {
@@ -91,7 +92,7 @@
 		
 		<table style="
 			width:100%;order-spacing: 10px;
-		" >
+		" class="pr-table" >
 			<thead>
 				<tr style="background-color:#00628e;color:white;">
 					<!--812-->
@@ -181,8 +182,9 @@
 				</tr>
 			</tbody>
 		</table>
-		
-		
-		
+
+
+
+		<?php echo helper_reporteGeneralCreateAcciones(); ?>
 	</body>	
 </html>

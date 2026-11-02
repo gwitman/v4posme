@@ -10,7 +10,8 @@
 		<link rel="stylesheet" type="text/css" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/style_table_report_printer.css">
 		<link rel="stylesheet" type="text/css" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/style_table_report_printer.css" media="print">
 		-->
-		
+
+		<?php echo helper_reporteGeneralCreateStyle(); ?>
 		<style>
 			
 			table, td, tr, th {
@@ -74,7 +75,7 @@
 		
 		<table style="
 			width:100%;order-spacing: 10px;
-		" >
+		" class="pr-table" >
 			<thead>
 				<tr style="background-color:#00628e;color:white;">
 					<!--812-->
@@ -141,7 +142,8 @@
 				</tr>
 			</thead>
 		</table>
-		
-		
+
+
+		<?php echo helper_reporteGeneralCreateAcciones(); ?>
 	</body>	
 </html>

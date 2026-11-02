@@ -11,9 +11,243 @@ function helper_reporteGeneralCreateStyle(){
 			
 			.border {
 				border-color:black;
-				border:solid 1px black;						
+				border:solid 1px black;
 			}
-			
+
+			/* ===== Estilo moderno de reportes (paleta de la pantalla de ABONOS) ===== */
+			body {
+				font-family: "Segoe UI", Roboto, "Open Sans", Arial, sans-serif !important;
+				color: #0F172A;
+				background: #F1F5F9;
+				padding: 16px;
+			}
+
+			/* Encabezado */
+			table.pr-head {
+				background: #FFFFFF;
+				border: 1px solid #D9E1EC;
+				border-collapse: separate !important;
+				border-radius: 12px;
+				box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+				margin-bottom: 12px;
+			}
+			table.pr-head th {
+				background: transparent;
+			}
+			table.pr-head th.pr-title {
+				font-size: 20px;
+				font-weight: 700;
+				color: #0F172A !important;
+				background: transparent !important;
+			}
+			table.pr-head th.pr-company {
+				font-size: 14px;
+				font-weight: 600;
+				color: #2563EB !important;
+				background: transparent !important;
+			}
+			table.pr-head th.pr-sub {
+				font-size: 13px;
+				font-weight: 400;
+				color: #475569 !important;
+				background: transparent !important;
+			}
+			table.pr-head th.pr-logo img {
+				object-fit: contain;
+				max-height: 70px;
+				width: auto !important;
+				height: auto !important;
+			}
+
+			/* Tabla de datos */
+			table.pr-table {
+				background: #FFFFFF;
+				border: 1px solid #D9E1EC;
+				box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+			}
+			table.pr-table tr.pr-thead-row th {
+				background: #0F172A !important;
+				color: #FFFFFF !important;
+				font-size: 12px;
+				font-weight: 700;
+				text-transform: uppercase;
+				padding: 8px 10px;
+			}
+			table.pr-table td {
+				padding: 6px 10px;
+				border: 1px solid #E2E8F0;
+			}
+			table.pr-table .border {
+				border: 1px solid #E2E8F0 !important;
+			}
+			table.pr-table tbody tr:nth-child(even) td {
+				background: #F8FAFC;
+			}
+			table.pr-table tbody tr:hover td {
+				background: #EFF6FF;
+			}
+			table.pr-table td.pr-num {
+				text-align: right;
+				font-variant-numeric: tabular-nums;
+			}
+			table.pr-table tr.pr-filter-row th {
+				background: #1E293B !important;
+				padding: 4px 6px;
+			}
+			table.pr-table input.pr-filter {
+				height: 28px;
+				width: 100%;
+				box-sizing: border-box;
+				border: 1px solid #CBD5E1;
+				border-radius: 6px;
+				padding: 0 6px;
+				color: #0F172A;
+				background: #FFFFFF;
+			}
+			table.pr-table tfoot.pr-tfoot th,
+			table.pr-table .pr-tfoot th {
+				background: #DCFCE7 !important;
+				color: #14532D !important;
+				font-weight: 700;
+				border-top: 2px solid #86EFAC !important;
+				padding: 6px 10px;
+			}
+
+			/* Tabla vertical */
+			table.pr-vertical td.pr-vlabel {
+				background: #0F172A !important;
+				color: #FFFFFF !important;
+			}
+
+			/* Firma */
+			table.pr-firma {
+				font-size: 11px;
+				color: #64748B;
+				text-align: center;
+				margin-top: 12px;
+			}
+			table.pr-firma th {
+				font-weight: 400;
+				text-align: center;
+			}
+
+			/* Barra de acciones */
+			.pr-toolbar {
+				position: fixed;
+				top: 12px;
+				right: 12px;
+				z-index: 9999;
+				display: flex;
+				gap: 8px;
+			}
+			.pr-btn {
+				min-height: 40px;
+				padding: 0 16px;
+				border-radius: 10px;
+				border: none;
+				font-weight: 600;
+				font-family: inherit;
+				cursor: pointer;
+				color: #FFFFFF;
+				box-shadow: 0 1px 3px rgba(15, 23, 42, 0.15);
+			}
+			.pr-btn-excel {
+				background: #16A34A;
+				color: #FFFFFF;
+			}
+			.pr-btn-excel:hover {
+				background: #15803D;
+			}
+			.pr-btn-print {
+				background: #2563EB;
+				color: #FFFFFF;
+			}
+			.pr-btn-print:hover {
+				background: #1D4ED8;
+			}
+
+			/* Vistas escritas a mano: colores inline heredados */
+			th[style*="#00628e"], td[style*="#00628e"], tr[style*="#00628e"],
+			th[style*="#00628E"], td[style*="#00628E"], tr[style*="#00628E"] {
+				background: #0F172A !important;
+				color: #FFFFFF !important;
+			}
+			th[style*="#68c778"], th[style*="#68C778"] {
+				background: #2563EB !important;
+				color: #FFFFFF !important;
+			}
+
+			/* Telefono */
+			@media (max-width: 767px) {
+				body {
+					padding: 8px;
+				}
+				/* Barra de acciones fija abajo, como la barra inferior de ABONOS */
+				.pr-toolbar {
+					position: sticky;
+					top: auto;
+					right: auto;
+					bottom: 0;
+					z-index: 50;
+					flex-direction: row;
+					margin: 8px -8px -8px;
+					padding: 8px;
+					background: #FFFFFF;
+					border-top: 1px solid #E2E8F0;
+					box-shadow: 0 -2px 8px rgba(15, 23, 42, 0.08);
+				}
+				.pr-btn {
+					flex: 1 1 0;
+					min-height: 44px;
+				}
+				table.pr-table,
+				table.pr-head {
+					display: block;
+					overflow-x: auto;
+					max-width: 100%;
+				}
+				/* La firma trae un ancho fijo (suma de columnas): evitar scroll horizontal de la pagina */
+				table.pr-firma {
+					width: 100% !important;
+					max-width: 100%;
+				}
+			}
+
+			/* Impresion */
+			@media print {
+				body {
+					background: #FFFFFF !important;
+					padding: 0 !important;
+				}
+				.pr-noexport,
+				.pr-toolbar {
+					display: none !important;
+				}
+				table.pr-head,
+				table.pr-table,
+				table.pr-firma,
+				th[style*="#00628e"], td[style*="#00628e"], tr[style*="#00628e"],
+				th[style*="#00628E"], td[style*="#00628E"], tr[style*="#00628E"],
+				th[style*="#68c778"], th[style*="#68C778"] {
+					-webkit-print-color-adjust: exact;
+					print-color-adjust: exact;
+				}
+				table.pr-table thead {
+					display: table-header-group;
+				}
+				table.pr-table tr {
+					page-break-inside: avoid;
+				}
+				table.pr-head,
+				table.pr-table {
+					box-shadow: none !important;
+				}
+				@page {
+					size: landscape;
+					margin: 10mm;
+				}
+			}
+
 		</style>
 		';
 		
@@ -33,9 +267,9 @@ function helper_reporteGeneralCreateEncabezado($titulo,$company,$countColumn,$ti
 		if($imagenOtherLine == true){
 			$resultado = $resultado.
 					'
-					<table  style="	width:'.$width.';border-spacing: 10px;"	>
+					<table class="pr-head" style="	width:'.$width.';border-spacing: 10px;"	>
 						<tr>
-							<th colspan="'.$countColumn.'" rowspan="1" style="text-align:center;width:130px">
+							<th class="pr-logo" colspan="'.$countColumn.'" rowspan="1" style="text-align:center;width:130px">
 								<img width="220" height="110" 						
 									style="
 										width: 220px;
@@ -53,7 +287,7 @@ function helper_reporteGeneralCreateEncabezado($titulo,$company,$countColumn,$ti
 		
 		$resultado = $resultado.
 		'
-		<table style="width:'.$width.';border-spacing: 10px;" >
+		<table class="pr-head" style="width:'.$width.';border-spacing: 10px;" >
 			<thead>
 				<tr>
 					';
@@ -62,7 +296,7 @@ function helper_reporteGeneralCreateEncabezado($titulo,$company,$countColumn,$ti
 		if($imagenOtherLine == false){
 			
 			$resultado = $resultado.
-					'<th colspan="3" rowspan="5" style="text-align:left;width:130px">
+					'<th class="pr-logo" colspan="3" rowspan="5" style="text-align:left;width:130px">
 						<img width="120" height="110" 						
 							style="
 								width: 120px;
@@ -77,32 +311,32 @@ function helper_reporteGeneralCreateEncabezado($titulo,$company,$countColumn,$ti
 		
 					
 		$resultado = $resultado.'
-					<th colspan="'.($countColumn-$numerLine).'" style="
+					<th class="pr-title" colspan="'.($countColumn-$numerLine).'" style="
 						text-align:Left;background-color:#68c778;color:black;
 						width:80%
 					">'.$titulo.'</th>
 				</tr>
 				
 				<tr>
-					<th colspan="'.($countColumn-$numerLine).'" style="
+					<th class="pr-company" colspan="'.($countColumn-$numerLine).'" style="
 						text-align:Left;background-color:#00628e;color:white;
 					">'.strtoupper($company).'</th>
 				</tr>
 				<tr>';
 				
 					if ($titulo2 == "")
-						$resultado = $resultado. '<th colspan="'.($countColumn-$numerLine).'" style="text-align:Left">&nbsp;</th>';
+						$resultado = $resultado. '<th class="pr-sub" colspan="'.($countColumn-$numerLine).'" style="text-align:Left">&nbsp;</th>';
 					else 
-						$resultado = $resultado. '<th colspan="'.($countColumn-$numerLine).'" style="text-align:Left;background-color:#00628e;color:white;">'.$titulo2.'</th>';
+						$resultado = $resultado. '<th class="pr-sub" colspan="'.($countColumn-$numerLine).'" style="text-align:Left;background-color:#00628e;color:white;">'.$titulo2.'</th>';
 					
 					$resultado = $resultado.'
 				</tr>
 				<tr>';
 				
 					if ($titulo3 == "")
-						$resultado = $resultado. '<th colspan="'.($countColumn-$numerLine).'" style="text-align:Left">&nbsp;</th>';
+						$resultado = $resultado. '<th class="pr-sub" colspan="'.($countColumn-$numerLine).'" style="text-align:Left">&nbsp;</th>';
 					else 
-						$resultado = $resultado. '<th colspan="'.($countColumn-$numerLine).'" style="text-align:Left;background-color:#00628e;color:white;">'.$titulo3.'</th>';
+						$resultado = $resultado. '<th class="pr-sub" colspan="'.($countColumn-$numerLine).'" style="text-align:Left;background-color:#00628e;color:white;">'.$titulo3.'</th>';
 					
 					
 					$resultado = $resultado. '
@@ -110,9 +344,9 @@ function helper_reporteGeneralCreateEncabezado($titulo,$company,$countColumn,$ti
 				<tr>';
 				
 					if ($titulo4 == "")
-						$resultado = $resultado. '<th colspan="'.($countColumn-$numerLine).'" style="text-align:Left">&nbsp;</th>';
+						$resultado = $resultado. '<th class="pr-sub" colspan="'.($countColumn-$numerLine).'" style="text-align:Left">&nbsp;</th>';
 					else 
-						$resultado = $resultado. '<th colspan="'.($countColumn-$numerLine).'" style="text-align:Left;background-color:#00628e;color:white;">'.$titulo4.'</th>';
+						$resultado = $resultado. '<th class="pr-sub" colspan="'.($countColumn-$numerLine).'" style="text-align:Left;background-color:#00628e;color:white;">'.$titulo4.'</th>';
 					
 					
 					$resultado = $resultado.'
@@ -131,6 +365,26 @@ function helper_reporteGeneralCreateEncabezado($titulo,$company,$countColumn,$ti
 
 
 
+/**
+ * Genera la barra de acciones del reporte (Exportar a Excel e Imprimir) y carga posme-report.js.
+ * La barra lleva la clase pr-noexport para que no se incluya en el archivo exportado.
+ *
+ * @param string $elementId Identificador del contenedor del reporte; se usa como sufijo del id del boton de exportar.
+ * @return string HTML de la barra de acciones mas la etiqueta <script> de posme-report.js.
+ */
+function helper_reporteGeneralCreateAcciones($elementId = 'myReport'){
+
+	$result =
+	'<div class="pr-toolbar pr-noexport">
+		<button type="button" id="btnExportToExcel'.$elementId.'" class="pr-btn pr-btn-excel">Exportar a Excel</button>
+		<button type="button" class="pr-btn pr-btn-print">Imprimir</button>
+	</div>
+	<script src="'.APP_URL_RESOURCE_CSS_JS.'/resource/js/posme-report.js?v=1"></script>
+	';
+
+	return $result;
+}
+
 function helper_reporteGeneralCreateFirma($firma,$column,$width, $elementId = 'myReport'){
 	
 		$filterColumn = "[ \"\" ";
@@ -142,63 +396,25 @@ function helper_reporteGeneralCreateFirma($firma,$column,$width, $elementId = 'm
 		
 		$result = 
 		'
-		<table style="width:'.$width.'">
+		<table class="pr-firma" style="width:'.$width.'">
 			<thead>
 				<tr>
-					<th colspan="'.$column.'" >'.date("Y-m-d H:i:s").' '.$firma.' posMe</th>
-				</tr>
-				<tr>
-					<th colspan="'.$column.'" ><a id="btnExportToExcel'.$elementId.'" href="#" >export to excel</a></th>
+					<th colspan="'.$column.'" >'.helper_getDateTime().' '.$firma.' posMe</th>
 				</tr>
 			</thead>
 		</table>
-		
+		'.helper_reporteGeneralCreateAcciones($elementId).'
+
 		
 		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 		<script>
 			$(document).ready(function() {
-				
-				  $(document).on("click","#btnExportToExcel'.$elementId.'",function(e,o){
-					  
-						  
-						  // Obtener el contenido HTML de la tabla
-						  var tablaHTML = 
-										"<div>"+	
-										document.getElementById("'.$elementId.'").outerHTML + 
-										"</div>";
-						  var tablaHTML = $(tablaHTML);
-						  
-						  tablaHTML.find("input").remove();						  
-						  tablaHTML 	= $(tablaHTML[0]).html();
 
-						  // Crear un objeto Blob con el contenido HTML
-						  var BOM = "\uFEFF"; // Marcador UTF-8
-						  var blob = new Blob([ BOM + tablaHTML], { type: "application/vnd.ms-excel;charset=utf-8" });
-
-						  // Crear una URL para el objeto Blob
-						  var url = URL.createObjectURL(blob);
-
-
-						  // Crear un enlace <a> para iniciar la descarga
-						  var a = document.createElement("a");
-						  a.href = url;
-						  a.download = "data_export.xls";
-						  document.body.appendChild(a);
-
-						  // Simular un clic en el enlace para iniciar la descarga
-						  a.click();
-
-						  // Limpiar el objeto URL
-						  URL.revokeObjectURL(url);
-						  
-						
-				  });
-				
-				
+				  // La exportacion a Excel y la impresion las maneja posme-report.js (helper_reporteGeneralCreateAcciones)
 
 				  // Arreglo para almacenar los filtros
 				  var filtros = '.$filterColumn.';
-				  
+
 
 				  // Aplicar el filtro en cada columna al escribir en el input
 				  $("#'.$elementId.' thead input").on("keyup", function() {
@@ -276,10 +492,10 @@ function helper_reporteGeneralCreateFirmaNotEjecuteExport($firma,$column,$width)
 		
 		$result = 
 		'
-		<table style="width:'.$width.'">
+		<table class="pr-firma" style="width:'.$width.'">
 			<thead>
 				<tr>
-					<th colspan="'.$column.'" >'.date("Y-m-d H:i:s").' '.$firma.' posMe</th>
+					<th colspan="'.$column.'" >'.helper_getDateTime().' '.$firma.' posMe</th>
 				</tr>
 				<tr>
 					<th colspan="'.$column.'" ><a id="btnExportToExcel" href="#" >export to excel</a></th>
@@ -436,7 +652,7 @@ function helper_reporteGeneralCreateTable($objDetail,$configColumn,$widht,$titul
 			$table3 = 
 			$table3.
 			'<th nowrap style="text-overflow:ellipsis;overflow:hidden;white-space:nowrap;text-align:left;width:'.$value['Width'].'" colspan="'.$value['Colspan'].'" class="border"  >
-				<input style="width:80px;height: 10px;margin-top: 5px;margin-bottom: 5px;"  type="text" placeholder="Filtrar" data-index="'.$couterIndexColumn.'" />
+				<input class="pr-filter" autocomplete="off" style="width:80px;height: 10px;margin-top: 5px;margin-bottom: 5px;"  type="text" placeholder="Filtrar" data-index="'.$couterIndexColumn.'" />
 			</th>';
 		}
 		$couterIndexColumn++;
@@ -453,7 +669,7 @@ function helper_reporteGeneralCreateTable($objDetail,$configColumn,$widht,$titul
     
 	//Armar titulo
 	$table1 =  
-	'<table id="'.$idTable.'"  style="
+	'<table id="'.$idTable.'" class="pr-table" style="
 			width:'.$widthTemporal.';order-spacing: 10px; table-layout: fixed;
 		" >
 			<thead>
@@ -470,14 +686,14 @@ function helper_reporteGeneralCreateTable($objDetail,$configColumn,$widht,$titul
 	//Unir Titulo y encabezado de la tabla
 	$table =  	$table.
 				$table1.
-				'<tr style="background-color:#'.$backgournd.';color:'.$color.';">'.
+				'<tr class="pr-thead-row" style="background-color:#'.$backgournd.';color:'.$color.';">'.
 				$table2.
 				'</tr>'.
 				
 				(
 					$filtrarRegistroOnLine == true ? 
 					(
-					'<tr style="background-color:#'.$backgournd.';color:'.$color.';">'.
+					'<tr class="pr-filter-row pr-noexport" style="background-color:#'.$backgournd.';color:'.$color.';">'.
 					$table3.
 					'</tr>'
 					)
@@ -522,7 +738,15 @@ function helper_reporteGeneralCreateTable($objDetail,$configColumn,$widht,$titul
 			
 			if($value['Colspan'] != "0")
 			{
-				$table = $table. "<td nowrap style='text-overflow:ellipsis;overflow:hidden;white-space:nowrap;text-align:".$value["Alineacion"].";".$value["Style"]." ' colspan='".$value['Colspan']."'  class='border'>";
+				//Celda numerica: clase pr-num y data-num con el valor puro (sin comas ni prefijos) para exportar a Excel
+				$tdClass 	= "border";
+				$tdDataNum 	= "";
+				if($value["Formato"] == "Number"){
+					$valorPuro 	= $value["FiledSouce"] == "" ? "" : $i[$value["FiledSouce"]];
+					$tdClass 	= "border pr-num";
+					$tdDataNum 	= " data-num='".number_format((float)$valorPuro,2,'.','')."'";
+				}
+				$table = $table. "<td nowrap style='text-overflow:ellipsis;overflow:hidden;white-space:nowrap;text-align:".$value["Alineacion"].";".$value["Style"]." ' colspan='".$value['Colspan']."'  class='".$tdClass."'".$tdDataNum.">";
 					
 					
 					$valueField 			= $value["FiledSouce"] == "" ? "" : ($i[$value["FiledSouce"] ] );
@@ -604,7 +828,7 @@ function helper_reporteGeneralCreateTable($objDetail,$configColumn,$widht,$titul
 	//Armar Pie de Tabla
 	$table = $table.'</tbody>';
 	
-	$table = $table.'<tfoot><tr>';
+	$table = $table.'<tfoot class="pr-tfoot"><tr>';
 			
 				foreach($configColumn as $key => $value ){
 					
@@ -659,7 +883,7 @@ function helper_reporteGeneralCreateTableVertical($objDetail,$configColumn,$maxC
 	
     $widht         = str_replace("px","", $widht);
 	$table         =  
-	'<table style="
+	'<table class="pr-table pr-vertical" style="
 			width:'.$widht.';order-spacing: 10px;
 		" >
 			<tbody>
@@ -706,7 +930,7 @@ function helper_reporteGeneralCreateTableVertical($objDetail,$configColumn,$maxC
 				
 				$table = $table. "<tr>";
 				
-					$table = $table. "<td nowrap style='text-align:".";width:167px;background-color:#00628e;color:white;' colspan='2'   >";
+					$table = $table. "<td nowrap class='pr-vlabel' style='text-align:".";width:167px;background-color:#00628e;color:white;' colspan='2'   >";
 						$table		= $table.$titulo;
 					$table = $table. "</td>";
 					
@@ -26583,7 +26807,7 @@ function helper_reporteGeneralCreateTableGroupBy($objDetail,$configColumn,$widht
 			$table3 = 
 			$table3.
 			'<th nowrap style="text-overflow:ellipsis;overflow:hidden;white-space:nowrap;text-align:left;width:'.$value['Width'].'" colspan="'.$value['Colspan'].'" class="border"  >
-				<input style="width:80px;height: 10px;margin-top: 5px;margin-bottom: 5px;"  type="text" placeholder="Filtrar" data-index="'.$couterIndexColumn.'" />
+				<input class="pr-filter" autocomplete="off" style="width:80px;height: 10px;margin-top: 5px;margin-bottom: 5px;"  type="text" placeholder="Filtrar" data-index="'.$couterIndexColumn.'" />
 			</th>';
 		}
 		$couterIndexColumn++;
@@ -26591,7 +26815,7 @@ function helper_reporteGeneralCreateTableGroupBy($objDetail,$configColumn,$widht
 	
 	//Armar titulo
 	$table1 =  
-	'<table id="'.$idTable.'"  style="
+	'<table id="'.$idTable.'" class="pr-table" style="
 			width:'.$widthTemporal.';order-spacing: 10px; table-layout: fixed;
 		" >
 			<thead>
@@ -26608,14 +26832,14 @@ function helper_reporteGeneralCreateTableGroupBy($objDetail,$configColumn,$widht
 	//Unir Titulo y encabezado de la tabla
 	$table =  	$table.
 				$table1.
-				'<tr style="background-color:#'.$backgournd.';color:'.$color.';">'.
+				'<tr class="pr-thead-row" style="background-color:#'.$backgournd.';color:'.$color.';">'.
 				$table2.
 				'</tr>'.
 				
 				(
 					$filtrarRegistroOnLine == true ? 
 					(
-					'<tr style="background-color:#'.$backgournd.';color:'.$color.';">'.
+					'<tr class="pr-filter-row pr-noexport" style="background-color:#'.$backgournd.';color:'.$color.';">'.
 					$table3.
 					'</tr>'
 					)
@@ -26661,7 +26885,15 @@ function helper_reporteGeneralCreateTableGroupBy($objDetail,$configColumn,$widht
 			if($value['Colspan'] != "0")
 			{							
 					//Codigo Original:
-					$table = $table. "<td nowrap style='text-overflow:ellipsis;overflow:hidden;white-space:nowrap;text-align:".$value["Alineacion"].";".$value["Style"]." ' colspan='".$value['Colspan']."'  class='border'>";										
+					//Celda numerica: clase pr-num y data-num con el valor puro (sin comas ni prefijos) para exportar a Excel
+					$tdClass 	= "border";
+					$tdDataNum 	= "";
+					if($value["Formato"] == "Number"){
+						$valorPuro 	= $value["FiledSouce"] == "" ? "" : $i[$value["FiledSouce"]];
+						$tdClass 	= "border pr-num";
+						$tdDataNum 	= " data-num='".number_format((float)$valorPuro,2,'.','')."'";
+					}
+					$table = $table. "<td nowrap style='text-overflow:ellipsis;overflow:hidden;white-space:nowrap;text-align:".$value["Alineacion"].";".$value["Style"]." ' colspan='".$value['Colspan']."'  class='".$tdClass."'".$tdDataNum.">";										
 					$valueField 			= $value["FiledSouce"] == "" ? "" : ($i[$value["FiledSouce"] ] );
 					//$valueField 			= $value["FiledSouce"] == "" ? "" : ($i[$value["FiledSouce"] ]." - ".$autoIncrementValue++ );
 					$tipoData				= array_key_exists("Formato",$value) ? $value["Formato"] : "" ;
@@ -26733,7 +26965,7 @@ function helper_reporteGeneralCreateTableGroupBy($objDetail,$configColumn,$widht
 	//Armar Pie de Tabla
 	$table = $table.'</tbody>';
 	
-	$table = $table.'<tfoot><tr>';
+	$table = $table.'<tfoot class="pr-tfoot"><tr>';
 			
 				foreach($configColumn as $key => $value ){
 					
@@ -26798,7 +27030,7 @@ function helper_reporteGeneralCreateTableGroupByVendors($objDetail,$configColumn
 				// Si no es el primero, cerrar la tabla anterior y mostrar subtotal
 				if ($lastEmployerName !== null) {
 					// Subtotal row
-					$table 		.= "<tr><td colspan='2' style='text-align:right;font-weight:bold;'>SUBTOTAL:</td><td style='text-align:right;font-weight:bold;'>"
+					$table 		.= "<tr><td colspan='2' style='text-align:right;font-weight:bold;'>SUBTOTAL:</td><td class='pr-num' data-num='" . number_format((float)$subtotalAmountConIva, 2, '.', '') . "' style='text-align:right;font-weight:bold;'>"
 								. number_format($subtotalAmountConIva, 2, '.', ',') . "</td></tr>";
 					$table 		.= "</tbody></table>";
 					$htmlFinal 	.= $table;
@@ -26806,7 +27038,7 @@ function helper_reporteGeneralCreateTableGroupByVendors($objDetail,$configColumn
 
 				// Nueva tabla para el nuevo employerName
 				$table = "<h3> DOCTOR: " . htmlspecialchars($i['employerName']) . "</h3>";
-				$table .= "<table class='border' style='width:100%;margin-bottom:10px;'>
+				$table .= "<table class='border pr-table' style='width:100%;margin-bottom:10px;'>
 				<thead>
 					<tr>
 					<th style='font-weight:bold; text-align:left;'>Numero Factura</th>
@@ -26824,7 +27056,7 @@ function helper_reporteGeneralCreateTableGroupByVendors($objDetail,$configColumn
 			$table .= "<tr>";
 			$table .= "<td>" . htmlspecialchars($i['transactionNumber']) . "</td>";
 			$table .= "<td>" . htmlspecialchars($i['legalName']) . "</td>";
-			$table .= "<td style='text-align:right;'>" . number_format($i['amountConIva'], 2, '.', ',') . "</td>";
+			$table .= "<td class='pr-num' data-num='" . number_format((float)$i['amountConIva'], 2, '.', '') . "' style='text-align:right;'>" . number_format($i['amountConIva'], 2, '.', ',') . "</td>";
 			$table .= "</tr>";
 
 			// Sumar al subtotal
@@ -26835,10 +27067,10 @@ function helper_reporteGeneralCreateTableGroupByVendors($objDetail,$configColumn
 		// Cerrar la última tabla y mostrar subtotal
 		if ($lastEmployerName !== null) {
 			
-			$table 	.= "<tr><td colspan='2' style='text-align:right;font-weight:bold;'>SUBTOTAL:</td><td style='text-align:right;font-weight:bold;'>"
+			$table 	.= "<tr><td colspan='2' style='text-align:right;font-weight:bold;'>SUBTOTAL:</td><td class='pr-num' data-num='" . number_format((float)$subtotalAmountConIva, 2, '.', '') . "' style='text-align:right;font-weight:bold;'>"
 					. number_format($subtotalAmountConIva, 2, '.', ',') . "</td></tr>";
 			
-			$table 	.= "<tr><td colspan='2' style='text-align:right;font-weight:bold;'>TOTAL:</td><td style='text-align:right;font-weight:bold;'>"
+			$table 	.= "<tr><td colspan='2' style='text-align:right;font-weight:bold;'>TOTAL:</td><td class='pr-num' data-num='" . number_format((float)$totalAmountConIva, 2, '.', '') . "' style='text-align:right;font-weight:bold;'>"
 					.number_format($totalAmountConIva, 2, '.', ',') . "</td></tr>";
 
 			$table 		.= "</tbody></table>";

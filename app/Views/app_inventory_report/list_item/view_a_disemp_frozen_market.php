@@ -4,7 +4,8 @@
 		<meta charset="utf-8">
 		<title><?php echo $objFirmaEncription; ?></title>
 		<meta name="viewport" 			content="width=device-width, initial-scale=1.0">
-		<meta name="application-name" 	content="dsemp" /> 
+		<meta name="application-name" 	content="dsemp" />
+		<?php echo helper_reporteGeneralCreateStyle(); ?>
 		<style>
 			table, td, tr, th {
 				border-collapse: collapse;
@@ -68,7 +69,7 @@
 		
 		<br/>		
 		
-		<table style="width:100%;" id="myReport" >
+		<table style="width:100%;" id="myReport" class="pr-table" >
 			<thead >
 				
 				<tr style="background-color:#00628e;color:white;">
@@ -159,9 +160,6 @@
 				<tr>
 					<th colspan="11" ><?php echo date("Y-m-d H:i:s");  ?> <?php echo $objFirmaEncription; ?> posMe</th>
 				</tr>
-				<tr>
-					<th colspan="'.$column.'" ><a id="btnExportToExcel" href="#" >export to excel</a></th>
-				</tr>
 			</thead>
 		</table>
 	
@@ -169,43 +167,6 @@
 		<script>
 			$(document).ready(function() {
 				
-				  $(document).on("click","#btnExportToExcel",function(e,o){
-					  
-						  
-						  // Obtener el contenido HTML de la tabla
-						  var tablaHTML = 
-										"<div>"+	
-										document.getElementById("myReport").outerHTML + 
-										"</div>";
-						  var tablaHTML = $(tablaHTML);
-						  
-						  tablaHTML.find("input").remove();						  
-						  tablaHTML 	= $(tablaHTML[0]).html();
-
-						  // Crear un objeto Blob con el contenido HTML
-						  var blob = new Blob([tablaHTML], { type: "application/vnd.ms-excel" });
-
-						  // Crear una URL para el objeto Blob
-						  var url = URL.createObjectURL(blob);
-
-
-						  // Crear un enlace <a> para iniciar la descarga
-						  var a = document.createElement("a");
-						  a.href = url;
-						  a.download = "list_item.xls";
-						  document.body.appendChild(a);
-
-						  // Simular un clic en el enlace para iniciar la descarga
-						  a.click();
-
-						  // Limpiar el objeto URL
-						  URL.revokeObjectURL(url);
-						  
-						
-				  });
-				
-				
-
 				  // Arreglo para almacenar los filtros
 				  var filtros = '.$filterColumn.';
 				  
@@ -268,7 +229,7 @@
 			});
 
 		</script>
-		
-		
+
+		<?php echo helper_reporteGeneralCreateAcciones(); ?>
 	</body>	
 </html>

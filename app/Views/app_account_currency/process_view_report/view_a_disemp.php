@@ -5,6 +5,7 @@
 		<title><?php echo $objFirmaEncription; ?></title>
 		<meta name="viewport" 			content="width=device-width, initial-scale=1.0">
 		<meta name="application-name" 	content="dsemp" /> 
+		<?php echo helper_reporteGeneralCreateStyle(); ?>
 		<style>
 			table, td, tr, th {
 				border-collapse: collapse;
@@ -68,7 +69,7 @@
 		
 		<br/>		
 		
-		<table style="width:100%;" id="myReport" >
+		<table style="width:100%;" id="myReport" class="pr-table" >
 			<thead >
 				
 				<tr style="background-color:#00628e;color:white;">
@@ -141,8 +142,9 @@
 				</tr>				
 			</thead>
 		</table>
-	
-		
-		
+
+
+
+		<?php echo helper_reporteGeneralCreateAcciones(); ?>
 	</body>	
 </html>
