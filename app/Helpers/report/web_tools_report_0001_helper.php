@@ -27,12 +27,39 @@ function helper_reporteGeneralCreateStyle(){
 				background: #FFFFFF;
 				border: 1px solid #D9E1EC;
 				border-collapse: separate !important;
+				border-spacing: 0 !important;
 				border-radius: 12px;
 				box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
 				margin-bottom: 12px;
 			}
 			table.pr-head th {
 				background: transparent;
+				padding: 2px 16px;
+				text-align: left !important;
+			}
+			/* Logo: columna fija de 180px, imagen maximo 180x70 conservando la proporcion */
+			table.pr-head th.pr-logo {
+				width: 180px !important;
+				min-width: 180px;
+				max-width: 180px;
+				padding: 12px 16px;
+				vertical-align: middle;
+				text-align: center !important;
+			}
+			table.pr-head th.pr-logo img {
+				max-width: 100% !important;
+			}
+			/* Titulo y empresa juntos, centrados verticalmente junto al logo */
+			table.pr-head th.pr-title {
+				width: 100% !important;
+				vertical-align: bottom;
+				padding-top: 12px;
+			}
+			table.pr-head th.pr-company {
+				vertical-align: top;
+			}
+			table.pr-head tr:last-child th:not(.pr-logo) {
+				padding-bottom: 12px;
 			}
 			table.pr-head th.pr-title {
 				font-size: 20px;
@@ -132,10 +159,12 @@ function helper_reporteGeneralCreateStyle(){
 			}
 
 			/* Barra de acciones */
+			/* Computadora: flotante (fixed) y alineada dentro del recuadro del titulo:
+			   16px padding del body + 1px borde + 12px padding interno del encabezado */
 			.pr-toolbar {
 				position: fixed;
-				top: 12px;
-				right: 12px;
+				top: 29px;
+				right: 33px;
 				z-index: 9999;
 				display: flex;
 				gap: 8px;
@@ -177,6 +206,82 @@ function helper_reporteGeneralCreateStyle(){
 				color: #FFFFFF !important;
 			}
 
+			/* Vistas escritas a mano: su encabezado (tabla con logo en rowspan=5 y titulo al 80%)
+			   toma la misma apariencia que table.pr-head: logo fijo de 180px y titulo junto al logo */
+			body > table:not(.pr-head):has(th[rowspan="5"] img) {
+				background: #FFFFFF;
+				border: 1px solid #D9E1EC;
+				border-collapse: separate !important;
+				border-spacing: 0 !important;
+				border-radius: 12px;
+				box-shadow: 0 1px 3px rgba(15, 23, 42, 0.08);
+				margin-bottom: 12px;
+				padding-bottom: 12px;
+			}
+			body > table:not(.pr-head):has(th[rowspan="5"] img) th {
+				background: transparent !important;
+				color: #475569 !important;
+				font-size: 13px;
+				font-weight: 400;
+				line-height: 16px;
+				padding: 0 16px;
+				text-align: left !important;
+			}
+			body > table:not(.pr-head):has(th[rowspan="5"] img) th[rowspan="5"] {
+				width: 180px !important;
+				min-width: 180px;
+				max-width: 180px;
+				padding: 12px 16px;
+				vertical-align: middle;
+				text-align: center !important;
+			}
+			body > table:not(.pr-head):has(th[rowspan="5"] img) th[rowspan="5"] img {
+				object-fit: contain;
+				max-width: 100% !important;
+				max-height: 70px;
+				width: auto !important;
+				height: auto !important;
+			}
+			body > table:not(.pr-head):has(th[rowspan="5"] img) tr:nth-child(n+2) th {
+				vertical-align: top;
+			}
+			body > table:not(.pr-head):has(th[rowspan="5"] img) tr:first-child th:not([rowspan]) {
+				vertical-align: bottom;
+				width: 100% !important;
+				font-size: 20px;
+				font-weight: 700;
+				line-height: 26px;
+				color: #0F172A !important;
+				padding-top: 12px;
+			}
+			body > table:not(.pr-head):has(th[rowspan="5"] img) tr:nth-child(2) th {
+				font-size: 14px;
+				font-weight: 600;
+				line-height: 20px;
+				color: #2563EB !important;
+			}
+
+			/* Computadora: encabezado, tabla y firma ocupan el mismo ancho.
+			   El body toma el ancho de la tabla mas ancha (minimo el ancho de la pantalla)
+			   y todas las tablas de primer nivel se estiran al 100% de ese ancho.
+			   Si hay mas columnas que pantalla aparece el scroll horizontal y el
+			   encabezado se desplaza junto con el reporte. */
+			@media screen and (min-width: 768px) {
+				body {
+					display: inline-block;
+					min-width: 100%;
+					box-sizing: border-box;
+				}
+				body > table {
+					width: 100% !important;
+				}
+				/* Espacio reservado a la derecha del titulo para los botones flotantes */
+				table.pr-head th:not(.pr-logo),
+				body > table:not(.pr-head):has(th[rowspan="5"] img) th:not([rowspan]) {
+					padding-right: 300px;
+				}
+			}
+
 			/* Telefono */
 			@media (max-width: 767px) {
 				body {
@@ -205,6 +310,14 @@ function helper_reporteGeneralCreateStyle(){
 					display: block;
 					overflow-x: auto;
 					max-width: 100%;
+				}
+				/* Logo mas pequeno para dejar espacio al titulo */
+				table.pr-head th.pr-logo,
+				body > table:not(.pr-head):has(th[rowspan="5"] img) th[rowspan="5"] {
+					width: 110px !important;
+					min-width: 110px;
+					max-width: 110px;
+					padding: 10px 8px 10px 12px;
 				}
 				/* La firma trae un ancho fijo (suma de columnas): evitar scroll horizontal de la pagina */
 				table.pr-firma {
@@ -249,8 +362,61 @@ function helper_reporteGeneralCreateStyle(){
 			}
 
 		</style>
+		<script>
+			// Vistas escritas a mano: oculta las filas vacias (solo &nbsp;) del encabezado
+			// para que el recuadro no quede alto. Las filas con texto (fechas, bodega) se mantienen.
+			// Se ejecuta en cuanto el encabezado termina de leerse (sin esperar scripts externos
+			// como jQuery del CDN) y de nuevo en DOMContentLoaded como respaldo.
+			(function () {
+				var procesado = false;
+
+				function ocultarFilasVacias(tabla) {
+					tabla.querySelectorAll("tr").forEach(function (fila) {
+						var texto = fila.textContent.replace(/[\s\u00a0]/g, "");
+						if (texto === "" && !fila.querySelector("img")) {
+							fila.style.display = "none";
+						}
+					});
+				}
+
+				// Devuelve true cuando encontro el encabezado completo (ya existe un elemento despues de el)
+				function revisarEncabezado(final) {
+					if (procesado || !document.body) {
+						return procesado;
+					}
+					var tablas = document.querySelectorAll("body > table:not(.pr-head)");
+					for (var i = 0; i < tablas.length; i++) {
+						if (!tablas[i].querySelector("th[rowspan=\'5\'] img")) {
+							continue;
+						}
+						if (final || tablas[i].nextElementSibling) {
+							ocultarFilasVacias(tablas[i]);
+							procesado = true;
+						}
+						break;
+					}
+					return procesado;
+				}
+
+				var observador = null;
+				if (window.MutationObserver) {
+					observador = new MutationObserver(function () {
+						if (revisarEncabezado(false)) {
+							observador.disconnect();
+						}
+					});
+					observador.observe(document.documentElement, { childList: true, subtree: true });
+				}
+				document.addEventListener("DOMContentLoaded", function () {
+					if (observador) {
+						observador.disconnect();
+					}
+					revisarEncabezado(true);
+				});
+			})();
+		</script>
 		';
-		
+
 		return $result;
 }
  
@@ -285,18 +451,24 @@ function helper_reporteGeneralCreateEncabezado($titulo,$company,$countColumn,$ti
 		}
 		
 		
+		//Solo se generan las filas de subtitulo con texto; el logo abarca exactamente
+		//las filas visibles (titulo + empresa + subtitulos) para que el encabezado no quede alto.
+		$subtitulos 	 = array_values(array_filter(array($titulo2,$titulo3,$titulo4), function($t){ return $t != ""; }));
+		$filasEncabezado = 2 + count($subtitulos);
+
 		$resultado = $resultado.
 		'
-		<table class="pr-head" style="width:'.$width.';border-spacing: 10px;" >
+		<table class="pr-head" style="width:'.$width.';" >
 			<thead>
 				<tr>
 					';
-					
-				
+
+
 		if($imagenOtherLine == false){
-			
+
+			//Logo con ancho fijo (180px); el CSS lo limita a 180x70 conservando la proporcion
 			$resultado = $resultado.
-					'<th class="pr-logo" colspan="3" rowspan="5" style="text-align:left;width:130px">
+					'<th class="pr-logo" colspan="3" rowspan="'.$filasEncabezado.'" style="text-align:center;width:180px">
 						<img width="120" height="110" 						
 							style="
 								width: 120px;
@@ -313,49 +485,24 @@ function helper_reporteGeneralCreateEncabezado($titulo,$company,$countColumn,$ti
 		$resultado = $resultado.'
 					<th class="pr-title" colspan="'.($countColumn-$numerLine).'" style="
 						text-align:Left;background-color:#68c778;color:black;
-						width:80%
+						width:100%
 					">'.$titulo.'</th>
 				</tr>
-				
+
 				<tr>
 					<th class="pr-company" colspan="'.($countColumn-$numerLine).'" style="
 						text-align:Left;background-color:#00628e;color:white;
 					">'.strtoupper($company).'</th>
-				</tr>
-				<tr>';
-				
-					if ($titulo2 == "")
-						$resultado = $resultado. '<th class="pr-sub" colspan="'.($countColumn-$numerLine).'" style="text-align:Left">&nbsp;</th>';
-					else 
-						$resultado = $resultado. '<th class="pr-sub" colspan="'.($countColumn-$numerLine).'" style="text-align:Left;background-color:#00628e;color:white;">'.$titulo2.'</th>';
-					
+				</tr>';
+
+				foreach($subtitulos as $subtitulo){
 					$resultado = $resultado.'
-				</tr>
-				<tr>';
-				
-					if ($titulo3 == "")
-						$resultado = $resultado. '<th class="pr-sub" colspan="'.($countColumn-$numerLine).'" style="text-align:Left">&nbsp;</th>';
-					else 
-						$resultado = $resultado. '<th class="pr-sub" colspan="'.($countColumn-$numerLine).'" style="text-align:Left;background-color:#00628e;color:white;">'.$titulo3.'</th>';
-					
-					
-					$resultado = $resultado. '
-				</tr>
-				<tr>';
-				
-					if ($titulo4 == "")
-						$resultado = $resultado. '<th class="pr-sub" colspan="'.($countColumn-$numerLine).'" style="text-align:Left">&nbsp;</th>';
-					else 
-						$resultado = $resultado. '<th class="pr-sub" colspan="'.($countColumn-$numerLine).'" style="text-align:Left;background-color:#00628e;color:white;">'.$titulo4.'</th>';
-					
-					
-					$resultado = $resultado.'
-				</tr>
 				<tr>
-					<th colspan="'.($countColumn).'" style="text-align:left">
-						&nbsp;
-					</th>
-				</tr>
+					<th class="pr-sub" colspan="'.($countColumn-$numerLine).'" style="text-align:Left;background-color:#00628e;color:white;">'.$subtitulo.'</th>
+				</tr>';
+				}
+
+				$resultado = $resultado.'
 			</thead>
 		</table>
 		';
