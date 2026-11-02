@@ -55,12 +55,19 @@
 		$(document).on("click","#btnDeleteShare",function(){
 			console.info("btnDeleteShare");
 			$(".txtCheckedIsActive").each(function(i,obj){
-					if($(obj).attr("checked") == "checked"){
+					if($(obj).is(":checked")){
 						$(obj).parents("tr").first().remove();
 					}
-			});				
+			});
 		});
-		
+
+		//Rediseno: etiquetas de celdas, contador, estado vacio y barra del telefono (initDetail llama pv2BindMobileBar una sola vez)
+		if(window.PosmeInv){
+			PosmeInv.initDetail({table:"#tb_transaction_master_detail", totalSelector:null, unitSingular:"elemento", unitPlural:"elementos"});
+			//Telefono: combo nativo (sin select2). En PC no cambia nada
+			PosmeInv.mobileSelects();
+		}
+
 	});
 	
 	
@@ -82,7 +89,8 @@
 	
 	
 	function refreschChecked(){
-		$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();
+		//#txtStatusID excluido: en telefono PosmeInv.mobileSelects le quita la clase select2 y debe quedar nativo
+		$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect, #txtStatusID').uniform();
 		//$('.txtDebit').mask('000,000.00', {reverse: true});
 		//$('.txtCredit').mask('000,000.00', {reverse: true});
 		$('.txt-numeric').mask('000,000.00', {reverse: true});

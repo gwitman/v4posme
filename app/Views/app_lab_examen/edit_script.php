@@ -92,7 +92,7 @@
 									"aTargets"	: [ 3 ],//Valor
 									"mRender"	: function ( data, type, full ) {
 										
-										var ele = '<input type="text" class="col-lg-12 " value="'+data+'" name="txtValue[]" />';
+										var ele = '<input type="text" class="col-lg-12 " value="'+data+'" name="txtValue[]" autocomplete="off" />';
 										
 										if(full[5] != "")
 										{
@@ -106,9 +106,18 @@
 										return ele;
 									}
 								}
-							]							
+							]
 		});
-		
+
+		//Rediseno pv2: etiquetas de celdas, contador, estado vacio y barra del telefono (initDetail ya llama pv2BindMobileBar)
+		if(window.PosmeInv){ PosmeInv.initDetail({table:"#tb_transaction_master_detail", totalSelector:null, unitSingular:"parametro", unitPlural:"parametros"}); }
+
+		//Telefono: combos nativos (sin select2) y calendario nativo en la fecha. En PC no cambia nada
+		if(window.PosmeInv){
+			PosmeInv.mobileSelects();
+			PosmeInv.mobileDates("#txtDate");
+		}
+
 		//Ir a Lista
 		$(document).on("click","#btnBack",function(){
 				fnWaitOpen();
@@ -124,8 +133,8 @@
 		//Buscar el Cliente
 		$(document).on("click","#btnSearchCustomer",function(){
 			var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomer->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_BILLING/true/empty/false/not_redirect_when_empty";
-			window.open(url_request,"MsgWindow","width=900,height=450");
-			window.onCompleteCustomer = onCompleteCustomer; 
+			//PC: ventana emergente; telefono: ventana interna (pv2OpenSearch registra window.onCompleteCustomer)
+			pv2OpenSearch(url_request,"Buscar paciente","onCompleteCustomer",onCompleteCustomer,"width=900,height=450");
 		});		
 		
 		//Eliminar Cliente

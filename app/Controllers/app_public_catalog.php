@@ -705,13 +705,17 @@ class app_public_catalog extends _BaseController
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$parameter["{flavorID}"]	= $this->session->get('company')->flavorID;
 				$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'), $objComponent->componentID, "DEFAULT_MOBILE_LISTA_ABONOS", CALLERID_LIST, $resultPermission, $parameter);
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+				$dataViewRender				= $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow");
 			}
 			//Vista Por Id
 			else {
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$parameter["{flavorID}"]	= $this->session->get('company')->flavorID;
 				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'), $objComponent->componentID, $dataViewID, CALLERID_LIST, $resultPermission, $parameter);
+				//En telefono la lista se dibuja como en abonos (app_box_share)
+				if ($this->request->getUserAgent()->isMobile())
+				$dataViewRender				= $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow");
+				else
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
 			}
 

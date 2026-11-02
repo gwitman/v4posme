@@ -1748,6 +1748,7 @@ $routes->match(['get', 'post'], 'core_cache/delete_by_name/(:any)', 'core_cache:
 $routes->match(['get', 'post'], 'app_public_catalog/edit', 'app_public_catalog::edit');
 $routes->match(['get', 'post'], 'app_public_catalog/edit/(:any)', 'app_public_catalog::edit');
 $routes->match(['get', 'post'], 'app_public_catalog/delete', 'app_public_catalog::delete');
+$routes->match(['get', 'post'], 'app_public_catalog/delete/(:any)', 'app_public_catalog::delete');
 $routes->match(['get', 'post'], 'app_public_catalog/updateElement', 'app_public_catalog::updateElement');
 $routes->match(['get', 'post'], 'app_public_catalog/updateElement/(:any)', 'app_public_catalog::updateElement');
 $routes->match(['get', 'post'], 'app_public_catalog/insertElement', 'app_public_catalog::insertElement');
@@ -1755,8 +1756,11 @@ $routes->match(['get', 'post'], 'app_public_catalog/insertElement/(:any)', 'app_
 $routes->match(['get', 'post'], 'app_public_catalog/save', 'app_public_catalog::save');
 $routes->match(['get', 'post'], 'app_public_catalog/save/(:any)', 'app_public_catalog::save');
 $routes->match(['get', 'post'], 'app_public_catalog/add', 'app_public_catalog::add');
+$routes->match(['get', 'post'], 'app_public_catalog/add/(:any)', 'app_public_catalog::add');
 $routes->match(['get', 'post'], 'app_public_catalog/index', 'app_public_catalog::index');
 $routes->match(['get', 'post'], 'app_public_catalog/index/(:any)', 'app_public_catalog::index');
+$routes->match(['get', 'post'], 'app_public_catalog/searchTransactionMaster', 'app_public_catalog::searchTransactionMaster');
+$routes->match(['get', 'post'], 'app_public_catalog/searchTransactionMaster/(:any)', 'app_public_catalog::searchTransactionMaster');
 $routes->match(['get', 'post'], 'app_box_share/edit', 'app_box_share::edit');
 $routes->match(['get', 'post'], 'app_box_share/edit/(:any)', 'app_box_share::edit');
 $routes->match(['get', 'post'], 'app_box_share/delete', 'app_box_share::delete');
