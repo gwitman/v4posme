@@ -69,7 +69,7 @@ WHERE p.name = 'AI_MAX_QUESTION_LENGTH'
     AND cp.companyID = 2;
 
 -- 10. AI_API_KEY: SECRETO: reemplazar por la clave real
---my-secret-key-posme-chat-of-posme
+#my-secret-key-posme-chat-of-posme
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = ''
