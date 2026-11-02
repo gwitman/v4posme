@@ -1,8 +1,4 @@
 <?php
 	echo helper_getHtmlOfStylePageListReportCSS();
+	echo helper_getHtmlOfPageListReportHeader("Compras", "🛒");
 ?>
-
-
-<div id="heading" class="page-header">
-			<h1><i class="icon20  i-stack"></i> Compras</h1>
-</div> 

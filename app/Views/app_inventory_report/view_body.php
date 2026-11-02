@@ -1,24 +1,11 @@
-<div class="row"> 
-	<div class="col-lg-12">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<div class="icon"><i class="icon20 i-power"></i></div> 
-					<h4>📈 Listado de Reportes</h4>
-					<a href="#" class="minimize"></a>
-				</div><!-- End .panel-heading -->
-			
-				<div class="panel-body noPadding">
-					<ul class="recent-activity">
-					
-						
-						<div class="reportes-grid">
-							<?php
-								echo $menuRenderBodyReport;
-							?>
-						</div>
-						
-					</ul>
-				</div><!-- End .panel-body -->
-			</div><!-- End .widget -->
-	<div>
-<div>
+<!-- Indice de reportes: tarjetas generadas por core_web_menu::render_menu_body_report (core_template/menu_nivel_body_report_0) -->
+<div class="pv2 prl">
+	<div class="prl-grid" id="prlGrid">
+		<?php echo $menuRenderBodyReport; ?>
+	</div>
+
+	<div class="pv2-empty prl-empty" id="prlVacio" hidden>
+		<i aria-hidden="true">&#128269;</i>
+		<span id="prlVacioTexto">No hay reportes que coincidan con la búsqueda.</span>
+	</div>
+</div>

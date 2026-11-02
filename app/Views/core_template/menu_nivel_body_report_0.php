@@ -1,47 +1,22 @@
-<!--
-<?php echo $icon; ?>
-<?php echo $address; ?>
-<?php echo $display; ?>
-<?php echo $description; ?>
--->			
-
-<?php 
-	$description 	= $description;
-	$short			= helper_obtenerPrimeras5Palabras($description,5);
+<?php
+	/*
+	 * Tarjeta de un reporte en las paginas indice (app_xxxxx_report/index).
+	 * Variables: $icon, $address, $display, $description (core_web_menu::render_item_body_report).
+	 * Estilo y comportamiento: helper_getHtmlOfStylePageListReportCSS / helper_getHtmlOfStylePageListReportJS.
+	 */
+	$tituloTexto = trim(strip_tags($display));
+	$inicial     = function_exists('mb_substr') ? mb_strtoupper(mb_substr($tituloTexto, 0, 1, 'UTF-8'), 'UTF-8') : strtoupper(substr($tituloTexto, 0, 1));
 ?>
+<div class="reporte-item prl-card" data-url="<?php echo $address; ?>">
+	<div class="prl-card-head">
+		<span class="prl-card-icon" aria-hidden="true"><?php echo htmlspecialchars($inicial, ENT_QUOTES, 'UTF-8'); ?></span>
+		<h3 class="prl-card-title" title="<?php echo htmlspecialchars($tituloTexto, ENT_QUOTES, 'UTF-8'); ?>"><?php echo $display; ?></h3>
+	</div>
 
-<div class="reporte-item" data-url="<?php echo $address; ?>">
-  <p class="reporte-titulo"><?php echo $display; ?></p>
-  
-  <p class="reporte-descripcion">
-    <span class="texto-corto">
-      <?php echo $description; ?>
-    </span>
-  </p>
-  
-  <a href="javascript:void(0);" class="reporte-ver-mas"  onclick="
-     event.preventDefault();
-     event.stopPropagation();
+	<div class="prl-card-desc"><?php echo $description; ?></div>
+	<button type="button" class="prl-card-more" aria-expanded="false" hidden>Ver más</button>
 
-     const item        = this.closest('.reporte-item');
-     const descripcion = item.querySelector('.reporte-descripcion');
-
-     descripcion.classList.toggle('expandido');
-
-     this.textContent =
-       descripcion.classList.contains('expandido') ? '[Menos]' : '[Mas]';
-	 
-	 
-	 item.classList.toggle('expandido');
-     return false;
-  " >[Mas]</a>
-
-  
-  <div class="reporte-rating">
-	<span class="star">★</span>
-	<span class="star">★</span>
-	<span class="star">★</span>
-	<span class="star">★</span>
-	<span class="star">☆</span>
-  </div>
+	<div class="prl-card-foot">
+		<a class="prl-card-open" href="<?php echo $address; ?>" target="_blank" rel="noopener">Abrir reporte <span aria-hidden="true">&#8599;</span></a>
+	</div>
 </div>

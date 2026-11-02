@@ -1,7 +1,4 @@
 <?php
 	echo helper_getHtmlOfStylePageListReportCSS();
+	echo helper_getHtmlOfPageListReportHeader("Clientes", "👥");
 ?>
-
-<div id="heading" class="page-header">
-			<h1><i class="icon20  i-stack"></i> Clientes</h1>
-</div> 

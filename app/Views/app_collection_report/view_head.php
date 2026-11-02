@@ -1,7 +1,4 @@
 <?php
 	echo helper_getHtmlOfStylePageListReportCSS();
+	echo helper_getHtmlOfPageListReportHeader("Recolectores", "🛵");
 ?>
-
-<div id="heading" class="page-header">
-			<h1><i class="icon20  i-stack"></i> Recolectores</h1>
-</div> 

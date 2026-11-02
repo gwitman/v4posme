@@ -1,7 +1,4 @@
 <?php
 	echo helper_getHtmlOfStylePageListReportCSS();
+	echo helper_getHtmlOfPageListReportHeader("Contabilidad", "📒");
 ?>
-
-<div id="heading" class="page-header">
-			<h1><i class="icon20  i-stack"></i> Contabilidad</h1>
-</div> 

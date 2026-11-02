@@ -1021,142 +1021,334 @@ function helper_getCssWidthInvoiceMobile()
 }
 
 
+/**
+ * Imprime el encabezado de las paginas indice de reportes (app_xxxxx_report/index)
+ * con el estilo de la pantalla de ABONOS (pv2): titulo del modulo, cantidad de
+ * reportes disponibles y buscador instantaneo.
+ *
+ * @param string $titulo Nombre del modulo (ej. "Clientes").
+ * @param string $icono  Emoji o texto corto que representa al modulo.
+ * @return void Imprime el HTML directamente.
+ */
+function helper_getHtmlOfPageListReportHeader($titulo, $icono = "📊")
+{
+	$titulo = htmlspecialchars($titulo, ENT_QUOTES, 'UTF-8');
+	$icono  = htmlspecialchars($icono, ENT_QUOTES, 'UTF-8');
+
+	echo view('core_template/posme_v2_style');
+	?>
+	<div class="pv2 prl">
+		<div class="pv2-card pv2-header prl-header">
+			<div class="pv2-header-info">
+				<div class="pv2-header-icon" aria-hidden="true"><?php echo $icono; ?></div>
+				<div>
+					<p class="pv2-header-title">Reportes de <?php echo $titulo; ?></p>
+					<p class="pv2-header-sub"><span id="prlTotal">0</span> reportes disponibles &middot; se abren en una pestaña nueva</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="pv2-card pv2-listbar prl-toolbar">
+			<form class="pv2-search prl-search" role="search" autocomplete="off" onsubmit="return false;">
+				<input type="search" class="form-control" id="prlBuscar" placeholder="Buscar reporte…" title="Busca por nombre o descripción" aria-label="Buscar reporte por nombre o descripción" autocomplete="off">
+				<button type="button" class="btn btn-default" id="prlLimpiar" title="Limpiar búsqueda" aria-label="Limpiar búsqueda">&times;</button>
+			</form>
+			<span class="prl-contador" id="prlContador" aria-live="polite"></span>
+		</div>
+	</div>
+	<?php
+}
+
+/**
+ * Imprime el CSS de las paginas indice de reportes: cuadricula responsive de
+ * tarjetas (4/3 columnas en computadora, 2 en tableta y 1 en telefono) con la
+ * paleta de la pantalla de ABONOS (variables --pv2-*).
+ *
+ * @return void Imprime la etiqueta <style> directamente.
+ */
 function helper_getHtmlOfStylePageListReportCSS()
 {
 	?>
 	<style>
-		/*function helper_getHtmlOfStylePageListReportCSS()*/
-		/*estilo para los elementos de reporteria*/
-		.recent-activity h2 {
-		  text-align: center;
-		  margin-bottom: 30px;
-		  color: #333;
+		/* ===== Indice de reportes (prefijo .prl) ===== */
+		.prl .pv2-header-icon { font-size: 22px; }
+		.prl-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+		.prl .prl-search { flex: 1 1 320px; max-width: 560px; }
+		.prl .prl-search .btn { min-width: 42px; font-size: 18px; line-height: 1; }
+		.prl .prl-search .btn[hidden] { display: none; }
+		.prl-contador {
+			font-size: 12px;
+			font-weight: 700;
+			color: var(--pv2-accent);
+			background: var(--pv2-accent-bg);
+			border-radius: 20px;
+			padding: 5px 12px;
+			white-space: nowrap;
 		}
 
-		/*function helper_getHtmlOfStylePageListReportCSS()*/
-		/*estilo para los elementos de reporteria*/
-		.recent-activity .reportes-grid {
-		  display: grid;
-		  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-		  gap: 20px;
-		  max-width: 1200px;
-		  margin: 0 auto;
-		  grid-auto-rows: 1fr;
+		/* Cuadricula de tarjetas */
+		.prl-grid {
+			display: grid;
+			grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+			gap: 14px;
+			margin-bottom: 14px;
 		}
 
-		/*function helper_getHtmlOfStylePageListReportCSS()*/
-		/*estilo para los elementos de reporteria*/
-		.recent-activity .reporte-item {
-		  background: #fff;
-		  border-radius: 10px;
-		  padding: 20px;
-		  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-		  cursor: pointer;
-		  transition: transform 0.2s, box-shadow 0.2s;
-		  display: flex;
-		  flex-direction: column;
-		  justify-content: space-between;
+		/* Tarjeta de reporte */
+		.prl-card {
+			position: relative;
+			display: flex;
+			flex-direction: column;
+			gap: 8px;
+			min-width: 0;
+			background: #FFFFFF;
+			border: 1px solid var(--pv2-border);
+			border-left: 4px solid var(--pv2-accent);
+			border-radius: 12px;
+			padding: 14px 16px;
+			cursor: pointer;
+			box-shadow: 0 1px 3px rgba(16, 24, 40, .05);
+			transition: transform .15s ease, box-shadow .15s ease;
+		}
+		.prl-card[hidden] { display: none !important; }
+		.prl-card:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(16, 24, 40, .10); }
+		.prl-card:focus-within { outline: 3px solid rgba(57, 73, 171, .30); outline-offset: 2px; }
+
+		.prl-card-head { display: flex; align-items: center; gap: 10px; min-width: 0; }
+		.prl-card-icon {
+			width: 36px;
+			height: 36px;
+			flex: 0 0 36px;
+			border-radius: 10px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 15px;
+			font-weight: 700;
+			background: var(--pv2-accent-bg);
+			color: var(--pv2-accent);
+		}
+		.prl-card-title {
+			margin: 0;
+			font-size: 14px;
+			font-weight: 700;
+			line-height: 1.3;
+			color: #1F2933;
+			display: -webkit-box;
+			-webkit-line-clamp: 2;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+			word-break: break-word;
 		}
 
-		/*function helper_getHtmlOfStylePageListReportCSS()*/
-		/*estilo para los elementos de reporteria*/
-		.recent-activity .reporte-item:hover {
-		  transform: translateY(-5px);
-		  box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+		/* Descripcion: 3 lineas; "Ver mas" la expande */
+		.prl-card-desc {
+			flex: 0 0 auto;
+			margin: 0;
+			font-size: 13px;
+			line-height: 1.45;
+			color: var(--pv2-muted);
+			display: -webkit-box;
+			-webkit-line-clamp: 3;
+			-webkit-box-orient: vertical;
+			overflow: hidden;
+			word-break: break-word;
+		}
+		.prl-card-desc.is-open { display: block; -webkit-line-clamp: unset; overflow: visible; }
+		.prl-card-more {
+			align-self: flex-start;
+			background: none;
+			border: 0;
+			padding: 0;
+			font-size: 12px;
+			font-weight: 600;
+			color: var(--pv2-accent);
+			cursor: pointer;
+		}
+		.prl-card-more[hidden] { display: none; }
+		.prl-card-more:hover { text-decoration: underline; }
+
+		.prl-card-foot {
+			display: flex;
+			justify-content: flex-end;
+			margin-top: auto;
+			padding-top: 10px;
+			border-top: 1px solid var(--pv2-border);
+		}
+		.prl-card-open {
+			display: inline-flex;
+			align-items: center;
+			gap: 6px;
+			min-height: 34px;
+			padding: 0 14px;
+			border-radius: 8px;
+			background: var(--pv2-accent);
+			color: #FFFFFF !important;
+			font-size: 13px;
+			font-weight: 600;
+			text-decoration: none !important;
+		}
+		.prl-card-open:hover { background: #303F9F; }
+		.prl-card-open:focus { outline: 3px solid rgba(57, 73, 171, .35); outline-offset: 2px; }
+
+		.prl-empty[hidden] { display: none; }
+
+		/* Tableta */
+		@media (min-width: 768px) and (max-width: 991px) {
+			.prl-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 		}
 
-		/*function helper_getHtmlOfStylePageListReportCSS()*/
-		/*estilo para los elementos de reporteria*/
-		.recent-activity .reporte-titulo {
-		  font-size: 12px;
-		  font-weight: bold;
-		  color: #333;
-		  margin: 0 0 10px;
+		/* Telefono: una columna, controles tactiles de 44px */
+		@media (max-width: 767px) {
+			.prl-grid { grid-template-columns: 1fr; gap: 10px; }
+			.prl-card { padding: 12px; }
+			.prl-card:hover { transform: none; }
+			.prl-card-title { font-size: 15px; }
+			.prl-card-desc { font-size: 14px; }
+			.prl-card-more { font-size: 14px; min-height: 32px; }
+			.prl-card-open { width: 100%; min-height: 44px; justify-content: center; font-size: 15px; }
+			.prl .prl-search .btn { min-width: 44px; }
+			.prl-contador { width: 100%; text-align: center; }
 		}
-
-		/*function helper_getHtmlOfStylePageListReportCSS()*/
-		/*estilo para los elementos de reporteria*/
-		.recent-activity .reporte-descripcion {
-		  font-size: 12px;
-		  color: #555;
-		  flex-grow: 1;
-		  
-		  position: relative;
-		  max-width: 300px;       /* ancho contraído */
-		  max-height: 60px;       /* alto contraído */
-		  overflow: hidden;
-		  transition: all 0.3s ease;
-		  
-		}
-		
-		.reporte-item.expandido
-		{
-			background: antiquewhite;
-		}
-		.reporte-descripcion.expandido {
-		  max-width: 100%;        /* ancho expandido */
-		  max-height: 600px;      /* alto expandido */
-		}
-
-		.reporte-ver-mas {
-		  display: inline-block;
-		  margin-top: 5px;
-		  color: #007bff;
-		  cursor: pointer;
-		  font-weight: 600;
-		  text-decoration: none;
-		}
-
-		.reporte-ver-mas:hover {
-		  text-decoration: underline;
-		}
-
-		/*function helper_getHtmlOfStylePageListReportCSS()*/
-		/*estilo para los elementos de reporteria*/
-		.recent-activity .reporte-rating {
-		  margin-top: 15px;
-		}
-
-		/*function helper_getHtmlOfStylePageListReportCSS()*/
-		/*estilo para los elementos de reporteria*/
-		.recent-activity .star {
-		  color: #ffc107;
-		  font-size: 20px;
-		  margin-right: 2px;
-		}
-
-		/*function helper_getHtmlOfStylePageListReportCSS()*/
-		/*estilo para los elementos de reporteria*/
-		@media (max-width: 900px) {
-		  .recent-activity .reportes-grid {
-			grid-template-columns: repeat(2, 1fr);
-		  }
-		}
-
-		/*function helper_getHtmlOfStylePageListReportCSS()*/
-		/*estilo para los elementos de reporteria*/
-		@media (max-width: 600px) {
-		  .recent-activity .reportes-grid {
-			grid-template-columns: 1fr;
-		  }
-		}
-		</style>
+	</style>
 	<?php
 }
 
+/**
+ * Imprime el JS de las paginas indice de reportes:
+ * - Buscador instantaneo (sin distinguir mayusculas ni acentos) con contador.
+ * - "Ver mas" solo en tarjetas cuya descripcion esta recortada.
+ * - Clic en cualquier parte de la tarjeta abre el reporte en una pestaña nueva.
+ *
+ * @return void Imprime la etiqueta <script> directamente.
+ */
 function helper_getHtmlOfStylePageListReportJS()
 {
 	?>
-	<!-- ./ page heading -->
 	<script>
-	document.querySelectorAll('.reporte-item').forEach(item => {
-	  item.addEventListener('click', () => {
-		const url = item.getAttribute('data-url');
-		if (url) {
-		  window.open(url, '_blank');
+	(function () {
+		var grid = document.getElementById("prlGrid");
+		if (!grid) {
+			return;
 		}
-	  });
-	});
+
+		var tarjetas   = Array.prototype.slice.call(grid.querySelectorAll(".reporte-item"));
+		var buscar     = document.getElementById("prlBuscar");
+		var limpiar    = document.getElementById("prlLimpiar");
+		var contador   = document.getElementById("prlContador");
+		var total      = document.getElementById("prlTotal");
+		var vacio      = document.getElementById("prlVacio");
+		var vacioTexto = document.getElementById("prlVacioTexto");
+		var acentos    = new RegExp("[" + String.fromCharCode(0x300) + "-" + String.fromCharCode(0x36F) + "]", "g");
+
+		// Texto en minusculas y sin acentos para comparar ("Crédito" == "credito")
+		function normalizar(texto) {
+			texto = (texto || "").toString().toLowerCase();
+			if (texto.normalize) {
+				texto = texto.normalize("NFD").replace(acentos, "");
+			}
+			return texto.replace(/\s+/g, " ").trim();
+		}
+
+		tarjetas.forEach(function (tarjeta) {
+			tarjeta.setAttribute("data-buscar", normalizar(tarjeta.textContent));
+		});
+
+		if (total) {
+			total.textContent = tarjetas.length;
+		}
+
+		// Filtra las tarjetas; todas las palabras escritas deben aparecer en el titulo o la descripcion
+		function filtrar() {
+			var palabras = normalizar(buscar ? buscar.value : "").split(" ").filter(function (p) { return p !== ""; });
+			var visibles = 0;
+
+			tarjetas.forEach(function (tarjeta) {
+				var texto  = tarjeta.getAttribute("data-buscar");
+				var coincide = palabras.every(function (p) { return texto.indexOf(p) !== -1; });
+				tarjeta.hidden = !coincide;
+				if (coincide) {
+					visibles++;
+				}
+			});
+
+			if (contador) {
+				contador.textContent = palabras.length ? ("Mostrando " + visibles + " de " + tarjetas.length) : (tarjetas.length + " reportes");
+			}
+			if (limpiar) {
+				limpiar.hidden = palabras.length === 0;
+			}
+			if (vacio) {
+				vacio.hidden = visibles !== 0;
+				if (vacioTexto) {
+					vacioTexto.textContent = tarjetas.length === 0
+						? "No hay reportes disponibles para tu usuario en este módulo."
+						: "No hay reportes que coincidan con la búsqueda.";
+				}
+			}
+			revisarVerMas();
+		}
+
+		// Muestra "Ver mas" solo si la descripcion no cabe en 3 lineas
+		function revisarVerMas() {
+			tarjetas.forEach(function (tarjeta) {
+				var desc  = tarjeta.querySelector(".prl-card-desc");
+				var boton = tarjeta.querySelector(".prl-card-more");
+				if (!desc || !boton || tarjeta.hidden || desc.classList.contains("is-open")) {
+					return;
+				}
+				boton.hidden = desc.scrollHeight <= desc.clientHeight + 1;
+			});
+		}
+
+		grid.addEventListener("click", function (e) {
+			var boton = e.target.closest(".prl-card-more");
+			if (boton) {
+				e.preventDefault();
+				e.stopPropagation();
+				var desc    = boton.parentNode.querySelector(".prl-card-desc");
+				var abierto = desc.classList.toggle("is-open");
+				boton.textContent = abierto ? "Ver menos" : "Ver más";
+				boton.setAttribute("aria-expanded", abierto ? "true" : "false");
+				return;
+			}
+
+			// Los enlaces reales (Abrir reporte) se manejan solos: clic medio, ctrl+clic, etc.
+			if (e.target.closest("a")) {
+				return;
+			}
+
+			var tarjeta = e.target.closest(".reporte-item");
+			if (tarjeta && tarjeta.getAttribute("data-url")) {
+				window.open(tarjeta.getAttribute("data-url"), "_blank");
+			}
+		});
+
+		if (buscar) {
+			buscar.addEventListener("input", filtrar);
+			buscar.addEventListener("keydown", function (e) {
+				if (e.key === "Escape") {
+					buscar.value = "";
+					filtrar();
+				}
+			});
+		}
+		if (limpiar) {
+			limpiar.addEventListener("click", function () {
+				buscar.value = "";
+				filtrar();
+				buscar.focus();
+			});
+		}
+
+		var espera = null;
+		window.addEventListener("resize", function () {
+			clearTimeout(espera);
+			espera = setTimeout(revisarVerMas, 150);
+		});
+
+		filtrar();
+	})();
 	</script>
 	<?php
 }
