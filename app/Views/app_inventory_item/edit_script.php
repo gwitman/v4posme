@@ -426,12 +426,12 @@
 					$("#txtStateID").html("");
 					$("#txtStateID").append("<option value=''>N/D</option>");
 
-					if(userMobile != '1')
+					if(userMobile != '1' && !PosmeInv.isMobile())
 					$("#txtStateID").select2();
 
 					$("#txtCityID").html("");
 
-					if(userMobile != '1')
+					if(userMobile != '1' && !PosmeInv.isMobile())
 					$("#txtCityID").select2();
 
 
@@ -462,7 +462,7 @@
 					$("#txtCityID").html("");
 					$("#txtCityID").append("<option value=''>N/D</option>");
 
-					if(userMobile != '1')
+					if(userMobile != '1' && !PosmeInv.isMobile())
 					$("#txtCityID").select2();
 
 					if(data.catalogItems == null)
@@ -578,4 +578,9 @@
 		$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();
 	}
 
+	//Telefono: combos nativos (sin select2) y calendario nativo en las fechas. En PC no cambia nada
+	$(document).ready(function(){
+		PosmeInv.mobileSelects();
+		PosmeInv.mobileDates("#txtRealStateDateExpired");
+	});
 </script>

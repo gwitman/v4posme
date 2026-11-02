@@ -304,4 +304,10 @@
 						//$('.txtDetailCost').mask('000,000.00', {reverse: true});
 					}
 					
-				</script>
+				
+	//Telefono: combos nativos (sin select2) y calendario nativo en las fechas. En PC no cambia nada
+	$(document).ready(function(){
+		PosmeInv.mobileSelects();
+		PosmeInv.mobileDates("#txtTransactionOn");
+	});
+</script>

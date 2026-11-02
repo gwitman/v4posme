@@ -228,11 +228,75 @@
 		}
 	}
 
+	/* ---------------------------------------------------------------- controles en telefono */
+	//Telefono = bandera del servidor (varUseMobile == "1") o pantalla menor a 768px
+	function isMobile() {
+		var pantallaChica = root.matchMedia ? root.matchMedia('(max-width: 767px)').matches : (root.innerWidth < 768);
+		return (typeof root.varUseMobile !== 'undefined' && root.varUseMobile == '1') || pantallaChica;
+	}
+
+	//Deja solo la parte YYYY-MM-DD; cualquier otro formato se devuelve vacio
+	//para que el input type="date" no muestre un valor invalido
+	function normalizarFecha(valor) {
+		var texto = $.trim(valor === null || valor === undefined ? '' : String(valor)).substring(0, 10);
+		//la fecha cero de MySQL (0000-00-00) equivale a "sin fecha"
+		return (/^\d{4}-\d{2}-\d{2}$/.test(texto) && texto !== '0000-00-00') ? texto : '';
+	}
+
+	//En telefono: quita select2 y deja el <select> nativo. En PC no hace nada.
+	//Se ejecuta en setTimeout(0) para correr despues del select2/uniform global (genyx-app-init.js, app.js)
+	function mobileSelects(scope) {
+		if (!isMobile()) { return; }
+		setTimeout(function () {
+			$(scope || document).find('select.select2, select.select2-offscreen').each(function () {
+				var $select = $(this);
+				try {
+					if ($select.data('select2')) { $select.select2('destroy'); }
+				}
+				catch (ex) {
+					if (root.console) { console.info('PosmeInv.mobileSelects', ex); }
+				}
+				$select.removeClass('select2 select2-offscreen').addClass('form-control').css('display', '');
+			});
+		}, 0);
+	}
+
+	//En telefono: convierte los campos de fecha en <input type="date"> (calendario nativo).
+	//No pone la fecha de hoy si el campo esta vacio. En PC no hace nada.
+	function mobileDates(selectores) {
+		if (!isMobile()) { return; }
+		setTimeout(function () {
+			$(selectores).filter('input').each(function () {
+				var input 	= this;
+				var $input 	= $(input);
+				var valor 	= normalizarFecha(input.value);
+				try {
+					if ($input.data('datepicker')) { $input.datepicker('remove'); }
+				}
+				catch (ex) {
+					if (root.console) { console.info('PosmeInv.mobileDates', ex); }
+				}
+				//readonly bloquea el selector nativo; el valor solo cambia desde el calendario
+				$input.removeAttr('readonly');
+				try { input.type = 'date'; } catch (ex2) { if (root.console) { console.info('PosmeInv.mobileDates', ex2); } }
+				input.value = valor;
+
+				var $grupo = $input.closest('.input-group');
+				$grupo.find('.input-group-addon').hide();
+				$grupo.removeClass('input-group date');
+			});
+		}, 0);
+	}
+
 	root.PosmeInv = {
-		__version	: 1,
-		initDetail	: initDetail,
-		labelTable	: labelTable,
-		refresh		: refresh
+		__version		: 2,
+		initDetail		: initDetail,
+		labelTable		: labelTable,
+		refresh			: refresh,
+		isMobile		: isMobile,
+		mobileSelects	: mobileSelects,
+		mobileDates		: mobileDates,
+		normalizarFecha	: normalizarFecha
 	};
 
 })(window, window.jQuery);

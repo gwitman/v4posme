@@ -329,4 +329,9 @@
 	});
 	// or just send userId without attributes
 	//window.userGuiding.identify('1Ax69i57j0j69i60l4')
+	//Telefono: combos nativos (sin select2) y calendario nativo en las fechas. En PC no cambia nada
+	$(document).ready(function(){
+		PosmeInv.mobileSelects();
+		PosmeInv.mobileDates("#txtTransactionOn");
+	});
 </script>

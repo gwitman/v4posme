@@ -266,4 +266,9 @@
 					function refreschChecked(){
 						$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();						
 					}
-				</script>
+				
+	//Telefono: combos nativos (sin select2) y calendario nativo en las fechas. En PC no cambia nada
+	$(document).ready(function(){
+		PosmeInv.mobileSelects();
+	});
+</script>
