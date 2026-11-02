@@ -168,9 +168,10 @@ class app_ai_chat extends _BaseController
             if ($acceso["respuesta"] !== null) {
                 return $acceso["respuesta"];
             }
+            $dataSession = $acceso["dataSession"];
             session_write_close();
 
-            $configurado = $this->core_web_ai->getApiKey() !== "";
+            $configurado = $this->core_web_ai->getApiKey((int) $dataSession["user"]->companyID) !== "";
             $internet    = $configurado ? $this->core_web_ai->hayInternet() : false;
 
             return $this->response->setJSON([

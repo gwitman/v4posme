@@ -167,6 +167,10 @@ class core_web_parameter {
 		{
 			foreach($objParameterList as $objParameter)
 			{
+				//Parametros secretos (clave de API y usuario de BD del asistente IA): nunca se envian al navegador
+				if(in_array($objParameter->name, core_web_ai::PARAMETROS_SECRETOS))
+				continue;
+				
 				$javascriptResult	 = $javascriptResult."var objCompanyParameter_Key_".$objParameter->name." = '".$objParameter->value."';";
 			}
 		}

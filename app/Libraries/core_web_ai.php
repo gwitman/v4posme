@@ -17,8 +17,15 @@ use App\Models\Ai_Chat_Model;
 class core_web_ai
 {
     const API_VERSION      = "2023-06-01";
+    const API_URL          = "https://api.anthropic.com/v1/messages";
     const MODELO_DEFECTO   = "claude-haiku-5-5";
     const CACHE_INTERNET   = "ai_jordania_internet_ok";
+    const CONNECT_TIMEOUT  = 5;
+    const TIMEOUT          = 60;
+    const INTERNET_MINUTOS = 5;
+
+    /** Parametros de empresa con secretos: nunca se envian al navegador. */
+    const PARAMETROS_SECRETOS = ["AI_API_KEY", "AI_READONLY_USERNAME", "AI_READONLY_PASSWORD"];
 
     /** Mensajes amigables por codigo de error. */
     public static $MENSAJES = [
@@ -86,18 +93,14 @@ class core_web_ai
     }
 
     /**
-     * API key desde app/Config/AiAssistant.php o la variable de entorno ANTHROPIC_API_KEY.
+     * API key de la empresa (parametro AI_API_KEY).
      *
+     * @param int $companyID Empresa de la sesion.
      * @return string
      */
-    function getApiKey()
+    function getApiKey($companyID)
     {
-        $config = core_web_ai_tools::getConfig();
-        if ($config !== null && !empty($config->apiKey)) {
-            return (string) $config->apiKey;
-        }
-        $env = getenv("ANTHROPIC_API_KEY");
-        return $env ? (string) $env : "";
+        return (string) core_web_ai_tools::getConfig($companyID)->apiKey;
     }
 
     /**
@@ -160,7 +163,7 @@ class core_web_ai
         $periodo   = substr($ahora, 0, 7);
 
         // 1. Validaciones previas (ninguna llama a la API)
-        $apiKey = $this->getApiKey();
+        $apiKey = $this->getApiKey($companyID);
         if ($apiKey === "") {
             return self::error("sin_configuracion");
         }
@@ -428,10 +431,9 @@ class core_web_ai
      */
     function callApi($apiKey, $payload)
     {
-        $config   = core_web_ai_tools::getConfig();
-        $url      = ($config !== null && !empty($config->apiUrl)) ? $config->apiUrl : "https://api.anthropic.com/v1/messages";
-        $connect  = ($config !== null && !empty($config->connectTimeout)) ? (int) $config->connectTimeout : 5;
-        $timeout  = ($config !== null && !empty($config->timeout)) ? (int) $config->timeout : 60;
+        $url      = self::API_URL;
+        $connect  = self::CONNECT_TIMEOUT;
+        $timeout  = self::TIMEOUT;
         $cuerpo   = json_encode($payload, JSON_UNESCAPED_UNICODE | JSON_PARTIAL_OUTPUT_ON_ERROR);
 
         for ($intento = 1; $intento <= 2; $intento++) {
@@ -532,9 +534,8 @@ class core_web_ai
             $cache = null;
         }
 
-        $config  = core_web_ai_tools::getConfig();
-        $url     = ($config !== null && !empty($config->apiUrl)) ? $config->apiUrl : "https://api.anthropic.com/v1/messages";
-        $minutos = ($config !== null && !empty($config->internetCheckMinutes)) ? (int) $config->internetCheckMinutes : 5;
+        $url     = self::API_URL;
+        $minutos = self::INTERNET_MINUTOS;
 
         $ch = curl_init($url);
         curl_setopt_array($ch, [

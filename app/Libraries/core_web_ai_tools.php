@@ -10,7 +10,7 @@ use App\Models\Ai_Chat_Model;
  * Reglas de seguridad:
  *  - Toda lectura de datos se hace SOLO sobre las vistas ai_v_* y con @ai_company_id
  *    fijado desde la SESION (nunca desde el navegador ni desde lo que pida Claude).
- *  - Si existe usuario MySQL de solo lectura (app/Config/AiAssistant.php) se usa esa conexion;
+ *  - Si la empresa tiene usuario MySQL de solo lectura (parametros AI_READONLY_*) se usa esa conexion;
  *    sin el, la herramienta consulta_sql queda deshabilitada.
  *  - Cada herramienta exige el permiso de la pantalla equivalente del sistema (admin pasa siempre).
  *  - Todo lo ejecutado queda en tb_ai_auditoria_sql.
@@ -1203,30 +1203,60 @@ class core_web_ai_tools
     ================================================================================= */
 
     /**
-     * Configuracion del usuario de solo lectura o null si no esta configurado.
+     * Configuracion del usuario de solo lectura de la empresa de la sesion o null si no esta configurado.
      *
      * @return object|null
      */
     function getConfigReadonly()
     {
-        $config = self::getConfig();
-        if ($config === null || empty($config->readonlyUsername) || empty($config->readonlyPassword)) {
+        $config = self::getConfig($this->companyID);
+        if (empty($config->readonlyUsername) || empty($config->readonlyPassword)) {
             return null;
         }
         return $config;
     }
 
     /**
-     * Configuracion privada (app/Config/AiAssistant.php) o null si no existe.
+     * Configuracion privada del asistente tomada de los parametros de la empresa (tb_company_parameter):
+     *   AI_API_KEY            Clave de la API de Anthropic.
+     *   AI_READONLY_HOSTNAME  Servidor MySQL del usuario de solo lectura (defecto localhost).
+     *   AI_READONLY_USERNAME  Usuario MySQL de solo lectura (solo SELECT sobre ai_v_*).
+     *   AI_READONLY_PASSWORD  Contrasena de ese usuario.
+     *   AI_READONLY_DATABASE  Base de datos (defecto la misma de la aplicacion).
+     * Estos parametros son secretos: core_web_parameter::getParameterAllToJavaScript no los envia al navegador.
+     * Se leen una sola vez por peticion y empresa.
      *
-     * @return object|null
+     * @param int $companyID Empresa de la sesion.
+     * @return object
      */
-    static function getConfig()
+    static function getConfig($companyID)
     {
-        if (!class_exists("\\Config\\AiAssistant")) {
-            return null;
+        static $cache = [];
+        $companyID    = (int) $companyID;
+        if (isset($cache[$companyID])) {
+            return $cache[$companyID];
         }
-        return config("AiAssistant");
+
+        $parametros = new core_web_parameter();
+        $leer       = function ($nombre, $defecto) use ($parametros, $companyID) {
+            try {
+                $valor = trim((string) $parametros->getParameterValue($nombre, $companyID));
+                return $valor !== "" ? $valor : $defecto;
+            } catch (\Throwable $ex) {
+                // Parametro no creado para la empresa: se usa el defecto
+                return $defecto;
+            }
+        };
+
+        $cache[$companyID] = (object) [
+            "apiKey"           => $leer("AI_API_KEY", ""),
+            "readonlyHostname" => $leer("AI_READONLY_HOSTNAME", "localhost"),
+            "readonlyUsername" => $leer("AI_READONLY_USERNAME", ""),
+            "readonlyPassword" => $leer("AI_READONLY_PASSWORD", ""),
+            "readonlyDatabase" => $leer("AI_READONLY_DATABASE", DB_BDNAME),
+            "readonlyPort"     => 3306,
+        ];
+        return $cache[$companyID];
     }
 
     /**
