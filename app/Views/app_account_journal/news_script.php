@@ -1,38 +1,39 @@
 				<!-- ./ page heading -->
-				<script>					
+				<script>
 					var objTableDetailJournal = {};
-					$(document).ready(function(){					
+					$(document).ready(function(){
 						 $('#txtDate').datepicker({format:"yyyy-mm-dd"});
-						 $('#txtDate').val(moment().format("YYYY-MM-DD"));	
+						 $('#txtDate').val(moment().format("YYYY-MM-DD"));
 						 $('#txtTotalCredit').mask('000,000,000.00', {reverse: true});
 						 $('#txtTotalDebit').mask('000,000,000.00', {reverse: true});
-						
-						
-						$(document).on("click","#btnOpenTemplated",function(){
+
+
+						$(document).on("click","#btnOpenTemplated",function(e){
+							e.preventDefault();
 							var url_request 				= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $componentAccountID; ?>/onCompleteSelectTemplate/SELECCIONAR_TEMPLATED/true/empty/false/not_redirect_when_empty";
 							window.open(url_request,"MsgWindow","width=900,height=450");
-							window.onCompleteSelectTemplate 	= onCompleteSelectTemplate; 
+							window.onCompleteSelectTemplate 	= onCompleteSelectTemplate;
 						});
-						
+
 						function onCompleteSelectTemplate(objResponse){
 							console.info("CALL onCompleteSelectTemplate");
-							var journalEntryIDTemplated 	= objResponse[0][0];		
+							var journalEntryIDTemplated 	= objResponse[0][0];
 							$( "#txtTemplatedNumber").val(journalEntryIDTemplated);
 							$( "#form-new-account-journal" ).attr("method","POST");
-							$( "#form-new-account-journal" ).attr("action","<?php echo base_url(); ?>/app_accounting_journal/save/new");							
-							$( "#form-new-account-journal" ).submit();							
+							$( "#form-new-account-journal" ).attr("action","<?php echo base_url(); ?>/app_accounting_journal/save/new");
+							$( "#form-new-account-journal" ).submit();
 						}
-					
-						
-						
-					
+
+
+
+
 						objTableDetailJournal = $("#tb_journal_entry_detail").dataTable({
 							"bPaginate"		: false,
 							"bFilter"		: false,
 							"bSort"			: false,
 							"bInfo"			: false,
 							"bAutoWidth"	: false,
-							"aoColumnDefs": [ 
+							"aoColumnDefs": [
 										{
 											"aTargets"		: [ 0 ],//checked
 											"mRender"		: function ( data, type, full ) {
@@ -72,41 +73,44 @@
 										{
 											"aTargets"		: [ 6 ],//Debito
 											"mRender"		: function ( data, type, full ) {
-												return '<input type="text" class="col-lg-12 txtDebit txt-numeric" value="'+data+'" name="txtDebit[]" />';
+												return '<input type="text" class="col-lg-12 txtDebit txt-numeric" value="'+data+'" name="txtDebit[]" autocomplete="off" inputmode="decimal" />';
 											}
 										},
 										{
 											"aTargets"		: [ 7 ],//Credito
 											"mRender"		: function ( data, type, full ) {
-												return '<input type="text" class="col-lg-12 txtCredit txt-numeric" value="'+data+'" name="txtCredit[]" />';
+												return '<input type="text" class="col-lg-12 txtCredit txt-numeric" value="'+data+'" name="txtCredit[]" autocomplete="off" inputmode="decimal" />';
 											}
 										}
-							]							
+							]
 						});
-						
-						
+
+
 						 //Regresar a la lista
 						$(document).on("click","#btnBack",function(){
 								fnWaitOpen();
 						});
 						//Evento Agregar el Usuario
-						$(document).on("click","#btnAcept",function(){
+						$(document).on("click","#btnAcept",function(e){
+								e.preventDefault();
 								$( "#form-new-account-journal" ).attr("method","POST");
 								$( "#form-new-account-journal" ).attr("action","<?php echo base_url(); ?>/app_accounting_journal/save/new");
-								
+
 								if(validateForm()){
 									fnWaitOpen();
 									$( "#form-new-account-journal" ).submit();
 								}
-								
+
 						});
-						$(document).on("click","#btnNewDetailJournal",function(){
+						$(document).on("click","#btnNewDetailJournal",function(e){
+							e.preventDefault();
 							var url_request 				= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $componentAccountID; ?>/onCompleteNewAccount/SELECCIONAR_CUENTA/true/empty/false/not_redirect_when_empty";
 							window.open(url_request,"MsgWindow","width=900,height=450");
-							window.onCompleteNewAccount 	= onCompleteNewAccount; 
+							window.onCompleteNewAccount 	= onCompleteNewAccount;
 						});
-						$(document).on("click","#btnDeleteDetailJournal",function(){
-									var listRow = objTableDetailJournal.fnGetData();							
+						$(document).on("click","#btnDeleteDetailJournal",function(e){
+									e.preventDefault();
+									var listRow = objTableDetailJournal.fnGetData();
 									var length 	= listRow.length;
 									var i 		= 0;
 									var j 		= 0;
@@ -118,45 +122,122 @@
 										i++;
 										j++;
 									}
-							
+
 								handler_changeDebit();
 								handler_changeCredit();
 						});
-						$(document).on("change","input.txtDebit",function(){
+						//Recalcular totales al cambiar o escribir un monto
+						$(document).on("change keyup","input.txtDebit",function(){
 								handler_changeDebit();
 						});
-						$(document).on("change","input.txtCredit",function(){
+						$(document).on("change keyup","input.txtCredit",function(){
 								handler_changeCredit();
 						});
+
+						//Rediseno: etiquetas de celdas (tarjetas en telefono), contador de lineas, estado vacio y barra del telefono.
+						//initDetail llama pv2BindMobileBar() una sola vez
+						if(window.PosmeInv){
+							PosmeInv.initDetail({
+								table				: "#tb_journal_entry_detail",
+								totalSelector		: null,
+								countSelector		: ".pv2-count",
+								emptySelector		: ".pv2-empty",
+								mbarTotalSelector	: "#lblJournalLines",
+								unitSingular		: "línea",
+								unitPlural			: "líneas"
+							});
+						}
+						else if(typeof pv2BindMobileBar == "function"){
+							pv2BindMobileBar();
+						}
+						handler_changeDebit();
+						handler_changeCredit();
 					});
-					//Seleccionar Checke 
+					//Seleccionar Checke
 					$(document).on("click",".classCheckedDetail",function(){
-						var objrow_ = $(this).parent().parent().parent().parent()[0];
+						//closest("tr") funciona con o sin el envoltorio de uniform (div.checker > span)
+						var objrow_ = $(this).closest("tr")[0];
 						var objind_ = objTableDetailJournal.fnGetPosition(objrow_);
-						var objdat_ = objTableDetailJournal.fnGetData(objind_);								
+						var objdat_ = objTableDetailJournal.fnGetData(objind_);
 						objTableDetailJournal.fnUpdate( !objdat_[0], objind_, 0 );
 						refreschChecked();
 					});
+					//Convierte un monto con formato (1,500.00) a numero puro redondeado a 2 decimales. Nunca devuelve NaN
+					function fnJournalToNumber(value){
+						var numero = (typeof pv2Num == "function") ? pv2Num(value) : parseFloat(String(value === null || value === undefined ? "" : value).replace(/,/g,""));
+						if(isNaN(numero)) numero = 0;
+						return Math.round(numero * 100) / 100;
+					}
+					//Formato visual 1,000.00
+					function fnJournalFormat(value){
+						return (typeof pv2Fmt == "function") ? pv2Fmt(value) : fnFormatNumber(value,2);
+					}
+					//Suma los debitos y creditos de las lineas del detalle (numeros puros, 2 decimales)
+					function fnJournalTotals(){
+						var totalDebit 	= 0;
+						var totalCredit = 0;
+						$("input.txtDebit").each(function(i,obj){
+							totalDebit = totalDebit + fnJournalToNumber($(obj).val());
+						});
+						$("input.txtCredit").each(function(i,obj){
+							totalCredit = totalCredit + fnJournalToNumber($(obj).val());
+						});
+						return {
+							debit 	: Math.round(totalDebit * 100) / 100,
+							credit 	: Math.round(totalCredit * 100) / 100
+						};
+					}
+					//Indicador visual Cuadrado / Descuadrado y montos de la barra del telefono
+					function fnJournalRefreshBalance(){
+						var totals 		= fnJournalTotals();
+						var lines 		= $("input.txtDebit").length;
+						var diff 		= Math.round((totals.debit - totals.credit) * 100) / 100;
+						var $kpi 		= $("#divJournalBalance");
+						var $icon 		= $kpi.find(".pv2-kpi-icon i");
+						var isBalanced 	= (diff == 0 && totals.debit > 0);
+
+						$("#lblMbarDebit").text(fnJournalFormat(totals.debit));
+						$("#lblMbarCredit").text(fnJournalFormat(totals.credit));
+						$("#lblMbarDebit, #lblMbarCredit").toggleClass("is-bad", lines > 0 && !isBalanced).toggleClass("is-ok", isBalanced);
+
+						$kpi.removeClass("k-ok is-negative");
+						if(lines == 0){
+							$("#lblJournalBalance").text("Sin movimientos");
+							$("#lblJournalDiff").text("Agrega las cuentas del comprobante");
+							$icon.attr("class","icon16 i-checkmark-4");
+						}
+						else if(totals.debit == 0 && totals.credit == 0){
+							$("#lblJournalBalance").text("Sin montos");
+							$("#lblJournalDiff").text("Escribe los débitos y créditos");
+							$icon.attr("class","icon16 i-warning");
+						}
+						else if(isBalanced){
+							$kpi.addClass("k-ok");
+							$("#lblJournalBalance").text("Cuadrado");
+							$("#lblJournalDiff").text("Débito y crédito son iguales");
+							$icon.attr("class","icon16 i-checkmark-4");
+						}
+						else{
+							$kpi.addClass("is-negative");
+							$("#lblJournalBalance").text("Descuadrado");
+							$("#lblJournalDiff").text("Diferencia: " + fnJournalFormat(Math.abs(diff)));
+							$icon.attr("class","icon16 i-warning");
+						}
+					}
 					function handler_changeDebit(){
-							var totalDebit = 0;
-							$("input.txtDebit").each(function(i,obj){
-								if($(obj).val() != "")
-								totalDebit = totalDebit + fnFormatFloat($(obj).val());
-							});
-							$("#txtTotalDebit").val(fnFormatNumber(totalDebit,2));
+							var totalDebit = fnJournalTotals().debit;
+							$("#txtTotalDebit").val(fnJournalFormat(totalDebit));
+							fnJournalRefreshBalance();
 					}
 					function handler_changeCredit(){
-							var totalCredit = 0;
-							$("input.txtCredit").each(function(i,obj){
-								if($(obj).val() != "")
-								totalCredit = totalCredit + fnFormatFloat($(obj).val()) ;
-							});
-							$("#txtTotalCredit").val(fnFormatNumber(totalCredit,2));
+							var totalCredit = fnJournalTotals().credit;
+							$("#txtTotalCredit").val(fnJournalFormat(totalCredit));
+							fnJournalRefreshBalance();
 					}
 					function onCompleteNewAccount(objResponse){
 						console.info("CALL onCompleteNewAccount");
 						var objRow 						= {};
-						objRow.checked 					= false;						
+						objRow.checked 					= false;
 						objRow.journalEntryDetailID 	= 0;
 						objRow.accountID				= objResponse[0][1];
 						objRow.classID					= 0;
@@ -164,21 +245,22 @@
 						objRow.className				= "";
 						objRow.debit 					= fnFormatNumber(0,2);
 						objRow.credit 					= fnFormatNumber(0,2);
-						
-						//Berificar que el Item ya esta agregado 
+
+						//Berificar que el Item ya esta agregado
 						if(jLinq.from(objTableDetailJournal.fnGetData()).where(function(obj){ return obj[2] == objRow.accountID;}).select().length > 0 ){
 							fnShowNotification("El Item ya esta agregado","error");
 							return;
 						}
-						
+
 						objTableDetailJournal.fnAddData([objRow.checked,objRow.journalEntryDetailID,objRow.accountID,objRow.classID,objRow.accountName,objRow.className,objRow.debit,objRow.credit]);
 						refreschChecked();
-						
+						fnJournalRefreshBalance();
+
 					}
 					function validateForm(){
 						var result 				= true;
 						var timerNotification 	= 15000;
-						
+
 						//Validar Fecha
 						if($("#txtDate").val() == ""){
 							fnShowNotification("Establecer Fecha al Documento","error",timerNotification);
@@ -204,40 +286,50 @@
 							fnShowNotification("Establecer Moneda al Documento","error",timerNotification);
 							result = false;
 						}
-						
+
 						//Validar Detalle
-						//
+						//Los totales se comparan como NUMEROS (sin comas, 2 decimales) calculados desde las lineas;
+						//el servidor no valida el cuadre, por eso esta validacion es obligatoria.
 						///////////////////////////////////////////////
-						//Validar Creditos
-						if($("#txtTotalCredit").val() == "" || $("#txtTotalCredit").val() == "0" ){
+						var totals = fnJournalTotals();
+						//Validar Creditos ("", "0" y "0.00" cuentan como cero)
+						if(totals.credit <= 0){
 							fnShowNotification("Establecer Los creditos al Documento","error",timerNotification);
 							result = false;
 						}
 						//Validar Debitos
-						if($("#txtTotalDebit").val() == "" || $("#txtTotalDebit").val() == "0"){
+						if(totals.debit <= 0){
 							fnShowNotification("Establecer Los debitos al Documento","error",timerNotification);
 							result = false;
-						} 
+						}
 						//Validar Cuentas del Comprobantes
 						if(objTableDetailJournal.fnGetData().length == 0){
 							fnShowNotification("Establecer Cuentas a los Movimientos del Comprobante","error",timerNotification);
 							result = false;
 						};
-						
+
 						//Validar Comprobante
-						if(	$("#txtTotalDebit").val() != $("#txtTotalCredit").val() ){
+						if(	totals.debit != totals.credit ){
 							fnShowNotification("El documento no esta cuadrado","error",timerNotification);
 							result = false;
 						}
-						
+
 						return result;
 					}
 					function refreschChecked(){
-						$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();
+						//Los combos ya convertidos a nativos en el telefono (select.form-control) no se envuelven con uniform
+						$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect, select.form-control').uniform();
 						$('.txtDebit').mask('000,000,000.00', {reverse: true});
 						$('.txtCredit').mask('000,000,000.00', {reverse: true});
-						
+
 						$('#txtTotalCredit').mask('000,000,000.00', {reverse: true});
 						$('#txtTotalDebit').mask('000,000,000.00', {reverse: true});
 					}
+					//Telefono: combos nativos (sin select2) y calendario nativo en la fecha (valor YYYY-MM-DD). En PC no cambia nada
+					$(document).ready(function(){
+						if(window.PosmeInv){
+							PosmeInv.mobileSelects();
+							PosmeInv.mobileDates("#txtDate");
+						}
+					});
 				</script>

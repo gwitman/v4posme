@@ -1,6 +1,6 @@
 MANUAL DE USUARIO DE POSME
 ======================================================================
-Actualizado: 2026-11-03 07:12
+Actualizado: 2026-11-03
 
 INDICE
 ----------------------------------------------------------------------
@@ -23,23 +23,39 @@ INDICE
 17. Reportes de ventas
 18. Reportes de inventario
 19. Reportes de cuentas por cobrar y cobranza
-20. Seguridad: qué contiene el menú SEGURIDAD
-21. Iniciar sesión en posMe
-22. Olvidé mi contraseña (reenviar contraseña)
-23. Cerrar sesión (salir, salgo de posMe)
-24. Cambiar mi contraseña o mi correo (editar perfil)
-25. Crear un usuario (creo un usuario nuevo)
-26. Modificar o eliminar un usuario
-27. Crear un rol
-28. Permisos por pantalla de un rol (ver, crear, editar, eliminar)
-29. Autorizaciones de un rol
-30. Dar acceso al asistente Jordania (Asistente IA)
-31. Sucursales
-32. Notificaciones y recordatorios (CONFIG. NOTI)
-33. Ver quién entró: sesiones y actividad de un usuario (LOG SESSION)
-34. Actualizar (uso de soporte)
-35. Parámetros de la empresa
-36. Soporte
+20. Qué contiene el menú CONTABILIDAD
+21. Configurar los niveles de cuenta
+22. Configurar la naturaleza de las cuentas
+23. Centros de costo
+24. Crear una cuenta contable
+25. Modificar o eliminar una cuenta contable
+26. Configurar monedas
+27. Actualizar el tipo de cambio (herramienta de monedas)
+28. Crear periodos y ciclos contables
+29. Abrir y cerrar periodos contables
+30. Registrar un comprobante contable
+31. Buscar, modificar, imprimir o eliminar un comprobante
+32. Contabilizar documentos
+33. Mayorizar y cerrar un ciclo contable
+34. Configurar los parámetros contables
+35. Indicadores contables
+36. Seguridad: qué contiene el menú SEGURIDAD
+37. Iniciar sesión en posMe
+38. Olvidé mi contraseña (reenviar contraseña)
+39. Cerrar sesión (salir, salgo de posMe)
+40. Cambiar mi contraseña o mi correo (editar perfil)
+41. Crear un usuario (creo un usuario nuevo)
+42. Modificar o eliminar un usuario
+43. Crear un rol
+44. Permisos por pantalla de un rol (ver, crear, editar, eliminar)
+45. Autorizaciones de un rol
+46. Dar acceso al asistente Jordania (Asistente IA)
+47. Sucursales
+48. Notificaciones y recordatorios (CONFIG. NOTI)
+49. Ver quién entró: sesiones y actividad de un usuario (LOG SESSION)
+50. Actualizar (uso de soporte)
+51. Parámetros de la empresa
+52. Soporte
 
 
 1. CÓMO FUNCIONAN LAS PANTALLAS DE POSME (LISTAS Y REGISTROS)
@@ -71,6 +87,7 @@ Ruta: Menú > FACTURACION > FACTURAR.
   3. Si la factura ya estaba APLICADA, posMe genera automáticamente un documento de reversión: devuelve el inventario y, si era a crédito, anula el documento de crédito. La factura queda en estado ANULADA.
   4. Si la factura estaba solo REGISTRADA (sin aplicar), simplemente se elimina.
 Restricciones: no se puede anular una factura de crédito que ya tiene abonos, ni una factura de un periodo contable cerrado. Se requiere permiso de eliminar en FACTURAR.
+Ver también: Mayorizar y cerrar un ciclo contable.
 
 4. REGISTRAR UN ABONO DE UN CLIENTE
 ----------------------------------------------------------------------
@@ -189,7 +206,194 @@ Lista de productos, existencias por bodega, kardex, compras, productos por trans
 Ruta: Menú > CXC > REPORTES y COBRANZA > REPORTES.
 Cartera de clientes, documentos de crédito, pagos, estado de cuenta, clientes con mora.
 
-20. SEGURIDAD: QUÉ CONTIENE EL MENÚ SEGURIDAD
+20. QUÉ CONTIENE EL MENÚ CONTABILIDAD
+----------------------------------------------------------------------
+Ruta: Menú > CONTABILIDAD.
+El menú CONTABILIDAD agrupa las opciones para llevar la contabilidad de la empresa:
+  * CUENTAS: catálogo de cuentas contables.
+  * NIVEL DE CUENTA: formato y longitud de los códigos de cuenta.
+  * NATURALEZA: naturaleza deudora (D) o acreedora (C) de las cuentas.
+  * PERIODOS: periodos contables y sus ciclos.
+  * CENTRO DE COSTO: centros de costo.
+  * MONEDAS: monedas de la empresa y la Herramienta de tipo de cambio.
+  * COMPROBANTES: asientos contables (débitos y créditos).
+  * PROCESOS: cerrar ciclo, mayorizar, contabilizar documentos, tipo de cambio y notificaciones.
+  * PARAMETROS: cuentas principales, monedas y razones financieras.
+  * INDICADORES: indicadores financieros.
+Orden recomendado al empezar: niveles, naturaleza, centros de costo, monedas, cuentas, periodos y ciclos; después comprobantes y procesos.
+Notas: en el teléfono el botón Guardar está en la barra inferior de la pantalla. Lo que ve cada usuario depende de los permisos de su rol.
+
+21. CONFIGURAR LOS NIVELES DE CUENTA
+----------------------------------------------------------------------
+Ruta: Menú > CONTABILIDAD > NIVEL DE CUENTA.
+El nivel define cómo se escriben los códigos de las cuentas (por ejemplo 1, 1-01, 1-01-001).
+  1. En NIVELES DE CUENTAS presione Nuevo. Se abre Nuevo nivel de cuenta.
+  2. En Datos del nivel complete:
+     * Nombre y Descripción.
+     * Separador: carácter que separa los grupos del código (por ejemplo -).
+     * Longitud total: cantidad total de caracteres del código, incluidos los separadores.
+     * Longitud del grupo: cantidad de caracteres del último grupo del código.
+     * Es operativa: márquelo si las cuentas de este nivel reciben movimientos en los comprobantes (cuentas de detalle).
+  3. Presione Guardar.
+Para modificarlo ábralo en la lista (Nivel de cuenta); para darlo de baja presione Eliminar.
+Ver también: Crear una cuenta contable.
+
+22. CONFIGURAR LA NATURALEZA DE LAS CUENTAS
+----------------------------------------------------------------------
+Ruta: Menú > CONTABILIDAD > NATURALEZA.
+La naturaleza indica si la cuenta aumenta con el débito (deudora, D: activos, costos, gastos) o con el crédito (acreedora, C: pasivos, capital, ingresos).
+  1. En NATURALEZA DE CUENTAS presione Nuevo. Se abre Nueva naturaleza de cuenta.
+  2. En Datos de la naturaleza escriba el Nombre (por ejemplo ACTIVO), la Naturaleza (C|D) y la Descripción.
+  3. Presione Guardar.
+Para modificarla ábrala en la lista (Naturaleza de cuenta); para darla de baja presione Eliminar.
+
+23. CENTROS DE COSTO
+----------------------------------------------------------------------
+Ruta: Menú > CONTABILIDAD > CENTRO DE COSTO.
+Los centros de costo permiten separar los movimientos por área, sucursal o proyecto.
+  1. En LISTA DE CENTRO DE COSTOS presione Nuevo. Se abre Nuevo centro de costo.
+  2. En Datos del centro de costo complete el Código, el Código padre (centro de costo superior) si depende de otro, el Nivel y la Descripción.
+  3. Presione Guardar.
+Para modificarlo ábralo en la lista (Centro de costo); para darlo de baja presione Eliminar.
+El centro de costo se asigna a la cuenta (campo Centro de costo) y a cada línea del comprobante (columna CC).
+
+24. CREAR UNA CUENTA CONTABLE
+----------------------------------------------------------------------
+Ruta: Menú > CONTABILIDAD > CUENTAS.
+  1. En CATALOGO DE CUENTAS presione Nuevo. Se abre Nueva cuenta contable.
+  2. En Datos de la cuenta escriba el Código, el Código padre (cuenta superior; vacío si es una cuenta principal), el Nombre y la Descripción.
+  3. En Clasificación elija el Nivel, la Naturaleza / Tipo, el Centro de costo y la Moneda.
+  4. Marque Es operativa si la cuenta recibirá movimientos en los comprobantes.
+  5. Presione Guardar.
+Restricciones:
+  * El código no puede repetirse: "EL CODIGO DE LA CUENTA YA ESTA RESERVADO...".
+  * El código debe tener la longitud total y la longitud del último grupo definidas en el nivel elegido; si no, "EL CODIGO DE LA CUENTA TIENE UN FORMATO INCORRECTO".
+  * Es operativa debe coincidir con lo definido en el nivel; si no, "OPERATIVIDAD DE LA CUENTA NO ES VALIDA".
+Ver también: Configurar los niveles de cuenta.
+
+25. MODIFICAR O ELIMINAR UNA CUENTA CONTABLE
+----------------------------------------------------------------------
+Ruta: Menú > CONTABILIDAD > CUENTAS.
+  1. Busque la cuenta con Buscar cuenta… y ábrala. Se abre Cuenta contable.
+  2. Cambie los datos y presione Guardar. Se aplican las mismas validaciones que al crearla (código único, formato del nivel y Es operativa).
+  3. En Histórico de balances vea en un gráfico los últimos 12 saldos de la cuenta (o Sin balances si aún no tiene).
+  4. Para darla de baja presione Eliminar y confirme.
+Restricciones: no se puede eliminar una cuenta que tiene subcuentas ("ELIMINAR PRIMERAMENTE LAS CUENTAS DE MAS BAJO NIVEL") ni una cuenta con saldo o movimientos. Si su permiso es Propios, solo puede eliminar las cuentas que usted creó.
+
+26. CONFIGURAR MONEDAS
+----------------------------------------------------------------------
+Ruta: Menú > CONTABILIDAD > MONEDAS.
+  1. En MONEDAS presione Nuevo. Se abre Nueva moneda.
+  2. En Moneda elija la Moneda que usará la empresa y escriba su Símbolo (por ejemplo C$ o $).
+  3. Presione Guardar.
+Para cambiar el símbolo abra la moneda en la lista y presione Guardar; para quitarla presione Eliminar.
+Botones de la lista: Herramienta (abre la herramienta de tipo de cambio) y Archivos (subir el archivo de tasas de cambio).
+Ver también: Actualizar el tipo de cambio (herramienta de monedas).
+
+27. ACTUALIZAR EL TIPO DE CAMBIO (HERRAMIENTA DE MONEDAS)
+----------------------------------------------------------------------
+Ruta: Menú > CONTABILIDAD > MONEDAS > Herramienta.
+Se abre Herramientas de monedas con tres tarjetas:
+  * Actualizar tipo de cambio: escriba el Valor (cuánto vale 1 unidad de la moneda extranjera en moneda local, por ejemplo córdobas por dólar), la Fecha inicial y la Fecha final, y presione Actualizar tipo de cambio. posMe guarda ese valor en todos los días del rango.
+  * Reporte de tipo de cambio: indique Fecha inicial y Fecha final y presione Ver reporte; se abre en una pestaña nueva.
+  * Procesar archivo: suba antes el archivo con el botón Archivos de la lista de MONEDAS, escriba su nombre en Archivo y presione Procesar archivo. El archivo (CSV) lleva las columnas FECHA (AAAA-MM-DD), MONEDA_LOCAL, TASA_DE_CAMBIO, MONEDA_EXTRANJERA y TIPO; si una línea está mal, posMe indica el número de línea a revisar.
+También puede descargar el tipo de cambio del BCN en CONTABILIDAD > PROCESOS, tarjeta Tipo de cambio: elija Periodo y Ciclo y presione Actualizar tipo de cambio (requiere internet y que el servicio esté configurado para su empresa).
+Notas: los comprobantes necesitan tipo de cambio en su fecha.
+
+28. CREAR PERIODOS Y CICLOS CONTABLES
+----------------------------------------------------------------------
+Ruta: Menú > CONTABILIDAD > PERIODOS.
+Un periodo es normalmente un año contable y se divide en ciclos (normalmente meses).
+  1. En PERIODOS CONTABLES presione Nuevo. Se abre Periodo contable.
+  2. En Periodo escriba el Nombre, elija el Estado, la Fecha inicial, la Fecha final y la Descripción. El Código de periodo lo asigna posMe.
+  3. En Ciclos del periodo presione Agregar ciclo una vez por cada ciclo. posMe calcula las fechas Inicio y Fin mes a mes desde la fecha inicial del periodo; puede corregirlas.
+  4. Elija el Estado de cada ciclo.
+  5. Presione Guardar.
+Para quitar ciclos márquelos y presione Quitar marcados. Para modificar el periodo ábralo en la lista; para darlo de baja presione Eliminar.
+Restricciones:
+  * El periodo no puede solaparse con otro periodo contable.
+  * Cada ciclo debe tener estado, fecha inicial y fecha final, quedar dentro de las fechas del periodo y no solaparse con otro ciclo.
+  * No se puede quitar un ciclo que tiene comprobantes o que está cerrado, ni eliminar un periodo que tiene comprobantes.
+
+29. ABRIR Y CERRAR PERIODOS CONTABLES
+----------------------------------------------------------------------
+Ruta: Menú > CONTABILIDAD > PERIODOS y CONTABILIDAD > PROCESOS.
+  * Abrir un periodo: créelo en PERIODOS con sus ciclos en estado abierto (ver Crear periodos y ciclos contables).
+  * Cerrar un mes (ciclo): use PROCESOS > Cerrar ciclo (ver Mayorizar y cerrar un ciclo contable).
+  * Cerrar el periodo (año): se cierra solo al cerrar su último ciclo.
+  * Antes de cerrar el último ciclo del año cree el periodo siguiente, porque el cierre exige que exista el ciclo siguiente.
+Notas: con el ciclo cerrado no se pueden registrar ni anular documentos con fechas de ese ciclo.
+
+30. REGISTRAR UN COMPROBANTE CONTABLE
+----------------------------------------------------------------------
+Ruta: Menú > CONTABILIDAD > COMPROBANTES.
+  1. En LISTA DE COMPROBANTES presione Nuevo. Se abre Nuevo comprobante.
+  2. En Datos del comprobante indique Fecha, Estado, Tipo, Moneda y Beneficiario (obligatorio). El Tipo de cambio se muestra solo.
+  3. Opcional: en Referencias y plantilla complete Referencia 1, Referencia 2, Referencia 3, Comentario y Descripción.
+  4. En Movimientos presione Agregar cuenta, elija la cuenta y escriba el Débito o el Crédito; en CC elija el centro de costo si aplica. Para quitar líneas márquelas y presione Quitar marcadas.
+  5. Revise Estado del comprobante: debe decir Cuadrado (Total débito igual a Total crédito). Si dice Descuadrado muestra la diferencia.
+  6. Presione Guardar.
+Usar una plantilla: presione Abrir plantilla y elija un comprobante modelo; posMe crea el comprobante nuevo a partir de él.
+Restricciones: el comprobante debe estar cuadrado; la fecha debe estar dentro de un ciclo contable abierto ("TODO COMPROBANTE DEBE DE PERTENECER A UN CICLO" o "EL CICLO ESTA CERRADO..."); y debe existir tipo de cambio para esa fecha ("NO EXISTE LA TASA DE CAMBIO PARA: ...").
+Ver también: Actualizar el tipo de cambio (herramienta de monedas).
+
+31. BUSCAR, MODIFICAR, IMPRIMIR O ELIMINAR UN COMPROBANTE
+----------------------------------------------------------------------
+Ruta: Menú > CONTABILIDAD > COMPROBANTES.
+  1. Escriba el número en Buscar por número de comprobante… y presione Enter o la lupa; también puede abrirlo desde la lista.
+  2. Se abre Comprobante #. Use Anterior y Siguiente para pasar al comprobante anterior o siguiente.
+  3. Modifique los datos o los Movimientos y presione Guardar (debe seguir Cuadrado).
+  4. Imprimir muestra el comprobante para imprimir; Auditoría muestra su historial; Archivos adjunta documentos de soporte. En el teléfono Nuevo, Auditoría e Imprimir están en Más.
+  5. Marque Es plantilla y escriba el Título de la plantilla para reutilizarlo con Abrir plantilla.
+  6. Para eliminarlo presione Eliminar y confirme.
+Restricciones: no se puede modificar ni eliminar un comprobante de un ciclo cerrado ("EL CICLO ESTA CERRADO, EL COMPROBANTE NO PUEDE SER EDITADO") ni pasarlo a un ciclo cerrado; el estado del comprobante debe permitir eliminarlo. Si el comprobante venía de un documento (factura, abono...), al eliminarlo el documento queda pendiente de contabilizar.
+
+32. CONTABILIZAR DOCUMENTOS
+----------------------------------------------------------------------
+Ruta: Menú > CONTABILIDAD > PROCESOS, tarjeta Contabilizar documentos.
+Genera los comprobantes contables de los documentos (facturas, abonos, compras, etc.) que aún no tienen comprobante.
+  1. En Transacción elija el tipo de documento o TODAS.
+  2. Presione Contabilizar y confirme.
+  3. Revise los comprobantes generados en CONTABILIDAD > COMPROBANTES.
+Notas: las cuentas que usa cada documento dependen de la configuración de su empresa.
+Otra tarjeta de PROCESOS, Notificaciones: elija la Notificación y presione Ejecutar para correr ese proceso de notificación, o Limpiar para borrar las notificaciones de esa etiqueta.
+
+33. MAYORIZAR Y CERRAR UN CICLO CONTABLE
+----------------------------------------------------------------------
+Ruta: Menú > CONTABILIDAD > PROCESOS.
+Mayorizar:
+  1. En la tarjeta Mayorizar elija el Periodo y el Ciclo.
+  2. Presione Mayorizar y confirme. posMe traslada los movimientos de los comprobantes del ciclo a los saldos del libro mayor.
+Cerrar ciclo:
+  1. En la tarjeta Cerrar ciclo elija el Periodo y el Ciclo.
+  2. Presione Cerrar ciclo y confirme.
+Reglas del cierre: el ciclo anterior debe estar cerrado; debe existir el ciclo siguiente y no estar cerrado; los débitos y créditos del ciclo deben ser iguales. Al cerrar el último ciclo del periodo, el periodo también queda cerrado.
+Después del cierre no se pueden registrar, modificar ni eliminar comprobantes de ese ciclo, ni registrar o anular facturas y otros documentos con fecha de ese periodo cerrado.
+Notas: en Ciclo solo aparecen los ciclos abiertos; "Sin ciclos abiertos en este periodo" indica que todos sus ciclos ya están cerrados. Mayorice el ciclo antes de cerrarlo.
+
+34. CONFIGURAR LOS PARÁMETROS CONTABLES
+----------------------------------------------------------------------
+Ruta: Menú > CONTABILIDAD > PARAMETROS.
+Se abre Parámetros contables con estas tarjetas:
+  * Cuentas principales: código de la Cuenta de Activo, Cuenta de Pasivo, Cuenta de Capital, Cuenta de Ingresos, Cuenta de Costos, Cuenta de Gastos y Cuentas de Resultado.
+  * Utilidades: Cuenta de Utilidad del periodo, Cuenta de Utilidades acumuladas y Fórmula de utilidades.
+  * Moneda y tipo de cambio: Moneda de la empresa, Moneda de reporte, Dólares compra y Dólares venta.
+  * Razones financieras: Razón del circulante, Endeudamiento, Utilidad mensual, Utilidad anual, Rentabilidad anual y Rentabilidad mensual.
+Presione Guardar.
+Notas: el cierre de ciclo usa la cuenta de utilidades acumuladas. Cambie estos valores solo con su contador o con el soporte de posMe.
+
+35. INDICADORES CONTABLES
+----------------------------------------------------------------------
+Ruta: Menú > CONTABILIDAD > INDICADORES.
+Los indicadores son valores financieros calculados que posMe muestra, por ejemplo, en la aplicación móvil.
+  1. En LISTA DE INDICADOR presione Nuevo. Se abre Nuevo indicador.
+  2. En Indicador complete Código, Nombre, Etiqueta (texto que se muestra), Orden, Prefijo y Posfijo (por ejemplo C$ o %) y Descripción.
+  3. En Fórmula escriba el Script que calcula el valor.
+  4. Presione Guardar.
+Para modificarlo ábralo en la lista (Indicador #); para darlo de baja presione Eliminar.
+Notas: el Script es técnico; pídalo al equipo de soporte de posMe.
+
+36. SEGURIDAD: QUÉ CONTIENE EL MENÚ SEGURIDAD
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD.
 El menú SEGURIDAD agrupa las opciones para controlar quién entra a posMe y qué puede hacer:
@@ -203,7 +407,7 @@ El menú SEGURIDAD agrupa las opciones para controlar quién entra a posMe y qu�
   * ACTUALIZAR: uso exclusivo del equipo de soporte de posMe.
 Lo que cada persona ve en el menú depende de los permisos de su rol.
 
-21. INICIAR SESIÓN EN POSME
+37. INICIAR SESIÓN EN POSME
 ----------------------------------------------------------------------
 Ruta: pantalla de inicio de posMe.
   1. Escriba su Usuario y su Contraseña.
@@ -211,7 +415,7 @@ Ruta: pantalla de inicio de posMe.
   3. Presione Ingresar.
 Notas: si posMe pide PERMISO DE LOCALIZACION REQUERIDO, debe permitir la ubicación en el navegador para poder entrar. Si los datos son incorrectos se muestra un mensaje y no se ingresa. Si no tiene usuario, pídalo al administrador de su empresa.
 
-22. OLVIDÉ MI CONTRASEÑA (REENVIAR CONTRASEÑA)
+38. OLVIDÉ MI CONTRASEÑA (REENVIAR CONTRASEÑA)
 ----------------------------------------------------------------------
 Ruta: pantalla de inicio de posMe > Reenviar Contraseña?
   1. En la pantalla de inicio presione Reenviar Contraseña?.
@@ -219,14 +423,14 @@ Ruta: pantalla de inicio de posMe > Reenviar Contraseña?
   3. Revise su correo.
 Si no recibe el correo, pida al administrador de su empresa que le asigne una nueva contraseña en SEGURIDAD > USUARIOS.
 
-23. CERRAR SESIÓN (SALIR, SALGO DE POSME)
+39. CERRAR SESIÓN (SALIR, SALGO DE POSME)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > SALIR.
   1. Entre a SEGURIDAD > SALIR. posMe cierra la sesión y vuelve a la pantalla de inicio.
 Así es como se sale de posMe o se cambia de usuario.
 Cierre siempre la sesión al terminar, sobre todo en equipos compartidos.
 
-24. CAMBIAR MI CONTRASEÑA O MI CORREO (EDITAR PERFIL)
+40. CAMBIAR MI CONTRASEÑA O MI CORREO (EDITAR PERFIL)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > EDITAR PERFIL.
   1. Entre a SEGURIDAD > EDITAR PERFIL. Se abre Mi perfil con su Codigo y el Colaborador asociado.
@@ -235,7 +439,7 @@ Ruta: Menú > SEGURIDAD > EDITAR PERFIL.
   4. Cierre sesión y vuelva a entrar con la nueva contraseña.
 El botón Imprimir imprime los datos del perfil.
 
-25. CREAR UN USUARIO (CREO UN USUARIO NUEVO)
+41. CREAR UN USUARIO (CREO UN USUARIO NUEVO)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > USUARIOS.
   1. En la Lista de Usuarios presione Nuevo. Se abre Nuevo usuario.
@@ -249,7 +453,7 @@ Ruta: Menú > SEGURIDAD > USUARIOS.
   5. Presione Guardar.
 Notas: para quitar una bodega o caja, toque la fila para seleccionarla y presione Quitar seleccionada. El usuario solo ve el menú que permite su rol (ver Roles).
 
-26. MODIFICAR O ELIMINAR UN USUARIO
+42. MODIFICAR O ELIMINAR UN USUARIO
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > USUARIOS.
   1. Busque el usuario en la lista (campo Buscar usuario…) y ábralo.
@@ -259,7 +463,7 @@ Ruta: Menú > SEGURIDAD > USUARIOS.
 Para cambiar la contraseña de otro usuario escriba la nueva en Password y guarde.
 Restricciones: se requiere permiso de editar o eliminar en USUARIOS; si su permiso es Propios, solo puede modificar o eliminar los usuarios que usted creó.
 
-27. CREAR UN ROL
+43. CREAR UN ROL
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES.
 Un rol es un perfil de permisos (por ejemplo CAJERO, VENDEDOR, CONTADOR) que se asigna a los usuarios.
@@ -271,7 +475,7 @@ Un rol es un perfil de permisos (por ejemplo CAJERO, VENDEDOR, CONTADOR) que se 
   6. Presione Guardar.
 Notas: los cambios en el menú se ven cuando el usuario vuelve a iniciar sesión.
 
-28. PERMISOS POR PANTALLA DE UN ROL (VER, CREAR, EDITAR, ELIMINAR)
+44. PERMISOS POR PANTALLA DE UN ROL (VER, CREAR, EDITAR, ELIMINAR)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
   1. En Permisos por pantalla active el interruptor de cada pantalla a la que el rol tendrá acceso. Use Buscar pantalla… para encontrarla y Solo con acceso para ver solo las que ya tienen acceso.
@@ -284,7 +488,7 @@ Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
   4. Presione Guardar y pida a los usuarios del rol cerrar sesión y volver a entrar.
 Notas: si el rol es administrador tiene acceso a todo y estos permisos no se aplican. Si edita su propio rol y le quita el acceso a ROLES, perderá acceso a esa pantalla.
 
-29. AUTORIZACIONES DE UN ROL
+45. AUTORIZACIONES DE UN ROL
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES > abrir el rol > Autorizaciones.
 Las autorizaciones son permisos especiales que no dependen de una pantalla (por ejemplo ADMINISTRADOR, CAJERO, CONTADOR, o autorizaciones de usuario interno o externo de taller). Según la configuración de la empresa, habilitan acciones como aprobar documentos o ver información restringida.
@@ -292,7 +496,7 @@ Las autorizaciones son permisos especiales que no dependen de una pantalla (por 
   2. Marque las que correspondan (Marcar todas / Ninguna para marcar o desmarcar todo).
   3. Presione Guardar.
 
-30. DAR ACCESO AL ASISTENTE JORDANIA (ASISTENTE IA)
+46. DAR ACCESO AL ASISTENTE JORDANIA (ASISTENTE IA)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
   1. En Permisos por pantalla busque Asistente IA y active el acceso.
@@ -300,7 +504,7 @@ Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
   3. Los usuarios del rol deben cerrar sesión y volver a entrar; verán el botón del asistente en la pantalla.
 Notas: además del permiso, la empresa debe tener habilitado el asistente (lo configura soporte de posMe).
 
-31. SUCURSALES
+47. SUCURSALES
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > SUCURSAL.
   1. Para crear una sucursal presione Nuevo. Se abre Nueva sucursal.
@@ -309,7 +513,7 @@ Ruta: Menú > SEGURIDAD > SUCURSAL.
 Para modificarla, ábrala en la lista, cambie los datos y presione Guardar; para darla de baja presione Eliminar.
 Después asigne la sucursal a los usuarios en SEGURIDAD > USUARIOS (campo Sucursal).
 
-32. NOTIFICACIONES Y RECORDATORIOS (CONFIG. NOTI)
+48. NOTIFICACIONES Y RECORDATORIOS (CONFIG. NOTI)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > CONFIG. NOTI.
 Permite configurar recordatorios periódicos que posMe muestra o envía a los usuarios.
@@ -320,7 +524,7 @@ Permite configurar recordatorios periódicos que posMe muestra o envía a los us
   5. Presione Guardar.
 Para que un usuario reciba la notificación, asígnela en SEGURIDAD > USUARIOS > pestaña Notificaciones.
 
-33. VER QUIÉN ENTRÓ: SESIONES Y ACTIVIDAD DE UN USUARIO (LOG SESSION)
+49. VER QUIÉN ENTRÓ: SESIONES Y ACTIVIDAD DE UN USUARIO (LOG SESSION)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > LOG SESSION.
   1. En Usuario elija el usuario y presione Consultar.
@@ -329,16 +533,17 @@ Ruta: Menú > SEGURIDAD > LOG SESSION.
      * Últimas 5 Sesiones con IP, Plataforma (navegador/dispositivo), Último Movimiento y Detalle.
 Útil para revisar quién entró al sistema, desde dónde y cuánto trabajo ha registrado.
 
-34. ACTUALIZAR (USO DE SOPORTE)
+50. ACTUALIZAR (USO DE SOPORTE)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ACTUALIZAR.
 Opción técnica para que el equipo de soporte de posMe aplique actualizaciones al sistema. No la use salvo que soporte se lo indique.
 
-35. PARÁMETROS DE LA EMPRESA
+51. PARÁMETROS DE LA EMPRESA
 ----------------------------------------------------------------------
 Los parámetros controlan el comportamiento de posMe por empresa (por ejemplo, orden de aplicación de abonos, lista de precios por defecto, formato de impresión).
 Los parámetros contables se editan en CONTABILIDAD > PARAMETROS; el resto los configura el equipo de soporte de posMe.
+Ver también: Configurar los parámetros contables.
 
-36. SOPORTE
+52. SOPORTE
 ----------------------------------------------------------------------
 Si no encuentra cómo hacer algo o hay un error en el sistema, contacte al equipo de soporte de posMe.

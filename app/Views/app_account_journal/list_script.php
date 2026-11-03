@@ -16,7 +16,13 @@
 			}
 			
 		}); 
+		//Buscar comprobante en el servidor por numero (boton lupa o Enter en #txtSearchJournal)
 		$(document).on("click","#btnSearchJournal",function(){
+					if($.trim($("#txtSearchJournal").val()) == ""){
+						fnShowNotification("Escriba el numero de comprobante","error");
+						$("#txtSearchJournal").focus();
+						return;
+					}
 					fnWaitOpen();
 					$.ajax({									
 						cache       : false,

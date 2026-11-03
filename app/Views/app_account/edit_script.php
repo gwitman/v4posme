@@ -41,7 +41,11 @@
 									width: 40,
 									height: 1
 								},
-								yaxis: {min: 0 },
+								yaxis: {
+									min			: 0,
+									//Eje Y con formato 1,000.00 (solo visual)
+									tickFormatter: function(valor){ return pv2Fmt(valor); }
+								},
 								xaxis: {
 									mode		: "time",	
 									minTickSize : tickSize,									
@@ -51,7 +55,10 @@
 								shadowSize:1,
 								tooltip: true,
 								tooltipOpts: {
-									content: "%s : %y.0",										
+									//Monto con formato 1,000.00 (solo visual)
+									content: function(label, xval, yval){
+										return label + " : " + pv2Fmt(yval);
+									},
 									xDateFormat: "%d/%m",
 									shifts: {
 										x: -30,
@@ -67,14 +74,33 @@
 								url  		: "<?php echo base_url(); ?>/app_accounting_api/getHistoryBalanceByAccount",
 								data 		: {companyID : <?php echo $objAccount->companyID;?>, accountID : <?php echo $objAccount->accountID;?>  },
 								success:function(data){
-									
-									var d1 		= [];																	
-									$.each(data.data,function(i,obj){			
-										console.info(obj);
-										d1.push([moment(obj.startOnCycle),parseFloat(obj.balanceEnd)]); 										
+
+									//Caso 1: el servidor devolvio error -> se muestra el mensaje en el estado vacio
+									if(data.error === true){
+										$(".chart-line").hide();
+										$("#pv2EmptyBalanceText").text(data.message);
+										$("#pv2EmptyBalance").show();
+										fnShowNotification(data.message,"error");
+										return;
+									}
+
+									//Caso 2: sin balances -> estado vacio
+									if(!data.data || data.data.length == 0){
+										$(".chart-line").hide();
+										$("#pv2EmptyBalanceText").text("Sin balances");
+										$("#pv2EmptyBalance").show();
+										return;
+									}
+
+									//Caso 3: con datos -> se dibuja la grafica
+									$("#pv2EmptyBalance").hide();
+									$(".chart-line").show();
+									var d1 		= [];
+									$.each(data.data,function(i,obj){
+										d1.push([moment(obj.startOnCycle),parseFloat(obj.balanceEnd)]);
 									});
-			
-									$.plot($(".chart-line"), [ 
+
+									$.plot($(".chart-line"), [
 										{
 											label	: "Saldo", 
 											data	: d1,
@@ -83,7 +109,10 @@
 									], options);
 									
 								},
-								error:function(xhr,data){	
+								error:function(xhr,data){
+									$(".chart-line").hide();
+									$("#pv2EmptyBalanceText").text("error en la grafica");
+									$("#pv2EmptyBalance").show();
 									fnShowNotification("error en la grafica","error");
 								}
 							});
@@ -133,8 +162,14 @@
 								});
 							});
 						});
-						
-						
+
+
 					});
-					
-				</script>
+
+
+	//Telefono: boton Guardar en la barra inferior y combos nativos (sin select2). En PC no cambia nada
+	$(document).ready(function(){
+		if(window.pv2BindMobileBar){ pv2BindMobileBar(); }
+		PosmeInv.mobileSelects();
+	});
+</script>

@@ -14,7 +14,11 @@
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/charts/sparklines/jquery.sparkline.min.js"></script>
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/charts/pie-chart/jquery.easy-pie-chart.js"></script>
 				<!-- /plugins chart-->
-				
+
+				<?php echo view('core_template/posme_v2_style'); ?>
+				<?php echo view('core_template/posme_v2_common'); ?>
+				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-inventory.css?v=1" rel="stylesheet" />
+				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme-inventory.js?v=2"></script>
 				<div id="heading" class="page-header">
 							<h1><i class="icon20  i-books"></i> Editar Cuenta</h1>
 				</div> 

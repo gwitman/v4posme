@@ -280,13 +280,21 @@ class app_accounting_indicators extends _BaseController
                 $targetComponentID              = 0;
                 $parameter["{companyID}"]       = $this->session->get('user')->companyID;
                 $dataViewData                   = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
-                $dataViewRender                 = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+                //En telefono la lista se dibuja como en abonos (app_box_share)
+                if ($this->request->getUserAgent()->isMobile())
+                    $dataViewRender             = $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow");
+                else
+                    $dataViewRender             = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
             }
             //Otra vista
             else {
                 $parameter["{companyID}"]       = $this->session->get('user')->companyID;
                 $dataViewData                   = $this->core_web_view->getViewBy_DataViewID($this->session->get('user'), $objComponent->componentID, $dataViewID, CALLERID_LIST, $resultPermission, $parameter);
-                $dataViewRender                 = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+                //En telefono la lista se dibuja como en abonos (app_box_share)
+                if ($this->request->getUserAgent()->isMobile())
+                    $dataViewRender             = $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow");
+                else
+                    $dataViewRender             = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
             }
 
             //Renderizar Resultado

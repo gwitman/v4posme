@@ -52,7 +52,12 @@
 								});
 							});
 						});
-						
+
 					});
-					
+
+	//Telefono: boton Guardar en la barra inferior (dispara #btnAcept). En PC no cambia nada
+	$(document).ready(function(){
+		if(window.pv2BindMobileBar){ pv2BindMobileBar(); }
+		PosmeInv.mobileSelects();
+	});
 				</script>

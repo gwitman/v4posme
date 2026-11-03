@@ -69,6 +69,7 @@
 		
 		<br/>		
 		
+		<div style="width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch;">
 		<table style="width:100%;" id="myReport" class="pr-table" >
 			<thead >
 				
@@ -130,10 +131,11 @@
 				
 			</tfoot>
 		</table>
+		</div>
 
-		
-		
-		<br/>		
+
+
+		<br/>
 
 		<table style="width:100%">
 			<thead>

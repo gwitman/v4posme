@@ -56,7 +56,34 @@
 			window.location	= "<?php echo base_url(); ?>/app_accounting_period/add";
 		});
 	});
-	
+
+	//Buscar en la lista: filtra la tabla del lado del cliente (mismo patron que app_branch)
+	function fnFiltrarLista(){
+		var valor = $("#txtSearchList").val();
+		if(typeof objTableListView != "undefined" && objTableListView && typeof objTableListView.fnFilter == "function"){
+			objTableListView.fnFilter(valor);
+		}
+		else{
+			var texto = $.trim(valor).toLowerCase();
+			$("#ListView tbody tr").each(function(){
+				$(this).toggle(texto == "" || $(this).text().toLowerCase().indexOf(texto) != -1);
+			});
+		}
+	}
+	$(document).on("click","#btnSearchList",function(e){
+		e.preventDefault();
+		fnFiltrarLista();
+	});
+	$(document).on("keyup","#txtSearchList",function(e){
+		fnFiltrarLista();
+	});
+	$(document).on("keydown","#txtSearchList",function(e){
+		if((e.keyCode || e.which) == 13){
+			e.preventDefault();
+			fnFiltrarLista();
+		}
+	});
+
 	function fn_aceptCallback(data){
 			var dataViewID 	= data[0];
 			window.location = "../../app_accounting_period/index/"+dataViewID;   

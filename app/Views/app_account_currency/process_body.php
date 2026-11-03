@@ -1,133 +1,106 @@
+<div class="pv2 pinv pinv-form">
 
-<div class="row"> 
-<div class="col-lg-6">
-	<div class="panel panel-default">
-			<div class="panel-heading">
-				<div class="icon"><i class="icon20 i-file"></i></div> 
-				<h4>Procesar Archivo <span class="invoice-num">#</span></h4>
-				<div class="w-right">
-					<button id="btnBack" class="btn btn-inverse btn-full tip" title="Atras" rel="panel-body"><i class="icon20 i-rotate gap-right0"></i></button>
-					<button id="btnAcept" class="btn btn-success btn-full tip" title="Aceptar" rel="panel-body"><i class="icon20 i-checkmark-4 gap-right0"></i></button>
-				</div>
-			</div><!-- End .panel-heading -->
-		
-			<div class="panel-body printArea">
-				<!-- formulario -->
-				<form id="form-new-account-level" name="form-new-rol" class="form-horizontal" role="form">
-					<fieldset>													
-						
-						<div class="form-group">
-								<label class="col-lg-2 control-label" for="normal">Archivo</label>
-								<div class="col-lg-10">
-									<input class="form-control"  type="text" name="txtFile" id="txtFile" value="">												
-								</div>
-						</div>
-						
-					</fieldset> 
-				</form>
-				<!-- /formulario -->
+	<!-- encabezado y acciones -->
+	<div class="pv2-card pv2-header">
+		<div class="pv2-header-info">
+			<div class="pv2-header-icon"><i class="icon20 i-coins"></i></div>
+			<div>
+				<p class="pv2-header-title">Herramientas de monedas</p>
+				<p class="pv2-header-sub">Procesar archivo, reporte y actualización del tipo de cambio</p>
 			</div>
+		</div>
+		<div class="pv2-actions">
+			<a href="#" id="btnBack" class="btn btn-default"><i class="icon16 i-rotate"></i> Atras</a>
+			<!-- botones Atras de cada tarjeta: se conservan ocultos por compatibilidad -->
+			<a href="#" id="btnBackReport" class="btn btn-default" style="display:none"><i class="icon16 i-rotate"></i> Atras</a>
+			<a href="#" id="btnBackExchangeRate" class="btn btn-default" style="display:none"><i class="icon16 i-rotate"></i> Atras</a>
+		</div>
 	</div>
-	
-</div>
-<div class="col-lg-6">
-	<div class="panel panel-default">
-			<div class="panel-heading">
-				<div class="icon"><i class="icon20 i-file"></i></div> 
-				<h4>Reporte <span class="invoice-num">#</span></h4>
-				<div class="w-right">
-					<button id="btnBackReport" class="btn btn-inverse btn-full tip" title="Atras" rel="panel-body"><i class="icon20 i-rotate gap-right0"></i></button>
-					<button id="btnAceptReport" class="btn btn-success btn-full tip" title="Aceptar" rel="panel-body"><i class="icon20 i-checkmark-4 gap-right0"></i></button>
-				</div>
-			</div><!-- End .panel-heading -->
-		
-			<div class="panel-body printArea">
-				<!-- formulario -->
-				<form id="form-new-account-level-report" name="form-new-rol" class="form-horizontal" role="form">
-					<fieldset>													
-						
-						<div class="form-group">
-							<label class="col-lg-5 control-label" for="datepicker">Fecha Inicial</label>
-							<div class="col-lg-7">
-								<div id="datepicker" class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
-									<input size="16" class="form-control" type="text" name="txtStartOn" id="txtStartOn" value="2014-01-30">
-									<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
-								</div>
-							</div>
-						</div>
-						
-						<div class="form-group">
-							<label class="col-lg-5 control-label" for="datepicker">Fecha Final</label>
-							<div class="col-lg-7">
-								<div id="datepicker" class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
-									<input size="16" class="form-control" type="text" name="txtEndOn" id="txtEndOn" value="2014-01-30">
-									<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
-								</div>
-							</div>
-						</div>
-						
-					</fieldset> 
+	<!-- /encabezado y acciones -->
+
+	<div class="row pacc-grid">
+
+		<!-- procesar archivo -->
+		<div class="col-xs-12 col-md-6">
+			<div class="pv2-card">
+				<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-file-upload"></i></span> Procesar archivo</p>
+				<p class="pv2-help pacc-desc">Carga las tasas de cambio desde el archivo indicado.</p>
+				<form id="form-new-account-level" name="form-new-rol" role="form" autocomplete="off" onsubmit="return false;">
+					<div class="form-group">
+						<label class="pv2-label" for="txtFile">Archivo</label>
+						<input class="form-control" type="text" name="txtFile" id="txtFile" value="" autocomplete="off">
+					</div>
+					<div class="pacc-foot">
+						<a href="#" id="btnAcept" class="btn btn-primary"><i class="icon16 i-checkmark-4"></i> Procesar archivo</a>
+					</div>
 				</form>
-				<!-- /formulario -->
 			</div>
-	</div>
-</div>
+		</div>
+		<!-- /procesar archivo -->
 
-
-</div>
-
-<div class="row">
-<div class="col-lg-6">
-	<div class="panel panel-default">
-			<div class="panel-heading">
-				<div class="icon"><i class="icon20 i-file"></i></div> 
-				<h4>Actualizar Tipo de cambio del dia<span class="invoice-num">#</span></h4>
-				<div class="w-right">
-					<button id="btnBackExchangeRate" class="btn btn-inverse btn-full tip" title="Atras" rel="panel-body"><i class="icon20 i-rotate gap-right0"></i></button>
-					<button id="btnAceptExchangeRate" class="btn btn-success btn-full tip" title="Aceptar" rel="panel-body"><i class="icon20 i-checkmark-4 gap-right0"></i></button>
-				</div>
-			</div><!-- End .panel-heading -->
-		
-			<div class="panel-body printArea">
-				<!-- formulario -->
-				<form id="form-new-account-level" name="form-new-rol" class="form-horizontal" role="form">
-					<fieldset>													
-						
-						<div class="form-group">
-								<label class="col-lg-2 control-label" for="normal">Valor</label>
-								<div class="col-lg-10">
-									<input class="form-control"  type="text" name="txtValueExchangeRate" id="txtValueExchangeRate" value="">												
-								</div>
-						</div>
-						
-						
-						<div class="form-group">
-							<label class="col-lg-5 control-label" for="datepicker">Fecha Inicial</label>
-							<div class="col-lg-7">
-								<div id="datepicker" class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
-									<input size="16" class="form-control" type="text" name="txtStartOnExchange" id="txtStartOnExchange" value="2014-01-30">
-									<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
-								</div>
+		<!-- reporte de tipo de cambio -->
+		<div class="col-xs-12 col-md-6">
+			<div class="pv2-card">
+				<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-file"></i></span> Reporte de tipo de cambio</p>
+				<p class="pv2-help pacc-desc">Muestra en una nueva pestaña las tasas registradas en el rango de fechas.</p>
+				<form id="form-new-account-level-report" name="form-new-rol" role="form" autocomplete="off" onsubmit="return false;">
+					<div class="row">
+						<div class="col-xs-12 col-sm-6 form-group">
+							<label class="pv2-label" for="txtStartOn">Fecha inicial</label>
+							<div class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
+								<input size="16" class="form-control" type="text" name="txtStartOn" id="txtStartOn" value="2014-01-30" autocomplete="off">
+								<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
 							</div>
 						</div>
-						
-						<div class="form-group">
-							<label class="col-lg-5 control-label" for="datepicker">Fecha Final</label>
-							<div class="col-lg-7">
-								<div id="datepicker" class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
-									<input size="16" class="form-control" type="text" name="txtEndOnExchange" id="txtEndOnExchange" value="2014-01-30">
-									<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
-								</div>
+						<div class="col-xs-12 col-sm-6 form-group">
+							<label class="pv2-label" for="txtEndOn">Fecha final</label>
+							<div class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
+								<input size="16" class="form-control" type="text" name="txtEndOn" id="txtEndOn" value="2014-01-30" autocomplete="off">
+								<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
 							</div>
 						</div>
-						
-					</fieldset> 
+					</div>
+					<div class="pacc-foot">
+						<a href="#" id="btnAceptReport" class="btn btn-primary"><i class="icon16 i-checkmark-4"></i> Ver reporte</a>
+					</div>
 				</form>
-				<!-- /formulario -->
 			</div>
-	</div>
-	
-</div>
-</div>
+		</div>
+		<!-- /reporte de tipo de cambio -->
 
-<!-- End .row-fluid  -->
+		<!-- actualizar tipo de cambio -->
+		<div class="col-xs-12 col-md-6">
+			<div class="pv2-card">
+				<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-coin"></i></span> Actualizar tipo de cambio</p>
+				<p class="pv2-help pacc-desc">Aplica el valor indicado a todos los días del rango de fechas.</p>
+				<form id="form-new-account-level-exchange" name="form-new-rol" role="form" autocomplete="off" onsubmit="return false;">
+					<div class="row">
+						<div class="col-xs-12 form-group">
+							<label class="pv2-label" for="txtValueExchangeRate">Valor</label>
+							<input class="form-control pv2-num" type="text" inputmode="decimal" name="txtValueExchangeRate" id="txtValueExchangeRate" value="" autocomplete="off">
+						</div>
+						<div class="col-xs-12 col-sm-6 form-group">
+							<label class="pv2-label" for="txtStartOnExchange">Fecha inicial</label>
+							<div class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
+								<input size="16" class="form-control" type="text" name="txtStartOnExchange" id="txtStartOnExchange" value="2014-01-30" autocomplete="off">
+								<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+							</div>
+						</div>
+						<div class="col-xs-12 col-sm-6 form-group">
+							<label class="pv2-label" for="txtEndOnExchange">Fecha final</label>
+							<div class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
+								<input size="16" class="form-control" type="text" name="txtEndOnExchange" id="txtEndOnExchange" value="2014-01-30" autocomplete="off">
+								<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+							</div>
+						</div>
+					</div>
+					<div class="pacc-foot">
+						<a href="#" id="btnAceptExchangeRate" class="btn btn-primary"><i class="icon16 i-checkmark-4"></i> Actualizar tipo de cambio</a>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- /actualizar tipo de cambio -->
+
+	</div>
+</div>

@@ -3,20 +3,26 @@
 					
 					$(document).ready(function(){					
 						
+						//En telefono no se usa el datepicker JS (se reemplaza por el calendario nativo)
+						var esTelefono = PosmeInv.isMobile();
+
 						$('#txtStartOn').datepicker({format:"yyyy-mm-dd"});
-						$('#txtStartOn').val(moment().format("YYYY-MM-DD"));						 						
-						$("#txtStartOn").datepicker("update");						
+						$('#txtStartOn').val(moment().format("YYYY-MM-DD"));
+						if(!esTelefono) $("#txtStartOn").datepicker("update");
 						$('#txtEndOn').datepicker({format:"yyyy-mm-dd"});
-						$('#txtEndOn').val(moment().format("YYYY-MM-DD"));		
-						$("#txtEndOn").datepicker("update");
-						
+						$('#txtEndOn').val(moment().format("YYYY-MM-DD"));
+						if(!esTelefono) $("#txtEndOn").datepicker("update");
+
 						$('#txtStartOnExchange').datepicker({format:"yyyy-mm-dd"});
-						$('#txtStartOnExchange').val(moment().format("YYYY-MM-DD"));						 						
-						$("#txtStartOnExchange").datepicker("update");						
+						$('#txtStartOnExchange').val(moment().format("YYYY-MM-DD"));
+						if(!esTelefono) $("#txtStartOnExchange").datepicker("update");
 						$('#txtEndOnExchange').datepicker({format:"yyyy-mm-dd"});
-						$('#txtEndOnExchange').val(moment().format("YYYY-MM-DD"));		
-						$("#txtEndOnExchange").datepicker("update");
-						
+						$('#txtEndOnExchange').val(moment().format("YYYY-MM-DD"));
+						if(!esTelefono) $("#txtEndOnExchange").datepicker("update");
+
+						//Telefono: fechas con <input type="date"> (valor Y-m-d, igual que el datepicker). En PC no cambia nada
+						PosmeInv.mobileDates('#txtStartOn,#txtEndOn,#txtStartOnExchange,#txtEndOnExchange');
+
 						
 						//Evento Agregar el Usuario						
 						$(document).on("click","#btnBackReport",function(){
@@ -31,7 +37,13 @@
 							fnWaitOpen();
 							window.location = "<?php echo base_url(); ?>/app_accounting_currency/index";
 						});							
-						$(document).on("click","#btnAceptReport",function(){							
+						$(document).on("click","#btnAceptReport",function(){
+							//En telefono el calendario nativo permite dejar la fecha vacia
+							if( $("#txtStartOn").val() == "" || $("#txtEndOn").val() == "" )
+							{
+								fnShowNotification("Seleccione la fecha inicial y final","error");
+								return;
+							}
 							window.open( '<?php echo base_url(); ?>/app_accounting_currency/process_view_report/startOn/'+$("#txtStartOn").val()+'/endOn/'+$("#txtEndOn").val(), '_blank'); 
 						});
 						$(document).on("click","#btnAcept",function(){
@@ -69,7 +81,13 @@
 							{
 								fnShowNotification("Escriba el valor del tipo de cambio","error");
 								return;
-							}								
+							}
+							if( $("#txtStartOnExchange").val() == "" || $("#txtEndOnExchange").val() == "" )
+							{
+								fnShowNotification("Seleccione la fecha inicial y final","error");
+								return;
+							}
+
 							
 							fnShowConfirm("Confirmar..","Actualizar tipo de cambio...",function(){
 								fnWaitOpen();
