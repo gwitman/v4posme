@@ -4,11 +4,21 @@
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/
+--Parámetro					Pagado				Prueba gratis
+--AI_ASSISTANT_ENABLED		true				true
+--AI_MODEL					claude-haiku-5-5	claude-haiku-5-5
+--AI_MAX_TOKENS				1024				600
+--AI_MAX_TOOL_ITERATIONS	5					3
+--AI_HISTORY_MESSAGES		8					4
+--AI_QUOTA_COMPANY_MONTH	1500000				400000
+--AI_QUOTA_USER_MONTH		500000				200000
+--AI_RATE_PER_MINUTE		5					3
+--AI_MAX_QUESTION_LENGTH	800					400
 
 -- 1. AI_ASSISTANT_ENABLED: true = habilitado / false = deshabilitado
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
-SET cp.value = 'false'
+SET cp.value = 'true'
 WHERE p.name = 'AI_ASSISTANT_ENABLED'
     AND cp.companyID = 2;
 
@@ -22,49 +32,49 @@ WHERE p.name = 'AI_MODEL'
 -- 3. AI_MAX_TOKENS: 256 a 8192
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
-SET cp.value = '1024'
+SET cp.value = '600'
 WHERE p.name = 'AI_MAX_TOKENS'
     AND cp.companyID = 2;
 
 -- 4. AI_MAX_TOOL_ITERATIONS: 1 a 12
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
-SET cp.value = '6'
+SET cp.value = '3'
 WHERE p.name = 'AI_MAX_TOOL_ITERATIONS'
     AND cp.companyID = 2;
 
 -- 5. AI_HISTORY_MESSAGES: 0 a 40
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
-SET cp.value = '8'
+SET cp.value = '4'
 WHERE p.name = 'AI_HISTORY_MESSAGES'
     AND cp.companyID = 2;
 
 -- 6. AI_QUOTA_COMPANY_MONTH: tokens por mes; 0 = sin limite
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
-SET cp.value = '2000000'
+SET cp.value = '400000'
 WHERE p.name = 'AI_QUOTA_COMPANY_MONTH'
     AND cp.companyID = 2;
 
 -- 7. AI_QUOTA_USER_MONTH: tokens por mes; 0 = sin limite
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
-SET cp.value = '0'
+SET cp.value = '200000'
 WHERE p.name = 'AI_QUOTA_USER_MONTH'
     AND cp.companyID = 2;
 
 -- 8. AI_RATE_PER_MINUTE: 0 = sin limite
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
-SET cp.value = '6'
+SET cp.value = '3'
 WHERE p.name = 'AI_RATE_PER_MINUTE'
     AND cp.companyID = 2;
 
 -- 9. AI_MAX_QUESTION_LENGTH: caracteres
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
-SET cp.value = '1000'
+SET cp.value = '400'
 WHERE p.name = 'AI_MAX_QUESTION_LENGTH'
     AND cp.companyID = 2;
 
