@@ -1,3 +1,5 @@
+<?php echo view('core_template/posme_v2_style'); ?>
+<?php echo view('core_template/posme_v2_common'); ?>
 <link href="<?= APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/datepicker/datepicker.css"
       rel="stylesheet"/>
 
@@ -25,46 +27,52 @@
 <link href="<?= APP_URL_RESOURCE_CSS_JS; ?>/resource/js/is-loading-master/style.css" rel="stylesheet"/>
 <script src="<?= APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/js/plugins/forms/datepicker/bootstrap-datepicker.js"></script>
 
-<div id="heading" class="page-header">
-    <h1><i class="icon20 i-dashboard"></i>
-        Estadisticos
-    </h1>
-</div>
+<style>
+    /* ==========================================================
+       Estadisticas de inmuebles: tablero de Data Studio embebido
+       El contenedor define el alto; el iframe lo ocupa completo.
+       ========================================================== */
+    .pv2 .pv2-dash-frame { position:relative; width:100%; height:calc(100vh - 230px); min-height:480px; border-radius:10px; overflow:hidden; background:var(--pv2-soft); }
+    .pv2 .pv2-dash-frame iframe { position:absolute; top:0; right:0; bottom:0; left:0; width:100%; height:100%; border:0; }
+    .pv2 .pv2-dash-frame .pv2-empty { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:80%; max-width:360px; background:#fff; }
+    .pv2 .pv2-dash-frame.is-loaded .pv2-empty { display:none; }
+    @media (max-width:767px) {
+        .pv2 .pv2-dash-frame { height:75vh; min-height:0; }
+    }
+</style>
 
-<!--
-<div class="panel" style="margin-bottom:20px; height: calc(100vh - 200px);">
-   <iframe width="100%" height="100%" 
-        src="https://datastudio.google.com/embed/reporting/bc67583a-fdb3-478a-9272-b7d4eb6a3697/page/page_12345" 
-        frameborder="0" style="border:0" 
-        allowfullscreen 
-        sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox">
-    </iframe>
-</div>
--->
-                
+<div class="pv2<?php echo (isset($useMobile) && $useMobile == "1") ? " pv2-mobile" : ""; ?>">
 
-<div class="row"  >
-    <div class="col-lg-12">
-        <div class="panel" style="margin-bottom:20px; height: calc(100vh - 200px);">
-            <div class="panel-heading">
-                <div class="icon"><i class="icon20 i-health"></i></div>
-                <h4>Dashboard con Google Analytics</h4>
-                <a href="#" class="minimize"></a>
-            </div>
-
-            <div class="panel-body" style="height: calc(100% - 50px); padding: 0;">
-                <iframe width="100%" height="100%" 
-                    src="https://datastudio.google.com/embed/reporting/bc67583a-fdb3-478a-9272-b7d4eb6a3697/page/page_12345" 
-                    frameborder="0" style="border:0" 
-                    allowfullscreen 
-                    sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads">
-                  
-
-                </iframe>
-
+    <!-- encabezado -->
+    <div class="pv2-card pv2-header">
+        <div class="pv2-header-info">
+            <div class="pv2-header-icon"><i class="icon20 i-dashboard"></i></div>
+            <div>
+                <p class="pv2-header-title">Estadísticas de inmuebles</p>
+                <p class="pv2-header-sub">Tablero de Google Data Studio con el comportamiento de las propiedades</p>
             </div>
         </div>
+        <div class="pv2-actions">
+            <a href="https://datastudio.google.com/embed/reporting/bc67583a-fdb3-478a-9272-b7d4eb6a3697/page/page_12345" target="_blank" rel="noopener" class="btn btn-default"><i class="icon16 i-new-tab"></i> Abrir en pestaña nueva</a>
+        </div>
     </div>
+    <!-- /encabezado -->
+
+    <!-- tablero -->
+    <div class="pv2-card">
+        <div class="pv2-dash-frame" id="pv2DashFrame">
+            <div class="pv2-empty"><i class="icon20 i-dashboard"></i>Cargando tablero…</div>
+            <iframe
+                src="https://datastudio.google.com/embed/reporting/bc67583a-fdb3-478a-9272-b7d4eb6a3697/page/page_12345"
+                frameborder="0"
+                allowfullscreen
+                onload="document.getElementById('pv2DashFrame').className += ' is-loaded';"
+                sandbox="allow-storage-access-by-user-activation allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-downloads">
+            </iframe>
+        </div>
+    </div>
+    <!-- /tablero -->
+
 </div>
 
 

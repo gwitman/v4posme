@@ -63,6 +63,35 @@ Ruta: Menú > CXC > REPORTES (Estado de cuenta / Estado del cliente).
 También puede preguntarle a Jordania: "¿Cuánto me debe <cliente>?".
 <!-- REVISAR: nombre exacto del reporte en el menu de reportes de CXC -->
 
+## Asignar clientes a un gestor de cobranza
+Ruta: Menú > COBRANZA > GESTORES.
+Sirve para indicar qué clientes visita cada gestor (cobrador o asesor) y en qué orden de visita (ruta de cobro).
+1. En la lista de gestores presione **Nuevo**. Se abre **Agregar Cliente a un Asesor**.
+2. En la tarjeta **Asignación**, en **Colaborador** presione **Buscar** y elija el gestor. Con **Limpiar** borra lo elegido.
+3. En **Cliente** presione **Buscar** y elija el cliente que se le asigna.
+4. Defina el orden de visita: escriba el número en **Orden No**, o en **Aplicar orden después de** presione **Buscar** y elija el cliente detrás del cual debe ir. Si elige un cliente en **Aplicar orden después de**, se usa ese en lugar del número.
+5. Opcional: en la tarjeta **Referencias** complete **Referencia FAC**, **Referido**, **Tasa**, **Referencia 4**, **Referencia 5** y **Descripción**. <!-- REVISAR: uso de negocio de Referencia FAC, Referido y Tasa -->
+6. Presione **Guardar**. En el teléfono el botón **Guardar** está en la barra inferior de la pantalla.
+Mensajes de validación:
+* "El Colaborador es requerido" / "El Cliente es requerido".
+* "No puede ingresar valores negativos en el orden".
+* "El Cliente es identico al siguiente orden indicado": el cliente no puede ser el mismo de **Aplicar orden después de**.
+Notas: si deja **Orden No** vacío el cliente se agrega sin un número de orden fijo. Según la configuración de su empresa los nombres pueden cambiar (por ejemplo **Ruta** en lugar de **Colaborador** y "CLIENTES POR RUTAS" como título de la lista). <!-- REVISAR: confirmar si con Orden No vacio el cliente queda de ultimo en la ruta -->
+Ver también: Cambiar el orden de visita o quitar un cliente de un gestor.
+
+## Cambiar el orden de visita o quitar un cliente de un gestor
+Ruta: Menú > COBRANZA > GESTORES.
+Cambiar el gestor o el orden de visita de un cliente:
+1. En la lista de gestores escriba en el buscador y presione el botón de la lupa para filtrar.
+2. Seleccione la fila y presione **Editar**. Se abre **Editar Cliente a un Asesor**. Si no seleccionó una fila aparece "Debe de Seleccionar el Registros, para editarlo...".
+3. Cambie **Colaborador**, **Cliente**, **Orden No** o **Aplicar orden después de** con los botones **Buscar** y **Limpiar**.
+4. Presione **Guardar** (en el teléfono, en la barra inferior).
+Al editar es obligatorio indicar el orden: si **Orden No** queda vacío o en 0 y no eligió **Aplicar orden después de**, aparece "Debe indicar el orden a ingresar el Cliente o debe ser mayor que 0". También se validan los mismos mensajes de la asignación.
+Quitar un cliente de un gestor:
+1. En la lista seleccione la fila y presione **Eliminar**, o dentro de **Editar Cliente a un Asesor** presione **Eliminar**.
+2. Confirme el mensaje "Desea eliminar este Registro...".
+Ver también: Asignar clientes a un gestor de cobranza.
+
 ## Crear un cliente
 Ruta: Menú > CXC > CLIENTES.
 1. Presione **Nuevo**.
@@ -136,6 +165,70 @@ Lista de productos, existencias por bodega, kardex, compras, productos por trans
 ## Reportes de cuentas por cobrar y cobranza
 Ruta: Menú > CXC > REPORTES y COBRANZA > REPORTES.
 Cartera de clientes, documentos de crédito, pagos, estado de cuenta, clientes con mora.
+Ver también: Asignar clientes a un gestor de cobranza.
+
+## Ver estadísticas de inmuebles
+Ruta: Menú > ESTADISTICA > INMUEBLE.
+1. Entre a ESTADISTICA > INMUEBLE. Se abre **Estadísticas de inmuebles**, un tablero de Google Data Studio con el comportamiento de las propiedades.
+2. Revise la información directamente en el tablero.
+3. Para verlo en pantalla completa presione **Abrir en pestaña nueva**.
+Notas: el tablero se carga desde internet; si no se muestra, revise su conexión o use **Abrir en pestaña nueva**. <!-- REVISAR: el enlace del tablero de Data Studio es fijo en la vista; confirmar si es el mismo para todas las empresas y si muestra solo los datos de la empresa -->
+Ver también: Ver estadísticas de clientes.
+
+## Ver estadísticas de clientes
+Ruta: Menú > ESTADISTICA > CLIENTES.
+La pantalla **Estadísticas de clientes** muestra fuentes de contacto, intereses, agentes y cierres de clientes en un rango de fechas.
+1. En la tarjeta **Rango de fechas** indique **Inicio** y **Fin** (formato AAAA-MM-DD). Al entrar se muestra el mes actual.
+2. Presione **Filtrar**. El rango consultado aparece junto al título.
+3. Revise los indicadores: **Total de contactos**, **Clientes cerrados**, **Agentes activos** e **Interés principal**.
+4. Revise los gráficos: **Fuente de contacto**, **Interés del cliente**, **Tipo de propiedad**, **Clientes asignados**, **Clasificación por agente** y **Cierre de clientes**.
+Si un gráfico no tiene información muestra "Sin datos en el rango seleccionado".
+Mensajes al filtrar:
+* "La fecha de inicio debe tener el formato AAAA-MM-DD" / "La fecha de fin debe tener el formato AAAA-MM-DD".
+* "La fecha de inicio no puede ser mayor que la fecha de fin".
+Notas: para entrar a esta pantalla su rol necesita acceso a ESTADISTICA > INMUEBLE. <!-- REVISAR: customer_realstate valida el permiso de real_state (INMUEBLE); confirmar si es intencional -->
+Ver también: Ver estadísticas de inmuebles.
+
+## Ver el calendario de programación
+Ruta: Menú > CALENDARIO > PROGRAMACION.
+La pantalla **Programación** muestra en un calendario las tareas, visitas y citas programadas, y además eventos automáticos de documentos: facturas, órdenes de taller (fecha de siguiente visita) y abonos.
+1. Use las flechas para ir al periodo anterior o siguiente (en PC también al año anterior o siguiente) y **Hoy** para volver a la fecha actual.
+2. En PC cambie la vista con **Mes**, **Semana**, **Día** o **Año**. En el teléfono se muestra la vista de lista de la semana.
+3. En PC pase el mouse sobre un evento para ver su descripción.
+4. Haga clic en un evento para abrirlo.
+Eventos automáticos: al hacer clic en una factura, orden de taller o abono se abre una ventana con la información del documento (Código, Cliente, Teléfono, Activo fijo o Descripción) y los botones **Imprimir**, **Abrir documento** (lo abre en una pestaña nueva) y **Cerrar**. Estos eventos no se modifican desde el calendario.
+Notas: qué facturas aparecen (registradas o aplicadas, con o sin hora) depende de la configuración de su empresa.
+Ver también: Programar una tarea o visita en el calendario; Modificar, eliminar o imprimir un evento del calendario.
+
+## Programar una tarea o visita en el calendario
+Ruta: Menú > CALENDARIO > PROGRAMACION.
+Sirve para agendar una tarea, visita, cita o recordatorio.
+1. Presione **Agregar** o, en PC, haga clic sobre un día del calendario. En el teléfono use siempre el botón **Agregar** (arriba a la derecha). Se abre **Nueva programación**.
+2. En el bloque **Detalle** escriba el **Título del evento** y la **Descripción del evento**, y en **Etiqueta** elija el tipo (tag) de la programación; no deje "Seleccione…".
+3. En el bloque **Cuándo** indique la **Fecha** y, si desea, la **Hora (opcional)**. Con **Agregar** la fecha propuesta es hoy; al hacer clic en un día, la de ese día.
+4. Presione **Guardar**.
+La ventana se cierra solo si la programación se guardó. Si ocurre un error se muestra el mensaje y la ventana queda abierta con sus datos para corregir o volver a guardar. **Cerrar** o la X salen sin guardar.
+Mensajes de validación (debajo de cada campo):
+* "El título del evento es obligatorio."
+* "La descripción del evento es obligatoria."
+* "La fecha del evento es obligatoria."
+* "Debe seleccionar una etiqueta."
+Ver también: Modificar, eliminar o imprimir un evento del calendario.
+
+## Modificar, eliminar o imprimir un evento del calendario
+Ruta: Menú > CALENDARIO > PROGRAMACION.
+Modificar una programación:
+1. Haga clic sobre la programación en el calendario. Se abre **Editar programación** con su código.
+2. Cambie los datos de **Detalle** y **Cuándo** y presione **Guardar**.
+Eliminar una programación:
+1. Ábrala y presione **Eliminar**.
+2. Confirme el mensaje "¿Desea eliminar la programación seleccionada? Esta acción no se puede deshacer.".
+Imprimir:
+* Una programación: ábrala y presione **Imprimir**; se abre en una pestaña nueva.
+* Todos los eventos de un día (en PC): cambie a la vista **Día**, vaya a la fecha y presione **Imprimir** en la barra del calendario. En otra vista aparece "Cambie a la vista Día para imprimir".
+* Una factura, orden de taller o abono: haga clic en el evento y use **Imprimir** o **Abrir documento**.
+Notas: **Eliminar** e **Imprimir** solo aparecen al editar una programación existente. Si la programación ya no existe aparece "No se encontró la programación seleccionada".
+Ver también: Ver el calendario de programación.
 
 ## Qué contiene el menú CONTABILIDAD
 Ruta: Menú > CONTABILIDAD.
@@ -433,6 +526,7 @@ Permite configurar recordatorios periódicos que posMe muestra o envía a los us
 4. Escriba la **Descripcion** y el **Mensaje** que verá el usuario.
 5. Presione **Guardar**.
 Para que un usuario reciba la notificación, asígnela en SEGURIDAD > USUARIOS > pestaña **Notificaciones**.
+Ver también: Programar una tarea o visita en el calendario.
 <!-- REVISAR: significado exacto de Periodo/Dias, Temporal y Desde archivo -->
 
 ## Ver quién entró: sesiones y actividad de un usuario (LOG SESSION)

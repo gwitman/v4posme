@@ -53,8 +53,8 @@
 		//Buscar Colagorador
 		$(document).on("click","#btnSearchEmployee",function(){
 			var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteEmployee/SELECCIONAR_EMPLOYEE_PAGINATED/true/empty/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
-			window.open(url_request,"MsgWindow","width=900,height=450");
-			window.onCompleteEmployee = onCompleteEmployee; 
+			//PC: ventana emergente; telefono: ventana interna (pv2OpenSearch registra window.onCompleteEmployee)
+			pv2OpenSearch(url_request,"Buscar colaborador","onCompleteEmployee",onCompleteEmployee,"width=900,height=450");
 		});
 
 		//Eliminar Colaborador
@@ -74,8 +74,8 @@
 		//Buscar Cliente
 		$(document).on("click","#btnSearchCustomer",function(){
 			var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_ALL_PAGINATED/true/empty/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
-			window.open(url_request,"MsgWindow","width=900,height=450");
-			window.onCompleteCustomer = onCompleteCustomer; 
+			//PC: ventana emergente; telefono: ventana interna (pv2OpenSearch registra window.onCompleteCustomer)
+			pv2OpenSearch(url_request,"Buscar cliente","onCompleteCustomer",onCompleteCustomer,"width=900,height=450");
 		});
 		
 		//Eliminar Cliente
@@ -94,8 +94,8 @@
 		
 		$(document).on("click","#btnSearchCustomerAfter",function(){
 			var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteCustomerAfter/SELECCIONAR_CLIENTES_ALL_PAGINATED/true/empty/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
-			window.open(url_request,"MsgWindow","width=900,height=450");
-			window.onCompleteCustomerAfter = onCompleteCustomerAfter; 
+			//PC: ventana emergente; telefono: ventana interna (pv2OpenSearch registra window.onCompleteCustomerAfter)
+			pv2OpenSearch(url_request,"Buscar cliente","onCompleteCustomerAfter",onCompleteCustomerAfter,"width=900,height=450");
 		});
 		$(document).on("click","#btnClearCustomerAfter",function(){
 					$("#txtCustomerIDAfter").val("0");
@@ -160,4 +160,8 @@
 
 	}
 
+	//Telefono: boton Guardar en la barra inferior. En PC no cambia nada
+	$(document).ready(function(){
+		if(window.pv2BindMobileBar){ pv2BindMobileBar(); }
+	});
 </script>
