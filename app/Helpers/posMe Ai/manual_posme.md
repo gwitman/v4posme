@@ -3,6 +3,8 @@
 Este manual lo consulta Jordania con la herramienta buscar_en_manual. Cada sección empieza con `## Título`.
 Las rutas de menú son las del menú estándar; el menú real de cada usuario depende de sus permisos
 (Jordania usa la herramienta ruta_menu para confirmarlo). Lo marcado con REVISAR debe completarlo el equipo de posMe.
+Este archivo es la fuente principal del manual de usuario: lo mantiene el agente posme-documentacion, que copia cada cambio
+a public/resource/file_manual/manual_usuario_posme.txt. No use encabezados # ni ### en el cuerpo.
 
 ## Cómo funcionan las pantallas de posMe (listas y registros)
 Ruta: cualquier opción del menú.
@@ -134,23 +136,138 @@ Lista de productos, existencias por bodega, kardex, compras, productos por trans
 Ruta: Menú > CXC > REPORTES y COBRANZA > REPORTES.
 Cartera de clientes, documentos de crédito, pagos, estado de cuenta, clientes con mora.
 
-## Usuarios y contraseñas
-Ruta: Menú > SEGURIDAD > USUARIOS.
-1. Presione **Nuevo** para crear un usuario o abra uno existente.
-2. Indique usuario, contraseña, sucursal y rol.
-3. Presione **Guardar**.
-Para cambiar su propia contraseña: SEGURIDAD > EDITAR PERFIL.
+## Seguridad: qué contiene el menú SEGURIDAD
+Ruta: Menú > SEGURIDAD.
+El menú SEGURIDAD agrupa las opciones para controlar quién entra a posMe y qué puede hacer:
+- **SALIR**: cerrar la sesión.
+- **ROLES**: crear roles y definir a qué pantallas tienen acceso.
+- **USUARIOS**: crear los usuarios, asignarles rol, sucursal, bodegas y cajas.
+- **EDITAR PERFIL**: cambiar su propia contraseña y correo.
+- **CONFIG. NOTI**: configurar recordatorios periódicos (notificaciones).
+- **SUCURSAL**: crear y editar las sucursales de la empresa.
+- **LOG SESSION**: ver las últimas sesiones y la actividad de un usuario.
+- **ACTUALIZAR**: uso exclusivo del equipo de soporte de posMe.
+Lo que cada persona ve en el menú depende de los permisos de su rol.
 
-## Roles y permisos (incluye dar acceso a Jordania)
+## Iniciar sesión en posMe
+Ruta: pantalla de inicio de posMe.
+1. Escriba su **Usuario** y su **Contraseña**.
+2. Marque **Recordarme** si quiere que el navegador recuerde el usuario en ese equipo.
+3. Presione **Ingresar**.
+Notas: si posMe pide **PERMISO DE LOCALIZACION REQUERIDO**, debe permitir la ubicación en el navegador para poder entrar. Si los datos son incorrectos se muestra un mensaje y no se ingresa. Si no tiene usuario, pídalo al administrador de su empresa.
+
+## Olvidé mi contraseña (reenviar contraseña)
+Ruta: pantalla de inicio de posMe > **Reenviar Contraseña?**
+1. En la pantalla de inicio presione **Reenviar Contraseña?**.
+2. Escriba el correo registrado en su usuario y confirme.
+3. Revise su correo.
+Si no recibe el correo, pida al administrador de su empresa que le asigne una nueva contraseña en SEGURIDAD > USUARIOS.
+<!-- REVISAR: en core_acount::rememberpassword el envio del correo ($this->email->send()) esta comentado; hoy no se envia el correo aunque la pantalla diga PASSWORD REENVIADA -->
+
+## Cerrar sesión (salir, salgo de posMe)
+Ruta: Menú > SEGURIDAD > SALIR.
+1. Entre a SEGURIDAD > SALIR. posMe cierra la sesión y vuelve a la pantalla de inicio.
+Así es como se sale de posMe o se cambia de usuario.
+Cierre siempre la sesión al terminar, sobre todo en equipos compartidos.
+
+## Cambiar mi contraseña o mi correo (editar perfil)
+Ruta: Menú > SEGURIDAD > EDITAR PERFIL.
+1. Entre a SEGURIDAD > EDITAR PERFIL. Se abre **Mi perfil** con su **Codigo** y el **Colaborador** asociado.
+2. En **Datos de acceso** cambie el **Password** y/o el **Email**. El **Nickname** es su nombre de usuario.
+3. Presione **Guardar**.
+4. Cierre sesión y vuelva a entrar con la nueva contraseña.
+El botón **Imprimir** imprime los datos del perfil.
+
+## Crear un usuario (creo un usuario nuevo)
+Ruta: Menú > SEGURIDAD > USUARIOS.
+1. En la **Lista de Usuarios** presione **Nuevo**. Se abre **Nuevo usuario**.
+2. Pestaña **Informacion General**:
+   - **Datos de acceso**: **Nickname** (nombre con el que entrará), **Password** y **Email**.
+   - **Rol y ubicacion**: elija el **Rol** (define sus permisos), la **Sucursal** y la **Caja**.
+   - **Entidad**: presione **Buscar** y elija el colaborador (empleado) al que pertenece el usuario.
+   - Marque **Usa telefono (Mobile)** si trabajará desde un teléfono.
+3. Pestaña **Bodegas**: presione **Agregar** y elija de la **Lista de Bodegas** las bodegas con las que podrá trabajar.
+4. Pestaña **Cajas**: presione **Agregar** y elija de la **Lista de Cajas** las cajas que podrá usar.
+5. Presione **Guardar**.
+Notas: para quitar una bodega o caja, toque la fila para seleccionarla y presione **Quitar seleccionada**. El usuario solo ve el menú que permite su rol (ver Roles).
+
+## Modificar o eliminar un usuario
+Ruta: Menú > SEGURIDAD > USUARIOS.
+1. Busque el usuario en la lista (campo **Buscar usuario…**) y ábralo.
+2. Cambie lo necesario en **Informacion General**, **Bodegas**, **Cajas** o **Notificaciones** (pestaña para asignarle notificaciones con **Agregar**).
+3. Presione **Guardar**.
+4. Para dar de baja al usuario presione **Eliminar** y confirme; ya no podrá entrar a posMe.
+Para cambiar la contraseña de otro usuario escriba la nueva en **Password** y guarde.
+Restricciones: se requiere permiso de editar o eliminar en USUARIOS; si su permiso es **Propios**, solo puede modificar o eliminar los usuarios que usted creó.
+
+## Crear un rol
 Ruta: Menú > SEGURIDAD > ROLES.
-1. Abra el rol o cree uno nuevo con **Nuevo**.
-2. En **Permisos por pantalla** marque las pantallas a las que tendrá acceso (ver, agregar, editar, eliminar). Hay botones rápidos: Acceso total, Solo ver, Quitar todo.
-3. Para usar el asistente IA marque la opción **Asistente IA**.
-4. Presione **Guardar**. Los usuarios del rol deben cerrar sesión y volver a entrar para ver los cambios.
+Un rol es un perfil de permisos (por ejemplo CAJERO, VENDEDOR, CONTADOR) que se asigna a los usuarios.
+1. Presione **Nuevo**. Se abre **Nuevo rol**.
+2. En **Datos del rol** escriba el **Nombre** (obligatorio) y la **Descripción**.
+3. **Url por defecto**: pantalla que se abre al iniciar sesión (por ejemplo core_dashboards/index).
+4. **Tipo de app**: déjelo en el valor indicado por soporte (normalmente default).
+5. Defina los **Permisos por pantalla** y las **Autorizaciones** (ver las secciones siguientes).
+6. Presione **Guardar**.
+Notas: los cambios en el menú se ven cuando el usuario vuelve a iniciar sesión.
+
+## Permisos por pantalla de un rol (ver, crear, editar, eliminar)
+Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
+1. En **Permisos por pantalla** active el interruptor de cada pantalla a la que el rol tendrá acceso. Use **Buscar pantalla…** para encontrarla y **Solo con acceso** para ver solo las que ya tienen acceso.
+2. Para cada pantalla elija el nivel de **Ver**, **Crear**, **Editar** y **Eliminar**:
+   - **Ninguno**: no puede hacerlo.
+   - **Todos**: sobre todos los registros.
+   - **Sucursal**: solo registros de su sucursal.
+   - **Propios**: solo los registros que creó el mismo usuario.
+3. Botones rápidos sobre las pantallas visibles: **Acceso total**, **Solo ver** y **Quitar todo**. También hay botones por módulo.
+4. Presione **Guardar** y pida a los usuarios del rol cerrar sesión y volver a entrar.
+Notas: si el rol es administrador tiene acceso a todo y estos permisos no se aplican. Si edita su propio rol y le quita el acceso a ROLES, perderá acceso a esa pantalla.
+
+## Autorizaciones de un rol
+Ruta: Menú > SEGURIDAD > ROLES > abrir el rol > **Autorizaciones**.
+Las autorizaciones son permisos especiales que no dependen de una pantalla (por ejemplo ADMINISTRADOR, CAJERO, CONTADOR, o autorizaciones de usuario interno o externo de taller). Según la configuración de la empresa, habilitan acciones como aprobar documentos o ver información restringida.
+1. Abra el rol y vaya a **Autorizaciones**.
+2. Marque las que correspondan (**Marcar todas** / **Ninguna** para marcar o desmarcar todo).
+3. Presione **Guardar**.
+<!-- REVISAR: describir que habilita cada autorizacion en cada empresa -->
+
+## Dar acceso al asistente Jordania (Asistente IA)
+Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
+1. En **Permisos por pantalla** busque **Asistente IA** y active el acceso.
+2. Presione **Guardar**.
+3. Los usuarios del rol deben cerrar sesión y volver a entrar; verán el botón del asistente en la pantalla.
+Notas: además del permiso, la empresa debe tener habilitado el asistente (lo configura soporte de posMe).
 
 ## Sucursales
 Ruta: Menú > SEGURIDAD > SUCURSAL.
-Permite crear y editar las sucursales de la empresa.
+1. Para crear una sucursal presione **Nuevo**. Se abre **Nueva sucursal**.
+2. En **Datos de la sucursal** escriba el **Nombre** y la **Dirección**.
+3. Presione **Guardar**.
+Para modificarla, ábrala en la lista, cambie los datos y presione **Guardar**; para darla de baja presione **Eliminar**.
+Después asigne la sucursal a los usuarios en SEGURIDAD > USUARIOS (campo **Sucursal**).
+
+## Notificaciones y recordatorios (CONFIG. NOTI)
+Ruta: Menú > SEGURIDAD > CONFIG. NOTI.
+Permite configurar recordatorios periódicos que posMe muestra o envía a los usuarios.
+1. Presione **Nuevo**. Se abre **Nueva notificacion**.
+2. En **Datos de la notificacion** complete **Titulo**, **Tag** (tipo de notificación), **Periodo** y **Dias**, y el **Estado**.
+3. Marque **Temporal** si es una notificación de una sola vez.
+4. Escriba la **Descripcion** y el **Mensaje** que verá el usuario.
+5. Presione **Guardar**.
+Para que un usuario reciba la notificación, asígnela en SEGURIDAD > USUARIOS > pestaña **Notificaciones**.
+<!-- REVISAR: significado exacto de Periodo/Dias, Temporal y Desde archivo -->
+
+## Ver quién entró: sesiones y actividad de un usuario (LOG SESSION)
+Ruta: Menú > SEGURIDAD > LOG SESSION.
+1. En **Usuario** elija el usuario y presione **Consultar**.
+2. posMe muestra:
+   - **Total Transacciones** registradas por el usuario y **Transacciones por Tipo** (facturas, abonos, etc.).
+   - **Últimas 5 Sesiones** con **IP**, **Plataforma** (navegador/dispositivo), **Último Movimiento** y **Detalle**.
+Útil para revisar quién entró al sistema, desde dónde y cuánto trabajo ha registrado.
+
+## Actualizar (uso de soporte)
+Ruta: Menú > SEGURIDAD > ACTUALIZAR.
+Opción técnica para que el equipo de soporte de posMe aplique actualizaciones al sistema. No la use salvo que soporte se lo indique.
 
 ## Parámetros de la empresa
 Los parámetros controlan el comportamiento de posMe por empresa (por ejemplo, orden de aplicación de abonos, lista de precios por defecto, formato de impresión).
