@@ -71,7 +71,7 @@ class app_planilla_leave extends _BaseController
             }
 
             //RENDERIZAR RESULTADO
-            $dataSession["notification"]    = $this->core_web_error->get_error($dataSession['user']->companyID);
+            $dataSession["notification"]    = $this->core_web_error->get_error($dataSession["user"]->userID);
             $dataSession["message"]         = $this->core_web_notification->get_message();
             $dataSession["head"]            = view("app_planilla_leave/list_head");
             $dataSession["footer"]          = view("app_planilla_leave/list_footer");
@@ -332,7 +332,7 @@ class app_planilla_leave extends _BaseController
             $objTM["componentID"]           = $objComponent->componentID;
             $objTM["note"]                  = $this->request->getPost("txtEmployeeLeaveNote");
             $objTM["statusID"]              = $this->request->getPost("txtEmployeeLeaveStatusID");
-            $objTM["amount"]                = $this->request->getPost("txtEmployeeVacationDays");
+            $objTM["amount"]                = helper_StringToNumber($this->request->getPost("txtEmployeeVacationDays"));
             $objTM["nextVisit"]             = $this->request->getPost("txtEmployeeLeaveIntegrationDate");
             $objTM["areaID"]                = $this->request->getPost("txtEmployeeTypeLeave");
             $objTM["isActive"]              = 1;
@@ -411,7 +411,7 @@ class app_planilla_leave extends _BaseController
             $objTMNew["componentID"]           = $objComponent->componentID;
             $objTMNew["note"]                  = $this->request->getPost("txtEmployeeLeaveNote");
             $objTMNew["statusID"]              = $this->request->getPost("txtEmployeeLeaveStatusID");
-            $objTMNew["amount"]                = $this->request->getPost("txtEmployeeVacationDays");
+            $objTMNew["amount"]                = helper_StringToNumber($this->request->getPost("txtEmployeeVacationDays"));
             $objTMNew["nextVisit"]             = $this->request->getPost("txtEmployeeLeaveIntegrationDate");
             $objTMNew["areaID"]                = $this->request->getPost("txtEmployeeTypeLeave");
             $objTMNew["isActive"]              = 1;

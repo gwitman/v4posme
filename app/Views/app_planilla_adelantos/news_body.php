@@ -10,7 +10,7 @@
             </div>
         </div>
         <div class="pv2-actions">
-            <a href="<?php echo base_url(); ?>/app_planilla_adelantos/index" id="btnBack" class="btn btn-default"><i class="icon16 i-rotate"></i> Atras</a>
+            <a href="<?php echo base_url(); ?>/app_planilla_adelantos/index" id="btnBack" class="btn btn-default"><i class="icon16 i-rotate"></i> Atrás</a>
             <a href="#" class="btn btn-primary pv2-hide-xs" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
         </div>
     </div>

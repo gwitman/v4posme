@@ -10,7 +10,7 @@
             </div>
         </div>
         <div class="pv2-actions">
-            <a href="<?php echo base_url(); ?>/app_planilla_leave/index" id="btnBack" class="btn btn-default"><i class="icon16 i-rotate"></i> Atras</a>
+            <a href="<?php echo base_url(); ?>/app_planilla_leave/index" id="btnBack" class="btn btn-default"><i class="icon16 i-rotate"></i> Atrás</a>
             <a href="#" class="btn btn-primary pv2-hide-xs" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
         </div>
     </div>
@@ -32,7 +32,7 @@
                                                 <input type="hidden" id="txtTransactionMasterID" name="txtTransactionMasterID" value="<?php echo $objTM->transactionMasterID ?>">
                                                 <input type="hidden" id="txtEmployeeEntityID" name="txtEmployeeEntityID" value="<?php echo $objTM->entityID ?>">
                                                 <input type="hidden" id="txtTransactionOn" name="txtTransactionOn" value="">
-                                                <input class="form-control" readonly id="txtEmployeeDescription" type="text" autocomplete="off" value="<?php echo $objEmployee->entityID . " " . $objEmployee->employeNumber . " | " . $objListNaturales->firstName . " " . $objListNaturales->lastName ?>">
+                                                <input class="form-control" readonly id="txtEmployeeDescription" type="text" autocomplete="off" value="<?php echo $objEmployee->employeNumber . " | " . $objListNaturales->firstName . " " . $objListNaturales->lastName ?>">
                                                 <input type="hidden" id="txtEndvsIntegrationDiff" name="txtEndvsIntegrationDiff" value="<?php echo $objTM->amount ?>">
 
                                                 <span class="input-group-btn">
@@ -52,7 +52,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="pv2-label">Codigo</label>
+                                        <label class="pv2-label">Código</label>
                                         <div>
                                             <input class="form-control" readonly type="text" name="txtEmployeeCode" id="txtEmployeeCode" value="<?php echo $objEmployee->employeNumber ?>">
                                         </div>
@@ -66,7 +66,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="pv2-label">Area</label>
+                                        <label class="pv2-label">Área</label>
                                         <div>
                                             <input class="form-control" readonly type="text" name="txtEmployeeArea" id="txtEmployeeArea" value="<?php echo $objCatalogItem->name ?>">
                                         </div>
@@ -117,7 +117,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="pv2-label" for="txtEmployeeLeaveIntegrationDate">Fecha de Integracion</label>
+                                        <label class="pv2-label" for="txtEmployeeLeaveIntegrationDate">Fecha de Integración</label>
                                         <div>
                                             <div class="input-group date" data-date="" data-date-format="yyyy-mm-dd">
                                                 <input size="16" class="form-control" type="text" autocomplete="off" name="txtEmployeeLeaveIntegrationDate" id="txtEmployeeLeaveIntegrationDate" value="<?php echo explode(' ', $objTM->nextVisit)[0]; ?>">
@@ -127,9 +127,9 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="pv2-label">Dias de Vacaciones</label>
+                                        <label class="pv2-label">Días</label>
                                         <div>
-                                            <input class="form-control" readonly type="text" name="txtEmployeeVacationDays" id="txtEmployeeVacationDays" value="<?php echo number_format($objTM->amount, 2) ?>">
+                                            <input class="form-control" readonly type="text" name="txtEmployeeVacationDays" id="txtEmployeeVacationDays" value="<?php echo number_format($objTM->amount, 2, '.', '') ?>">
                                         </div>
                                     </div>
 

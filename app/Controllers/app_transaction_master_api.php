@@ -453,7 +453,7 @@ class app_transaction_master_api extends _BaseController {
                 throw new \Exception(NOT_DELETE);
 
             //Si el documento esta aplicado crear el contra documento
-            if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_task","statusID",$objTM->statusID,COMMAND_ELIMINABLE,$companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
+            if(!$this->core_web_workflow->validateWorkflowStage("tb_transaction_master_task","statusID",$objTM->statusID,COMMAND_ELIMINABLE,$companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
                 throw new \Exception(NOT_WORKFLOW_DELETE);
 
             //Eliminar el Registro

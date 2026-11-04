@@ -1,10 +1,11 @@
 <script>
 	//https://localhost/posmev4/app_rrhh_gps/edit/txtCompanyName/Demo4/txtUserName/abc
-    var Locations = JSON.parse('<?php echo json_encode($objListRegisteredLocations) ?>');    
+    var Locations = <?php echo json_encode($objListRegisteredLocations, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?> || [];    
 	
     function fnCargarMapa() {
 		
 		
+		if(Locations.length == 0){ document.getElementById('map').style.display = 'none'; document.getElementById('gpsSinDatos').style.display = 'block'; return; }
 		var companyName 	= Locations[0].companyName;
 		var userName 		= Locations[0].Name;
         var coord = {

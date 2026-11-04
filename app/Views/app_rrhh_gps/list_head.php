@@ -5,6 +5,8 @@
 <script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/chart-google/loader.js"></script>
 <script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jLinq-2.2.1.js"></script>
 <script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/jquery.number.min.js"></script>
+<?php echo view('core_template/posme_v2_style'); ?>
+<?php echo view('core_template/posme_v2_common'); ?>
 
 <!-- Link API Google Maps (PosMe API Key) -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDV_kkjf0B6tCsFekM2x3wcqacvGm4ASx0&loading=async&callback=fnCargarMapa"></script>

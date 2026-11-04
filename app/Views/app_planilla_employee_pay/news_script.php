@@ -146,6 +146,11 @@
 							fnShowNotification("Ingrese el Nombre","error",timerNotification);
 							result = false;
 						}
+						//Una planilla debe tener al menos un colaborador
+						if($("#body_tb_transaction_master_detail tr").length == 0){
+							fnShowNotification("Agregue al menos un colaborador","error",timerNotification);
+							result = false;
+						}
 						return result;
 					}
 					

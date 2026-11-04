@@ -9,5 +9,5 @@
 <?php echo view('app_planilla_employee_pay/pla_v2_common'); ?>
 
 <div id="heading" class="page-header">
-    <h1><i class="icon20  i-clock-5"></i> Agregar Liquidacion</h1>
+    <h1><i class="icon20  i-clock-5"></i> Agregar Liquidación</h1>
 </div>

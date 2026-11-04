@@ -90,6 +90,7 @@ class app_rrhh_gps extends _BaseController{
 
             
 
+			$dataSession["useMobile"]		= $dataSession["user"]->useMobile;
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= "";
             $dataSession["head"]            = /*--inicio view*/ view("app_rrhh_gps/list_head",$dataSession);//--finview

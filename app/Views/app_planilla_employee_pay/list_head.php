@@ -13,7 +13,7 @@
 						<div class="pv2-actions">
 							<a href="#" class="btn btn-default" id="btnView"><i class="icon16 i-grid-2"></i> Vistas</a>
 							<a href="#" class="btn btn-default" id="btnEdit"><i class="icon16 i-pencil-4"></i> Editar</a>
-							<a href="#" class="btn btn-danger" id="btnEliminar"><i class="icon16 i-remove"></i> Eliminar</a>
+							<a href="#" class="btn btn-danger" id="btnEliminar" style="display:none"><i class="icon16 i-remove"></i> Eliminar</a>
 							<a href="#" class="btn btn-primary" id="btnNuevo"><i class="icon16 i-plus"></i> Nuevo</a>
 						</div>
 					</div>

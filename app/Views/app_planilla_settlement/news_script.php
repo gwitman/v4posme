@@ -25,7 +25,9 @@
         //Limpiar datos del colaborador
         $("#btnClearEmployee").on("click", function() 
         {
-            $("#form-new-rrhh-employee input").val(""); 
+            $("#form-new-rrhh-employee input").val("");
+            //Sin colaborador elegido no debe recalcularse con los datos del anterior
+            selectedEmployeeData = null;
         });
 
         //Agregar Registro
@@ -71,7 +73,7 @@
                 //NOTA!! el input txtEmployeeSettlement podria ser negativo si el empleado tiene mas deducciones que ingresos.
                 if(isNaN(inputValueFormatted) || inputValueFormatted < 0 && inputName != "txtEmployeeSettlement")
                 {
-                    fnShowNotification("El dato '" + inputValue + "' no es una entrada Valida", "error", timerNotification);
+                    fnShowNotification("El dato '" + inputValue + "' no es una entrada Válida", "error", timerNotification);
                     isValidForm = false;
                 }else if(isValidForm)
                 {
@@ -107,7 +109,7 @@
             $("#txtEmployeeAmountSaving").val(EmployeeAmountSaving);
             //El selector nativo del telefono solo acepta YYYY-MM-DD; sin fecha de fin el campo queda vacio
             $("#txtEmployeeEndDate").val(EmployeeEndDate ? String(EmployeeEndDate).substring(0,10) : "");
-            $("#txtEmployeeDescription").val(EmployeeEntityID + " " + EmployeeCode + " | " + EmployeeFullName);
+            $("#txtEmployeeDescription").val(EmployeeCode + " | " + EmployeeFullName);
             $("#txtEmployeeArea").val(EmployeeArea);
 
             $('#txtTransactionOn').val(moment().format("YYYY-MM-DD"));

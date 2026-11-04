@@ -1,440 +1,389 @@
-<!-- botonera -->
-<div class="row"> 
-	<div id="email" class="col-lg-12">                        	
-		<div class="email-bar" style="border-left:1px solid #c9c9c9">                                
-			<div class="btn-group pull-right">									
-				<a href="<?php echo base_url(); ?>/app_rrhh_employee/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>                                    
-				<a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>									
-				<a href="#" class="btn btn-primary" id="btnPrinter"><i class="icon16 i-print"></i> Imprimir</a>
-				<a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
-				<a href="#" class="btn btn-warning <?php echo getBahavioSession($company->type, "app_rrhh_employee", "btnEmployerMenuDigital", "hidden", $objListCompanyPageSetting); ?>" id="btnLinkMenu"><i class="icon16 i-remove"></i> Url Menu</a>									
-			</div>
-		</div> 
-	</div>
-</div>
-<!-- /botonera -->
+<div class="pv2 pv2-has-mbar<?php echo (isset($useMobile) && $useMobile == "1") ? " pv2-mobile" : ""; ?>">
 
-<div class="row">
-	<div class="col-lg-12">
-		<div class="panel panel-default">
-					
-			<!-- titulo de comprobante-->
-			<div class="panel-heading">
-					<div class="icon"><i class="icon20 i-file"></i></div> 
-					<h4>CODIGO:#<span class="invoice-num"><?php echo $objEmployee->employeNumber; ?></span></h4>
-			</div>
-			<!-- /titulo de comprobante-->
-			
-			<!-- body -->	
-			<form id="form-new-rrhh-employee" name="form-new-rrhh-employee" class="form-horizontal" role="form">
-			<div class="panel-body printArea"> 
-			
-				<ul id="myTab" class="nav nav-tabs">
-					<li class="active"><a href="#home" data-toggle="tab">Informacion</a></li>
-					<li><a href="#profile" data-toggle="tab">Referencias.</a></li>
-					<li><a href="#profile-phones" data-toggle="tab">Telefonos.</a></li>
-					<li><a href="#profile-email" data-toggle="tab">Email.</a></li>
-					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas <b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li><a href="#dropdown" data-toggle="tab">Direccion</a></li>
-							<li><a id="btnClickArchivo" href="#dropdown-file" data-toggle="tab">Archivos</a></li>
-						 </ul>
-					</li>
-				</ul>
-				
-				<div class="tab-content">
-					<div class="tab-pane fade in active" id="home">	
-						<div class="row">										
-						<div class="col-lg-6">
-							
-								<div class="form-group">
-										
-										<label class="col-lg-4 control-label" for="normal">Primer Nombre</label>
-										<div class="col-lg-8">
-											<input type="hidden" id="txtCompanyID" name="txtCompanyID" value="<?php echo $objEmployee->companyID; ?>">
-											<input type="hidden" id="txtBranchID" name="txtBranchID" value="<?php echo $objEmployee->branchID; ?>">
-											<input type="hidden" id="txtEntityID" name="txtEntityID" value="<?php echo $objEmployee->entityID; ?>">
-											<input class="form-control"  type="text"  name="txtFirstName" id="txtFirstName" value="<?php echo $objNatural->firstName; ?>">												
-										</div>
-								</div>
-								<div class="form-group">
-										<label class="col-lg-4 control-label" for="normal">Segundo Nombre</label>
-										<div class="col-lg-8">
-											<input class="form-control"  type="text"  name="txtLastName" id="txtLastName" value="<?php echo $objNatural->lastName; ?>">
-										</div>
-								</div>				
-								
-								<div class="form-group">
-									<label class="col-lg-4 control-label" for="selectFilter">Tipo Identificacion</label>
-									<div class="col-lg-8">
-										<select name="txtIdentificationTypeID" id="txtIdentificationTypeID" class="select2">
-												<option></option>																
-												<?php
-												$count = 0;
-												if($objListIdentificationType)
-												foreach($objListIdentificationType as $ws){
-													if($ws->catalogItemID == $objEmployee->identificationTypeID )
-													echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
-													else
-													echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
-													$count++;
-												}
-												?>
-										</select>
-									</div>
-								</div>
-								<div class="form-group">
-										<label class="col-lg-4 control-label" for="normal">Identificacion</label>
-										<div class="col-lg-8">
-											<input class="form-control"  type="text"  name="txtIdentification" id="txtIdentification" value="<?php echo $objEmployee->numberIdentification; ?>">
-										</div>
-								</div>
-								<div class="form-group">
-										<label class="col-lg-4 control-label" for="normal">INSS</label>
-										<div class="col-lg-8">
-											<input class="form-control"  type="text"  name="txtSocialSecurityNumber" id="txtSocialSecurityNumber" value="<?php echo $objEmployee->socialSecurityNumber; ?>">												
-										</div>
-								</div>	
-								<div class="form-group">
-									<label class="col-lg-4 control-label" for="buttons">Jefe Inmediato</label>
-									<div class="col-lg-8">
-										<div class="input-group">
-											<input type="hidden" id="txtParentEmployeeID" name="txtParentEmployeeID" value="<?php echo $objEmployee->parentEmployeeID; ?>">
-											<input class="form-control" readonly id="txtParentDescription" type="txtParentDescription" value="<?php echo $objParentEmployee == null  ?  ""  : ($objParentEmployee->employeNumber." / ".$objParentNatural->firstName." ".$objParentNatural->lastName); ?>">
-											<span class="input-group-btn">
-												<button class="btn btn-danger" type="button" id="btnClearEmployeeParent">
-													<i aria-hidden="true" class="i-undo-2"></i>
-													clear
-												</button>
-											</span>
-											<span class="input-group-btn">
-												<button class="btn btn-primary" type="button" id="btnSearchEmployeeParent">
-													<i aria-hidden="true" class="i-search-5"></i>
-													buscar
-												</button>
-											</span>
-										</div>
-									</div>
-								</div>
-						</div>
-						<div class="col-lg-6">
-						
-								<div class="form-group">
-									<label class="col-lg-4 control-label" for="selectFilter">Estado</label>
-									<div class="col-lg-8">
-										<select name="txtStatusID" id="txtStatusID" class="select2">
-												<option></option>																
-												<?php
-												if($objListWorkflowStage)
-												foreach($objListWorkflowStage as $ws){
-													if($ws->workflowStageID == $objEmployee->statusID)
-														echo "<option value='".$ws->workflowStageID."' selected>".$ws->name."</option>";
-													else
-														echo "<option value='".$ws->workflowStageID."' >".$ws->name."</option>";
-												}
-												?>
-										</select>
-									</div>
-								</div>
-								<div class="form-group">
-									<label class="col-lg-4 control-label" for="selectFilter">Clasificacion</label>
-									<div class="col-lg-8">
-										<select name="txtClasificationID" id="txtClasificationID" class="select2">
-												<option></option>																
-												<?php
-												
-												if($objListClasificationID)
-												foreach($objListClasificationID as $ws){
-													if($ws->catalogItemID == $objEmployee->clasificationID )
-													echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
-													else
-													echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
-													$count++;
-												}
-												?>
-										</select>
-									</div>
-								</div>
-								<div class="form-group">
-									<label class="col-lg-4 control-label" for="selectFilter">Contrato</label>
-									<div class="col-lg-8">
-										<select name="txtCategoryID" id="txtCategoryID" class="select2">
-												<option></option>																
-												<?php
-												
-												if($objListCategoryID)
-												foreach($objListCategoryID as $ws){
-													if($ws->catalogItemID == $objEmployee->categoryID )
-													echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
-													else
-													echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
-													
-												}
-												?>
-										</select>
-									</div>
-								</div>
-								<div class="form-group">
-									<label class="col-lg-4 control-label" for="selectFilter">Grado</label>
-									<div class="col-lg-8">
-										<select name="txtTypeEmployeeID" id="txtTypeEmployeeID" class="select2">
-												<option></option>																
-												<?php
-												
-												if($objListTypeEmployeeID)
-												foreach($objListTypeEmployeeID as $ws){
-													if($ws->catalogItemID == $objEmployee->typeEmployeeID )
-													echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
-													else
-													echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
-													
-												}
-												?>
-										</select>
-									</div>
-								</div>
-								<div class="form-group">
-									<label class="col-lg-4 control-label" for="selectFilter">Departamento</label>
-									<div class="col-lg-8">
-										<select name="txtDepartamentID" id="txtDepartamentID" class="select2">
-												<option></option>																
-												<?php
-												
-												if($objListDepartamentID)
-												foreach($objListDepartamentID as $ws){
-													if($ws->catalogItemID == $objEmployee->departamentID )
-													echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
-													else
-													echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
-												
-												}
-												?>
-										</select>
-									</div>
-								</div>
-								<div class="form-group">
-									<label class="col-lg-4 control-label" for="selectFilter">Area</label>
-									<div class="col-lg-8">
-										<select name="txtAreaID" id="txtAreaID" class="select2">
-												<option></option>
-												<?php
-												
-												if($objListAreaID)
-												foreach($objListAreaID as $ws){
-													if($ws->catalogItemID == $objEmployee->areaID )
-													echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
-													else
-													echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
-													
-												}
-												?>
-										</select>
-									</div>
-								</div>
-						</div>
-						</div>
-					</div>
-					<div class="tab-pane fade" id="profile">
-						<div class="row">		
-						
-							<div class="col-lg-6">
-									<div class="form-group">
-										<label class="col-lg-4 control-label" for="selectFilter">Pais</label>
-										<div class="col-lg-8">
-											<select name="txtCountryID" id="txtCountryID" class="select2">
-													<option></option>																
-													<?php
-													if($objListCountry)
-													foreach($objListCountry as $ws){
-														if($ws->catalogItemID == $objEmployee->countryID)
-															echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
-														else
-															echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
-													}
-													?>
-											</select>
-										</div>
-									</div>
-									<div class="form-group">
-										<label class="col-lg-4 control-label" for="selectFilter">Departamento</label>
-										<div class="col-lg-8">
-											<select name="txtStateID" id="txtStateID" class="select2">
-													<option></option>				
-													<?php
-													if($objListState)
-													foreach($objListState as $ws){
-														if($ws->catalogItemID == $objEmployee->stateID)
-															echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
-														else
-															echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
-													}
-													?>
-											</select>
-										</div>
-									</div>
-									<div class="form-group">
-										<label class="col-lg-4 control-label" for="selectFilter">Municipio</label>
-										<div class="col-lg-8">
-											<select name="txtCityID" id="txtCityID" class="select2">
-													<option></option>
-													<?php
-													if($objListCity)
-													foreach($objListCity as $ws){
-														if($ws->catalogItemID == $objEmployee->cityID)
-															echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
-														else
-															echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
-													}
-													?>
-											</select>
-										</div>
-									</div>
-							</div>
-							<div class="col-lg-6">
-								
-								<div class="form-group">
-									<label class="col-lg-4 control-label" for="datepicker">Fecha Inicio</label>
-									<div class="col-lg-8">
-										<div id="datepicker" class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
-											<input size="16"  class="form-control" type="text" name="txtStartOn" id="txtStartOn" value="<?php echo $objEmployee->startOn; ?>">
-											<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
-										</div>
-									</div>
-								</div>
-								<div class="form-group">
-									<label class="col-lg-4 control-label" for="datepicker">Fecha Fin</label>
-									<div class="col-lg-8">
-										<div id="datepicker" class="input-group date" data-date="2014-01-30" data-date-format="yyyy-mm-dd">
-											<input size="16"  class="form-control" type="text" name="txtEndOn" id="txtEndOn" value="<?php echo $objEmployee->endOn; ?>">
-											<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
-										</div>
-									</div>
-								</div>
-								
-								<div class="form-group">
-										<label class="col-lg-4 control-label" for="normal"><?php echo getBahavioSession($company->type,'app_rrhh_employee','labelReference1','Referencia1',$objListCompanyPageSetting) ?></label>
-										<div class="col-lg-8">
-											<input class="form-control"  type="text"  name="txtReference1" id="txtReference1" value="<?php echo $objEmployee->reference1; ?>">												
-										</div>
-								</div>											
-								<div class="form-group">
-										<label class="col-lg-4 control-label" for="normal">Referencia2</label>
-										<div class="col-lg-8">
-											<input class="form-control"  type="text"  name="txtReference2" id="txtReference2" value="<?php echo $objEmployee->reference2; ?>">												
-										</div>
-								</div>				
-								<div class="form-group">
-										<label class="col-lg-4 control-label" for="normal">Costo/H</label>
-										<div class="col-lg-8">
-											<input class="form-control"  type="text"  name="txtHourCost" id="txtHourCost" value="<?php echo $objEmployee->hourCost; ?>">												
-										</div>
-								</div>				
-								
-								<div class="form-group">
-									<label class="col-lg-4 control-label" for="normal">Vacaciones Acumuladas</label>
-									<div class="col-lg-8">
-										<input class="form-control" readonly type="number"  name="txtVacationBalanceDay" id="txtVacationBalanceDay" value="<?php echo $objEmployee->vacationBalanceDay; ?>">												
-									</div>
-								</div>	
-							</div>
-						</div>
-					</div>
-					<div class="tab-pane fade" id="profile-phones">
-						<div class="row">													
-							<div class="col-lg-6">
-								<br/>
-								<a href="#" class="btn btn-flat btn-info" id="btnNewPhones" >Agregar</a>
-								<a href="#" class="btn btn-flat btn-danger" id="btnDeletePhones" >Eliminar</a>
-								
-								<table id="tb_detail_phone" class="table table-bordered">
-									<thead>
-									  <tr>
-										<th></th>
-										<th>entityPhoneID</th>
-										<th>entityPhoneTypeID</th>
-										<th>Tipo</th>
-										<th>Numero</th>
-										<th>Primario</th>
-									  </tr>
-									</thead>
-									<tbody id="body_detail_phone">             
-									</tbody>
-								</table>
-								
-							</div>
-						</div>
-					</div>
-					<div class="tab-pane fade" id="profile-email">
-						<div class="row">													
-							<div class="col-lg-6">
-								<br/>
-								<a href="#" class="btn btn-flat btn-info" id="btnNewEmail" >Agregar</a>
-								<a href="#" class="btn btn-flat btn-danger" id="btnDeleteEmail" >Eliminar</a>
-								<table id="tb_detail_email" class="table table-bordered">
-									<thead>
-									  <tr>
-										<th></th>
-										<th>entityEmailID</th>
-										<th>Email</th>															
-										<th>Primario</th>
-									  </tr>
-									</thead>
-									<tbody id="body_detail_email">             
-									</tbody>
-								</table>
-								
-							</div>
-						</div>
-					</div>
-					<div class="tab-pane fade" id="dropdown">
-						
-							<div class="form-group">
-								<label class="col-lg-4 control-label" for="normal">Direccion</label>
-								<div class="col-lg-8">
-									<textarea class="form-control"  id="txtAddress" name="txtAddress" rows="6"><?php echo $objEmployee->address; ?></textarea>
-								</div>
-							</div>
-						
-					</div>
-					<div class="tab-pane fade" id="dropdown-file">
-						
-					</div>
-				</div>    
-				
-			</div>
-			</form>
-			<!-- /body -->
-		</div>
-	</div>
+    <!-- encabezado y acciones -->
+    <div class="pv2-card pv2-header">
+        <div class="pv2-header-info">
+            <div class="pv2-header-icon"><i class="icon20 i-vcard"></i></div>
+            <div>
+                <p class="pv2-header-title">CODIGO:#<span class="invoice-num"><?php echo $objEmployee->employeNumber; ?></span></p>
+                <p class="pv2-header-sub">Revisa o actualiza los datos del colaborador</p>
+            </div>
+        </div>
+        <div class="pv2-actions">
+            <a href="<?php echo base_url(); ?>/app_rrhh_employee/index" id="btnBack" class="btn btn-default"><i class="icon16 i-rotate"></i> Atras</a>
+            <a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>
+            <a href="#" class="btn btn-primary pv2-hide-xs" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+            <a href="#" class="btn btn-default <?php echo getBahavioSession($company->type, "app_rrhh_employee", "btnEmployerMenuDigital", "hidden", $objListCompanyPageSetting); ?>" id="btnLinkMenu"><i class="icon16 i-link"></i> Url Menu</a>
+        </div>
+    </div>
+    <!-- /encabezado y acciones -->
+
+    <!-- formulario -->
+    <form id="form-new-rrhh-employee" name="form-new-rrhh-employee" role="form" autocomplete="off">
+        <div class="printArea">
+            <input type="hidden" id="txtCompanyID" name="txtCompanyID" value="<?php echo $objEmployee->companyID; ?>">
+            <input type="hidden" id="txtBranchID" name="txtBranchID" value="<?php echo $objEmployee->branchID; ?>">
+            <input type="hidden" id="txtEntityID" name="txtEntityID" value="<?php echo $objEmployee->entityID; ?>">
+
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
+                    <div class="pv2-card" id="home">
+                        <p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-user"></i></span> Datos personales</p>
+
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtFirstName">Primer Nombre <span class="pv2-req">*</span></label>
+                            <input class="form-control" type="text" autocomplete="off" name="txtFirstName" id="txtFirstName" value="<?php echo $objNatural->firstName; ?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtLastName">Apellidos</label>
+                            <input class="form-control" type="text" autocomplete="off" name="txtLastName" id="txtLastName" value="<?php echo $objNatural->lastName; ?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtIdentificationTypeID">Tipo Identificacion</label>
+                            <select name="txtIdentificationTypeID" id="txtIdentificationTypeID" class="select2">
+                                <option></option>
+                                <?php
+                                if($objListIdentificationType)
+                                foreach($objListIdentificationType as $ws){
+                                    if($ws->catalogItemID == $objEmployee->identificationTypeID )
+                                    echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+                                    else
+                                    echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtIdentification">Identificacion <span class="pv2-req">*</span></label>
+                            <input class="form-control" type="text" autocomplete="off" name="txtIdentification" id="txtIdentification" value="<?php echo $objEmployee->numberIdentification; ?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtSocialSecurityNumber">INSS</label>
+                            <input class="form-control" type="text" autocomplete="off" name="txtSocialSecurityNumber" id="txtSocialSecurityNumber" value="<?php echo $objEmployee->socialSecurityNumber; ?>">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-md-6">
+                    <div class="pv2-card">
+                        <p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-file"></i></span> Su trabajo</p>
+
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtStatusID">Estado</label>
+                            <select name="txtStatusID" id="txtStatusID" class="select2">
+                                <option></option>
+                                <?php
+                                if($objListWorkflowStage)
+                                foreach($objListWorkflowStage as $ws){
+                                    if($ws->workflowStageID == $objEmployee->statusID)
+                                        echo "<option value='".$ws->workflowStageID."' selected>".$ws->name."</option>";
+                                    else
+                                        echo "<option value='".$ws->workflowStageID."' >".$ws->name."</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtClasificationID">Clasificacion</label>
+                            <select name="txtClasificationID" id="txtClasificationID" class="select2">
+                                <option></option>
+                                <?php
+                                if($objListClasificationID)
+                                foreach($objListClasificationID as $ws){
+                                    if($ws->catalogItemID == $objEmployee->clasificationID )
+                                    echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+                                    else
+                                    echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtCategoryID">Contrato</label>
+                            <select name="txtCategoryID" id="txtCategoryID" class="select2">
+                                <option></option>
+                                <?php
+                                if($objListCategoryID)
+                                foreach($objListCategoryID as $ws){
+                                    if($ws->catalogItemID == $objEmployee->categoryID )
+                                    echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+                                    else
+                                    echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtTypeEmployeeID">Grado</label>
+                            <select name="txtTypeEmployeeID" id="txtTypeEmployeeID" class="select2">
+                                <option></option>
+                                <?php
+                                if($objListTypeEmployeeID)
+                                foreach($objListTypeEmployeeID as $ws){
+                                    if($ws->catalogItemID == $objEmployee->typeEmployeeID )
+                                    echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+                                    else
+                                    echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtDepartamentID">Departamento de la empresa</label>
+                            <select name="txtDepartamentID" id="txtDepartamentID" class="select2">
+                                <option></option>
+                                <?php
+                                if($objListDepartamentID)
+                                foreach($objListDepartamentID as $ws){
+                                    if($ws->catalogItemID == $objEmployee->departamentID )
+                                    echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+                                    else
+                                    echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtAreaID">Area</label>
+                            <select name="txtAreaID" id="txtAreaID" class="select2">
+                                <option></option>
+                                <?php
+                                if($objListAreaID)
+                                foreach($objListAreaID as $ws){
+                                    if($ws->catalogItemID == $objEmployee->areaID )
+                                    echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+                                    else
+                                    echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtParentDescription">Jefe Inmediato</label>
+                            <div class="input-group afx-search">
+                                <input type="hidden" id="txtParentEmployeeID" name="txtParentEmployeeID" value="<?php echo $objEmployee->parentEmployeeID; ?>">
+                                <input class="form-control" readonly id="txtParentDescription" type="text" autocomplete="off" value="<?php echo $objParentEmployee == null  ?  ""  : ($objParentEmployee->employeNumber." / ".$objParentNatural->firstName." ".$objParentNatural->lastName); ?>">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default" type="button" id="btnClearEmployeeParent">
+                                        <i aria-hidden="true" class="i-undo-2"></i>
+                                        Limpiar
+                                    </button>
+                                </span>
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="button" id="btnSearchEmployeeParent">
+                                        <i aria-hidden="true" class="i-search-5"></i>
+                                        Buscar
+                                    </button>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtStartOn">Fecha Inicio</label>
+                            <div class="input-group date" data-date-format="yyyy-mm-dd">
+                                <input size="16" class="form-control" type="text" autocomplete="off" name="txtStartOn" id="txtStartOn" value="<?php echo $objEmployee->startOn; ?>">
+                                <span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtEndOn">Fecha Fin</label>
+                            <div class="input-group date" data-date-format="yyyy-mm-dd">
+                                <input size="16" class="form-control" type="text" autocomplete="off" name="txtEndOn" id="txtEndOn" value="<?php echo $objEmployee->endOn; ?>">
+                                <span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
+                    <div class="pv2-card is-required" id="profile">
+                        <p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-home"></i></span> Dónde vive</p>
+
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtCountryID">Pais <span class="pv2-req">*</span></label>
+                            <select name="txtCountryID" id="txtCountryID" class="select2">
+                                <option></option>
+                                <?php
+                                if($objListCountry)
+                                foreach($objListCountry as $ws){
+                                    if($ws->catalogItemID == $objEmployee->countryID)
+                                        echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+                                    else
+                                        echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtStateID">Departamento del pais <span class="pv2-req">*</span></label>
+                            <select name="txtStateID" id="txtStateID" class="select2">
+                                <option></option>
+                                <?php
+                                if($objListState)
+                                foreach($objListState as $ws){
+                                    if($ws->catalogItemID == $objEmployee->stateID)
+                                        echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+                                    else
+                                        echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtCityID">Municipio <span class="pv2-req">*</span></label>
+                            <select name="txtCityID" id="txtCityID" class="select2">
+                                <option></option>
+                                <?php
+                                if($objListCity)
+                                foreach($objListCity as $ws){
+                                    if($ws->catalogItemID == $objEmployee->cityID)
+                                        echo "<option value='".$ws->catalogItemID."' selected >".$ws->name."</option>";
+                                    else
+                                        echo "<option value='".$ws->catalogItemID."'  >".$ws->name."</option>";
+                                }
+                                ?>
+                            </select>
+                        </div>
+                        <div class="form-group" id="dropdown">
+                            <label class="pv2-label" for="txtAddress">Direccion</label>
+                            <textarea class="form-control" id="txtAddress" name="txtAddress" rows="3"><?php echo $objEmployee->address; ?></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-md-6">
+                    <div class="pv2-card">
+                        <p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-coins"></i></span> Pago y vacaciones</p>
+
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtHourCost">Costo/H</label>
+                            <input class="form-control pv2-num afx-monto" type="text" inputmode="decimal" autocomplete="off" name="txtHourCost" id="txtHourCost" value="<?php echo $objEmployee->hourCost; ?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtVacationBalanceDay">Vacaciones Acumuladas</label>
+                            <input class="form-control" readonly type="number" autocomplete="off" name="txtVacationBalanceDay" id="txtVacationBalanceDay" value="<?php echo $objEmployee->vacationBalanceDay; ?>">
+                        </div>
+                    </div>
+
+                    <div class="pv2-card">
+                        <p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-tags-2"></i></span> Referencias</p>
+
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtReference1"><?php echo getBahavioSession($company->type,'app_rrhh_employee','labelReference1','Referencia1',$objListCompanyPageSetting) ?></label>
+                            <input class="form-control" type="text" autocomplete="off" name="txtReference1" id="txtReference1" value="<?php echo $objEmployee->reference1; ?>">
+                        </div>
+                        <div class="form-group">
+                            <label class="pv2-label" for="txtReference2">Referencia2</label>
+                            <input class="form-control" type="text" autocomplete="off" name="txtReference2" id="txtReference2" value="<?php echo $objEmployee->reference2; ?>">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-md-6">
+                    <div class="pv2-card" id="profile-phones">
+                        <div class="pv2-detail-head">
+                            <p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-phone"></i></span> Teléfonos</p>
+                            <div class="pv2-actions">
+                                <a href="#" class="btn btn-default" id="btnNewPhones"><i class="icon16 i-plus"></i> Agregar</a>
+                                <a href="#" class="btn btn-danger" id="btnDeletePhones"><i class="icon16 i-remove"></i> Eliminar</a>
+                            </div>
+                        </div>
+                        <span class="pv2-help">Marque la casilla de una fila y pulse Eliminar para quitarla.</span>
+                        <div class="pv2-table-wrap">
+                            <table id="tb_detail_phone" class="pv2-table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>entityPhoneID</th>
+                                        <th>entityPhoneTypeID</th>
+                                        <th>Tipo</th>
+                                        <th>Numero</th>
+                                        <th>Primario</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="body_detail_phone">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xs-12 col-md-6">
+                    <div class="pv2-card" id="profile-email">
+                        <div class="pv2-detail-head">
+                            <p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-envelop"></i></span> Correos</p>
+                            <div class="pv2-actions">
+                                <a href="#" class="btn btn-default" id="btnNewEmail"><i class="icon16 i-plus"></i> Agregar</a>
+                                <a href="#" class="btn btn-danger" id="btnDeleteEmail"><i class="icon16 i-remove"></i> Eliminar</a>
+                            </div>
+                        </div>
+                        <span class="pv2-help">Marque la casilla de una fila y pulse Eliminar para quitarla.</span>
+                        <div class="pv2-table-wrap">
+                            <table id="tb_detail_email" class="pv2-table">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>entityEmailID</th>
+                                        <th>Email</th>
+                                        <th>Primario</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="body_detail_email">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pv2-card" id="dropdown-file">
+                <div class="pv2-detail-head">
+                    <p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-file"></i></span> Archivos</p>
+                    <a href="#" class="btn btn-default" id="btnClickArchivo"><i class="icon16 i-file"></i> Abrir archivos</a>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!-- /formulario -->
+
+    <!-- barra inferior (telefono) -->
+    <div class="pv2-mbar">
+        <div class="pv2-mbar-info">
+            <p class="pv2-mbar-label">Colaborador #<?php echo $objEmployee->employeNumber; ?></p>
+        </div>
+        <a href="#" class="btn btn-primary" id="btnAceptMobile"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+    </div>
 </div>
 
 <div id="modalMenuDitigal" style="display:none">
-	<h3>DATOS DE ACCESO AL MENU DIGITAL</h3>
-	<br/>
-	<a href="<?php echo base_url()."/app_invoice_survery/index/key/".$objEmployee->reference1; ?> " target="_blank" 
-	   style="color:blue; font-weight:bold; text-decoration:none; margin-right:8px;">
-	   Link Menu Digital
-	</a>
-	<button class="copiar" data-url="<?php echo base_url()."/app_invoice_survery/index/key/".$objEmployee->reference1; ?> " 
-	   style="cursor:pointer; padding:4px 8px; border:1px solid #ccc; border-radius:4px; background:#f0f0f0;">
-	   📋 Copiar
-	</button>
+    <h3>DATOS DE ACCESO AL MENU DIGITAL</h3>
+    <br/>
+    <a href="<?php echo base_url()."/app_invoice_survery/index/key/".$objEmployee->reference1; ?> " target="_blank"
+       style="color:blue; font-weight:bold; text-decoration:none; margin-right:8px;">
+       Link Menu Digital
+    </a>
+    <button class="copiar" data-url="<?php echo base_url()."/app_invoice_survery/index/key/".$objEmployee->reference1; ?> "
+       style="cursor:pointer; padding:4px 8px; border:1px solid #ccc; border-radius:4px; background:#f0f0f0;">
+       📋 Copiar
+    </button>
 
-	<br><br>
+    <br><br>
 
-	<a href="<?php echo base_url()."/core_report/show/key/CxcReport_HistorySurvery/company/".$objEmployee->reference1."/parameter1/123456/parameter2/abcdef"; ?> " target="_blank" 
-	   style="color:blue; font-weight:bold; text-decoration:none; margin-right:8px;">	   
-	   Link Reporte
-	</a>
-	<button class="copiar" data-url="<?php echo base_url()."/core_report/show/key/CxcReport_HistorySurvery/company/".$objEmployee->reference1."/parameter1/123456/parameter2/abcdef"; ?> " 
-	   style="cursor:pointer; padding:4px 8px; border:1px solid #ccc; border-radius:4px; background:#f0f0f0;">
-	   📋 Copiar
-	</button>
-	<br/>
-	<br/>
+    <a href="<?php echo base_url()."/core_report/show/key/CxcReport_HistorySurvery/company/".$objEmployee->reference1."/parameter1/123456/parameter2/abcdef"; ?> " target="_blank"
+       style="color:blue; font-weight:bold; text-decoration:none; margin-right:8px;">
+       Link Reporte
+    </a>
+    <button class="copiar" data-url="<?php echo base_url()."/core_report/show/key/CxcReport_HistorySurvery/company/".$objEmployee->reference1."/parameter1/123456/parameter2/abcdef"; ?> "
+       style="cursor:pointer; padding:4px 8px; border:1px solid #ccc; border-radius:4px; background:#f0f0f0;">
+       📋 Copiar
+    </button>
+    <br/>
+    <br/>
 
 </div>
 <?php
-	helper_getHtmlOfModalDialog("ModalMenuDigital","modalMenuDitigal","fnAceptarModalMenuDigital",true);
+    helper_getHtmlOfModalDialog("ModalMenuDigital","modalMenuDitigal","fnAceptarModalMenuDigital",true);
 ?>

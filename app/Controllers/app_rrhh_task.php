@@ -32,7 +32,7 @@ class app_rrhh_task extends _BaseController
 
             if((!$companyID || !$transactionID  || !$transactionMasterID))
             {
-                $this->response->redirect(base_url()."/".'app_purchase_taller/add');
+                $this->response->redirect(base_url()."/".'app_rrhh_task/add');
             }
 
             //Obtener el componente de tarea
@@ -53,6 +53,7 @@ class app_rrhh_task extends _BaseController
             $dataView["objTransactionMaster"]				    = $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
             $dataView["objTransactionMaster"]->transactionOn    = date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");
             $dataView["objTransactionMaster"]->nextVisit        = date_format(date_create($dataView["objTransactionMaster"]->nextVisit),"Y-m-d");
+            $dataView["useMobile"]                              = $dataSession["user"]->useMobile;
             $dataView["objComponentEmployer"]                   = $objComponentEmployer;
             $dataView["objComponentTask"]                       = $objComponentTask;
             $dataView["objCaudal"]                              = $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
@@ -132,7 +133,7 @@ class app_rrhh_task extends _BaseController
                 throw new \Exception(NOT_DELETE);
 
             //Si el documento esta aplicado crear el contra documento
-            if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_task","statusID",$objTM->statusID,COMMAND_ELIMINABLE,$companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
+            if(!$this->core_web_workflow->validateWorkflowStage("tb_transaction_master_task","statusID",$objTM->statusID,COMMAND_ELIMINABLE,$companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
                 throw new \Exception(NOT_WORKFLOW_DELETE);
 
             //Eliminar el Registro
@@ -508,6 +509,7 @@ class app_rrhh_task extends _BaseController
             if (!$objComponentEmployer)
                 throw new \Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
 
+            $dataView["useMobile"] = $dataSession["user"]->useMobile;
             $dataView["objComponentEmployer"] = $objComponentEmployer;
             $dataView["objComponentTask"] 	= $objComponentTask;
             $dataView["companyID"] 			= $companyID;
@@ -577,18 +579,20 @@ class app_rrhh_task extends _BaseController
                 throw new \Exception("00409 EL COMPONENTE 'tb_transaction_master_task' NO EXISTE...");
 
 
+            $esMovil = $dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile();
+
             //Vista por defecto
             if ($dataViewID == null) {
                 $targetComponentID 			= 0;
                 $parameter["{companyID}"] 	= $this->session->get('user')->companyID;
                 $dataViewData 				= $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
-                $dataViewRender 			= $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+                $dataViewRender 			= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
 
             } //Otra vista
             else {
                 $parameter["{companyID}"] 	= $this->session->get('user')->companyID;
                 $dataViewData 				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'), $objComponent->componentID, $dataViewID, CALLERID_LIST, $resultPermission, $parameter);
-                $dataViewRender 			= $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+                $dataViewRender 			= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
 
             }
 
@@ -673,6 +677,7 @@ class app_rrhh_task extends _BaseController
             $dataView["company"] 			= $dataSession["company"];
             $dataSession["notification"] 	= $this->core_web_error->get_error($dataSession["user"]->userID);
             $dataSession["message"] 		= $this->core_web_notification->get_message();
+            $dataView["useMobile"] 			= $dataSession["user"]->useMobile;
             $dataSession["head"] 			= /*--inicio view*/ view('app_rrhh_task/listKanba_head', $dataView);//--finview
             $dataSession["footer"] 			= /*--inicio view*/ view('app_rrhh_task/listKanba_footer', $dataView);//--finview
             $dataSession["body"] 			= "";

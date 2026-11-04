@@ -73,7 +73,7 @@ class app_planilla_settlement extends _BaseController
             }
 
             //RENDERIZAR RESULTADO
-            $dataSession["notification"]    = $this->core_web_error->get_error($dataSession['user']->companyID);
+            $dataSession["notification"]    = $this->core_web_error->get_error($dataSession["user"]->userID);
             $dataSession["message"]         = $this->core_web_notification->get_message();
             $dataSession["head"]            = view("app_planilla_settlement/list_head");
             $dataSession["footer"]          = view("app_planilla_settlement/list_footer");
@@ -330,7 +330,7 @@ class app_planilla_settlement extends _BaseController
             $objTM["reference1"]            = $this->request->getPost("txtEmployeeWorkYears");
             //Los montos se guardan sin las comas del formato visual
             $objTM["tax1"]                  = helper_StringToNumber($this->request->getPost("txtEmployeeSalary"));
-            $objTM["tax2"]                  = $this->request->getPost("txtEmployeeAccumulatedVacations");
+            $objTM["tax2"]                  = helper_StringToNumber($this->request->getPost("txtEmployeeAccumulatedVacations"));
             $objTM["tax3"]                  = helper_StringToNumber($this->request->getPost("txtEmployeeProporcionalSalary"));
             $objTM["discount"]              = helper_StringToNumber($this->request->getPost("txtEmployeeAmountSaving"));
             $objTM["reference2"]            = helper_StringToNumber($this->request->getPost("txtEmployeeComission"));
@@ -435,7 +435,7 @@ class app_planilla_settlement extends _BaseController
             $objTMNew["reference1"]             = $this->request->getPost("txtEmployeeWorkYears");
             //Los montos se guardan sin las comas del formato visual
             $objTMNew["tax1"]                   = helper_StringToNumber($this->request->getPost("txtEmployeeSalary"));
-            $objTMNew["tax2"]                   = $this->request->getPost("txtEmployeeAccumulatedVacations");
+            $objTMNew["tax2"]                   = helper_StringToNumber($this->request->getPost("txtEmployeeAccumulatedVacations"));
             $objTMNew["tax3"]                   = helper_StringToNumber($this->request->getPost("txtEmployeeProporcionalSalary"));
             $objTMNew["discount"]               = helper_StringToNumber($this->request->getPost("txtEmployeeAmountSaving"));
             $objTMNew["reference2"]             = helper_StringToNumber($this->request->getPost("txtEmployeeComission"));

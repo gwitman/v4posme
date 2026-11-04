@@ -10,7 +10,7 @@
             </div>
         </div>
         <div class="pv2-actions">
-            <a href="<?php echo base_url(); ?>/app_planilla_employee_pay/index" id="btnBack" class="btn btn-default"><i class="icon16 i-rotate"></i> Atras</a>
+            <a href="<?php echo base_url(); ?>/app_planilla_employee_pay/index" id="btnBack" class="btn btn-default"><i class="icon16 i-rotate"></i> Atrás</a>
             <a href="#" class="btn btn-primary pv2-hide-xs" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
         </div>
     </div>
@@ -159,10 +159,10 @@
 													<th>Vacaciones Acumuladas</th>
 													<th>INSS Patronal</th>
 													<th>+Salario</th>
-													<th>+Comision</th>
+													<th>+Comisión</th>
 													<th>+Bono Quincenal</th>
 													<th>-Adelantos</th>
-													<th>-Deducciones Por Prestamos</th>
+													<th>-Deducciones Por Préstamos</th>
 													<th>-Deducciones Por Llegada Tarde</th>
 													<th>INSS</th>
 													<th>Ahorro</th>
@@ -192,7 +192,7 @@
 																		{
 																			if($employee["entityID"] === $objItem->employeeID)
 																			{
-																				echo "<input class='form-control pv2-num txtDetailShare' readonly type='text' id='txtVacationBalanceDay' name='txtVacationBalanceDay' value='" . $employee["vacationBalanceDay"] + 1.25 . "' />";
+																				echo "<input class='form-control pv2-num txtDetailShare' readonly type='text' id='txtVacationBalanceDay' name='txtVacationBalanceDay' value='" . ($employee["vacationBalanceDay"] + 1.25) . "' />";
 																				break;
 																			}
 																		}
@@ -205,7 +205,7 @@
 															<td data-label="+Salario">
 																<input class="form-control pv2-num txtDetailShare afx-monto" inputmode="decimal" autocomplete="off" type="text" id="txtSalario"  name="txtSalario[]"  value="<?php echo $objItem->plus_salary; ?>" />
 															</td>
-															<td data-label="+Comision">
+															<td data-label="+Comisión">
 																<input class="form-control pv2-num txtDetailShare afx-monto" inputmode="decimal" autocomplete="off" type="text" id="txtComision"  name="txtComision[]"  value="<?php echo $objItem->plus_commission; ?>" />
 															</td>
 															<td data-label="+Bono Quincenal">
@@ -214,7 +214,7 @@
 															<td data-label="-Adelantos">
 																<input class="form-control pv2-num txtDetailShare afx-monto" inputmode="decimal" autocomplete="off" type="text" id="txtAdelantos"  name="txtAdelantos[]"  value="<?php echo $objItem->minus_adelantos; ?>" />
 															</td>
-															<td data-label="-Deducciones Por Prestamos">
+															<td data-label="-Deducciones Por Préstamos">
 																<input class="form-control pv2-num txtDetailShare afx-monto" inputmode="decimal" autocomplete="off" type="text" id="txtDeduccionesPrestamo"  name="txtDeduccionesPrestamo[]"  value="<?php echo $objItem->minus_deduction_for_loans; ?>" />
 															</td>
 															<td data-label="-Deducciones Por Llegada Tarde">
@@ -230,7 +230,7 @@
 																<input class="form-control pv2-num txtDetailShare afx-monto" readonly  type="text" id="txtIR"  name="txtIR[]"  value="<?php echo $objItem->minus_ir; ?>" />
 															</td>
 															<td data-label="Salario Neto">
-																<input class="form-control pv2-num txtDetailShare afx-monto" inputmode="decimal" autocomplete="off" type="text" id="txtNeto"  name="txtNeto[]"  value="<?php echo $objItem->equal_neto; ?>" />
+																<input class="form-control pv2-num txtDetailShare afx-monto" readonly type="text" id="txtNeto"  name="txtNeto[]"  value="<?php echo $objItem->equal_neto; ?>" />
 															</td>
 														</tr>
 														<?php 
@@ -286,7 +286,7 @@
 								<td data-label="+Salario">
 									<input class="form-control pv2-num txtDetailShare afx-monto" readonly type="text" id="txtSalario"  name="txtSalario[]"  value="0" />
 								</td>
-								<td data-label="+Comision">
+								<td data-label="+Comisión">
 									<input class="form-control pv2-num txtDetailShare afx-monto" inputmode="decimal" autocomplete="off" type="text" id="txtComision"  name="txtComision[]"  value="0" />
 								</td>
 								<td data-label="+Bono Quincenal">
@@ -295,7 +295,7 @@
 								<td data-label="-Adelantos">
 									<input class="form-control pv2-num txtDetailShare afx-monto" inputmode="decimal" autocomplete="off" type="text" id="txtAdelantos"  name="txtAdelantos[]"  value="0" />
 								</td>
-								<td data-label="-Deducciones Por Prestamos">
+								<td data-label="-Deducciones Por Préstamos">
 									<input class="form-control pv2-num txtDetailShare afx-monto" inputmode="decimal" autocomplete="off" type="text" id="txtDeduccionesPrestamo"  name="txtDeduccionesPrestamo[]"  value="0" />
 								</td>
 								<td data-label="-Deducciones Por Llegada Tarde">

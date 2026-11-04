@@ -1,338 +1,293 @@
-<script>	
+<script>
+    var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
 
-	//cerrarModal('ModalCargandoDatos');
-	//mostrarModal('ModalCargandoDatos');
-	mostrarModal('ModalCargandoDatos');
+    mostrarModal('ModalCargandoDatos');
 
-	document.addEventListener('DOMContentLoaded', () => {
-		const kanbanBoard = document.getElementById('kanban-board');
-		const responsibleFilter = document.getElementById('responsible-filter');
-		const addTaskBtn = document.getElementById('add-task-btn');
-		const listTaskBtn = document.getElementById('list-task-btn');
-		const refreshTaskBtn = document.getElementById('refresh-task-btn');
-		
-		const taskTransactionMasterID	= document.getElementById('txtTransactionMasterID');
-		const taskDescripcion 			= document.getElementById('txtDescripcion');
-		const taskComentarioTareaArray 	= document.getElementById('txtComentarioTareaArray');
-		const taskNote 					= document.getElementById('txtNote');		
-		const taskPriorityID 		= document.getElementById('txtPriorityID');
-		const taskAreaID 			= document.getElementById('txtAreaID');
-		const taskDate  			= document.getElementById('txtDate');
-		const taskNextVisit  		= document.getElementById('txtNextVisit');
-		const taskStatusID  		= document.getElementById('txtStatusID');
-		const taskAsignadoID 		= document.getElementById('txtAsignadoID');
-		const taskEmisorID  		= document.getElementById('txtEmisorID');
-		const taskReference1		= document.getElementById('txtReference1');
-		const taskReference2		= document.getElementById('txtReference2');
-		const taskReference3		= document.getElementById('txtReference3');
-		const taskReference4		= document.getElementById('txtReference4');
-		
-		let tasks 		= [];
-		let draggedTask = null;
+    document.addEventListener('DOMContentLoaded', () => {
+        const kanbanBoard       = document.getElementById('kanban-board');
+        const responsibleFilter = document.getElementById('responsible-filter');
+        const addTaskBtn        = document.getElementById('add-task-btn');
+        const listTaskBtn       = document.getElementById('list-task-btn');
+        const refreshTaskBtn    = document.getElementById('refresh-task-btn');
 
-		// Colores para responsables
-		const responsableColors = {
-			'Juan': '#28a745',
-			'Maria': '#007bff',
-			'Pedro': '#ffc107',
-			// Añade más responsables y colores aquí
-		};
+        let tasks          = [];
+        let draggedTask    = null;
+        let draggedOrigin  = null;
 
-		// Funciones de la API
-		const api = {
-			async fetchTasks() {
-				try {
-					const response = await fetch('<?php echo base_url(); ?>/app_transaction_master_api/getAll_TransactionMaster_Task/2');					
-					return await response.json();
-				} catch (error) {
-					console.error('Error fetching tasks:', error);
-					return [];
-				}
-			},
-			async createTask(task) {
-				try {
-					
-					const formData = new URLSearchParams();
-					for (const key in task) {
-					  if (task.hasOwnProperty(key)) {
-						formData.append(key, task[key]);
-					  }
-					}
+        //Sin arrastre en pantallas tactiles: alli se ofrecen Subir y Bajar
+        const usarBotonesMover = pv2IsMobile() || (navigator.maxTouchPoints || 0) > 0;
 
-					const response = await fetch('<?php echo base_url(); ?>/app_transaction_master_api/create_TransactionMaster_Task/save/new', {
-						method		: 'POST',
-						//headers	: { 'Content-Type': 'application/json' },
-						//body: JSON.stringify(task),
-						
-						headers	: { 'Content-Type': 'application/x-www-form-urlencoded' },
-						body	: formData.toString(),
-					});
-					return await response.json();
-				} catch (error) {
-					console.error('Error creating task:', error);
-				}
-			},
-			async updateTask(id, task) {
-				try {
-					
-					const formData = new URLSearchParams();
-					for (const key in task) {
-					  if (task.hasOwnProperty(key)) {
-						formData.append(key, task[key]);
-					  }
-					}
+        // Funciones de la API
+        const api = {
+            async fetchTasks() {
+                try {
+                    const response = await fetch('<?php echo base_url(); ?>/app_transaction_master_api/getAll_TransactionMaster_Task/2');
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error fetching tasks:', error);
+                    return { error: true, message: 'No se pudieron cargar las tareas.', data: [] };
+                }
+            },
+            async reorderTasks(task) {
+                try {
+                    let transactionMasterIDs = task.map(item => item.txtTransactionMasterID);
+                    let reference3           = task.map(item => item.txtReference3);
 
-					
-					const response = await fetch('<?php echo base_url(); ?>/app_transaction_master_api/update_TransactionMaster_Task/save/edit/transactionMasterID/'+id, {
-						method: 'POST',
-						//headers: { 'Content-Type': 'application/json' },
-						//body: JSON.stringify(task),
-						
-						headers	: { 'Content-Type': 'application/x-www-form-urlencoded' },
-						body	: formData.toString(),
-						
-					});
-					return await response.json();
-				} catch (error) {
-					console.error('Error updating task:', error);
-				}
-			},
-			async deleteTask(id) {
-				try {
-					await fetch('<?php echo base_url(); ?>/app_transaction_master_api/delete_TransactionMaster_Task/transactionNumber/'+id, 
-					{
-						method: 'GET',
-					});
-				} catch (error) {
-					console.error('Error deleting task:', error);
-				}
-			},
-			async updateTaskStatus(id, newStatus) {
-				try {
-					await fetch(`/api/tasks/${id}/status`, {
-						method: 'PUT',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({ transactionStatus: newStatus }),
-					});
-				} catch (error) {
-					console.error('Error updating task status:', error);
-				}
-			},
-			async reorderTasks(task) {
-				try {
-					
-					let transactionMasterIDs = task.map(item => item.txtTransactionMasterID);
-					let reference3 			 = task.map(item => item.txtReference3);
-					
-					const formData = new URLSearchParams({
-						"txtTransactionMasterIDs": transactionMasterIDs,
-						"txtReference3s": reference3
-					});
-	
-					
-					
-					await fetch('<?php echo base_url(); ?>/app_transaction_master_api/updateOrden_TransactionMaster_Task/save/edit/transactionMasterID/0', {
-						method: 'POST',
-						//headers: { 'Content-Type': 'application/json' },
-						//body: JSON.stringify(reorderData),
-						
-						headers	: { 'Content-Type': 'application/x-www-form-urlencoded' },
-						body	: formData.toString(),
-						
-						
-					});
-				} catch (error) {
-					console.error('Error reordering tasks:', error);
-				}
-			},
-		};
+                    const formData = new URLSearchParams({
+                        "txtTransactionMasterIDs": transactionMasterIDs,
+                        "txtReference3s": reference3
+                    });
 
-		// Renderizar el tablero
-		async function renderBoard(filteredResponsible = null) {
-			
-			
-			const allTasks 	= await api.fetchTasks();						
-			tasks 			= allTasks.data.filter(task => !filteredResponsible || task.responsable === filteredResponsible);
-			
-			const uniqueResponsibles = [...new Set(allTasks.data.map(task => task.responsable))];
-			responsibleFilter.innerHTML = `<option value="">Filtrar por Responsable</option>`;
-			uniqueResponsibles.forEach(resp => {
-				const option = document.createElement('option');
-				option.value = resp;
-				option.textContent = resp;
-				if (resp === filteredResponsible) {
-					option.selected = true;
-				}
-				responsibleFilter.appendChild(option);
-			});
+                    const response = await fetch('<?php echo base_url(); ?>/app_transaction_master_api/updateOrden_TransactionMaster_Task/save/edit/transactionMasterID/0', {
+                        method  : 'POST',
+                        headers : { 'Content-Type': 'application/x-www-form-urlencoded' },
+                        body    : formData.toString(),
+                    });
+                    return await response.json();
+                } catch (error) {
+                    console.error('Error reordering tasks:', error);
+                    return { error: true, message: 'No se pudo guardar el orden.' };
+                }
+            },
+        };
 
-			kanbanBoard.innerHTML = '';
-			if (tasks.length === 0 && filteredResponsible) {
-				kanbanBoard.innerHTML = `<p>No hay tareas asignadas a ${filteredResponsible}.</p>`;
-				return;
-			}
+        //Muestra un mensaje dentro del tablero: el texto no se interpreta como HTML
+        function mostrarMensajeTablero(mensaje) {
+            kanbanBoard.innerHTML = '';
+            const aviso = document.createElement('div');
+            aviso.className = 'pv2-empty';
+            aviso.style.width = '100%';
+            aviso.textContent = mensaje;
+            kanbanBoard.appendChild(aviso);
+        }
 
-			const responsiblesToRender = filteredResponsible ? [filteredResponsible] : uniqueResponsibles;
-			
-			responsiblesToRender.forEach(responsible => {
-				const column = document.createElement('div');
-				column.classList.add('column');
-				column.setAttribute('data-responsible', responsible);
+        function escapeHtml(value) {
+            const div = document.createElement('div');
+            div.textContent = (value === null || value === undefined) ? '' : value;
+            return div.innerHTML.replace(/"/g, '&quot;');
+        }
 
-				const columnTitle = document.createElement('h2');
-				columnTitle.textContent = responsible;
-				column.appendChild(columnTitle);
+        // Renderizar el tablero
+        async function renderBoard(filteredResponsible = null) {
+            try {
+                const allTasks = await api.fetchTasks();
 
-				const taskList = document.createElement('div');
-				taskList.classList.add('task-list');
+                //Error del servidor o respuesta inesperada
+                if (!allTasks || allTasks.error === true || !Array.isArray(allTasks.data)) {
+                    const mensaje = (allTasks && allTasks.message) ? allTasks.message : 'No se pudieron cargar las tareas.';
+                    mostrarMensajeTablero(mensaje);
+                    fnShowNotification(mensaje, 'error');
+                    return;
+                }
 
-				const responsibleTasks = tasks
-					.filter(task => task.responsable === responsible)
-					.sort((a, b) => a.Orden - b.Orden);
+                tasks = allTasks.data.filter(task => !filteredResponsible || task.responsable === filteredResponsible);
 
-				responsibleTasks.forEach(task => {
-					taskList.appendChild(createTaskElement(task));
-				});
+                const uniqueResponsibles = [...new Set(allTasks.data.map(task => task.responsable))];
+                responsibleFilter.innerHTML = `<option value="">Filtrar por Responsable</option>`;
+                uniqueResponsibles.forEach(resp => {
+                    const option = document.createElement('option');
+                    option.value = resp;
+                    option.textContent = resp;
+                    if (resp === filteredResponsible) {
+                        option.selected = true;
+                    }
+                    responsibleFilter.appendChild(option);
+                });
 
-				column.appendChild(taskList);
-				kanbanBoard.appendChild(column);
-			});
-			addDragAndDropListeners();
-			cerrarModal('ModalCargandoDatos');
-		}
+                //Sin datos
+                if (tasks.length === 0) {
+                    mostrarMensajeTablero(filteredResponsible ? `No hay tareas asignadas a ${filteredResponsible}.` : 'No hay tareas pendientes.');
+                    return;
+                }
 
-		function createTaskElement(task) {
-			
-			const taskElement = document.createElement('div');
-			taskElement.classList.add('task');
-			taskElement.classList.add(`responsable-${task.responsable.replace(/\s/g, '')}`);
-			taskElement.setAttribute('data-id', task.transactionMasterID);
-			taskElement.setAttribute('draggable', true);
+                kanbanBoard.innerHTML = '';
+                const responsiblesToRender = filteredResponsible ? [filteredResponsible] : uniqueResponsibles;
 
-			const priorityClass = `priority-${task.priorityName}`;
-			
-			taskElement.innerHTML = `
-				<h3>${task.reference4}</h3>
-				<p>${task.descriptionReference}</p>
-				<div class="meta">
-					<span class="priority ${priorityClass} priority-Alta">Entrega: ${task.nextVisit}</span>
-					<span>Estado: ${task.statusName}</span>
-					<span class="priority ${priorityClass} priority-Baja" >Orden: ${task.reference3}</span>
-				</div>
-				<div class="task-actions">					
-					<button class="edit-btn">Editar</button>					
-					<button class="delete-btn">${task.transactionNumber}</button>					
-				</div>
-			`;
+                responsiblesToRender.forEach(responsible => {
+                    const column = document.createElement('div');
+                    column.classList.add('column');
+                    column.setAttribute('data-responsible', responsible);
 
-			taskElement.querySelector('.edit-btn').addEventListener('click', (e,t) => {
-				e.stopPropagation();				
-				window.open("<?php echo base_url(); ?>/app_rrhh_task/edit/companyID/"+task.companyID+"/transactionID/"+task.transactionID+"/transactionMasterID/"+task.transactionMasterID, "_blank");				
-			});
+                    const columnTitle = document.createElement('h2');
+                    columnTitle.textContent = responsible;
+                    column.appendChild(columnTitle);
 
-			
-			
-			
-			return taskElement;
-		}
+                    const taskList = document.createElement('div');
+                    taskList.classList.add('task-list');
 
-		
-		
-		// Drag and Drop
-		function addDragAndDropListeners() {
-			
-			const tasksElements = document.querySelectorAll('.task');
-			const taskLists = document.querySelectorAll('.task-list');
+                    const responsibleTasks = tasks
+                        .filter(task => task.responsable === responsible)
+                        .sort((a, b) => (parseInt(a.reference3, 10) || 0) - (parseInt(b.reference3, 10) || 0));
 
-			tasksElements.forEach(task => {
-				task.addEventListener('dragstart', () => {
-					draggedTask = task;
-					setTimeout(() => task.classList.add('dragging'), 0);
-				});
-				task.addEventListener('dragend', () => {
-					draggedTask.classList.remove('dragging');
-					draggedTask = null;
-				});
-			});
+                    responsibleTasks.forEach(task => {
+                        taskList.appendChild(createTaskElement(task));
+                    });
 
-			taskLists.forEach(list => {
-				list.addEventListener('dragover', (e) => {
-					e.preventDefault();
-					const afterElement = getDragAfterElement(list, e.clientY);
-					const dragging = document.querySelector('.dragging');
-					if (afterElement == null) {
-						list.appendChild(dragging);
-					} else {
-						list.insertBefore(dragging, afterElement);
-					}
-				});
-				list.addEventListener('drop', async () => {
-					
-					if (draggedTask) {
-						const responsible 		= draggedTask.closest('.column').getAttribute('data-responsible');
-						const reorderedTasks 	= Array.from(list.children).map((item, index) => ({
-							txtTransactionMasterID		: item.getAttribute('data-id'),
-							txtReference3				: index + 1
-						}));
+                    column.appendChild(taskList);
+                    kanbanBoard.appendChild(column);
+                });
+                addDragAndDropListeners();
+            } catch (error) {
+                console.error('Error rendering board:', error);
+                mostrarMensajeTablero('No se pudo mostrar el tablero.');
+                fnShowNotification('No se pudo mostrar el tablero.', 'error');
+            } finally {
+                cerrarModal('ModalCargandoDatos');
+            }
+        }
 
-						const changedTask = tasks.find(t => t.transactionMasterID == draggedTask.getAttribute('data-id'));						
-						if (changedTask) 
-						{
-							
-							 const updatedTask = {
-								...changedTask,
-								responsable		: responsible,
-								txtReference3	: reorderedTasks.find(t => t.txtTransactionMasterID == changedTask.transactionMasterID).txtReference3,
-							 };
-							 
-							 mostrarModal('ModalCargandoDatos');
-							 //await api.updateTask(changedTask.transactionMasterID, updatedTask);
-							 await api.reorderTasks(reorderedTasks);
-							 renderBoard(responsibleFilter.value);
-						}
-					}
-				});
-			});
-		}
+        function createTaskElement(task) {
+            const taskElement = document.createElement('div');
+            taskElement.classList.add('task');
+            taskElement.setAttribute('data-id', task.transactionMasterID);
+            if (!usarBotonesMover) {
+                taskElement.setAttribute('draggable', true);
+            }
 
-		function getDragAfterElement(container, y) {
-			
-			const draggableElements = [...container.querySelectorAll('.task:not(.dragging)')];
-			return draggableElements.reduce((closest, child) => {
-				const box = child.getBoundingClientRect();
-				const offset = y - box.top - box.height / 2;
-				if (offset < 0 && offset > closest.offset) {
-					return { offset: offset, element: child };
-				} else {
-					return closest;
-				}
-			}, { offset: Number.NEGATIVE_INFINITY }).element;
-		}
+            //La clase de color solo admite el nombre del catalogo limpio
+            const priorityClass = 'priority-' + String(task.priorityName || '').replace(/[^A-Za-z0-9_-]/g, '');
+            const priorityHtml  = task.priorityName ? `<span class="priority ${priorityClass}">Prioridad: ${escapeHtml(task.priorityName)}</span>` : '';
+            const moveHtml      = usarBotonesMover ? `<button type="button" class="move-btn up-btn">Subir</button><button type="button" class="move-btn down-btn">Bajar</button>` : '';
 
-		
-		addTaskBtn.addEventListener('click', () => {	
-				window.open("<?php echo base_url(); ?>/app_rrhh_task/add", "_blank");
-			}
-		);
-		listTaskBtn.addEventListener('click', () => {	
-				window.location = "<?php echo base_url(); ?>/app_rrhh_task/index";
-			}
-		);
-		refreshTaskBtn.addEventListener('click', () => {
-				mostrarModal('ModalCargandoDatos');
-				renderBoard(responsibleFilter.value);
-			}
-		);
-		
-		
-		
+            taskElement.innerHTML = `
+                <h3>${escapeHtml(task.reference4)}</h3>
+                <p>${escapeHtml(task.descriptionReference)}</p>
+                <div class="meta">
+                    ${priorityHtml}
+                    <span>Entrega: ${escapeHtml(task.nextVisit)}</span>
+                    <span>Estado: ${escapeHtml(task.statusName)}</span>
+                    <span>Orden: ${escapeHtml(task.reference3)}</span>
+                </div>
+                <div class="task-actions">
+                    <button type="button" class="edit-btn">Editar</button>
+                    ${moveHtml}
+                    <span class="task-doc">${escapeHtml(task.transactionNumber)}</span>
+                </div>
+            `;
 
+            taskElement.querySelector('.edit-btn').addEventListener('click', (e,t) => {
+                e.stopPropagation();
+                window.open("<?php echo base_url(); ?>/app_rrhh_task/edit/companyID/"+task.companyID+"/transactionID/"+task.transactionID+"/transactionMasterID/"+task.transactionMasterID, "_blank");
+            });
 
-		responsibleFilter.addEventListener('change', (e) => {
-			renderBoard(e.target.value || null);
-		});
+            if (usarBotonesMover) {
+                taskElement.querySelector('.up-btn').addEventListener('click', () => moverTarea(taskElement, -1));
+                taskElement.querySelector('.down-btn').addEventListener('click', () => moverTarea(taskElement, 1));
+            }
 
-		// Cargar el tablero al inicio
-		renderBoard();
-	});
+            return taskElement;
+        }
+
+        //Guarda el orden de una columna y vuelve a pintar el tablero
+        async function guardarOrden(list) {
+            const reorderedTasks = Array.from(list.children).map((item, index) => ({
+                txtTransactionMasterID  : item.getAttribute('data-id'),
+                txtReference3           : index + 1
+            }));
+
+            mostrarModal('ModalCargandoDatos');
+            const resultado = await api.reorderTasks(reorderedTasks);
+            if (!resultado || resultado.error === true) {
+                fnShowNotification((resultado && resultado.message) ? resultado.message : 'No se pudo guardar el orden.', 'error');
+            }
+            renderBoard(responsibleFilter.value || null);
+        }
+
+        //Botones Subir y Bajar: mueven la tarea dentro de su columna
+        async function moverTarea(taskElement, direccion) {
+            const list    = taskElement.closest('.task-list');
+            const vecina  = direccion < 0 ? taskElement.previousElementSibling : taskElement.nextElementSibling;
+            if (!vecina) {
+                return;
+            }
+
+            if (direccion < 0) {
+                list.insertBefore(taskElement, vecina);
+            } else {
+                list.insertBefore(vecina, taskElement);
+            }
+            await guardarOrden(list);
+        }
+
+        // Drag and Drop: solo reordena dentro de la columna de origen
+        function addDragAndDropListeners() {
+            const tasksElements = document.querySelectorAll('.task');
+            const taskLists     = document.querySelectorAll('.task-list');
+
+            tasksElements.forEach(task => {
+                task.addEventListener('dragstart', () => {
+                    draggedTask   = task;
+                    draggedOrigin = task.closest('.task-list');
+                    setTimeout(() => task.classList.add('dragging'), 0);
+                });
+                task.addEventListener('dragend', () => {
+                    if (draggedTask) {
+                        draggedTask.classList.remove('dragging');
+                    }
+                    draggedTask   = null;
+                    draggedOrigin = null;
+                });
+            });
+
+            taskLists.forEach(list => {
+                list.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    if (list !== draggedOrigin) {
+                        return;
+                    }
+                    const afterElement = getDragAfterElement(list, e.clientY);
+                    const dragging     = document.querySelector('.dragging');
+                    if (!dragging) {
+                        return;
+                    }
+                    if (afterElement == null) {
+                        list.appendChild(dragging);
+                    } else {
+                        list.insertBefore(dragging, afterElement);
+                    }
+                });
+                list.addEventListener('drop', async () => {
+                    if (!draggedTask) {
+                        return;
+                    }
+                    if (list !== draggedOrigin) {
+                        fnShowNotification('No se puede mover la tarea a otro responsable. Cambie el asignado desde Editar.', 'error');
+                        return;
+                    }
+                    await guardarOrden(list);
+                });
+            });
+        }
+
+        function getDragAfterElement(container, y) {
+            const draggableElements = [...container.querySelectorAll('.task:not(.dragging)')];
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = y - box.top - box.height / 2;
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+
+        addTaskBtn.addEventListener('click', () => {
+            window.open("<?php echo base_url(); ?>/app_rrhh_task/add", "_blank");
+        });
+        listTaskBtn.addEventListener('click', () => {
+            window.location = "<?php echo base_url(); ?>/app_rrhh_task/index";
+        });
+        refreshTaskBtn.addEventListener('click', () => {
+            mostrarModal('ModalCargandoDatos');
+            renderBoard(responsibleFilter.value || null);
+        });
+
+        responsibleFilter.addEventListener('change', (e) => {
+            renderBoard(e.target.value || null);
+        });
+
+        // Cargar el tablero al inicio
+        renderBoard();
+    });
 </script>

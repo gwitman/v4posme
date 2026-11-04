@@ -1,3 +1,5 @@
+<?php echo view('core_template/posme_v2_style'); ?>
+<?php echo view('core_template/posme_v2_common'); ?>
 <style>
 /* --- Contenedor Principal para evitar conflictos de estilos --- */
 .body_custom {
@@ -8,98 +10,18 @@
     box-sizing: border-box; /* Asegura que el padding no afecte el ancho total */
 }
 
-/* --- Header y Controles --- */
-.body_custom header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 5px;
-    background-color: #fff;
-    padding: 15px 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.body_custom h1 {
-    color: #333;
-    margin: 0;
-}
-
-.body_custom .controls {
-    display: flex;
-    gap: 10px;
-}
-
-.body_custom #responsible-filter, .body_custom #add-task-btn {
-    padding: 10px 15px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.body_custom #responsible-filter, .body_custom #list-task-btn {
-    padding: 10px 15px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.body_custom #responsible-filter, .body_custom #refresh-task-btn {
-    padding: 10px 15px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    font-size: 16px;
-    cursor: pointer;
-    transition: all 0.2s;
-}
-
-.body_custom #add-task-btn {
-    background-color: #007bff; /* Color primario moderno */
-    color: white;
-    border: none;
-    font-weight: bold;
-}
-
-.body_custom #list-task-btn {
-    background-color: #ff5722; /* Color secundario moderno */
-    color: white;
-    border: none;
-    font-weight: bold;
-}
-
-.body_custom #refresh-task-btn {
-    background-color: #00e676; /* Color tercero moderno */
-    color: white;
-    border: none;
-    font-weight: bold;
-}
-
-.body_custom #add-task-btn:hover {
-    background-color: #0056b3;
-    transform: translateY(-1px);
-}
-
-.body_custom #list-task-btn:hover {
-    background-color: #0056b3;
-    transform: translateY(-1px);
-}
-.body_custom #refresh-task-btn:hover {
-    background-color: #0056b3;
-    transform: translateY(-1px);
-}
+.body_custom .kanban-title { flex: 0 0 auto; }
+.body_custom .kanban-filter { flex: 1 1 220px; max-width: 420px; }
 
 /* --- Tablero Kanban (Columnas y Tareas) --- */
 .body_custom #kanban-board {
-    display: 	flex;
-    gap: 		20px;
+    display: flex;
+    gap: 20px;
     overflow-x: auto;
-    padding: 	0px;
-	overflow-y:	auto;
-	height:		500px;
+    overflow-y: auto;
+    padding: 0;
+    height: 70vh;
+    min-height: 360px;
 }
 
 .body_custom .column {
@@ -152,21 +74,22 @@
     margin: 0 0 5px 0;
     font-size: 1em;
     color: #333;
+    word-break: break-word;
 }
 
 .body_custom .task p {
     margin: 0 0 10px 0;
     font-size: 0.9em;
     color: #666;
+    word-break: break-word;
 }
 
 .body_custom .task .meta {
     font-size: 0.8em;
-    color: #999;
+    color: #555;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
     flex-wrap: wrap;
+    align-items: center;
     gap: 5px;
 }
 
@@ -180,18 +103,16 @@
     font-weight: bold;
 }
 
-/* --- Colores para Prioridad y Responsables --- */
-.body_custom .priority-Baja { background-color: #d4edda; color: #155724; }
-.body_custom .priority-Media { background-color: #fff3cd; color: #856404; }
-.body_custom .priority-Alta { background-color: #f8d7da; color: #721c24; }
-
-.body_custom .responsable-Juan { border-left: 5px solid #28a745; }
-.body_custom .responsable-Maria { border-left: 5px solid #007bff; }
-.body_custom .responsable-Pedro { border-left: 5px solid #ffc107; }
+/* --- Colores para Prioridad --- */
+.body_custom .task .meta .priority-Baja { background-color: #d4edda; color: #155724; }
+.body_custom .task .meta .priority-Media { background-color: #fff3cd; color: #856404; }
+.body_custom .task .meta .priority-Alta { background-color: #f8d7da; color: #721c24; }
 
 /* --- Botones de Acción de Tarea --- */
 .body_custom .task-actions {
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     gap: 5px;
     margin-top: 10px;
 }
@@ -207,12 +128,19 @@
 }
 
 .body_custom .edit-btn { background-color: #17a2b8; }
-.body_custom .delete-btn { background-color: #dc3545; }
-.body_custom .status-btn { background-color: #6c757d; }
+.body_custom .move-btn { background-color: #6c757d; }
 
 .body_custom .edit-btn:hover { background-color: #138496; }
-.body_custom .delete-btn:hover { background-color: #c82333; }
-.body_custom .status-btn:hover { background-color: #5a6268; }
+.body_custom .move-btn:hover { background-color: #5a6268; }
+
+/* Numero de documento: solo etiqueta, no es un boton */
+.body_custom .task-doc {
+    font-size: 0.8em;
+    color: #555;
+    background-color: #e9ecef;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
 
 /* --- Modal (Caja de Diálogo) --- */
 .body_custom .modal {
@@ -265,123 +193,43 @@
     cursor: pointer;
 }
 
-.body_custom #modal-title {
-    color: #333;
-    margin-top: 0;
-    margin-bottom: 25px;
-    border-bottom: 2px solid #e9ecef;
-    padding-bottom: 10px;
-}
-
-.body_custom #task-form {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 20px;
-}
-
-.body_custom #task-form .full-width {
-    grid-column: span 2;
-}
-
-.body_custom #task-form label {
-    font-weight: 600;
-    color: #555;
-    display: block;
-    margin-bottom: 5px;
-}
-
-.body_custom #task-form input,
-.body_custom #task-form textarea,
-.body_custom #task-form select {
-    width: 100%;
-    padding: 12px;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    box-sizing: border-box;
-    font-size: 16px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.body_custom #task-form input:focus,
-.body_custom #task-form textarea:focus,
-.body_custom #task-form select:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
-    outline: none;
-}
-
-.body_custom #task-form textarea {
-    height: 100px;
-    resize: vertical;
-}
-
-/* --- Botón Guardar Tarea --- */
-.body_custom #save-task-btn {
-    grid-column: span 2;
-    background-color: #007bff;
-    color: white;
-    padding: 15px 25px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: bold;
-    margin-top: 15px;
-    transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.body_custom #save-task-btn:hover {
-    background-color: #0056b3;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
-}
-
-.body_custom #save-task-btn:active {
-    transform: translateY(0);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+/* --- Telefono: columnas apiladas, sin scroll horizontal --- */
+@media (max-width: 767px) {
+    .body_custom { padding: 8px; }
+    .body_custom .kanban-filter { max-width: none; flex: 1 1 100%; }
+    .body_custom #kanban-board { flex-direction: column; height: auto; min-height: 0; overflow: visible; }
+    .body_custom .column { flex: 1 1 auto; width: 100%; }
+    .body_custom .task { cursor: default; }
+    .body_custom .task-actions button { min-height: 40px; padding: 8px 12px; font-size: 0.9em; }
 }
 </style>
 
 
-<div class="body_custom">
-	<header>
-		<table style="width:100%">
-			<tr>
-				<td style="width: 20%;">
-					<h3>Tablero Kanban</h3>
-				</td>
-				<td style="width: 50%;">
-					<select id="responsible-filter">
-						<option value="">Filtrar por Responsable</option>
-					</select>
-				</td>
-				<td style="text-align:right;">
-					<button id="add-task-btn">Agregar Tarea</button>
-				</td>
-				<td style="text-align:right;">
-					<button id="list-task-btn">Lista Tarea</button>
-				</td>
-				<td style="text-align:right;">
-					<button id="refresh-task-btn">Refresh</button>
-				</td>
-			</tr>
-		</table>
-		
-	</header>
-	
-	<div id="modalCargandoDatos" style="display:flex">
-		<h3 id="title-modal">ESPERE UN MOMENTO<h3/>
-		<img class="img-fluid" style="height: 80px;" src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/img/loading.gif" />
-	</div>
-	
-	<?php
-		helper_getHtmlOfModalDialog("ModalCargandoDatos","modalCargandoDatos","fnAceptarModalDialogCargandoDatos",false);
-	?>
-	
-	
-	<div id="kanban-board"></div>
+<div class="pv2 body_custom<?php echo (isset($useMobile) && $useMobile == "1") ? " pv2-mobile" : ""; ?>">
+    <div class="pv2-card pv2-listbar">
+        <p class="pv2-card-title kanban-title" style="margin:0"><span class="pv2-ico"><i class="icon16 i-grid-2"></i></span> Tablero Kanban</p>
+        <div class="kanban-filter">
+            <select id="responsible-filter" class="form-control" autocomplete="off" aria-label="Filtrar por Responsable">
+                <option value="">Filtrar por Responsable</option>
+            </select>
+        </div>
+        <div class="pv2-actions">
+            <button type="button" class="btn btn-primary" id="add-task-btn"><i class="icon16 i-plus"></i> Agregar Tarea</button>
+            <button type="button" class="btn btn-default" id="list-task-btn"><i class="icon16 i-table"></i> Lista Tarea</button>
+            <button type="button" class="btn btn-default" id="refresh-task-btn"><i class="icon16 i-rotate"></i> Actualizar</button>
+        </div>
+    </div>
 
-	
+    <div id="modalCargandoDatos" style="display:flex">
+        <h3 id="title-modal">ESPERE UN MOMENTO</h3>
+        <img class="img-fluid" style="height: 80px;" src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/img/loading.gif" />
+    </div>
+
+    <?php
+        helper_getHtmlOfModalDialog("ModalCargandoDatos","modalCargandoDatos","fnAceptarModalDialogCargandoDatos",false);
+    ?>
+
+
+    <div id="kanban-board"></div>
 
 </div>

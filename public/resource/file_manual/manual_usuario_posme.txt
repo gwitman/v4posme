@@ -68,23 +68,32 @@ INDICE
 62. Registrar adelantos a colaboradores
 63. Registrar la liquidación de un colaborador
 64. Registrar un permiso de un colaborador
-65. Seguridad: qué contiene el menú SEGURIDAD
-66. Iniciar sesión en posMe
-67. Olvidé mi contraseña (reenviar contraseña)
-68. Cerrar sesión (salir, salgo de posMe)
-69. Cambiar mi contraseña o mi correo (editar perfil)
-70. Crear un usuario (creo un usuario nuevo)
-71. Modificar o eliminar un usuario
-72. Crear un rol
-73. Permisos por pantalla de un rol (ver, crear, editar, eliminar)
-74. Autorizaciones de un rol
-75. Dar acceso al asistente Jordania (Asistente IA)
-76. Sucursales
-77. Notificaciones y recordatorios (CONFIG. NOTI)
-78. Ver quién entró: sesiones y actividad de un usuario (LOG SESSION)
-79. Actualizar (uso de soporte)
-80. Parámetros de la empresa
-81. Soporte
+65. Qué contiene el menú de colaboradores (RRHH)
+66. Crear un colaborador
+67. Modificar o eliminar un colaborador
+68. Agregar teléfonos y correos de un colaborador
+69. Registrar la asistencia de un colaborador
+70. Ver la ubicación de los colaboradores en el mapa (GPS)
+71. Crear una tarea para un colaborador
+72. Modificar o eliminar una tarea
+73. Ver las tareas en el tablero Kanban
+74. Seguridad: qué contiene el menú SEGURIDAD
+75. Iniciar sesión en posMe
+76. Olvidé mi contraseña (reenviar contraseña)
+77. Cerrar sesión (salir, salgo de posMe)
+78. Cambiar mi contraseña o mi correo (editar perfil)
+79. Crear un usuario (creo un usuario nuevo)
+80. Modificar o eliminar un usuario
+81. Crear un rol
+82. Permisos por pantalla de un rol (ver, crear, editar, eliminar)
+83. Autorizaciones de un rol
+84. Dar acceso al asistente Jordania (Asistente IA)
+85. Sucursales
+86. Notificaciones y recordatorios (CONFIG. NOTI)
+87. Ver quién entró: sesiones y actividad de un usuario (LOG SESSION)
+88. Actualizar (uso de soporte)
+89. Parámetros de la empresa
+90. Soporte
 
 1. CÓMO FUNCIONAN LAS PANTALLAS DE POSME (LISTAS Y REGISTROS)
 ----------------------------------------------------------------------
@@ -319,6 +328,7 @@ Mensajes:
   * "Establecer Fecha al Documento" / "Seleccione el cliente".
   * "Cliente no encontrado" / "Cliente sin membresia" / "Cliente con Mora".
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuevo, Nuevo e Imprimir, Atras, el menú Imprimir (Imprimir preview e Imprimir direct), Eliminar y Guardar. En la edición no aparece Huella.
+Ver también: Registrar la asistencia de un colaborador.
 
 23. QUÉ CONTIENE EL MENÚ BANCO
 ----------------------------------------------------------------------
@@ -459,7 +469,7 @@ Mensajes de validación (debajo de cada campo):
   * "La descripción del evento es obligatoria."
   * "La fecha del evento es obligatoria."
   * "Debe seleccionar una etiqueta."
-Ver también: Modificar, eliminar o imprimir un evento del calendario.
+Ver también: Modificar, eliminar o imprimir un evento del calendario, Crear una tarea para un colaborador.
 
 35. MODIFICAR, ELIMINAR O IMPRIMIR UN EVENTO DEL CALENDARIO
 ----------------------------------------------------------------------
@@ -783,11 +793,11 @@ Ruta: Menú > PLANILLA.
   * ADELANTOS: adelantos a colaboradores.
   * LIQUIDACION: liquidación de colaboradores.
   * PERMISO: permisos de colaboradores.
-Seleccione la fila de la lista y presione Editar para abrir un registro; si no selecciona una aparece "Seleccionar el Registro...". Para crear uno presione Nuevo. En ADELANTOS, LIQUIDACION y PERMISO, Eliminar pide confirmar "Desea eliminar este Registro...".
+Seleccione la fila de la lista y presione Editar para abrir un registro; si no selecciona una aparece "Seleccionar el Registro...". Para crear uno presione Nuevo. En ADELANTOS, LIQUIDACION y PERMISO, Eliminar pide confirmar "Desea eliminar este Registro...". P. PLANILLA no tiene botón Eliminar en la lista.
 Buscar en la lista:
   * En P. PLANILLA, Buscar en la lista… filtra la lista cargada mientras escribe.
   * En ADELANTOS, LIQUIDACION y PERMISO escriba en Buscar por número… y presione el botón de la lupa o Enter.
-Al editar, las cuatro pantallas tienen arriba solo Atras y Guardar.
+Al editar, las cuatro pantallas tienen arriba solo Atrás y Guardar.
 Notas: en el teléfono el botón Guardar está en la barra inferior y los botones Buscar abren la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol.
 Ver también: Crear una planilla de pago, Registrar adelantos a colaboradores, Registrar la liquidación de un colaborador, Registrar un permiso de un colaborador.
 
@@ -799,10 +809,11 @@ Ruta: Menú > PLANILLA > P. PLANILLA. La lista se llama LISTA DE PLANILLAS.
   3. En la tarjeta Clasificación indique Tipo y Moneda.
   4. Opcional: en la tarjeta Comentario escriba la Descripción.
   5. En la tarjeta Colaboradores presione Agregar colaborador y elíjalo en la búsqueda. Repita por cada colaborador. En el teléfono cada colaborador se ve como una tarjeta.
-  6. Complete en cada colaborador +Comision, +Bono Quincenal, -Adelantos, -Deducciones Por Prestamos y -Deducciones Por Llegada Tarde. Vacaciones Acumuladas, INSS Patronal, +Salario, INSS, Ahorro, IR y Salario Neto no se escriben a mano.
+  6. Complete en cada colaborador +Comisión, +Bono Quincenal, -Adelantos, -Deducciones Por Préstamos y -Deducciones Por Llegada Tarde. Vacaciones Acumuladas, INSS Patronal, +Salario, INSS, Ahorro, IR y Salario Neto no se escriben a mano.
   7. Revise el Total en la tarjeta Resumen y presione Guardar (en el teléfono, en la barra inferior).
 Quitar un colaborador: marque su casilla (en el teléfono, la casilla Quitar) y presione Quitar marcados.
-Mensajes de validación: "Ingrese el Nombre" y "El Colaborador ya existe en el detalle".
+No se puede guardar una planilla sin colaboradores.
+Mensajes de validación: "Ingrese el Nombre", "Agregue al menos un colaborador" y "El Colaborador ya existe en el detalle".
 Para modificarla, selecciónela en la lista y presione Editar.
 Ver también: Registrar adelantos a colaboradores.
 
@@ -816,37 +827,162 @@ Ruta: Menú > PLANILLA > ADELANTOS. La lista se llama LISTA DE ADELANTOS.
   5. En la tarjeta Colaboradores presione Agregar colaborador, elíjalo en la búsqueda y escriba el Monto. Repita por cada colaborador.
   6. Revise el Total en la tarjeta Resumen y presione Guardar (en el teléfono, en la barra inferior).
 Quitar un colaborador: marque su casilla (en el teléfono, la casilla Quitar) y presione Quitar marcados.
-Mensajes de validación: "El Colaborador ya existe en el detalle".
+No se puede guardar un adelanto sin colaboradores ni con un Monto en 0.
+Mensajes de validación: "Agregue al menos un colaborador", "Ingrese el monto de cada colaborador" y "El Colaborador ya existe en el detalle".
 Para modificarlo, selecciónelo en la lista y presione Editar.
 Ver también: Crear una planilla de pago.
 
 63. REGISTRAR LA LIQUIDACIÓN DE UN COLABORADOR
 ----------------------------------------------------------------------
-Ruta: Menú > PLANILLA > LIQUIDACION. La lista se llama LISTA DE LIQUIDACION.
-  1. Presione Nuevo. Se abre LIQUIDACION:#.
-  2. En la tarjeta Colaborador, en Colaborador use Buscar y Limpiar. Se muestran Codigo, Nombre Completo y Area. Indique el Estado. Liquidación Neta se muestra y no se escribe a mano.
+Ruta: Menú > PLANILLA > LIQUIDACION. La lista se llama LISTA DE LIQUIDACIÓN.
+  1. Presione Nuevo. Se abre LIQUIDACIÓN:#.
+  2. En la tarjeta Colaborador, en Colaborador use Buscar y Limpiar; el campo muestra el código y el nombre. Se muestran también Código, Nombre Completo y Área. Indique el Estado. Liquidación Neta se muestra y no se escribe a mano.
   3. En la tarjeta Trabajo indique Fecha de Fin. Fecha de Inicio, Años Laborados, Salario Devengado y Vacaciones Acumuladas no se escriben a mano.
-  4. En la tarjeta Ingresos complete Comision y Bono. Salario Proporcional, Ahorro Acumulado, Pago Vacaciones Acumuladas, Pago por mes 13 y Pago por Antiguedad no se escriben a mano.
-  5. En la tarjeta Deducciones complete Prestamos, Llegadas Tarde y Adelantos. INSS, IR e IR Por Vacaciones no se escriben a mano.
+  4. En la tarjeta Ingresos complete Comisión y Bono. Salario Proporcional, Ahorro Acumulado, Pago Vacaciones Acumuladas, Pago por mes 13 y Pago por Antigüedad no se escriben a mano.
+  5. En la tarjeta Deducciones complete Préstamos, Llegadas Tarde y Adelantos. INSS, IR e IR Por Vacaciones no se escriben a mano.
   6. Presione Guardar (en el teléfono, en la barra inferior).
-Mensajes de validación: "Seleccione el colaborador", y "El dato ... no es una entrada Valida" si un monto no es válido.
+Mensajes de validación: "Seleccione el colaborador", y "El dato ... no es una entrada Válida" si un monto no es válido.
 Para modificarla, selecciónela en la lista y presione Editar.
 
 64. REGISTRAR UN PERMISO DE UN COLABORADOR
 ----------------------------------------------------------------------
 Ruta: Menú > PLANILLA > PERMISO. La lista se llama LISTA DE PERMISOS.
   1. Presione Nuevo. Se abre PERMISO:#.
-  2. En la tarjeta Colaborador, en Colaborador use Buscar y Limpiar. Se muestran Codigo, Nombre Completo y Area.
-  3. En la tarjeta Detalles del permiso indique Tipo de Permiso, Fecha de Inicio, Fecha de Fin, Fecha de Integracion y Estado. Dias de Vacaciones no se escribe a mano.
+  2. En la tarjeta Colaborador, en Colaborador use Buscar y Limpiar; el campo muestra el código y el nombre. Se muestran también Código, Nombre Completo y Área.
+  3. En la tarjeta Detalles del permiso indique Tipo de Permiso, Fecha de Inicio, Fecha de Fin, Fecha de Integración y Estado. Días no se escribe a mano.
   4. Opcional: escriba la Nota. Según la configuración de su empresa este campo puede tener otro nombre.
   5. Presione Guardar (en el teléfono, en la barra inferior).
 Mensajes de validación:
   * "Seleccione el colaborador".
-  * "La Fecha Final del Permiso Esta Mal Configurada".
-  * "La Fecha de Integracion del Colaborador Esta Mal Configurada".
+  * "La Fecha Final del Permiso Está Mal Configurada".
+  * "La Fecha de Integración del Colaborador Está Mal Configurada".
 Para modificarlo, selecciónelo en la lista y presione Editar.
 
-65. SEGURIDAD: QUÉ CONTIENE EL MENÚ SEGURIDAD
+65. QUÉ CONTIENE EL MENÚ DE COLABORADORES (RRHH)
+----------------------------------------------------------------------
+Ruta: Menú > COLABORADORES, ASIS. COL, GPS y TASK.
+  * COLABORADORES: datos de cada colaborador.
+  * ASIS. COL: asistencia de los colaboradores.
+  * GPS: ubicación de los colaboradores en el mapa.
+  * TASK: tareas de los colaboradores, en lista o en tablero Kanban.
+En COLABORADORES, ASIS. COL y TASK seleccione la fila de la lista y presione Editar; si no selecciona una aparece "Seleccionar el Registro...". Para crear uno presione Nuevo. Eliminar pide confirmar "Desea eliminar este Registro...".
+Buscar en la lista: en ASIS. COL y TASK escriba en Buscar por número… y presione el botón de la lupa o Enter. La lista de COLABORADORES no tiene buscador.
+Notas: en el teléfono el botón Guardar está en la barra inferior y los botones Buscar abren la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol.
+Ver también: Crear un colaborador, Registrar la asistencia de un colaborador, Ver la ubicación de los colaboradores en el mapa (GPS), Crear una tarea para un colaborador.
+
+66. CREAR UN COLABORADOR
+----------------------------------------------------------------------
+Ruta: Menú > COLABORADORES. La lista se llama LISTA DE COLABORADORES; según la configuración de su empresa puede tener otro nombre.
+  1. Presione Nuevo. Se abre CODIGO:#, con todos los datos en tarjetas en una sola pantalla.
+  2. En la tarjeta Datos personales indique Primer Nombre, Apellidos, Tipo Identificacion, Identificacion e INSS.
+  3. En la tarjeta Su trabajo indique Estado, Clasificacion, Contrato, Grado, Departamento de la empresa y Area. En Jefe Inmediato use Buscar y Limpiar. Fecha Inicio trae la fecha de hoy; cámbiela si hace falta. Indique Fecha Fin si corresponde.
+  4. En la tarjeta Dónde vive indique Pais, Departamento del pais, Municipio y Direccion.
+  5. En la tarjeta Pago y vacaciones indique Costo/H. Vacaciones Acumuladas no se escribe a mano.
+  6. Opcional: en la tarjeta Referencias complete Referencia1 y Referencia2. Según la configuración de su empresa, Referencia1 puede tener otro nombre.
+  7. Opcional: agregue datos en las tarjetas Teléfonos y Correos.
+  8. Presione Guardar (en el teléfono, en la barra inferior).
+Mensajes de validación:
+  * "Seleccionar el Pais" / "Seleccionar el Departamento" / "Seleccionar el Municipio".
+  * "Escribir la Identificacion" / "Escribir el Nombre".
+Ver también: Agregar teléfonos y correos de un colaborador, Modificar o eliminar un colaborador.
+
+67. MODIFICAR O ELIMINAR UN COLABORADOR
+----------------------------------------------------------------------
+Ruta: Menú > COLABORADORES.
+  1. Seleccione el colaborador en la lista y presione Editar. Arriba tiene Atras, Eliminar y Guardar.
+  2. Cambie los datos en las tarjetas y presione Guardar (en el teléfono, en la barra inferior).
+Archivos: en la tarjeta Archivos presione Abrir archivos. Esta tarjeta solo aparece al editar.
+Eliminar: use Eliminar en la lista o al editar, y confirme "Desea eliminar este Registro...". Si aparece "No es posible eliminar el colaborador, edite el nombre", ese colaborador no se puede eliminar; solo se puede editar.
+Según la configuración de su empresa también aparece el botón Url Menu.
+Ver también: Crear un colaborador, Agregar teléfonos y correos de un colaborador.
+
+68. AGREGAR TELÉFONOS Y CORREOS DE UN COLABORADOR
+----------------------------------------------------------------------
+Ruta: Menú > COLABORADORES > Nuevo o Editar.
+Agregar un teléfono:
+  1. En la tarjeta Teléfonos presione Agregar. Se abre Agregar teléfono.
+  2. Indique Tipo y Telefono, y marque Es Primario si corresponde.
+  3. Presione Aceptar (o Cancelar para salir sin agregarlo).
+Agregar un correo:
+  1. En la tarjeta Correos presione Agregar. Se abre Agregar correo.
+  2. Escriba el E-Mail y marque Es Primario si corresponde.
+  3. Presione Aceptar (o Cancelar para salir sin agregarlo).
+Quitar: marque la casilla de la fila y presione Eliminar en esa misma tarjeta.
+Presione Guardar en la pantalla del colaborador para conservar los cambios.
+Restricciones: el teléfono y el correo no aceptan vacío. Si los deja en blanco aparece "Escriba el número de teléfono." o "Escriba el correo.".
+
+69. REGISTRAR LA ASISTENCIA DE UN COLABORADOR
+----------------------------------------------------------------------
+Ruta: Menú > ASIS. COL. La lista se llama LISTA DE ASISTENCIA COLABORADOR.
+  1. Presione Nuevo. Se abre ASISTENCIA:#.
+  2. Primero revise la tarjeta Registro: Fecha (trae la de hoy), Prioridad y Estado.
+  3. En la tarjeta ¿Quién?, en Colaborador, presione Buscar y elíjalo.
+Importante: al crear una asistencia, elegir el colaborador con Buscar la guarda de inmediato, sin presionar Guardar. La pantalla lo avisa.
+Con Limpiar borra el colaborador elegido.
+Mensajes de validación: "Establecer Fecha al Documento" y "Seleccione el colaborador".
+Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuevo, Atras, Eliminar y Guardar. Al editar, cambiar el colaborador no guarda solo: presione Guardar (en el teléfono, en la barra inferior).
+Huella: en PC, al crear, se muestra el campo Huella; en el teléfono no aparece. Use Buscar para elegir al colaborador.
+Notas: esta pantalla no tiene Imprimir. Eliminar puede no estar permitido según el estado del registro.
+Ver también: Registrar la asistencia de un cliente.
+
+70. VER LA UBICACIÓN DE LOS COLABORADORES EN EL MAPA (GPS)
+----------------------------------------------------------------------
+Ruta: Menú > GPS. La pantalla se llama Google Maps.
+  1. En la tarjeta Filtro de búsqueda elija la Compañia y el Colaborador, o déjelos en TODAS para ver todos. Al cambiar la compañía se actualiza la lista de colaboradores.
+  2. Presione Ver mapa.
+  3. En la tarjeta Ubicaciones vea la cantidad de ubicaciones y el mapa con un marcador por cada una. Al pasar el cursor por un marcador se muestran el nombre, la compañía y la fecha.
+Mientras la pantalla está abierta, los marcadores se actualizan cada 10 segundos.
+Mensajes:
+  * "No hay ubicaciones para este filtro.": se muestra este aviso en lugar del mapa.
+  * "Completar los Parametros".
+Ver también: Qué contiene el menú de colaboradores (RRHH).
+
+71. CREAR UNA TAREA PARA UN COLABORADOR
+----------------------------------------------------------------------
+Ruta: Menú > TASK. La lista se llama LISTA DE TAREAS.
+  1. Presione Nuevo. Se abre TAREA:#.
+  2. En la tarjeta La tarea escriba el Titulo y la Descripcion.
+  3. En la tarjeta Personas, en Emisor y en Asignado, use Buscar y Limpiar.
+  4. En la tarjeta Fechas y estado revise Fecha registro y Fecha de entrega (traen la de hoy) e indique Estado, Prioridad y Categoria.
+  5. Opcional: en la tarjeta Seguimiento escriba la Descripción, elija la Situación y presione Agregar. Repita por cada comentario.
+  6. Opcional: en la tarjeta Comentario escriba el Comentario.
+  7. Opcional: en la tarjeta Más datos complete Referencia 1, Despues de y Orden.
+  8. Presione Guardar (en el teléfono, en la barra inferior).
+Mensajes de validación:
+  * "Establecer un titulo para la tarea" / "Establecer Fecha al Documento".
+  * "Seleccione el emisor de la tarea" / "Seleccione a quién asignará la tarea".
+  * "Este campo no puede estar vacío": al presionar Agregar en Seguimiento sin descripción.
+Ver también: Modificar o eliminar una tarea, Ver las tareas en el tablero Kanban, Programar una tarea o visita en el calendario.
+
+72. MODIFICAR O ELIMINAR UNA TAREA
+----------------------------------------------------------------------
+Ruta: Menú > TASK.
+  1. Seleccione la tarea en la lista y presione Editar. Se abre en otra pestaña. Arriba tiene Nuevo, Atras, Eliminar y Guardar.
+  2. Cambie los datos en las tarjetas y presione Guardar (en el teléfono, en la barra inferior).
+Comentarios: en la tarjeta Seguimiento agregue filas con Agregar y quítelas con el botón Quitar de cada fila.
+Restricciones: si quita todos los comentarios y guarda, los anteriores no se borran. La pantalla lo avisa: "Si guarda sin ninguna fila, los comentarios anteriores no se borran. Para quitar un comentario, deje al menos otra fila."
+Archivos: en la tarjeta Archivos presione Abrir archivos. Esta tarjeta solo aparece al editar.
+Eliminar: use Eliminar en la lista o al editar, y confirme "Desea eliminar este Registro...". Puede no estar permitido según el estado de la tarea.
+Ver también: Crear una tarea para un colaborador, Ver las tareas en el tablero Kanban.
+
+73. VER LAS TAREAS EN EL TABLERO KANBAN
+----------------------------------------------------------------------
+Ruta: Menú > TASK > botón Kanban. Se abre Tablero Kanban, con una columna por responsable.
+Cada tarea muestra título, descripción, Prioridad, Entrega, Estado, Orden, el botón Editar y el número de documento. El número es solo una etiqueta, no un botón.
+Reordenar: solo se puede dentro de la misma columna.
+  * En PC, arrastre la tarea a su nueva posición.
+  * En teléfonos y pantallas táctiles, use Subir y Bajar.
+No se puede mover a otro responsable: al soltarla en otra columna aparece "No se puede mover la tarea a otro responsable. Cambie el asignado desde Editar."
+Otros botones:
+  * Filtrar por Responsable: muestra solo la columna de esa persona.
+  * Agregar Tarea: abre en otra pestaña la pantalla normal para crear la tarea.
+  * Editar: abre en otra pestaña la pantalla normal de esa tarea.
+  * Lista Tarea: vuelve a LISTA DE TAREAS.
+  * Actualizar: vuelve a cargar el tablero.
+Mensajes: "No hay tareas pendientes.", "No hay tareas asignadas a ..." y "No se pudo guardar el orden."
+Ver también: Crear una tarea para un colaborador, Modificar o eliminar una tarea.
+
+74. SEGURIDAD: QUÉ CONTIENE EL MENÚ SEGURIDAD
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD.
 El menú SEGURIDAD agrupa las opciones para controlar quién entra a posMe y qué puede hacer:
@@ -860,7 +996,7 @@ El menú SEGURIDAD agrupa las opciones para controlar quién entra a posMe y qu�
   * ACTUALIZAR: uso exclusivo del equipo de soporte de posMe.
 Lo que cada persona ve en el menú depende de los permisos de su rol.
 
-66. INICIAR SESIÓN EN POSME
+75. INICIAR SESIÓN EN POSME
 ----------------------------------------------------------------------
 Ruta: pantalla de inicio de posMe.
   1. Escriba su Usuario y su Contraseña.
@@ -868,7 +1004,7 @@ Ruta: pantalla de inicio de posMe.
   3. Presione Ingresar.
 Notas: si posMe pide PERMISO DE LOCALIZACION REQUERIDO, debe permitir la ubicación en el navegador para poder entrar. Si los datos son incorrectos se muestra un mensaje y no se ingresa. Si no tiene usuario, pídalo al administrador de su empresa.
 
-67. OLVIDÉ MI CONTRASEÑA (REENVIAR CONTRASEÑA)
+76. OLVIDÉ MI CONTRASEÑA (REENVIAR CONTRASEÑA)
 ----------------------------------------------------------------------
 Ruta: pantalla de inicio de posMe > Reenviar Contraseña?
   1. En la pantalla de inicio presione Reenviar Contraseña?.
@@ -876,14 +1012,14 @@ Ruta: pantalla de inicio de posMe > Reenviar Contraseña?
   3. Revise su correo.
 Si no recibe el correo, pida al administrador de su empresa que le asigne una nueva contraseña en SEGURIDAD > USUARIOS.
 
-68. CERRAR SESIÓN (SALIR, SALGO DE POSME)
+77. CERRAR SESIÓN (SALIR, SALGO DE POSME)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > SALIR.
   1. Entre a SEGURIDAD > SALIR. posMe cierra la sesión y vuelve a la pantalla de inicio.
 Así es como se sale de posMe o se cambia de usuario.
 Cierre siempre la sesión al terminar, sobre todo en equipos compartidos.
 
-69. CAMBIAR MI CONTRASEÑA O MI CORREO (EDITAR PERFIL)
+78. CAMBIAR MI CONTRASEÑA O MI CORREO (EDITAR PERFIL)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > EDITAR PERFIL.
   1. Entre a SEGURIDAD > EDITAR PERFIL. Se abre Mi perfil con su Codigo y el Colaborador asociado.
@@ -892,7 +1028,7 @@ Ruta: Menú > SEGURIDAD > EDITAR PERFIL.
   4. Cierre sesión y vuelva a entrar con la nueva contraseña.
 El botón Imprimir imprime los datos del perfil.
 
-70. CREAR UN USUARIO (CREO UN USUARIO NUEVO)
+79. CREAR UN USUARIO (CREO UN USUARIO NUEVO)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > USUARIOS.
   1. En la Lista de Usuarios presione Nuevo. Se abre Nuevo usuario.
@@ -906,7 +1042,7 @@ Ruta: Menú > SEGURIDAD > USUARIOS.
   5. Presione Guardar.
 Notas: para quitar una bodega o caja, toque la fila para seleccionarla y presione Quitar seleccionada. El usuario solo ve el menú que permite su rol (ver Roles).
 
-71. MODIFICAR O ELIMINAR UN USUARIO
+80. MODIFICAR O ELIMINAR UN USUARIO
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > USUARIOS.
   1. Busque el usuario en la lista (campo Buscar usuario…) y ábralo.
@@ -916,7 +1052,7 @@ Ruta: Menú > SEGURIDAD > USUARIOS.
 Para cambiar la contraseña de otro usuario escriba la nueva en Password y guarde.
 Restricciones: se requiere permiso de editar o eliminar en USUARIOS; si su permiso es Propios, solo puede modificar o eliminar los usuarios que usted creó.
 
-72. CREAR UN ROL
+81. CREAR UN ROL
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES.
 Un rol es un perfil de permisos (por ejemplo CAJERO, VENDEDOR, CONTADOR) que se asigna a los usuarios.
@@ -928,7 +1064,7 @@ Un rol es un perfil de permisos (por ejemplo CAJERO, VENDEDOR, CONTADOR) que se 
   6. Presione Guardar.
 Notas: los cambios en el menú se ven cuando el usuario vuelve a iniciar sesión.
 
-73. PERMISOS POR PANTALLA DE UN ROL (VER, CREAR, EDITAR, ELIMINAR)
+82. PERMISOS POR PANTALLA DE UN ROL (VER, CREAR, EDITAR, ELIMINAR)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
   1. En Permisos por pantalla active el interruptor de cada pantalla a la que el rol tendrá acceso. Use Buscar pantalla… para encontrarla y Solo con acceso para ver solo las que ya tienen acceso.
@@ -941,7 +1077,7 @@ Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
   4. Presione Guardar y pida a los usuarios del rol cerrar sesión y volver a entrar.
 Notas: si el rol es administrador tiene acceso a todo y estos permisos no se aplican. Si edita su propio rol y le quita el acceso a ROLES, perderá acceso a esa pantalla.
 
-74. AUTORIZACIONES DE UN ROL
+83. AUTORIZACIONES DE UN ROL
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES > abrir el rol > Autorizaciones.
 Las autorizaciones son permisos especiales que no dependen de una pantalla (por ejemplo ADMINISTRADOR, CAJERO, CONTADOR, o autorizaciones de usuario interno o externo de taller). Según la configuración de la empresa, habilitan acciones como aprobar documentos o ver información restringida.
@@ -949,7 +1085,7 @@ Las autorizaciones son permisos especiales que no dependen de una pantalla (por 
   2. Marque las que correspondan (Marcar todas / Ninguna para marcar o desmarcar todo).
   3. Presione Guardar.
 
-75. DAR ACCESO AL ASISTENTE JORDANIA (ASISTENTE IA)
+84. DAR ACCESO AL ASISTENTE JORDANIA (ASISTENTE IA)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
   1. En Permisos por pantalla busque Asistente IA y active el acceso.
@@ -957,7 +1093,7 @@ Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
   3. Los usuarios del rol deben cerrar sesión y volver a entrar; verán el botón del asistente en la pantalla.
 Notas: además del permiso, la empresa debe tener habilitado el asistente (lo configura soporte de posMe).
 
-76. SUCURSALES
+85. SUCURSALES
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > SUCURSAL.
   1. Para crear una sucursal presione Nuevo. Se abre Nueva sucursal.
@@ -966,7 +1102,7 @@ Ruta: Menú > SEGURIDAD > SUCURSAL.
 Para modificarla, ábrala en la lista, cambie los datos y presione Guardar; para darla de baja presione Eliminar.
 Después asigne la sucursal a los usuarios en SEGURIDAD > USUARIOS (campo Sucursal).
 
-77. NOTIFICACIONES Y RECORDATORIOS (CONFIG. NOTI)
+86. NOTIFICACIONES Y RECORDATORIOS (CONFIG. NOTI)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > CONFIG. NOTI.
 Permite configurar recordatorios periódicos que posMe muestra o envía a los usuarios.
@@ -978,7 +1114,7 @@ Permite configurar recordatorios periódicos que posMe muestra o envía a los us
 Para que un usuario reciba la notificación, asígnela en SEGURIDAD > USUARIOS > pestaña Notificaciones.
 Ver también: Programar una tarea o visita en el calendario.
 
-78. VER QUIÉN ENTRÓ: SESIONES Y ACTIVIDAD DE UN USUARIO (LOG SESSION)
+87. VER QUIÉN ENTRÓ: SESIONES Y ACTIVIDAD DE UN USUARIO (LOG SESSION)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > LOG SESSION.
   1. En Usuario elija el usuario y presione Consultar.
@@ -987,17 +1123,17 @@ Ruta: Menú > SEGURIDAD > LOG SESSION.
      * Últimas 5 Sesiones con IP, Plataforma (navegador/dispositivo), Último Movimiento y Detalle.
 Útil para revisar quién entró al sistema, desde dónde y cuánto trabajo ha registrado.
 
-79. ACTUALIZAR (USO DE SOPORTE)
+88. ACTUALIZAR (USO DE SOPORTE)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ACTUALIZAR.
 Opción técnica para que el equipo de soporte de posMe aplique actualizaciones al sistema. No la use salvo que soporte se lo indique.
 
-80. PARÁMETROS DE LA EMPRESA
+89. PARÁMETROS DE LA EMPRESA
 ----------------------------------------------------------------------
 Los parámetros controlan el comportamiento de posMe por empresa (por ejemplo, orden de aplicación de abonos, lista de precios por defecto, formato de impresión).
 Los parámetros contables se editan en CONTABILIDAD > PARAMETROS; el resto los configura el equipo de soporte de posMe.
 Ver también: Configurar los parámetros contables.
 
-81. SOPORTE
+90. SOPORTE
 ----------------------------------------------------------------------
 Si no encuentra cómo hacer algo o hay un error en el sistema, contacte al equipo de soporte de posMe.

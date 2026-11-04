@@ -28,7 +28,7 @@
 						//Nueva factura
 						$(document).on("click","#btnNewShare",function(){
 							var url_request 			= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentEmployee->componentID; ?>/onCompleteNewShare/SELECCIONAR_EMPLOYEE/true/empty/false/not_redirect_when_empty";
-							pv2OpenSearch(url_request,"Buscar colaborador","onCompleteNewShare",onCompleteNewShare,"width=1585,height=795");
+							pv2OpenSearch(url_request,"Buscar colaborador","onCompleteNewShare",onCompleteNewShare,"width=900,height=500");
 						});
 						//Eliminar factura
 						$(document).on("click","#btnDeleteShare",function(){
@@ -93,6 +93,23 @@
 					function validateForm(){
 						var result 				= true;
 						var timerNotification 	= 15000;
+						var filas 				= $("#body_tb_transaction_master_detail tr");
+
+						//Un adelanto debe tener al menos un colaborador
+						if(filas.length == 0){
+							fnShowNotification("Agregue al menos un colaborador","error",timerNotification);
+							return false;
+						}
+
+						//pv2Num quita el formato visual; un monto vacio cuenta como 0
+						filas.each(function(index,obj){
+							if(pv2Num($(obj).find("#txtNeto").val()) == 0){
+								result = false;
+							}
+						});
+						if(!result){
+							fnShowNotification("Ingrese el monto de cada colaborador","error",timerNotification);
+						}
 						return result;
 					}
 					

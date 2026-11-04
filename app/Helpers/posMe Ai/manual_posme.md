@@ -224,6 +224,7 @@ Mensajes:
 - "Cliente no encontrado" / "Cliente sin membresia" / "Cliente con Mora".
 Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Nuevo e Imprimir**, **Atras**, el menú **Imprimir** (**Imprimir preview** e **Imprimir direct**), **Eliminar** y **Guardar**. En la edición no aparece **Huella**.
 <!-- REVISAR: funcionamiento de Huella y del sensor; significado de Solvencia; efecto de pasar el Estado a APLICADO; si "Cliente con Mora" impide guardar -->
+Ver también: Registrar la asistencia de un colaborador.
 
 ## Qué contiene el menú BANCO
 Ruta: Menú > BANCO.
@@ -356,7 +357,7 @@ Mensajes de validación (debajo de cada campo):
 * "La descripción del evento es obligatoria."
 * "La fecha del evento es obligatoria."
 * "Debe seleccionar una etiqueta."
-Ver también: Modificar, eliminar o imprimir un evento del calendario.
+Ver también: Modificar, eliminar o imprimir un evento del calendario, Crear una tarea para un colaborador.
 
 ## Modificar, eliminar o imprimir un evento del calendario
 Ruta: Menú > CALENDARIO > PROGRAMACION.
@@ -666,12 +667,12 @@ Ruta: Menú > PLANILLA.
 - **ADELANTOS**: adelantos a colaboradores.
 - **LIQUIDACION**: liquidación de colaboradores.
 - **PERMISO**: permisos de colaboradores.
-Seleccione la fila de la lista y presione **Editar** para abrir un registro; si no selecciona una aparece "Seleccionar el Registro...". Para crear uno presione **Nuevo**. En ADELANTOS, LIQUIDACION y PERMISO, **Eliminar** pide confirmar "Desea eliminar este Registro...".
+Seleccione la fila de la lista y presione **Editar** para abrir un registro; si no selecciona una aparece "Seleccionar el Registro...". Para crear uno presione **Nuevo**. En ADELANTOS, LIQUIDACION y PERMISO, **Eliminar** pide confirmar "Desea eliminar este Registro...". P. PLANILLA no tiene botón **Eliminar** en la lista.
 Buscar en la lista:
 - En P. PLANILLA, **Buscar en la lista…** filtra la lista cargada mientras escribe.
 - En ADELANTOS, LIQUIDACION y PERMISO escriba en **Buscar por número…** y presione el botón de la lupa o Enter.
-Al editar, las cuatro pantallas tienen arriba solo **Atras** y **Guardar**.
-Notas: en el teléfono el botón **Guardar** está en la barra inferior y los botones **Buscar** abren la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol. <!-- REVISAR: Eliminar de la lista de P. PLANILLA no funciona hoy (defecto conocido sin corregir); documentarlo cuando se corrija -->
+Al editar, las cuatro pantallas tienen arriba solo **Atrás** y **Guardar**.
+Notas: en el teléfono el botón **Guardar** está en la barra inferior y los botones **Buscar** abren la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol.
 Ver también: Crear una planilla de pago, Registrar adelantos a colaboradores, Registrar la liquidación de un colaborador, Registrar un permiso de un colaborador.
 
 ## Crear una planilla de pago
@@ -681,10 +682,11 @@ Ruta: Menú > PLANILLA > P. PLANILLA. La lista se llama **LISTA DE PLANILLAS**.
 3. En la tarjeta **Clasificación** indique **Tipo** y **Moneda**.
 4. Opcional: en la tarjeta **Comentario** escriba la **Descripción**.
 5. En la tarjeta **Colaboradores** presione **Agregar colaborador** y elíjalo en la búsqueda. Repita por cada colaborador. En el teléfono cada colaborador se ve como una tarjeta.
-6. Complete en cada colaborador **+Comision**, **+Bono Quincenal**, **-Adelantos**, **-Deducciones Por Prestamos** y **-Deducciones Por Llegada Tarde**. **Vacaciones Acumuladas**, **INSS Patronal**, **+Salario**, **INSS**, **Ahorro**, **IR** y **Salario Neto** no se escriben a mano.
+6. Complete en cada colaborador **+Comisión**, **+Bono Quincenal**, **-Adelantos**, **-Deducciones Por Préstamos** y **-Deducciones Por Llegada Tarde**. **Vacaciones Acumuladas**, **INSS Patronal**, **+Salario**, **INSS**, **Ahorro**, **IR** y **Salario Neto** no se escriben a mano.
 7. Revise el **Total** en la tarjeta **Resumen** y presione **Guardar** (en el teléfono, en la barra inferior).
 Quitar un colaborador: marque su casilla (en el teléfono, la casilla **Quitar**) y presione **Quitar marcados**.
-Mensajes de validación: "Ingrese el Nombre" y "El Colaborador ya existe en el detalle".
+No se puede guardar una planilla sin colaboradores.
+Mensajes de validación: "Ingrese el Nombre", "Agregue al menos un colaborador" y "El Colaborador ya existe en el detalle".
 Para modificarla, selecciónela en la lista y presione **Editar**.
 <!-- REVISAR: uso de Ciclo, Quincena y Tipo; cómo se calculan salario, INSS, Ahorro, IR y Salario Neto; efecto de pasar el Estado a APLICADO -->
 Ver también: Registrar adelantos a colaboradores.
@@ -698,36 +700,160 @@ Ruta: Menú > PLANILLA > ADELANTOS. La lista se llama **LISTA DE ADELANTOS**.
 5. En la tarjeta **Colaboradores** presione **Agregar colaborador**, elíjalo en la búsqueda y escriba el **Monto**. Repita por cada colaborador.
 6. Revise el **Total** en la tarjeta **Resumen** y presione **Guardar** (en el teléfono, en la barra inferior).
 Quitar un colaborador: marque su casilla (en el teléfono, la casilla **Quitar**) y presione **Quitar marcados**.
-Mensajes de validación: "El Colaborador ya existe en el detalle".
+No se puede guardar un adelanto sin colaboradores ni con un **Monto** en 0.
+Mensajes de validación: "Agregue al menos un colaborador", "Ingrese el monto de cada colaborador" y "El Colaborador ya existe en el detalle".
 Para modificarlo, selecciónelo en la lista y presione **Editar**.
 <!-- REVISAR: uso de Ciclo y Tipo; si el adelanto se descuenta en la planilla y cuándo; efecto de pasar el Estado a APLICADO -->
 Ver también: Crear una planilla de pago.
 
 ## Registrar la liquidación de un colaborador
-Ruta: Menú > PLANILLA > LIQUIDACION. La lista se llama **LISTA DE LIQUIDACION**.
-1. Presione **Nuevo**. Se abre **LIQUIDACION:#**.
-2. En la tarjeta **Colaborador**, en **Colaborador** use **Buscar** y **Limpiar**. Se muestran **Codigo**, **Nombre Completo** y **Area**. Indique el **Estado**. **Liquidación Neta** se muestra y no se escribe a mano.
+Ruta: Menú > PLANILLA > LIQUIDACION. La lista se llama **LISTA DE LIQUIDACIÓN**.
+1. Presione **Nuevo**. Se abre **LIQUIDACIÓN:#**.
+2. En la tarjeta **Colaborador**, en **Colaborador** use **Buscar** y **Limpiar**; el campo muestra el código y el nombre. Se muestran también **Código**, **Nombre Completo** y **Área**. Indique el **Estado**. **Liquidación Neta** se muestra y no se escribe a mano.
 3. En la tarjeta **Trabajo** indique **Fecha de Fin**. **Fecha de Inicio**, **Años Laborados**, **Salario Devengado** y **Vacaciones Acumuladas** no se escriben a mano.
-4. En la tarjeta **Ingresos** complete **Comision** y **Bono**. **Salario Proporcional**, **Ahorro Acumulado**, **Pago Vacaciones Acumuladas**, **Pago por mes 13** y **Pago por Antiguedad** no se escriben a mano.
-5. En la tarjeta **Deducciones** complete **Prestamos**, **Llegadas Tarde** y **Adelantos**. **INSS**, **IR** e **IR Por Vacaciones** no se escriben a mano.
+4. En la tarjeta **Ingresos** complete **Comisión** y **Bono**. **Salario Proporcional**, **Ahorro Acumulado**, **Pago Vacaciones Acumuladas**, **Pago por mes 13** y **Pago por Antigüedad** no se escriben a mano.
+5. En la tarjeta **Deducciones** complete **Préstamos**, **Llegadas Tarde** y **Adelantos**. **INSS**, **IR** e **IR Por Vacaciones** no se escriben a mano.
 6. Presione **Guardar** (en el teléfono, en la barra inferior).
-Mensajes de validación: "Seleccione el colaborador", y "El dato ... no es una entrada Valida" si un monto no es válido.
+Mensajes de validación: "Seleccione el colaborador", y "El dato ... no es una entrada Válida" si un monto no es válido.
 Para modificarla, selecciónela en la lista y presione **Editar**.
 <!-- REVISAR: cómo se calculan los montos y la Liquidación Neta, y su base legal; efecto de pasar el Estado a APLICADO -->
 
 ## Registrar un permiso de un colaborador
 Ruta: Menú > PLANILLA > PERMISO. La lista se llama **LISTA DE PERMISOS**.
 1. Presione **Nuevo**. Se abre **PERMISO:#**.
-2. En la tarjeta **Colaborador**, en **Colaborador** use **Buscar** y **Limpiar**. Se muestran **Codigo**, **Nombre Completo** y **Area**.
-3. En la tarjeta **Detalles del permiso** indique **Tipo de Permiso**, **Fecha de Inicio**, **Fecha de Fin**, **Fecha de Integracion** y **Estado**. **Dias de Vacaciones** no se escribe a mano.
+2. En la tarjeta **Colaborador**, en **Colaborador** use **Buscar** y **Limpiar**; el campo muestra el código y el nombre. Se muestran también **Código**, **Nombre Completo** y **Área**.
+3. En la tarjeta **Detalles del permiso** indique **Tipo de Permiso**, **Fecha de Inicio**, **Fecha de Fin**, **Fecha de Integración** y **Estado**. **Días** no se escribe a mano.
 4. Opcional: escriba la **Nota**. Según la configuración de su empresa este campo puede tener otro nombre.
 5. Presione **Guardar** (en el teléfono, en la barra inferior).
 Mensajes de validación:
 - "Seleccione el colaborador".
-- "La Fecha Final del Permiso Esta Mal Configurada".
-- "La Fecha de Integracion del Colaborador Esta Mal Configurada".
+- "La Fecha Final del Permiso Está Mal Configurada".
+- "La Fecha de Integración del Colaborador Está Mal Configurada".
 Para modificarlo, selecciónelo en la lista y presione **Editar**.
-<!-- REVISAR: opciones de Tipo de Permiso; efecto en Dias de Vacaciones; significado de Fecha de Integracion; efecto de pasar el Estado a APLICADO -->
+<!-- REVISAR: opciones de Tipo de Permiso; efecto en Días; significado de Fecha de Integración; efecto de pasar el Estado a APLICADO -->
+
+## Qué contiene el menú de colaboradores (RRHH)
+Ruta: Menú > **COLABORADORES**, **ASIS. COL**, **GPS** y **TASK**.
+- **COLABORADORES**: datos de cada colaborador.
+- **ASIS. COL**: asistencia de los colaboradores.
+- **GPS**: ubicación de los colaboradores en el mapa.
+- **TASK**: tareas de los colaboradores, en lista o en tablero Kanban.
+En COLABORADORES, ASIS. COL y TASK seleccione la fila de la lista y presione **Editar**; si no selecciona una aparece "Seleccionar el Registro...". Para crear uno presione **Nuevo**. **Eliminar** pide confirmar "Desea eliminar este Registro...".
+Buscar en la lista: en ASIS. COL y TASK escriba en **Buscar por número…** y presione el botón de la lupa o Enter. La lista de COLABORADORES no tiene buscador.
+Notas: en el teléfono el botón **Guardar** está en la barra inferior y los botones **Buscar** abren la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol.
+<!-- REVISAR: menú padre y nombres exactos de las cuatro opciones; no están en el código ni en seeds del repositorio y no se consultó la BD -->
+Ver también: Crear un colaborador, Registrar la asistencia de un colaborador, Ver la ubicación de los colaboradores en el mapa (GPS), Crear una tarea para un colaborador.
+
+## Crear un colaborador
+Ruta: Menú > COLABORADORES. La lista se llama **LISTA DE COLABORADORES**; según la configuración de su empresa puede tener otro nombre.
+1. Presione **Nuevo**. Se abre **CODIGO:#**, con todos los datos en tarjetas en una sola pantalla.
+2. En la tarjeta **Datos personales** indique **Primer Nombre**, **Apellidos**, **Tipo Identificacion**, **Identificacion** e **INSS**.
+3. En la tarjeta **Su trabajo** indique **Estado**, **Clasificacion**, **Contrato**, **Grado**, **Departamento de la empresa** y **Area**. En **Jefe Inmediato** use **Buscar** y **Limpiar**. **Fecha Inicio** trae la fecha de hoy; cámbiela si hace falta. Indique **Fecha Fin** si corresponde.
+4. En la tarjeta **Dónde vive** indique **Pais**, **Departamento del pais**, **Municipio** y **Direccion**.
+5. En la tarjeta **Pago y vacaciones** indique **Costo/H**. **Vacaciones Acumuladas** no se escribe a mano.
+6. Opcional: en la tarjeta **Referencias** complete **Referencia1** y **Referencia2**. Según la configuración de su empresa, **Referencia1** puede tener otro nombre.
+7. Opcional: agregue datos en las tarjetas **Teléfonos** y **Correos**.
+8. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensajes de validación:
+- "Seleccionar el Pais" / "Seleccionar el Departamento" / "Seleccionar el Municipio".
+- "Escribir la Identificacion" / "Escribir el Nombre".
+<!-- REVISAR: uso de Clasificacion, Contrato, Grado y Referencia2; cómo se calculan las Vacaciones Acumuladas -->
+Ver también: Agregar teléfonos y correos de un colaborador, Modificar o eliminar un colaborador.
+
+## Modificar o eliminar un colaborador
+Ruta: Menú > COLABORADORES.
+1. Seleccione el colaborador en la lista y presione **Editar**. Arriba tiene **Atras**, **Eliminar** y **Guardar**.
+2. Cambie los datos en las tarjetas y presione **Guardar** (en el teléfono, en la barra inferior).
+Archivos: en la tarjeta **Archivos** presione **Abrir archivos**. Esta tarjeta solo aparece al editar.
+Eliminar: use **Eliminar** en la lista o al editar, y confirme "Desea eliminar este Registro...". Si aparece "No es posible eliminar el colaborador, edite el nombre", ese colaborador no se puede eliminar; solo se puede editar.
+Según la configuración de su empresa también aparece el botón **Url Menu**.
+<!-- REVISAR: uso de Url Menu (datos de acceso al menú digital) y qué colaborador produce el mensaje de que no se puede eliminar -->
+Ver también: Crear un colaborador, Agregar teléfonos y correos de un colaborador.
+
+## Agregar teléfonos y correos de un colaborador
+Ruta: Menú > COLABORADORES > Nuevo o Editar.
+Agregar un teléfono:
+1. En la tarjeta **Teléfonos** presione **Agregar**. Se abre **Agregar teléfono**.
+2. Indique **Tipo** y **Telefono**, y marque **Es Primario** si corresponde.
+3. Presione **Aceptar** (o **Cancelar** para salir sin agregarlo).
+Agregar un correo:
+1. En la tarjeta **Correos** presione **Agregar**. Se abre **Agregar correo**.
+2. Escriba el **E-Mail** y marque **Es Primario** si corresponde.
+3. Presione **Aceptar** (o **Cancelar** para salir sin agregarlo).
+Quitar: marque la casilla de la fila y presione **Eliminar** en esa misma tarjeta.
+Presione **Guardar** en la pantalla del colaborador para conservar los cambios.
+Restricciones: el teléfono y el correo no aceptan vacío. Si los deja en blanco aparece "Escriba el número de teléfono." o "Escriba el correo.".
+
+## Registrar la asistencia de un colaborador
+Ruta: Menú > ASIS. COL. La lista se llama **LISTA DE ASISTENCIA COLABORADOR**.
+1. Presione **Nuevo**. Se abre **ASISTENCIA:#**.
+2. Primero revise la tarjeta **Registro**: **Fecha** (trae la de hoy), **Prioridad** y **Estado**.
+3. En la tarjeta **¿Quién?**, en **Colaborador**, presione **Buscar** y elíjalo.
+Importante: al crear una asistencia, elegir el colaborador con **Buscar** la guarda de inmediato, sin presionar **Guardar**. La pantalla lo avisa.
+Con **Limpiar** borra el colaborador elegido.
+Mensajes de validación: "Establecer Fecha al Documento" y "Seleccione el colaborador".
+Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Eliminar** y **Guardar**. Al editar, cambiar el colaborador no guarda solo: presione **Guardar** (en el teléfono, en la barra inferior).
+Huella: en PC, al crear, se muestra el campo **Huella**; en el teléfono no aparece. Use **Buscar** para elegir al colaborador.
+Notas: esta pantalla no tiene **Imprimir**. Eliminar puede no estar permitido según el estado del registro.
+<!-- REVISAR: la lectura de huella tiene un fallo conocido sin corregir; no documentarla como operativa hasta confirmarla. Además: uso de Prioridad y efecto de cada Estado -->
+Ver también: Registrar la asistencia de un cliente.
+
+## Ver la ubicación de los colaboradores en el mapa (GPS)
+Ruta: Menú > GPS. La pantalla se llama **Google Maps**.
+1. En la tarjeta **Filtro de búsqueda** elija la **Compañia** y el **Colaborador**, o déjelos en TODAS para ver todos. Al cambiar la compañía se actualiza la lista de colaboradores.
+2. Presione **Ver mapa**.
+3. En la tarjeta **Ubicaciones** vea la cantidad de ubicaciones y el mapa con un marcador por cada una. Al pasar el cursor por un marcador se muestran el nombre, la compañía y la fecha.
+Mientras la pantalla está abierta, los marcadores se actualizan cada 10 segundos.
+Mensajes:
+- "No hay ubicaciones para este filtro.": se muestra este aviso en lugar del mapa.
+- "Completar los Parametros".
+<!-- REVISAR: de dónde sale cada ubicación (aplicación móvil) y qué debe hacer el colaborador para que se registre; qué compañías debe ver cada usuario -->
+Ver también: Qué contiene el menú de colaboradores (RRHH).
+
+## Crear una tarea para un colaborador
+Ruta: Menú > TASK. La lista se llama **LISTA DE TAREAS**.
+1. Presione **Nuevo**. Se abre **TAREA:#**.
+2. En la tarjeta **La tarea** escriba el **Titulo** y la **Descripcion**.
+3. En la tarjeta **Personas**, en **Emisor** y en **Asignado**, use **Buscar** y **Limpiar**.
+4. En la tarjeta **Fechas y estado** revise **Fecha registro** y **Fecha de entrega** (traen la de hoy) e indique **Estado**, **Prioridad** y **Categoria**.
+5. Opcional: en la tarjeta **Seguimiento** escriba la **Descripción**, elija la **Situación** y presione **Agregar**. Repita por cada comentario.
+6. Opcional: en la tarjeta **Comentario** escriba el **Comentario**.
+7. Opcional: en la tarjeta **Más datos** complete **Referencia 1**, **Despues de** y **Orden**.
+8. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensajes de validación:
+- "Establecer un titulo para la tarea" / "Establecer Fecha al Documento".
+- "Seleccione el emisor de la tarea" / "Seleccione a quién asignará la tarea".
+- "Este campo no puede estar vacío": al presionar **Agregar** en **Seguimiento** sin descripción.
+<!-- REVISAR: significado de Despues de y de Referencia 1; opciones de Situación; efecto de cada Estado -->
+Ver también: Modificar o eliminar una tarea, Ver las tareas en el tablero Kanban, Programar una tarea o visita en el calendario.
+
+## Modificar o eliminar una tarea
+Ruta: Menú > TASK.
+1. Seleccione la tarea en la lista y presione **Editar**. Se abre en otra pestaña. Arriba tiene **Nuevo**, **Atras**, **Eliminar** y **Guardar**.
+2. Cambie los datos en las tarjetas y presione **Guardar** (en el teléfono, en la barra inferior).
+Comentarios: en la tarjeta **Seguimiento** agregue filas con **Agregar** y quítelas con el botón **Quitar** de cada fila.
+Restricciones: si quita todos los comentarios y guarda, los anteriores no se borran. La pantalla lo avisa: "Si guarda sin ninguna fila, los comentarios anteriores no se borran. Para quitar un comentario, deje al menos otra fila."
+Archivos: en la tarjeta **Archivos** presione **Abrir archivos**. Esta tarjeta solo aparece al editar.
+Eliminar: use **Eliminar** en la lista o al editar, y confirme "Desea eliminar este Registro...". Puede no estar permitido según el estado de la tarea.
+<!-- REVISAR: en qué estados se permite eliminar; depende del flujo configurado en la BD -->
+Ver también: Crear una tarea para un colaborador, Ver las tareas en el tablero Kanban.
+
+## Ver las tareas en el tablero Kanban
+Ruta: Menú > TASK > botón **Kanban**. Se abre **Tablero Kanban**, con una columna por responsable.
+Cada tarea muestra título, descripción, **Prioridad**, **Entrega**, **Estado**, **Orden**, el botón **Editar** y el número de documento. El número es solo una etiqueta, no un botón.
+Reordenar: solo se puede dentro de la misma columna.
+- En PC, arrastre la tarea a su nueva posición.
+- En teléfonos y pantallas táctiles, use **Subir** y **Bajar**.
+No se puede mover a otro responsable: al soltarla en otra columna aparece "No se puede mover la tarea a otro responsable. Cambie el asignado desde Editar."
+Otros botones:
+- **Filtrar por Responsable**: muestra solo la columna de esa persona.
+- **Agregar Tarea**: abre en otra pestaña la pantalla normal para crear la tarea.
+- **Editar**: abre en otra pestaña la pantalla normal de esa tarea.
+- **Lista Tarea**: vuelve a **LISTA DE TAREAS**.
+- **Actualizar**: vuelve a cargar el tablero.
+Mensajes: "No hay tareas pendientes.", "No hay tareas asignadas a ..." y "No se pudo guardar el orden."
+<!-- REVISAR: qué tareas considera el tablero (por ejemplo, si excluye las terminadas) -->
+Ver también: Crear una tarea para un colaborador, Modificar o eliminar una tarea.
 
 ## Seguridad: qué contiene el menú SEGURIDAD
 Ruta: Menú > SEGURIDAD.

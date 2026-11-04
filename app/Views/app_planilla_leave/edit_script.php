@@ -68,14 +68,14 @@
 
             if(totalVacationDays < 1)
             {
-                fnShowNotification("La Fecha Final del Permiso Esta Mal Configurada", "error", timerNotification);
+                fnShowNotification("La Fecha Final del Permiso Está Mal Configurada", "error", timerNotification);
                 isValidForm = false;
                 return isValidForm;
             }
 
             if(leaveEndvsIntegrationDiff < 1)
             {
-                fnShowNotification("La Fecha de Integracion del Colaborador Esta Mal Configurada", "error", timerNotification);
+                fnShowNotification("La Fecha de Integración del Colaborador Está Mal Configurada", "error", timerNotification);
                 isValidForm = false;
                 return isValidForm;
             }
@@ -99,7 +99,7 @@
             $("#txtEmployeeEntityID").val(EmployeeEntityID);
             $("#txtEmployeeCode").val(EmployeeCode);
             $("#txtEmployeeFullName").val(EmployeeFullName);
-            $("#txtEmployeeDescription").val(EmployeeEntityID + " " + EmployeeCode + " | " + EmployeeFullName);
+            $("#txtEmployeeDescription").val(EmployeeCode + " | " + EmployeeFullName);
             $("#txtEmployeeArea").val(EmployeeArea);
 
             //Inicializar inputs en cero.
@@ -124,7 +124,7 @@
             let leaveEndvsIntegrationDiff   = fnCountDiscreteDays(EmployeeLeaveEnd, EmployeeLeaveIntegration);
             
             $("#txtEndvsIntegrationDiff").val(leaveEndvsIntegrationDiff);
-            $("#txtEmployeeVacationDays").val(totalVacationDays);
+            $("#txtEmployeeVacationDays").val(totalVacationDays.toFixed(2));
             refreschChecked();
         }
         

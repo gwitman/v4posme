@@ -5,12 +5,12 @@
         <div class="pv2-header-info">
             <div class="pv2-header-icon"><i class="icon20 i-clock-5"></i></div>
             <div>
-                <p class="pv2-header-title">LIQUIDACION:#<span class="invoice-num"><?php echo $objTM->transactionNumber; ?></span></p>
+                <p class="pv2-header-title">LIQUIDACIÓN:#<span class="invoice-num"><?php echo $objTM->transactionNumber; ?></span></p>
                 <p class="pv2-header-sub">Consulta y actualiza los ingresos, deducciones y la liquidación neta del colaborador</p>
             </div>
         </div>
         <div class="pv2-actions">
-            <a href="<?php echo base_url(); ?>/app_planilla_settlement/index" id="btnBack" class="btn btn-default"><i class="icon16 i-rotate"></i> Atras</a>
+            <a href="<?php echo base_url(); ?>/app_planilla_settlement/index" id="btnBack" class="btn btn-default"><i class="icon16 i-rotate"></i> Atrás</a>
             <a href="#" class="btn btn-primary pv2-hide-xs" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
         </div>
     </div>
@@ -32,7 +32,7 @@
                                                 <input type="hidden" id="txtTransactionOn" name="txtTransactionOn" value="">
                                                 <input type="hidden" id="txtTransactionID" name="txtTransactionID" value="<?php echo $objTM->transactionID ?>">
                                                 <input type="hidden" id="txtTransactionMasterID" name="txtTransactionMasterID" value="<?php echo $objTM->transactionMasterID ?>">
-                                                <input class="form-control" readonly id="txtEmployeeDescription" type="text" autocomplete="off" value="<?php echo $objEmployee->entityID . " " . $objEmployee->employeNumber . " | " . $objListNaturales->firstName . " " . $objListNaturales->lastName ?>">
+                                                <input class="form-control" readonly id="txtEmployeeDescription" type="text" autocomplete="off" value="<?php echo $objEmployee->employeNumber . " | " . $objListNaturales->firstName . " " . $objListNaturales->lastName ?>">
 
                                                 <span class="input-group-btn">
                                                     <button class="btn btn-default" type="button" id="btnClearEmployee">
@@ -51,7 +51,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="pv2-label">Codigo</label>
+                                        <label class="pv2-label">Código</label>
                                         <div>
                                             <input class="form-control" readonly type="text" name="txtEmployeeCode" id="txtEmployeeCode" value="<?php echo $objEmployee->employeNumber ?>">
                                         </div>
@@ -65,7 +65,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="pv2-label">Area</label>
+                                        <label class="pv2-label">Área</label>
                                         <div>
                                             <input class="form-control" readonly type="text" name="txtEmployeeArea" id="txtEmployeeArea" value="<?php echo $objCatalogItem->name ?>">
                                         </div>
@@ -170,7 +170,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="pv2-label">Comision</label>
+                                        <label class="pv2-label">Comisión</label>
                                         <div>
                                             <input class="form-control pv2-num txt-employee-numeric" inputmode="decimal" autocomplete="off" type="text" name="txtEmployeeComission" id="txtEmployeeComission" value="<?php echo number_format($objTM->reference2,2) ?>">
                                         </div>
@@ -202,7 +202,7 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="pv2-label">Pago por Antiguedad</label>
+                                        <label class="pv2-label">Pago por Antigüedad</label>
                                         <div>
                                             <input class="form-control pv2-num txt-employee-numeric" readonly type="text" name="txtEmployeeSeniorityPayment" id="txtEmployeeSeniorityPayment" value="<?php echo number_format($objTMI->reference1,2) ?>">
                                         </div>
@@ -243,7 +243,7 @@
                                 <div class="col-xs-12 col-md-6">
 
                                     <div class="form-group">
-                                        <label class="pv2-label">Prestamos</label>
+                                        <label class="pv2-label">Préstamos</label>
                                         <div>
                                             <input class="form-control pv2-num txt-employee-numeric" inputmode="decimal" autocomplete="off" type="text" name="txtEmployeeLoans" id="txtEmployeeLoans" value="<?php echo number_format($objTMI->receiptAmountDol,2) ?>">
                                         </div>

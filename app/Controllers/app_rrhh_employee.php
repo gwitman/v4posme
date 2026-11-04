@@ -53,6 +53,7 @@ class app_rrhh_employee extends _BaseController {
 			$db->transStart();			
 			//El Estado solo permite editar el workflow
 			if($this->core_web_workflow->validateWorkflowStage("tb_employee","statusID",$oldStatusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)){				
+				$objEmployee					= array();
 				$objEmployee["statusID"] 		= /*inicio get post*/ $this->request->getPost('txtStatusID');//--fin peticion get o post
 				$this->Employee_Model->update_app_posme($companyID_,$branchID_,$entityID_,$objEmployee);
 			}
@@ -71,7 +72,7 @@ class app_rrhh_employee extends _BaseController {
 				$objEmployee["reference1"]				= /*inicio get post*/ $this->request->getPost("txtReference1");//--fin peticion get o post
 				$objEmployee["reference2"]				= /*inicio get post*/ $this->request->getPost("txtReference2");//--fin peticion get o post
 				$objEmployee["socialSecurityNumber"]	= /*inicio get post*/ $this->request->getPost("txtSocialSecurityNumber");//--fin peticion get o post
-				$objEmployee["hourCost"]				= /*inicio get post*/ $this->request->getPost('txtHourCost');//--fin peticion get o post
+				$objEmployee["hourCost"]				= /*inicio get post*/ helper_StringToNumber($this->request->getPost('txtHourCost'));//--fin peticion get o post
 				$objEmployee["countryID"]				= /*inicio get post*/ $this->request->getPost('txtCountryID');//--fin peticion get o post
 				$objEmployee["stateID"]					= /*inicio get post*/ $this->request->getPost('txtStateID');//--fin peticion get o post
 				$objEmployee["cityID"]					= /*inicio get post*/ $this->request->getPost("txtCityID");//--fin peticion get o post
@@ -202,6 +203,7 @@ class app_rrhh_employee extends _BaseController {
 			$datView["objParentNatural"]		= $datView["objParentEmployee"] == null ? $datView["objParentEmployee"] : $this->Natural_Model->get_rowByPK($companyID,$datView["objParentEmployee"]->branchID,$datView["objParentEmployee"]->entityID);
 			$datView["objEntityListEmail"]		= $this->Entity_Email_Model->get_rowByEntity($companyID,$branchID,$entityID);
 			$datView["objEntityListPhone"]		= $this->Entity_Phone_Model->get_rowByEntity($companyID,$branchID,$entityID);
+			$datView["useMobile"]				= $dataSession["user"]->useMobile;
 			$datView["company"]					= $dataSession["company"];
 
 			$objComponent						= $this->core_web_tools->getComponentIDBy_ComponentName("tb_employee");
@@ -308,7 +310,7 @@ class app_rrhh_employee extends _BaseController {
 			$objEmployee["reference1"]				= /*inicio get post*/ $this->request->getPost("txtReference1");//--fin peticion get o post
 			$objEmployee["reference2"]				= /*inicio get post*/ $this->request->getPost("txtReference2");//--fin peticion get o post
 			$objEmployee["socialSecurityNumber"]	= /*inicio get post*/ $this->request->getPost("txtSocialSecurityNumber");//--fin peticion get o post
-			$objEmployee["hourCost"]				= /*inicio get post*/ $this->request->getPost('txtHourCost');//--fin peticion get o post
+			$objEmployee["hourCost"]				= /*inicio get post*/ helper_StringToNumber($this->request->getPost('txtHourCost'));//--fin peticion get o post
 			$objEmployee["countryID"]				= /*inicio get post*/ $this->request->getPost('txtCountryID');//--fin peticion get o post
 			$objEmployee["stateID"]					= /*inicio get post*/ $this->request->getPost('txtStateID');//--fin peticion get o post
 			$objEmployee["cityID"]					= /*inicio get post*/ $this->request->getPost("txtCityID");//--fin peticion get o post
@@ -543,6 +545,7 @@ class app_rrhh_employee extends _BaseController {
 			$dataView["objListClasificationID"]			= $this->core_web_catalog->getCatalogAllItem("tb_employee","clasificationID",$companyID);			
 			$dataView["objListCategoryID"]				= $this->core_web_catalog->getCatalogAllItem("tb_employee","categoryID",$companyID);
 			$dataView["objListTypeEmployeeID"]			= $this->core_web_catalog->getCatalogAllItem("tb_employee","typeEmployeeID",$companyID);
+			$dataView["useMobile"]						= $dataSession["user"]->useMobile;
 			$dataView["objListCompanyPageSetting"]		= $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"app_rrhh_employee");
 			$dataView["company"]						= $dataSession["company"];
 			
@@ -600,18 +603,20 @@ class app_rrhh_employee extends _BaseController {
 			throw new \Exception("00409 EL COMPONENTE 'tb_employee' NO EXISTE...");
 			
 			
-			//Vista por defecto 
+			$esMovil = $dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile();
+
+			//Vista por defecto
 			if($dataViewID == null){				
 				$targetComponentID			= 0;	
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewRender				= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			}
 			//Otra vista
 			else{									
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewRender				= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			} 
 			 
 			//Renderizar Resultado

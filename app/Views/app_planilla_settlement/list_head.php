@@ -1,7 +1,7 @@
 <?php echo view('core_template/posme_v2_style'); ?>
 
 <div id="heading" class="page-header">
-    <h1><i class="icon20 i-cone"></i> LISTA DE LIQUIDACION</h1>
+    <h1><i class="icon20 i-cone"></i> LISTA DE LIQUIDACIÓN</h1>
 </div>
 
 <div class="pv2">
