@@ -109,6 +109,7 @@ class app_invoice_price extends _BaseController {
 			
 			//Obtener Informacion
 			$datView["objListWorkflowStage"]			= $this->core_web_workflow->getWorkflowStageByStageInit("tb_list_price","statusID",$datView["objListPrice"]->statusID,$companyID,$branchID,$roleID);			
+			$datView["useMobile"]						= $dataSession["user"]->useMobile;
 			$datView["objComponent"] 					= $objComponent;			
 			
 			//Renderizar Resultado
@@ -567,6 +568,7 @@ class app_invoice_price extends _BaseController {
 			$companyID 							= $dataSession["user"]->companyID;
 			$branchID 							= $dataSession["user"]->branchID;
 			$roleID 							= $dataSession["role"]->roleID;			
+			$dataView["useMobile"]				= $dataSession["user"]->useMobile;
 			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_list_price","statusID",$companyID,$branchID,$roleID);
 			
 			//Renderizar Resultado 
@@ -624,18 +626,20 @@ class app_invoice_price extends _BaseController {
 			throw new \Exception("00409 EL COMPONENTE 'tb_list_price' NO EXISTE...");
 			
 			
-			//Vista por defecto 
+			$esMovil = $dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile();
+
+			//Vista por defecto
 			if($dataViewID == null){				
 				$targetComponentID			= 0;	
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewRender				= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			}
 			//Otra vista
 			else{									
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewRender				= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			} 
 			 
 			//Renderizar Resultado

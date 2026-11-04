@@ -34,24 +34,26 @@ class app_cxp_notedebit extends _BaseController
 				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_cxp_notadebito' NO EXISTE...");
 
 
+			$esMovil = $dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile();
+
 			//Vista por defecto PC
 			if ($dataViewID == null and  !$this->request->getUserAgent()->isMobile()) {
 				$targetComponentID              = 0;
 				$parameter["{companyID}"]       = $this->session->get('user')->companyID;
 				$dataViewData                   = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
-				$dataViewRender                 = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+				$dataViewRender                 = $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
 			}
 			//Vista por defecto MOBILE
 			else if ($this->request->getUserAgent()->isMobile()) {
 				$parameter["{companyID}"]       = $this->session->get('user')->companyID;
 				$dataViewData                   = $this->core_web_view->getViewByName($this->session->get('user'), $objComponent->componentID, "LISTA DE NOTAS DE DEBITOS DE PROVEEDORES", CALLERID_LIST, $resultPermission, $parameter);
-				$dataViewRender                 = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+				$dataViewRender                 = $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
 			}
 			//Vista Por Id
 			else {
 				$parameter["{companyID}"]       = $this->session->get('user')->companyID;
 				$dataViewData                   = $this->core_web_view->getViewBy_DataViewID($this->session->get('user'), $objComponent->componentID, $dataViewID, CALLERID_LIST, $resultPermission, $parameter);
-				$dataViewRender                 = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+				$dataViewRender                 = $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
 			}
 
 			//Renderizar Resultado
@@ -168,6 +170,7 @@ class app_cxp_notedebit extends _BaseController
 
 			$objCurrency						                = $this->core_web_currency->getCurrencyDefault($companyID);
 			$dataView["company"]                                = $dataSession["company"];
+			$dataView["useMobile"]                              = $dataSession["user"]->useMobile;
 			$dataView["objComponentNoteDebit"]                  = $objComponentNoteDebit;
 			$dataView["objComponentProvider"]                   = $objComponentProvider;
 			$dataView["objListWorkflowStage"]                   = $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_cxp_notadebito", "statusID", $companyID, $branchID, $roleID);
@@ -250,6 +253,7 @@ class app_cxp_notedebit extends _BaseController
 				$this->response->redirect(base_url() . "/" . 'app_cxp_notedebit/add');
 			}
 
+			$dataView["useMobile"]              = $dataSession["user"]->useMobile;
 			$dataView["objTM"]                  = $this->Transaction_Master_Model->get_rowByPk($companyID, $transactionID, $transactionMasterID);
 			$dataView["objProvider"]            = $this->Provider_Model->get_rowByPK($companyID, $branchID, $dataView["objTM"]->entityID);
 			$dataView["objListLegal"]			= $this->Legal_Model->get_rowByPk($companyID, $branchID, $dataView["objTM"]->entityID);
@@ -322,7 +326,7 @@ class app_cxp_notedebit extends _BaseController
 
 			$entityID                               = $this->request->getPost("txtProviderEntityID");
 			$currencyID                             = $this->request->getPost("txtCurrencyID");
-			$monto                                  = $this->request->getPost("txtAmount");
+			$monto                                  = helper_StringToNumber($this->request->getPost("txtAmount")); //Sin comas: este valor afecta el saldo del proveedor
 
 			//Valores de tasa de cambio
 			date_default_timezone_set(APP_TIMEZONE);
@@ -422,7 +426,7 @@ class app_cxp_notedebit extends _BaseController
 
 			$entityID                               = $this->request->getPost("txtProviderEntityID");
 			$currencyID                             = $this->request->getPost("txtCurrencyID");
-			$monto                                  = $this->request->getPost("txtAmount");
+			$monto                                  = helper_StringToNumber($this->request->getPost("txtAmount")); //Sin comas: este valor afecta el saldo del proveedor
 			$transactionID                          = $this->request->getPost("txtTransactionID");
 			$transactionMasterID                    = $this->request->getPost("txtTransactionMasterID");
 

@@ -98,6 +98,7 @@ class app_cxp_expenses extends _BaseController {
 			$dataView["branchID"]					= $dataSession["branch"]->branchID;
 			$dataView["branchName"]					= $dataSession["branch"]->name;
 			$dataView["exchangeRate"]				= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
+			$dataView["useMobile"]					= $dataSession["user"]->useMobile;
 			$dataView["objComponentShare"]			= $objComponentTransactionShare;					
 			$dataView["objListWorkflowStage"]		= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_accounting_expenses","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
 			$dataView["objListBranch"]				= $this->Branch_Model->getByCompany($companyID);
@@ -394,7 +395,7 @@ class app_cxp_expenses extends _BaseController {
 			//$objTMNew["reference4"] 					= /*inicio get post*/ $this->request->getPost("txtCustomerCreditLineID");//--fin peticion get o post
 			//$objTMNew["descriptionReference"] 		= "reference1:input,reference2:input,reference3:Gestor de Cobro,reference4:Linea de credito del Cliente";
 			$objTMNew["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");
-			$objTMNew["amount"] 						= /*inicio get post*/ $this->request->getPost("txtDetailAmount");
+			$objTMNew["amount"] 						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtDetailAmount"));
             $objTMNew["tax1"] 						    = helper_StringToNumber(/*inicio get post*/ $this->request->getPost('txtTransactionMasterTax1'));
             $objTMNew["tax2"] 						    = helper_StringToNumber(/*inicio get post*/ $this->request->getPost('txtTransactionMasterTax2'));
 			$objTMNew["tax4"] 						    = helper_StringToNumber(/*inicio get post*/ $this->request->getPost('txtAmortizationID'));
@@ -916,6 +917,7 @@ class app_cxp_expenses extends _BaseController {
 			$dataView["branchID"]				= $dataSession["branch"]->branchID;
 			$dataView["branchName"]				= $dataSession["branch"]->name;
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
+			$dataView["useMobile"]				= $dataSession["user"]->useMobile;
 			$dataView["objCurrency"]			= $objCurrency;
 			$objParameterExchangePurchase		= $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_PURCHASE",$companyID);
 			$dataView["exchangeRatePurchase"]	= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID) - $objParameterExchangePurchase->value;			
@@ -1011,25 +1013,27 @@ class app_cxp_expenses extends _BaseController {
 			throw new \Exception("00409 EL COMPONENTE 'tb_transaction_master_accounting_expenses' NO EXISTE...");
 			
 			
+			$esMovil = $dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile();
+
 			//Vista por defecto PC
 			if($dataViewID == null and  !$this->request->getUserAgent()->isMobile() ){				
 				$targetComponentID			= 0;	
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewRender				= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			}		
 			//Vista por defecto MOBILE
 			else if( $this->request->getUserAgent()->isMobile() ){
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$objComponent->componentID,"DEFAULT_MOBILE_LISTA_INGRESO_A_CAJA",CALLERID_LIST,$resultPermission,$parameter); 			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewRender				= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			} 
 			//Vista Por Id
 			else 
 			{
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewRender				= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			}
 			
 			//Renderizar Resultado

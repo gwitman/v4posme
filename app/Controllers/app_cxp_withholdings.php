@@ -34,24 +34,26 @@ class app_cxp_withholdings extends _BaseController
 				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_withholdings' NO EXISTE...");
 
 
+			$esMovil = $dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile();
+
 			//Vista por defecto PC
 			if ($dataViewID == null and  !$this->request->getUserAgent()->isMobile()) {
 				$targetComponentID              = 0;
 				$parameter["{companyID}"]       = $this->session->get('user')->companyID;
 				$dataViewData                   = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
-				$dataViewRender                 = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+				$dataViewRender                 = $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
 			}
 			//Vista por defecto MOBILE
 			else if ($this->request->getUserAgent()->isMobile()) {
 				$parameter["{companyID}"]       = $this->session->get('user')->companyID;
 				$dataViewData                   = $this->core_web_view->getViewByName($this->session->get('user'), $objComponent->componentID, "LISTA DE RETENCIONES DE PROVEEDOR", CALLERID_LIST, $resultPermission, $parameter);
-				$dataViewRender                 = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+				$dataViewRender                 = $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
 			}
 			//Vista Por Id
 			else {
 				$parameter["{companyID}"]       = $this->session->get('user')->companyID;
 				$dataViewData                   = $this->core_web_view->getViewBy_DataViewID($this->session->get('user'), $objComponent->componentID, $dataViewID, CALLERID_LIST, $resultPermission, $parameter);
-				$dataViewRender                 = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+				$dataViewRender                 = $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
 			}
 
 			//Renderizar Resultado
@@ -170,6 +172,7 @@ class app_cxp_withholdings extends _BaseController
 
 			$objCurrency						                = $this->core_web_currency->getCurrencyDefault($companyID);
 			$dataView["company"]                                = $dataSession["company"];
+			$dataView["useMobile"]                              = $dataSession["user"]->useMobile;
 			$dataView["objComponentProvider"]                   = $objComponentProvider;
 			$dataView["objListWorkflowStage"]                   = $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_withholdings", "statusID", $companyID, $branchID, $roleID);
 			$dataView["objListProvider"]                        = $this->Provider_Model->get_rowByCompany($companyID);
@@ -251,6 +254,7 @@ class app_cxp_withholdings extends _BaseController
 				$this->response->redirect(base_url() . "/" . 'app_cxp_withholdings/add');
 			}
 
+			$dataView["useMobile"]                      = $dataSession["user"]->useMobile;
 			$dataView["objTM"]                          = $this->Transaction_Master_Model->get_rowByPk($companyID, $transactionID, $transactionMasterID);
 			$dataView["objProvider"]                    = $this->Provider_Model->get_rowByPK($companyID, $branchID, $dataView["objTM"]->entityID);
 			$dataView["objListLegal"]			        = $this->Legal_Model->get_rowByPk($companyID, $branchID, $dataView["objTM"]->entityID);
@@ -346,8 +350,8 @@ class app_cxp_withholdings extends _BaseController
 			$objTM["reference3"]                    = /*inicio get post*/ $this->request->getPost("txtInvoice");
 			$objTM["reference4"]                    = /*inicio get post*/ $this->request->getPost("txtTax");
 			$objTM["statusID"]                      = /*inicio get post*/ $this->request->getPost("txtStatusID");
-			$objTM["amount"]                        = /*inicio get post*/ $this->request->getPost("txtInvoiceAmount");
-			$objTM["discount"]						= /*inicio get post*/ $this->request->getPost("txtWithholdingAmount");
+			$objTM["amount"]                        = /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtInvoiceAmount"));
+			$objTM["discount"]						= /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtWithholdingAmount"));
 			$objTM["isActive"]                      = 1;
 			$this->core_web_auditoria->setAuditCreated($objTM, $dataSession, $this->request);
 
@@ -441,8 +445,8 @@ class app_cxp_withholdings extends _BaseController
 			$objTMNew["reference3"]                 = /*inicio get post*/ $this->request->getPost("txtInvoice");
 			$objTMNew["reference4"]                 = /*inicio get post*/ $this->request->getPost("txtTax");
 			$objTMNew["statusID"]                   = /*inicio get post*/ $this->request->getPost("txtStatusID");
-			$objTMNew["amount"]                     = /*inicio get post*/ $this->request->getPost("txtInvoiceAmount");
-			$objTMNew["discount"]				    = /*inicio get post*/ $this->request->getPost("txtWithholdingAmount");
+			$objTMNew["amount"]                     = /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtInvoiceAmount"));
+			$objTMNew["discount"]				    = /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtWithholdingAmount"));
 			$objTMNew["isActive"]                   = 1;
 
 			//Validar si el estado permite editar

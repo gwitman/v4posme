@@ -661,6 +661,7 @@ class app_cxp_provider extends _BaseController {
 			//Obtener Informacion
 			$datView["objListWorkflowStage"]			= $this->core_web_workflow->getWorkflowStageByStageInit("tb_provider","statusID",$datView["objProvider"]->statusID,$companyID,$branchIDUser,$roleID);
 			$datView["objListCurrency"]					= $this->Company_Currency_Model->getByCompany($companyID);			
+			$datView["useMobile"]						= $dataSession["user"]->useMobile;
 			$datView["objComponent"] 					= $objComponent;
 			$datView["objCurrency"]						= $this->core_web_currency->getCurrencyDefault($companyID);			
 			$datView["objListCountry"]					= $this->core_web_catalog->getCatalogAllItem("tb_provider","countryID",$companyID);
@@ -738,6 +739,7 @@ class app_cxp_provider extends _BaseController {
 			
 			$dataView["objListCurrency"]				= $this->Company_Currency_Model->getByCompany($companyID);
 			$objCurrency								= $this->core_web_currency->getCurrencyDefault($companyID);			
+			$dataView["useMobile"]						= $dataSession["user"]->useMobile;
 			$dataView["objCurrency"]					= $objCurrency;
 			
 			//Renderizar Resultado 
@@ -793,18 +795,20 @@ class app_cxp_provider extends _BaseController {
 			throw new \Exception("00409 EL COMPONENTE 'tb_provider' NO EXISTE...");
 			
 			
-			//Vista por defecto 
+			$esMovil = $dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile();
+
+			//Vista por defecto
 			if($dataViewID == null){				
 				$targetComponentID			= 0;	
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewRender				= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			}
 			//Otra vista
 			else{									
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewRender				= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			} 
 			 
 			//Renderizar Resultado

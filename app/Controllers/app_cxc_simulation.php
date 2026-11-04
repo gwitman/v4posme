@@ -192,6 +192,7 @@ class app_cxc_simulation extends _BaseController {
 			$dataView["roleName"]				= $dataSession["role"]->name;
 			$dataView["branchID"]				= $dataSession["branch"]->branchID;
 			$dataView["branchName"]				= $dataSession["branch"]->name;
+			$dataView["useMobile"]				= $dataSession["user"]->useMobile;
 			$dataView["exchangeRate"]			= $this->core_web_currency->getRatio($companyID,date("Y-m-d"),1,$targetCurrency->currencyID,$objCurrency->currencyID);			
 			$dataView["objComponentCustomer"]	= $objComponentCustomer;
 			$dataView["objCustomerDefault"]		= $this->Customer_Model->get_rowByCode($companyID,$customerDefault->value);

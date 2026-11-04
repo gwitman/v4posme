@@ -583,6 +583,8 @@ $routes->match(['get', 'post'], 'app_cxp_expenses/delete', 'app_cxp_expenses::de
 $routes->match(['get', 'post'], 'app_cxp_expenses/delete/(:any)', 'app_cxp_expenses::delete');
 $routes->match(['get', 'post'], 'app_cxp_expenses/viewPrinterFormatoA4', 'app_cxp_expenses::viewPrinterFormatoA4');
 $routes->match(['get', 'post'], 'app_cxp_expenses/viewPrinterFormatoA4/(:any)', 'app_cxp_expenses::viewPrinterFormatoA4');
+$routes->match(['get', 'post'], 'app_cxp_expenses/searchTransactionMaster', 'app_cxp_expenses::searchTransactionMaster');
+$routes->match(['get', 'post'], 'app_cxp_expenses/searchTransactionMaster/(:any)', 'app_cxp_expenses::searchTransactionMaster');
 $routes->match(['get', 'post'], 'app_cxp_report/index', 'app_cxp_report::index');
 $routes->match(['get', 'post'], 'app_cxp_report/index/(:any)', 'app_cxp_report::index');
 $routes->match(['get', 'post'], 'app_cxp_report/expenses', 'app_cxp_report::expenses');
@@ -873,6 +875,7 @@ $routes->match(['get', 'post'], 'app_cxc_notedebit/delete', 'app_cxc_notedebit::
 $routes->match(['get', 'post'], 'app_cxc_notedebit/searchTransactionMaster', 'app_cxc_notedebit::searchTransactionMaster');
 $routes->match(['get', 'post'], 'app_cxc_notedebit/viewPrinterFormatoA4/(:any)', 'app_cxc_notedebit::viewPrinterFormatoA4');
 $routes->match(['get', 'post'], 'app_cxp_notedebit/index', 'app_cxp_notedebit::index');
+$routes->match(['get', 'post'], 'app_cxp_notedebit/index/(:any)', 'app_cxp_notedebit::index');
 $routes->match(['get', 'post'], 'app_cxp_notedebit/save', 'app_cxp_notedebit::save');
 $routes->match(['get', 'post'], 'app_cxp_notedebit/save/(:any)', 'app_cxp_notedebit::save');
 $routes->match(['get', 'post'], 'app_cxp_notedebit/add', 'app_cxp_notedebit::add');
@@ -882,6 +885,7 @@ $routes->match(['get', 'post'], 'app_cxp_notedebit/delete', 'app_cxp_notedebit::
 $routes->match(['get', 'post'], 'app_cxp_notedebit/searchTransactionMaster', 'app_cxp_notedebit::searchTransactionMaster');
 $routes->match(['get', 'post'], 'app_cxp_notedebit/viewPrinterFormatoA4/(:any)', 'app_cxp_notedebit::viewPrinterFormatoA4');
 $routes->match(['get', 'post'], 'app_cxp_withholdings/index', 'app_cxp_withholdings::index');
+$routes->match(['get', 'post'], 'app_cxp_withholdings/index/(:any)', 'app_cxp_withholdings::index');
 $routes->match(['get', 'post'], 'app_cxp_withholdings/save', 'app_cxp_withholdings::save');
 $routes->match(['get', 'post'], 'app_cxp_withholdings/save/(:any)', 'app_cxp_withholdings::save');
 $routes->match(['get', 'post'], 'app_cxp_withholdings/add', 'app_cxp_withholdings::add');
@@ -1166,6 +1170,7 @@ $routes->match(['get', 'post'], 'app_bank_notedebit/delete', 'app_bank_notedebit
 $routes->match(['get', 'post'], 'app_bank_notedebit/searchTransactionMaster', 'app_bank_notedebit::searchTransactionMaster');
 $routes->match(['get', 'post'], 'app_bank_notedebit/viewPrinterFormatoA4/(:any)', 'app_bank_notedebit::viewPrinterFormatoA4');
 $routes->match(['get', 'post'], 'app_sales_loyalty/index', 'app_sales_loyalty::index');
+$routes->match(['get', 'post'], 'app_sales_loyalty/index/(:any)', 'app_sales_loyalty::index');
 $routes->match(['get', 'post'], 'app_sales_loyalty/save', 'app_sales_loyalty::save');
 $routes->match(['get', 'post'], 'app_sales_loyalty/save/(:any)', 'app_sales_loyalty::save');
 $routes->match(['get', 'post'], 'app_sales_loyalty/add', 'app_sales_loyalty::add');
