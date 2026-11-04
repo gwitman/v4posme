@@ -1,11 +1,10 @@
 <script>
+    var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+
     $(document).ready(function() {
 
-        $('#txtDate').datepicker({
-            format: "yyyy-mm-dd"
-        });
-        $('#txtDate').val();
-        $("#txtDate").datepicker("update");
+        pv2InitDate("txtDate", true);
+        afxBindCommon();
 
         //Regresar a la lista
         $(document).on("click", "#btnBack", function() {
@@ -13,7 +12,8 @@
         });
 
         //Evento Guardar
-        $(document).on("click", "#btnAcept", function() {
+        $(document).on("click", "#btnAcept", function(e) {
+            e.preventDefault();
             $("#form-new-transferpiece").attr("method", "POST");
             $("#form-new-transferpiece").attr("action", "<?php echo base_url(); ?>/app_afx_fixedassent_transferpiece/save/new");
 
@@ -26,8 +26,7 @@
         //Buscar Activo Origen
         $(document).on("click", "#btnSearchSourceAsset", function() {
             var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentFixedAsset->componentID; ?>/onCompleteSourceAsset/SELECCIONAR_FIXEDASSENT/true/empty/false/not_redirect_when_empty";
-            window.open(url_request, "MsgWindow", "width=900,height=450");
-            window.onCompleteSourceAsset = onCompleteSourceAsset;
+            pv2OpenSearch(url_request, "Buscar activo origen", "onCompleteSourceAsset", onCompleteSourceAsset, "width=900,height=450");
         });
 
         //Limpiar Activo Origen
@@ -39,8 +38,7 @@
         //Buscar Activo Destino
         $(document).on("click", "#btnSearchTargetAsset", function() {
             var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentFixedAsset->componentID; ?>/onCompleteTargetAsset/SELECCIONAR_FIXEDASSENT/true/empty/false/not_redirect_when_empty";
-            window.open(url_request, "MsgWindow", "width=900,height=450");
-            window.onCompleteTargetAsset = onCompleteTargetAsset;
+            pv2OpenSearch(url_request, "Buscar activo destino", "onCompleteTargetAsset", onCompleteTargetAsset, "width=900,height=450");
         });
 
         //Limpiar Activo Destino
@@ -53,12 +51,12 @@
         $(document).on("click", "#btnNewDetailTransaction", function() {
             var tmpl = $($("#tmpl_row_piece").html());
             $("#body_tb_transaction_master_detail").append(tmpl);
-            //Inicializar select2 en la nueva fila
-            tmpl.find(".select2-action").select2({
+            //Inicializar los combos de la nueva fila: Select2 en PC, nativo en telefono
+            afxInitSelect2(tmpl.find(".select2-action"), {
                 placeholder: "--Seleccione--",
                 allowClear: true
             });
-            tmpl.find(".select2-piecename").select2({
+            afxInitSelect2(tmpl.find(".select2-piecename"), {
                 placeholder: "--Seleccione--",
                 allowClear: true
             });
@@ -74,8 +72,7 @@
         //Buscar Colaborador
         $(document).on("click","#btnSearchEmployer",function(){
             var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteEmployee/SELECCIONAR_EMPLOYEE_PAGINATED/true/empty/true/not_redirect_when_empty/1/1/<?= $objParameterCantidadItemPoup; ?>/";
-            window.open(url_request,"MsgWindow","width=900,height=450");
-            window.onCompleteEmployee = onCompleteEmployee; 
+            pv2OpenSearch(url_request, "Buscar colaborador", "onCompleteEmployee", onCompleteEmployee, "width=900,height=450");
         });
         //Eliminar Colaborador
         $(document).on("click","#btnClearEmployer",function(){

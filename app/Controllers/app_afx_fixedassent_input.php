@@ -44,7 +44,7 @@ class app_afx_fixedassent_input extends _BaseController
             else if ($this->request->getUserAgent()->isMobile()) {
                 $parameter["{companyID}"]       = $this->session->get('user')->companyID;
                 $dataViewData                   = $this->core_web_view->getViewByName($this->session->get('user'), $objComponent->componentID, "LISTA DE ENTRADAS DE ACTIVOS FIJOS", CALLERID_LIST, $resultPermission, $parameter);
-                $dataViewRender                 = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+                $dataViewRender                 = $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow");
             }
             //Vista Por Id
             else {
@@ -182,6 +182,7 @@ class app_afx_fixedassent_input extends _BaseController
             $dataView["objComponentFixedAssetInput"]            = $objComponentFixedAssetInput;
             $dataView["objComponentEmployee"]                   = $objComponentEmployee;
             $dataView["objListWorkflowStage"]                   = $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_fixedassent_input", "statusID", $companyID, $branchID, $roleID);
+            $dataView["useMobile"]                              = $dataSession["user"]->useMobile;
             $dataView["objListEmployee"]                        = $this->Employee_Model->get_rowByBranchID($companyID, $branchID);
             $dataView["objCausal"]                              = $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
 
@@ -373,6 +374,7 @@ class app_afx_fixedassent_input extends _BaseController
             $dataView["objComponentPublicCatalog"]              = $objComponentPublicCatalog;
             $dataView["objComponentEmployee"]                   = $objComponentEmployee;
             $dataView["objListWorkflowStage"]                   = $this->core_web_workflow->getWorkflowAllStage("tb_transaction_master_fixedassent_input", "statusID", $companyID, $branchID, $roleID);
+            $dataView["useMobile"]                              = $dataSession["user"]->useMobile;
             $dataView["objListEmployee"]                        = $this->Employee_Model->get_rowByBranchID($companyID, $branchID);
             $dataView["objCausal"]                              = $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
             $dataView["objNatural"]                             = $this->Natural_Model->get_rowByPk($companyID, $branchID, $dataView["objTM"]->entityID);

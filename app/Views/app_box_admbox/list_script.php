@@ -19,31 +19,6 @@
 			}
 
 		});
-		$(document).on("click","#btnSearchTransaction",function(){
-					fnWaitOpen();
-					$.ajax({
-						cache       : false,
-						dataType    : 'json',
-						type        : 'POST',
-						url  		: "<?php echo base_url(); ?>/app_box_admbox/searchBox",
-						data 		: {transactionNumber : $("#txtSearchTransaction").val() },
-						success:function(data){
-							console.info("complete delete success");
-							fnWaitClose();
-							if(data.error){
-								fnShowNotification(data.message,"error");
-							}
-							else{
-								window.location = "<?php echo base_url(); ?>/app_box_admbox/edit/companyID/"+data.companyID+"/transactionID/"+data.transactionID+"/transactionMasterID/"+data.transactionMasterID;
-							}
-						},
-						error:function(xhr,data){
-							console.info("complete delete error");
-							fnWaitClose();
-							fnShowNotification("Error 505","error");
-						}
-					});
-		});
 		$(document).on("click","#btnEliminar",function(){
 
 			if(objRowTableListView != undefined){
@@ -92,6 +67,33 @@
 			fnWaitOpen();
 			window.location	= "<?php echo base_url(); ?>/app_box_admbox/add";
 		});
+	});
+
+	//Buscar en la lista: filtra la tabla del lado del cliente (admbox no tiene busqueda en el servidor)
+	function fnFiltrarLista(){
+		var valor = $("#txtSearchList").val();
+		if(typeof objTableListView != "undefined" && objTableListView && typeof objTableListView.fnFilter == "function"){
+			objTableListView.fnFilter(valor);
+		}
+		else{
+			var texto = $.trim(valor).toLowerCase();
+			$("#ListView tbody tr").each(function(){
+				$(this).toggle(texto == "" || $(this).text().toLowerCase().indexOf(texto) != -1);
+			});
+		}
+	}
+	$(document).on("click","#btnSearchList",function(e){
+		e.preventDefault();
+		fnFiltrarLista();
+	});
+	$(document).on("keyup","#txtSearchList",function(e){
+		fnFiltrarLista();
+	});
+	$(document).on("keydown","#txtSearchList",function(e){
+		if((e.keyCode || e.which) == 13){
+			e.preventDefault();
+			fnFiltrarLista();
+		}
 	});
 
 	function fn_aceptCallback(data){

@@ -1,5 +1,13 @@
 <script>
+	var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+</script>
+<?php echo view('core_template/posme_v2_common'); ?>
+<script>
 	$(document).ready(function () {
+		//Combo nativo en telefono y barra inferior (una sola vez: enlazarla dos veces guardaria dos veces)
+		pv2MobileSelects("#txtStatusID");
+		pv2BindMobileBar();
+
 		//Regresar a la lista
 		$(document).on("click","#btnBack",function(){
 				fnWaitOpen();

@@ -1,56 +1,39 @@
-<div class="row">
-	<div id="email" class="col-lg-12">
+<div class="pv2 pv2-has-mbar<?php echo (isset($useMobile) && $useMobile == "1") ? " pv2-mobile" : ""; ?>">
 
-		<!-- botonera -->
-		<div class="email-bar" style="border-left:1px solid #c9c9c9">
-			<div class="btn-group pull-right">
-				<a href="<?php echo base_url(); ?>/app_box_admbox/add" class="btn btn-success" id="btnNuevo"><i class="icon16 i-checkmark-4"></i>Nuevo</a>
-				<a href="<?php echo base_url(); ?>/app_box_admbox/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>
-				<a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>
-				<a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+	<!-- encabezado y acciones -->
+	<div class="pv2-card pv2-header">
+		<div class="pv2-header-info">
+			<div class="pv2-header-icon"><i class="icon20 i-storage-2"></i></div>
+			<div>
+				<p class="pv2-header-title">CAJA: #<span class="box-num"><?php echo $objCashBox->cashBoxCode ?></span></p>
+				<p class="pv2-header-sub">Editar caja</p>
 			</div>
 		</div>
-		<!-- /botonera -->
+		<div class="pv2-actions">
+			<a href="<?php echo base_url(); ?>/app_box_admbox/add" class="btn btn-default" id="btnNuevo"><i class="icon16 i-plus"></i> Nuevo</a>
+			<a href="<?php echo base_url(); ?>/app_box_admbox/index" id="btnBack" class="btn btn-default" ><i class="icon16 i-rotate"></i> Atras</a>
+			<a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>
+			<a href="#" class="btn btn-primary pv2-hide-xs" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+		</div>
 	</div>
-	<!-- End #email  -->
-</div>
-<!-- Fin del head -->
+	<!-- /encabezado y acciones -->
 
-<!-- Inicio del Body -->
-<div class="row">
-	<div class="col-lg-12">
-		<div class="panel panel-default">
-
-			<!-- titulo de comprobante-->
-			<div class="panel-heading">
-				<div class="icon"><i class="icon20 i-file"></i></div>
-				<h4>CAJA: #<span class="box-num"><?php echo $objCashBox->cashBoxCode ?></span></h4>
-			</div>
-
-			<form id="form-edit-box" name="form-edit-box" class="form-horizontal" role="form">
-				<input type="hidden" name="txtBoxID" value="<?php echo $objCashBox->cashBoxID ?>">
-				<input type="hidden" name="txtCompanyID" value="<?php echo $objCashBox->companyID ?>">
-				<div class="panel-body printArea">
-
-					<ul id="myTab" class="nav nav-tabs">
-						<li class="active">
-							<a href="#home" data-toggle="tab">Informaci&oacute;n</a>
-						</li>
-					</ul>
-
-					<div class="tab-content">
-						<div class="tab-pane fade in active" id="home">
+	<form id="form-edit-box" name="form-edit-box" role="form" autocomplete="off">
+		<input type="hidden" name="txtBoxID" value="<?php echo $objCashBox->cashBoxID ?>">
+		<input type="hidden" name="txtCompanyID" value="<?php echo $objCashBox->companyID ?>">
+		<div class="pv2-card" id="home">
+			<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-file"></i></span> Información</p>
 							<div class="row">
 								<div class="col-lg-12">
 								    <div class="form-group">
-										<label class="col-lg-4 control-label" for="txtNameBox">Nombre de Caja</label>
-										<div class="col-lg-8">
-											<input class="form-control" type="text" name="txtNameBox" id="txtNameBox" value="<?php echo $objCashBox->name ?>">
+										<label class="pv2-label" for="txtNameBox">Nombre de Caja</label>
+										<div>
+											<input class="form-control" autocomplete="off" type="text" name="txtNameBox" id="txtNameBox" value="<?php echo $objCashBox->name ?>">
 										</div>
 									</div>
 									<div class="form-group">
-										<label class="col-lg-4 control-label" for="txtStatusID">Estado</label>
-										<div class="col-lg-8">
+										<label class="pv2-label" for="txtStatusID">Estado</label>
+										<div>
 											<select name="txtStatusID" id="txtStatusID" class="select2">
 													<option></option>
 													<?php
@@ -70,17 +53,22 @@
 										</div>
 									</div>
 									<div class="form-group">
-										<label class="col-lg-4 control-label" for="txtDescriptionBox">Descripción de Caja</label>
-										<div class="col-lg-8">
-											<input class="form-control" type="text" name="txtDescriptionBox" id="txtDescriptionBox" value="<?php echo $objCashBox->description ?>">
+										<label class="pv2-label" for="txtDescriptionBox">Descripción de Caja</label>
+										<div>
+											<input class="form-control" autocomplete="off" type="text" name="txtDescriptionBox" id="txtDescriptionBox" value="<?php echo $objCashBox->description ?>">
 										</div>
 									</div>
 								</div>
 							</div>
-						</div>
-					</div>
-				</div>
-			</form>
 		</div>
+	</form>
+
+	<!-- barra inferior (telefono) -->
+	<div class="pv2-mbar">
+		<div class="pv2-mbar-info">
+			<p class="pv2-mbar-label">Caja</p>
+			<p class="pv2-mbar-total"><?php echo $objCashBox->cashBoxCode ?></p>
+		</div>
+		<a href="#" class="btn btn-primary" id="btnAceptMobile"><i class="icon16 i-checkmark-4"></i> Guardar</a>
 	</div>
 </div>

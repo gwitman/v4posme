@@ -75,7 +75,8 @@ class app_afx_fixedassent extends _BaseController {
 				$objFA["typeDepresiationID"]		= /*inicio get post*/ $this->request->getPost('txtTypeDepresiationID');//--fin peticion get o post
 				$objFA["yearOfUtility"]				= /*inicio get post*/ $this->request->getPost('txtYearUtility');//--fin peticion get o post
 				$objFA["currencyID"]				= /*inicio get post*/ $this->request->getPost("txtCurrencyID");
-				$objFA["priceStart"]				= /*inicio get post*/ $this->request->getPost('txtPriceStart');//--fin peticion get o post
+				//Los montos pueden llegar con formato visual: se quitan las comas antes de guardar
+				$objFA["priceStart"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost('txtPriceStart'));//--fin peticion get o post
 				$objFA["isForaneo"]					= /*inicio get post*/ $this->request->getPost('txtIsForaneo');//--fin peticion get o post
 				$objFA["statusID"]					= /*inicio get post*/ $this->request->getPost('txtStatusID');//--fin peticion get o post
 				$objFA["countryID"]					= /*inicio get post*/ $this->request->getPost("txtCountryID");
@@ -87,9 +88,9 @@ class app_afx_fixedassent extends _BaseController {
 				$objFA["duration"]					= /*inicio get post*/ $this->request->getPost("txtDuration");
 				$objFA["typeFixedAssentID"]			= /*inicio get post*/ $this->request->getPost("txtTypeAssentID");
 				$objFA["startOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
-				$objFA["ratio"]						= /*inicio get post*/ $this->request->getPost("txtRatio");
-				$objFA["settlementAmount"]			= /*inicio get post*/ $this->request->getPost("txtSettlementAmount");
-				$objFA["currentAmount"]				= /*inicio get post*/ $this->request->getPost("txtCurrentAmount");
+				$objFA["ratio"]						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtRatio"));
+				$objFA["settlementAmount"]			= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtSettlementAmount"));
+				$objFA["currentAmount"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtCurrentAmount"));
 				$this->Fixed_Assent_Model->update_app_posme($companyID_,$branchID_,$fixedAssentID_,$objFA);
 			
 			}
@@ -239,6 +240,7 @@ class app_afx_fixedassent extends _BaseController {
 			//Obtener Informacion
 			$datView["objComponentCatalog"]			= $objComponentCatalog;
 			$datView["objListWorkflowStage"]		= $this->core_web_workflow->getWorkflowStageByStageInit("tb_fixed_assent","statusID",$datView["objFA"]->statusID,$companyID,$branchIDUser,$roleID);
+			$datView["useMobile"]					= $dataSession["user"]->useMobile;
 			$datView["componentEmployeeID"] 		= $objComponent->componentID;
 			$datView["componentCustomerID"] 		= $objComponentCustomer->componentID;
 			$datView["objComponentFA"] 				= $objComponentFA;
@@ -348,7 +350,8 @@ class app_afx_fixedassent extends _BaseController {
 			$objFA["typeDepresiationID"]		= /*inicio get post*/ $this->request->getPost('txtTypeDepresiationID');//--fin peticion get o post
 			$objFA["yearOfUtility"]				= /*inicio get post*/ $this->request->getPost('txtYearUtility');//--fin peticion get o post
 			$objFA["currencyID"]				= /*inicio get post*/ $this->request->getPost("txtCurrencyID");
-			$objFA["priceStart"]				= /*inicio get post*/ $this->request->getPost('txtPriceStart');//--fin peticion get o post
+			//Los montos pueden llegar con formato visual: se quitan las comas antes de guardar
+			$objFA["priceStart"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost('txtPriceStart'));//--fin peticion get o post
 			$objFA["isForaneo"]					= /*inicio get post*/ $this->request->getPost('txtIsForaneo');//--fin peticion get o post			
 			$objFA["statusID"]					= /*inicio get post*/ $this->request->getPost('txtStatusID');//--fin peticion get o post
 			$objFA["countryID"]					= /*inicio get post*/ $this->request->getPost("txtCountryID");
@@ -360,9 +363,9 @@ class app_afx_fixedassent extends _BaseController {
 			$objFA["duration"]					= /*inicio get post*/ $this->request->getPost("txtDuration");
 			$objFA["typeFixedAssentID"]			= /*inicio get post*/ $this->request->getPost("txtTypeAssentID");
 			$objFA["startOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
-			$objFA["ratio"]						= /*inicio get post*/ $this->request->getPost("txtRatio");
-			$objFA["settlementAmount"]			= /*inicio get post*/ $this->request->getPost("txtSettlementAmount");
-			$objFA["currentAmount"]				= /*inicio get post*/ $this->request->getPost("txtCurrentAmount");
+			$objFA["ratio"]						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtRatio"));
+			$objFA["settlementAmount"]			= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtSettlementAmount"));
+			$objFA["currentAmount"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtCurrentAmount"));
 			$objFA["isActive"]					= 1;
 			$this->core_web_auditoria->setAuditCreated($objFA,$dataSession,$this->request);
 			
@@ -602,6 +605,7 @@ class app_afx_fixedassent extends _BaseController {
 			$dataView["objListTypeFixedAssent"]			= $this->core_web_catalog->getCatalogAllItem("tb_fixed_assent","typeFixedAssentID",$companyID);
 			$dataView["objListCompanyPageSetting"]		= $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"tb_fixed_assent");
 			$dataView["company"]						= $dataSession["company"];
+			$dataView["useMobile"]						= $dataSession["user"]->useMobile;
 
 			//Obtener Propiedades del Activo Fijo
 			$objCompany 		= $this->Company_Model->get_rowByPK($companyID);
@@ -766,14 +770,22 @@ class app_afx_fixedassent extends _BaseController {
 				if(!$dataViewData){
 					$targetComponentID			= 0;	
 					$parameter["{companyID}"]	= $this->session->get('user')->companyID;					
-					$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);				
-				}				
+					$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);
+				}
+				//En telefono la lista se dibuja como en abonos (app_box_share)
+				if( $this->request->getUserAgent()->isMobile() )
+				$dataViewRender				= $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow");
+				else
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			}
 			//Otra vista
 			else{									
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;				
-				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 							
+				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter);
+				//En telefono la lista se dibuja como en abonos (app_box_share)
+				if( $this->request->getUserAgent()->isMobile() )
+				$dataViewRender				= $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow");
+				else
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			} 
 			 

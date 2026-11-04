@@ -1,14 +1,13 @@
 				<!-- ./ page heading -->
 				<script>
+					var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+
 					$(document).ready(function() {
 
 						var objTableDetailTransaction = {};
 
-						$('#txtDate').datepicker({
-							format: "yyyy-mm-dd"
-						});
-						$('#txtDate').val();
-						$("#txtDate").datepicker("update");
+						pv2InitDate("txtDate", true);
+						afxBindCommon();
 						$('.txt-numeric').mask('000,000.00', {
 							reverse: true
 						});
@@ -19,12 +18,15 @@
 						});
 
 						//Evento Agregar entrada
-						$(document).on("click", "#btnAcept", function() {
+						$(document).on("click", "#btnAcept", function(e) {
+							e.preventDefault();
 							$("#form-new-fixedasset_output").attr("method", "POST");
 							$("#form-new-fixedasset_output").attr("action", "<?php echo base_url(); ?>/app_afx_fixedassent_valorated/save/new");
 
 							if (validateForm()) {
 								fnWaitOpen();
+								//El servidor recibe los montos como numero puro, sin el formato visual
+								afxLimpiarMontos("#form-new-fixedasset_output");
 								$("#form-new-fixedasset_output").submit();
 							}
 						});
@@ -33,17 +35,14 @@
 						$(document).on("click", "#btnNewDetailTransaction", function() {
 							var currencyID = $("#txtCurrencyID").val();
 							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentFixedAsset->componentID; ?>/onCompleteFixedAsset/SELECCIONAR_FIXEDASSENT_VALORATED/true/" + encodeURI('{\"currencyID\"|\"' + currencyID + '\"}') + "/false/not_redirect_when_empty";
-							window.open(url_request, "MsgWindow", "width=900,height=450");
-							window.onCompleteFixedAsset = onCompleteFixedAsset;
+							pv2OpenSearch(url_request, "Buscar activo", "onCompleteFixedAsset", onCompleteFixedAsset, "width=900,height=450");
 						});
 
 						//Eliminar activo
 						$(document).on("click", "#btnDeleteDetailTransaction", function() {
 							console.info("btnDeleteDetailTransaction");
-							$(".txtCheckedIsActive").each(function(i, obj) {
-								if ($(obj).attr("checked") == "checked") {
-									$(obj).parents("tr").first().remove();
-								}
+							$(".txtCheckedIsActive:checked").each(function(i, obj) {
+								$(obj).parents("tr").first().remove();
 							});
 							fnCalculateTotalAmount();
 						});
@@ -109,7 +108,6 @@
 							result = false;
 						}
 
-						console.log($("#txtMonthID").val());
 						if ($("#txtMonthID").val() === "") {
 							fnShowNotification("Seleccione el Mes", "error", timerNotification);
 							result = false;
@@ -126,9 +124,7 @@
 
 						//Validar que el ratio no sea cero
 						$("#body_tb_transaction_master_detail").find("tr").each(function(index, obj) {
-							var ratio 			= parseFloat($(obj).find("#txtFixedAssetRatio").val()) 			|| 0;
-							var settlement 		= parseFloat($(obj).find("#txtFixedSettlementAmount").val()) 	|| 0;
-							var currentAmount 	= parseFloat($(obj).find("#txtFixedAssetCurrentAmount").val()) 	|| 0;
+							var ratio 			= pv2Num($(obj).find("#txtFixedAssetRatio").val());
 
 							if (ratio == "" || ratio == 0) {	
 								fnShowNotification("El Ratio no puede ser cero o vacio", "error", timerNotification);
@@ -157,7 +153,6 @@
 						objRow.ratio 			= objResponse[0][3];
 						objRow.currentAmount	= objResponse[0][4];
 						objRow.settlement 		= objResponse[0][5];
-						debugger;
 
 						// Validar si ya existe el activo
 						var assetExists = false;
@@ -181,6 +176,7 @@
 						tmpl.find("#txtFixedAssetRatio").attr("value", objRow.ratio);
 						tmpl.find("#txtFixedSettlementAmount").attr("value", objRow.settlement);
 						tmpl.find("#txtFixedAssetCurrentAmount").attr("value", objRow.currentAmount);
+						afxInitMontos(tmpl);
 
 						$("#body_tb_transaction_master_detail").append(tmpl);
 
@@ -191,10 +187,10 @@
 						let totalAmount = 0;
 
 						$("#body_tb_transaction_master_detail tr").each(function() {
-							let ratio = parseFloat($(this).find("#txtFixedAssetRatio").val().trim()) || 0;
+							let ratio = pv2Num($(this).find("#txtFixedAssetRatio").val());
 							totalAmount += ratio;
 						});
 
-						$("#txtTotalAmount").val(totalAmount);
+						$("#txtTotalAmount").val(afxFmtMonto(afxRedondear(totalAmount)));
 					}
 				</script>

@@ -90,6 +90,7 @@ class app_box_attendance extends _BaseController {
 			$dataView["objNaturalDefault"]		= $this->Natural_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
 			$dataView["objLegalDefault"]		= $this->Legal_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
 			$dataView["objListPrioridad"]		= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_attendance","priorityID",$companyID);
+			$dataView["useMobile"]				= $dataSession["user"]->useMobile;
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -561,6 +562,7 @@ class app_box_attendance extends _BaseController {
 			$dataView["objLegalDefault"]				= $this->Legal_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
 			$dataView["objListPrioridad"]				= $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_attendance","priorityID",$companyID);
 			$dataView["objParameterAsistenciaManual"]	= $this->core_web_parameter->getParameter("BOX_ATTENDANCE_MANUALITY",$companyID)->value;
+			$dataView["useMobile"]						= $dataSession["user"]->useMobile;
 			
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -630,8 +632,8 @@ class app_box_attendance extends _BaseController {
 			//Vista por defecto MOBILE
 			else if( $this->request->getUserAgent()->isMobile() ){
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
-				$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$objComponent->componentID,"DEFAULT_MOBILE_LISTA_EGRESOS_A_CAJA",CALLERID_LIST,$resultPermission,$parameter); 			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$objComponent->componentID,"DEFAULT_MOBILE_LISTA_EGRESOS_A_CAJA",CALLERID_LIST,$resultPermission,$parameter);
+				$dataViewRender				= $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow");
 			} 
 			//Vista Por Id
 			else 

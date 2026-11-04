@@ -23,7 +23,7 @@
 						dataType    : 'json',
 						type        : 'POST',
 						url  		: "<?php echo base_url(); ?>/app_box_provisioned/searchTransactionMaster",
-						data 		: {journalNumber : $("#txtSearchTransaction").val() },
+						data 		: {transactionNumber : $("#txtSearchTransaction").val() },
 						success:function(data){
 							console.info("complete delete success");
 							fnWaitClose();

@@ -1,10 +1,16 @@
 				<!-- ./ page heading -->
 				<script>
+					var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+				</script>
+				<?php echo view('core_template/posme_v2_common'); ?>
+				<script>
 					$(document).ready(function(){						 
-						 $('#txtDate').datepicker({format:"yyyy-mm-dd"});
-						 $('#txtDate').val(moment().format("YYYY-MM-DD"));	
-						 $("#txtDate").datepicker("update");
-						 $('.txt-numeric').mask('000,000.00', {reverse: true});
+						 //Fecha nativa y combos nativos en telefono; barra inferior (una sola vez: enlazarla dos veces guardaria dos veces)
+						 pv2InitDate("txtDate", true);
+						 pv2MobileSelects("#txtStatusID");	
+						 pv2BindMobileBar();
+						 fnRefreshDetailState();
+						 pv2Mask($('.pv2 .txt-numeric'));
 						 
 						
 						 //Regresar a la lista
@@ -36,18 +42,28 @@
 								return; 
 							}
 							var url_request 			= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomerCreditDocument->componentID; ?>/onCompleteNewShare/LISTA_DE_CREDITOS_MOROSOS/true/empty/false/not_redirect_when_empty";
-							window.open(url_request,"MsgWindow","width=1585,height=795");
-							window.onCompleteNewShare 	= onCompleteNewShare; 
+							//Ventana emergente en PC, ventana interna en telefono
+							pv2OpenSearch(url_request,"Buscar documento","onCompleteNewShare",onCompleteNewShare,"width=1585,height=795");
 						});
 						//Eliminar factura
 						$(document).on("click","#btnDeleteShare",function(){
 							console.info("btnDeleteShare");
 							$(".txtCheckedIsActive").each(function(i,obj){
-									if($(obj).attr("checked") == "checked"){
+									if($(obj).prop("checked")){
 										$(obj).parents("tr").first().remove();
 									}
-							});	
+							});
+							//Al quitar documentos cambian el total y el cambio
+							updateSummary();
+							updateCalculateChange();
 							
+						});
+						//Quitar una fila: en telefono no hay casilla para marcar, por eso cada fila tiene su boton
+						$(document).on("click",".btnShareRemoveRow",function(e){
+							e.preventDefault();
+							$(this).closest("tr").remove();
+							updateSummary();
+							updateCalculateChange();
 						});
 						$(document).on("change","input.txtBalance",function(){
 							updateSummary();
@@ -57,21 +73,37 @@
 							updateCalculateChange();
 						});
 					});
+					//Contador de documentos y mensaje de detalle vacio
+					function fnRefreshDetailState(){
+						var cantidad = $("#body_tb_transaction_master_detail tr.row_razon").length;
+						$("#pv2DetailCount").text(cantidad);
+						$("#pv2EmptyDetail").toggle(cantidad == 0);
+						$("#pv2DetailWrap").toggle(cantidad > 0);
+					}
+					//Muestra el total y el cambio en la barra inferior del telefono
+					function fnSyncMobileBar(){
+						var cambio = pv2Num($("#txtChangeAmount").val());
+						$("#pv2MbarTotal").text(pv2Fmt($("#txtTotal").val()));
+						$("#pv2MbarChange").text(pv2Fmt(cambio)).toggleClass("is-negative", cambio < 0);
+						$(".pv2-change").toggleClass("is-negative", cambio < 0);
+					}
 					function updateCalculateChange(){
 						console.info("updateCalculateChange");
-						var i = fnFormatFloat($("#txtTotal").val());
-						var x = fnFormatFloat($("#txtReceiptAmount").val());
-						$("#txtChangeAmount").val(fnFormatNumber((x-i),2));
+						var i = pv2Num($("#txtTotal").val());
+						var x = pv2Num($("#txtReceiptAmount").val());
+						$("#txtChangeAmount").val(pv2Fmt(x-i));
+						fnSyncMobileBar();
 					}
 				
 					function updateSummary(){
 						console.info("updateSummary");
 						var total = 0;
 						$(".txtBalance").each(function(index,obj){
-							total = total + fnFormatFloat($(obj).val());
+							total = total + pv2Num($(obj).val());
 						});
-						total = fnFormatNumber(total,2);
-						$("#txtTotal").val(total);
+						$("#txtTotal").val(pv2Fmt(total));
+						fnRefreshDetailState();
+						fnSyncMobileBar();
 					}
 					function onCompleteNewShare(objResponse){
 						console.info("CALL onCompleteNewShare");	
@@ -104,7 +136,8 @@
 						tmpl.find("#txtDetailTransactionMaster").attr("value",objRow.transactionMasterDetail);						
 						tmpl.find("#txtDocument").text(objRow.documentNumber);
 						tmpl.find("#txtNameMoneda").text(objRow.nameMoneda);
-						tmpl.find("#txtBalance").attr("value",objRow.balance);
+						//Con formato 1,000.00: la mascara lee de derecha a izquierda y un 1500 sin decimales quedaria como 15.00
+						tmpl.find("#txtBalance").attr("value",pv2Fmt(objRow.balance));
 						
 						$("#body_tb_transaction_master_detail").append(tmpl);
 						refreschChecked();
@@ -127,10 +160,10 @@
 					}
 					
 					function refreschChecked(){
-						$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();
+						$("[type='checkbox']").not('.toggle, .select2, .multiselect').uniform();
 						//$('.txtDebit').mask('000,000.00', {reverse: true});
 						//$('.txtCredit').mask('000,000.00', {reverse: true});
-						$('.txt-numeric').mask('000,000.00', {reverse: true});
+						pv2Mask($('.pv2 .txt-numeric'));
 					}
 					
 				</script>

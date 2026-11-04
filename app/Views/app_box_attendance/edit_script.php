@@ -1,9 +1,16 @@
 				<!-- ./ page heading -->
+				<script>
+					var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+				</script>
+				<?php echo view('core_template/posme_v2_common'); ?>
 				<script>		
 					
 					$(document).ready(function(){					
-						 $('#txtDate').datepicker({format:"yyyy-mm-dd"});						 
-						 $("#txtDate").datepicker("update");
+						 //Fecha nativa y combos nativos en telefono; barra inferior (una sola vez: enlazarla dos veces guardaria dos veces)
+						 //Solo #txtDate lleva calendario: Proximo Pago y Vencimiento son de solo lectura
+						 pv2InitDate("txtDate", false);						 
+						 pv2MobileSelects("#txtStatusID,#txtPriorityID");
+						 pv2BindMobileBar();
 						 
 						 
 						 //$('#txtDetailReference2').datepicker({format:"yyyy-mm-dd"});						 
@@ -95,8 +102,8 @@
 						
 						$(document).on("click","#btnSearchCustomer",function(){
 							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomer->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_BILLING/true/empty/false/not_redirect_when_empty";
-							window.open(url_request,"MsgWindow","width=900,height=450");
-							window.onCompleteCustomer = onCompleteCustomer; 
+							//Ventana emergente en PC, ventana interna en telefono
+							pv2OpenSearch(url_request,"Buscar cliente","onCompleteCustomer",onCompleteCustomer,"width=900,height=450");
 						});		
 		
 		
@@ -218,7 +225,7 @@
 					}
 					
 					function refreschChecked(){
-						$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();
+						$("[type='checkbox']").not('.toggle, .select2, .multiselect').uniform();
 						//$('.txtDebit').mask('000,000.00', {reverse: true});
 						//$('.txtCredit').mask('000,000.00', {reverse: true});
 						$('.txt-numeric').mask('000,000.00', {reverse: true});

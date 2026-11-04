@@ -125,6 +125,8 @@
 
 	/* ===================== Telefono ===================== */
 	@media (max-width:767px) {
+		/* El tema da margen -25px a #heading, mayor que el relleno del contenedor en telefono: provocaba scroll horizontal */
+		#heading.page-header { margin-left:0; margin-right:0; }
 		.pv2 { overflow-x:hidden; overflow-x:clip; }
 		.pv2.pv2-has-mbar { padding-bottom:84px; }
 		.pv2-card { padding:12px; }

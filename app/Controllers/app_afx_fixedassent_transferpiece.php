@@ -50,7 +50,7 @@ class app_afx_fixedassent_transferpiece extends _BaseController
                 log_message('info', '[app_afx_fixedassent_transferpiece::index] Renderizando vista MOBILE');
                 $parameter["{companyID}"]   = $this->session->get('user')->companyID;
                 $dataViewData               = $this->core_web_view->getViewByName($this->session->get('user'), $objComponent->componentID, "LISTA DE TRANSFERENCIA DE PIEZAS", CALLERID_LIST, $resultPermission, $parameter);
-                $dataViewRender             = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+                $dataViewRender             = $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow");
             }
             //Vista Por Id
             else {
@@ -209,6 +209,7 @@ class app_afx_fixedassent_transferpiece extends _BaseController
             log_message('info', '[app_afx_fixedassent_transferpiece::add] Componentes cargados. transactionID: ' . $transactionID . ', companyID: ' . $companyID . ', branchID: ' . $branchID);
 
             $dataView["company"] = $dataSession["company"];
+            $dataView["useMobile"] = $dataSession["user"]->useMobile;
             $dataView["objUser"] = $dataSession["user"];
             $dataView["objComponentTransferpiece"] = $objComponentTransferpiece;
             $dataView["objComponentFixedAsset"] = $objComponentFixedAsset;
@@ -336,6 +337,7 @@ class app_afx_fixedassent_transferpiece extends _BaseController
 
             log_message('info', '[app_afx_fixedassent_transferpiece::edit] Inciando a cargar varaibles');
             $dataView["company"]                    = $dataSession["company"];
+            $dataView["useMobile"]                  = $dataSession["user"]->useMobile;
             $dataView["objUser"]                    = $dataSession["user"];
             $dataView["objTM"]                      = $this->Transaction_Master_Model->get_rowByPK($companyID, $transactionID, $transactionMasterID);
             $dataView["objComponentTransferpiece"]  = $objComponentTransferpiece;

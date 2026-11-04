@@ -90,6 +90,8 @@
 
 	/* ===================== Telefono ===================== */
 	@media (max-width:767px) {
+		/* El tema da margen -25px a #heading, mayor que el relleno del contenedor en telefono: provocaba scroll horizontal */
+		#heading.page-header { margin-left:0; margin-right:0; }
 		.abv2 { padding-bottom:84px; overflow-x:hidden; overflow-x:clip; }
 		.abv2-card { padding:12px; border-radius:12px; }
 		.abv2-header-num { font-size:16px; }

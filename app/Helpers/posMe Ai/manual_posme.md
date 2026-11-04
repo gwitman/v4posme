@@ -10,9 +10,10 @@ a public/resource/file_manual/manual_usuario_posme.txt. No use encabezados # ni 
 Ruta: cualquier opción del menú.
 1. Al entrar a una opción se muestra la lista de registros (búsqueda en la parte superior).
 2. Para crear un registro use el botón **Nuevo** de la lista.
-3. Para ver o modificar un registro haga clic sobre él en la lista; se abre la pantalla de edición.
+3. Para ver o modificar un registro haga clic sobre él en la lista; según la pantalla se abre la edición directamente o debe presionar **Editar**.
 4. En la pantalla de edición use **Guardar** para guardar los cambios y **Atras** para volver a la lista.
 5. Los documentos (facturas, abonos, ajustes, entradas, salidas) tienen un campo **Estado**: mientras están en REGISTRADO se pueden modificar; al pasar a APLICADO afectan inventario, caja o saldos.
+Notas: en las pantallas con encabezado de acciones y tarjetas, en el teléfono el botón **Guardar** está en la barra inferior y los botones **Buscar** abren la búsqueda en una ventana dentro de la misma pantalla. **Limpiar** borra lo elegido.
 
 ## Facturar (crear una factura de venta)
 Ruta: Menú > FACTURACION > FACTURAR (o FACTURACION > NUEVA FACTURA).
@@ -133,23 +134,96 @@ Ruta: Menú > CXP > GASTOS.
 1. Presione **Nuevo**, indique fecha, concepto, monto y moneda.
 2. Presione **Guardar**. <!-- REVISAR -->
 
+## Qué contiene el menú CAJA
+Ruta: Menú > CAJA.
+Entre otras, el menú CAJA tiene estas opciones:
+- **PROVISION**: provisiones de caja.
+- **ING A CAJA** y **EGS A CAJA**: ingresos y egresos de caja.
+- **ASISTENCIA**: asistencia de clientes.
+- **ADM CAJA**: crear y administrar las cajas.
+- **ABRIR** y **CERRAR**: apertura y cierre de caja.
+Las listas tienen los botones **Vistas**, **Editar**, **Eliminar** y **Nuevo**. Seleccione la fila antes de presionar **Editar** o **Eliminar**; si no lo hace aparece "Seleccionar el Registro...".
+Buscar en la lista:
+- En ING A CAJA, EGS A CAJA, ASISTENCIA, ABRIR y CERRAR escriba en **Buscar por número…** y presione el botón de la lupa o Enter. No busca mientras escribe.
+- En ADM CAJA, **Buscar caja…** filtra la lista mientras escribe.
+Notas: en el teléfono el botón **Guardar** está en la barra inferior. Lo que ve cada usuario depende de los permisos de su rol. <!-- REVISAR: el buscador de la lista de PROVISION tiene un defecto conocido sin corregir; documentarlo cuando se corrija -->
+Ver también: Abrir caja, Cerrar caja (cierre / arqueo), Ingresos y egresos de caja.
+
 ## Abrir caja
-Ruta: Menú > CAJA > ABRIR.
-1. Presione **Nuevo**.
-2. Seleccione la **Caja**, la moneda y el **Monto** inicial.
-3. Presione **Guardar**.
+Ruta: Menú > CAJA > ABRIR. La lista se llama **LISTA DE APERTURA A CAJA**.
+1. Presione **Nuevo**. Se abre **APERTURA:#**.
+2. En la tarjeta **Información** indique **Fecha**, **Estado**, **Sucursal**, **Moneda**, **Caja**, **Tipo** y **Categoría**. Opcional: **Referencia 1**, **Referencia 2** y **Referencia 3**.
+3. En la tarjeta **Denominaciones** escriba la cantidad de cada denominación. El **Monto** se calcula solo y no se escribe a mano.
+4. Opcional: en la tarjeta **Comentario** escriba la **Descripción**.
+5. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensajes de validación: "Establecer Fecha al Documento" y "El monto no puede ser 0".
+Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Archivos**, **Imprimir**, **Eliminar** y **Guardar**. **Eliminar** pide confirmar "Desea eliminar este Registro...".
+<!-- REVISAR: efecto de pasar el Estado a APLICADO; uso de negocio de Tipo, Categoría y Cambio -->
+Ver también: Cerrar caja (cierre / arqueo).
 
 ## Cerrar caja (cierre / arqueo)
-Ruta: Menú > CAJA > CERRAR.
-1. Presione **Nuevo**.
-2. Seleccione la **Caja**, la moneda y escriba el **Monto** contado.
-3. Presione **Guardar**.
+Ruta: Menú > CAJA > CERRAR. La lista se llama **LISTA DE CIERRE DE CAJA**.
+1. Presione **Nuevo**. Se abre **CIERRE:#**.
+2. En la tarjeta **Información** indique **Fecha**, **Estado**, **Sucursal**, **Moneda**, **Caja**, **Tipo** y **Categoría**. Opcional: **Referencia 1**, **Referencia 2** y **Referencia 3**.
+3. En la tarjeta **Denominaciones** escriba la cantidad contada de cada denominación. El **Monto** se calcula solo y no se escribe a mano.
+4. Opcional: en la tarjeta **Comentario** escriba la **Descripción**.
+5. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensajes de validación: "Establecer Fecha al Documento" y "El monto no puede ser 0".
+Para modificarlo, selecciónelo en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Archivos**, **Imprimir**, **Eliminar** y **Guardar**. **Eliminar** pide confirmar "Desea eliminar este Registro...".
 Para revisar lo cobrado use CAJA > REPORTES (abonos, resumen de abonos, cierre de operaciones).
+<!-- REVISAR: efecto de pasar el Estado a APLICADO; uso de negocio de Tipo, Categoría y Cambio -->
+Ver también: Abrir caja.
 
 ## Ingresos y egresos de caja
-Ruta: Menú > CAJA > ING A CAJA o CAJA > EGS A CAJA.
-1. Presione **Nuevo**, indique fecha, moneda, monto y descripción.
-2. Presione **Guardar**.
+Ruta: Menú > CAJA > ING A CAJA o CAJA > EGS A CAJA. Las listas se llaman **LISTA DE INGRESOS A CAJA** y **LISTA DE EGRESOS A CAJA**.
+1. Presione **Nuevo**. Se abre **INGRESO:#** o **EGRESO:#**.
+2. En la tarjeta **Información** indique **Fecha**, **Estado**, **Sucursal**, **Moneda**, **Caja**, **Tipo** y **Categoría**. Opcional: **Referencia 1**, **Referencia 2** y **Referencia 3**.
+3. Indique el monto según el **Tipo**:
+   - En un ingreso con **Tipo** Apertura, o un egreso con **Tipo** Cierre, aparece la tarjeta **Denominaciones**: escriba las cantidades y el **Monto** se calcula solo.
+   - Con otro **Tipo** esa tarjeta se oculta y usted escribe el **Monto** a mano.
+4. Opcional: en la tarjeta **Comentario** escriba la **Descripción**.
+5. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensajes de validación: "Establecer Fecha al Documento" y "El monto no puede ser 0".
+Para modificarlo, selecciónelo en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Archivos**, **Imprimir**, **Eliminar** y **Guardar**. **Eliminar** pide confirmar "Desea eliminar este Registro...".
+<!-- REVISAR: efecto de pasar el Estado a APLICADO; uso de negocio de Categoría y Cambio -->
+
+## Crear o administrar cajas (ADM CAJA)
+Ruta: Menú > CAJA > ADM CAJA. La lista se llama **LISTA DE CAJAS**.
+1. Presione **Nuevo**. Se abre **CAJA: #**.
+2. En la tarjeta **Información** complete **Nombre de Caja**, **Estado** y **Descripción de Caja**.
+3. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensajes de validación: "Nombre de la caja no puede estar vacío" y "Descripción de la caja no puede estar vacía".
+Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Eliminar** y **Guardar**. **Eliminar** pide confirmar "Desea eliminar este Registro...".
+Para encontrar una caja escriba en **Buscar caja…**: la lista se filtra mientras escribe.
+
+## Registrar una provisión de caja
+Ruta: Menú > CAJA > PROVISION. La lista se llama **LISTA DE PROVISIONES**.
+1. Presione **Nuevo**. Se abre **PROVISION:#**.
+2. En la tarjeta **Información** indique **Fecha** y **Estado**.
+3. En la tarjeta **Referencias** complete **Persona Ref.**, **ID Persona Ref.** y **Referencia**.
+4. Opcional: en la tarjeta **Comentario** escriba la **Descripción**.
+5. En la tarjeta **Detalle** presione **Agregar documento** y elíjalo en la búsqueda. Solo se admite un documento. Revise el monto en la columna **Provisión**.
+6. En la tarjeta **Pago** escriba **Ingreso**; se muestran **Total** y **Cambio**.
+7. Presione **Guardar** (en el teléfono, en la barra inferior).
+Quitar un documento: use el botón de quitar de su fila, o en la computadora márquelo y presione **Quitar marcados**.
+Mensajes de validación:
+- "Establecer Fecha al Documento" / "Seleccionar documento".
+- "El Documento no puede tener mas de un item" / "El Documento ya esta agregado".
+Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Atras**, **Archivos**, **Eliminar** y **Guardar**. En la edición los campos se llaman **Cliente Ref.** e **ID Cliente Ref.**, y además se muestra **Cliente**.
+<!-- REVISAR: para qué sirve la provisión, qué documentos se eligen y efecto de pasar el Estado a APLICADO; buscador de la lista con defecto conocido sin corregir -->
+
+## Registrar la asistencia de un cliente
+Ruta: Menú > CAJA > ASISTENCIA. La lista se llama **LISTA DE ASISTENCIA**.
+1. Presione **Nuevo**. Se abre **ASISTENCIA:#**.
+2. En la tarjeta **Información** indique **Fecha**, **Prioridad** y **Estado**.
+3. Indique el cliente: en **Cliente** presione **Buscar**, o en **Huella** use el menú **Lectura** > **Abrir Sensor**. Con **Limpiar** borra lo elegido.
+4. Revise **Solvencia**, **Próximo Pago**, **Días Próx. Pago** y **Vencimiento**.
+5. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensajes:
+- "Establecer Fecha al Documento" / "Seleccione el cliente".
+- "Cliente no encontrado" / "Cliente sin membresia" / "Cliente con Mora".
+Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Nuevo e Imprimir**, **Atras**, el menú **Imprimir** (**Imprimir preview** e **Imprimir direct**), **Eliminar** y **Guardar**. En la edición no aparece **Huella**.
+<!-- REVISAR: funcionamiento de Huella y del sensor; significado de Solvencia; efecto de pasar el Estado a APLICADO; si "Cliente con Mora" impide guardar -->
 
 ## Reportes de ventas
 Ruta: Menú > VENTAS > REPORTES (también FACTURACION > REPORTES).
@@ -406,6 +480,116 @@ Los indicadores son valores financieros calculados que posMe muestra, por ejempl
 Para modificarlo ábralo en la lista (**Indicador #**); para darlo de baja presione **Eliminar**.
 Notas: el **Script** es técnico; pídalo al equipo de soporte de posMe.
 <!-- REVISAR: dónde más se muestran los indicadores y en qué lenguaje se escribe el Script -->
+
+## Qué contiene el menú ACTIVOS FIJOS
+Ruta: Menú > ACTIVOS FIJOS.
+- **ACTIVOS F.**: catálogo de activos fijos.
+- **ENT. ACTIVOS**: entradas de activos.
+- **SAL. ACTIVOS**: salidas de activos.
+- **DEPRECIACION**: depreciación de activos.
+- **ACT VALORACION**: valoración de activos.
+- **TRA. PIEZA**: traslado o transferencia de piezas.
+- **REPORTES**: reportes de activos fijos.
+Las listas tienen los botones **Vistas**, **Editar**, **Eliminar** y **Nuevo**. Seleccione la fila antes de presionar **Editar** o **Eliminar**; si no lo hace aparece "Seleccionar el Registro...".
+Buscar en la lista:
+- En ACTIVOS F., **Buscar en la lista…** filtra mientras escribe.
+- En las demás opciones escriba en **Buscar por número…** y presione el botón de la lupa o Enter. No busca mientras escribe.
+Notas: en el teléfono el botón **Guardar** está en la barra inferior y los botones **Buscar** abren la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol.
+Ver también: Crear un activo fijo.
+
+## Crear un activo fijo
+Ruta: Menú > ACTIVOS FIJOS > ACTIVOS F. La lista se llama **LISTA DE ACTIVOS FIJOS**.
+1. Presione **Nuevo**. Se abre **Activo Fijo**.
+2. En la pestaña **Informacion General** complete **Nombre**, **Estado**, **Marca**, **Modelo**, **Categoria**, **Tipo**, **Es Foraneo** y **Descripcion**. Según la configuración de su empresa los nombres pueden cambiar o aparecer otros campos (por ejemplo **Color** o **Chasis No**).
+3. En la pestaña **Ubicacion** complete **Pais**, **Departamento**, **Municipio**, **Direccion**, **Area**, **Proyecto**, **Asignado A.**, **Cliente**, **Sucursal** y **Duracion**. En **Area**, **Proyecto**, **Asignado A.** y **Cliente** use **Buscar** y **Limpiar**.
+4. En la pestaña **Valores** complete **Tipo de Activo**, **Año**, **Fecha de Ingreso**, **Años de Utilidad**, **Moneda**, **Precio Inicial**, **Ratio**, **Tipo de Calculo**, **Monto de liquidacion** y **Monto Corriente**. **Fecha de Ingreso** abre vacía: selecciónela.
+5. En la pestaña **Propiedades** complete los campos que se muestren.
+6. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensajes de validación: "Seleccionar la Categoria", "Seleccionar el Tipo" y "Escribir el Nombre".
+<!-- REVISAR: significado de Ratio, Tipo de Calculo, Monto de liquidacion y Monto Corriente -->
+Ver también: Modificar o eliminar un activo fijo.
+
+## Modificar o eliminar un activo fijo
+Ruta: Menú > ACTIVOS FIJOS > ACTIVOS F.
+1. En la lista escriba en **Buscar en la lista…** para filtrar, seleccione la fila y presione **Editar**.
+2. Cambie los datos en las pestañas **Informacion General**, **Ubicacion**, **Valores** y **Propiedades**.
+3. Presione **Guardar** (en el teléfono, en la barra inferior).
+Arriba tiene **Atras**, **Archivos**, **Eliminar** y **Guardar**. **Eliminar** pide confirmar "Desea eliminar este Registro...".
+En la edición aparece además la pestaña **Expediente**, con el historial de órdenes de taller del activo.
+Ver también: Crear un activo fijo.
+
+## Registrar una entrada de activos
+Ruta: Menú > ACTIVOS FIJOS > ENT. ACTIVOS. La lista se llama **LISTA DE ENTRADA DE ACTIVOS FIJOS**.
+1. Presione **Nuevo**. Se abre **Entrada de Activo Fijo**.
+2. En la tarjeta **Datos del documento** indique **Fecha**, **Estado** y **Causal**. Opcional: **Referencia 1**, **Referencia 2** y **Referencia 3**.
+3. En la tarjeta **Asignación** elija con **Buscar** **Asignado A.**, **Area Asignada** y **Proyecto Asignado** (**Limpiar** borra lo elegido). Opcional: **Comentario**.
+4. En la tarjeta **Activos** presione **Agregar activo** y elíjalo en la búsqueda. Repita por cada activo.
+5. Presione **Guardar** (en el teléfono, en la barra inferior).
+Quitar un activo: marque su casilla (en el teléfono, la casilla **Quitar**) y presione **Quitar marcados**.
+Mensajes de validación:
+- "Ingrese la Fecha" / "Seleccione el Colaborador" / "Seleccione el Area" / "Seleccione el Proyecto".
+- "Seleccione Un Activo a Asignar" / "El Activo Fijo ya existe en el detalle".
+Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Atras**, **Nuevo**, **Archivos**, **Imprimir**, **Eliminar** y **Guardar**.
+<!-- REVISAR: opciones y uso de Causal; efecto de pasar el Estado a APLICADO -->
+
+## Registrar una salida de activos
+Ruta: Menú > ACTIVOS FIJOS > SAL. ACTIVOS. La lista se llama **LISTA DE SALIDAS DE ACTIVOS FIJOS**.
+1. Presione **Nuevo**. Se abre **Salida de Activo Fijo**.
+2. En la tarjeta **Datos del documento** indique **Fecha**, **Estado** y **Causal**. Opcional: **Referencia 1**, **Referencia 2** y **Referencia 3**.
+3. En la tarjeta **Retiro** elija con **Buscar** **Retirado de**, **Area de Retiro** y **Proyecto de Retiro** (**Limpiar** borra lo elegido). Opcional: **Comentario**.
+4. En la tarjeta **Activos** presione **Agregar activo** y elíjalo en la búsqueda. Repita por cada activo.
+5. Presione **Guardar** (en el teléfono, en la barra inferior).
+Quitar un activo: marque su casilla (en el teléfono, la casilla **Quitar**) y presione **Quitar marcados**.
+Mensajes de validación:
+- "Ingrese la Fecha" / "Seleccione el Colaborador" / "Seleccione el Area" / "Seleccione el Proyecto".
+- "Seleccione Un Activo a Retirar" / "El Activo Fijo ya existe en el detalle".
+Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Atras**, **Nuevo**, **Archivos**, **Imprimir**, **Eliminar** y **Guardar**.
+<!-- REVISAR: opciones y uso de Causal; efecto de pasar el Estado a APLICADO -->
+
+## Registrar la depreciación de activos
+Ruta: Menú > ACTIVOS FIJOS > DEPRECIACION. La lista se llama **LISTA DE DEPRECIACION DE ACTIVOS FIJOS**.
+1. Presione **Nuevo**. Se abre **Depreciación de Activo Fijo**.
+2. En la tarjeta **Datos del documento** indique **Fecha** y **Estado**. Opcional: **Referencia 1**, **Referencia 2**, **Referencia 3** y **Comentario**.
+3. En la tarjeta **Período y monto** indique **Año**, **Mes** y **Moneda**. **Monto Total** no se escribe a mano.
+4. En la tarjeta **Activos** presione **Agregar activo** y elíjalo en la búsqueda. Escriba el **Ratio** de cada activo; **Monto corriente** y **Monto de liquidación** solo se muestran.
+5. Presione **Guardar** (en el teléfono, en la barra inferior).
+Quitar un activo: marque su casilla (en el teléfono, la casilla **Quitar**) y presione **Quitar marcados**.
+Mensajes de validación:
+- "Ingrese la Fecha" / "Seleccione el Año" / "Seleccione el Mes" / "Seleccione Un Activo a Depreciar".
+- "El Ratio no puede ser cero o vacio" / "El Ratio no puede ser mayor que la liquidacion".
+- "El Ratio mas el Monto Corriente no pueden ser mayor que la liquidacion".
+- "El Activo Fijo ya existe en el detalle".
+Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Atras**, **Nuevo**, **Archivos**, **Imprimir**, **Eliminar** y **Guardar**.
+<!-- REVISAR: significado de Ratio; efecto de pasar el Estado a APLICADO -->
+
+## Registrar la valoración de activos
+Ruta: Menú > ACTIVOS FIJOS > ACT VALORACION. La lista se llama **LISTA DE VALORACION DE ACTIVOS FIJOS**.
+1. Presione **Nuevo**. Se abre **Valoración de Activo Fijo**.
+2. En la tarjeta **Datos del documento** indique **Fecha** y **Estado**. Opcional: **Referencia 1**, **Referencia 2**, **Referencia 3** y **Comentario**.
+3. En la tarjeta **Período y monto** indique **Año**, **Mes** y **Moneda**. **Monto Total** no se escribe a mano.
+4. En la tarjeta **Activos** presione **Agregar activo** y elíjalo en la búsqueda. Escriba el **Ratio** de cada activo; **Monto corriente** y **Monto de liquidación** solo se muestran.
+5. Presione **Guardar** (en el teléfono, en la barra inferior).
+Quitar un activo: marque su casilla (en el teléfono, la casilla **Quitar**) y presione **Quitar marcados**.
+Mensajes de validación:
+- "Ingrese la Fecha" / "Seleccione el Año" / "Seleccione el Mes" / "Seleccione Un Activo a Valorar".
+- "El Ratio no puede ser cero o vacio" / "El Activo Fijo ya existe en el detalle".
+Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Atras**, **Nuevo**, **Archivos**, **Imprimir**, **Eliminar** y **Guardar**.
+<!-- REVISAR: significado de Ratio; efecto de pasar el Estado a APLICADO -->
+
+## Trasladar piezas entre activos (traslado o transferencia de piezas)
+Ruta: Menú > ACTIVOS FIJOS > TRA. PIEZA. La lista se llama **LISTA DE TRANSFERENCIA DE PIEZAS**.
+1. Presione **Nuevo**. Se abre **Transferencia de Piezas**.
+2. En la tarjeta **Datos del documento** indique **Fecha** y **Estado**. Opcional: **Referencia 1**, **Referencia 2** y **Comentario**.
+3. En la tarjeta **Activos y responsable** elija con **Buscar** **Activo Origen** y **Activo Destino** (al menos uno) y **Tecnico**. **Limpiar** borra lo elegido. Según la configuración de su empresa **Tecnico** puede tener otro nombre.
+4. En la tarjeta **Piezas** presione **Agregar pieza** y complete **Nombre de la pieza**, **Cantidad**, **Acción** y **Comentario**. Repita por cada pieza.
+5. Presione **Guardar** (en el teléfono, en la barra inferior).
+Quitar una pieza: márquela y presione **Quitar marcadas**.
+Mensajes de validación:
+- "Ingrese la Fecha" / "Seleccione el Estado" / "Agregue al menos una pieza".
+- "Seleccione una accion para cada pieza" / "Seleccione el nombre de cada pieza".
+- "Seleccione al menos un Activo (Origen o Destino)".
+Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Atras**, **Nuevo**, **Eliminar** y **Guardar**.
+<!-- REVISAR: significado de cada Acción; efecto de pasar el Estado a APLICADO -->
 
 ## Seguridad: qué contiene el menú SEGURIDAD
 Ruta: Menú > SEGURIDAD.

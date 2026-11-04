@@ -1,11 +1,10 @@
 				<!-- ./ page heading -->
 				<script>
+					var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+
 					$(document).ready(function() {
-						$('#txtDate').datepicker({
-							format: "yyyy-mm-dd"
-						});
-						$('#txtDate').val();
-						$("#txtDate").datepicker("update");
+						pv2InitDate("txtDate", false);
+						afxBindCommon();
 						$('.txt-numeric').mask('000,000.00', {
 							reverse: true
 						});
@@ -16,7 +15,8 @@
 						});
 
 						//Evento Agregar entrada
-						$(document).on("click", "#btnAcept", function() {
+						$(document).on("click", "#btnAcept", function(e) {
+							e.preventDefault();
 							$("#form-new-fixedasset_input").attr("method", "POST");
 							$("#form-new-fixedasset_input").attr("action", "<?php echo base_url(); ?>/app_afx_fixedassent_input/save/edit");
 
@@ -29,8 +29,7 @@
 						//Buscar el Empleado
 						$(document).on("click", "#btnSearchEmployee", function() {
 							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentEmployee->componentID; ?>/onCompleteEmployee/SELECCIONAR_EMPLOYEE/true/empty/false/not_redirect_when_empty";
-							window.open(url_request, "MsgWindow", "width=900,height=450");
-							window.onCompleteEmployee = onCompleteEmployee;
+							pv2OpenSearch(url_request, "Buscar colaborador", "onCompleteEmployee", onCompleteEmployee, "width=900,height=450");
 						});
 						//Eliminar Empleado
 						$(document).on("click", "#btnClearEmployee", function() {
@@ -41,8 +40,7 @@
 						//Buscar area
 						$(document).on("click", "#btnSearchArea", function() {
 							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentPublicCatalog->componentID; ?>/onCompleteArea/SELECCIONAR_ACTIVOFIJO_AREA/true/empty/false/not_redirect_when_empty";
-							window.open(url_request, "MsgWindow", "width=900,height=450");
-							window.onCompleteArea = onCompleteArea;
+							pv2OpenSearch(url_request, "Buscar área", "onCompleteArea", onCompleteArea, "width=900,height=450");
 						});
 						//Eliminar area
 						$(document).on("click", "#btnClearArea", function() {
@@ -53,8 +51,7 @@
 						//Buscar proyecto
 						$(document).on("click", "#btnSearchProyect", function() {
 							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentPublicCatalog->componentID; ?>/onCompleteProyect/SELECCIONAR_ACTIVOFIJO_PROYECTO/true/empty/false/not_redirect_when_empty";
-							window.open(url_request, "MsgWindow", "width=900,height=450");
-							window.onCompleteProyect = onCompleteProyect;
+							pv2OpenSearch(url_request, "Buscar proyecto", "onCompleteProyect", onCompleteProyect, "width=900,height=450");
 						});
 						//Eliminar proyecto
 						$(document).on("click", "#btnClearProyect", function() {
@@ -107,8 +104,7 @@
 
 						$(document).on("click", "#btnNewDetailTransaction", function() {
 							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentFixedAsset->componentID; ?>/onCompleteFixedAsset/SELECCIONAR_FIXEDASSENT/true/empty/false/not_redirect_when_empty";
-							window.open(url_request, "MsgWindow", "width=900,height=450");
-							window.onCompleteFixedAsset = onCompleteFixedAsset;
+							pv2OpenSearch(url_request, "Buscar activo", "onCompleteFixedAsset", onCompleteFixedAsset, "width=900,height=450");
 						});
 
 						$(document).on("click", "#btnPrinter", function() {

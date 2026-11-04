@@ -86,6 +86,7 @@ class app_box_outcash extends _BaseController
             $objParameterUrlPrinter             = $this->core_web_parameter->getParameter("BOX_OUTCASH_URL_PRINTER", $companyID);
             $objParameterUrlPrinter             = $objParameterUrlPrinter->value;
             $dataView["objParameterUrlPrinter"] = $objParameterUrlPrinter;
+            $dataView["useMobile"]              = $dataSession["user"]->useMobile;
 
             //Renderizar Resultado
             $dataSession["notification"] = $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -722,6 +723,7 @@ class app_box_outcash extends _BaseController
             $dataView["objSubTipoMovement"]   = $this->core_web_catalog->getCatalogAllItem_Parent("tb_transaction_master_outputcash", "priorityID", $companyID, $dataView["objTipoMovement"][0]->catalogItemID);
             $dataView["objListDenomination"]  = $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_denomination", "catalogItemID", $companyID);
             $dataView["objListBranch"]        = $this->Branch_Model->getByCompany($companyID);
+            $dataView["useMobile"]            = $dataSession["user"]->useMobile;
 
             //Renderizar Resultado
             $dataSession["notification"] = $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -788,19 +790,31 @@ class app_box_outcash extends _BaseController
                 $targetComponentID        = 0;
                 $parameter["{companyID}"] = $this->session->get('user')->companyID;
                 $dataViewData             = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
-                $dataViewRender           = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+                //En telefono la lista se dibuja como en abonos (app_box_share)
+                if ($this->request->getUserAgent()->isMobile())
+                    $dataViewRender       = $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow");
+                else
+                    $dataViewRender       = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
             }
             //Vista por defecto MOBILE
             else if ($dataSession["user"]->useMobile == 1) {
                 $parameter["{companyID}"] = $this->session->get('user')->companyID;
                 $dataViewData             = $this->core_web_view->getViewByName($this->session->get('user'), $objComponent->componentID, "DEFAULT_MOBILE_LISTA_EGRESOS_A_CAJA", CALLERID_LIST, $resultPermission, $parameter);
-                $dataViewRender           = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+                //En telefono la lista se dibuja como en abonos (app_box_share)
+                if ($this->request->getUserAgent()->isMobile())
+                    $dataViewRender       = $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow");
+                else
+                    $dataViewRender       = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
             }
             //Vista Por Id
             else {
                 $parameter["{companyID}"] = $this->session->get('user')->companyID;
                 $dataViewData             = $this->core_web_view->getViewBy_DataViewID($this->session->get('user'), $objComponent->componentID, $dataViewID, CALLERID_LIST, $resultPermission, $parameter);
-                $dataViewRender           = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+                //En telefono la lista se dibuja como en abonos (app_box_share)
+                if ($this->request->getUserAgent()->isMobile())
+                    $dataViewRender       = $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow");
+                else
+                    $dataViewRender       = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
             }
 
             //Renderizar Resultado

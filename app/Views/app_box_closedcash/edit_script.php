@@ -1,9 +1,15 @@
 				<!-- ./ page heading -->
+				<script>
+					var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+				</script>
+				<?php echo view('core_template/posme_v2_common'); ?>
 				<script>		
 					
 					$(document).ready(function(){					
-						$('#txtDate').datepicker({format:"yyyy-mm-dd"});						 
-						$("#txtDate").datepicker("update");
+						//Fecha nativa y combos nativos en telefono; barra inferior (una sola vez: enlazarla dos veces guardaria dos veces)
+						pv2InitDate("txtDate", false);						 
+						pv2MobileSelects("#txtStatusID,#txtBranchID,#txtCurrencyID,#txtBoxID,#txtAreaID,#txtPriorityID");
+						pv2BindMobileBar();
 						$('.txt-numeric').mask('000,000.00', {reverse: true});
 						var urlPrinter = '<?php echo $objParameterUrlPrinter; ?>';
 						updatePantalla();
@@ -103,7 +109,6 @@
 					
 					function fnCompletCatalogDetail(data)
 					{
-						debugger;
 						fnWaitClose();
 						data = data.catalogItems;
 						
@@ -120,7 +125,10 @@
 							
 						}
 						
-						$("#txtPriorityID").select2();
+						//En telefono el combo queda nativo: no volver a activar select2
+						if(!pv2IsMobile()){
+							$("#txtPriorityID").select2();
+						}
 						
 					}
 					
@@ -132,23 +140,24 @@
 						if($("#txtCurrencyID").val()  == "1")
 						{							
 							$( ".currency-1  .denomination-quantity" ).each(function() {
-							  var i = parseFloat($( this ).val());
-							  var p = parseFloat($( this ).data("reference"));
+							  var i = pv2Num($( this ).val());
+							  var p = pv2Num($( this ).data("reference"));
 							  totalTmp = totalTmp + (i * p );
 							});							
 						}
 						else
 						{							
 							$( ".currency-2  .denomination-quantity" ).each(function() {
-							  var i = parseFloat($( this ).val());
-							  var p = parseFloat($( this ).data("reference"));
+							  var i = pv2Num($( this ).val());
+							  var p = pv2Num($( this ).data("reference"));
 							  totalTmp = totalTmp + (i * p );
 							});
 							
 						}
 						
 						
-						$("#txtDetailAmount").val(totalTmp);
+						//Solo el total se muestra con formato 1,000.00; el servidor limpia las comas al guardar
+						$("#txtDetailAmount").val(pv2Fmt(totalTmp));
 					}
 					
 					function updatePantalla()
@@ -191,7 +200,7 @@
 						}
 						
 						//Validar Monto
-						if($("#txtDetailAmount").val() == "0"){
+						if(pv2Num($("#txtDetailAmount").val()) == 0){
 							fnShowNotification("El monto no puede ser 0","error",timerNotification);
 							result = false;
 						}
@@ -201,7 +210,7 @@
 					}
 					
 					function refreschChecked(){
-						$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();
+						$("[type='checkbox']").not('.toggle, .select2, .multiselect').uniform();
 						//$('.txtDebit').mask('000,000.00', {reverse: true});
 						//$('.txtCredit').mask('000,000.00', {reverse: true});
 						$('.txt-numeric').mask('000,000.00', {reverse: true});

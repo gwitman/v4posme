@@ -1,82 +1,56 @@
-					<div class="row">
-                        <div id="email" class="col-lg-12">
+					<div class="pv2 pv2-has-mbar<?php echo (isset($useMobile) && $useMobile == "1") ? " pv2-mobile" : ""; ?>">
 
-                        	<!-- botonera -->
-                            <div class="email-bar" style="border-left:1px solid #c9c9c9">
-                                <div class="btn-group pull-right">
-									<a href="<?php echo base_url(); ?>/app_box_openingcash/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>
-                                    <a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
-                                </div>
-                            </div>
-                            <!-- /botonera -->
-                        </div>
-                        <!-- End #email  -->
-                    </div>
-                    <!-- End .row-fluid  -->
-
-				    <div class="row">
-						<div class="col-lg-12">
-							<div class="panel panel-default">
-
-								<!-- titulo de comprobante-->
-								<div class="panel-heading">
-										<div class="icon"><i class="icon20 i-file"></i></div>
-										<h4>INGRESO:#<span class="invoice-num">00000000</span></h4>
-								</div>
-								<!-- /titulo de comprobante-->
+	<!-- encabezado y acciones -->
+	<div class="pv2-card pv2-header">
+		<div class="pv2-header-info">
+			<div class="pv2-header-icon"><i class="icon20 i-storage-2"></i></div>
+			<div>
+				<p class="pv2-header-title">APERTURA:#<span class="invoice-num">00000000</span> <span class="pv2-chip">Nuevo</span></p>
+				<p class="pv2-header-sub">Registra la apertura de la caja</p>
+			</div>
+		</div>
+		<div class="pv2-actions">
+			<a href="<?php echo base_url(); ?>/app_box_openingcash/index" id="btnBack" class="btn btn-default" ><i class="icon16 i-rotate"></i> Atras</a>
+			<a href="#" class="btn btn-primary pv2-hide-xs" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+		</div>
+	</div>
+	<!-- /encabezado y acciones -->
 
 								<!-- body -->
-								<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form">
-								<div class="panel-body printArea">
+								<form id="form-new-invoice" name="form-new-invoice" role="form" autocomplete="off">
 
-									<ul id="myTab" class="nav nav-tabs">
-										<li class="active">
-											<a href="#home" data-toggle="tab">Informacion</a>
-										</li>
-										<li>
-											<a href="#profile" data-toggle="tab">Referencias.</a>
-										</li>
-										<li class="dropdown">
-											<a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas <b class="caret"></b></a>
-											<ul class="dropdown-menu">
-												<li><a href="#dropdown" data-toggle="tab">Comentario</a></li>
-												<li><a href="#dropdown-file" data-toggle="tab">Archivos</a></li>
-											 </ul>
-										</li>
-									</ul>
-
-									<div class="tab-content">
-										<div class="tab-pane fade in active" id="home">
+										<div class="pv2-card" id="home">
+											<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-file"></i></span> Información</p>
 											<div class="row">
-												<div class="col-lg-6">
+												<div class="col-sm-6">
 
 
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="datepicker">Fecha</label>
-															<div class="col-lg-8">
+															<label class="pv2-label" for="txtDate">Fecha</label>
+															<div>
 																<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">
-																	<input size="16"  class="form-control" type="text" name="txtDate" id="txtDate" >
+																	<input size="16"  class="form-control" autocomplete="off" type="text" name="txtDate" id="txtDate" >
 																	<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>
 																</div>
 															</div>
 														</div>
 
 														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Aplicado</label>
-																<div class="col-lg-5">
+																<label class="pv2-label" for="txtIsApplied">Aplicado</label>
+																<div>
 																	<input type="checkbox" disabled   name="txtIsApplied" id="txtIsApplied" value="1" >
 																</div>
 														</div>
 														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Cambio</label>
-																<div class="col-lg-8">
-																	<input class="form-control"   type="text" disabled="disabled" name="txtExchangeRate" id="txtExchangeRate" value="<?php echo $exchangeRate; ?>">
+																<label class="pv2-label" for="txtExchangeRate">Cambio</label>
+																<div>
+																	<input class="form-control" autocomplete="off" type="text" disabled="disabled" name="txtExchangeRate" id="txtExchangeRate" value="<?php echo $exchangeRate; ?>">
 																</div>
 														</div>
 
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="selectFilter">Estado</label>
-															<div class="col-lg-8">
+															<label class="pv2-label" for="txtStatusID">Estado</label>
+															<div>
 																<select name="txtStatusID" id="txtStatusID" class="select2">
 																		<option></option>
 																		<?php
@@ -92,35 +66,35 @@
 														</div>
 
 														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Referencia 1</label>
-																<div class="col-lg-8">
-																	<input class="form-control"  type="text"  name="txtDetailReference1" id="txtDetailReference1" value="">
+																<label class="pv2-label" for="txtDetailReference1">Referencia 1</label>
+																<div>
+																	<input class="form-control" autocomplete="off" type="text"  name="txtDetailReference1" id="txtDetailReference1" value="">
 																</div>
 														</div>
 
 
 														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Referencia 2</label>
-																<div class="col-lg-8">
+																<label class="pv2-label" for="txtDetailReference2">Referencia 2</label>
+																<div>
 
-																	<input class="form-control"  type="text"  name="txtDetailReference2" id="txtDetailReference2" value="">
+																	<input class="form-control" autocomplete="off" type="text"  name="txtDetailReference2" id="txtDetailReference2" value="">
 																</div>
 														</div>
 
 														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Referencia 3</label>
-																<div class="col-lg-8">
-																	<input class="form-control"  type="text"  name="txtDetailReference3" id="txtDetailReference3" value="">
+																<label class="pv2-label" for="txtDetailReference3">Referencia 3</label>
+																<div>
+																	<input class="form-control" autocomplete="off" type="text"  name="txtDetailReference3" id="txtDetailReference3" value="">
 																</div>
 														</div>
 
 
 												</div>
-												<div class="col-lg-6">
+												<div class="col-sm-6">
 
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="selectFilter">Sucursal</label>
-															<div class="col-lg-8">
+															<label class="pv2-label" for="txtBranchID">Sucursal</label>
+															<div>
 																<select name="txtBranchID" id="txtBranchID"  class="select2">
 																		<?php
                                                                             foreach ($objListBranch as $i) {
@@ -132,8 +106,8 @@
 														</div>
 
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="selectFilter">Moneda</label>
-															<div class="col-lg-8">
+															<label class="pv2-label" for="txtCurrencyID">Moneda</label>
+															<div>
 																<select name="txtCurrencyID" id="txtCurrencyID" class="select2">																		>
 																		<?php
                                                                             if ($objListCurrency) {
@@ -148,8 +122,8 @@
 														</div>
 
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="txtBoxID">Caja</label>
-															<div class="col-lg-8">
+															<label class="pv2-label" for="txtBoxID">Caja</label>
+															<div>
 																<select name="txtBoxID" id="txtBoxID" class="select2">																		>
 																	<?php
                                                                         if (isset($objListCashBox)) {
@@ -170,8 +144,8 @@
 														</div>
 
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="selectFilter">Tipo</label>
-															<div class="col-lg-8">
+															<label class="pv2-label" for="txtAreaID">Tipo</label>
+															<div>
 																<select name="txtAreaID" id="txtAreaID" class="select2">
 																		<?php
                                                                             $counter = 0;
@@ -194,8 +168,8 @@
 														</div>
 
 														<div class="form-group">
-															<label class="col-lg-4 control-label" for="selectFilter">Categoria</label>
-															<div class="col-lg-8">
+															<label class="pv2-label" for="txtPriorityID">Categoría</label>
+															<div>
 																<select name="txtPriorityID" id="txtPriorityID" class="select2">
 																		<?php
                                                                             $counter = 0;
@@ -218,54 +192,36 @@
 														</div>
 
 														<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal">Monto</label>
-																<div class="col-lg-8">
+																<label class="pv2-label" for="txtDetailAmount">Monto</label>
+																<div>
 																	<input type="hidden" name="txtDetailTransactionDetailID" value="0">
-																	<input class="form-control"  type="text"  name="txtDetailAmount" id="txtDetailAmount" value="0">
+																	<input class="form-control pv2-num" autocomplete="off" inputmode="decimal" type="text"  name="txtDetailAmount" id="txtDetailAmount" value="0.00">
 																</div>
 														</div>
 
 
 
-														<div class="vital-stats">
-															<ul>
-
-																<li>
-																	<a href="#">
-																		<div class="item">
-																			<div class="icon green"><i class="i-download-2"></i></div>
-																			<span class="percent"><?php echo sprintf("%01.2f", $exchangeRatePurchase); ?></span>
-																			<span class="txt">C$ compra</span>
-																		</div>
-																	</a>
-																</li>
-																<li>
-																	<a href="#">
-																		<div class="item">
-																			<div class="icon yellow"><i class="i-search-3"></i></div>
-																			<span class="percent"><?php echo sprintf("%01.2f", $exchangeRateSale); ?></span>
-																			<span class="txt">C$ vent</span>
-																		</div>
-																	</a>
-																</li>
-																<li>
-																	<a href="#">
-																		<div class="item">
-																			<div class="icon orange"><i class="i-temperature"></i></div>
-																			<span class="percent"><?php echo sprintf("%01.2f", $exchangeRate); ?></span>
-																			<span class="txt">C$</span>
-																		</div>
-																	</a>
-																</li>
-
-															</ul>
-														</div><!-- End .vital-stats -->
+														<div class="pv2-kpis">
+															<div class="pv2-kpi k-ok">
+																<div class="pv2-kpi-icon"><i class="i-download-2"></i></div>
+																<div class="pv2-kpi-body"><span class="pv2-kpi-label">C$ compra</span><span class="pv2-kpi-value"><?php echo number_format((float)$exchangeRatePurchase,2); ?></span></div>
+															</div>
+															<div class="pv2-kpi k-warn">
+																<div class="pv2-kpi-icon"><i class="i-search-3"></i></div>
+																<div class="pv2-kpi-body"><span class="pv2-kpi-label">C$ venta</span><span class="pv2-kpi-value"><?php echo number_format((float)$exchangeRateSale,2); ?></span></div>
+															</div>
+															<div class="pv2-kpi k-info">
+																<div class="pv2-kpi-icon"><i class="i-temperature"></i></div>
+																<div class="pv2-kpi-body"><span class="pv2-kpi-label">C$</span><span class="pv2-kpi-value"><?php echo number_format((float)$exchangeRate,2); ?></span></div>
+															</div>
+														</div>
 												</div>
 											</div>
 										</div>
-										<div class="tab-pane fade" id="profile">
+										<div class="pv2-card" id="profile">
+											<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-coins"></i></span> Denominaciones</p>
 											<div class="row">
-												<div class="col-lg-6 currency-1">
+												<div class="col-sm-6 currency-1">
 
 													<?php
                                                         if ($objListDenomination) {
@@ -274,14 +230,14 @@
                                                                 if ($deno->ratio == 1) {
                                                                 ?>
 															<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal"><?php echo $deno->name; ?></label>
-																<div class="col-lg-8">
+																<label class="pv2-label"><?php echo $deno->name; ?></label>
+																<div>
 																	<input type="hidden" name="txtTransactionMasterDenominationID[]" value="0">
 																	<input type="hidden" name="txtTransactionMasterDenominationCatalogItemID[]" value="<?php echo $deno->catalogItemID; ?>">
 																	<input type="hidden" name="txtTransactionMasterDenominationCurrencyID[]" value="<?php echo $deno->ratio; ?>">
 																	<input type="hidden" name="txtTransactionMasterDenominationExchangeRate[]" value="<?php echo $exchangeRate; ?>">
 																	<input type="hidden" name="txtTransactionMasterDenominationReference[]" value="<?php echo $deno->reference1; ?>">
-																	<input class="form-control denomination-quantity"  type="text"  name="txtTransactionMasterDenominationQuantity[]" data-reference="<?php echo $deno->reference1; ?>"  value="0">
+																	<input class="form-control pv2-num denomination-quantity" autocomplete="off" inputmode="decimal" type="text"  name="txtTransactionMasterDenominationQuantity[]" data-reference="<?php echo $deno->reference1; ?>"  value="0">
 																</div>
 															</div>
 															<?php
@@ -293,7 +249,7 @@
 
 
 												</div>
-												<div class="col-lg-6 currency-2">
+												<div class="col-sm-6 currency-2">
 													<?php
                                                         if ($objListDenomination) {
                                                             foreach ($objListDenomination as $deno) {
@@ -301,14 +257,14 @@
                                                                 if ($deno->ratio == 2) {
                                                                 ?>
 															<div class="form-group">
-																<label class="col-lg-4 control-label" for="normal"><?php echo $deno->name; ?></label>
-																<div class="col-lg-8">
+																<label class="pv2-label"><?php echo $deno->name; ?></label>
+																<div>
 																	<input type="hidden" name="txtTransactionMasterDenominationID[]" value="0">
 																	<input type="hidden" name="txtTransactionMasterDenominationCatalogItemID[]" value="<?php echo $deno->catalogItemID; ?>">
 																	<input type="hidden" name="txtTransactionMasterDenominationCurrencyID[]" value="<?php echo $deno->ratio; ?>">
 																	<input type="hidden" name="txtTransactionMasterDenominationExchangeRate[]" value="<?php echo $exchangeRate; ?>">
 																	<input type="hidden" name="txtTransactionMasterDenominationReference[]" value="<?php echo $deno->reference1; ?>">
-																	<input class="form-control denomination-quantity"  type="text"  name="txtTransactionMasterDenominationQuantity[]" data-reference="<?php echo $deno->reference1; ?>" value="0">
+																	<input class="form-control pv2-num denomination-quantity" autocomplete="off" inputmode="decimal" type="text"  name="txtTransactionMasterDenominationQuantity[]" data-reference="<?php echo $deno->reference1; ?>" value="0">
 																</div>
 															</div>
 															<?php
@@ -322,27 +278,29 @@
 												</div>
 											</div>
 										</div>
-										<div class="tab-pane fade" id="dropdown">
+										<div class="pv2-card" id="dropdown">
+											<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-bubble"></i></span> Comentario</p>
 
 												<div class="form-group">
-		                                            <label class="col-lg-2 control-label" for="normal">Descripcion</label>
-		                                            <div class="col-lg-6">
+		                                            <label class="pv2-label" for="txtNote">Descripción</label>
+		                                            <div>
 		                                                <textarea class="form-control"  id="txtNote" name="txtNote" rows="6"></textarea>
 		                                            </div>
 		                                        </div>
 
 										</div>
-										<div class="tab-pane fade" id="dropdown-file">
 
-										</div>
-									</div>
-
-
-                                </div>
 								</form>
 								<!-- /body -->
-							</div>
-						</div>
-					</div>
+
+	<!-- barra inferior (telefono) -->
+	<div class="pv2-mbar">
+		<div class="pv2-mbar-info">
+			<p class="pv2-mbar-label">Apertura de caja</p>
+			<p class="pv2-mbar-total">Nuevo</p>
+		</div>
+		<a href="#" class="btn btn-primary" id="btnAceptMobile"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+	</div>
+</div>
 
 

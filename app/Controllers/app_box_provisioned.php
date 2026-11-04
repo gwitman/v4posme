@@ -105,6 +105,7 @@ class app_box_provisioned extends _BaseController {
 			$dataView["objComponentCustomer"]	= $objComponentCustomer;
 			$dataView["objComponentEmployee"]	= $objComponentEmployee;			
 			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_provisioned","statusID",$dataView["objTransactionMaster"]->statusID,$companyID,$branchID,$roleID);
+			$dataView["useMobile"]				= $dataSession["user"]->useMobile;
 			$dataView["objCustomerDefault"]		= $this->Customer_Model->get_rowByEntity($companyID,$dataView["objTransactionMaster"]->entityID);
 			$dataView["objNaturalDefault"]		= $this->Natural_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);			
 			$dataView["objLegalDefault"]		= $this->Legal_Model->get_rowByPK($companyID,$dataView["objCustomerDefault"]->branchID,$dataView["objCustomerDefault"]->entityID);
@@ -751,6 +752,7 @@ class app_box_provisioned extends _BaseController {
 			$dataView["objComponentCustomerCreditDocument"]	= $objComponentCustomerCreditDocument;
 			$dataView["objCaudal"]				= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);			
 			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_provisioned","statusID",$companyID,$branchID,$roleID);
+			$dataView["useMobile"]				= $dataSession["user"]->useMobile;
 			
 			
 			//Renderizar Resultado 
@@ -821,8 +823,8 @@ class app_box_provisioned extends _BaseController {
 			//Vista por defecto MOBILE
 			else if( $this->request->getUserAgent()->isMobile() ){
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
-				$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$objComponent->componentID,"DEFAULT_MOBILE_LISTA_ABONOS",CALLERID_LIST,$resultPermission,$parameter); 			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$objComponent->componentID,"DEFAULT_MOBILE_LISTA_ABONOS",CALLERID_LIST,$resultPermission,$parameter);
+				$dataViewRender				= $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow");
 			} 
 			//Vista Por Id
 			else 

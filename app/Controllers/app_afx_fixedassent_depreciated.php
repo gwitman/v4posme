@@ -44,7 +44,7 @@ class app_afx_fixedassent_depreciated extends _BaseController
             else if ($this->request->getUserAgent()->isMobile()) {
                 $parameter["{companyID}"]       = $this->session->get('user')->companyID;
                 $dataViewData                   = $this->core_web_view->getViewByName($this->session->get('user'), $objComponent->componentID, "LISTA DEPRECIACION DE ACTIVOS", CALLERID_LIST, $resultPermission, $parameter);
-                $dataViewRender                 = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+                $dataViewRender                 = $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow");
             }
             //Vista Por Id
             else {
@@ -180,6 +180,7 @@ class app_afx_fixedassent_depreciated extends _BaseController
             $dataView["objComponentPublicCatalog"]              = $objComponentPublicCatalog;
             $dataView["objComponentEmployee"]                   = $objComponentEmployee;
             $dataView["objListWorkflowStage"]                   = $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_fixed_assent_depreciated", "statusID", $companyID, $branchID, $roleID);
+            $dataView["useMobile"]                              = $dataSession["user"]->useMobile;
             $dataView["objCausal"]                              = $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
             $dataView["objListCurrency"]                        = $this->Company_Currency_Model->getByCompany($companyID);
             $dataView["objCurrency"]                            = $this->core_web_currency->getCurrencyDefault($companyID);
@@ -253,7 +254,7 @@ class app_afx_fixedassent_depreciated extends _BaseController
             $objTM["reference2"]                    = /*inicio get post*/ $this->request->getPost("txtReference2");
             $objTM["reference3"]                    = /*inicio get post*/ $this->request->getPost("txtReference3");
             $objTM["currencyID"]                    = /*inicio get post*/ $this->request->getPost("txtCurrencyID");
-            $objTM["amount"]                        = /*inicio get post*/ $this->request->getPost("txtTotalAmount");
+            $objTM["amount"]                        = helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtTotalAmount"));
             $objTM["statusID"]                      = /*inicio get post*/ $this->request->getPost("txtStatusID");
             $objTM["classID"]                       = /*inicio get post*/ $this->request->getPost("txtYearID");
             $objTM["areaID"]                        = /*inicio get post*/ $this->request->getPost("txtMonthID");
@@ -268,11 +269,12 @@ class app_afx_fixedassent_depreciated extends _BaseController
             $arrayListFixedAssetRatio               = $this->request->getPost("txtFixedAssetRatio");
             $arrayListFixedAssetCurrentAmount       = $this->request->getPost("txtFixedAssetCurrentAmount");
 
+            //Los montos se limpian de comas por elemento, antes de sumarlos en PHP
             if (!empty($arrayListFixedAssetID)) {
                 foreach ($arrayListFixedAssetID as $key => $value) {
                     $assetID                        = $value;
-                    $assetRatio                     = $arrayListFixedAssetRatio[$key];
-                    $currentAmount                  = $arrayListFixedAssetCurrentAmount[$key] ?: 0;
+                    $assetRatio                     = helper_StringToNumber($arrayListFixedAssetRatio[$key]);
+                    $currentAmount                  = helper_StringToNumber($arrayListFixedAssetCurrentAmount[$key]) ?: 0;
 
                     $objTMD["companyID"]            = $companyID;
                     $objTMD["transactionID"]        = $objTM["transactionID"];
@@ -377,6 +379,7 @@ class app_afx_fixedassent_depreciated extends _BaseController
             $dataView["objComponentPublicCatalog"]              = $objComponentPublicCatalog;
             $dataView["objComponentEmployee"]                   = $objComponentEmployee;
             $dataView["objListWorkflowStage"]                   = $this->core_web_workflow->getWorkflowAllStage("tb_transaction_master_fixed_assent_depreciated", "statusID", $companyID, $branchID, $roleID);
+            $dataView["useMobile"]                              = $dataSession["user"]->useMobile;
             $dataView["objCausal"]                              = $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
             $dataView["objTMD"]                                 = $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID, $transactionID, $transactionMasterID, $objComponentFixedAssetDepreciated->componentID);
             $dataView["objListCurrency"]                        = $this->Company_Currency_Model->getByCompany($companyID);
@@ -465,7 +468,7 @@ class app_afx_fixedassent_depreciated extends _BaseController
             $objTMNew["reference2"]                 = /*inicio get post*/ $this->request->getPost("txtReference2");
             $objTMNew["reference3"]                 = /*inicio get post*/ $this->request->getPost("txtReference3");
             $objTMNew["currencyID"]                 = /*inicio get post*/ $this->request->getPost("txtCurrencyID");
-            $objTMNew["amount"]                     = /*inicio get post*/ $this->request->getPost("txtTotalAmount");
+            $objTMNew["amount"]                     = helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtTotalAmount"));
             $objTMNew["statusID"]                   = /*inicio get post*/ $this->request->getPost("txtStatusID");
             $objTMNew["classID"]                    = /*inicio get post*/ $this->request->getPost("txtYearID");
             $objTMNew["areaID"]                     = /*inicio get post*/ $this->request->getPost("txtMonthID");
@@ -500,11 +503,12 @@ class app_afx_fixedassent_depreciated extends _BaseController
             }
 
             //Actualizar los activos fijos ya existentes
+            //Los montos se limpian de comas por elemento, antes de sumarlos en PHP
             if (!empty($arrayCurrentListFixedAssetID)) {
                 foreach ($arrayCurrentListFixedAssetID as $key => $value) {
                     $assetID                    = $value;
-                    $assetRatio                 = $arrayListFixedAssetRatio[$key];
-                    $currentAmount              = $arrayListFixedAssetCurrentAmount[$key] ?: 0;
+                    $assetRatio                 = helper_StringToNumber($arrayListFixedAssetRatio[$key]);
+                    $currentAmount              = helper_StringToNumber($arrayListFixedAssetCurrentAmount[$key]) ?: 0;
 
                     $objTMDNew["amount"]        = $assetRatio;
                     $objTMDNew["discount"]      = $currentAmount;
@@ -523,8 +527,8 @@ class app_afx_fixedassent_depreciated extends _BaseController
                 for($i = $currentFixedAssetListLength; $i < $mixedFixedAssetListLength; $i++)
                 {
                     $assetID                            = $arrayNewListFixedAssetID[$lapsCounter];
-                    $assetRatio                         = $arrayListFixedAssetRatio[$i];
-                    $assetCurrentAmount                 = $arrayListFixedAssetCurrentAmount[$i] ?: 0;      
+                    $assetRatio                         = helper_StringToNumber($arrayListFixedAssetRatio[$i]);
+                    $assetCurrentAmount                 = helper_StringToNumber($arrayListFixedAssetCurrentAmount[$i]) ?: 0;      
                     
                     $objTMDNew                          = [];
                     $objTMDNew["companyID"]             = $companyID;
