@@ -89,6 +89,7 @@ class app_planilla_employee_pay extends _BaseController {
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
+			$dataView["useMobile"]			= $dataSession["user"]->useMobile;
 			$dataSession["head"]			= /*--inicio view*/ view('app_planilla_employee_pay/edit_head',$dataView);//--finview
 			$dataSession["body"]			= /*--inicio view*/ view('app_planilla_employee_pay/edit_body',$dataView);//--finview
 			$dataSession["script"]			= /*--inicio view*/ view('app_planilla_employee_pay/edit_script',$dataView);//--finview
@@ -291,20 +292,21 @@ class app_planilla_employee_pay extends _BaseController {
 			
 			if(!empty($arrayListCalendarDetailID)){
 				foreach($arrayListCalendarDetailID as $key => $value){
+					//Los montos se guardan sin las comas del formato visual
 					$calendarPayDetailID		= $value;
 					$EmployeeID					= $arrayListEmployeeID[$key];
-					$Salario					= $arrayListSalario[$key];
-					$Comision					= $arrayListComision[$key];
-					$Adelantos					= $arrayListAdelantos[$key];
-					$Neto 						= $arrayListNeto[$key];
+					$Salario					= helper_StringToNumber($arrayListSalario[$key]);
+					$Comision					= helper_StringToNumber($arrayListComision[$key]);
+					$Adelantos					= helper_StringToNumber($arrayListAdelantos[$key]);
+					$Neto 						= helper_StringToNumber($arrayListNeto[$key]);
 					
-					$Bono						= $arrayListBono[$key];
-					$DeduccionPrestamo			= $arrayListDeduccionPrestamo[$key];
-					$DeduccionLlegadaTarde		= $arrayListDeduccionLlegadaTarde[$key];
-					$INSS						= $arrayListINSS[$key];
-					$INSSPatronal 				= $arrayListINSSPatronal[$key];
-					$IR							= $arrayListIR[$key];
-					$Ahorro						= $arrayListAhorro[$key];
+					$Bono						= helper_StringToNumber($arrayListBono[$key]);
+					$DeduccionPrestamo			= helper_StringToNumber($arrayListDeduccionPrestamo[$key]);
+					$DeduccionLlegadaTarde		= helper_StringToNumber($arrayListDeduccionLlegadaTarde[$key]);
+					$INSS						= helper_StringToNumber($arrayListINSS[$key]);
+					$INSSPatronal 				= helper_StringToNumber($arrayListINSSPatronal[$key]);
+					$IR							= helper_StringToNumber($arrayListIR[$key]);
+					$Ahorro						= helper_StringToNumber($arrayListAhorro[$key]);
 					
 					//Nuevo Detalle
 					if($calendarPayDetailID == 0){	
@@ -469,20 +471,21 @@ class app_planilla_employee_pay extends _BaseController {
 
 			if(!empty($arrayListCalendarDetailID)){
 				foreach($arrayListCalendarDetailID as $key => $value){
+					//Los montos se guardan sin las comas del formato visual
 					$calendarPayDetailID		= $value;
 					$EmployeeID					= $arrayListEmployeeID[$key];
-					$Salario					= $arrayListSalario[$key];
-					$Comision					= $arrayListComision[$key];
-					$Adelantos					= $arrayListAdelantos[$key];
-					$Neto 						= $arrayListNeto[$key];
+					$Salario					= helper_StringToNumber($arrayListSalario[$key]);
+					$Comision					= helper_StringToNumber($arrayListComision[$key]);
+					$Adelantos					= helper_StringToNumber($arrayListAdelantos[$key]);
+					$Neto 						= helper_StringToNumber($arrayListNeto[$key]);
 					
-					$Bono						= $arrayListBono[$key];
-					$DeduccionPrestamo			= $arrayListDeduccionPrestamo[$key];
-					$DeduccionLlegadaTarde		= $arrayListDeduccionLlegadaTarde[$key];
-					$INSS						= $arrayListINSS[$key];
-					$INSSPatronal 				= $arrayListINSSPatronal[$key];
-					$IR							= $arrayListIR[$key];
-					$Ahorro						= $arrayListAhorro[$key];
+					$Bono						= helper_StringToNumber($arrayListBono[$key]);
+					$DeduccionPrestamo			= helper_StringToNumber($arrayListDeduccionPrestamo[$key]);
+					$DeduccionLlegadaTarde		= helper_StringToNumber($arrayListDeduccionLlegadaTarde[$key]);
+					$INSS						= helper_StringToNumber($arrayListINSS[$key]);
+					$INSSPatronal 				= helper_StringToNumber($arrayListINSSPatronal[$key]);
+					$IR							= helper_StringToNumber($arrayListIR[$key]);
+					$Ahorro						= helper_StringToNumber($arrayListAhorro[$key]);
 					
 					$objECD 									= NULL;
 					$objECD["calendarID"] 						= $calendarID;
@@ -642,6 +645,7 @@ class app_planilla_employee_pay extends _BaseController {
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
+			$dataView["useMobile"]			= $dataSession["user"]->useMobile;
 			$dataSession["head"]			= /*--inicio view*/ view('app_planilla_employee_pay/news_head',$dataView);//--finview
 			$dataSession["body"]			= /*--inicio view*/ view('app_planilla_employee_pay/news_body',$dataView);//--finview
 			$dataSession["script"]			= /*--inicio view*/ view('app_planilla_employee_pay/news_script',$dataView);//--finview
@@ -707,8 +711,8 @@ class app_planilla_employee_pay extends _BaseController {
 			//Vista por defecto MOBILE
 			else if( $this->request->getUserAgent()->isMobile() ){
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
-				$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$objComponent->componentID,"DEFAULT_MOBILE_LISTA_ABONOS",CALLERID_LIST,$resultPermission,$parameter); 			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$objComponent->componentID,"DEFAULT_MOBILE_LISTA_ABONOS",CALLERID_LIST,$resultPermission,$parameter);
+				$dataViewRender				= $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow");
 			} 
 			//Vista Por Id
 			else 

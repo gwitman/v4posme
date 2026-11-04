@@ -1,6 +1,14 @@
 				<!-- ./ page heading -->
 				<script>
+				    var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+				</script>
+				<?php echo view('core_template/posme_v2_common'); ?>
+				<script>
 				    $(document).ready(function() {
+				        //Combos nativos en telefono; barra inferior (una sola vez: enlazarla dos veces guardaria dos veces)
+				        pv2MobileSelects("#txtStatusID,#txtCurrencyID");
+				        pv2BindMobileBar();
+
 				        // $('#txtDate').datepicker({
 				        //     format: "yyyy-mm-dd"
 				        // });
@@ -30,8 +38,7 @@
 				        $(document).on("click", "#btnSearchBank", function() {
 							var currencyID 		= $("#txtCurrencyID").val();
 				            var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentBank->componentID; ?>/onCompleteBank/SELECCIONAR_BANCO/true/" + encodeURI('{\"currencyID\"|\"' + currencyID + '\"}') + "/false/not_redirect_when_empty";
-				            window.open(url_request, "MsgWindow", "width=900,height=450");
-				            window.onCompleteBank = onCompleteBank;
+				            pv2OpenSearch(url_request, "Buscar banco", "onCompleteBank", onCompleteBank, "width=900,height=450");
 				        });
 
 				        //Eliminar banco
@@ -46,8 +53,7 @@
 						//Buscar el Empleado
 				        $(document).on("click", "#btnSearchEmployee", function() {
 				            var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentEmployee->componentID; ?>/onCompleteEmployee/SELECCIONAR_EMPLOYEE/true/empty/false/not_redirect_when_empty";
-				            window.open(url_request, "MsgWindow", "width=900,height=450");
-				            window.onCompleteEmployee = onCompleteEmployee;
+				            pv2OpenSearch(url_request, "Buscar empleado", "onCompleteEmployee", onCompleteEmployee, "width=900,height=450");
 				        });
 
 				        //Eliminar Empleado
@@ -64,7 +70,7 @@
 
 						var initialValue		= $("#txtInitialValue").val().trim();
 						var finalValue			= $("#txtFinalValue").val().trim();
-						debugger;
+
 						if ($("#txtName").val() == "") {
 				            fnShowNotification("Ingrese el Nombre", "error", timerNotification);
 				            result = false;

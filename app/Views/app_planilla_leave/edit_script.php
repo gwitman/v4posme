@@ -1,11 +1,15 @@
 <script>
+    var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+
     $(document).ready(function() {
 
         var selectedEmployeeData = null;
 
-        $('#txtEmployeeLeaveStartDate').datepicker({format:"yyyy-mm-dd"});
-        $('#txtEmployeeLeaveEndDate').datepicker({format:"yyyy-mm-dd"});
-        $('#txtEmployeeLeaveIntegrationDate').datepicker({format:"yyyy-mm-dd"});
+        //Una fecha guardada se conserva y una vacia sigue vacia
+        plaInitDate("txtEmployeeLeaveStartDate");
+        plaInitDate("txtEmployeeLeaveEndDate");
+        plaInitDate("txtEmployeeLeaveIntegrationDate");
+        afxBindCommon();
 
         //Regresar a la lista
         $("#btnBack").on("click", function() 
@@ -17,22 +21,21 @@
         $("#btnSearchEmployee").on("click", function() 
         {
             var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentEmployee->componentID; ?>/onCompleteNewEmployee/SELECCIONAR_EMPLOYEE_TO_PLANILLA/true/empty/false/not_redirect_when_empty";
-            window.open(url_request, "MsgWindow", "width=900,height=500");
-            window.onCompleteNewEmployee = onCompleteNewEmployee;
+            pv2OpenSearch(url_request, "Buscar colaborador", "onCompleteNewEmployee", onCompleteNewEmployee, "width=900,height=500");
         });
 
         //Limpiar datos del colaborador
         $("#btnClearEmployee").on("click", function() 
         {
-            $("#form-new-employee-leave input").val(""); 
+            //Los identificadores del documento no se limpian: sin ellos no se puede guardar la edicion
+            $("#form-new-employee-leave input").not("#txtTransactionID, #txtTransactionMasterID").val("");
             $("#txtEmployeeLeaveNote").val("");
-            $("#txtTransactionID").val(objDataTM.transactionID);
-            $("#txtTransactionMasterID").val(objDataTM.transactionMasterID);
         });
 
         //Agregar Registro
-        $("#btnAcept").on("click", function()
+        $("#btnAcept").on("click", function(e)
         {
+            e.preventDefault();
             if(validateForm())
             {
                 fnWaitOpen();
@@ -148,7 +151,7 @@
 
         function refreschChecked()
         {
-            $("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();	
+            plaRefreshChecked();
         }
 
 

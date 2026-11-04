@@ -1,55 +1,31 @@
-					<div class="row"> 
-                        <div id="email" class="col-lg-12">
-                        
-                        	<!-- botonera -->
-                            <div class="email-bar" style="border-left:1px solid #c9c9c9">                                
-                                <div class="btn-group pull-right">                                    
-									<a href="<?php echo base_url(); ?>/app_planilla_adelantos/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>                                    
-                                    <a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
-                                </div>
-                            </div> 
-                            <!-- /botonera -->
-                        </div>
-                        <!-- End #email  -->
-                    </div>
-                    <!-- End .row-fluid  -->
-					
-				    <div class="row">
-						<div class="col-lg-12">
-							<div class="panel panel-default">
-										
-								<!-- titulo de comprobante-->
-								<div class="panel-heading">
-										<div class="icon"><i class="icon20 i-file"></i></div> 
-										<h4>ADELANTO:#<span class="invoice-num">00000000</span></h4>
-								</div>
-								<!-- /titulo de comprobante-->
-								
-								<!-- body -->	
-								<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form">
-								<div class="panel-body printArea"> 
-								
-									<ul id="myTab" class="nav nav-tabs">
-										<li class="active">
-											<a href="#home" data-toggle="tab">Informacion</a>
-										</li>
-										<li class="dropdown">
-											<a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas <b class="caret"></b></a>
-											<ul class="dropdown-menu">
-												<li><a href="#dropdown" data-toggle="tab">Comentario</a></li>
-												<li><a href="#dropdown-file" data-toggle="tab">Archivos</a></li>
-											 </ul>
-										</li>
-									</ul>
-									
-									<div class="tab-content">
-										<div class="tab-pane fade in active" id="home">	
-											<div class="row">										
-												<div class="col-lg-6">
-													
+<div class="pv2 pv2-has-mbar<?php echo (isset($useMobile) && $useMobile == "1") ? " pv2-mobile" : ""; ?>">
+
+    <!-- encabezado y acciones -->
+    <div class="pv2-card pv2-header">
+        <div class="pv2-header-info">
+            <div class="pv2-header-icon"><i class="icon20 i-clock-5"></i></div>
+            <div>
+                <p class="pv2-header-title">ADELANTO:#<span class="invoice-num">00000000</span> <span class="pv2-chip">Nuevo</span></p>
+                <p class="pv2-header-sub">Registra los adelantos de salario de los colaboradores</p>
+            </div>
+        </div>
+        <div class="pv2-actions">
+            <a href="<?php echo base_url(); ?>/app_planilla_adelantos/index" id="btnBack" class="btn btn-default"><i class="icon16 i-rotate"></i> Atras</a>
+            <a href="#" class="btn btn-primary pv2-hide-xs" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+        </div>
+    </div>
+    <!-- /encabezado y acciones -->
+
+								<!-- formulario -->
+								<form id="form-new-invoice" name="form-new-invoice" role="form" autocomplete="off">
+								<div class="printArea">
+											<div class="row" id="home">
+												<div class="col-xs-12 col-md-6">
+												  <div class="pv2-card">
+													<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-file"></i></span> Datos del adelanto</p>
 														<div class="form-group">
-															<label class="col-lg-2 control-label" for="selectFilter">Ciclo</label>
-															<div class="col-lg-8">
+															<label class="pv2-label">Ciclo</label>
+															<div>
 																<select name="txtCycleID" id="txtCycleID" class="select2">							
 																		<?php
 																		if($objListCycle)
@@ -63,8 +39,8 @@
 														</div>
 													
 														<div class="form-group">
-															<label class="col-lg-2 control-label" for="selectFilter">Estado</label>
-															<div class="col-lg-8">
+															<label class="pv2-label">Estado</label>
+															<div>
 																<select name="txtStatusID" id="txtStatusID" class="select2">
 																		<option></option>																
 																		<?php
@@ -78,12 +54,15 @@
 														</div>
 														
 													
+												  </div>
 												</div>
-												<div class="col-lg-6">
+												<div class="col-xs-12 col-md-6">
+												  <div class="pv2-card">
+													<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-list-2"></i></span> Clasificación</p>
 												
 														<div class="form-group">
-															<label class="col-lg-2 control-label" for="selectFilter">Tipo</label>
-															<div class="col-lg-8">
+															<label class="pv2-label">Tipo</label>
+															<div>
 																<select name="txtTypeID" id="txtTypeID" class="select2">
 																		<option></option>																
 																		<?php
@@ -96,8 +75,8 @@
 															</div>
 														</div>
 														<div class="form-group">
-															<label class="col-lg-2 control-label" for="selectFilter">Moneda</label>
-															<div class="col-lg-8">
+															<label class="pv2-label">Moneda</label>
+															<div>
 																<select name="txtCurrencyID" id="txtCurrencyID" class="select2">
 																		<option></option>																
 																		<?php
@@ -110,90 +89,86 @@
 															</div>
 														</div>
 														
+												  </div>
 												</div>
 											</div>
-										</div>
 										
-										<div class="tab-pane fade" id="dropdown">
+											<div class="pv2-card" id="dropdown">
+												<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-pencil-4"></i></span> Comentario</p>
 											
 												<div class="form-group">
-		                                            <label class="col-lg-2 control-label" for="normal">Descripcion</label>
-		                                            <div class="col-lg-6">
-		                                                <textarea class="form-control"  id="txtNote" name="txtNote" rows="6"></textarea>
+		                                            <label class="pv2-label" for="txtNote">Descripción</label>
+		                                            <div>
+		                                                <textarea class="form-control"  id="txtNote" name="txtNote" rows="4"></textarea>
 		                                            </div>
 		                                        </div>
 											
 										</div>
-										<div class="tab-pane fade" id="dropdown-file">
 											
-										</div>
-									</div>    
 							
-									<br/>
-									<a href="#" class="btn btn-flat btn-info" id="btnNewShare" >Agregar</a>
-									<a href="#" class="btn btn-flat btn-danger" id="btnDeleteShare" >Eliminar</a>									
-									<div class="row">
-                                        <div class="col-lg-12">
-                                            <h3>Detalle:</h3>
-                                            <table id="tb_transaction_master_detail" class="table table-bordered">
-                                                <thead>
-                                                  <tr>
-                                                    <th></th>
-													<th>Colaborador</th>                                                    
-													<th>Monto</th>
-                                                  </tr>
-                                                </thead>
-                                                <tbody id="body_tb_transaction_master_detail">
-                                                </tbody>
-                                            </table>
-                                            
-                                        </div><!-- End .col-lg-12  --> 
-                                    </div><!-- End .row-fluid  -->
-                                    <div class="row">
-                                        <div class="col-lg-8">
-											<div class="page-header">
-                                                <h3>Ref.</h4>
-                                            </div>
-                                            <ul class="list-unstyled">
-                                                <li><h3>CC: <span class="red-smooth">*</span></h3></li>
-                                                <li><i class="icon16 i-arrow-right-3"></i>Resumen de planilla</li>                                                
-                                            </ul>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="page-header">
-                                                <h3>Resumen</h3>
-                                            </div>
-                                            <table class="table table-bordered">
-                                                <tbody>                                                    
+									<!-- detalle -->
+									<div class="pv2-card">
+										<div class="pv2-detail-head">
+											<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-list-2"></i></span> Colaboradores <span class="pv2-count" id="afxDetailCount">0</span></p>
+											<div class="pv2-actions">
+												<button type="button" class="btn btn-default btn-sm" id="btnDeleteShare"><i class="icon16 i-remove"></i> Quitar marcados</button>
+												<button type="button" class="btn btn-primary btn-sm" id="btnNewShare"><i class="icon16 i-plus"></i> Agregar colaborador</button>
+											</div>
+										</div>
+										<div id="div_transaction_master_detail" class="pv2-table-wrap">
+											<table id="tb_transaction_master_detail" class="pv2-table">
+												<thead>
 													<tr>
-                                                        <th>TOTAL</th>
-                                                        <td >
-															<input type="text" id="txtTotal" name="txtTotal" readonly class="col-lg-12 txt-numeric" value="" style="text-align:right"/>
-														</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div><!-- End .col-lg-6  --> 
-                                    </div><!-- End .row-fluid  -->
+														<th class="afx-col-quitar"></th>
+														<th>Colaborador</th>
+														<th>Monto</th>
+													</tr>
+												</thead>
+												<tbody id="body_tb_transaction_master_detail">
+												</tbody>
+											</table>
+										</div>
+										<div class="pv2-empty" id="afxDetailEmpty">
+											<i class="icon20 i-file-plus"></i>
+											Este adelanto no tiene colaboradores. Toca <b>Agregar colaborador</b> para empezar.
+										</div>
+									</div>
+									<!-- /detalle -->
+                                            
+									<!-- resumen -->
+									<div class="pv2-card">
+										<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-checkmark-4"></i></span> Resumen</p>
+										<div class="pv2-total">
+											<label class="pv2-label" for="txtTotal">Total</label>
+											<input type="text" id="txtTotal" name="txtTotal" readonly class="afx-monto" autocomplete="off" value="">
+										</div>
+									</div>
+									<!-- /resumen -->
                                        
                                 </div>
 								</form>
-								<!-- /body -->
-							</div>
-						</div>
-					</div>
+								<!-- /formulario -->
+
+    <!-- barra inferior (telefono) -->
+    <div class="pv2-mbar">
+        <div class="pv2-mbar-info">
+            <p class="pv2-mbar-label">Nuevo adelanto</p>
+        </div>
+        <a href="#" class="btn btn-primary" id="btnAceptMobile"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+    </div>
+</div>
 					
 					
 					<script type="text/template"  id="tmpl_row_document">
 							<tr class="row_razon">
-								<td>
+								<td class="td-checkbox" data-label="Quitar">
 									<input type="checkbox"  class="txtCheckedIsActive" name="txtCheckedIsActive[]" value="1" />
 									<input type="hidden"  name="txtTransactionMasterDetailID[]" id="txtTransactionMasterDetailID"  />
 									<input type="hidden" class="classDetailItem" id="txtEmployeeID" name="txtEmployeeID[]" />
 								</td>
-								<td><text id="txtDocument"></text></td>								
-								<td>
-									<input class="form-control txtDetailShare txt-numeric"  type="text" id="txtNeto"  name="txtNeto[]"  value="0" />
+								<td data-label="Colaborador"><span id="txtDocument"></span></td>
+								<td data-label="Monto">
+									<input class="form-control pv2-num txtDetailShare afx-monto" inputmode="decimal" autocomplete="off" type="text" id="txtNeto"  name="txtNeto[]"  value="0" />
 								</td>
 							</tr>
 					</script>

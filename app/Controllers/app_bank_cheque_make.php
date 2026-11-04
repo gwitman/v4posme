@@ -44,7 +44,7 @@ class app_bank_cheque_make extends _BaseController
 			else if ($this->request->getUserAgent()->isMobile()) {
 				$parameter["{companyID}"]       = $this->session->get('user')->companyID;
 				$dataViewData                   = $this->core_web_view->getViewByName($this->session->get('user'), $objComponent->componentID, "LISTA DE EMISION DE CHEQUE", CALLERID_LIST, $resultPermission, $parameter);
-				$dataViewRender                 = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+				$dataViewRender                 = $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow");
 			}
 			//Vista Por Id
 			else {
@@ -175,6 +175,7 @@ class app_bank_cheque_make extends _BaseController
 			//Renderizar Resultado 
 			$dataSession["notification"]        = $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]             = $this->core_web_notification->get_message();
+			$dataView["useMobile"]              = $dataSession["user"]->useMobile;
 			$dataSession["head"]                = /*--inicio view*/ view('app_bank_cheque_make/news_head', $dataView); //--finview
 			$dataSession["body"]                = /*--inicio view*/ view('app_bank_cheque_make/news_body', $dataView); //--finview
 			$dataSession["script"]              = /*--inicio view*/ view('app_bank_cheque_make/news_script', $dataView); //--finview
@@ -240,7 +241,7 @@ class app_bank_cheque_make extends _BaseController
 			$objTM["reference3"]                    = /*inicio get post*/ $this->request->getPost("txtReference3");
 			$objTM["reference4"]                    = /*inicio get post*/ $this->request->getPost("txtReceiver");
 			$objTM["statusID"]                      = /*inicio get post*/ $this->request->getPost("txtStatusID");
-			$objTM["amount"]						= /*inicio get post*/ $this->request->getPost("txtAmount");
+			$objTM["amount"]						= /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtAmount")); //Sin comas del formato visual
 			$objTM["isActive"]                      = 1;
 			$this->core_web_auditoria->setAuditCreated($objTM, $dataSession, $this->request);
 
@@ -329,6 +330,7 @@ class app_bank_cheque_make extends _BaseController
 			//RENDERIZAR RESULTADO
 			$dataSession["notification"]    = $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]         = $this->core_web_notification->get_message();
+			$dataView["useMobile"]          = $dataSession["user"]->useMobile;
 			$dataSession["head"]            = view('app_bank_cheque_make/edit_head', $dataView);
 			$dataSession["body"]            = view('app_bank_cheque_make/edit_body', $dataView);
 			$dataSession["script"]          = view('app_bank_cheque_make/edit_script', $dataView);
@@ -396,7 +398,7 @@ class app_bank_cheque_make extends _BaseController
 			$objTMNew["reference3"]                 = /*inicio get post*/ $this->request->getPost("txtReference3");
 			$objTMNew["reference4"]                 = /*inicio get post*/ $this->request->getPost("txtReceiver");
 			$objTMNew["statusID"]					= /*inicio get post*/ $this->request->getPost("txtStatusID");
-			$objTMNew["amount"]						= /*inicio get post*/ $this->request->getPost("txtAmount");
+			$objTMNew["amount"]						= /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtAmount")); //Sin comas del formato visual
 			$objTMNew["isActive"]                   = 1;
 
 			//Validar si el estado permite editar

@@ -1,6 +1,14 @@
 <script>
+	var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+</script>
+<?php echo view('core_template/posme_v2_common'); ?>
+<script>
 
 	$(document).ready(function(){
+		//Combos nativos en telefono; barra inferior (una sola vez: enlazarla dos veces guardaria dos veces)
+		pv2MobileSelects("#txtStatusID,#txtCurrencyID");
+		pv2BindMobileBar();
+
 		//Regresar
 		$(document).on("click","#btnBack",function(){
 				fnWaitOpen();
@@ -88,8 +96,7 @@
 	});
 	$(document).on("click", "#btnSearchCustomer", function() {
 		var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomer->componentID; ?>/onCompleteEmployee/SELECCIONAR_EMPLOYEE/true/empty/false/not_redirect_when_empty";
-		window.open(url_request, "MsgWindow", "width=900,height=450");
-		window.onCompleteEmployee = onCompleteEmployee;
+		pv2OpenSearch(url_request, "Buscar administrador", "onCompleteEmployee", onCompleteEmployee, "width=900,height=450");
 	});
 
 	//Eliminar cliente

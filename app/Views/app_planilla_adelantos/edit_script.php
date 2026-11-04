@@ -1,30 +1,34 @@
 				<!-- ./ page heading -->
 				<script>
-					$(document).ready(function(){						 
-						 
-						
-						
+					var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+
+					$(document).ready(function(){
+
+						afxBindCommon();
+
 						 //Regresar a la lista
 						$(document).on("click","#btnBack",function(){
 								fnWaitOpen();
 						});
-						
+
 						//Evento Agregar el Usuario
-						$(document).on("click","#btnAcept",function(){
+						$(document).on("click","#btnAcept",function(e){
+								e.preventDefault();
 								$( "#form-new-invoice" ).attr("method","POST");
 								$( "#form-new-invoice" ).attr("action","<?php echo base_url(); ?>/app_planilla_adelantos/save/edit");
-								
+
 								if(validateForm()){
 									fnWaitOpen();
+									//El servidor debe recibir numeros puros, sin el formato visual
+									plaLimpiarMontos("#form-new-invoice");
 									$( "#form-new-invoice" ).submit();
 								}
-								
+
 						});
 						//Nueva factura
 						$(document).on("click","#btnNewShare",function(){
 							var url_request 			= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentEmployee->componentID; ?>/onCompleteNewShare/SELECCIONAR_EMPLOYEE/true/empty/false/not_redirect_when_empty";
-							window.open(url_request,"MsgWindow","width=1585,height=795");
-							window.onCompleteNewShare 	= onCompleteNewShare; 
+							pv2OpenSearch(url_request,"Buscar colaborador","onCompleteNewShare",onCompleteNewShare,"width=1585,height=795");
 						});
 						//Eliminar factura
 						$(document).on("click","#btnDeleteShare",function(){
@@ -46,13 +50,14 @@
 						var total = 0;
 						
 						$("#body_tb_transaction_master_detail tr").each(function(index,obj){
-							var neto 		= fnFormatFloat($(obj).find("#txtNeto").val());
-							
-							$(obj).find("#txtNeto").val(fnFormatNumber(neto,2));
+							//Un monto vacio cuenta como 0; el formato visual se aplica solo al escribir en el campo
+							var neto 		= pv2Num($(obj).find("#txtNeto").val());
+
+							$(obj).find("#txtNeto").val(afxFmtMonto(fnFormatNumber(neto,2)));
 							total 			= total + neto;
 						});
-						
-						$("#txtTotal").val(fnFormatNumber(total,2));
+
+						$("#txtTotal").val(afxFmtMonto(fnFormatNumber(total,2)));
 					}
 					function onCompleteNewShare(objResponse){
 						console.info("CALL onCompleteNewShare");	
@@ -93,7 +98,7 @@
 					}
 					
 					function refreschChecked(){
-						$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();						
+						plaRefreshChecked();
 					}
 					
 				</script>

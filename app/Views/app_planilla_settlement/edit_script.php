@@ -1,10 +1,13 @@
     <script>
+    var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+
     $(document).ready(function() {
 
         var selectedEmployeeData    = null;
-        var objDataEmployee         = JSON.parse('<?php echo json_encode($objEmployee) ?>');
-        var objDataTM               = JSON.parse('<?php echo json_encode($objTM)?>');
-        var objDataTMI              = JSON.parse('<?php echo json_encode($objTMI)?>');
+        //JSON directo como literal de JS: un apostrofo en los datos ya no rompe el script
+        var objDataEmployee         = <?php echo json_encode($objEmployee, JSON_HEX_APOS | JSON_HEX_TAG); ?>;
+        var objDataTM               = <?php echo json_encode($objTM, JSON_HEX_APOS | JSON_HEX_TAG); ?>;
+        var objDataTMI              = <?php echo json_encode($objTMI, JSON_HEX_APOS | JSON_HEX_TAG); ?>;
 
         //Regresar a la lista
         $("#btnBack").on("click", function() 
@@ -12,14 +15,15 @@
             fnWaitOpen();
         });
 
-        $('#txtEmployeeEndDate').datepicker({format:"yyyy-mm-dd"});
+        //Solo interfaz: no dispara change, asi que onUpdatedEmployeeData no corre al abrir y se conserva lo guardado
+        plaInitDate("txtEmployeeEndDate");
+        afxBindCommon();
 
         //Seleccionar colaborador
         $("#btnSearchEmployee").on("click", function() 
         {
             var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentEmployee->componentID; ?>/onCompleteNewEmployee/SELECCIONAR_EMPLOYEE_TO_PLANILLA/true/empty/false/not_redirect_when_empty";
-            window.open(url_request, "MsgWindow", "width=900,height=500");
-            window.onCompleteNewEmployee = onCompleteNewEmployee;
+            pv2OpenSearch(url_request, "Buscar colaborador", "onCompleteNewEmployee", onCompleteNewEmployee, "width=900,height=500");
         });
 
         //Limpiar datos del colaborador
@@ -31,8 +35,9 @@
         });
 
         //Agregar Registro
-        $("#btnAcept").on("click", function()
+        $("#btnAcept").on("click", function(e)
         {
+            e.preventDefault();
             if(validateForm())
             {
                 fnWaitOpen();
@@ -114,7 +119,8 @@
             $("#txtEmployeeBeginDate").val(EmployeeStartDate);
             $("#txtEmployeeAccumulatedVacations").val(EmployeeVacationBalance);
             $("#txtEmployeeAmountSaving").val(EmployeeAmountSaving);
-            $("#txtEmployeeEndDate").val(EmployeeEndDate);
+            //El selector nativo del telefono solo acepta YYYY-MM-DD; sin fecha de fin el campo queda vacio
+            $("#txtEmployeeEndDate").val(EmployeeEndDate ? String(EmployeeEndDate).substring(0,10) : "");
             $("#txtEmployeeDescription").val(EmployeeEntityID + " " + EmployeeCode + " | " + EmployeeFullName);
             $("#txtEmployeeArea").val(EmployeeArea);
 
@@ -396,7 +402,7 @@
 
         function refreschChecked()
         {
-            $("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();						
+            plaRefreshChecked();
         }
 
         function fnFormatInputsToCurrency() 

@@ -68,6 +68,7 @@ class app_bank extends _BaseController
 			$dataView["objComponentCustomer"]                   = $objComponentCustomer;
 			$dataSession["notification"]						= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]								= $this->core_web_notification->get_message();
+			$dataView["useMobile"]								= $dataSession["user"]->useMobile;
 			$dataSession["head"]								= /*--inicio view*/ view('app_bank/edit_head', $dataView); //--finview
 			$dataSession["body"]								= /*--inicio view*/ view('app_bank/edit_body', $dataView); //--finview
 			$dataSession["script"]								= /*--inicio view*/ view('app_bank/edit_script', $dataView); //--finview
@@ -243,6 +244,7 @@ class app_bank extends _BaseController
 			$dataSession["notification"]						= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataView["objComponentCustomer"]                   = $objComponentCustomer;
 			$dataSession["message"]								= $this->core_web_notification->get_message();
+			$dataView["useMobile"]								= $dataSession["user"]->useMobile;
 			$dataSession["head"]								= /*--inicio view*/ view('app_bank/news_head', $dataView); //--finview
 			$dataSession["body"]								= /*--inicio view*/ view('app_bank/news_body', $dataView); //--finview
 			$dataSession["script"]								= /*--inicio view*/ view('app_bank/news_script', $dataView); //--finview
@@ -298,12 +300,20 @@ class app_bank extends _BaseController
 				$targetComponentID			= 0;
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
+				//En telefono la lista se dibuja como en abonos (app_box_share)
+				if( $this->request->getUserAgent()->isMobile() )
+				$dataViewRender				= $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow");
+				else
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
 			}
 			//Otra vista
 			else {
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'), $objComponent->componentID, $dataViewID, CALLERID_LIST, $resultPermission, $parameter);
+				//En telefono la lista se dibuja como en abonos (app_box_share)
+				if( $this->request->getUserAgent()->isMobile() )
+				$dataViewRender				= $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow");
+				else
 				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
 			}
 
@@ -433,7 +443,6 @@ class app_bank extends _BaseController
 			$obj["name"] 				= /*inicio get post*/ $this->request->getPost("txtName");
 			$obj["isActive"] 			= true;
 			$obj["accountID"] 			= 0;
-			$obj["balance"] 			= 0;
 			$obj["managerID"] 			= $this->request->getPost('txtCustomerEntityID');
 			$obj["currencyID"] 			= $this->request->getPost('txtCurrencyID');
 			$obj["cardNumber"] 			= $this->request->getPost('txtTarjeta');

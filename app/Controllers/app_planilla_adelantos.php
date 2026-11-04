@@ -161,6 +161,7 @@ class app_planilla_adelantos extends _BaseController {
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
+			$dataView["useMobile"]			= $dataSession["user"]->useMobile;
 			$dataSession["head"]			= /*--inicio view*/ view('app_planilla_adelantos/edit_head',$dataView);//--finview
 			$dataSession["body"]			= /*--inicio view*/ view('app_planilla_adelantos/edit_body',$dataView);//--finview
 			$dataSession["script"]			= /*--inicio view*/ view('app_planilla_adelantos/edit_script',$dataView);//--finview
@@ -571,7 +572,7 @@ class app_planilla_adelantos extends _BaseController {
 				foreach($arrayListTransactionMasterDetailID as $key => $value){
 					$transactionMasterDetailID	= $value;
 					$EmployeeID					= $arrayListEmployeeID[$key];
-					$Neto 						= $arrayListNeto[$key];
+					$Neto 						= helper_StringToNumber($arrayListNeto[$key]); //Sin comas antes de sumar, igual que el update
 					
 					$objTMD["companyID"] 					= $objTM["companyID"];
 					$objTMD["transactionID"] 				= $objTM["transactionID"];
@@ -753,6 +754,7 @@ class app_planilla_adelantos extends _BaseController {
 			//Renderizar Resultado 
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
+			$dataView["useMobile"]			= $dataSession["user"]->useMobile;
 			$dataSession["head"]			= /*--inicio view*/ view('app_planilla_adelantos/news_head',$dataView);//--finview
 			$dataSession["body"]			= /*--inicio view*/ view('app_planilla_adelantos/news_body',$dataView);//--finview
 			$dataSession["script"]			= /*--inicio view*/ view('app_planilla_adelantos/news_script',$dataView);//--finview
@@ -818,8 +820,8 @@ class app_planilla_adelantos extends _BaseController {
 			//Vista por defecto MOBILE
 			else if( $this->request->getUserAgent()->isMobile() ){
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
-				$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$objComponent->componentID,"DEFAULT_MOBILE_LISTA_ABONOS",CALLERID_LIST,$resultPermission,$parameter); 			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$objComponent->componentID,"DEFAULT_MOBILE_LISTA_ABONOS",CALLERID_LIST,$resultPermission,$parameter);
+				$dataViewRender				= $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow");
 			} 
 			//Vista Por Id
 			else 

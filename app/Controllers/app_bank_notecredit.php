@@ -44,7 +44,7 @@ class app_bank_notecredit extends _BaseController
 			else if ($this->request->getUserAgent()->isMobile()) {
 				$parameter["{companyID}"]       = $this->session->get('user')->companyID;
 				$dataViewData                   = $this->core_web_view->getViewByName($this->session->get('user'), $objComponent->componentID, "LISTA DE NOTAS DE CREDITO DE BANCO", CALLERID_LIST, $resultPermission, $parameter);
-				$dataViewRender                 = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+				$dataViewRender                 = $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow");
 			}
 			//Vista Por Id
 			else {
@@ -176,6 +176,7 @@ class app_bank_notecredit extends _BaseController
 			//Renderizar Resultado 
 			$dataSession["notification"]        = $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]             = $this->core_web_notification->get_message();
+			$dataView["useMobile"]              = $dataSession["user"]->useMobile;
 			$dataSession["head"]                = /*--inicio view*/ view('app_bank_notecredit/news_head', $dataView); //--finview
 			$dataSession["body"]                = /*--inicio view*/ view('app_bank_notecredit/news_body', $dataView); //--finview
 			$dataSession["script"]              = /*--inicio view*/ view('app_bank_notecredit/news_script', $dataView); //--finview
@@ -250,6 +251,7 @@ class app_bank_notecredit extends _BaseController
 			//RENDERIZAR RESULTADO
 			$dataSession["notification"]    = $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]         = $this->core_web_notification->get_message();
+			$dataView["useMobile"]          = $dataSession["user"]->useMobile;
 			$dataSession["head"]            = view('app_bank_notecredit/edit_head', $dataView);
 			$dataSession["body"]            = view('app_bank_notecredit/edit_body', $dataView);
 			$dataSession["script"]          = view('app_bank_notecredit/edit_script', $dataView);
@@ -327,7 +329,7 @@ class app_bank_notecredit extends _BaseController
 			$objTM["reference2"]                    = /*inicio get post*/ $this->request->getPost("txtReference2");
 			$objTM["reference3"]                    = /*inicio get post*/ $this->request->getPost("txtReference3");
 			$objTM["statusID"]                      = /*inicio get post*/ $this->request->getPost("txtStatusID");
-			$objTM["amount"]                        = /*inicio get post*/ $this->request->getPost("txtAmount");
+			$objTM["amount"]                        = /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtAmount")); //Sin comas del formato visual
 			$objTM["discount"]						= 0;
 			$objTM["subAmount"]						= 0;
 			$objTM["isActive"]                      = 1;
@@ -402,7 +404,7 @@ class app_bank_notecredit extends _BaseController
 
 			$entityID                               = $this->request->getPost("txtBankID");
 			$currencyID                             = $this->request->getPost("txtCurrencyID");
-			$monto                                  = $this->request->getPost("txtAmount");
+			$monto                                  = helper_StringToNumber($this->request->getPost("txtAmount")); //Sin comas: este valor afecta el saldo del banco
 			$transactionID                          = $this->request->getPost("txtTransactionID");
 			$transactionMasterID                    = $this->request->getPost("txtTransactionMasterID");
 

@@ -225,6 +225,75 @@ Mensajes:
 Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Nuevo e Imprimir**, **Atras**, el menú **Imprimir** (**Imprimir preview** e **Imprimir direct**), **Eliminar** y **Guardar**. En la edición no aparece **Huella**.
 <!-- REVISAR: funcionamiento de Huella y del sensor; significado de Solvencia; efecto de pasar el Estado a APLICADO; si "Cliente con Mora" impide guardar -->
 
+## Qué contiene el menú BANCO
+Ruta: Menú > BANCO.
+- **CUENT. BANK**: cuentas bancarias.
+- **CHEQUERA**: chequeras.
+- **EMITIR CHEQUE**: emisión de cheques.
+- **BANK NC**: notas de crédito de banco.
+- **BANK ND**: notas de débito de banco.
+Las listas tienen los botones **Vistas**, **Editar**, **Eliminar** y **Nuevo**. Seleccione la fila antes de presionar **Editar** o **Eliminar**; si no lo hace aparece "Seleccionar el Registro...".
+Buscar en la lista:
+- En CUENT. BANK, **Buscar en la lista…** filtra la lista cargada mientras escribe.
+- En las demás opciones escriba en **Buscar por número…** y presione el botón de la lupa o Enter.
+Notas: en el teléfono el botón **Guardar** está en la barra inferior y los botones **Buscar** abren la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol.
+Ver también: Crear una cuenta bancaria, Crear una chequera, Emitir un cheque, Notas de crédito y débito de banco.
+
+## Crear una cuenta bancaria
+Ruta: Menú > BANCO > CUENT. BANK. La lista se llama **LISTA DE BANCOS**.
+1. Presione **Nuevo**. Se abre **Formulario de Datos**.
+2. En la tarjeta **Información** complete **Nombre**, **Moneda** y **Estado**. En **Administrador** use **Buscar** y **Limpiar**. **Balance** no se escribe a mano.
+3. En la tarjeta **Tarjeta y comisiones** complete **Numero de tarjeta asociada**, **Fecha de expiracion**, **Comision POS** y **Comision Ahorro**.
+4. En la tarjeta **Referencias** complete **Referencia 1**, **Referencia 2** y **Comentario**.
+5. En la tarjeta **Acceso al banco** complete **URL de banco**, **Usuario**, **Contraseña** y **Pin**. **Contraseña** y **Pin** se escriben ocultos.
+6. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensajes de validación: "El nombre es requerido", "La moneda es requerida" y "El estado es requerido".
+Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Atras**, **Eliminar** y **Guardar**. **Eliminar** pide confirmar "Desea eliminar este Registro...".
+<!-- REVISAR: cómo cambia el Balance; uso de Comision POS y Comision Ahorro; qué campos son obligatorios además de los validados -->
+Ver también: Crear una chequera.
+
+## Crear una chequera
+Ruta: Menú > BANCO > CHEQUERA. La lista se llama **LISTA DE CHEQUERAS**.
+1. Presione **Nuevo**. Se abre **CHEQUERA:#**.
+2. En la tarjeta **Información** complete **Nombre**, **Estado** y **Moneda**. En **Banco** y **Empleado** use **Buscar** y **Limpiar**.
+3. En la tarjeta **Numeración** complete **Serie**, **Valor Inicial** y **Valor Final**. **Valor Corriente** no se escribe a mano.
+4. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensajes de validación:
+- "Ingrese el Nombre" / "Ingrese la Serie".
+- "El valor Inicial es invalido" / "El valor Final es Invalido".
+- "Seleccione el Banco" / "Seleccione el Empleado".
+Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Eliminar** y **Guardar**. **Eliminar** pide confirmar "Desea eliminar este Registro...".
+<!-- REVISAR: uso de Serie y Valor Corriente; para qué se asigna un Empleado; efecto del Estado -->
+Ver también: Emitir un cheque.
+
+## Emitir un cheque
+Ruta: Menú > BANCO > EMITIR CHEQUE. La lista se llama **LISTA DE EMISION DE CHEQUE**.
+1. Presione **Nuevo**. Se abre **Emision De Cheque:#**.
+2. En la tarjeta **Información** indique **Fecha**, **Estado** y **Moneda**.
+3. En la tarjeta **Chequera**, en **Chequera** use **Buscar** y **Limpiar**. **Numero de Cheque** no se escribe a mano.
+4. En la tarjeta **Pago** complete **Monto** y **Pagar A:**.
+5. Opcional: en la tarjeta **Referencias** complete **Referencia 1**, **Referencia 2** y **Referencia 3**.
+6. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensajes de validación:
+- "Ingrese la Fecha" / "Seleccione la chequera" / "Ingrese el beneficiario".
+- "Ingrese el Monto": aparece también si el monto es 0.
+- "Se ha alcanzdo el Limite de la Chequera".
+Para modificarlo, selecciónelo en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Archivos**, **Imprimir**, **Eliminar** y **Guardar**. **Eliminar** pide confirmar "Desea eliminar este Registro...".
+<!-- REVISAR: de dónde sale el Numero de Cheque; efecto de pasar el Estado a APLICADO y efecto en el saldo del banco -->
+Ver también: Crear una chequera.
+
+## Notas de crédito y débito de banco
+Ruta: Menú > BANCO > BANK NC o BANCO > BANK ND. Las listas se llaman **LISTA DE NOTAS DE CREDITO DE BANCO** y **LISTA DE NOTAS DE DEBITO DE BANCO**.
+1. Presione **Nuevo**. Se abre **Nota de Credito:#** o **Nota de Debito:#**.
+2. En la tarjeta **Información** indique **Fecha**, **Estado**, **Moneda** y **Monto**. En **Banco** use **Buscar** y **Limpiar**.
+3. Opcional: en la tarjeta **Referencias** complete **Referencia 1**, **Referencia 2** y **Referencia 3**.
+4. Opcional: en la tarjeta **Comentario** escriba el **Comentario**.
+5. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensajes de validación: "Ingrese la Fecha", "El monto no puede ser 0" y "Seleccione el Banco".
+Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Archivos**, **Imprimir**, **Eliminar** y **Guardar**. **Eliminar** pide confirmar "Desea eliminar este Registro...".
+<!-- REVISAR: signo con que cada nota afecta el saldo del banco, por confirmar con el negocio; efecto de pasar el Estado a APLICADO -->
+Ver también: Crear una cuenta bancaria.
+
 ## Reportes de ventas
 Ruta: Menú > VENTAS > REPORTES (también FACTURACION > REPORTES).
 1. Elija el reporte: detalle de ventas, resumen de ventas, ventas por cliente, utilidad, etc.
@@ -590,6 +659,75 @@ Mensajes de validación:
 - "Seleccione al menos un Activo (Origen o Destino)".
 Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Atras**, **Nuevo**, **Eliminar** y **Guardar**.
 <!-- REVISAR: significado de cada Acción; efecto de pasar el Estado a APLICADO -->
+
+## Qué contiene el menú PLANILLA
+Ruta: Menú > PLANILLA.
+- **P. PLANILLA**: planillas de pago.
+- **ADELANTOS**: adelantos a colaboradores.
+- **LIQUIDACION**: liquidación de colaboradores.
+- **PERMISO**: permisos de colaboradores.
+Seleccione la fila de la lista y presione **Editar** para abrir un registro; si no selecciona una aparece "Seleccionar el Registro...". Para crear uno presione **Nuevo**. En ADELANTOS, LIQUIDACION y PERMISO, **Eliminar** pide confirmar "Desea eliminar este Registro...".
+Buscar en la lista:
+- En P. PLANILLA, **Buscar en la lista…** filtra la lista cargada mientras escribe.
+- En ADELANTOS, LIQUIDACION y PERMISO escriba en **Buscar por número…** y presione el botón de la lupa o Enter.
+Al editar, las cuatro pantallas tienen arriba solo **Atras** y **Guardar**.
+Notas: en el teléfono el botón **Guardar** está en la barra inferior y los botones **Buscar** abren la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol. <!-- REVISAR: Eliminar de la lista de P. PLANILLA no funciona hoy (defecto conocido sin corregir); documentarlo cuando se corrija -->
+Ver también: Crear una planilla de pago, Registrar adelantos a colaboradores, Registrar la liquidación de un colaborador, Registrar un permiso de un colaborador.
+
+## Crear una planilla de pago
+Ruta: Menú > PLANILLA > P. PLANILLA. La lista se llama **LISTA DE PLANILLAS**.
+1. Presione **Nuevo**. Se abre **PLANILLA:#**.
+2. En la tarjeta **Datos de la planilla** indique **Ciclo**, **Quincena**, **Nombre** y **Estado**.
+3. En la tarjeta **Clasificación** indique **Tipo** y **Moneda**.
+4. Opcional: en la tarjeta **Comentario** escriba la **Descripción**.
+5. En la tarjeta **Colaboradores** presione **Agregar colaborador** y elíjalo en la búsqueda. Repita por cada colaborador. En el teléfono cada colaborador se ve como una tarjeta.
+6. Complete en cada colaborador **+Comision**, **+Bono Quincenal**, **-Adelantos**, **-Deducciones Por Prestamos** y **-Deducciones Por Llegada Tarde**. **Vacaciones Acumuladas**, **INSS Patronal**, **+Salario**, **INSS**, **Ahorro**, **IR** y **Salario Neto** no se escriben a mano.
+7. Revise el **Total** en la tarjeta **Resumen** y presione **Guardar** (en el teléfono, en la barra inferior).
+Quitar un colaborador: marque su casilla (en el teléfono, la casilla **Quitar**) y presione **Quitar marcados**.
+Mensajes de validación: "Ingrese el Nombre" y "El Colaborador ya existe en el detalle".
+Para modificarla, selecciónela en la lista y presione **Editar**.
+<!-- REVISAR: uso de Ciclo, Quincena y Tipo; cómo se calculan salario, INSS, Ahorro, IR y Salario Neto; efecto de pasar el Estado a APLICADO -->
+Ver también: Registrar adelantos a colaboradores.
+
+## Registrar adelantos a colaboradores
+Ruta: Menú > PLANILLA > ADELANTOS. La lista se llama **LISTA DE ADELANTOS**.
+1. Presione **Nuevo**. Se abre **ADELANTO:#**.
+2. En la tarjeta **Datos del adelanto** indique **Ciclo** y **Estado**.
+3. En la tarjeta **Clasificación** indique **Tipo** y **Moneda**.
+4. Opcional: en la tarjeta **Comentario** escriba la **Descripción**.
+5. En la tarjeta **Colaboradores** presione **Agregar colaborador**, elíjalo en la búsqueda y escriba el **Monto**. Repita por cada colaborador.
+6. Revise el **Total** en la tarjeta **Resumen** y presione **Guardar** (en el teléfono, en la barra inferior).
+Quitar un colaborador: marque su casilla (en el teléfono, la casilla **Quitar**) y presione **Quitar marcados**.
+Mensajes de validación: "El Colaborador ya existe en el detalle".
+Para modificarlo, selecciónelo en la lista y presione **Editar**.
+<!-- REVISAR: uso de Ciclo y Tipo; si el adelanto se descuenta en la planilla y cuándo; efecto de pasar el Estado a APLICADO -->
+Ver también: Crear una planilla de pago.
+
+## Registrar la liquidación de un colaborador
+Ruta: Menú > PLANILLA > LIQUIDACION. La lista se llama **LISTA DE LIQUIDACION**.
+1. Presione **Nuevo**. Se abre **LIQUIDACION:#**.
+2. En la tarjeta **Colaborador**, en **Colaborador** use **Buscar** y **Limpiar**. Se muestran **Codigo**, **Nombre Completo** y **Area**. Indique el **Estado**. **Liquidación Neta** se muestra y no se escribe a mano.
+3. En la tarjeta **Trabajo** indique **Fecha de Fin**. **Fecha de Inicio**, **Años Laborados**, **Salario Devengado** y **Vacaciones Acumuladas** no se escriben a mano.
+4. En la tarjeta **Ingresos** complete **Comision** y **Bono**. **Salario Proporcional**, **Ahorro Acumulado**, **Pago Vacaciones Acumuladas**, **Pago por mes 13** y **Pago por Antiguedad** no se escriben a mano.
+5. En la tarjeta **Deducciones** complete **Prestamos**, **Llegadas Tarde** y **Adelantos**. **INSS**, **IR** e **IR Por Vacaciones** no se escriben a mano.
+6. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensajes de validación: "Seleccione el colaborador", y "El dato ... no es una entrada Valida" si un monto no es válido.
+Para modificarla, selecciónela en la lista y presione **Editar**.
+<!-- REVISAR: cómo se calculan los montos y la Liquidación Neta, y su base legal; efecto de pasar el Estado a APLICADO -->
+
+## Registrar un permiso de un colaborador
+Ruta: Menú > PLANILLA > PERMISO. La lista se llama **LISTA DE PERMISOS**.
+1. Presione **Nuevo**. Se abre **PERMISO:#**.
+2. En la tarjeta **Colaborador**, en **Colaborador** use **Buscar** y **Limpiar**. Se muestran **Codigo**, **Nombre Completo** y **Area**.
+3. En la tarjeta **Detalles del permiso** indique **Tipo de Permiso**, **Fecha de Inicio**, **Fecha de Fin**, **Fecha de Integracion** y **Estado**. **Dias de Vacaciones** no se escribe a mano.
+4. Opcional: escriba la **Nota**. Según la configuración de su empresa este campo puede tener otro nombre.
+5. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensajes de validación:
+- "Seleccione el colaborador".
+- "La Fecha Final del Permiso Esta Mal Configurada".
+- "La Fecha de Integracion del Colaborador Esta Mal Configurada".
+Para modificarlo, selecciónelo en la lista y presione **Editar**.
+<!-- REVISAR: opciones de Tipo de Permiso; efecto en Dias de Vacaciones; significado de Fecha de Integracion; efecto de pasar el Estado a APLICADO -->
 
 ## Seguridad: qué contiene el menú SEGURIDAD
 Ruta: Menú > SEGURIDAD.

@@ -54,7 +54,7 @@ class app_planilla_settlement extends _BaseController
                 $dataViewData                = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
             }
 
-            if ($dataSession["user"]->useMobile == 1) {
+            if ($dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile()) {
                 $dataViewRender                = $this->core_web_view->renderGreedWithHtmlInFildMobile($dataViewData, 'ListView', "fnTableSelectedRow");
             } else {
                 $dataViewRender                = $this->core_web_view->renderGreedWithHtmlInFild($dataViewData, 'ListView', "fnTableSelectedRow");
@@ -65,7 +65,7 @@ class app_planilla_settlement extends _BaseController
                 $parameter["{companyID}"]    = $this->session->get('user')->companyID;
                 $dataViewData                = $this->core_web_view->getViewBy_DataViewID($this->session->get('user'), $objComponent->componentID, $dataViewID, CALLERID_LIST, $resultPermission, $parameter);
 
-                if ($dataSession["user"]->useMobile == 1) {
+                if ($dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile()) {
                     $dataViewRender                = $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow");
                 } else {
                     $dataViewRender                = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
@@ -187,6 +187,7 @@ class app_planilla_settlement extends _BaseController
             //RENDERIZAR RESULTADO
             $dataSession["notification"]    = $this->core_web_error->get_error($dataSession["user"]->userID);
             $dataSession["message"]         = $this->core_web_notification->get_message();
+            $dataView["useMobile"]          = $dataSession["user"]->useMobile;
             $dataSession["head"]            = view('app_planilla_settlement/news_head',$dataView);
             $dataSession["body"]            = view('app_planilla_settlement/news_body',$dataView);
             $dataSession["script"]          = view('app_planilla_settlement/news_script', $dataView);
@@ -264,6 +265,7 @@ class app_planilla_settlement extends _BaseController
             //RENDERIZAR RESULTADO
             $dataSession["notification"]    = $this->core_web_error->get_error($dataSession["user"]->userID);
             $dataSession["message"]         = $this->core_web_notification->get_message();
+            $dataView["useMobile"]          = $dataSession["user"]->useMobile;
             $dataSession["head"]            = view('app_planilla_settlement/edit_head',$dataView);
             $dataSession["body"]            = view('app_planilla_settlement/edit_body',$dataView);
             $dataSession["script"]          = view('app_planilla_settlement/edit_script', $dataView);
@@ -326,13 +328,14 @@ class app_planilla_settlement extends _BaseController
             $objTM["statusIDChangeOn"]      = date("Y-m-d H:m:s");
             $objTM["componentID"]           = $objComponent->componentID;
             $objTM["reference1"]            = $this->request->getPost("txtEmployeeWorkYears");
-            $objTM["tax1"]                  = $this->request->getPost("txtEmployeeSalary");
+            //Los montos se guardan sin las comas del formato visual
+            $objTM["tax1"]                  = helper_StringToNumber($this->request->getPost("txtEmployeeSalary"));
             $objTM["tax2"]                  = $this->request->getPost("txtEmployeeAccumulatedVacations");
-            $objTM["tax3"]                  = $this->request->getPost("txtEmployeeProporcionalSalary");
-            $objTM["discount"]              = $this->request->getPost("txtEmployeeAmountSaving");
-            $objTM["reference2"]            = $this->request->getPost("txtEmployeeComission");
+            $objTM["tax3"]                  = helper_StringToNumber($this->request->getPost("txtEmployeeProporcionalSalary"));
+            $objTM["discount"]              = helper_StringToNumber($this->request->getPost("txtEmployeeAmountSaving"));
+            $objTM["reference2"]            = helper_StringToNumber($this->request->getPost("txtEmployeeComission"));
             $objTM["statusID"]              = $this->request->getPost("txtEmployeeSettlementStatusID");
-            $objTM["amount"]                = $this->request->getPost("txtEmployeeSettlement");
+            $objTM["amount"]                = helper_StringToNumber($this->request->getPost("txtEmployeeSettlement"));
             $objTM["nextVisit"]             = $this->request->getPost("txtEmployeeEndDate");
             $objTM["isActive"]              = 1;
             $this->core_web_auditoria->setAuditCreated($objTM, $dataSession, $this->request);
@@ -350,16 +353,16 @@ class app_planilla_settlement extends _BaseController
             $objTMI["companyID"]            = $dataSession["user"]->companyID;
             $objTMI["transactionID"]        = $transactionID;
             $objTMI["transactionMasterID"]  = $transactionMasterID;
-            $objTMI["changeAmount"]         = $this->request->getPost("txtEmployeeBonus");
-            $objTMI["receiptAmount"]        = $this->request->getPost("txtEmployeeAccumulatedVacationsPayment");
-            $objTMI["receiptAmountPoint"]   = $this->request->getPost("txtEmployeePaymentMonthThirteen");
-            $objTMI["reference1"]           = $this->request->getPost("txtEmployeeSeniorityPayment");
-            $objTMI["receiptAmountBank"]    = $this->request->getPost("txtEmployeeINSS");
-            $objTMI["receiptAmountCard"]    = $this->request->getPost("txtEmployeeIR");
-            $objTMI["receiptAmountCardDol"] = $this->request->getPost("txtEmployeeIRVacation");
-            $objTMI["receiptAmountDol"]     = $this->request->getPost("txtEmployeeLoans");
-            $objTMI["receiptAmountBankDol"] = $this->request->getPost("txtEmployeeLateArrival");
-            $objTMI["reference2"]           = $this->request->getPost("txtEmployeeAdvancedPayment");
+            $objTMI["changeAmount"]         = helper_StringToNumber($this->request->getPost("txtEmployeeBonus"));
+            $objTMI["receiptAmount"]        = helper_StringToNumber($this->request->getPost("txtEmployeeAccumulatedVacationsPayment"));
+            $objTMI["receiptAmountPoint"]   = helper_StringToNumber($this->request->getPost("txtEmployeePaymentMonthThirteen"));
+            $objTMI["reference1"]           = helper_StringToNumber($this->request->getPost("txtEmployeeSeniorityPayment"));
+            $objTMI["receiptAmountBank"]    = helper_StringToNumber($this->request->getPost("txtEmployeeINSS"));
+            $objTMI["receiptAmountCard"]    = helper_StringToNumber($this->request->getPost("txtEmployeeIR"));
+            $objTMI["receiptAmountCardDol"] = helper_StringToNumber($this->request->getPost("txtEmployeeIRVacation"));
+            $objTMI["receiptAmountDol"]     = helper_StringToNumber($this->request->getPost("txtEmployeeLoans"));
+            $objTMI["receiptAmountBankDol"] = helper_StringToNumber($this->request->getPost("txtEmployeeLateArrival"));
+            $objTMI["reference2"]           = helper_StringToNumber($this->request->getPost("txtEmployeeAdvancedPayment"));
 
             $this->Transaction_Master_Info_Model->insert_app_posme($objTMI);
 
@@ -430,28 +433,29 @@ class app_planilla_settlement extends _BaseController
             $objTMNew["transactionOn2"]         = $this->request->getPost("txtEmployeeBeginDate");
             $objTMNew["statusIDChangeOn"]       = date("Y-m-d H:m:s");
             $objTMNew["reference1"]             = $this->request->getPost("txtEmployeeWorkYears");
-            $objTMNew["tax1"]                   = $this->request->getPost("txtEmployeeSalary");
+            //Los montos se guardan sin las comas del formato visual
+            $objTMNew["tax1"]                   = helper_StringToNumber($this->request->getPost("txtEmployeeSalary"));
             $objTMNew["tax2"]                   = $this->request->getPost("txtEmployeeAccumulatedVacations");
-            $objTMNew["tax3"]                   = $this->request->getPost("txtEmployeeProporcionalSalary");
-            $objTMNew["discount"]               = $this->request->getPost("txtEmployeeAmountSaving");
-            $objTMNew["reference2"]             = $this->request->getPost("txtEmployeeComission");
+            $objTMNew["tax3"]                   = helper_StringToNumber($this->request->getPost("txtEmployeeProporcionalSalary"));
+            $objTMNew["discount"]               = helper_StringToNumber($this->request->getPost("txtEmployeeAmountSaving"));
+            $objTMNew["reference2"]             = helper_StringToNumber($this->request->getPost("txtEmployeeComission"));
             $objTMNew["statusID"]               = $this->request->getPost("txtEmployeeSettlementStatusID");
-            $objTMNew["amount"]                 = $this->request->getPost("txtEmployeeSettlement");
+            $objTMNew["amount"]                 = helper_StringToNumber($this->request->getPost("txtEmployeeSettlement"));
             $objTMNew["nextVisit"]              = $this->request->getPost("txtEmployeeEndDate");
 
             $objEmployeeEntityID                = $this->request->getPost("txtEmployeeEntityID");
             $objEmployee["endOn"]               = $this->request->getPost("txtEmployeeEndDate");    
             
-            $objTMI["changeAmount"]             = $this->request->getPost("txtEmployeeBonus");
-            $objTMI["receiptAmount"]            = $this->request->getPost("txtEmployeeAccumulatedVacationsPayment");
-            $objTMI["receiptAmountPoint"]       = $this->request->getPost("txtEmployeePaymentMonthThirteen");
-            $objTMI["reference1"]               = $this->request->getPost("txtEmployeeSeniorityPayment");
-            $objTMI["receiptAmountBank"]        = $this->request->getPost("txtEmployeeINSS");
-            $objTMI["receiptAmountCard"]        = $this->request->getPost("txtEmployeeIR");
-            $objTMI["receiptAmountCardDol"]     = $this->request->getPost("txtEmployeeIRVacation");
-            $objTMI["receiptAmountDol"]         = $this->request->getPost("txtEmployeeLoans");
-            $objTMI["receiptAmountBankDol"]     = $this->request->getPost("txtEmployeeLateArrival");
-            $objTMI["reference2"]               = $this->request->getPost("txtEmployeeAdvancedPayment");
+            $objTMI["changeAmount"]             = helper_StringToNumber($this->request->getPost("txtEmployeeBonus"));
+            $objTMI["receiptAmount"]            = helper_StringToNumber($this->request->getPost("txtEmployeeAccumulatedVacationsPayment"));
+            $objTMI["receiptAmountPoint"]       = helper_StringToNumber($this->request->getPost("txtEmployeePaymentMonthThirteen"));
+            $objTMI["reference1"]               = helper_StringToNumber($this->request->getPost("txtEmployeeSeniorityPayment"));
+            $objTMI["receiptAmountBank"]        = helper_StringToNumber($this->request->getPost("txtEmployeeINSS"));
+            $objTMI["receiptAmountCard"]        = helper_StringToNumber($this->request->getPost("txtEmployeeIR"));
+            $objTMI["receiptAmountCardDol"]     = helper_StringToNumber($this->request->getPost("txtEmployeeIRVacation"));
+            $objTMI["receiptAmountDol"]         = helper_StringToNumber($this->request->getPost("txtEmployeeLoans"));
+            $objTMI["receiptAmountBankDol"]     = helper_StringToNumber($this->request->getPost("txtEmployeeLateArrival"));
+            $objTMI["reference2"]               = helper_StringToNumber($this->request->getPost("txtEmployeeAdvancedPayment"));
 
             //Validar si el estado permite editar
 			if(!$this->core_web_workflow->validateWorkflowStage("tb_transaction_master_settlement","statusID",$objTransactionMaster->statusID,COMMAND_EDITABLE_TOTAL,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))

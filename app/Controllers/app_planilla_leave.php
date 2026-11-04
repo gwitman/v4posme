@@ -51,7 +51,7 @@ class app_planilla_leave extends _BaseController
                     $dataViewData                = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
                 }
 
-                if ($dataSession["user"]->useMobile == 1) {
+                if ($dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile()) {
                     $dataViewRender                = $this->core_web_view->renderGreedWithHtmlInFildMobile($dataViewData, 'ListView', "fnTableSelectedRow");
                 } else {
                     $dataViewRender                = $this->core_web_view->renderGreedWithHtmlInFild($dataViewData, 'ListView', "fnTableSelectedRow");
@@ -63,7 +63,7 @@ class app_planilla_leave extends _BaseController
                 $parameter["{companyID}"]    = $this->session->get('user')->companyID;
                 $dataViewData                = $this->core_web_view->getViewBy_DataViewID($this->session->get('user'), $objComponent->componentID, $dataViewID, CALLERID_LIST, $resultPermission, $parameter);
 
-                if ($dataSession["user"]->useMobile == 1) {
+                if ($dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile()) {
                     $dataViewRender                = $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow");
                 } else {
                     $dataViewRender                = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
@@ -189,6 +189,7 @@ class app_planilla_leave extends _BaseController
             //RENDERIZAR RESULTADO
             $dataSession["notification"]    = $this->core_web_error->get_error($dataSession["user"]->userID);
             $dataSession["message"]         = $this->core_web_notification->get_message();
+            $dataView["useMobile"]          = $dataSession["user"]->useMobile;
             $dataSession["head"]            = view('app_planilla_leave/news_head',$dataView);
             $dataSession["body"]            = view('app_planilla_leave/news_body',$dataView);
             $dataSession["script"]          = view('app_planilla_leave/news_script', $dataView);
@@ -267,6 +268,7 @@ class app_planilla_leave extends _BaseController
             //RENDERIZAR RESULTADO
             $dataSession["notification"]    = $this->core_web_error->get_error($dataSession["user"]->userID);
             $dataSession["message"]         = $this->core_web_notification->get_message();
+            $dataView["useMobile"]          = $dataSession["user"]->useMobile;
             $dataSession["head"]            = view('app_planilla_leave/edit_head',$dataView);
             $dataSession["body"]            = view('app_planilla_leave/edit_body',$dataView);
             $dataSession["script"]          = view('app_planilla_leave/edit_script', $dataView);

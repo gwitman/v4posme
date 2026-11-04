@@ -1,81 +1,32 @@
-<style>
-	#tb_transaction_master_detail {
-		table-layout: fixed;
-		width: 100%;
-	}
+<div class="pv2 pv2-has-mbar<?php echo (isset($useMobile) && $useMobile == "1") ? " pv2-mobile" : ""; ?>">
 
-	#tb_transaction_master_detail th,
-	#tb_transaction_master_detail td {
-		width: 20em;
-		word-wrap: break-word;
-	}
+    <!-- encabezado y acciones -->
+    <div class="pv2-card pv2-header">
+        <div class="pv2-header-info">
+            <div class="pv2-header-icon"><i class="icon20 i-cone"></i></div>
+            <div>
+                <p class="pv2-header-title">PLANILLA:#<span class="invoice-num">00000000</span> <span class="pv2-chip">Nuevo</span></p>
+                <p class="pv2-header-sub">Registra los colaboradores, ingresos y deducciones de la planilla</p>
+            </div>
+        </div>
+        <div class="pv2-actions">
+            <a href="<?php echo base_url(); ?>/app_planilla_employee_pay/index" id="btnBack" class="btn btn-default"><i class="icon16 i-rotate"></i> Atras</a>
+            <a href="#" class="btn btn-primary pv2-hide-xs" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+        </div>
+    </div>
+    <!-- /encabezado y acciones -->
 
-	#tb_transaction_master_detail thead
-	{
-		position: sticky;
-		top: 0;
-		z-index: 2;
-	}
-
-	#div_transaction_master_detail
-	{
-		height:500px;
-		overflow-y: auto;  
-		overflow-x: auto;								
-	}
-</style>
-					<div class="row"> 
-                        <div id="email" class="col-lg-12">
-                        
-                        	<!-- botonera -->
-                            <div class="email-bar" style="border-left:1px solid #c9c9c9">                                
-                                <div class="btn-group pull-right">                                    
-									<a href="<?php echo base_url(); ?>/app_planilla_employee_pay/index" id="btnBack" class="btn btn-inverse" ><i class="icon16 i-rotate"></i> Atras</a>                                    
-                                    <a href="#" class="btn btn-success" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
-                                </div>
-                            </div> 
-                            <!-- /botonera -->
-                        </div>
-                        <!-- End #email  -->
-                    </div>
-                    <!-- End .row-fluid  -->
-					
-				    <div class="row">
-						<div class="col-lg-12">
-							<div class="panel panel-default">
-										
-								<!-- titulo de comprobante-->
-								<div class="panel-heading">
-										<div class="icon"><i class="icon20 i-file"></i></div> 
-										<h4>PLANILLA:#<span class="invoice-num">00000000</span></h4>
-								</div>
-								<!-- /titulo de comprobante-->
-								
-								<!-- body -->	
-								<form id="form-new-invoice" name="form-new-invoice" class="form-horizontal" role="form">
-								<div class="panel-body printArea"> 
-								
-									<ul id="myTab" class="nav nav-tabs">
-										<li class="active">
-											<a href="#home" data-toggle="tab">Informacion</a>
-										</li>
-										<li class="dropdown">
-											<a href="#" class="dropdown-toggle" data-toggle="dropdown">Mas <b class="caret"></b></a>
-											<ul class="dropdown-menu">
-												<li><a href="#dropdown" data-toggle="tab">Comentario</a></li>
-												<li><a href="#dropdown-file" data-toggle="tab">Archivos</a></li>
-											 </ul>
-										</li>
-									</ul>
-									
-									<div class="tab-content">
-										<div class="tab-pane fade in active" id="home">	
-											<div class="row">										
-												<div class="col-lg-6">
+								<!-- formulario -->
+								<form id="form-new-invoice" name="form-new-invoice" role="form" autocomplete="off">
+								<div class="printArea">
+											<div class="row" id="home">
+												<div class="col-xs-12 col-md-6">
+												  <div class="pv2-card">
+													<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-file"></i></span> Datos de la planilla</p>
 													
 														<div class="form-group">
-															<label class="col-lg-2 control-label" for="selectFilter">Ciclo</label>
-															<div class="col-lg-8">
+															<label class="pv2-label">Ciclo</label>
+															<div>
 																<select name="txtCycleID" id="txtCycleID" class="select2">							
 																		<?php
 																		if($objListCycle)
@@ -88,8 +39,8 @@
 														</div>
 
 														<div class="form-group">
-															<label class="col-lg-2 control-label" for="selectFilter">Quincena</label>
-															<div class="col-lg-8">
+															<label class="pv2-label">Quincena</label>
+															<div>
 																<select name="txtWeekID" id="txtWeekID" class="select2">
 																		<option></option>																
 																		<?php
@@ -112,15 +63,15 @@
 														</div>
 														
 														<div class="form-group">
-															<label class="col-lg-2 control-label" for="normal">Nombre.</label>
-															<div class="col-lg-8">
-																<input class="form-control"   type="text" name="txtNombre" id="txtNombre" value="">
+															<label class="pv2-label" for="txtNombre">Nombre</label>
+															<div>
+																<input class="form-control" type="text" autocomplete="off" name="txtNombre" id="txtNombre" value="">
 															</div>
 														</div>
 													
 														<div class="form-group">
-															<label class="col-lg-2 control-label" for="selectFilter">Estado</label>
-															<div class="col-lg-8">
+															<label class="pv2-label">Estado</label>
+															<div>
 																<select name="txtStatusID" id="txtStatusID" class="select2">
 																		<option></option>																
 																		<?php
@@ -134,12 +85,15 @@
 														</div>
 														
 													
+												  </div>
 												</div>
-												<div class="col-lg-6">
+												<div class="col-xs-12 col-md-6">
+												  <div class="pv2-card">
+													<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-list-2"></i></span> Clasificación</p>
 												
 														<div class="form-group">
-															<label class="col-lg-2 control-label" for="selectFilter">Tipo</label>
-															<div class="col-lg-8">
+															<label class="pv2-label">Tipo</label>
+															<div>
 																<select name="txtTypeID" id="txtTypeID" class="select2">
 																		<option></option>																
 																		<?php
@@ -152,8 +106,8 @@
 															</div>
 														</div>
 														<div class="form-group">
-															<label class="col-lg-2 control-label" for="selectFilter">Moneda</label>
-															<div class="col-lg-8">
+															<label class="pv2-label">Moneda</label>
+															<div>
 																<select name="txtCurrencyID" id="txtCurrencyID" class="select2">
 																		<option></option>																
 																		<?php
@@ -166,36 +120,34 @@
 															</div>
 														</div>
 														
+												  </div>
 												</div>
 											</div>
-										</div>
-										
-										<div class="tab-pane fade" id="dropdown">
-											
+
+											<div class="pv2-card" id="dropdown">
+												<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-pencil-4"></i></span> Comentario</p>
 												<div class="form-group">
-		                                            <label class="col-lg-2 control-label" for="normal">Descripcion</label>
-		                                            <div class="col-lg-6">
-		                                                <textarea class="form-control"  id="txtNote" name="txtNote" rows="6"></textarea>
-		                                            </div>
-		                                        </div>
-											
+													<label class="pv2-label" for="txtNote">Descripción</label>
+													<div>
+														<textarea class="form-control" id="txtNote" name="txtNote" rows="4"></textarea>
+													</div>
+												</div>
+											</div>
+
+									<!-- detalle -->
+									<div class="pv2-card">
+										<div class="pv2-detail-head">
+											<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-list-2"></i></span> Colaboradores <span class="pv2-count" id="afxDetailCount">0</span></p>
+											<div class="pv2-actions">
+												<button type="button" class="btn btn-default btn-sm" id="btnDeleteShare"><i class="icon16 i-remove"></i> Quitar marcados</button>
+												<button type="button" class="btn btn-primary btn-sm" id="btnNewShare"><i class="icon16 i-plus"></i> Agregar colaborador</button>
+											</div>
 										</div>
-										<div class="tab-pane fade" id="dropdown-file">
-											
-										</div>
-									</div>    
-							
-									<br/>
-									<a href="#" class="btn btn-flat btn-info" id="btnNewShare" >Agregar</a>
-									<a href="#" class="btn btn-flat btn-danger" id="btnDeleteShare" >Eliminar</a>									
-									<div class="row">
-                                        <div class="col-lg-12">
-                                            <h3>Detalle:</h3>
-											<div id="div_transaction_master_detail">
-												<table id="tb_transaction_master_detail" class="table table-bordered">
+											<div id="div_transaction_master_detail" class="pv2-table-wrap">
+												<table id="tb_transaction_master_detail" class="pv2-table pla-table-ancha">
 													<thead>
 														<tr>
-															<th style="width: 40px;"></th>
+															<th class="afx-col-quitar"></th>
 															<th>Colaborador</th>
 															<th>Vacaciones Acumuladas</th>
 															<th>INSS Patronal</th>
@@ -215,86 +167,79 @@
 													</tbody>
 												</table>
 											</div>
-                                        </div><!-- End .col-lg-12  --> 
-                                    </div><!-- End .row-fluid  -->
-                                    <div class="row">
-                                        <div class="col-lg-8">
-											<div class="page-header">
-                                                <h3>Ref.</h4>
-                                            </div>
-                                            <ul class="list-unstyled">
-                                                <li><h3>CC: <span class="red-smooth">*</span></h3></li>
-                                                <li><i class="icon16 i-arrow-right-3"></i>Resumen de planilla</li>                                                
-                                            </ul>
-                                        </div>
-                                        <div class="col-lg-4">
-                                            <div class="page-header">
-                                                <h3>Resumen</h3>
-                                            </div>
-                                            <table class="table table-bordered">
-                                                <tbody>                                                    
-													<tr>
-                                                        <th>TOTAL</th>
-                                                        <td >
-															<input type="text" id="txtTotal" name="txtTotal" readonly class="col-lg-12 txt-numeric" value="" style="text-align:right"/>
-														</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div><!-- End .col-lg-6  --> 
-                                    </div><!-- End .row-fluid  -->
-                                       
+										<div class="pv2-empty" id="afxDetailEmpty">
+											<i class="icon20 i-file-plus"></i>
+											Esta planilla no tiene colaboradores. Toca <b>Agregar colaborador</b> para empezar.
+										</div>
+									</div>
+									<!-- /detalle -->
+
+									<!-- resumen -->
+									<div class="pv2-card">
+										<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-checkmark-4"></i></span> Resumen</p>
+										<div class="pv2-total">
+											<label class="pv2-label" for="txtTotal">Total</label>
+											<input type="text" id="txtTotal" name="txtTotal" readonly class="afx-monto" autocomplete="off" value="">
+										</div>
+									</div>
+									<!-- /resumen -->
                                 </div>
 								</form>
-								<!-- /body -->
-							</div>
-						</div>
-					</div>
+								<!-- /formulario -->
+
+    <!-- barra inferior (telefono) -->
+    <div class="pv2-mbar">
+        <div class="pv2-mbar-info">
+            <p class="pv2-mbar-label">Nueva planilla</p>
+        </div>
+        <a href="#" class="btn btn-primary" id="btnAceptMobile"><i class="icon16 i-checkmark-4"></i> Guardar</a>
+    </div>
+</div>
 					
 					
 					<script type="text/template"  id="tmpl_row_document">
 							<tr class="row_razon">
-								<td class="td-checkbox">
+								<td class="td-checkbox" data-label="Quitar">
 									<input type="checkbox"  class="txtCheckedIsActive" name="txtCheckedIsActive[]" value="1" />
 									<input type="hidden"  name="txtCalendarDetailID[]" id="txtCalendarDetailID"  />
 									<input type="hidden" class="classDetailItem" id="txtEmployeeID" name="txtEmployeeID[]" />
 								</td>
-								<td><text id="txtDocument"></text></td>
-								<td>
-									<input class="form-control txtDetailShare txt-numeric" readonly type="text" id="txtVacationBalanceDay"  name="txtVacationBalanceDay[]"  value="0" />
+								<td data-label="Colaborador"><span id="txtDocument"></span></td>
+								<td data-label="Vacaciones Acumuladas">
+									<input class="form-control pv2-num txtDetailShare" readonly type="text" id="txtVacationBalanceDay"  name="txtVacationBalanceDay[]"  value="0" />
 								</td>
-								<td>
-									<input class="form-control txtDetailShare txt-numeric" readonly type="text" id="txtINSSPatronal"  name="txtINSSPatronal[]"  value="0" />
+								<td data-label="INSS Patronal">
+									<input class="form-control pv2-num txtDetailShare afx-monto" readonly type="text" id="txtINSSPatronal"  name="txtINSSPatronal[]"  value="0" />
 								</td>
-								<td>
-									<input class="form-control txtDetailShare txt-numeric" readonly type="text" id="txtSalario"  name="txtSalario[]"  value="0" />
+								<td data-label="+Salario">
+									<input class="form-control pv2-num txtDetailShare afx-monto" readonly type="text" id="txtSalario"  name="txtSalario[]"  value="0" />
 								</td>
-								<td>
-									<input class="form-control txtDetailShare txt-numeric"  type="text" id="txtComision"  name="txtComision[]"  value="0" />
+								<td data-label="+Comision">
+									<input class="form-control pv2-num txtDetailShare afx-monto" inputmode="decimal" autocomplete="off" type="text" id="txtComision"  name="txtComision[]"  value="0" />
 								</td>
-								<td>
-									<input class="form-control txtDetailShare txt-numeric"  type="text" id="txtBonoQuincenal"  name="txtBonoQuincenal[]"  value="0" />
+								<td data-label="+Bono Quincenal">
+									<input class="form-control pv2-num txtDetailShare afx-monto" inputmode="decimal" autocomplete="off" type="text" id="txtBonoQuincenal"  name="txtBonoQuincenal[]"  value="0" />
 								</td>
-								<td>
-									<input class="form-control txtDetailShare txt-numeric"  type="text" id="txtAdelantos"  name="txtAdelantos[]"  value="0" />
+								<td data-label="-Adelantos">
+									<input class="form-control pv2-num txtDetailShare afx-monto" inputmode="decimal" autocomplete="off" type="text" id="txtAdelantos"  name="txtAdelantos[]"  value="0" />
 								</td>
-								<td>
-									<input class="form-control txtDetailShare txt-numeric"  type="text" id="txtDeduccionesPrestamo"  name="txtDeduccionesPrestamo[]"  value="0" />
+								<td data-label="-Deducciones Por Prestamos">
+									<input class="form-control pv2-num txtDetailShare afx-monto" inputmode="decimal" autocomplete="off" type="text" id="txtDeduccionesPrestamo"  name="txtDeduccionesPrestamo[]"  value="0" />
 								</td>
-								<td>
-									<input class="form-control txtDetailShare txt-numeric"  type="text" id="txtDeduccionesLlegadaTarde"  name="txtDeduccionesLlegadaTarde[]"  value="0" />
+								<td data-label="-Deducciones Por Llegada Tarde">
+									<input class="form-control pv2-num txtDetailShare afx-monto" inputmode="decimal" autocomplete="off" type="text" id="txtDeduccionesLlegadaTarde"  name="txtDeduccionesLlegadaTarde[]"  value="0" />
 								</td>
-								<td>
-									<input class="form-control txtDetailShare txt-numeric" readonly type="text" id="txtINSS"  name="txtINSS[]"  value="0" />
+								<td data-label="INSS">
+									<input class="form-control pv2-num txtDetailShare afx-monto" readonly type="text" id="txtINSS"  name="txtINSS[]"  value="0" />
 								</td>
-								<td>
-									<input class="form-control txtDetailShare txt-numeric" readonly  type="text" id="txtAhorro"  name="txtAhorro[]"  value="0" />
+								<td data-label="Ahorro">
+									<input class="form-control pv2-num txtDetailShare afx-monto" readonly  type="text" id="txtAhorro"  name="txtAhorro[]"  value="0" />
 								</td>
-								<td>
-									<input class="form-control txtDetailShare txt-numeric" readonly  type="text" id="txtIR"  name="txtIR[]"  value="0" />
+								<td data-label="IR">
+									<input class="form-control pv2-num txtDetailShare afx-monto" readonly  type="text" id="txtIR"  name="txtIR[]"  value="0" />
 								</td>
-								<td>
-									<input class="form-control txtDetailShare txt-numeric" readonly type="text" id="txtNeto"  name="txtNeto[]"  value="0" />
+								<td data-label="Salario Neto">
+									<input class="form-control pv2-num txtDetailShare afx-monto" readonly type="text" id="txtNeto"  name="txtNeto[]"  value="0" />
 								</td>
 							</tr>
 					</script>

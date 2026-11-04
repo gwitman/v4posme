@@ -1,16 +1,24 @@
 				<!-- ./ page heading -->
 				<script>
+				    var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+				</script>
+				<?php echo view('core_template/posme_v2_common'); ?>
+				<script>
 				    $(document).ready(function() {
 
-						var objTM			= JSON.parse('<?= json_encode($objTM)?>');
+						var statusID = <?= (int)$objTM->statusID ?>;
 
-						$('#txtDate').datepicker({
-				            format: "yyyy-mm-dd"
-				        });
-				        $('#txtDate').val();
-				        $("#txtDate").datepicker("update");
+				        //Fecha y combos nativos en telefono; barra inferior (una sola vez: enlazarla dos veces guardaria dos veces)
+				        pv2InitDate("txtDate", false);
+				        pv2MobileSelects("#txtStatusID,#txtCurrencyID");
+				        pv2BindMobileBar();
 				        $('.txt-numeric').mask('000,000.00', {
 				            reverse: true
+				        });
+
+				        //Monto: al salir del campo se muestra como 1,000.00 (sin mascara: la inversa convertiria 500 en 5.00)
+				        $(document).on("change", "#txtAmount", function() {
+				            $(this).val(pv2Fmt($(this).val()));
 				        });
 
 				        //Regresar a la lista
@@ -23,6 +31,8 @@
 				            $("#form-new-emision").attr("action", "<?php echo base_url(); ?>/app_bank_cheque_make/save/edit");
 
 							if (validateForm()) {
+				                //El formato es solo visual: al servidor viaja el numero puro. Si la validacion falla no se toca el campo
+				                $("#txtAmount").val(pv2Plain($("#txtAmount").val()));
 				                fnWaitOpen();
 				                $("#form-new-emision").submit();
 				            }
@@ -33,8 +43,7 @@
 				        $(document).on("click", "#btnSearcCheckbook", function() {
 							var currencyID 	= $("#txtCurrencyID").val(); 
 				            var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentBankCheck->componentID; ?>/onCompleteCheckbook/SELECCIONAR_CHEQUERA/true/"+ encodeURI('{\"currencyID\"|\"' + currencyID + '\"}') +"/false/not_redirect_when_empty";
-				            window.open(url_request, "MsgWindow", "width=900,height=450");
-				            window.onCompleteCheckbook = onCompleteCheckbook;
+				            pv2OpenSearch(url_request, "Buscar chequera", "onCompleteCheckbook", onCompleteCheckbook, "width=900,height=450");
 				        });
 
 				        //Eliminar chequera
@@ -88,7 +97,7 @@
 						});
 
 						//No mostrar el valor del contador de la chequera a menos que el documento este aplicado
-						if(objTM.statusID == 171 /*REGISTRADO*/)
+						if(statusID == 171 /*REGISTRADO*/)
 						{
 							$("#txtCheckbookCounterDescription").val("");
 						}
@@ -121,7 +130,7 @@
 				            result = false;
 						}
 
-						if($("#txtAmount").val() === "")
+						if(pv2Num($("#txtAmount").val()) == 0)
 						{
 							fnShowNotification("Ingrese el Monto", "error", timerNotification);
 				            result = false;

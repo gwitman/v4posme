@@ -16,31 +16,14 @@
 			}
 			
 		}); 
-		$(document).on("click","#btnSearchTransaction",function(){
-					fnWaitOpen();
-					$.ajax({									
-						cache       : false,
-						dataType    : 'json',
-						type        : 'POST',
-						url  		: "<?php echo base_url(); ?>/app_planilla_employee_pay/searchTransactionMaster",
-						data 		: {journalNumber : $("#txtSearchTransaction").val() },
-						success:function(data){
-							console.info("complete delete success");
-							fnWaitClose();
-							if(data.error){
-								fnShowNotification(data.message,"error");
-							}
-							else{		
-								window.location = "<?php echo base_url(); ?>/app_planilla_employee_pay/edit/calendarID/"+data.calendarID;
-							}
-						},
-						error:function(xhr,data){	
-							console.info("complete delete error");									
-							fnWaitClose();
-							fnShowNotification("Error 505","error");
-						}
-					});
-		});		
+		//El controlador no tiene busqueda en servidor: se filtra la lista cargada en pantalla
+		$(document).on("click","#btnSearchTransaction",function(e){
+			e.preventDefault();
+			fnFiltrarLista();
+		});
+		$(document).on("keyup","#txtSearchTransaction",function(){
+			fnFiltrarLista();
+		});
 		$(document).on("click","#btnEliminar",function(){
 		
 			if(objRowTableListView != undefined){
@@ -82,6 +65,20 @@
 		});
 	});
 	
+	//Filtra con DataTables; si la tabla no esta disponible, oculta las filas que no coinciden
+	function fnFiltrarLista(){
+		var valor = $("#txtSearchTransaction").val();
+		if(typeof objTableListView != "undefined" && objTableListView && typeof objTableListView.fnFilter == "function"){
+			objTableListView.fnFilter(valor);
+		}
+		else{
+			var texto = $.trim(valor).toLowerCase();
+			$("#ListView tbody tr").each(function(){
+				$(this).toggle(texto == "" || $(this).text().toLowerCase().indexOf(texto) != -1);
+			});
+		}
+	}
+
 	function fn_aceptCallback(data){
 			var dataViewID 	= data[0];
 			window.location = "../../app_planilla_employee_pay/index/"+dataViewID;   

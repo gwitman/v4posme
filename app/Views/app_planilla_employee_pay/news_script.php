@@ -1,30 +1,34 @@
 				<!-- ./ page heading -->
 				<script>
-					$(document).ready(function(){						 
-						 
-						
-						
+					var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+
+					$(document).ready(function(){
+
+						afxBindCommon();
+
 						 //Regresar a la lista
 						$(document).on("click","#btnBack",function(){
 								fnWaitOpen();
 						});
-						
+
 						//Evento Agregar el Usuario
-						$(document).on("click","#btnAcept",function(){
+						$(document).on("click","#btnAcept",function(e){
+								e.preventDefault();
 								$( "#form-new-invoice" ).attr("method","POST");
 								$( "#form-new-invoice" ).attr("action","<?php echo base_url(); ?>/app_planilla_employee_pay/save/new");
-								
+
 								if(validateForm()){
 									fnWaitOpen();
+									//El servidor debe recibir numeros puros, sin el formato visual
+									plaLimpiarMontos("#form-new-invoice");
 									$( "#form-new-invoice" ).submit();
 								}
-								
+
 						});
 						//Nueva factura
 						$(document).on("click","#btnNewShare",function(){
 							var url_request 			= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentEmployee->componentID; ?>/onCompleteNewShare/SELECCIONAR_EMPLOYEE_TO_PLANILLA/true/empty/false/not_redirect_when_empty";
-							window.open(url_request,"MsgWindow","width=900,height=500");
-							window.onCompleteNewShare 	= onCompleteNewShare; 
+							pv2OpenSearch(url_request,"Buscar colaborador","onCompleteNewShare",onCompleteNewShare,"width=900,height=500");
 						});
 						//Eliminar factura
 						$(document).on("click","#btnDeleteShare",function(){
@@ -55,29 +59,30 @@
 							/*-impuesto sobre la renta*/
 							/*-ahorro*/
 							/*neto*/
-							var salario 				= fnFormatFloat($(obj).find("#txtSalario").val());
-							var comision 				= fnFormatFloat($(obj).find("#txtComision").val());
-							var bono 					= fnFormatFloat($(obj).find("#txtBonoQuincenal").val());
-							var adelanto 				= fnFormatFloat($(obj).find("#txtAdelantos").val());
-							var deduccionPrestamo		= fnFormatFloat($(obj).find("#txtDeduccionesPrestamo").val());
-							var deduccionLlegadaTarde	= fnFormatFloat($(obj).find("#txtDeduccionesLlegadaTarde").val());
-							var ahorro 					= fnFormatFloat($(obj).find("#txtAhorro").val());
+							//Lectura con pv2Num: quita el formato visual y un monto vacio cuenta como 0
+							var salario 				= pv2Num($(obj).find("#txtSalario").val());
+							var comision 				= pv2Num($(obj).find("#txtComision").val());
+							var bono 					= pv2Num($(obj).find("#txtBonoQuincenal").val());
+							var adelanto 				= pv2Num($(obj).find("#txtAdelantos").val());
+							var deduccionPrestamo		= pv2Num($(obj).find("#txtDeduccionesPrestamo").val());
+							var deduccionLlegadaTarde	= pv2Num($(obj).find("#txtDeduccionesLlegadaTarde").val());
+							var ahorro 					= pv2Num($(obj).find("#txtAhorro").val());
 							var inss 					= salario * 0.07;
 							var inssPatronal 			= salario * 0.215;
 							var IR						= fnCalculateIR((salario - inss)*2)/2;
 							var neto 					= salario + comision + bono - adelanto - deduccionPrestamo - deduccionLlegadaTarde - inss - IR - ahorro;
 							
-							$(obj).find("#txtNeto").val(fnFormatNumber(neto,2));
+							$(obj).find("#txtNeto").val(afxFmtMonto(fnFormatNumber(neto,2)));
 							total 			= total + neto;
 
-							$(obj).find("#txtINSS").val(fnFormatNumber(inss,2));
+							$(obj).find("#txtINSS").val(afxFmtMonto(fnFormatNumber(inss,2)));
 
-							$(obj).find("#txtINSSPatronal").val(fnFormatNumber(inssPatronal,2));
+							$(obj).find("#txtINSSPatronal").val(afxFmtMonto(fnFormatNumber(inssPatronal,2)));
 
-							$(obj).find("#txtIR").val(fnFormatNumber(IR,2));
+							$(obj).find("#txtIR").val(afxFmtMonto(fnFormatNumber(IR,2)));
 						});
-						
-						$("#txtTotal").val(fnFormatNumber(total,2));
+
+						$("#txtTotal").val(afxFmtMonto(fnFormatNumber(total,2)));
 					}
 					function onCompleteNewShare(objResponse){
 						console.info("CALL onCompleteNewShare");	
@@ -112,7 +117,9 @@
 						tmpl.find("#txtSalario").attr("value", salarioQuincenal);
 						tmpl.find("#txtAhorro").attr("value", objRow.saving);
 						$("#body_tb_transaction_master_detail").append(tmpl);
-						refreschChecked();						
+						//Salario y ahorro llegan sin formato y son de solo lectura en la fila nueva
+						afxInitMontos(tmpl);
+						refreschChecked();
 						updateSummary();
 					}
 					function fnCompleteGetDocumentInfo(data){
@@ -143,7 +150,7 @@
 					}
 					
 					function refreschChecked(){
-						$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();						
+						plaRefreshChecked();
 					}
 					
 					function fnCalculateIR(salaryAfterINSS)

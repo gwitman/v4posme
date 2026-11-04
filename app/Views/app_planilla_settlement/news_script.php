@@ -1,9 +1,13 @@
 <script>
+    var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+
     $(document).ready(function() {
 
         var selectedEmployeeData = null;
 
-        $('#txtEmployeeEndDate').datepicker({format:"yyyy-mm-dd"});
+        //La fecha de fin abre vacia; se llena al elegir el colaborador
+        plaInitDate("txtEmployeeEndDate");
+        afxBindCommon();
 
         //Regresar a la lista
         $("#btnBack").on("click", function() 
@@ -15,8 +19,7 @@
         $("#btnSearchEmployee").on("click", function() 
         {
             var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentEmployee->componentID; ?>/onCompleteNewEmployee/SELECCIONAR_EMPLOYEE_TO_PLANILLA/true/empty/false/not_redirect_when_empty";
-            window.open(url_request, "MsgWindow", "width=900,height=500");
-            window.onCompleteNewEmployee = onCompleteNewEmployee;
+            pv2OpenSearch(url_request, "Buscar colaborador", "onCompleteNewEmployee", onCompleteNewEmployee, "width=900,height=500");
         });
 
         //Limpiar datos del colaborador
@@ -26,8 +29,9 @@
         });
 
         //Agregar Registro
-        $("#btnAcept").on("click", function()
+        $("#btnAcept").on("click", function(e)
         {
+            e.preventDefault();
             if(validateForm())
             {
                 fnWaitOpen();
@@ -39,6 +43,8 @@
         });
 
         $("#form-new-rrhh-employee input").on("change",function(){
+            //Sin colaborador elegido todavia no hay datos con que calcular
+            if(selectedEmployeeData == null) return;
             onUpdatedEmployeeData(selectedEmployeeData);
         });
 
@@ -99,7 +105,8 @@
             $("#txtEmployeeBeginDate").val(EmployeeStartDate);
             $("#txtEmployeeAccumulatedVacations").val(EmployeeVacationBalance);
             $("#txtEmployeeAmountSaving").val(EmployeeAmountSaving);
-            $("#txtEmployeeEndDate").val(EmployeeEndDate);
+            //El selector nativo del telefono solo acepta YYYY-MM-DD; sin fecha de fin el campo queda vacio
+            $("#txtEmployeeEndDate").val(EmployeeEndDate ? String(EmployeeEndDate).substring(0,10) : "");
             $("#txtEmployeeDescription").val(EmployeeEntityID + " " + EmployeeCode + " | " + EmployeeFullName);
             $("#txtEmployeeArea").val(EmployeeArea);
 
@@ -251,7 +258,6 @@
                 //Formula: Salario Diaro * Dias Laborados * Factor 0.083
                 totalpayment = (salaryDairy * daysWorked) + (monthsWorked * salaryMonthly);
             }
-            debugger;
             return totalpayment;
         }
 
@@ -401,7 +407,7 @@
 
         function refreschChecked()
         {
-            $("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();	
+            plaRefreshChecked();
         }
 
 
