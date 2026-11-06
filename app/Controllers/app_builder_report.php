@@ -205,7 +205,7 @@ class app_builder_report extends _BaseController
             $fields = $this->getCatalogFields($dataSession, $view->dataViewID);
             $normal = $this->core_web_report_builder->validateConfig($config, $fields, ['keepEmptyFilters' => true]);
 
-            if ($this->Report_Builder_Model->existsName($companyID, $userID, $name, $reportBuilderID)) {
+            if ($this->Report_Builder_Model->existsName($companyID, $userID, $name, $reportBuilderID, $this->getAvailableViewIDs($dataSession))) {
                 throw new \Exception('Ya tiene una consulta con ese nombre.');
             }
 
@@ -241,7 +241,7 @@ class app_builder_report extends _BaseController
             $dataSession = $access['session'];
             $queries     = [];
             $rows        = $this->Report_Builder_Model->get_rowsByUser($dataSession["user"]->companyID, $dataSession["user"]->userID);
-            $viewIDs     = array_map('intval', array_column($this->getAvailableViews($dataSession), 'dataViewID'));
+            $viewIDs     = $this->getAvailableViewIDs($dataSession);
 
             foreach ($rows as $row) {
                 if (!in_array((int) $row->dataViewID, $viewIDs, true)) {
@@ -317,7 +317,7 @@ class app_builder_report extends _BaseController
 
             if (is_string($rawName) && trim($rawName) !== '') {
                 $name = $this->core_web_report_builder->normalizeQueryName($rawName);
-                if ($this->Report_Builder_Model->existsName($dataSession["user"]->companyID, $dataSession["user"]->userID, $name)) {
+                if ($this->Report_Builder_Model->existsName($dataSession["user"]->companyID, $dataSession["user"]->userID, $name, 0, $this->getAvailableViewIDs($dataSession))) {
                     throw new \Exception('Ya tiene una consulta con ese nombre.');
                 }
             } else {
@@ -575,6 +575,17 @@ class app_builder_report extends _BaseController
     }
 
     /**
+     * IDs de las vistas disponibles para el usuario.
+     *
+     * @param array $dataSession Sesion.
+     * @return array Enteros con cada dataViewID.
+     */
+    protected function getAvailableViewIDs(array $dataSession)
+    {
+        return array_map('intval', array_column($this->getAvailableViews($dataSession), 'dataViewID'));
+    }
+
+    /**
      * Vista del catalogo activo a la que el usuario tiene acceso. Vista inexistente y vista sin
      * permiso dan la misma respuesta.
      *
@@ -801,11 +812,12 @@ class app_builder_report extends _BaseController
         $companyID = $dataSession["user"]->companyID;
         $userID    = $dataSession["user"]->userID;
         $base      = 'Copia de ' . $name;
+        $viewIDs   = $this->getAvailableViewIDs($dataSession);
 
         for ($i = 1; $i <= 100; $i++) {
             $suffix    = ($i === 1) ? '' : ' (' . $i . ')';
             $candidate = trim(mb_substr($base, 0, 150 - mb_strlen($suffix, 'UTF-8'), 'UTF-8')) . $suffix;
-            if (!$this->Report_Builder_Model->existsName($companyID, $userID, $candidate)) {
+            if (!$this->Report_Builder_Model->existsName($companyID, $userID, $candidate, 0, $viewIDs)) {
                 return $candidate;
             }
         }

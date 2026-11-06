@@ -82,17 +82,23 @@ class Report_Builder_Model extends Model
     }
 
     /**
-     * Indica si el usuario ya tiene una consulta activa con ese nombre.
+     * Indica si el usuario ya tiene una consulta activa visible con ese nombre. Las consultas de vistas
+     * no disponibles estan ocultas para el usuario, por eso no reservan el nombre.
      * La comparacion sigue la collation de la columna name.
      *
      * @param int    $companyID Empresa de la sesion.
      * @param int    $userID    Usuario de la sesion.
      * @param string $name      Nombre a comprobar.
      * @param int    $excludeID Consulta a excluir (la que se esta editando); 0 no excluye ninguna.
+     * @param array  $viewIDs   Vistas disponibles para el usuario (enteros).
      * @return bool true si el nombre ya esta en uso.
      */
-    function existsName($companyID, $userID, $name, $excludeID = 0)
+    function existsName($companyID, $userID, $name, $excludeID, array $viewIDs)
     {
+        if (empty($viewIDs)) {
+            return false;
+        }
+
         $db  = db_connect();
         $sql = sprintf("
             SELECT
@@ -102,10 +108,11 @@ class Report_Builder_Model extends Model
                 AND r.userID = %d
                 AND r.reportBuilderID <> %d
                 AND r.isActive = 1
+                AND r.dataViewID IN ?
                 AND r.name = ?
         ", $companyID, $userID, $excludeID);
 
-        $row = $db->query($sql, [$name])->getRow();
+        $row = $db->query($sql, [array_map('intval', $viewIDs), $name])->getRow();
         return $row ? ((int) $row->total) > 0 : false;
     }
 
