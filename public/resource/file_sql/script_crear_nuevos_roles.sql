@@ -227,6 +227,64 @@ where
 	
 	
 
+#CONFIGURAR AGENTE_MULTI_CANAL
+set @roleAgenteMultiCanal := (select u.roleID from tb_role u where u.`name` = CONCAT(@nameCompany,'@AGENTE_MULTI_CANAL') );
+insert into tb_user_permission(elementID,companyID,branchID,roleID,selected,inserted,deleted,edited)
+select
+	e.elementID,e.companyID,e.branchID,@roleAgenteMultiCanal roleID,e.selected,e.inserted,e.deleted,e.edited
+from
+	tb_user_permission e
+	inner join tb_role r on
+		e.roleID = r.roleID
+where
+	r.`name` = CONCAT(@nameCompanyOrigen,'@AGENTE_MULTI_CANAL');
+
+
+set @roleAgenteMultiCanal := (select u.roleID from tb_role u where u.`name` = CONCAT(@nameCompany,'@AGENTE_MULTI_CANAL') );
+insert into tb_role_autorization(companyID,componentAutorizationID,roleID,branchID)
+select
+	 e.companyID,
+	 componentAutorizationID,
+	 @roleAgenteMultiCanal,
+	 e.branchID
+from
+	tb_role_autorization e
+	inner join tb_role r on
+		e.roleID = r.roleID
+where
+	r.`name` = CONCAT(@nameCompanyOrigen,'@AGENTE_MULTI_CANAL');
+
+
+
+#CONFIGURAR SUPERVISOR_MULTI_CANAL
+set @roleSupervisorMultiCanal := (select u.roleID from tb_role u where u.`name` = CONCAT(@nameCompany,'@SUPERVISOR_MULTI_CANAL') );
+insert into tb_user_permission(elementID,companyID,branchID,roleID,selected,inserted,deleted,edited)
+select
+	e.elementID,e.companyID,e.branchID,@roleSupervisorMultiCanal roleID,e.selected,e.inserted,e.deleted,e.edited
+from
+	tb_user_permission e
+	inner join tb_role r on
+		e.roleID = r.roleID
+where
+	r.`name` = CONCAT(@nameCompanyOrigen,'@SUPERVISOR_MULTI_CANAL');
+
+
+set @roleSupervisorMultiCanal := (select u.roleID from tb_role u where u.`name` = CONCAT(@nameCompany,'@SUPERVISOR_MULTI_CANAL') );
+insert into tb_role_autorization(companyID,componentAutorizationID,roleID,branchID)
+select
+	 e.companyID,
+	 componentAutorizationID,
+	 @roleSupervisorMultiCanal,
+	 e.branchID
+from
+	tb_role_autorization e
+	inner join tb_role r on
+		e.roleID = r.roleID
+where
+	r.`name` = CONCAT(@nameCompanyOrigen,'@SUPERVISOR_MULTI_CANAL');
+
+
+
 #INSERTAR USUARIOS
 insert into tb_user (companyID,branchID,nickname,`password`,createdOn,isActive,email,createdBy,employeeID,useMobile,locationID)
 select 
@@ -255,14 +313,15 @@ where
 	
 
 #INSERTAR CAJAS
-insert into tb_cash_box_user (companyID,branchID,userID,cashBoxID,typeID)
-select 
+insert into tb_cash_box_user (companyID,branchID,userID,cashBoxID,typeID,isActive)
+select
 	2,
 	2,
 	c.userID,
 	1,
-	0
-from 
+	0,
+	1
+from
 	tb_user c 
 	inner join (
 			select 
