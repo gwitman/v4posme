@@ -1,6 +1,8 @@
 <!-- ./ page heading -->
 <script>
-	$(document).ready(function(){	
+	var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+
+	$(document).ready(function(){
 						//Inicializar DataPciker
 						$('#txtBirthDate').datepicker({format:"yyyy-mm-dd"});
 						 //Regresar a la lista

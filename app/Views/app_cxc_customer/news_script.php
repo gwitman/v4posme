@@ -7,7 +7,9 @@
 	var site_url 	  						= "<?php echo base_url(); ?>/";
 	var departamentoDefault 				= "<?php echo $objParameterDepartamento; ?>";
 	var municipioDefault 					= "<?php echo $objParameterMunicipio; ?>";
-	var userMobile							= '<?php echo $useMobile; ?>';
+	var varUseMobile						= '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+	//En telefono pv2OpenSearch reemplaza window.<callback>: se guarda la funcion original para no anidar envolturas
+	var cstCallbacks						= { email : parentNewEmail, phone : parentNewPhone, line : parentNewLine, employee : onCompleteEmployee };
 	var varParameterCantidadItemPoup		= '<?php echo $objParameterCantidadItemPoup; ?>';
 	
 	
@@ -22,21 +24,17 @@
 	
 	$(document).ready(function(){	
 		//Inicializar DataPciker
-		$('#txtVencimientoTarjeta').datepicker({format: "mm/yyyy"})
-		$('#txtBirthDate').datepicker({format:"yyyy-mm-dd"});
+		cstInitVencimiento("txtVencimientoTarjeta");
+		//El nacimiento conserva su valor inicial; la fecha de contacto inicia en hoy
+		pv2InitDate("txtBirthDate", false);
+		pv2InitDate("txtDateContract", true);
 		
-		var today 	= new Date();
-		var year 	= today.getFullYear();
-		var month 	= String(today.getMonth() + 1).padStart(2, '0'); // Los meses son 0-indexados
-		var day 	= String(today.getDate()).padStart(2, '0');
-		var formattedDate = year + '-' + month + '-' + day;
-		$("#txtDateContract").val(formattedDate);
-		$('#txtDateContract').datepicker({format:"yyyy-mm-dd"});
-		$("#txtDateContract").datepicker("setDate", new Date());
 		
 		
 		refreschChecked();
-		<?php echo getBehavio($company->type,"app_cxc_customer","divScriptReady",""); ?>		
+		//Montos, combos nativos en telefono y barra inferior. Una sola llamada: una segunda guardaria dos veces
+		prvBindCommon();
+		<?php echo getBehavio($company->type,"app_cxc_customer","divScriptReady",""); ?>
 		
 		
 		
@@ -51,6 +49,8 @@
 				
 				if(validateForm()){
 					fnWaitOpen();
+					//El servidor recibe numero puro, sin comas
+					afxLimpiarMontos("#form-new-cxc-customer");
 					$( "#form-new-cxc-customer" ).submit();
 				}
 				
@@ -59,8 +59,8 @@
 		//Buscar Colagorador
 		$(document).on("click","#btnSearchEmployer",function(){
 			var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentEmployer->componentID; ?>/onCompleteEmployee/SELECCIONAR_EMPLOYEE/true/empty/false/not_redirect_when_empty";
-			window.open(url_request,"MsgWindow","width=900,height=450");
-			window.onCompleteEmployee = onCompleteEmployee; 
+			//Ventana emergente en PC; dentro de la misma pantalla en telefono
+			pv2OpenSearch(url_request,"Buscar agente","onCompleteEmployee",cstCallbacks.employee,"width=900,height=450");
 		});
 		//Eliminar Colaborador
 		$(document).on("click","#btnClearEmployer",function(){
@@ -76,8 +76,7 @@
 
 
 			var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?php echo $objComponentItem->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_ALL_PAGINATED/true/empty/true/"+url_redirect+"/1/1/"+varParameterCantidadItemPoup+"/";
-			window.open(url_request,"MsgWindow","width=900,height=450");
-			window.onCompleteCustomer = onCompleteCustomer;
+			pv2OpenSearch(url_request,"Buscar cliente","onCompleteCustomer",onCompleteCustomer,"width=900,height=450");
 		});
 		
 		$(document).on("click","#btnClearCustomerReferente",function(){
@@ -228,6 +227,7 @@
 		});
 		//Grid de Linea
 		objTableLine = $("#tb_detail_credit_line").dataTable({
+			"fnCreatedRow"	: prvLineCreatedRow,
 			"bPaginate"		: false,
 			"bFilter"		: false,
 			"bSort"			: false,
@@ -375,13 +375,13 @@
 						{
 							"aTargets"		: [ 16 ],//Limite
 							"mRender"		: function ( data, type, full ) {
-								return '<input type="hidden" value="'+data+'" name="txtLineLimit[]" />'+data;
+								return prvMontoCell(data,"txtLineLimit[]");
 							}
 						},
 						{
 							"aTargets"		: [ 17 ],//Balance
 							"mRender"		: function ( data, type, full ) {
-								return '<input type="hidden" value="'+data+'" name="txtLineBalance[]" />'+data;
+								return prvMontoCell(data,"txtLineBalance[]");
 							}
 						},
 						{
@@ -420,8 +420,7 @@
 		//Nueva cuenta
 		$(document).on("click","#btnSearchAccount",function(){
 			var url_request 				= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentAccount->componentID; ?>/onCompleteSetAccount/SELECCIONAR_CUENTA/true/empty/false/not_redirect_when_empty";
-			window.open(url_request,"MsgWindow","width=900,height=450");
-			window.onCompleteSetAccount 	= onCompleteSetAccount; 
+			pv2OpenSearch(url_request,"Buscar cuenta","onCompleteSetAccount",onCompleteSetAccount,"width=900,height=450");
 		});
 		//Set cuenta
 		function onCompleteSetAccount(objResponse){
@@ -467,16 +466,11 @@
 					
 					$("#txtStateID").html("");
 					$("#txtStateID").append("<option value=''>N/D</option>");
-					
-					if(userMobile != '1')
-					$("#txtStateID").select2();
-				
+					afxInitSelect2("#txtStateID");
 					$("#txtCityID").html("");
-					
-					if(userMobile != '1')
-					$("#txtCityID").select2();
-					
-					
+					afxInitSelect2("#txtCityID");
+
+
 					if(data.catalogItems == null)
 					return;
 					
@@ -533,10 +527,8 @@
 					fnWaitClose();
 					$("#txtCityID").html("");
 					$("#txtCityID").append("<option value=''>N/D</option>");
-					
-					if(userMobile != '1')
-					$("#txtCityID").select2();
-					
+					afxInitSelect2("#txtCityID");
+
 					if(data.catalogItems == null)
 					return;
 					
@@ -553,8 +545,8 @@
 		//Nuevo Line
 		$(document).on("click","#btnNewLine",function(){
 			console.info("call click_btnNewLine");
-			window.open(site_url+"app_cxc_customer/add_credit_line","MsgWindow","width=700,height=600");
-			window.parentNewLine = parentNewLine;
+			//Ventana emergente en PC; dentro de la misma pantalla en telefono
+			pv2OpenSearch(site_url+"app_cxc_customer/add_credit_line","Agregar línea de crédito","parentNewLine",cstCallbacks.line,"width=700,height=600");
 		});
 		//Eliminar Linea
 		$(document).on("click","#btnDeleteLine",function(){
@@ -584,8 +576,8 @@
 		//Nuevo Email
 		$(document).on("click","#btnNewEmail",function(){
 			console.info("call click_btnNewEmail");
-			window.open(site_url+"app_cxc_customer/add_email","MsgWindow","width=650,height=500");
-			window.parentNewEmail = parentNewEmail;
+			//Ventana emergente en PC; dentro de la misma pantalla en telefono
+			pv2OpenSearch(site_url+"app_cxc_customer/add_email","Agregar correo","parentNewEmail",cstCallbacks.email,"width=650,height=500");
 		});
 		//Eliminar Email
 		$(document).on("click","#btnDeleteEmail",function(){
@@ -615,8 +607,8 @@
 		//Nuevo Telefono
 		$(document).on("click","#btnNewPhones",function(){
 			console.info("call click_btnNewPhones");
-			window.open(site_url+"app_cxc_customer/add_phone","MsgWindow","width=650,height=500");
-			window.parentNewPhone = parentNewPhone;
+			//Ventana emergente en PC; dentro de la misma pantalla en telefono
+			pv2OpenSearch(site_url+"app_cxc_customer/add_phone","Agregar teléfono","parentNewPhone",cstCallbacks.phone,"width=650,height=500");
 		});
 		//Eliminar Telefono
 		$(document).on("click","#btnDeletePhones",function(){
@@ -669,11 +661,11 @@
 		let combo2 = $('#txtFrecuencyContactID').val();
 		let selected = '';
 		let nuevaFila = ""+
-        	"<tr> "+
-                "<td>"+
+        	"<tr class='row_razon'> "+
+                "<td class='afx-col-block' data-label='Descripcion'>"+
                     "<input class='form-control' type='text' name='txtNombreRecordatorioArray[]' value='"+texto+"'> "+
                 "</td>"+
-                "<td>"+
+                "<td class='afx-col-block' data-label='Estado'>"+
                     "<select name='txtSituationIDArray[]' id='comboSituationId'>"+
 					<?php
 						if(isset($objListSituationID)){
@@ -685,7 +677,7 @@
 						}
 					?>
                 "</td>"+
-                "<td>"+
+                "<td class='afx-col-block' data-label='Frecuencia'>"+
                     "<select name='txtFrecuencyContactIDArray[]' id='comboFrecuencyContactId'>"+
 					<?php
 						if(isset($objListFrecuencyContactID)){
@@ -698,7 +690,7 @@
 					?>
                     "</select>"+
                 "</td>"+
-                "<td>"+
+                "<td data-label='Acción'>"+
                     "<button type='button' class='btn btn-flat btn-danger' onclick='fnEliminarFila(this)'>"+
                         "<i class='fas fa-trash'></i>"+
                     "</button>"+
@@ -712,9 +704,9 @@
         $('#txtSituationID').val(null).trigger('change');
         $('#txtFrecuencyContactID').val(null).trigger('change');
 
-		// Inicializar Select2 en los nuevos select creados
-		$('#comboSituationId').select2();
-		$('#comboFrecuencyContactId').select2();
+		// Inicializar los nuevos select creados: select2 en PC, combo nativo en telefono
+		afxInitSelect2('#comboSituationId');
+		afxInitSelect2('#comboFrecuencyContactId');
 	}
 
 	function onCompleteEmployee(objResponse)
@@ -794,8 +786,8 @@
 		
 	}
 	function refreschChecked(){
-		$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();						
-		$('.txt-numeric').mask('000,000.00', {reverse: true});
+		//Solo casillas: los combos nativos del telefono no deben envolverse con uniform
+		$("[type='checkbox']").not(".toggle, .multiselect").uniform();
 	}
 	function parentNewLine(data){
 		console.info("call parentNewLine");

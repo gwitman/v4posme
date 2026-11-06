@@ -1,17 +1,12 @@
 <!-- ./ page heading -->
 <script>
 	var objListaCustomerCredit 			= {};
-	var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
+	var varUseMobile 					= '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+	var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';
 
 	$(document).ready(function() {
-		$('#txtDate').datepicker({
-			format: "yyyy-mm-dd"
-		});
-		$('#txtDate').val(moment().format("YYYY-MM-DD"));
-		$("#txtDate").datepicker("update");
-		$('.txt-numeric').mask('000,000.00', {
-			reverse: true
-		});
+		pv2InitDate("txtDate", false);
+		afxBindCommon();
 
 		//Regresar a la lista
 		$(document).on("click", "#btnBack", function() {
@@ -23,12 +18,15 @@
 		});
 
 		//Evento Agregar el Usuario
-		$(document).on("click", "#btnAcept", function() {
+		$(document).on("click", "#btnAcept", function(e) {
+			e.preventDefault();
 			$("#form-new-notecredit").attr("method", "POST");
 			$("#form-new-notecredit").attr("action", "<?php echo base_url(); ?>/app_cxp_notecredit/save/edit");
 
 			if (validateForm()) {
 				fnWaitOpen();
+				//El monto viaja como numero puro, sin comas
+				afxLimpiarMontos("#form-new-notecredit");
 				$("#form-new-notecredit").submit();
 			}
 
@@ -38,8 +36,7 @@
 		$(document).on("click", "#btnSearchCustomer", function() {
 
 			var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteProvider/SELECCIONAR_PROVEEDOR_PAGINATED/true/empty/false/not_redirect_when_empty/1/1/" + varParameterCantidadItemPoup + "/";
-			window.open(url_request, "MsgWindow", "width=900,height=450");
-			window.onCompleteProvider = onCompleteProvider;
+			pv2OpenSearch(url_request, "Buscar proveedor", "onCompleteProvider", onCompleteProvider, "width=900,height=450");
 		});
 
 		//Eliminar Cliente
@@ -53,7 +50,8 @@
 			fnClearCustomer();
 		});
 
-		$(document).on("click", "#btnDelete", function() {
+		$(document).on("click", "#btnDelete", function(e) {
+			e.preventDefault();
 			fnShowConfirm("Confirmar..", "Desea eliminar este Registro...", function() {
 				fnWaitOpen();
 				$.ajax({
@@ -84,7 +82,8 @@
 			});
 		});
 
-		$(document).on("click", "#btnPrinter", function() {
+		$(document).on("click", "#btnPrinter", function(e) {
+			e.preventDefault();
 			fnWaitOpen();
 			window.open("<?php echo base_url(); ?>" + "/" + "/app_cxp_notecredit/viewPrinterFormatoA4" + "/companyID/<?php echo $objTM->companyID; ?>/transactionID/<?php echo $objTM->transactionID; ?>/transactionMasterID/<?php echo $objTM->transactionMasterID; ?>", '_blank');
 			fnWaitClose();
@@ -119,8 +118,8 @@
 			result = false;
 		}
 
-		//Validar Monto
-		if ($("#txtAmount").val() == "0") {
+		//Validar Monto (pv2Num detecta 0 y 0.00)
+		if ($("#txtAmount").val() != "" && pv2Num($("#txtAmount").val()) == 0) {
 			fnShowNotification("El monto no puede ser 0", "error", timerNotification);
 			result = false;
 		}
@@ -139,12 +138,9 @@
 	}
 
 	function refreschChecked() {
-		$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();
-		//$('.txtDebit').mask('000,000.00', {reverse: true});
-		//$('.txtCredit').mask('000,000.00', {reverse: true});
-		$('.txt-numeric').mask('000,000.00', {
-			reverse: true
-		});
+		//uniform solo sobre casillas, nunca sobre combos
+		$("[type='checkbox'], [type='radio']").not('.toggle, .select2, .multiselect').uniform();
+		afxInitMontos(".pv2");
 	}
 
 	function fnClearCustomer() {

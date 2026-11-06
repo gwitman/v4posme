@@ -1,6 +1,10 @@
 <script>	 				
 	
+	var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+
 	$(document).ready(function(){
+		afxBindCommon();
+
 		//Regresar
 		$(document).on("click","#btnBack",function(){
 				fnWaitOpen();

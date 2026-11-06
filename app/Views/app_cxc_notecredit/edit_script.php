@@ -1,14 +1,10 @@
 				<!-- ./ page heading -->
 				<script>
+					var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+
 					$(document).ready(function() {
-						$('#txtDate').datepicker({
-							format: "yyyy-mm-dd"
-						});
-						$('#txtDate').val();
-						$("#txtDate").datepicker("update");
-						$('.txt-numeric').mask('000,000.00', {
-							reverse: true
-						});
+						pv2InitDate("txtDate", false);
+						afxBindCommon();
 
 						var objCustomerNoteCredit = <?php echo json_encode($objComponentNoteCredit); ?>;
 
@@ -18,12 +14,15 @@
 						});
 
 						//Evento Agregar el Usuario
-						$(document).on("click", "#btnAcept", function() {
+						$(document).on("click", "#btnAcept", function(e) {
+							e.preventDefault();
 							$("#form-new-notecredit").attr("method", "POST");
 							$("#form-new-notecredit").attr("action", "<?php echo base_url(); ?>/app_cxc_notecredit/save/edit");
 
 							if (validateForm()) {
 								fnWaitOpen();
+								//El monto viaja como numero puro, sin comas
+								afxLimpiarMontos("#form-new-notecredit");
 								$("#form-new-notecredit").submit();
 							}
 
@@ -32,8 +31,7 @@
 						//Buscar el cliente
 						$(document).on("click", "#btnSearchCustomer", function() {
 							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomer->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_ALL/true/empty/false/not_redirect_when_empty";
-							window.open(url_request, "MsgWindow", "width=900,height=450");
-							window.onCompleteCustomer = onCompleteCustomer;
+							pv2OpenSearch(url_request, "Buscar cliente", "onCompleteCustomer", onCompleteCustomer, "width=900,height=450");
 						});
 
 						//Eliminar cliente
@@ -42,7 +40,8 @@
 						});
 
 
-						$(document).on("click", "#btnDelete", function() {
+						$(document).on("click", "#btnDelete", function(e) {
+							e.preventDefault();
 							fnShowConfirm("Confirmar..", "Desea eliminar este Registro...", function() {
 								fnWaitOpen();
 								$.ajax({
@@ -73,7 +72,8 @@
 							});
 						});
 
-						$(document).on("click", "#btnPrinter", function() {
+						$(document).on("click", "#btnPrinter", function(e) {
+							e.preventDefault();
 							fnWaitOpen();
 							window.open("<?php echo base_url(); ?>" + "/" + "/app_cxc_notecredit/viewPrinterFormatoA4" + "/companyID/<?php echo $objTM->companyID; ?>/transactionID/<?php echo $objTM->transactionID; ?>/transactionMasterID/<?php echo $objTM->transactionMasterID; ?>", '_blank');
 							fnWaitClose();
@@ -96,8 +96,8 @@
 							result = false;
 						}
 
-						//Validar Monto
-						if ($("#txtAmount").val() == "0" || $("#txtAmount").val() == "") {
+						//Validar Monto (pv2Num detecta 0, 0.00 y vacio)
+						if (pv2Num($("#txtAmount").val()) == 0) {
 							fnShowNotification("El monto no puede ser 0", "error", timerNotification);
 							result = false;
 						}
@@ -111,12 +111,9 @@
 					}
 
 					function refreschChecked() {
-						$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();
-						//$('.txtDebit').mask('000,000.00', {reverse: true});
-						//$('.txtCredit').mask('000,000.00', {reverse: true});
-						$('.txt-numeric').mask('000,000.00', {
-							reverse: true
-						});
+						//uniform solo sobre casillas, nunca sobre combos
+						$("[type='checkbox'], [type='radio']").not('.toggle, .select2, .multiselect').uniform();
+						afxInitMontos(".pv2");
 					}
 
 					function fnClearCustomer() {

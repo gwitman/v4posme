@@ -1,4 +1,5 @@
 <script>
+    var varUseMobile            = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
     let catalogID         		= <?= $catalogID ?? 0 ?>;
     let listaValoresModificar   = JSON.parse('<?php echo json_encode($objCatalogItem); ?>');
     let transactionDocument     = "<?= $objTransactionMasterReference->transactionReferenceNumber?>";
@@ -12,10 +13,10 @@
 
         let tagContenedorValorAnterior = $("#contenedorDinamicoValorAnterior");
         let tagContenedorValorNuevo    = $("#contenedorDinamicoValorNuevo");                
-        $("#txtValorModificar").select2();
-        $('#txtTransactionID').select2();
-        $('#txtDate').datepicker({format: "yyyy-mm-dd"});        
-        $("#txtDate").datepicker("update");
+        afxInitSelect2("#txtValorModificar");
+        afxInitSelect2("#txtTransactionID");
+        pv2InitDate("txtDate", false);
+        afxBindCommon();
 
         let selectedValue       = $("#txtValorModificar").val();			
 		let selectTipoEndoso    = listaValoresModificar.filter(function(item) {
@@ -75,8 +76,7 @@
                         '}'
                     ) +
                     "/false/not_redirect_when_empty/1/1/25/";
-                window.open(url_request, "MsgWindow", "width=900,height=450");
-                window.onCompleteDocument = onCompleteDocument;
+                pv2OpenSearch(url_request, "Buscar documento", "onCompleteDocument", onCompleteDocument, "width=900,height=450");
             }
         });
 
@@ -189,8 +189,8 @@
 				
 				if (tipo === "datetime") 
 				{
-					tagContenedorValorAnterior.html('<input readonly type="datetime-local" name="txtValorAnterior" id="txtValorAnterior" class="form-control" value="' + valorAnterior + '">');
-					tagContenedorValorNuevo.html('<input type="datetime-local" name="txtValorNuevo" id="txtValorNuevo" class="form-control" value="' + valorNuevo + '" >');
+					tagContenedorValorAnterior.html('<input readonly type="datetime-local" name="txtValorAnterior" id="txtValorAnterior" class="form-control" autocomplete="off" value="' + valorAnterior + '">');
+					tagContenedorValorNuevo.html('<input type="datetime-local" name="txtValorNuevo" id="txtValorNuevo" class="form-control" autocomplete="off" value="' + valorNuevo + '" >');
 					fnWaitClose();
 				} 
 				else if (tipo === "combobox") 
@@ -198,8 +198,9 @@
 					tagContenedorValorAnterior.html('<select name="txtValorAnterior" id="txtValorAnterior" class="select2"><option value="">Cargando opciones...</option></select>');
 					tagContenedorValorNuevo.html('<select name="txtValorNuevo" id="txtValorNuevo" class="select2"><option value="">Cargando opciones...</option></select>');
 					$("#txtValorAnterior").prop("disabled", true);
-					
-					if (referencia2 === "tb_catalog") 
+					fnInitCombosValor();
+
+					if (referencia2 === "tb_catalog")
 					{
 						fnCargarOpcionesComboTbCatalog(referencia3,campo,valorAnterior,valorNuevo);
 					}
@@ -207,8 +208,8 @@
 				} 
 				else if (tipo === "input") 
 				{
-					tagContenedorValorAnterior.html('<input readonly type="text" id="txtValorAnterior"  name="txtValorAnterior" class="form-control" placeholder="Ingrese un valor" value="' + valorAnterior + '">');
-					tagContenedorValorNuevo.html('<input type="text" name="txtValorNuevo" id="txtValorNuevo" class="form-control" placeholder="Ingrese un valor" value="' + valorNuevo + '"  >');
+					tagContenedorValorAnterior.html('<input readonly type="text" id="txtValorAnterior"  name="txtValorAnterior" class="form-control" autocomplete="off" placeholder="Ingrese un valor" value="' + valorAnterior + '">');
+					tagContenedorValorNuevo.html('<input type="text" name="txtValorNuevo" id="txtValorNuevo" class="form-control" autocomplete="off" placeholder="Ingrese un valor" value="' + valorNuevo + '"  >');
 					fnWaitClose();
 				}
 				else if (tipo === "checkbox") 
@@ -279,8 +280,8 @@
 						$("#txtSelectedTextValorNuevo").val("");
 						if (tipo === "datetime") 
 						{
-							tagContenedorValorAnterior.html('<input readonly type="datetime-local" name="txtValorAnterior" id="txtValorAnterior" class="form-control" value="' + valorAnterior + '">');
-							tagContenedorValorNuevo.html('<input type="datetime-local" name="txtValorNuevo" id="txtValorNuevo" class="form-control">');
+							tagContenedorValorAnterior.html('<input readonly type="datetime-local" name="txtValorAnterior" id="txtValorAnterior" class="form-control" autocomplete="off" value="' + valorAnterior + '">');
+							tagContenedorValorNuevo.html('<input type="datetime-local" name="txtValorNuevo" id="txtValorNuevo" class="form-control" autocomplete="off">');
 							fnWaitClose();
 						} 
 						else if (tipo === "combobox") 
@@ -288,15 +289,16 @@
 							tagContenedorValorAnterior.html('<select name="txtValorAnterior" id="txtValorAnterior" class="select2"><option value="">Cargando opciones...</option></select>');
 							tagContenedorValorNuevo.html('<select name="txtValorNuevo" id="txtValorNuevo" class="select2"><option value="">Cargando opciones...</option></select>');
 							$("#txtValorAnterior").prop("disabled", true);
-							
+							fnInitCombosValor();
+
 							if (referencia2 === "tb_catalog") {
 								fnCargarOpcionesComboTbCatalog(referencia3,campo,valorAnterior,0);
 							}
 						} 
 						else if (tipo === "input") 
 						{
-							tagContenedorValorAnterior.html('<input readonly type="text" id="txtValorAnterior" name="txtValorAnterior" class="form-control" placeholder="Ingrese un valor" value="' + valorAnterior + '">');
-							tagContenedorValorNuevo.html('<input type="text" name="txtValorNuevo" id="txtValorNuevo" class="form-control" placeholder="Ingrese un valor">');
+							tagContenedorValorAnterior.html('<input readonly type="text" id="txtValorAnterior" name="txtValorAnterior" class="form-control" autocomplete="off" placeholder="Ingrese un valor" value="' + valorAnterior + '">');
+							tagContenedorValorNuevo.html('<input type="text" name="txtValorNuevo" id="txtValorNuevo" class="form-control" autocomplete="off" placeholder="Ingrese un valor">');
 							fnWaitClose();
 						}
                         else if (tipo === "checkbox") 
@@ -357,6 +359,7 @@
                 error: function () {
                     comboValorAnterior.html('<option value="">Error al cargar opciones</option>');
                     comboValorNuevo.html('<option value="">Error al cargar opciones</option>');
+                    fnInitCombosValor();
                     fnWaitClose();
                 }
             });
@@ -376,8 +379,13 @@
             $("#txtValorModificar").append(newOption).trigger('change');
         }
 
+        //Los combos de valor se generan por JS: cada recarga vuelve a pasar por select2 (PC) o queda nativo (telefono)
+        function fnInitCombosValor(){
+            afxInitSelect2("#contenedorDinamicoValorAnterior select, #contenedorDinamicoValorNuevo select");
+        }
+
         function fnFillComboBox(comboBox, data, valor){
-            comboBox.select2();
+            afxInitSelect2(comboBox);
             comboBox.empty();
             comboBox.trigger('change');
             $.each(data, function (index, item) {

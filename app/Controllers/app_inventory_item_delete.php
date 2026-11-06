@@ -41,7 +41,9 @@ class app_inventory_item_delete extends _BaseController {
 			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
 			
 			
-			//Vista por defecto 
+			$esMovil = $dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile();
+
+			//Vista por defecto
 			if($dataViewID == null){				
 				
 				$targetComponentID			= $this->session->get('company')->flavorID;
@@ -55,7 +57,7 @@ class app_inventory_item_delete extends _BaseController {
 					$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);				
 				}
 				
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewRender				= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 				
 				
 			}
@@ -63,7 +65,7 @@ class app_inventory_item_delete extends _BaseController {
 			else{									
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewRender				= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			} 
 			 
 			//Renderizar Resultado

@@ -1,7 +1,9 @@
 <script >
 	$(document).ready(function(){
-			$("#btnPopupCancelar").click(function(){window.close();});
-			$("#btnPopupAceptar").click(function(){ 
+			pv2MobileSelects(".pv2 select.select2");
+			$("#btnPopupCancelar").click(function(e){e.preventDefault(); window.close();});
+			$("#btnPopupAceptar").click(function(e){
+					e.preventDefault();
 					var data								= {};
 					data.txtBranchID						= $("#txtBranchID").val();
 					data.txtBranchDescription				= $("#txtBranchID option:selected").text();

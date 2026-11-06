@@ -33,6 +33,7 @@ class app_inventory_process extends _BaseController {
 			
 			
 			$objCompanyParameter 				= $this->core_web_parameter->getParameter("ACCOUNTING_PERIOD_WORKFLOWSTAGECLOSED",$dataSession["user"]->companyID);
+			$dataV["useMobile"]					= $dataSession["user"]->useMobile;
 			$dataV["objListAccountingPeriod"]	= $this->Component_Period_Model->get_rowByNotClosed($dataSession["user"]->companyID,$objCompanyParameter->value);
 			
 			

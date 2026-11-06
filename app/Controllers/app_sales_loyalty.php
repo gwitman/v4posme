@@ -34,6 +34,7 @@ class app_sales_loyalty extends _BaseController
 
 
 			$esMovil = $dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile();
+			$dataViewID = filter_var(helper_SegmentsByIndex($this->uri->getSegments(), 1, $dataViewID), FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE); // Entero o null: el valor llega a SQL en Company_Data_View_Model
 
 			//Vista por defecto PC
 			if ($dataViewID == null and  !$this->request->getUserAgent()->isMobile()) {
@@ -46,6 +47,17 @@ class app_sales_loyalty extends _BaseController
 			else if ($this->request->getUserAgent()->isMobile()) {
 				$parameter["{companyID}"]       = $this->session->get('user')->companyID;
 				$dataViewData                   = $this->core_web_view->getViewByName($this->session->get('user'), $objComponent->componentID, "LISTA DE TARJETAS DE FIDELIDAD", CALLERID_LIST, $resultPermission, $parameter);
+
+				//Respaldo: la vista por nombre podria no existir en esta instalacion
+				if (!$dataViewData) {
+					$targetComponentID          = $this->session->get('company')->flavorID;
+					$dataViewData               = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
+				}
+				if (!$dataViewData) {
+					$targetComponentID          = 0;
+					$dataViewData               = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
+				}
+
 				$dataViewRender                 = $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
 			}
 			//Vista Por Id
@@ -320,8 +332,8 @@ class app_sales_loyalty extends _BaseController
 			$objTM["reference2"]                    = /*inicio get post*/ $this->request->getPost("txtReference2");
 			$objTM["reference3"]                    = /*inicio get post*/ $this->request->getPost("txtReference3");
 			$objTM["statusID"]                      = /*inicio get post*/ $this->request->getPost("txtStatusID");
-			$objTM["amount"]                        = /*inicio get post*/ $this->request->getPost("txtAmount");
-			$objTM["tax1"]                        	= /*inicio get post*/ $this->request->getPost("txtTax1");
+			$objTM["amount"]                        = /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtAmount") ?? "");
+			$objTM["tax1"]                        	= /*inicio get post*/ is_null($this->request->getPost("txtTax1")) ? null : helper_StringToNumber($this->request->getPost("txtTax1"));
 			$objTM["numberPhone"]                  	= /*inicio get post*/ $this->request->getPost("txtNumberPhone");
 			$objTM["discount"]						= 0;
 			$objTM["subAmount"]						= 0;
@@ -342,8 +354,9 @@ class app_sales_loyalty extends _BaseController
 				$this->core_web_notification->set_message(false, SUCCESS);
 				$this->response->redirect(base_url() . "/" . 'app_sales_loyalty/edit/companyID/' . $companyID . "/transactionID/" . $objTM["transactionID"] . "/transactionMasterID/" . $transactionMasterID);
 			} else {
+				$errorTransaccion = $db->error()["message"];
 				$db->transRollback();
-				$this->core_web_notification->set_message(true, $this->$db->_error_message());
+				$this->core_web_notification->set_message(true, $errorTransaccion ?: "No se pudo guardar la transaccion");
 				$this->response->redirect(base_url() . "/" . 'app_sales_loyalty/add');
 			}
 		} catch (Exception $ex) {
@@ -397,7 +410,7 @@ class app_sales_loyalty extends _BaseController
 
 			$entityID                               = $this->request->getPost("txtBankID");
 			$currencyID                             = $this->request->getPost("txtCurrencyID");
-			$monto                                  = $this->request->getPost("txtAmount");
+			$monto                                  = helper_StringToNumber($this->request->getPost("txtAmount") ?? "");
 			$transactionID                          = $this->request->getPost("txtTransactionID");
 			$transactionMasterID                    = $this->request->getPost("txtTransactionMasterID");
 
@@ -422,7 +435,7 @@ class app_sales_loyalty extends _BaseController
 			$objTMNew["reference3"]                 = /*inicio get post*/ $this->request->getPost("txtReference3");
 			$objTMNew["statusID"]                   = /*inicio get post*/ $this->request->getPost("txtStatusID");
 			$objTMNew["amount"]                     = $monto;
-			$objTMNew["tax1"]                       = /*inicio get post*/ $this->request->getPost("txtTax1");
+			$objTMNew["tax1"]                       = /*inicio get post*/ is_null($this->request->getPost("txtTax1")) ? null : helper_StringToNumber($this->request->getPost("txtTax1"));
 			$objTMNew["numberPhone"]                = /*inicio get post*/ $this->request->getPost("txtNumberPhone");
 			$objTMNew["discount"]					= 0;
 			$objTMNew["subAmount"]					= 0;
@@ -449,8 +462,9 @@ class app_sales_loyalty extends _BaseController
 				$this->core_web_notification->set_message(false, SUCCESS);
 				$this->response->redirect(base_url() . "/" . 'app_sales_loyalty/edit/companyID/' . $companyID . "/transactionID/" . $transactionID . "/transactionMasterID/" . $transactionMasterID);
 			} else {
+				$errorTransaccion = $db->error()["message"];
 				$db->transRollback();
-				$this->core_web_notification->set_message(true, $this->$db->_error_message());
+				$this->core_web_notification->set_message(true, $errorTransaccion ?: "No se pudo guardar la transaccion");
 				$this->response->redirect(base_url() . "/" . 'app_sales_loyalty/add');
 			}
 		} catch (Exception $ex) {

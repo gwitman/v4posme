@@ -156,12 +156,14 @@ class app_cxc_process extends _BaseController {
 			
 			
 			
-			//Renderizar Resultado 
+			$dataView["useMobile"]			= $dataSession["user"]->useMobile;
+
+			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
-			$dataSession["head"]			= /*--inicio view*/ view('app_cxc_process/view_head');//--finview
-			$dataSession["body"]			= /*--inicio view*/ view('app_cxc_process/view_body');//--finview
-			$dataSession["script"]			= /*--inicio view*/ view('app_cxc_process/view_script');//--finview
+			$dataSession["head"]			= /*--inicio view*/ view('app_cxc_process/view_head',$dataView);//--finview
+			$dataSession["body"]			= /*--inicio view*/ view('app_cxc_process/view_body',$dataView);//--finview
+			$dataSession["script"]			= /*--inicio view*/ view('app_cxc_process/view_script',$dataView);//--finview
 			$dataSession["footer"]			= "";			
 			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r	
 		}

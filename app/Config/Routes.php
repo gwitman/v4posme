@@ -489,6 +489,9 @@ $routes->match(['get', 'post'], 'app_purchase_pedidos/viewPrinterFormatoA4', 'ap
 $routes->match(['get', 'post'], 'app_purchase_pedidos/viewPrinterFormatoA4/(:any)', 'app_purchase_pedidos::viewPrinterFormatoA4');
 $routes->match(['get', 'post'], 'app_purchase_pedidos/viewPrinterFormatoA4Stiker', 'app_purchase_pedidos::viewPrinterFormatoA4Stiker');
 $routes->match(['get', 'post'], 'app_purchase_pedidos/viewPrinterFormatoA4Stiker/(:any)', 'app_purchase_pedidos::viewPrinterFormatoA4Stiker');
+$routes->match(['get', 'post'], 'app_purchase_pedidos/viewPrinterFormatoA4Output/(:any)', 'app_purchase_pedidos::viewPrinterFormatoA4Output');
+$routes->match(['get', 'post'], 'app_purchase_pedidos/searchTransactionMaster', 'app_purchase_pedidos::searchTransactionMaster');
+$routes->match(['get', 'post'], 'app_purchase_pedidos/searchTransactionMaster/(:any)', 'app_purchase_pedidos::searchTransactionMaster');
 $routes->match(['get', 'post'], 'app_purchase_taller/index', 'app_purchase_taller::index');
 $routes->match(['get', 'post'], 'app_purchase_taller/index/(:any)', 'app_purchase_taller::index');
 $routes->match(['get', 'post'], 'app_purchase_taller/add', 'app_purchase_taller::add');
@@ -567,6 +570,8 @@ $routes->match(['get', 'post'], 'app_purchase_garantia/viewPrinterFormatoA4Stike
 $routes->match(['get', 'post'], 'app_purchase_garantia/viewPrinterFormatoA4Stiker/(:any)', 'app_purchase_garantia::viewPrinterFormatoA4Stiker');
 $routes->match(['get', 'post'], 'app_purchase_garantia/viewPrinterFormatoA4Output', 'app_purchase_garantia::viewPrinterFormatoA4Output');
 $routes->match(['get', 'post'], 'app_purchase_garantia/viewPrinterFormatoA4Output/(:any)', 'app_purchase_garantia::viewPrinterFormatoA4Output');
+$routes->match(['get', 'post'], 'app_purchase_garantia/searchTransactionMaster', 'app_purchase_garantia::searchTransactionMaster');
+$routes->match(['get', 'post'], 'app_purchase_garantia/searchTransactionMaster/(:any)', 'app_purchase_garantia::searchTransactionMaster');
 $routes->match(['get', 'post'], 'app_cxp_expenses/index', 'app_cxp_expenses::index');
 $routes->match(['get', 'post'], 'app_cxp_expenses/index/(:any)', 'app_cxp_expenses::index');
 $routes->match(['get', 'post'], 'app_cxp_expenses/add', 'app_cxp_expenses::add');
@@ -585,6 +590,9 @@ $routes->match(['get', 'post'], 'app_cxp_expenses/viewPrinterFormatoA4', 'app_cx
 $routes->match(['get', 'post'], 'app_cxp_expenses/viewPrinterFormatoA4/(:any)', 'app_cxp_expenses::viewPrinterFormatoA4');
 $routes->match(['get', 'post'], 'app_cxp_expenses/searchTransactionMaster', 'app_cxp_expenses::searchTransactionMaster');
 $routes->match(['get', 'post'], 'app_cxp_expenses/searchTransactionMaster/(:any)', 'app_cxp_expenses::searchTransactionMaster');
+$routes->match(['get', 'post'], 'app_cxp_expenses/viewRegisterFormatoPaginaTicket/(:any)', 'app_cxp_expenses::viewRegisterFormatoPaginaTicket');
+$routes->match(['get', 'post'], 'app_cxp_expenses/viewRegisterFormatoPaginaTicketTermica/(:any)', 'app_cxp_expenses::viewRegisterFormatoPaginaTicketTermica');
+$routes->match(['get', 'post'], 'app_cxp_expenses/viewPrinterDirect80mmShareRustikGrill/(:any)', 'app_cxp_expenses::viewPrinterDirect80mmShareRustikGrill');
 $routes->match(['get', 'post'], 'app_cxp_report/index', 'app_cxp_report::index');
 $routes->match(['get', 'post'], 'app_cxp_report/index/(:any)', 'app_cxp_report::index');
 $routes->match(['get', 'post'], 'app_cxp_report/expenses', 'app_cxp_report::expenses');
@@ -852,11 +860,13 @@ $routes->match(['get', 'post'], 'app_cxc_simulation/save', 'app_cxc_simulation::
 $routes->match(['get', 'post'], 'app_cxc_simulation/save/(:any)', 'app_cxc_simulation::save');
 $routes->match(['get', 'post'], 'app_cxc_simulation/index', 'app_cxc_simulation::index');
 $routes->match(['get', 'post'], 'app_cxc_document/index', 'app_cxc_document::index');
+$routes->match(['get', 'post'], 'app_cxc_document/index/(:any)', 'app_cxc_document::index');
 $routes->match(['get', 'post'], 'app_cxc_document/edit/', 'app_cxc_document::edit');
 $routes->match(['get', 'post'], 'app_cxc_document/edit/(:any)', 'app_cxc_document::edit');
 $routes->match(['get', 'post'], 'app_cxc_document/save/(:any)', 'app_cxc_document::save');
 $routes->match(['get', 'post'], 'app_cxc_document/save', 'app_cxc_document::save');
 $routes->match(['get', 'post'], 'app_cxc_notecredit/index', 'app_cxc_notecredit::index');
+$routes->match(['get', 'post'], 'app_cxc_notecredit/index/(:any)', 'app_cxc_notecredit::index');
 $routes->match(['get', 'post'], 'app_cxc_notecredit/save', 'app_cxc_notecredit::save');
 $routes->match(['get', 'post'], 'app_cxc_notecredit/save/(:any)', 'app_cxc_notecredit::save');
 $routes->match(['get', 'post'], 'app_cxc_notecredit/add', 'app_cxc_notecredit::add');
@@ -866,6 +876,7 @@ $routes->match(['get', 'post'], 'app_cxc_notecredit/delete', 'app_cxc_notecredit
 $routes->match(['get', 'post'], 'app_cxc_notecredit/searchTransactionMaster', 'app_cxc_notecredit::searchTransactionMaster');
 $routes->match(['get', 'post'], 'app_cxc_notecredit/viewPrinterFormatoA4/(:any)', 'app_cxc_notecredit::viewPrinterFormatoA4');
 $routes->match(['get', 'post'], 'app_cxc_notedebit/index', 'app_cxc_notedebit::index');
+$routes->match(['get', 'post'], 'app_cxc_notedebit/index/(:any)', 'app_cxc_notedebit::index');
 $routes->match(['get', 'post'], 'app_cxc_notedebit/save', 'app_cxc_notedebit::save');
 $routes->match(['get', 'post'], 'app_cxc_notedebit/save/(:any)', 'app_cxc_notedebit::save');
 $routes->match(['get', 'post'], 'app_cxc_notedebit/add', 'app_cxc_notedebit::add');
@@ -1134,6 +1145,7 @@ $routes->match(['get', 'post'], 'app_inventory_warehouse/add', 'app_inventory_wa
 $routes->match(['get', 'post'], 'app_inventory_warehouse/index', 'app_inventory_warehouse::index');
 $routes->match(['get', 'post'], 'app_inventory_warehouse/index/(:any)', 'app_inventory_warehouse::index');
 $routes->match(['get', 'post'], 'app_inventory_expireddate/index', 'app_inventory_expireddate::index');
+$routes->match(['get', 'post'], 'app_inventory_expireddate/index/(:any)', 'app_inventory_expireddate::index');
 $routes->match(['get', 'post'], 'app_inventory_expireddate/download', 'app_inventory_expireddate::download');
 $routes->match(['get', 'post'], 'app_inventory_expireddate/process', 'app_inventory_expireddate::process');
 $routes->match(['get', 'post'], 'app_branch/edit', 'app_branch::edit');
@@ -1217,6 +1229,7 @@ $routes->match(['get', 'post'], 'app_inventory_transferoutput/index/(:any)', 'ap
 $routes->match(['get', 'post'], 'app_inventory_transferoutput/add_masinformacion', 'app_inventory_transferoutput::add_masinformacion');
 $routes->match(['get', 'post'], 'app_inventory_transferoutput/add_masinformacion/(:any)', 'app_inventory_transferoutput::add_masinformacion');
 $routes->match(['get', 'post'], 'app_inventory_production/index', 'app_inventory_production::index');
+$routes->match(['get', 'post'], 'app_inventory_production/index/(:any)', 'app_inventory_production::index');
 $routes->match(['get', 'post'], 'app_inventory_production/save', 'app_inventory_production::save');
 $routes->match(['get', 'post'], 'app_inventory_production/save/(:any)', 'app_inventory_production::save');
 $routes->match(['get', 'post'], 'app_inventory_production/add', 'app_inventory_production::add');
@@ -1931,6 +1944,7 @@ $routes->match(['get', 'post'], 'app_tools_endorsements/getTransactionMasterOld/
 $routes->match(['get', 'post'], 'app_tools_endorsements/getTransactionMaster/(:any)', 'app_tools_endorsements::getTransactionMaster/$1');
 $routes->match(['get', 'post'], 'app_tools_endorsements/searchTransactionMaster', 'app_tools_endorsements::searchTransactionMaster');
 $routes->match(['get', 'post'], 'app_tools_endorsements/index', 'app_tools_endorsements::index');
+$routes->match(['get', 'post'], 'app_tools_endorsements/index/(:any)', 'app_tools_endorsements::index');
 $routes->match(['get', 'post'], 'app_tools_endorsements/add', 'app_tools_endorsements::add');
 $routes->match(['get', 'post'], 'app_tools_endorsements/edit', 'app_tools_endorsements::edit');
 $routes->match(['get', 'post'], 'app_tools_endorsements/edit/(:any)', 'app_tools_endorsements::edit');

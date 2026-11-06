@@ -1,16 +1,12 @@
 				<!-- ./ page heading -->
 				<script>
-				    $(document).ready(function() {
-						var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
+				    var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
 
-				        $('#txtDate').datepicker({
-				            format: "yyyy-mm-dd"
-				        });
-				        $('#txtDate').val();
-				        $("#txtDate").datepicker("update");
-				        $('.txt-numeric').mask('000,000.00', {
-				            reverse: true
-				        });
+				    $(document).ready(function() {
+						var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';
+
+				        pv2InitDate("txtDate", true);
+				        afxBindCommon();
 
 				        //Regresar a la lista
 				        $(document).on("click", "#btnBack", function() {
@@ -18,12 +14,15 @@
 				        });
 
 				        //Evento Agregar el Usuario
-				        $(document).on("click", "#btnAcept", function() {
+				        $(document).on("click", "#btnAcept", function(e) {
+				            e.preventDefault();
 				            $("#form-new-withholding").attr("method", "POST");
 				            $("#form-new-withholding").attr("action", "<?php echo base_url(); ?>/app_cxp_withholdings/save/new");
 
 				            if (validateForm()) {
 				                fnWaitOpen();
+				                //Monto de factura y de retencion viajan como numero puro, sin comas
+				                afxLimpiarMontos("#form-new-withholding");
 				                $("#form-new-withholding").submit();
 				            }
 				        });
@@ -31,8 +30,7 @@
 				        //Buscar el cliente
 				        $(document).on("click", "#btnSearchProvider", function() {
 							var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteProvider/SELECCIONAR_PROVEEDOR_PAGINATED/true/empty/false/not_redirect_when_empty/1/1/" + varParameterCantidadItemPoup + "/";
-				            window.open(url_request, "MsgWindow", "width=900,height=450");
-				            window.onCompleteProvider = onCompleteProvider;
+				            pv2OpenSearch(url_request, "Buscar proveedor", "onCompleteProvider", onCompleteProvider, "width=900,height=450");
 				        });
 
 				        //Eliminar cliente
@@ -45,15 +43,16 @@
 							onPercentageAndAmountChange();
 						});
 
-						
+
 				    });
 
 					function onPercentageAndAmountChange()
 					{
-						var amount 			= parseFloat($("#txtInvoiceAmount").val()) || 0;
-						var percentage 		= $("#txtTax option:selected").data("ratio");
+						//Se calcula con numeros puros: el monto de factura puede traer comas
+						var amount 			= pv2Num($("#txtInvoiceAmount").val());
+						var percentage 		= pv2Num($("#txtTax option:selected").data("ratio"));
 						var result 			= fnCalculatePercentage(amount, percentage);
-						$("#txtWithholdingAmount").val(result.toFixed(2));							
+						$("#txtWithholdingAmount").val(afxFmtMonto(result.toFixed(2)));
 					};
 
 				    function validateForm() {
@@ -77,8 +76,8 @@
 				            result = false;
 				        }
 
-						//Validar Monto de Factura
-						if ($("#txtInvoiceAmount").val() == "0" || $("#txtInvoiceAmount").val() == "") {
+						//Validar Monto de Factura (pv2Num detecta 0, 0.00 y vacio)
+						if (pv2Num($("#txtInvoiceAmount").val()) == 0) {
 				            fnShowNotification("Establecer Monto de la Factura", "error", timerNotification);
 				            result = false;
 				        }
@@ -87,10 +86,9 @@
 				    }
 
 				    function refreschChecked() {
-				        $("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();
-				        $('.txt-numeric').mask('000,000.00', {
-				            reverse: true
-				        });
+				        //uniform solo sobre casillas, nunca sobre combos
+				        $("[type='checkbox'], [type='radio']").not('.toggle, .select2, .multiselect').uniform();
+				        afxInitMontos(".pv2");
 				    }
 
 				    function fnClearProvider() {

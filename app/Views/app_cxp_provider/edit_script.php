@@ -4,6 +4,9 @@
 					var objTablePhone = {};
 					var objTableLine 	= {};
 					var site_url 	  = "<?php echo base_url(); ?>";
+					var varUseMobile  = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+					//En telefono pv2OpenSearch reemplaza window.parent*: se guarda la funcion original para no anidar envolturas
+					var prvCallbacks  = { email : parentNewEmail, phone : parentNewPhone, line : parentNewLine, editLine : parentEditLine };
 					
 					$(document).ready(function(){	
 						
@@ -46,6 +49,8 @@
 								
 								if(validateForm()){
 									fnWaitOpen();
+									//El servidor recibe numero puro, sin comas
+									afxLimpiarMontos("#form-new-cxp-provider");
 									$( "#form-new-cxp-provider" ).submit();
 								}
 								
@@ -174,6 +179,7 @@
 						});
 						//Grid lineas de credito
 						objTableLine = $("#tb_detail_credit_line").dataTable({
+							"fnCreatedRow"	: prvLineCreatedRow,
 							"bPaginate"		: false,
 							"bFilter"		: false,
 							"bSort"			: false,
@@ -184,7 +190,7 @@
 										$listrow 	= [];
 										foreach($objCustomerCreditLine as $i)
 										{
-										$listrow[] 	= "[0,".$i->customerCreditLineID.",".$i->creditLineID.",".$i->currencyID.",".$i->statusID.",".$i->interestYear.",".$i->interestPay.",".$i->totalPay.",".$i->totalDefeated.",'".$i->dateOpen."',".$i->periodPay.",'".$i->dateLastPay."',".$i->term.",'".$i->note."','".$i->line."','".$i->accountNumber."','".number_format($i->limitCredit,2)."','".number_format($i->balance,2)."','".$i->statusName."','".$i->currencyName."',".$i->typeAmortization.",'".$i->typeAmortizationLabel."','".$i->periodPayLabel."','".number_format($i->interestYear,2)."','".number_format($i->term,2)."','".$i->dayExcluded."' ]";
+										$listrow[] 	= "[0,".$i->customerCreditLineID.",".$i->creditLineID.",".$i->currencyID.",".$i->statusID.",".$i->interestYear.",".$i->interestPay.",".$i->totalPay.",".$i->totalDefeated.",'".$i->dateOpen."',".$i->periodPay.",'".$i->dateLastPay."',".$i->term.",'".$i->note."','".$i->line."','".$i->accountNumber."','".sprintf("%01.4f",$i->limitCredit)."','".sprintf("%01.4f",$i->balance)."','".$i->statusName."','".$i->currencyName."',".$i->typeAmortization.",'".$i->typeAmortizationLabel."','".$i->periodPayLabel."','".number_format($i->interestYear,2)."','".number_format($i->term,2)."','".$i->dayExcluded."' ]";
 										}
 										echo implode(",",$listrow);
 									}
@@ -331,13 +337,13 @@
 										{
 											"aTargets"		: [ 16 ],//Limite
 											"mRender"		: function ( data, type, full ) {
-												return '<input type="hidden" value="'+data+'" name="txtLineLimit[]" />'+data;
+												return prvMontoCell(data,"txtLineLimit[]");
 											}
 										},
 										{
 											"aTargets"		: [ 17 ],//Balance
 											"mRender"		: function ( data, type, full ) {
-												return '<input type="hidden" value="'+data+'" name="txtLineBalance[]" />'+data;
+												return prvMontoCell(data,"txtLineBalance[]");
 											}
 										},
 										{
@@ -391,14 +397,14 @@
 											"bVisible"		: true,
 											"bSearchable"	: false,
 											"mRender"		: function ( data, type, full ) {
-												return '<input type="hidden" value="'+data+'" name="txtInterestYearLael[]" />'+data;
+												return prvMontoCell(data,"txtInterestYearLael[]");
 											}
 										},{
 											"aTargets"		: [ 24 ],//Term
 											"bVisible"		: true,
 											"bSearchable"	: false,
 											"mRender"		: function ( data, type, full ) {
-												return '<input type="hidden" value="'+data+'" name="txtTermLabel[]" />'+data;
+												return prvMontoCell(data,"txtTermLabel[]");
 											}
 										},{
 											
@@ -483,15 +489,15 @@
 							if(customerCreditLineID == 0)
 							return;
 							
-							window.open(site_url+"/app_cxp_provider/edit_credit_line/customerCreditLineID/"+customerCreditLineID,"MsgWindow","width=650,height=500");
-							window.parentEditLine = parentEditLine;
+							//Ventana emergente en PC; dentro de la misma pantalla en telefono
+							pv2OpenSearch(site_url+"/app_cxp_provider/edit_credit_line/customerCreditLineID/"+customerCreditLineID,"Editar línea de crédito","parentEditLine",prvCallbacks.editLine,"width=650,height=500");
 							
 						});			
 						//Nuevo Line
 						$(document).on("click","#btnNewLine",function(){
 							console.info("call click_btnNewLine");
-							window.open(site_url+"/app_cxp_provider/add_credit_line","MsgWindow","width=700,height=600");
-							window.parentNewLine = parentNewLine;
+							//Ventana emergente en PC; dentro de la misma pantalla en telefono
+							pv2OpenSearch(site_url+"/app_cxp_provider/add_credit_line","Agregar línea de crédito","parentNewLine",prvCallbacks.line,"width=700,height=600");
 						});						
 						//Eliminar Linea
 						$(document).on("click","#btnDeleteLine",function(){
@@ -524,6 +530,8 @@
 					
 
 						refreschChecked();
+						prvBindCommon();
+
 						$("#txtCountryID").change(function(){
 							fnWaitOpen();
 							$.ajax({									
@@ -539,9 +547,9 @@
 									
 									$("#txtStateID").html("");
 									$("#txtStateID").append("<option value=''>N/D</option>");
-									$("#txtStateID").select2();
+									afxInitSelect2("#txtStateID");
 									$("#txtCityID").html("");
-									$("#txtCityID").select2();
+									afxInitSelect2("#txtCityID");
 									
 									
 									if(data.catalogItems == null)
@@ -571,7 +579,7 @@
 									fnWaitClose();
 									$("#txtCityID").html("");
 									$("#txtCityID").append("<option value=''>N/D</option>");
-									$("#txtCityID").select2();
+									afxInitSelect2("#txtCityID");
 									
 									if(data.catalogItems == null)
 									return;
@@ -589,8 +597,8 @@
 						//Nuevo Email
 						$(document).on("click","#btnNewEmail",function(){
 							console.info("call click_btnNewEmail");
-							window.open(site_url+"app_cxp_provider/add_email","MsgWindow","width=650,height=500");
-							window.parentNewEmail = parentNewEmail;
+							//Ventana emergente en PC; dentro de la misma pantalla en telefono
+							pv2OpenSearch(site_url+"/app_cxp_provider/add_email","Agregar correo","parentNewEmail",prvCallbacks.email,"width=650,height=500");
 						});
 						//Eliminar Email
 						$(document).on("click","#btnDeleteEmail",function(){
@@ -620,8 +628,8 @@
 						//Nuevo Telefono
 						$(document).on("click","#btnNewPhones",function(){
 							console.info("call click_btnNewPhones");
-							window.open(site_url+"/app_cxp_provider/add_phone","MsgWindow","width=650,height=500");
-							window.parentNewPhone = parentNewPhone;
+							//Ventana emergente en PC; dentro de la misma pantalla en telefono
+							pv2OpenSearch(site_url+"/app_cxp_provider/add_phone","Agregar teléfono","parentNewPhone",prvCallbacks.phone,"width=650,height=500");
 						});
 						//Eliminar Telefono
 						$(document).on("click","#btnDeletePhones",function(){
@@ -694,7 +702,8 @@
 						
 					}
 					function refreschChecked(){
-						$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();						
+						//Solo casillas: los combos nativos del telefono no deben envolverse con uniform
+							$("[type='checkbox']").not(".toggle, .multiselect").uniform();						
 					}
 					function parentNewEmail(data){
 						console.info("call parentNewEmail");

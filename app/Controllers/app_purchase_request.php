@@ -111,6 +111,7 @@ class app_purchase_request extends _BaseController {
 			$dataView["objListBranch"]				= $this->Branch_Model->getByCompany($companyID);
 			
 			$dataView["company"]				= $dataSession["company"];
+			$dataView["useMobile"]				= $dataSession["user"]->useMobile;
 			$dataView["objListCurrency"]		= $objListCurrency;
 			$dataView["companyID"]				= $dataSession["user"]->companyID;
 			$dataView["userID"]					= $dataSession["user"]->userID;
@@ -349,7 +350,7 @@ class app_purchase_request extends _BaseController {
 			$objTMNew["statusID"] 						= /*inicio get post*/ $this->request->getPost("txtStatusID");
 			$objTMNew["isTemplate"] 					= 0;
 			$objTMNew["printerQuantity"]				= /*inicio get post*/ $this->request->getPost("txtTypeID");
-			$objTMNew["amount"] 						= /*inicio get post*/ $this->request->getPost("txtDetailAmount");	
+			$objTMNew["amount"] 						= helper_StringToNumber(/*inicio get post*/ $this->request->getPost('txtDetailAmount'));
 			$objTMNew["entityID"]						= /*inicio get post*/ $this->request->getPost("txtCustomerID");
 			$objTMNew["entityIDSecondary"]				= /*inicio get post*/ $this->request->getPost("txtEmployerID");
 			$objTMNew["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");
@@ -902,6 +903,7 @@ class app_purchase_request extends _BaseController {
 			$dataView["objComponentEmployer"]	= $objComponentEmployer;
 			$dataView["objListCurrency"]		= $objListCurrency;
 			$dataView["company"]				= $dataSession["company"];
+			$dataView["useMobile"]				= $dataSession["user"]->useMobile;
 			$dataView["companyID"]				= $dataSession["user"]->companyID;
 			$dataView["userID"]					= $dataSession["user"]->userID;
 			$dataView["userName"]				= $dataSession["user"]->nickname;
@@ -1004,8 +1006,10 @@ class app_purchase_request extends _BaseController {
 			throw new \Exception("00409 EL COMPONENTE 'tb_transaction_master_taller_zone_customer' NO EXISTE...");
 			
 			
+			$esMovil = $dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile();
+
 			//Vista por defecto PC
-			if($dataViewID == null and   $dataSession["user"]->useMobile != 1 ){				
+			if($dataViewID == null and   $dataSession["user"]->useMobile != 1 ){
 				$targetComponentID			= $this->session->get('company')->flavorID;	
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$parameter["{roleID}"]		= $this->session->get('role')->roleID;
@@ -1020,11 +1024,11 @@ class app_purchase_request extends _BaseController {
 					$parameter["{roleID}"]		= $this->session->get('role')->roleID;	
 					$parameter["{userID}"]		= $this->session->get('user')->userID;			
 					$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);				
-					$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+					$dataViewRender				= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 				}
 				else 
 				{
-					$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+					$dataViewRender				= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 				}
 				
 			}		
@@ -1033,8 +1037,12 @@ class app_purchase_request extends _BaseController {
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$parameter["{roleID}"]		= $this->session->get('role')->roleID;
 				$parameter["{userID}"]		= $this->session->get('user')->userID;
-				$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$objComponent->componentID,"DEFAULT_MOBILE_LISTA_INGRESO_A_CAJA",CALLERID_LIST,$resultPermission,$parameter); 			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewData				= $this->core_web_view->getViewByName($this->session->get('user'),$objComponent->componentID,"DEFAULT_MOBILE_LISTA_INGRESO_A_CAJA",CALLERID_LIST,$resultPermission,$parameter);
+				if(!$dataViewData)
+				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$this->session->get('company')->flavorID,$resultPermission,$parameter);
+				if(!$dataViewData)
+				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,0,$resultPermission,$parameter);
+				$dataViewRender				= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			} 
 			//Vista Por Id
 			else 
@@ -1043,7 +1051,7 @@ class app_purchase_request extends _BaseController {
 				$parameter["{roleID}"]		= $this->session->get('role')->roleID;
 				$parameter["{userID}"]		= $this->session->get('user')->userID;
 				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewRender				= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			}
 			
 			//Renderizar Resultado

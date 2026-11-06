@@ -1,13 +1,15 @@
 <!-- ./ page heading -->
-<script>			
-	$(document).ready(function(){					
-		
-		
+<script>
+	var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+
+	$(document).ready(function(){
+
+
 		/*Generar salidas de inventario por formulas*/
 		$(document).on("click","#btnAceptCreateOutputInventoryByFormulate",function(){
 			fnShowConfirm("Confirmar..","Desea Realizar la salidas de inventarios de las facturas con productos formulados.",function(){
 					fnWaitOpen();
-					$.ajax({									
+					$.ajax({
 						cache       : false,
 						dataType    : 'json',
 						type        : 'POST',
@@ -24,22 +26,22 @@
 								if(data.result.code == 0)
 									fnShowNotification("success","success");
 								else
-									fnShowNotification("problemas en el proceso de cierre","error");	
+									fnShowNotification("problemas en el proceso de cierre","error");
 							}
 						},
-						error:function(xhr,data){	
+						error:function(xhr,data){
 							fnWaitClose();
-							console.info("complete delete error");									
+							console.info("complete delete error");
 							fnShowNotification("Error 505","error");
 						}
 					});
 			});
 		});
 
-		
+
 		$(document).on("change","#txtClosedPeriod",function(){
 				fnWaitOpen();
-				$.ajax({									
+				$.ajax({
 					cache       : false,
 					dataType    : 'json',
 					type        : 'POST',
@@ -56,26 +58,30 @@
 							$.each(data.cycles,function(i,obj){
 								$("#txtClosedCicle").append("<option value='"+obj.componentCycleID+"'>"+obj.startOnFormat+"</option>")
 							});
+							//select2 (PC) debe refrescar la seleccion al regenerar las opciones
+							$("#txtClosedCicle").trigger("change");
 						}
 					},
-					error:function(xhr,data){	
+					error:function(xhr,data){
 						fnWaitClose();
-						console.info("complete delete error");									
+						console.info("complete delete error");
 						fnShowNotification("Error 505","error");
 					}
 				});
 		});
-		
-		
+
+
 		$(document).on("click","#btnAceptUploadFile",function(){
-			
+
 			var URL = "<?php echo base_url(); ?>/app_inventory_api/uploadDataEncuentra24";
 			window.open(URL, '_blank');
-			
+
 		});
-		
-		
+
+		//Telefono: combos nativos (sin select2). En PC no cambia nada
+		PosmeInv.mobileSelects();
+
 	});
-	
-	
+
+
 </script>

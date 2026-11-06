@@ -1820,7 +1820,7 @@ class app_cxc_customer extends _BaseController {
 			}	
 			//Obtener el componente Para mostrar la lista de AccountType
 			$cache 				= Services::cache();
-			$dataViewID 		= helper_SegmentsByIndex($this->uri->getSegments(), 1, $dataViewID);
+			$dataViewID 		= filter_var(helper_SegmentsByIndex($this->uri->getSegments(), 1, $dataViewID), FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE); // Entero o null: el valor llega a SQL en Company_Data_View_Model
 			$objComponent		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
 			if(!$objComponent)
 			throw new \Exception("00409 EL COMPONENTE 'tb_customer' NO EXISTE...");
@@ -1828,10 +1828,12 @@ class app_cxc_customer extends _BaseController {
 			
 			$dataViewIDCache			= $cache->get('app_cxc_customer_dataviewid_index');
 			if($dataViewIDCache && $dataViewID == null )
-				$dataViewID = $dataViewIDCache;
+				$dataViewID = filter_var($dataViewIDCache, FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE); // La cache pudo guardar un valor sin validar antes de esta correccion
 			
 			
-			//Vista por defecto 
+			$esMovil = $dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile();
+
+			//Vista por defecto
 			$targetComponentID			= $this->session->get('company')->flavorID;
 			if($dataViewID == null){
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;				
@@ -1846,7 +1848,7 @@ class app_cxc_customer extends _BaseController {
 				
 				
 				$cache->save('app_cxc_customer_dataviewid_index', $dataViewData["view_config"]->dataViewID, TIME_CACHE_APP);
-				if(  $this->request->getUserAgent()->isMobile()  )
+				if(  $esMovil  )
 				{					
 					//$dataViewRender			= $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow");
 					$dataViewRender				= $this->core_web_view->renderGreedWithHtmlInFildMobile($dataViewData,'ListView',"fnTableSelectedRow");
@@ -1863,8 +1865,8 @@ class app_cxc_customer extends _BaseController {
 			else{				
 				$cache->save('app_cxc_customer_dataviewid_index', $dataViewID, TIME_CACHE_APP);
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
-				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter,$targetComponentID); 			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter,$targetComponentID);
+				$dataViewRender				= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			} 
 			 
 			//Renderizar Resultado

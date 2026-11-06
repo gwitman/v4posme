@@ -1,32 +1,36 @@
 				<!-- ./ page heading -->
-				<script>	
+				<script>
+					var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
 					var objTableDetailTransaction = {};
-					$(document).ready(function(){					
-						//Inicializar Controles		
-						$('#txtTransactionOn').datepicker({format:"yyyy-mm-dd"});
-						$("#txtTransactionOn").datepicker("update");
-						
+					$(document).ready(function(){
+						//Inicializar Controles
+						pv2InitDate("txtTransactionOn", false);
+
 						objTableDetailTransaction = $("#tb_transaction_master_detail").dataTable({
 							"bPaginate"		: false,
 							"bFilter"		: false,
 							"bSort"			: false,
 							"bInfo"			: false,
 							"bAutoWidth"	: false,
-							"aaData": [		
-								<?php 
+							"oLanguage"		: { "sEmptyTable" : "Este documento no tiene productos. Toca Agregar para empezar." },
+							"fnCreatedRow"	: fnDetailRowCreated,
+							"fnDrawCallback": fnDetailDraw,
+							"aaData": [
+								<?php
 									if($objTMD){
-										$listrow = [];									
+										$listrow = [];
 										foreach($objTMD as $i)
 										{
-										$listrow[] = "[0,".$i->componentItemID.",".$i->transactionMasterDetailID.",'".$i->itemNumber."','".$i->itemName."','".$i->unitMeasureName."',fnFormatNumber(".$i->quantity.",2)]";
+										$listrow[] = "[0,".$i->componentItemID.",".$i->transactionMasterDetailID.",'".$i->itemNumber."','".$i->itemName."','".$i->unitMeasureName."',".sprintf("%01.4f", $i->quantity)."]";
 										}
 										echo implode(",",$listrow);
 									}
 								?>
 							],
-							"aoColumnDefs": [ 
+							"aoColumnDefs": [
 										{
 											"aTargets"	: [ 0 ],//checked
+											"sClass" 	: "td-checkbox",
 											"mRender"	: function ( data, type, full ) {
 												if (data == false)
 												return '<input type="checkbox"  class="classCheckedDetail"  value="0" ></span>';
@@ -55,46 +59,50 @@
 										{
 											"aTargets"	: [ 6 ],//cantidad
 											"mRender"	: function ( data, type, full ) {
-												return '<input type="text" class="col-lg-12 txtDetailQuantity txt-numeric " value="'+data+'" name="txtDetailQuantity[]" />';
+												return '<input type="text" inputmode="decimal" autocomplete="off" class="form-control pv2-num afx-monto txtDetailQuantity txt-numeric " value="'+data+'" name="txtDetailQuantity[]" />';
 											}
 										}
-							]							
+							]
 						});
 						refreschChecked();
-						
-						
+						afxBindCommon();
+
+						//La cantidad no admite negativos (la mascara anterior tampoco los permitia)
+						$(document).on("input",".pv2 input.txt-numeric",function(){
+							if(this.value.indexOf("-") !== -1) this.value = this.value.replace(/-/g,"");
+						});
+
 						//Buscar el Proveedor
 						$(document).on("click","#btnSearchProvider",function(){
 							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentProvider->componentID; ?>/onCompleteProvider/SELECCIONAR_PROVEEDOR/true/empty/false/not_redirect_when_empty";
-							window.open(url_request,"MsgWindow","width=900,height=450");
-							window.onCompleteProvider = onCompleteProvider; 
-						});		
+							pv2OpenSearch(url_request, "Buscar proveedor", "onCompleteProvider", onCompleteProvider, "width=900,height=450");
+						});
 						//Eliminar Proveedor
 						$(document).on("click","#btnClearProvider",function(){
 									$("#txtProviderID").val("");
 									$("#txtProviderDescription").val("");
 						});
-						
+
 						//Ir a Lista
 						$(document).on("click","#btnBack",function(){
 								fnWaitOpen();
 						});
 						//Printer
 						$(document).on("click","#btnPrinter",function(){
-							fnWaitOpen();							
+							fnWaitOpen();
 							window.location = "<?php echo base_url(); ?>/app_purchase_purchaseorden/viewRegister/companyID/<?php echo $objTM->companyID;?>/transactionID/<?php echo $objTM->transactionID;?>/transactionMasterID/<?php echo $objTM->transactionMasterID;?>";
 						});
-						
+
 						//Archivos
 						$(document).on("click","#btnClickArchivo",function(){
 							window.open("<?php echo base_url()."core_elfinder/index/componentID/".$objComponentOrdenCompra->componentID."/componentItemID/".$objTM->transactionMasterID; ?>","blanck");
 						});
-						
+
 						//Eliminar el Documento
 						$(document).on("click","#btnDelete",function(){
 							fnShowConfirm("Confirmar..","Desea eliminar este Registro...",function(){
 								fnWaitOpen();
-								$.ajax({									
+								$.ajax({
 									cache       : false,
 									dataType    : 'json',
 									type        : 'POST',
@@ -110,8 +118,8 @@
 											window.location = "<?php echo base_url(); ?>/app_purchase_purchaseorden/index";
 										}
 									},
-									error:function(xhr,data){	
-										console.info("complete delete error");									
+									error:function(xhr,data){
+										console.info("complete delete error");
 										fnWaitClose();
 										fnShowNotification("Error 505","error");
 									}
@@ -122,32 +130,33 @@
 						$(document).on("click","#btnAcept",function(){
 								$( "#form-new-transaction" ).attr("method","POST");
 								$( "#form-new-transaction" ).attr("action","<?php echo base_url(); ?>/app_purchase_purchaseorden/save/edit");
-								
+
 								if(validateForm()){
 									fnWaitOpen();
+									//Las cantidades se envian como numero puro: 1,000.00 -> 1000
+									afxLimpiarMontos("#form-new-transaction");
 									$( "#form-new-transaction" ).submit();
 								}
-								
-						});	
-						
+
+						});
+
 						//Agregar Item al Detalle
-						$(document).on("click","#btnNewDetailTransaction",function(){							
+						$(document).on("click","#btnNewDetailTransaction",function(){
 							var timerNotification 	= 15000;
-							
+
 							//Bodega Source
 							if($("#txtProviderID").val()==""){
 								fnShowNotification("Seleccione un proveedor","error",timerNotification);
 								return;
 							}
-						
+
 							var url_request 		= "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentItem->componentID; ?>/onCompleteItem/SELECCIONAR_ITEM_TO_PROVIDER/true/"+encodeURI('{\"providerID\"|\"'+$("#txtProviderID").val()+'\"}') + "/false/not_redirect_when_empty";
-							window.open(url_request,"MsgWindow","width=900,height=450");
-							window.onCompleteItem 	= onCompleteItem; 
-							
+							pv2OpenSearch(url_request, "Buscar producto", "onCompleteItem", onCompleteItem, "width=900,height=450");
+
 						});
 						//Eliminar Item del Detalle
 						$(document).on("click","#btnDeleteDetailTransaction",function(){
-							var listRow = objTableDetailTransaction.fnGetData();							
+							var listRow = objTableDetailTransaction.fnGetData();
 							var length 	= listRow.length;
 							var i 		= 0;
 							var j 		= 0;
@@ -160,37 +169,47 @@
 								j++;
 							}
 						});
-						//Cambio en la cantidades
+						//Cambio en la cantidades: se guarda en la fila real sin redibujar,
+						//para no perder el foco al pasar a otra cantidad (teclado del telefono)
 						$(document).on("blur",".txtDetailQuantity",function(){
-							var objrow_ = $(this).parent().parent()[0];
+							var objrow_ = $(this).closest("tr")[0];
 							var objind_ = objTableDetailTransaction.fnGetPosition(objrow_);
-							var objdat_ = objTableDetailTransaction.fnGetData(objind_);								
-							objTableDetailTransaction.fnUpdate( $(this).val(), objind_, 6 );
+							objTableDetailTransaction.fnUpdate( afxFmtMonto($(this).val()), objind_, 6, false, false );
 							refreschChecked();
 						})
-						//Seleccionar Checke 
+						//Seleccionar Checke
 						$(document).on("click",".classCheckedDetail",function(){
-							var objrow_ = $(this).parent().parent().parent().parent()[0];
+							var objrow_ = $(this).closest("tr")[0];
 							var objind_ = objTableDetailTransaction.fnGetPosition(objrow_);
-							var objdat_ = objTableDetailTransaction.fnGetData(objind_);								
+							var objdat_ = objTableDetailTransaction.fnGetData(objind_);
 							objTableDetailTransaction.fnUpdate( !objdat_[0], objind_, 0 );
 							refreschChecked();
 						});
 					});
-					
+
 					//Funciones
 					////////////////////////////
 					////////////////////////////
+					//Las filas de DataTables nacen sin data-label: se agregan para mostrarlas como tarjeta en el telefono
+					function fnDetailRowCreated(nRow){
+						var labels = ["Quitar","","","Codigo","Nombre","U/M","Cantidad"];
+						$(nRow).addClass("row_razon").children("td").each(function(index){
+							if(labels[index]) $(this).attr("data-label",labels[index]);
+						});
+					}
+					function fnDetailDraw(oSettings){
+						$("#pv2DetailCount").text(oSettings.aoData.length);
+					}
 					function validateForm(){
 						var result 				= true;
 						var timerNotification 	= 15000;
-						
+
 						//Bodega Proveedor
 						if($("#txtProviderID").val()==""){
 							fnShowNotification("Seleccione un proveedor","error",timerNotification);
 							result = false;
 						}
-						
+
 						//Validar Estado
 						if($("#txtStatusID").val() == ""){
 							fnShowNotification("Establecer Estado","error",timerNotification);
@@ -219,28 +238,28 @@
 						objRow.itemName 				= objResponse[0][3];
 						objRow.itemUM 					= objResponse[0][4];
 						objRow.quantity 				= 0;
-						
-						
-						//Berificar que el Item ya esta agregado 
+
+
+						//Berificar que el Item ya esta agregado
 						if(jLinq.from(objTableDetailTransaction.fnGetData()).where(function(obj){ return obj[1] == objRow.itemID;}).select().length > 0 ){
 							fnShowNotification("El Item ya esta agregado","error");
 							return;
 						}
-						
+
 						objTableDetailTransaction.fnAddData([objRow.checked,objRow.itemID,objRow.transactionMasterDetail,objRow.itemNumber,objRow.itemName,objRow.itemUM,objRow.quantity]);
 						refreschChecked();
-						
+
 					}
 					//Refresh
 					function refreschChecked(){
-						$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();
-						$('.txtDetailQuantity').mask('000,000.00', {reverse: true});
+						$("[type='checkbox'], [type='radio'], [type='file']").not('.toggle, .select2, .multiselect').uniform();
+						afxInitMontos("#tb_transaction_master_detail");
 					}
 					function onCompleteProvider(objResponse){
 						console.info("CALL onCompleteCustomer");
-					
+
 						$("#txtProviderID").val(objResponse[0][1]);
 						$("#txtProviderDescription").val(objResponse[0][2] + " / " + objResponse[0][3]);
-					
-					}		
+
+					}
 				</script>

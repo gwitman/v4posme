@@ -1,4 +1,5 @@
 <script>
+    var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
     let timerNotification = 15000;
     var count = 1;
     var $txtCalificacionCuantitativa = $('#txtCalificacionCuantitativa');
@@ -7,21 +8,40 @@
     var urlPrinter = "app_cxc_notes/viewPrinterFormatoA4";
     $(document).ready(function () {
 
-        $('#txtPriorityID').select2({
+        afxInitSelect2('#txtPriorityID', {
             allowClear: true,
             placeholder: "Selecciona un valor"
         });
-        $('#txtGradoID').select2({
+        afxInitSelect2('#txtGradoID', {
             allowClear: true,
             placeholder: "Selecciona un valor"
         });
-        $('#txtAnio').select2({
+        afxInitSelect2('#txtAnio', {
             allowClear: true,
             placeholder: "Selecciona un valor"
         });
-        $('#txtMes').select2({
+        afxInitSelect2('#txtMes', {
             allowClear: true,
             placeholder: "Selecciona un valor"
+        });
+
+        afxBindCommon();
+
+        //La barra del telefono guarda con el boton real de esta pantalla
+        $(document).on("click", "#btnGuardarMobile", function (e) {
+            e.preventDefault();
+            $("#btnGuardar").trigger("click");
+        });
+
+        // En teclados de telefono keypress no siempre se dispara: el filtro se repite al escribir o pegar.
+        // La coma se toma como punto decimal porque algunos teclados numericos en español solo ofrecen coma
+        $txtCalificacionCuantitativa.on('input', function () {
+            var texto = this.value.replace(/,/g, '.').replace(/[^0-9.]/g, '');
+            var punto = texto.indexOf('.');
+            if (punto !== -1) {
+                texto = texto.substring(0, punto + 1) + texto.substring(punto + 1).replace(/\./g, '');
+            }
+            if (texto !== this.value) this.value = texto;
         });
 
         $txtCalificacionCuantitativa.keypress(function (event) {
@@ -91,7 +111,7 @@
                 }
 
                 $('#txtDia').prop('disabled', false); // Habilitar el select de días
-                $('#txtDia').select2({
+                afxInitSelect2('#txtDia', {
                     allowClear: true,
                     placeholder: "Selecciona un valor"
                 });
@@ -126,20 +146,17 @@
 
         $("#btnSearchMateria").click(function () {
             var url_request = "<?= base_url(); ?>/core_view/showviewbyname/<?= $objComponentMateria->componentID; ?>/onCompleteMateria/SELECCIONAR_MATERIAS/true/empty/false/not_redirect_when_empty";
-            window.open(url_request, "MsgWindow", "width=900,height=450");
-            window.onCompleteMateria = onCompleteMateria;
+            pv2OpenSearch(url_request, "Buscar materia", "onCompleteMateria", onCompleteMateria, "width=900,height=450");
         });
 
         $("#btnSearchColaborador").click(function () {
             var url_request = "<?= base_url(); ?>/core_view/showviewbyname/<?= $objComponentEmployer->componentID; ?>/onCompleteCustomer/SELECCIONAR_EMPLOYEE/true/empty/false/not_redirect_when_empty";
-            window.open(url_request, "MsgWindow", "width=900,height=450");
-            window.onCompleteCustomer = onCompleteColaborador;
+            pv2OpenSearch(url_request, "Buscar colaborador", "onCompleteCustomer", onCompleteColaborador, "width=900,height=450");
         });
 
         $("#btnSearchAlumno").click(function () {
             var url_request = "<?= base_url(); ?>/core_view/showviewbyname/<?= $objComponentCustomer->componentID; ?>/onCompleteAlumno/SELECCIONAR_CLIENTES_ALL/true/empty/false/not_redirect_when_empty";
-            window.open(url_request, "MsgWindow", "width=900,height=450");
-            window.onCompleteAlumno = onCompleteAlumno;
+            pv2OpenSearch(url_request, "Buscar alumno", "onCompleteAlumno", onCompleteAlumno, "width=900,height=450");
         });
 
         $('#btnMostrar').click(function () {
@@ -243,6 +260,8 @@
         $('#txtPriorityID').on('change', function() {
             var selectedColor = $(this).find('option:selected').data('color');
             $('#s2id_txtPriorityID .select2-choice').css('color', selectedColor);
+            //En telefono no existe select2: el color se aplica al combo nativo
+            if (pv2IsMobile()) $(this).css('color', selectedColor || '');
         });
 
         $('#btnImprimir').click(function () {
@@ -353,6 +372,7 @@
                 }else{
                     if (response.datos.length <= 0){
                         $('#data_table tbody').empty();
+                        $('#notesEmpty').show();
                         fnShowNotification("No ha datos disponibles con los valores indicados", "success", timerNotification);
                     }else{
                         fnProcesarDatos(response.datos);
@@ -369,6 +389,7 @@
     }
 
     function fnProcesarDatos(datos) {
+        $('#notesEmpty').hide();
         var primerValor = datos[0];
         if (typeof primerValor !== 'undefined') {
             $('#txtShowNombreAlumno').text(primerValor.codigoAlumno + " / " + primerValor.alumno);
@@ -384,12 +405,12 @@
         $.each(datos, function(index, item) {
             var transactionOn   = new Date(item.transactionOn);
             let mes             = transactionOn.toLocaleString('default', { month: 'long' }).toUpperCase();
-            let html_code       = "<tr id='row" + item.transactionMasterID + "'>";
-            html_code           += "<td>" + item.colaborador + "</td>";
-            html_code           += "<td>" + item.materia + "</td>";
-            html_code           += "<td>" + mes + "</td>";
-            html_code           += "<td ><p class='"+ item.color + "' >" + item.calificacionCualitativa + "</p></td>";
-            html_code           += "<td ><p class='"+ item.color + "' >" + fnFormatNumber(item.calificacionCuantitativa, 2) + "</p></td>";
+            let html_code       = "<tr class='row_razon' id='row" + item.transactionMasterID + "'>";
+            html_code           += "<td data-label='Colaborador'>" + item.colaborador + "</td>";
+            html_code           += "<td data-label='Materia'>" + item.materia + "</td>";
+            html_code           += "<td data-label='Mes'>" + mes + "</td>";
+            html_code           += "<td data-label='Cualitativo'><p class='"+ item.color + "' >" + item.calificacionCualitativa + "</p></td>";
+            html_code           += "<td data-label='Cuantitativo'><p class='"+ item.color + "' >" + fnFormatNumber(item.calificacionCuantitativa, 2) + "</p></td>";
             html_code           += "</tr>";
             $('#data_table').append(html_code);
         });

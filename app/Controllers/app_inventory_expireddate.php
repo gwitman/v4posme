@@ -45,6 +45,7 @@ class app_inventory_expireddate extends _BaseController
 				}
 			}
 
+			$dataView["useMobile"]              = $dataSession["user"]->useMobile;
 			$dataView["objListWarehouse"]       = $this->Userwarehouse_Model->getRowByUserID($companyID, $userID);
 			$dataView["objComponent"]			= $objComponent;
 

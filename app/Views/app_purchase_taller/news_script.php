@@ -1,257 +1,210 @@
 <!-- ./ page heading -->
 <script>
-$(document).ready(function(){		
-	var varParameterCantidadItemPoup		= '<?php echo $objParameterCantidadItemPoup; ?>';  
-				 
-	$('#txtDateOnly').datepicker({format:"yyyy-mm-dd"});
-	$('#txtDateOnly').val(moment().format("YYYY-MM-DD"));	
-	$("#txtDateOnly").datepicker("update");
-	$('#txtDateTime').val(moment().format("HH:mm"));
-	$('#txtNextVisitDate').datepicker({format:"yyyy-mm-dd"});
-	$("#txtNextVisitDate").datepicker("update");
-	$('.txt-numeric').mask('000,000.00', {reverse: true});
+var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
 
-	//Combinar fecha + hora del documento en el campo oculto txtDate
-	function fnUpdateDate(){
-		var fecha = $('#txtDateOnly').val().trim();
-		var hora  = $('#txtDateTime').val().trim();
-		if(fecha){
-			$('#txtDate').val(hora ? (fecha + " " + hora + ":00") : (fecha + " 00:00:00"));
-		}else{
-			$('#txtDate').val("");
-		}
-	}
-	$(document).on("change","#txtDateOnly, #txtDateTime", fnUpdateDate);
-	$('#txtDateOnly').on("changeDate", fnUpdateDate);
-	fnUpdateDate();
+<?php
+    $commentOptions = [];
+    if(isset($objListComments) && $objListComments){
+        foreach($objListComments as $ws){
+            $commentOptions[] = ["id" => $ws->catalogItemID, "name" => $ws->name];
+        }
+    }
+?>
+var talCommentOptions = <?php echo json_encode($commentOptions, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT); ?>;
 
-	//Combinar fecha + hora de la siguiente visita en el campo oculto txtNextVisit
-	function fnUpdateNextVisit(){
-		var fecha = $('#txtNextVisitDate').val().trim();
-		var hora  = $('#txtNextVisitTime').val().trim();
-		if(fecha){
-			$('#txtNextVisit').val(hora ? (fecha + " " + hora + ":00") : (fecha + " 00:00:00"));
-		}else{
-			$('#txtNextVisit').val("");
-		}
-	}
-	$(document).on("change","#txtNextVisitDate, #txtNextVisitTime", fnUpdateNextVisit);
-	$('#txtNextVisitDate').on("changeDate", fnUpdateNextVisit);
-		
-	
-	
-	
-	$(document).on("change","#txtCurrencyID",function(){
-		updatePantalla();
-		updateAmount();
-	});
-	
-	
-		//Regresar a la lista
-	$(document).on("click","#btnBack",function(){
-			fnWaitOpen();
-	});
-	
-	//Evento Agregar el Usuario
-	$(document).on("click","#btnAcept",function(){
-			$( "#form-new-invoice" ).attr("method","POST");
-			$( "#form-new-invoice" ).attr("action","<?php echo base_url(); ?>/app_purchase_taller/save/new");
-			
-			if(validateForm()){
-				fnWaitOpen();
-				$( "#form-new-invoice" ).submit();
-			}
-			
-	});
-	
-	//Buscar el Cliente
-	$(document).on("click","#btnSearchCustomer",function(){
-		
-		
-		//Redireccion pantalla
-		var url_redirect		= "__app_cxc_customer__add__callback__onCompleteCustomer__comando__pantalla_abierta_desde_taller";			
-		url_redirect 			= encodeURIComponent(url_redirect);
-		
-		
-		var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_BILLING_PAGINATED/true/empty/false/"+url_redirect+"/1/1/"+varParameterCantidadItemPoup+"/";
-		window.open(url_request,"MsgWindow","width=900,height=450");
-		window.onCompleteCustomer = onCompleteCustomer; 
-	});	
+$(document).ready(function(){
+    var varParameterCantidadItemPoup = '<?php echo $objParameterCantidadItemPoup; ?>';
 
-	//Eliminar Cliente
-	$(document).on("click","#btnClearCustomer",function(){
-		$("#txtCustomerID").val("");
-		$("#txtCustomerDescription").val("");
-	});						
-	
-	
-	//Buscar Colaborador
-	$(document).on("click","#btnSearchEmployer",function(){
-		var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteEmployee/SELECCIONAR_EMPLOYEE_PAGINATED/true/empty/true/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
-		window.open(url_request,"MsgWindow","width=900,height=450");
-		window.onCompleteEmployee = onCompleteEmployee; 
-	});
-	//Eliminar Colaborador
-	$(document).on("click","#btnClearEmployer",function(){
-		$("#txtEmployerID").val("");
-		$("#txtEmployerDescription").val("");
-	});
-	
-	//Buscar Factura
-	$(document).on("click","#btnSearchNote",function(){
-		var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteBilling/SELECCIONAR_FACTURA_PAGINATED/true/empty/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
-		window.open(url_request,"MsgWindow","width=900,height=450");
-		window.onCompleteBilling = onCompleteBilling; 
-	});
-	//Eliminar Factura
-	$(document).on("click","#btnClearNote",function(){
-		$("#txtNote").val("");
-		$("#txtNoteDescription").val("");
-	});
+    pv2InitDate("txtDateOnly", true);
+    $('#txtDateTime').val(moment().format("HH:mm"));
+    //La siguiente visita es opcional: vacia significa que no hay visita programada
+    talInitDateOpcional("txtNextVisitDate");
+    talBindCommon();
 
-	//Buscar Activo Fijo
-	$(document).on("click","#btnSearchFixedAsset",function(){
-		var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentFixedAsset->componentID; ?>/onCompleteFixedAsset/SELECCIONAR_FIXEDASSENT/true/empty/false/not_redirect_when_empty";
-		window.open(url_request,"MsgWindow","width=900,height=450");
-		window.onCompleteFixedAsset = onCompleteFixedAsset;
-	});
-	//Eliminar Activo Fijo
-	$(document).on("click","#btnClearFixedAsset",function(){
-		$("#txtFixedAssetID").val("");
-		$("#txtFixedAssetDescription").val("");
-	});
-	
-	$('#errorLabel').hide();
+    //Combinar fecha + hora del documento en el campo oculto txtDate
+    function fnUpdateDate(){
+        var fecha = $('#txtDateOnly').val().trim();
+        var hora  = $('#txtDateTime').val().trim();
+        if(fecha){
+            $('#txtDate').val(hora ? (fecha + " " + hora + ":00") : (fecha + " 00:00:00"));
+        }else{
+            $('#txtDate').val("");
+        }
+    }
+    $(document).on("change","#txtDateOnly, #txtDateTime", fnUpdateDate);
+    $('#txtDateOnly').on("changeDate", fnUpdateDate);
+    fnUpdateDate();
 
-	$(document).on("click","#btnAddComments",function(){
-		fnAgregarFila();
-	});
-	
-	<?php 
-	echo $objReadyPostScript;
-	?>
-	
+    //Combinar fecha + hora de la siguiente visita en el campo oculto txtNextVisit
+    function fnUpdateNextVisit(){
+        var fecha = $('#txtNextVisitDate').val().trim();
+        var hora  = $('#txtNextVisitTime').val().trim();
+        if(fecha){
+            $('#txtNextVisit').val(hora ? (fecha + " " + hora + ":00") : (fecha + " 00:00:00"));
+        }else{
+            $('#txtNextVisit').val("");
+        }
+    }
+    $(document).on("change","#txtNextVisitDate, #txtNextVisitTime", fnUpdateNextVisit);
+    $('#txtNextVisitDate').on("changeDate", fnUpdateNextVisit);
+
+    $(document).on("change","#txtCurrencyID",function(){
+        updatePantalla();
+        updateAmount();
+    });
+
+    //Regresar a la lista
+    $(document).on("click","#btnBack",function(){
+        fnWaitOpen();
+    });
+
+    //Evento Agregar el Usuario
+    $(document).on("click","#btnAcept",function(e){
+        e.preventDefault();
+        $( "#form-new-invoice" ).attr("method","POST");
+        $( "#form-new-invoice" ).attr("action","<?php echo base_url(); ?>/app_purchase_taller/save/new");
+
+        if(validateForm()){
+            fnWaitOpen();
+            $( "#form-new-invoice" ).submit();
+        }
+    });
+
+    //Buscar el Cliente
+    $(document).on("click","#btnSearchCustomer",function(){
+        //Redireccion pantalla
+        var url_redirect = "__app_cxc_customer__add__callback__onCompleteCustomer__comando__pantalla_abierta_desde_taller";
+        url_redirect     = encodeURIComponent(url_redirect);
+
+        var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_BILLING_PAGINATED/true/empty/false/"+url_redirect+"/1/1/"+varParameterCantidadItemPoup+"/";
+        pv2OpenSearch(url_request,"Buscar cliente","onCompleteCustomer",onCompleteCustomer,"width=900,height=450");
+    });
+
+    //Eliminar Cliente
+    $(document).on("click","#btnClearCustomer",function(){
+        $("#txtCustomerID").val("");
+        $("#txtCustomerDescription").val("");
+    });
+
+    //Buscar Colaborador
+    $(document).on("click","#btnSearchEmployer",function(){
+        var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteEmployee/SELECCIONAR_EMPLOYEE_PAGINATED/true/empty/true/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
+        pv2OpenSearch(url_request,"Buscar colaborador","onCompleteEmployee",onCompleteEmployee,"width=900,height=450");
+    });
+    //Eliminar Colaborador
+    $(document).on("click","#btnClearEmployer",function(){
+        $("#txtEmployerID").val("");
+        $("#txtEmployerDescription").val("");
+    });
+
+    //Buscar Factura
+    $(document).on("click","#btnSearchNote",function(){
+        var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?= $objComponentItem->componentID; ?>/onCompleteBilling/SELECCIONAR_FACTURA_PAGINATED/true/empty/false/not_redirect_when_empty/1/1/"+varParameterCantidadItemPoup+"/";
+        pv2OpenSearch(url_request,"Buscar factura","onCompleteBilling",onCompleteBilling,"width=900,height=450");
+    });
+    //Eliminar Factura
+    $(document).on("click","#btnClearNote",function(){
+        $("#txtNote").val("");
+        $("#txtNoteDescription").val("");
+    });
+
+    //Buscar Activo Fijo
+    $(document).on("click","#btnSearchFixedAsset",function(){
+        var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentFixedAsset->componentID; ?>/onCompleteFixedAsset/SELECCIONAR_FIXEDASSENT/true/empty/false/not_redirect_when_empty";
+        pv2OpenSearch(url_request,"Buscar activo fijo","onCompleteFixedAsset",onCompleteFixedAsset,"width=900,height=450");
+    });
+    //Eliminar Activo Fijo
+    $(document).on("click","#btnClearFixedAsset",function(){
+        $("#txtFixedAssetID").val("");
+        $("#txtFixedAssetDescription").val("");
+    });
+
+    $('#errorLabel').hide();
+
+    $(document).on("click","#btnAddComments",function(e){
+        e.preventDefault();
+        fnAgregarFila();
+    });
+
+    <?php
+    echo $objReadyPostScript;
+    ?>
+
 });
 
 function onCompleteBilling(objResponse)
-{							
-		
-	$("#txtNote").val(objResponse[0][2]);
-	$("#txtNoteDescription").val(objResponse[0][2]);
-		
+{
+    $("#txtNote").val(objResponse[0][2]);
+    $("#txtNoteDescription").val(objResponse[0][2]);
 }
 
 function onCompleteEmployee(objResponse)
-{							
-		
-	$("#txtEmployerID").val(objResponse[0][2]);
-	$("#txtEmployerDescription").val(objResponse[0][3] + " / " + objResponse[0][4]);
-		
+{
+    $("#txtEmployerID").val(objResponse[0][2]);
+    $("#txtEmployerDescription").val(objResponse[0][3] + " / " + objResponse[0][4]);
 }
-	
 
 function onCompleteCustomer(objResponse)
 {
-	if(objResponse != undefined)
-	{
-		var entityID = objResponse[0][1];
-		$("#txtCustomerID").val(objResponse[0][1]);
-		$("#txtCustomerDescription").val(objResponse[0][2] + " " + objResponse[0][3] + " / " + objResponse[0][4]);								
-	}
-	
+    if(objResponse != undefined)
+    {
+        var entityID = objResponse[0][1];
+        $("#txtCustomerID").val(objResponse[0][1]);
+        $("#txtCustomerDescription").val(objResponse[0][2] + " " + objResponse[0][3] + " / " + objResponse[0][4]);
+    }
 }
 
 function onCompleteFixedAsset(objResponse)
 {
-	if(objResponse != undefined)
-	{
-		$("#txtFixedAssetID").val(objResponse[0][0]);
-		$("#txtFixedAssetDescription").val(objResponse[0][1] + " " + objResponse[0][2]);
-	}
+    if(objResponse != undefined)
+    {
+        $("#txtFixedAssetID").val(objResponse[0][0]);
+        $("#txtFixedAssetDescription").val(objResponse[0][1] + " " + objResponse[0][2]);
+    }
 }
 
 function validateForm(){
-	var result 				= true;
-	var timerNotification 	= 15000;
-	
-	//Validar Fecha
-	if($("#txtDateOnly").val() == ""){
-		fnShowNotification("Establecer Fecha al Documento","error",timerNotification);
-		result = false;
-	}
-	
-	
-	if($("#txtCustomerID").val() == ""){
-		fnShowNotification("Seleccionar cliente","error",timerNotification);
-		result = false;
-	}
-	
-	if($("#txtEmployerID").val() == ""){
-		fnShowNotification("Seleccionar tecnico","error",timerNotification);
-		result = false;
-	}
-	
-	
-	<?php echo getBehavio($company->type,"app_purchase_taller","scriptValidateForm","") ?>
-	return result;
+    var result            = true;
+    var timerNotification = 15000;
+
+    //Validar Fecha
+    if($("#txtDateOnly").val() == ""){
+        fnShowNotification("Establecer Fecha al Documento","error",timerNotification);
+        result = false;
+    }
+
+    if($("#txtCustomerID").val() == ""){
+        fnShowNotification("Seleccionar cliente","error",timerNotification);
+        result = false;
+    }
+
+    if($("#txtEmployerID").val() == ""){
+        fnShowNotification("Seleccionar tecnico","error",timerNotification);
+        result = false;
+    }
+
+    //Los scripts por cliente comparan txtDetailAmount contra '0' como texto
+    talMontoAntesDeValidar();
+    <?php echo getBehavio($company->type,"app_purchase_taller","scriptValidateForm","") ?>
+    talMontoDespuesDeValidar();
+
+    return result;
 }
 
 function refreschChecked(){
-	$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();
-	//$('.txtDebit').mask('000,000.00', {reverse: true});
-	//$('.txtCredit').mask('000,000.00', {reverse: true});
-	$('.txt-numeric').mask('000,000.00', {reverse: true});
+    $("[type='checkbox'], [type='radio']").not('.toggle, .select2, .multiselect').uniform();
+    pv2Mask($('.txt-numeric'));
 }
 
 function fnEliminarFila(boton) {
-	$(boton).closest('tr').remove();
+    $(boton).closest('tr').remove();
 }
 
 function fnAgregarFila() {
-	
-	let texto = $('#txtComentarioTaller').val();
-
-	// Si el campo de texto está vacío, mostrar un mensaje de error
-	if (texto === "") {
-		$('#errorLabel').show();
-		return; 
-	} else {
-		$('#errorLabel').hide();
-	}
-	let combo1 = $('#txtCommentsID').val();
-	let selected = '';
-	let nuevaFila = ""+
-		"<tr> "+
-			"<td>"+
-				"<input class='form-control' type='text' name='txtComentarioTallerArray[]' value='"+texto+"'> "+
-			"</td>"+
-			"<td>"+
-				"<select name='txtCommentsIDArray[]' id='comboCommentsId'>"+
-				<?php
-					if($objListComments){
-						foreach($objListComments as $ws){
-				?>
-							"<option value='<?=$ws->catalogItemID?>' " + ((combo1 == <?= $ws->catalogItemID?>) ? 'selected' : '') + "><?=$ws->name?></option>"+
-				<?php
-						}
-					}
-				?>
-			"</td>"+
-			"<td>"+
-				"<button type='button' class='btn btn-flat btn-danger' onclick='fnEliminarFila(this)'>"+
-					"<i class='fas fa-trash'></i>"+
-				"</button>"+
-			"</td>"+
-		"</tr>";
-
-	// Agregar la nueva fila después de la primera fila de entrada
-	$('#filaEntrada').after(nuevaFila);
-
-	$('#txtComentarioTaller').val('');
-	$('#txtSelectComments').val(null).trigger('change');
-
-	// Inicializar Select2 en los nuevos select creados
-	$('#comboCommentsId').select2();
+    talAgregarFila({
+        comboValue     : $('#txtCommentsID').val(),
+        conDetalleID   : false,
+        commentOptions : talCommentOptions
+    });
 }
-				
 </script>

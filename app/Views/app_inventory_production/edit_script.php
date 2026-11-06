@@ -1,5 +1,7 @@
 				<!-- ./ page heading -->
 				<script>
+					var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+
 					$(document).ready(function() {
 
 						var isInputTableOnEditionMode 		= false;
@@ -10,33 +12,11 @@
 						var $mySidebarItemOutput 			= $("#mySidebarItemOutput");
 						var $bodyInputTable 				= $("#body_tb_transaction_master_detail_item_input");
 						var $bodyOutputTable 				= $("#body_tb_transaction_master_detail_item_output");
-						var numberDecimal					= 2;
 						var varParameterCantidadItemPoup	= '<?php echo $objParameterCantidadItemPoup; ?>';  
 
-						$('#txtDate').datepicker({
-							format: "yyyy-mm-dd"
-						});
-						$('#txtDate').val();
-						$("#txtDate").datepicker("update");
-						// $('.txt-numeric').mask('000,000.00', {reverse: true}).css('text-align', 'left');
-
-						$('.txt-numeric').css('text-align', 'left');
-
-						$('.txt-numeric').each(function() {
-							let rawValue 		= $(this).val().replace(/,/g, ''); 
-							if (!isNaN(rawValue) && rawValue !== '') {
-								let formattedValue = fnFormatNumber(rawValue, numberDecimal);
-								$(this).val(formattedValue);
-							}
-						});				
-
-						$('.txt-numeric').on('input', function() {
-							let rawValue = $(this).val().replace(/,/g, ''); 
-							if (!isNaN(rawValue) && rawValue !== '') {
-								let formattedValue = fnFormatNumber(rawValue,numberDecimal);
-								$(this).val(formattedValue);
-							}
-						});
+						pv2InitDate("txtDate", false);
+						afxBindCommon();
+						prodBindCommon();
 
 						//Regresar a la lista
 						$(document).on("click", "#btnBack", fnWaitOpen)
@@ -48,6 +28,8 @@
 
 							if (validateForm()) {
 								fnWaitOpen();
+								//El valor enviado no debe llevar comas
+								afxLimpiarMontos("#form-new-production-order");
 								$("#form-new-production-order").submit();
 							}
 
@@ -97,15 +79,13 @@
 						//Buscar colaborador solicitadodr
 						$(document).on("click", "#btnSearchRequestEmployee", function() {
 							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentEmployee->componentID; ?>/onCompleteRequestEmployee/SELECCIONAR_EMPLOYEE/true/empty/false/not_redirect_when_empty";
-							window.open(url_request, "MsgWindow", "width=900,height=450");
-							window.onCompleteRequestEmployee = onCompleteRequestEmployee;
+							pv2OpenSearch(url_request, "Buscar colaborador", "onCompleteRequestEmployee", onCompleteRequestEmployee, "width=900,height=450");
 						});
 
 						//Buscar colaborador enviador
 						$(document).on("click", "#btnSearchSenderEmployee", function() {
 							var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentEmployee->componentID; ?>/onCompleteSenderEmployee/SELECCIONAR_EMPLOYEE/true/empty/false/not_redirect_when_empty";
-							window.open(url_request, "MsgWindow", "width=900,height=450");
-							window.onCompleteSenderEmployee = onCompleteSenderEmployee;
+							pv2OpenSearch(url_request, "Buscar colaborador", "onCompleteSenderEmployee", onCompleteSenderEmployee, "width=900,height=450");
 						});
 
 						//Limpiar colabodor solicitador
@@ -121,15 +101,15 @@
 						//Abrir barra lateral para insertar un producto insumo
 						$(document).on("click", "#btnNewDetailTransactionItemInput", function() {
 							$("#btnSaveItemInput").focus();
-							$mySidebarItemInput.css("width", "500px");
-							$mySidebarItemOutput.css("width", "0");
+							$mySidebarItemInput.addClass("prod-sidebar-open");
+							$mySidebarItemOutput.removeClass("prod-sidebar-open");
 						});
 
 						//Abrir barra lateral para insertar un producto resultado
 						$(document).on("click", "#btnNewDetailTransactionItemOutput", function() {
 							$("#btnSaveSidebarItemOutput").focus();
-							$mySidebarItemOutput.css("width", "500px");
-							$mySidebarItemInput.css("width", "0");
+							$mySidebarItemOutput.addClass("prod-sidebar-open");
+							$mySidebarItemInput.removeClass("prod-sidebar-open");
 						});
 
 						//Buscar producto de insumo
@@ -140,8 +120,7 @@
 								encodeURI('{' + '\"warehouseID\"|\"' + responseItemWarehouseID + '\"' + ',\"currencyID\"|\"' + $("#txtCurrencyID").val() + '\"' + '}') + 
 								"/false/not_redirect_when_empty/1/1/" + varParameterCantidadItemPoup + "/";				
 							
-							window.open(url_request, "MsgWindow", "width=900,height=450");
-							window.onCompleteSidebarRequestItem = onCompleteSidebarRequestItem;
+							pv2OpenSearch(url_request, "Buscar producto", "onCompleteSidebarRequestItem", onCompleteSidebarRequestItem, "width=900,height=450");
 						});
 
 						//Eliminar producto de insumo
@@ -159,8 +138,7 @@
 								encodeURI('{' + '\"warehouseID\"|\"' + responseItemWarehouseID + '\"' + ',\"currencyID\"|\"' + currencyID + '\"' + '}') + 
 								"/false/not_redirect_when_empty/1/1/" + varParameterCantidadItemPoup + "/";
 							
-							window.open(url_request, "MsgWindow", "width=900,height=450");
-							window.onCompleteSidebarDestinationItem = onCompleteSidebarDestinationItem;
+							pv2OpenSearch(url_request, "Buscar producto", "onCompleteSidebarDestinationItem", onCompleteSidebarDestinationItem, "width=900,height=450");
 						});
 
 						//Buscar producto de destino desde barra lateral de productos resultantes
@@ -172,8 +150,7 @@
 								encodeURI('{' + '\"warehouseID\"|\"' + responseItemWarehouseID + '\"' + ',\"currencyID\"|\"' + currencyID + '\"' + '}') + 
 								"/false/not_redirect_when_empty/1/1/" + varParameterCantidadItemPoup + "/";
 							
-							window.open(url_request, "MsgWindow", "width=900,height=450");
-							window.onCompleteSidebarOutputResponseItem = onCompleteSidebarOutputResponseItem;
+							pv2OpenSearch(url_request, "Buscar producto", "onCompleteSidebarOutputResponseItem", onCompleteSidebarOutputResponseItem, "width=900,height=450");
 						});
 
 						//Eliminar producto de destino en barra lateral de insumos
@@ -183,11 +160,11 @@
 						$(document).on("click", "#btnSidebarClearResponseItem", fnClearSidebarResponseItemOutput);
 
 						$(document).on("click", "#btnCloseSidebarItemInput", function() {
-							$mySidebarItemInput.css("width", "0");
+							$mySidebarItemInput.removeClass("prod-sidebar-open");
 						});
 
 						$(document).on("click", "#btnCloseSidebarItemOutput", function() {
-							$mySidebarItemOutput.css("width", "0");
+							$mySidebarItemOutput.removeClass("prod-sidebar-open");
 						});
 
 						//Guardar datos ingresados en barra lateral de insumos
@@ -209,7 +186,7 @@
 							}
 
 							fnClearSidebarInputs();
-							$mySidebarItemInput.css("width", "0");
+							$mySidebarItemInput.removeClass("prod-sidebar-open");
 						});
 
 						//Guardar datos ingresados en barra lateral de resultados
@@ -230,7 +207,7 @@
 							}
 
 							fnClearSidebarOutputs();
-							$mySidebarItemOutput.css("width", "0");
+							$mySidebarItemOutput.removeClass("prod-sidebar-open");
 						});
 
 						// Eliminar un registro de la tabla de insumos
@@ -256,8 +233,8 @@
 									fnPopulateSidebarInputFields(obj, index);
 									isInputTableOnEditionMode = true;
 									selectedItemRowInInputTable = index;
-									$mySidebarItemInput.css("width", "500px");
-									$mySidebarItemOutput.css("width", "0");
+									$mySidebarItemInput.addClass("prod-sidebar-open");
+									$mySidebarItemOutput.removeClass("prod-sidebar-open");
 								}
 							});
 						});
@@ -273,8 +250,8 @@
 									fnPopulateSidebarOutputFields(obj, index);
 									isOutputTableOnEditionMode = true;
 									selectedItemRowInOutputTable = index;
-									$mySidebarItemOutput.css("width", "500px");
-									$mySidebarItemInput.css("width", "0");
+									$mySidebarItemOutput.addClass("prod-sidebar-open");
+									$mySidebarItemInput.removeClass("prod-sidebar-open");
 								}
 							});
 						});
@@ -325,10 +302,8 @@
 					}
 
 					function refreschChecked() {
-						$("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();
-						$('.txt-numeric').mask('000,000.00', {
-							reverse: true
-						});
+						$("[type='checkbox'], [type='radio']").not('.toggle, .multiselect').uniform();
+						afxInitMontos(".pv2");
 					}
 
 					function onCompleteRequestEmployee(objResponse) {
@@ -347,11 +322,12 @@
 						var totalAmount = 0;
 
 						$(".txtItemInputTotalCost").each(function() {
-							var value = parseFloat($(this).val()) || 0;
+							var value = pv2Num($(this).val());
 							totalAmount += value;
 						});
 
-						$("#txtTransactionTotalAmount").val(totalAmount.toFixed(2));
+						$("#txtTransactionTotalAmount").val(pv2Fmt(totalAmount));
+						$("#prodMbarTotal").text(pv2Fmt(totalAmount));
 					}
 
 					function fnClearSidebarDestinationItemInput() {
@@ -426,10 +402,10 @@
 					}
 
 					function fnCalculateSidebarInputTotal() {
-						var unitaryCost = parseFloat($("#txtSidebarRequestItemUnitaryCost").val()) || 0;
-						var Quantity 	= parseFloat($("#txtSidebarRequestItemQuantity").val()) || 0;
+						var unitaryCost = pv2Num($("#txtSidebarRequestItemUnitaryCost").val());
+						var Quantity 	= pv2Num($("#txtSidebarRequestItemQuantity").val());
 						var total 		= unitaryCost * Quantity;
-						$("#txtSidebarInputTotalCost").val(total);
+						$("#txtSidebarInputTotalCost").val(prodCalcMonto(total));
 					}
 
 					function fnValidateSidebarInputRecord() {
@@ -438,7 +414,7 @@
 						var timerNotification 				= 15000;
 						var itemRequestID 					= $("#txtSidebarRequestItemID").val();
 						var itemRequestDestinationProductID = $("#txtSidebarDestinationItemID").val();
-						var itemRequestQuantity 			= parseFloat($("#txtSidebarRequestItemQuantity").val()) || 0;
+						var itemRequestQuantity 			= pv2Num($("#txtSidebarRequestItemQuantity").val());
 
 						//validar que exista un producto origen y un producto destino
 						if (itemRequestID == "" || itemRequestDestinationProductID == "") {
@@ -510,7 +486,7 @@
 						var itemRequestID 						= $("#txtSidebarRequestItemID").val();
 						var itemRequestCode 					= $("#txtSidebarRequestItemDescription").val().split("|")[0].trim();
 						var itemRequestName 					= $("#txtSidebarRequestItemDescription").val().split("|")[1].trim();
-						var itemRequestQuantity 				= parseFloat($("#txtSidebarRequestItemQuantity").val()) || 0;
+						var itemRequestQuantity 				= pv2Num($("#txtSidebarRequestItemQuantity").val());
 						var itemRequestTotalCost 				= $("#txtSidebarInputTotalCost").val();
 						var itemRequestUnitaryCost 				= $("#txtSidebarRequestItemUnitaryCost").val();
 						var itemRequestSourceWarehouseID 		= $("#txtSidebarItemSourceWarehouse").val();
@@ -530,9 +506,9 @@
 						tmpl.find("#txtItemInputID").val(itemRequestID);
 						tmpl.find("#txtItemInputCode").text(itemRequestCode);
 						tmpl.find("#txtItemInputName").text(itemRequestName);
-						tmpl.find("#txtItemInputQuantity").val(itemRequestQuantity);
-						tmpl.find("#txtItemInputTotalCost").val(itemRequestTotalCost);
-						tmpl.find("#txtItemInputUnitaryCost").val(itemRequestUnitaryCost);
+						tmpl.find("#txtItemInputQuantity").val(afxFmtMonto(itemRequestQuantity));
+						tmpl.find("#txtItemInputTotalCost").val(afxFmtMonto(itemRequestTotalCost));
+						tmpl.find("#txtItemInputUnitaryCost").val(afxFmtMonto(itemRequestUnitaryCost));
 						tmpl.find("#txtItemInputWarehouseSource").val(itemRequestWarehouseSourceName);
 						tmpl.find("#txtItemInputWarehouseSourceID").val(itemRequestSourceWarehouseID);
 						tmpl.find("#txtItemInputProductDestination").val(itemRequestDestinationProductName);
@@ -562,7 +538,7 @@
 					function fnUpdateInputTableRow(obj) {
 						var itemRequestID 						= $("#txtSidebarRequestItemID").val();
 						var itemRequestDescription 				= $("#txtSidebarRequestItemDescription").val();
-						var itemRequestQuantity 				= parseFloat($("#txtSidebarRequestItemQuantity").val()) || 0;
+						var itemRequestQuantity 				= pv2Num($("#txtSidebarRequestItemQuantity").val());
 						var itemRequestTotalCost 				= $("#txtSidebarInputTotalCost").val();
 						var itemRequestUnitaryCost 				= $("#txtSidebarRequestItemUnitaryCost").val();
 						var itemRequestSourceWarehouseID 		= $("#txtSidebarItemSourceWarehouse").val();
@@ -581,9 +557,9 @@
 						$(obj).find("#txtItemInputID").val(itemRequestID);
 						$(obj).find("#txtItemInputCode").text(itemRequestDescription.split("|")[0].trim());
 						$(obj).find("#txtItemInputName").text(itemRequestDescription.split("|")[1].trim());
-						$(obj).find("#txtItemInputQuantity").val(itemRequestQuantity);
-						$(obj).find("#txtItemInputTotalCost").val(itemRequestTotalCost);
-						$(obj).find("#txtItemInputUnitaryCost").val(itemRequestUnitaryCost);
+						$(obj).find("#txtItemInputQuantity").val(afxFmtMonto(itemRequestQuantity));
+						$(obj).find("#txtItemInputTotalCost").val(afxFmtMonto(itemRequestTotalCost));
+						$(obj).find("#txtItemInputUnitaryCost").val(afxFmtMonto(itemRequestUnitaryCost));
 						$(obj).find("#txtItemInputWarehouseSource").val(itemRequestWarehouseSourceName);
 						$(obj).find("#txtItemInputWarehouseSourceID").val(itemRequestSourceWarehouseID);
 						$(obj).find("#txtItemInputProductDestination").val(itemRequestDestinationProductName);
@@ -625,11 +601,11 @@
 
 					function fnCalculateSidebarOutputTotal() {
 						fnCalculateResponseItemTotalCost();
-						var unitaryCost = parseFloat($("#txtSidebarResponseItemUnitaryCost").val()) || 0;
-						var Quantity = parseFloat($("#txtSidebarResponseItemQuantity").val()) || 0;
+						var unitaryCost = pv2Num($("#txtSidebarResponseItemUnitaryCost").val());
+						var Quantity = pv2Num($("#txtSidebarResponseItemQuantity").val());
 						var total = unitaryCost * Quantity;
 						debugger;
-						$("#txtSidebarOutputTotalCost").val(total);
+						$("#txtSidebarOutputTotalCost").val(prodCalcMonto(total));
 					}
 
 					function fnCalculateResponseItemTotalCost() {
@@ -642,7 +618,7 @@
 
 						$("#body_tb_transaction_master_detail_item_input").find("tr").each(function(index, obj) {
 							var destinationItemID = $(obj).find("#txtItemInputProductDestinationID").val();
-							var inputTotalCost = parseFloat($(obj).find("#txtItemInputTotalCost").val()) || 0;
+							var inputTotalCost = pv2Num($(obj).find("#txtItemInputTotalCost").val());
 
 							if (destinationItemID === responseItemID) {
 								totalInputCost += inputTotalCost;
@@ -660,7 +636,7 @@
 						var itemResponseID = $("#txtSidebarResponseItemID").val();
 						var itemResponseCode = $("#txtSidebarResponseItemDescription").val().split("|")[0].trim();
 						var itemResponseName = $("#txtSidebarResponseItemDescription").val().split("|")[1].trim();
-						var itemResponseQuantity = parseFloat($("#txtSidebarResponseItemQuantity").val()) || 0;
+						var itemResponseQuantity = pv2Num($("#txtSidebarResponseItemQuantity").val());
 						var itemResponseTotalCost = $("#txtSidebarOutputTotalCost").val();
 						var itemResponseTargetWarehouse = $("#txtSidebarResponseItemTargetWarehouse").val();
 
@@ -717,7 +693,7 @@
 						var itemResponseID 					= $("#txtSidebarResponseItemID").val();
 						var itemResponseCode 				= $("#txtSidebarResponseItemDescription").val().split("|")[0].trim();
 						var itemResponseName 				= $("#txtSidebarResponseItemDescription").val().split("|")[1].trim();
-						var itemResponseQuantity 			= parseFloat($("#txtSidebarResponseItemQuantity").val()) || 0;
+						var itemResponseQuantity 			= pv2Num($("#txtSidebarResponseItemQuantity").val());
 						var itemResponseTotalCost 			= $("#txtSidebarOutputTotalCost").val();
 						var itemResponseUnitaryCost 		= $("#txtSidebarResponseItemUnitaryCost").val();
 						var itemResponseTargetWarehouseID 	= $("#txtSidebarResponseItemTargetWarehouse").val();
@@ -735,9 +711,9 @@
 						tmpl.find("#txtItemOutputID").val(itemResponseID);
 						tmpl.find("#txtItemOutputCode").text(itemResponseCode);
 						tmpl.find("#txtItemOutputName").text(itemResponseName);
-						tmpl.find("#txtItemOutputQuantity").val(itemResponseQuantity);
-						tmpl.find("#txtItemOutputTotalCost").val(itemResponseTotalCost);
-						tmpl.find("#txtItemOutputUnitaryCost").val(itemResponseUnitaryCost);
+						tmpl.find("#txtItemOutputQuantity").val(afxFmtMonto(itemResponseQuantity));
+						tmpl.find("#txtItemOutputTotalCost").val(afxFmtMonto(itemResponseTotalCost));
+						tmpl.find("#txtItemOutputUnitaryCost").val(afxFmtMonto(itemResponseUnitaryCost));
 						tmpl.find("#txtItemOutputWarehouseTarget").val(itemResponseTargetWarehouseName);
 						tmpl.find("#txtItemOutputWarehouseTargetID").val(itemResponseTargetWarehouseID);
 						$("#body_tb_transaction_master_detail_item_output").append(tmpl);
@@ -752,7 +728,7 @@
 						$("#body_tb_transaction_master_detail_item_input").find("tr").each(function(index, obj) {
 							var itemInputID 			= $(obj).find("#txtItemInputID").val();
 							var itemInputDestinationID 	= $(obj).find("#txtItemInputProductDestinationID").val();
-							var itemInputTotalCost 		= parseFloat($(obj).find("#txtItemInputTotalCost").val()) || 0;
+							var itemInputTotalCost 		= pv2Num($(obj).find("#txtItemInputTotalCost").val());
 
 							if (mapItemInputDestinationID.has(itemInputDestinationID)) {
 								var totalCost = mapItemInputDestinationID.get(itemInputDestinationID);
@@ -765,7 +741,7 @@
 
 						$("#body_tb_transaction_master_detail_item_output").find("tr").each(function(index, obj) {
 							var itemOutputID 			= $(obj).find("#txtItemOutputID").val();
-							var itemOutputQuantity 		= parseFloat($(obj).find("#txtItemOutputQuantity").val()) || 0;
+							var itemOutputQuantity 		= pv2Num($(obj).find("#txtItemOutputQuantity").val());
 
 							if (mapItemInputDestinationID.size == 0) {
 								$(obj).find("#txtItemOutputUnitaryCost").val("");
@@ -774,9 +750,10 @@
 							}
 
 							if (mapItemInputDestinationID.has(itemOutputID)) {
-								$(obj).find("#txtItemOutputUnitaryCost").val(mapItemInputDestinationID.get(itemOutputID) / itemOutputQuantity);
-								var itemOutputUnitaryCost 				= parseFloat($(obj).find("#txtItemOutputUnitaryCost").val()) || 0;
-								$(obj).find("#txtItemOutputTotalCost").val(itemOutputUnitaryCost * itemOutputQuantity);
+								var itemOutputUnitaryCost = mapItemInputDestinationID.get(itemOutputID) / itemOutputQuantity;
+								$(obj).find("#txtItemOutputUnitaryCost").val(prodCalcMonto(itemOutputUnitaryCost));
+								//El total se calcula con el costo sin redondear para no perder centavos
+								$(obj).find("#txtItemOutputTotalCost").val(prodCalcMonto(itemOutputUnitaryCost * itemOutputQuantity));
 							} else {
 								$(obj).find("#txtItemOutputUnitaryCost").val("");
 								$(obj).find("#txtItemOutputTotalCost").val("");
@@ -792,7 +769,7 @@
 					function fnUpdateOutputTableRow(obj, index) {
 						var itemResponseID 					= $("#txtSidebarResponseItemID").val();
 						var itemResponseDescription 		= $("#txtSidebarResponseItemDescription").val();
-						var itemResponseQuantity 			= parseFloat($("#txtSidebarResponseItemQuantity").val()) || 0;
+						var itemResponseQuantity 			= pv2Num($("#txtSidebarResponseItemQuantity").val());
 						var itemResponseTotalCost 			= $("#txtSidebarOutputTotalCost").val();
 						var itemResponseUnitaryCost 		= $("#txtSidebarResponseItemUnitaryCost").val();
 						var itemResponseTargetWarehouseID 	= $("#txtSidebarResponseItemTargetWarehouse").val();
@@ -808,9 +785,9 @@
 						$(obj).find("#txtItemOutputID").val(itemResponseID);
 						$(obj).find("#txtItemOutputCode").text(itemResponseDescription.split("|")[0].trim());
 						$(obj).find("#txtItemOutputName").text(itemResponseDescription.split("|")[1].trim());
-						$(obj).find("#txtItemOutputQuantity").val(itemResponseQuantity);
-						$(obj).find("#txtItemOutputTotalCost").val(itemResponseTotalCost);
-						$(obj).find("#txtItemOutputUnitaryCost").val(itemResponseUnitaryCost);
+						$(obj).find("#txtItemOutputQuantity").val(afxFmtMonto(itemResponseQuantity));
+						$(obj).find("#txtItemOutputTotalCost").val(afxFmtMonto(itemResponseTotalCost));
+						$(obj).find("#txtItemOutputUnitaryCost").val(afxFmtMonto(itemResponseUnitaryCost));
 						$(obj).find("#txtItemOutputWarehouseTarget").val(itemResponseTargetWarehouseName);
 						$(obj).find("#txtItemOutputWarehouseTargetID").val(itemResponseTargetWarehouseID);
 						return true;

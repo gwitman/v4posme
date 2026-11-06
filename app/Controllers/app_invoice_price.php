@@ -257,8 +257,9 @@ class app_invoice_price extends _BaseController {
 			$db->transStart();			
 			//El Estado solo permite editar el workflow
 			if($this->core_web_workflow->validateWorkflowStage("tb_list_price","statusID",$oldStatusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)){				
+				$objListPrice					= array();
 				$objListPrice["statusID"] 		= /*inicio get post*/ $this->request->getPost('txtStatusID');//--fin peticion get o post
-				$this->List_Price_Model->update_app_posme($companyID,$listPriceID);
+				$this->List_Price_Model->update_app_posme($companyID,$listPriceID,$objListPrice);
 			}
 			else{
 				
@@ -627,6 +628,7 @@ class app_invoice_price extends _BaseController {
 			
 			
 			$esMovil = $dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile();
+			$dataViewID = filter_var(helper_SegmentsByIndex($this->uri->getSegments(), 1, $dataViewID), FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE); // Entero o null: el valor llega a SQL en Company_Data_View_Model
 
 			//Vista por defecto
 			if($dataViewID == null){				

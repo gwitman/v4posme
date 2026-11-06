@@ -34,24 +34,32 @@ class app_cxc_notecredit extends _BaseController
 				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_cxc_notacredit' NO EXISTE...");
 
 
+			$dataViewID = helper_SegmentsByIndex($this->uri->getSegments(), 1, $dataViewID);
+			$dataViewID = is_numeric($dataViewID) ? (int) $dataViewID : null;
+			$esMovil    = $dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile();
+
 			//Vista por defecto PC
 			if ($dataViewID == null and  !$this->request->getUserAgent()->isMobile()) {
 				$targetComponentID              = 0;
 				$parameter["{companyID}"]       = $this->session->get('user')->companyID;
 				$dataViewData                   = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
-				$dataViewRender                 = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+				$dataViewRender                 = $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
 			}
 			//Vista por defecto MOBILE
 			else if ($this->request->getUserAgent()->isMobile()) {
 				$parameter["{companyID}"]       = $this->session->get('user')->companyID;
 				$dataViewData                   = $this->core_web_view->getViewByName($this->session->get('user'), $objComponent->componentID, "LISTA DE NOTAS DE CREDITO DE CLIENTES", CALLERID_LIST, $resultPermission, $parameter);
-				$dataViewRender                 = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+				if (!$dataViewData)
+					$dataViewData               = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $this->session->get('company')->flavorID, $resultPermission, $parameter);
+				if (!$dataViewData)
+					$dataViewData               = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, 0, $resultPermission, $parameter);
+				$dataViewRender                 = $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
 			}
 			//Vista Por Id
 			else {
 				$parameter["{companyID}"]       = $this->session->get('user')->companyID;
 				$dataViewData                   = $this->core_web_view->getViewBy_DataViewID($this->session->get('user'), $objComponent->componentID, $dataViewID, CALLERID_LIST, $resultPermission, $parameter);
-				$dataViewRender                 = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+				$dataViewRender                 = $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
 			}
 
 			//Renderizar Resultado
@@ -169,6 +177,7 @@ class app_cxc_notecredit extends _BaseController
 
 			$objCurrency						                = $this->core_web_currency->getCurrencyDefault($companyID);
 			$dataView["company"]                                = $dataSession["company"];
+			$dataView["useMobile"]                              = $dataSession["user"]->useMobile;
 			$dataView["objComponentNoteCredit"]                 = $objComponentNoteCredit;
 			$dataView["objComponentCustomer"]                   = $objComponentCustomer;
 			$dataView["objListWorkflowStage"]                   = $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_cxc_notacredit", "statusID", $companyID, $branchID, $roleID);
@@ -244,6 +253,7 @@ class app_cxc_notecredit extends _BaseController
 				$this->response->redirect(base_url() . "/" . 'app_cxc_notecredit/add');
 			}
 
+			$dataView["useMobile"]              = $dataSession["user"]->useMobile;
 			$dataView["objTM"]                  = $this->Transaction_Master_Model->get_rowByPk($companyID, $transactionID, $transactionMasterID);
 			$dataView["objCustomer"]            = $this->Customer_Model->get_rowByPK($companyID, $branchID, $dataView["objTM"]->entityID);
 			$dataView["objListLegal"]			= $this->Legal_Model->get_rowByPk($companyID, $branchID, $dataView["objTM"]->entityID);
@@ -310,7 +320,7 @@ class app_cxc_notecredit extends _BaseController
 
 			$entityID                               = $this->request->getPost("txtCustomerEntityID");
 			$currencyID                             = $this->request->getPost("txtCurrencyID");
-			$monto                                  = $this->request->getPost("txtAmount");
+			$monto                                  = helper_StringToNumber($this->request->getPost("txtAmount"));
 
 			//Valores de tasa de cambio
 			date_default_timezone_set(APP_TIMEZONE);
@@ -410,7 +420,7 @@ class app_cxc_notecredit extends _BaseController
 
 			$entityID                               = $this->request->getPost("txtCustomerEntityID");
 			$currencyID                             = $this->request->getPost("txtCurrencyID");
-			$monto                                  = $this->request->getPost("txtAmount");
+			$monto                                  = helper_StringToNumber($this->request->getPost("txtAmount"));
 			$transactionID                          = $this->request->getPost("txtTransactionID");
 			$transactionMasterID                    = $this->request->getPost("txtTransactionMasterID");
 

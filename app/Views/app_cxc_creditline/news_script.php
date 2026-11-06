@@ -1,7 +1,12 @@
 <!-- ./ page heading -->
+<script>
+	var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+</script>
 <script>					
 	
 	$(document).ready(function(){					
+		afxBindCommon();
+
 		//Regresar a la lista
 		$(document).on("click","#btnBack",function(){
 				fnWaitOpen();

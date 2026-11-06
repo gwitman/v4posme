@@ -47,6 +47,7 @@ class app_cxc_creditline extends _BaseController {
 			
 			//Obtener el Registro			
 			$datView["objCreditLine"]= $this->Credit_Line_Model->get_rowByPK($companyID,$creditLineID);
+			$datView["useMobile"]	= $dataSession["user"]->useMobile;
 			
 			
 			//Renderizar Resultado
@@ -285,13 +286,14 @@ class app_cxc_creditline extends _BaseController {
 			$companyID 							= $dataSession["user"]->companyID;
 			$branchID 							= $dataSession["user"]->branchID;
 			$roleID 							= $dataSession["role"]->roleID;
-			
-			//Renderizar Resultado 
+			$dataView["useMobile"]				= $dataSession["user"]->useMobile;
+
+			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
-			$dataSession["head"]			= /*--inicio view*/ view('app_cxc_creditline/news_head');//--finview
-			$dataSession["body"]			= /*--inicio view*/ view('app_cxc_creditline/news_body');//--finview
-			$dataSession["script"]			= /*--inicio view*/ view('app_cxc_creditline/news_script');//--finview
+			$dataSession["head"]			= /*--inicio view*/ view('app_cxc_creditline/news_head',$dataView);//--finview
+			$dataSession["body"]			= /*--inicio view*/ view('app_cxc_creditline/news_body',$dataView);//--finview
+			$dataSession["script"]			= /*--inicio view*/ view('app_cxc_creditline/news_script',$dataView);//--finview
 			$dataSession["footer"]			= "";
 			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r
 			
@@ -339,18 +341,20 @@ class app_cxc_creditline extends _BaseController {
 			throw new \Exception("00409 EL COMPONENTE 'tb_credit_line' NO EXISTE...");
 			
 			
-			//Vista por defecto 
-			if($dataViewID == null){				
-				$targetComponentID			= 0;	
+			$esMovil = $dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile();
+
+			//Vista por defecto
+			if($dataViewID == null){
+				$targetComponentID			= 0;
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewRender				= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			}
 			//Otra vista
 			else{									
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewRender				= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			}
 			 
 			//Renderizar Resultado

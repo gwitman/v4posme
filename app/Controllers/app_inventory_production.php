@@ -33,24 +33,38 @@ class app_inventory_production extends _BaseController
 				throw new Exception("00409 EL COMPONENTE 'tb_transaction_master_production_orden' NO EXISTE...");
 
 
+			$esMovil = $dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile();
+			$dataViewID = filter_var(helper_SegmentsByIndex($this->uri->getSegments(), 1, $dataViewID), FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE); // Entero o null: el valor llega a SQL en Company_Data_View_Model
+
 			//Vista por defecto PC
 			if ($dataViewID == null and  !$this->request->getUserAgent()->isMobile()) {
 				$targetComponentID              = 0;
 				$parameter["{companyID}"]       = $this->session->get('user')->companyID;
 				$dataViewData                   = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
-				$dataViewRender                 = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+				$dataViewRender                 = $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
 			}
 			//Vista por defecto MOBILE
 			else if ($this->request->getUserAgent()->isMobile()) {
 				$parameter["{companyID}"]       = $this->session->get('user')->companyID;
 				$dataViewData                   = $this->core_web_view->getViewByName($this->session->get('user'), $objComponent->componentID, "LISTA DE ORDENES DE PRODUCCION", CALLERID_LIST, $resultPermission, $parameter);
-				$dataViewRender                 = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+
+				//Respaldo: la vista por nombre podria no existir en esta instalacion
+				if (!$dataViewData) {
+					$targetComponentID          = $this->session->get('company')->flavorID;
+					$dataViewData               = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
+				}
+				if (!$dataViewData) {
+					$targetComponentID          = 0;
+					$dataViewData               = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
+				}
+
+				$dataViewRender                 = $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
 			}
 			//Vista Por Id
 			else {
 				$parameter["{companyID}"]       = $this->session->get('user')->companyID;
 				$dataViewData                   = $this->core_web_view->getViewBy_DataViewID($this->session->get('user'), $objComponent->componentID, $dataViewID, CALLERID_LIST, $resultPermission, $parameter);
-				$dataViewRender                 = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+				$dataViewRender                 = $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
 			}
 
 			//Renderizar Resultado
@@ -174,6 +188,7 @@ class app_inventory_production extends _BaseController
 				throw new Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
 			}
 
+			$dataView["useMobile"]                              = $dataSession["user"]->useMobile;
 			$dataView["company"]                                = $dataSession["company"];
 			$dataView["objComponentWarehouse"]                 	= $objComponentWarehouse;
 			$dataView["objComponentItem"]                 	    = $objComponentItem;
@@ -264,7 +279,7 @@ class app_inventory_production extends _BaseController
 			$objTM["note"]                          = /*inicio get post*/ $this->request->getPost("txtNote");
 			$objTM["currencyID"]					= /*inicio get post*/ $this->request->getPost("txtCurrencyID");
 			$objTM["statusID"]                      = /*inicio get post*/ $this->request->getPost("txtStatusID");
-			$objTM["amount"]						= /*inicio get post*/ $this->request->getPost("txtTransactionTotalAmount");
+			$objTM["amount"]						= /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtTransactionTotalAmount") ?? "");
 			$objTM["entityIDSecondary"]             = /*inicio get post*/ $this->request->getPost("txtSenderEmployeeID");
 			$objTM["isActive"]                      = 1;
 			$this->core_web_auditoria->setAuditCreated($objTM, $dataSession, $this->request);
@@ -275,17 +290,17 @@ class app_inventory_production extends _BaseController
 
 			//Lista de Insumos
 			$objListItemInputID						= /*inicio get post*/ $this->request->getPost("txtItemInputID");
-			$objListItemInputQuantity				= /*inicio get post*/ $this->request->getPost("txtItemInputQuantity");
-			$objListItemInputUnitaryCost			= /*inicio get post*/ $this->request->getPost("txtItemInputUnitaryCost");
-			$objListItemInputTotalCost				= /*inicio get post*/ $this->request->getPost("txtItemInputTotalCost");
+			$objListItemInputQuantity				= /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtItemInputQuantity") ?? []);
+			$objListItemInputUnitaryCost			= /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtItemInputUnitaryCost") ?? []);
+			$objListItemInputTotalCost				= /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtItemInputTotalCost") ?? []);
 			$objListItemInputWarehouseSource		= /*inicio get post*/ $this->request->getPost("txtItemInputWarehouseSourceID");
 			$objListItemInputProductDestination		= /*inicio get post*/ $this->request->getPost("txtItemInputProductDestinationID");
 
 			//Lista de productos resultantes
 			$objListItemOutputID					= /*inicio get post*/ $this->request->getPost("txtItemOutputID");
-			$objListItemOutputQuantity				= /*inicio get post*/ $this->request->getPost("txtItemOutputQuantity");
-			$objListItemOutputUnitaryCost			= /*inicio get post*/ $this->request->getPost("txtItemOutputUnitaryCost");
-			$objListItemOutputTotalCost				= /*inicio get post*/ $this->request->getPost("txtItemOutputTotalCost");
+			$objListItemOutputQuantity				= /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtItemOutputQuantity") ?? []);
+			$objListItemOutputUnitaryCost			= /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtItemOutputUnitaryCost") ?? []);
+			$objListItemOutputTotalCost				= /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtItemOutputTotalCost") ?? []);
 			$objListItemOutputWarehouseTargetID		= /*inicio get post*/ $this->request->getPost("txtItemOutputWarehouseTargetID");
 
 
@@ -334,8 +349,9 @@ class app_inventory_production extends _BaseController
 				$this->core_web_notification->set_message(false, SUCCESS);
 				$this->response->redirect(base_url() . "/" . 'app_inventory_production/edit/companyID/' . $companyID . "/transactionID/" . $objTM["transactionID"] . "/transactionMasterID/" . $transactionMasterID);
 			} else {
+				$errorTransaccion = $db->error()["message"];
 				$db->transRollback();
-				$this->core_web_notification->set_message(true, $this->$db->_error_message());
+				$this->core_web_notification->set_message(true, $errorTransaccion ?: "No se pudo guardar la transaccion");
 				$this->response->redirect(base_url() . "/" . 'app_inventory_production/add');
 			}
 		} catch (Exception $ex) {
@@ -401,6 +417,7 @@ class app_inventory_production extends _BaseController
 				throw new Exception("EL COMPONENTE 'tb_employee' NO EXISTE...");
 			}
 
+			$dataView["useMobile"]                              = $dataSession["user"]->useMobile;
 			$dataView["objTM"]                  				= $this->Transaction_Master_Model->get_rowByPk($companyID, $transactionID, $transactionMasterID);
 			$dataView["objTMD"]									= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndComponent($companyID, $transactionID, $transactionMasterID, $objComponentProductionOrder->componentID);
 			$dataView["company"]                                = $dataSession["company"];
@@ -500,7 +517,7 @@ class app_inventory_production extends _BaseController
 			$objTMNew["note"]						= /*inicio get post*/ $this->request->getPost("txtNote");
 			$objTMNew["currencyID"]					= /*inicio get post*/ $this->request->getPost("txtCurrencyID");
 			$objTMNew["statusID"]					= /*inicio get post*/ $this->request->getPost("txtStatusID");
-			$objTMNew["amount"]						= /*inicio get post*/ $this->request->getPost("txtTransactionTotalAmount");
+			$objTMNew["amount"]						= /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtTransactionTotalAmount") ?? "");
 			$objTMNew["entityIDSecondary"]			= /*inicio get post*/ $this->request->getPost("txtSenderEmployeeID");
 			$objTMNew["isActive"]                   = 1;
 
@@ -523,17 +540,17 @@ class app_inventory_production extends _BaseController
 
 			//Lista de Insumos
 			$objListItemInputID						= /*inicio get post*/ $this->request->getPost("txtItemInputID");
-			$objListItemInputQuantity				= /*inicio get post*/ $this->request->getPost("txtItemInputQuantity");
-			$objListItemInputUnitaryCost			= /*inicio get post*/ $this->request->getPost("txtItemInputUnitaryCost");
-			$objListItemInputTotalCost				= /*inicio get post*/ $this->request->getPost("txtItemInputTotalCost");
+			$objListItemInputQuantity				= /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtItemInputQuantity") ?? []);
+			$objListItemInputUnitaryCost			= /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtItemInputUnitaryCost") ?? []);
+			$objListItemInputTotalCost				= /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtItemInputTotalCost") ?? []);
 			$objListItemInputWarehouseSource		= /*inicio get post*/ $this->request->getPost("txtItemInputWarehouseSourceID");
 			$objListItemInputProductDestination		= /*inicio get post*/ $this->request->getPost("txtItemInputProductDestinationID");
 
 			//Lista de productos resultantes
 			$objListItemOutputID					= /*inicio get post*/ $this->request->getPost("txtItemOutputID");
-			$objListItemOutputQuantity				= /*inicio get post*/ $this->request->getPost("txtItemOutputQuantity");
-			$objListItemOutputUnitaryCost			= /*inicio get post*/ $this->request->getPost("txtItemOutputUnitaryCost");
-			$objListItemOutputTotalCost				= /*inicio get post*/ $this->request->getPost("txtItemOutputTotalCost");
+			$objListItemOutputQuantity				= /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtItemOutputQuantity") ?? []);
+			$objListItemOutputUnitaryCost			= /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtItemOutputUnitaryCost") ?? []);
+			$objListItemOutputTotalCost				= /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtItemOutputTotalCost") ?? []);
 			$objListItemOutputWarehouseTargetID		= /*inicio get post*/ $this->request->getPost("txtItemOutputWarehouseTargetID");
 
 			if ($objListTransactionMasterDetailID == null) {
@@ -648,8 +665,9 @@ class app_inventory_production extends _BaseController
 				$this->core_web_notification->set_message(false, SUCCESS);
 				$this->response->redirect(base_url() . "/" . 'app_inventory_production/edit/companyID/' . $companyID . "/transactionID/" . $transactionID . "/transactionMasterID/" . $transactionMasterID);
 			} else {
+				$errorTransaccion = $db->error()["message"];
 				$db->transRollback();
-				$this->core_web_notification->set_message(true, $this->$db->_error_message());
+				$this->core_web_notification->set_message(true, $errorTransaccion ?: "No se pudo guardar la transaccion");
 				$this->response->redirect(base_url() . "/" . 'app_inventory_production/add');
 			}
 		} catch (Exception $ex) {

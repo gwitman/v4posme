@@ -1,82 +1,69 @@
-				<!-- ./ page heading -->
-				<script>
-				    $(document).ready(function() {
-						var valueTemp = 0;
-				        $('#txtDate').datepicker({
-				            format: "yyyy-mm-dd"
-				        });
-				        $('#txtDate').val();
-				        $("#txtDate").datepicker("update");
-				        $('.txt-numeric').mask('000,000.00', {
-				            reverse: true
-				        });
+<!-- ./ page heading -->
+<script>
+    var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
 
-				        //Regresar a la lista
-				        $(document).on("click", "#btnBack", function() {
-				            fnWaitOpen();
-				        });
+    $(document).ready(function() {
+        var valueTemp = 0;
+        pv2InitDate("txtDate", true);
+        afxBindCommon();
 
-				        $(document).on("click", "#btnAcept", function() {
-				            $("#form-new-notecredit").attr("method", "POST");
-				            $("#form-new-notecredit").attr("action", "<?php echo base_url(); ?>/app_sales_loyalty/save/new");
+        //Regresar a la lista
+        $(document).on("click", "#btnBack", function() {
+            fnWaitOpen();
+        });
 
-				            if (validateForm()) {
-				                fnWaitOpen();
-				                $("#form-new-notecredit").submit();
-				            }
+        $(document).on("click", "#btnAcept", function() {
+            $("#form-new-notecredit").attr("method", "POST");
+            $("#form-new-notecredit").attr("action", "<?php echo base_url(); ?>/app_sales_loyalty/save/new");
 
-				        });
+            if (validateForm()) {
+                fnWaitOpen();
+                afxLimpiarMontos("#form-new-notecredit");
+                $("#form-new-notecredit").submit();
+            }
+        });
 
-						$(document).on("focus","#txtTax1",function(){
-							valueTemp = $(this).val();
-						});
-						$(document).on("change","#txtTax1",function(){
-							debugger;
-							var puntos 	= $(this).val();
-							var meta 	= $("#txtAmount").val();
-							
-							if(puntos > meta)
-							{
-								$(this).val(valueTemp);
-							}
-						});
-				       
-						
-				    });
+        $(document).on("focus", "#txtTax1", function() {
+            valueTemp = $(this).val();
+        });
 
+        //Los puntos no pueden superar la meta. Se compara como numero porque los campos llevan comas
+        $(document).on("change", "#txtTax1", function() {
+            var puntos = pv2Num($(this).val());
+            var meta   = pv2Num($("#txtAmount").val());
 
+            if (puntos > meta) {
+                $(this).val(valueTemp);
+            }
+        });
+    });
 
-				    function validateForm() {
-				        var result = true;
-				        var timerNotification = 15000;
+    function validateForm() {
+        var result            = true;
+        var timerNotification = 15000;
 
-						var date = new Date($("#txtDate").val());
+        var date = new Date($("#txtDate").val());
 
-						if (isNaN(date.valueOf())) {
-							fnShowNotification("Ingrese la Fecha", "error", timerNotification);
-							result = false;
-						}
+        if (isNaN(date.valueOf())) {
+            fnShowNotification("Ingrese la Fecha", "error", timerNotification);
+            result = false;
+        }
 
-				        //Validar Monto
-				        if ($("#txtAmount").val() == "0") {
-				            fnShowNotification("La meta no puede estar vacia", "error", timerNotification);
-				            result = false;
-				        }
+        //Validar Monto
+        if (pv2Num($("#txtAmount").val()) == 0) {
+            fnShowNotification("La meta no puede estar vacia", "error", timerNotification);
+            result = false;
+        }
 
-				        if ($("#txtNumberPhone").val() === "") {
-				            fnShowNotification("Escribir numero de telefono", "error", timerNotification);
-				            result = false;
-				        }
+        if ($("#txtNumberPhone").val() === "") {
+            fnShowNotification("Escribir numero de telefono", "error", timerNotification);
+            result = false;
+        }
 
-				        return result;
-				    }
+        return result;
+    }
 
-				    function refreschChecked() {
-				        $("[type='checkbox'], [type='radio'], [type='file'], select").not('.toggle, .select2, .multiselect').uniform();
-				        $('.txt-numeric').mask('000,000.00', {
-				            reverse: true
-				        });
-				    }
-
-
-				</script>
+    function refreschChecked() {
+        $("[type='checkbox'], [type='radio']").not('.toggle').uniform();
+    }
+</script>

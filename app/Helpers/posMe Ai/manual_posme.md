@@ -94,12 +94,19 @@ Quitar un cliente de un gestor:
 Ver también: Asignar clientes a un gestor de cobranza.
 
 ## Crear un cliente
-Ruta: Menú > CXC > CLIENTES.
+Ruta: Menú > CXC > CLIENTES. La lista se llama **LISTA DE CLIENTES**. Según la configuración de su empresa, títulos, campos y pestañas pueden cambiar.
 1. Presione **Nuevo**.
-2. En la pestaña **Informacion** complete nombre, apellido, identificación, categoría y estado.
-3. En las pestañas **Telefonos.**, **Email.** y **Direccion** agregue los datos de contacto.
-4. Si el cliente comprará a crédito, configure la pestaña **CXC Lineas.** (línea y límite de crédito).
-5. Presione **Guardar**.
+2. Pestaña **Informacion**: en **Datos generales** complete **Nombres**, **Apellidos**, **Nombre completo**, **Nombre comercial**, **Sexo**, **Tipo Identificacion**, **Identificacion** y **Telefono**. En **Clasificacion** elija **Estado** y **Tipo**.
+3. Pestañas **Telefonos.** y **Email.**: **Agregar**, complete la ventana y presione **Aceptar**.
+4. Pestaña **Referencias.**: **Agente** y **Cliente Referente** usan **Buscar** y **Limpiar**.
+5. Si comprará a crédito: en **CXC.** indique **Moneda**, **Tipo de Pago**, **Condicion de Pago** y **Limite Credito US$**. En **CXC Lineas.** presione **Agregar**, complete **Linea**, **Limite de Credito**, **Balance**, **Interes Anual (%)**, **Frecuencia de Pago**, **Plan** y **No Pagos**, y presione **Aceptar**.
+6. En **Mas** están **Direccion** y **Recordatorio**.
+7. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensajes: "Escribir la Identificacion", "Escribir el sexo", "Escribir Primer Nombre", "Escribir Segundo Nombre", "Escribir Nombre Legal", "Escribir Nombre Comercial", "La linea ya esta configurada" y, según la configuración, "Error identificacion del cliente ya existe.".
+Notas: **Limite de Credito** y **Balance** traen un valor inicial alto: revíselos. Si no agrega líneas, se asigna una predeterminada con límite 300,000.00.
+Para modificarlo, selecciónelo y presione **Editar**. Si el balance supera el límite aparece "BALANCE NO PUEDE SER MAYOR QUE EL LIMITE EN LA LINEA".
+Ver también: Crear una línea de crédito.
+<!-- REVISAR: Forma de Pago pide datos de tarjeta y CVC; uso sin documentar -->
 
 ## Crear un producto
 Ruta: Menú > INVENTARIO > PRODUCTO.
@@ -111,10 +118,37 @@ Ruta: Menú > INVENTARIO > PRODUCTO.
 6. Presione **Guardar**.
 
 ## Cambiar precios de productos
-Ruta: Menú > FACTURACION > PRECIOS.
-1. Busque la lista de precios y el producto.
-2. Modifique el precio por tipo (público, por mayor, crédito) y guarde.
-<!-- REVISAR: pasos exactos de la pantalla de precios -->
+Ruta: Menú > FACTURACION > PRECIOS. La lista se llama **LISTA DE PRECIO**. Aquí se cambian los precios de toda una lista con un archivo.
+Para un solo producto use Menú > INVENTARIO > PRODUCTO, pestaña **Precios** (lista predeterminada de su empresa).
+1. Seleccione la lista y presione **Editar**. Para una lista nueva presione **Nuevo**, indique **Fecha Inicial**, **Fecha Final**, **Nombre** y **Estado**, y presione **Guardar**.
+2. En la tarjeta **Archivo de precios** marque **Generar Archivo** y presione **Guardar** (en el teléfono, en la barra inferior). Se crea un archivo con todos los productos.
+3. En **Mas** > **Archivos** descargue el archivo que empieza con list_price_default_ seguido de la fecha.
+4. Cambie los precios y comisiones. No modifique los títulos de columna ni **Codigo**. Escriba los números sin comas: 1500.25.
+5. Suba el archivo en **Mas** > **Archivos**.
+6. En **Actualizar Precios** escriba el nombre exacto del archivo con su extensión (precios.csv) y presione **Guardar**.
+Mensajes: "Las fechas son obligatorias"; "NO EXISTE EL ARCHIVO PARA IMPORTAR LOS PRECIOS..."; "Las columnas de valor no son numericas".
+Notas:
+- Importar reemplaza todos los precios de la lista: un producto que no venga en el archivo pierde sus precios en ella.
+- No use el archivo list_price_default.csv, creado al guardar una lista nueva: sus columnas son distintas.
+- La columna **Costo** no cambia el costo del producto.
+- Según su estado, la lista puede no permitir cambios o permitir solo cambiar el **Estado**; en ese caso no se importa ni se genera el archivo.
+<!-- REVISAR: Imprimir abre una página en blanco; el cuadro Buscar de la lista no tiene acción -->
+<!-- REVISAR: efecto de Fecha Inicial, Fecha Final y Estado al facturar -->
+
+## Crear una tarjeta de fidelidad
+Ruta: Menú > VENTAS > FIDELIDAD. La lista se llama **LISTA DE TARJETAS DE FIDELIDAD**.
+1. Presione **Nuevo**. Se abre la pantalla de la tarjeta.
+2. En la tarjeta **Tarjeta** indique **Fecha** (arranca en hoy), **Estado**, **Meta**, **Puntos** y **Telefono Cliente**. **Meta** es obligatoria y no puede ser 0.
+3. En la tarjeta **Premio y referencias** complete **Premio**. Opcional: **Referencia 1**, **Referencia 2** y **Comentario**.
+4. Presione **Guardar** (en el teléfono, en la barra inferior). La tarjeta queda abierta con su número.
+Mensajes de validación: "Ingrese la Fecha", "La meta no puede estar vacia" y "Escribir numero de telefono".
+Notas:
+- **Puntos** no puede superar **Meta**: si escribe más, el campo vuelve a su valor anterior sin mostrar mensaje.
+- Los puntos se escriben a mano en la tarjeta. Al facturar no se suman solos.
+- **Imprimir** genera la tarjeta en PDF.
+Para modificarla, selecciónela en la lista y presione **Editar**, o escriba su número en **Buscar por número…** y presione el botón de buscar. Arriba tiene **Nuevo**, **Atras**, **Eliminar**, **Imprimir** y **Guardar**; en **Mas** > **Archivos** adjunta documentos en una ventana nueva. Según su estado, la tarjeta puede no permitir cambios, permitir solo cambiar el **Estado** o no permitir eliminarla.
+<!-- REVISAR: nombres de los estados de la tarjeta y efecto de cada uno -->
+<!-- REVISAR: Buscar por número no filtra por tipo de documento; puede abrir otro documento con el mismo número -->
 
 ## Ajustar el inventario
 Ruta: Menú > INVENTARIO > AJUSTE.
@@ -123,16 +157,418 @@ Ruta: Menú > INVENTARIO > AJUSTE.
 3. Presione **Guardar** y aplique el documento para que afecte la existencia.
 Otras opciones: INVENTARIO > O. ENTRADAS (otras entradas), INVENTARIO > O. SALIDAS (otras salidas), INVENTARIO > T. SALIDA y T. ENTRADA (traslados entre bodegas).
 
+## Imprimir códigos de barra de productos (OPERACIONES o acciones sobre productos)
+Ruta: Menú > INVENTARIO > OPERACIONES. La lista se llama **ACCIONES SOBRE PRODUCTOS**.
+1. En la fila de cada producto escriba cuántas etiquetas quiere imprimir. Deje vacío o en 0 los que no quiera imprimir.
+2. Presione **Imprimir codigo de barra**.
+Según la configuración de su empresa, las etiquetas se abren en una pestaña nueva para imprimirlas o se envían directamente a la impresora de etiquetas, con o sin precio.
+Si no escribió ninguna cantidad aparece "Seleccionar el Registro...".
+Notas:
+- Si un producto no tiene código de barra, al imprimir el sistema le asigna uno (la letra B más su código) y lo guarda en el producto.
+- Escriba las cantidades e imprima sin cambiar de página ni filtrar la tabla: solo se toman los productos que se ven en ese momento.
+Ver también: Crear un producto.
+<!-- REVISAR: nombre de la columna de cantidad y demás columnas de la lista; el cuadro Buscar… de esta lista no tiene ninguna acción programada; confirmar si se ve el cuadro Filtro: de la tabla -->
+
+## Ejecutar procesos de inventario (salidas por fórmulas y XML para Encuentra24)
+Ruta: Menú > INVENTARIO > PROCESOS. La pantalla se llama **Procesos de inventario** y tiene dos tarjetas.
+Salidas de inventario por fórmulas: crea la salida de inventario de los productos que componen a los productos formulados vendidos en el ciclo elegido.
+1. En la tarjeta **Salidas de inventario por fórmulas** elija **Periodo**. Solo aparecen los periodos sin cerrar.
+2. Elija **Ciclo**. La lista se llena al elegir el periodo.
+3. Presione **Aceptar** y confirme "Desea Realizar la salidas de inventarios de las facturas con productos formulados.".
+Al terminar aparece "success". Si aparece "problemas en el proceso de cierre", el proceso no terminó bien; por ejemplo, cuando el ciclo ya está cerrado.
+Notas: toma solo facturas en estado APLICADO. La salida se registra en la bodega predeterminada de la configuración de su empresa. Elija siempre **Periodo** y **Ciclo** antes de **Aceptar**.
+XML para Encuentra24:
+1. En la tarjeta **XML para Encuentra24** presione **Aceptar**. Se abre una pestaña nueva y se descarga un archivo XML con los inmuebles.
+<!-- REVISAR: sin Periodo ni Ciclo la pantalla no avisa y el proceso podría tomar facturas de todos los periodos; confirmar si repetir el proceso duplica salidas; el XML solo incluye un inmueble y lleva datos de contacto fijos en el código -->
+
+## Ver, reactivar o eliminar inmuebles desactivados (INMUEBLES DESAC)
+Ruta: Menú > INVENTARIO > INMUEBLES DESAC. La lista se llama **LISTA DE INMUEBLES DESACTIVADOS**.
+Reactivar un inmueble:
+1. Seleccione la fila en la lista.
+2. Presione **Editar**. Se abre la pantalla de edición del inmueble.
+Importante: **Editar** reactiva el inmueble en ese momento, sin pedir confirmación y aunque luego no presione **Guardar**.
+Si no seleccionó ninguna fila aparece "Seleccionar el Registro...".
+Volver a desactivarlo: en la pantalla de edición presione **Eliminar** y confirme "Desea eliminar este Registro...". El botón puede no aparecer según la configuración de su empresa. Según su empresa, si tiene existencias aparece "EL REGISTRO NO PUEDE SER ELIMINADO, SU CANTIDAD ES MAYOR QUE 0". En esta lista no hay botón para borrar un inmueble definitivamente.
+Notas:
+- El cuadro **Buscar…** busca por código solo entre los registros activos. Con un inmueble desactivado responde "NO SE ENCONTRO EL REGISTRO"; ubíquelo en la lista.
+- Si escribe el código de un registro activo, se abre su edición.
+Ver también: Crear un producto.
+<!-- REVISAR: confirmar en la BD que la vista de esta lista muestra solo registros desactivados, y sus columnas -->
+
+## Qué contiene el menú TRANSA
+Ruta: Menú > TRANSA.
+El menú TRANSA reúne estas opciones (cada usuario ve las que su rol tenga permitidas):
+- **DOCUMENTOS**: configura los documentos del sistema, sus causales y sus cuentas contables.
+- **VENCIMIENTO**: pantalla **FECHA DE EXPIRACION**. Descarga, sube y procesa el archivo con las fechas de vencimiento de la bodega seleccionada.
+- **ENDOSOS**: cambia un dato de un documento ya registrado, dejando constancia del valor anterior y del nuevo.
+- **PRODUCCION**: registra órdenes de producción con sus insumos y resultados.
+- **NOTAS**: registra y consulta las calificaciones de los alumnos.
+Notas: la opción NOTAS de este menú es para calificaciones. No es una nota de crédito ni de débito: esas están en CXC y en CXP.
+Ver también: Configurar documentos del sistema y causales; Registrar un endoso; Registrar calificaciones de un alumno.
+
+## Configurar documentos del sistema y causales
+Ruta: Menú > TRANSA > DOCUMENTOS. La lista se llama **LISTA DE DOCUMENTOS**. Aquí no se crean ni se eliminan documentos: solo se configuran.
+1. Seleccione el documento y presione **Editar**.
+2. En **Datos del documento** complete **Tipo de Comprobante**, **Referencia 1**, **Referencia 2**, **Referencia 3** y **Descripcion**. Marque **Contabiliza** para que el documento aparezca en CONTABILIDAD > PROCESOS. **Nombre**, **Workflow** y **Afectar el Inventario** no se pueden cambiar.
+3. En la pestaña **Causales** presione **Agregar**. En **Agregar causal** complete **Sucursal** y **Nombre** (obligatorios), **Bodega Origen**, **Bodega Destino** y **Es Principal**, y presione **Aceptar**.
+4. Para quitar un causal, toque la fila, presione **Eliminar** y confirme.
+5. Presione **Guardar** (en el teléfono, en la barra inferior). Los causales agregados o quitados se graban en ese momento.
+6. Para sus cuentas contables, toque el causal ya guardado y abra la pestaña **Configuracion**. Elija **Concepto**, **D|C** (Debito o Credito), **Cuenta** y **Centro de Costo**, y presione **Agregar**. Esta tabla se graba al instante, sin **Guardar**. Para quitar una fila, tóquela, presione **Eliminar** y confirme.
+Mensaje de validación: "Siempre el documento tiene que tener un Causal Principal."
+Notas: si falta **Concepto**, **Cuenta** o el causal, o en **Agregar causal** falta **Sucursal** o **Nombre**, el botón no hace nada ni muestra aviso. Un causal recién agregado no carga configuración hasta presionar **Guardar**.
+Ver también: Contabilizar documentos.
+
+## Registrar calificaciones de un alumno
+Ruta: Menú > TRANSA > NOTAS. La pantalla se llama **Notas**.
+1. En **Filtrar por** elija **Grado**, **Año**, **Meses** y **Días** (**Meses** se habilita al elegir el año).
+2. Con **Buscar** seleccione **Alumno**, **Colaborador** y **Materia**.
+3. Elija **Calificación Cualitativa** y escriba **Calificación Cuantitativa**, que debe estar dentro del rango de esa calificación. **Referencia 1** y **Referencia 2** son opcionales.
+4. Presione **Guardar** (en el teléfono, en la barra inferior). Si ya hay una nota con el mismo grado, alumno, colaborador, materia y fecha, se actualiza en lugar de crear otra.
+Consultar: complete **Grado**, **Año**, **Meses**, **Días** y **Alumno**, y presione **Mostrar**. La tabla **Calificaciones** muestra las notas de esa fecha; **Colaborador** y **Materia** acotan el resultado.
+Eliminar: con los mismos filtros, más **Colaborador** y **Materia**, presione **Eliminar** y confirme. Luego compruebe el resultado con **Mostrar**.
+Certificado: con **Grado**, **Año** y **Alumno**, presione **Certificado**.
+Mensajes de validación: "Debe seleccionar un Grado", "Debe seleccionar un año", "Debe seleccionar un mes", "Debe seleccionar el dia para aplicar", "Debe seleccionar un alumno" (al consultar o imprimir), "Debe seleccionar un Profesor", "Debe seleccionar una Materia", "Debe seleccionar un valor cualitativo" y "Debe especificar un valor cuantitativo".
+Notas: al cambiar la calificación cualitativa se borra la cuantitativa. Si el número sale del rango, se avisa y se borra.
+<!-- REVISAR: Eliminar no filtra por fecha: puede borrar otra nota del mismo alumno, grado, materia y colaborador. -->
+<!-- REVISAR: Guardar y Eliminar no exigen Alumno: sin el pueden tocar la nota de otro alumno. -->
+
+## Registrar un endoso
+Ruta: Menú > TRANSA > ENDOSOS. La lista se llama **LISTA DE ENDOSOS**.
+Un endoso cambia un dato de una factura, una compra o un activo fijo y guarda el valor anterior y el nuevo.
+1. Presione **Nuevo**. Se abre **ENDOSO:#**.
+2. En **Documento** revise **Fecha** (arranca en hoy) y **Estado** (al crear, solo REGISTRADO). Elija **Tipo de Transacción** y, con **Buscar**, el **Documento**.
+3. En **Motivo y referencias** escriba **Comentario** (el motivo) y, si aplica, **Referencia 1**, **Referencia 2** y **Referencia 3**.
+4. En **Valor a endosar** elija **Valor a Modificar**. Sus opciones dependen del tipo de documento; si no hay, dice "No hay datos disponibles". **Valor anterior** se carga solo; complete **Valor Nuevo**.
+5. Presione **Guardar** (en el teléfono, en la barra inferior). El cambio aún no se aplica al documento.
+6. Para aplicarlo, en la pantalla de edición cambie **Estado** a APLICADO y presione **Guardar**. El documento toma el valor nuevo.
+Mensaje de validación: "Seleccionar un valor nuevo para endoso".
+Para modificarlo, búsquelo por número o selecciónelo en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Imprimir**, **Eliminar** y **Guardar**. **Eliminar** pide confirmar "Desea eliminar este Registro...".
+Restricciones: un endoso APLICADO ya no se puede modificar ni eliminar. Tampoco se puede modificar si su ciclo contable está cerrado ("EL DOCUMENTO NO PUEDE ACTUALIZARCE, EL CICLO CONTABLE ESTA CERRADO").
+<!-- REVISAR: con que Tipo de Transaccion se llega a un activo fijo en Buscar. -->
+<!-- REVISAR: otros tipos con opciones configuradas dan error al cargar Valor anterior. -->
+
+## Registrar una orden de producción (insumos y resultados)
+Ruta: Menú > TRANSA > PRODUCCION. La lista se llama **LISTA DE ORDENES DE PRODUCCION**.
+1. Presione **Nuevo**. Se abre **Agregar Orden De Produccion**.
+2. En la pestaña **General** indique **Fecha** y **Moneda**. Opcional: **Solicitado Por** y **Elaborado Por** (con **Buscar**), **Referencia 1**, **Referencia 2**, **Referencia 3** y **Comentario**.
+3. En la pestaña **Insumos** presione **Agregar**. Elija primero **Bodega Origen** (al cambiarla se limpia el producto). Con **Buscar** elija **Producto Origen** (lo que se consume) y **Producto Destino** (lo que se fabrica). Escriba **Cantidad** y presione **Salvar**.
+4. En la pestaña **Resultados** presione **Agregar**. Elija **Bodega Destino**, **Producto Destino** y **Cantidad**, y presione **Salvar**. El costo sale de los insumos de ese producto; agregue primero los insumos.
+5. Presione **Guardar** (en el teléfono, en la barra inferior).
+Cada **Producto Destino** de los insumos debe estar en Resultados, y viceversa. **Monto Total** suma el costo de los insumos.
+Mensajes de validación: "Ingrese la Fecha", "Debe ingresar al menos un insumo", "Debe ingresar al menos un producto resultante" y "Los Insumos no coinciden con los Resultados".
+Quitar o cambiar una línea: márquela y presione **Eliminar** o **Editar**.
+Para modificarla, selecciónela en la lista y presione **Editar**, o use **Buscar por número…**. Arriba tiene **Nuevo**, **Atras**, **Eliminar**, **Imprimir** y **Guardar**; adjuntos en **Mas** > **Archivos**.
+El inventario se mueve al guardar en estado APLICADO: sale cada insumo de su **Bodega Origen** y entra cada resultado en su **Bodega Destino**.
+<!-- REVISAR: confirmar en una prueba real el movimiento de inventario al aplicar -->
+
+## Registrar el vencimiento de productos (fecha de expiración)
+Ruta: Menú > TRANSA > VENCIMIENTO. La pantalla se llama **FECHA DE EXPIRACION**.
+Las fechas se cambian con un archivo: se descarga, se corrige en el equipo, se sube y se procesa.
+1. En **Bodega** elija la bodega (solo aparecen las asignadas a su usuario).
+2. Presione **Descargar**. Se descarga el archivo expired_items.csv con los productos de esa bodega que ya tienen fecha de expiración.
+3. Corrija en el archivo las columnas **Expiracion** y **Cantidad**. No cambie las demás columnas ni el nombre del archivo. Para varias fechas de un mismo producto, repita su línea con el mismo código en **Sistema**.
+4. Presione **Subir Datos**. En la pestaña que se abre, suba el archivo corregido.
+5. Vuelva a la pantalla y presione **Procesar**. Debe aparecer "ARCHIVO PROCESADO CORRECTAMENTE".
+Importante:
+- Si borra todas las líneas de un producto, se borran sus fechas en esa bodega.
+- Un producto que no estaba en el archivo descargado no se agrega, aunque escriba su línea.
+- **Descargar** reemplaza el archivo guardado. No lo presione entre **Subir Datos** y **Procesar**, o perderá sus cambios.
+Mensajes:
+- "Seleccione una bodega".
+- "NO SE ENCONTRARON REGISTROS EXPIRADOS EN LA BODEGA": la bodega no tiene productos con fecha de expiración.
+- "NO SE ENCONTRO EL ARCHIVO expired_items.csv": no hay archivo con ese nombre en la bodega.
+- "EL ARCHIVO expired_items.csv NO TIENE EL FORMATO CORRECTO": alguna línea tiene columnas de más o de menos.
+El separador de columnas del archivo depende de la configuración de su empresa.
+<!-- REVISAR: de dónde salen las primeras fechas de expiración de un producto; formato de fecha aceptado al editar en Excel -->
+
 ## Registrar una compra de mercadería
 Ruta: Menú > INVENTARIO > COMPRA.
 1. Presione **Nuevo**, seleccione el proveedor, la bodega y la fecha.
 2. Agregue los productos con su cantidad y costo.
 3. Guarde y aplique la compra para que aumente el inventario. <!-- REVISAR -->
 
+## Qué contiene el menú ADM TALLER
+Ruta: Menú > ADM TALLER.
+- **TALLER**: órdenes de taller o de trabajo.
+- **PEDIDOS**: pedidos de piezas o productos para un cliente.
+- **ZONA DE CLIENTE**: registros de equipos de clientes en la zona de cliente.
+- **GARANTIA**: garantías.
+- **DEV. COMPRA**: devoluciones de compra a proveedores.
+- **ORD. COMPRA**: órdenes de compra.
+Las listas de TALLER, PEDIDOS y ZONA DE CLIENTE tienen **Vistas**, **Editar**, **Eliminar** y **Nuevo**; PEDIDOS tiene además **Imprimir**. Seleccione la fila antes de presionar **Editar**, **Eliminar** o **Imprimir**; si no lo hace aparece "Seleccionar el Registro...".
+Buscar en la lista: escriba en **Buscar por número…** y presione la lupa o Enter; si encuentra el número, abre el registro.
+Notas: en el teléfono **Guardar** está en la barra inferior y **Buscar** abre la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol. Según la configuración de su empresa, el menú y los campos pueden tener otros nombres.
+Ver también: Registrar una orden de taller, Registrar un pedido, Registrar una zona de cliente.
+
+## Registrar una orden de taller
+Ruta: Menú > ADM TALLER > TALLER. La lista se llama **LISTA DE TALLER**.
+1. Presione **Nuevo**.
+2. En **Informacion**, tarjeta **Documento**: revise **Fecha** y hora (arrancan en la actual), **Sucursal** y **Estado**. Al crear solo se ofrece el estado inicial.
+3. En **Personas y factura** elija con **Buscar** **Cliente**, **Tecnico** y, si aplica, **Factura** (**Limpiar** borra lo elegido).
+4. En **Datos del registro** complete **Estado del equipo**, **Articulo**, **Desc. otros**, **Marca**, **Modelo**, **Serie** y **Accesorios**.
+5. En **Detalle** complete **Moneda**, **Problema**, **Nota**, **Contraseña**, **Solucion** y **Monto**.
+6. Opcional: en **Referencias** escriba la **Descripción**, elija la **Situación** y presione **Agregar**; en **Datos** indique **Fecha de siguiente orden** y **Activo Fijo**; en **Archivos** adjunte documentos.
+7. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensajes de validación: "Establecer Fecha al Documento", "Seleccionar cliente" y "Seleccionar tecnico". Según la configuración de su empresa pueden pedirse otros campos.
+Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Eliminar**, **Imprimir E.**, **Imprimir S.**, **Opciones** (**Imprimir Sticker** y **Crear orden**) y **Guardar**.
+Crear orden: indique antes **Fecha de siguiente orden**, abra **Opciones** > **Crear orden**, revise **Problema** y **Nota** y acepte. La nueva orden queda en esa fecha, con estado inicial y monto 0.
+Notas: al guardar se puede enviar un WhatsApp al cliente según el **Estado del equipo**; si no se envía, la orden igual se guarda y se avisa en pantalla.
+<!-- REVISAR: el aviso de WhatsApp no enviado dice "Pedido" y un nombre tecnico -->
+
+## Registrar un pedido
+Ruta: Menú > ADM TALLER > PEDIDOS. La lista se llama **LISTA DE PEDIDOS**.
+1. Presione **Nuevo**.
+2. En **Informacion**, tarjeta **Documento**: **Fecha pedido** y **Fecha bodega** (abren vacías y son opcionales), **Sucursal** y **Status de pedido**.
+3. En **Factura y personas** elija con **Buscar** **Factura**, **Cliente** y **Tecnico** (**Limpiar** borra lo elegido). Al elegir la factura, el cliente se llena solo; puede cambiarlo.
+4. En **Producto** complete **Informacion adicional**, **Marca**, **Modelo** y **Numero de parte**.
+5. En **Precio y envio** complete **Moneda**, **Precio de venta**, **Pieza**, **Otros**, **Envio**, **Tracking** y **Precio de compra**. Según la configuración de su empresa también puede ver **Estado** o no ver **Precio de compra**.
+6. Opcional: en **Archivos** adjunte documentos.
+7. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensajes de validación: "El monto no puede ser 0", "Seleccionar cliente" y "Seleccionar tecnico". Si falta la factura aparece "Escribir una nota" al crear y "Seleccionar factura" al modificar; según la configuración de su empresa la factura puede no ser obligatoria.
+Para modificarlo, selecciónelo en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Eliminar**, **Imprimir** y **Guardar**.
+Notas: según la configuración de su empresa, al guardar cambios se puede enviar un WhatsApp al cliente; si no se envía, el pedido igual se guarda y se avisa en pantalla.
+<!-- REVISAR: "Escribir una nota" pide en realidad la Factura; confirmar si se unifica el mensaje -->
+<!-- REVISAR: una fecha vacia se guarda como 1900-01-01; confirmar como se ve en lista e impresion -->
+<!-- REVISAR: las pestanas Referencias y Comentario aparecen vacias en esta pantalla -->
+
+## Registrar una zona de cliente
+Ruta: Menú > ADM TALLER > ZONA DE CLIENTE. La lista se llama **LIST ZONA DE CLIENTE**.
+1. Presione **Nuevo**.
+2. En **Informacion**, tarjeta **Documento**: revise **Fecha** (arranca en hoy), **Sucursal** y **Estado**. Al crear solo se ofrece el estado inicial.
+3. En **Personas** elija con **Buscar** **Cliente** y **Tecnico** (**Limpiar** borra lo elegido).
+4. En **Datos del registro** complete **Numero**, **Estado del equipo**, **Articulo**, **Marca**, **Modelo**, **Serie**, **Accesorios**, **Tipo** y **Cotizacion**; con **Buscar** elija **Factura** si aplica.
+5. En **Detalle** complete **Moneda**, **Problema**, **Nota**, **Contraseña**, **Solucion** y **Monto**.
+6. Opcional: en **Referencias** escriba la **Descripción**, elija la **Situación** y presione **Agregar**; en **Archivos** adjunte documentos.
+7. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensajes de validación: "Establecer Fecha al Documento" y "Seleccionar cliente". Al modificar también se exige el técnico: "Seleccionar tecnico". Según la configuración de su empresa pueden pedirse otros campos, y los nombres y campos visibles pueden cambiar.
+Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Eliminar**, **Auditoria**, **Imprimir E.**, **Imprimir S.** y **Guardar**. **Auditoria** muestra el historial de cambios: fecha, usuario, campo, valor anterior y valor nuevo.
+<!-- REVISAR: para que usa el negocio la zona de cliente; la pantalla se basa en la de taller -->
+<!-- REVISAR: Tecnico es opcional al crear y obligatorio al modificar; confirmar si es intencional -->
+<!-- REVISAR: la pestana Comentario aparece vacia en esta pantalla -->
+
+## Registrar una garantía
+Ruta: Menú > ADM TALLER > GARANTIA. La lista se llama **LISTA DE GARANTIAS**.
+1. Presione **Nuevo**.
+2. En la tarjeta **Documento** indique **Fecha**, **Sucursal** y **Status de Garantia**. Según la configuración de su empresa también ve **Aplicado**, **Cambio** y **Estado**.
+3. En **Personas y factura** elija con **Buscar** el **Cliente**, el **Tecnico** y la **Factura** (**Limpiar** borra lo elegido). Elegir la factura no llena el cliente.
+4. En **Articulo** complete **Articulo**, **Sello**, **Modelo** y **Serie**.
+5. En **Detalle de la garantia** complete **Deja cargador**, **Problema** y **Solucion**. Según la configuración también ve **Moneda** y **Monto**.
+6. Presione **Guardar** (en el teléfono, en la barra inferior). La garantía queda abierta en edición.
+Mensajes de validación: "Establecer Fecha al Documento", "Seleccionar factura", "Seleccionar cliente" y "Seleccionar tecnico".
+Para modificarla: seleccione la fila y presione **Editar**, o escriba en **Buscar por número…** y presione la lupa. Arriba tiene **Nuevo**, **Atras**, **Eliminar**, **Imprimir**, **Imprimir S.**, **Imprimir Sticker** y **Guardar**. En edición, el encabezado dice **INGRESO** y **Articulo** se llama **Producto**. La pestaña **Archivos** abre los archivos del documento.
+Notas: según la configuración, al guardar se envía un WhatsApp al cliente. Si aparece "Garantia guardado correctamente, WhatsApp no enviado...", la garantía sí se guardó. Con el ciclo contable cerrado no se puede crear, modificar ni eliminar.
+<!-- REVISAR: Eliminar parece rechazar los estados marcados como eliminables (condición invertida) -->
+<!-- REVISAR: al crear con Articulo "Otros" y WhatsApp activo puede fallar el texto del mensaje -->
+Ver también: Registrar una orden de compra.
+
+## Registrar una devolución de compra a proveedor
+Ruta: Menú > ADM TALLER > DEV. COMPRA. La lista se llama **DEVOLUCION DE COMPRA**.
+1. Presione **Nuevo**.
+2. En **Datos del documento** indique **Fecha** y elija con **Buscar** el **Proveedor** (**Limpiar** lo borra).
+3. En **Estado y bodega** revise **Estado** y **Bodega**: vienen con una opción ya elegida.
+4. Opcional: pestaña **Referencias** (**Referencia1**, **Referencia2** y **Referencia3**) y pestaña **Comentario** (**Nota**).
+5. En la tarjeta **Detalle** presione **Agregar**, elija el producto y escriba la **Cantidad**. Repita por cada producto.
+6. Para quitar un producto, marque su casilla (en el teléfono, **Quitar**) y presione **Eliminar** de esa tarjeta.
+7. El botón para terminar es **Guardar** (en el teléfono, en la barra inferior).
+Aviso: por ahora, una devolución con productos en el **Detalle** no se guarda; la pantalla queda en blanco. Si le ocurre, avise a soporte.
+<!-- REVISAR: guardar con detalle falla, defecto previo pendiente de decision -->
+Mensajes de validación: "Seleccione un proveedor" (también al presionar **Agregar** sin proveedor), "Establecer Estado", "Escriba la Fecha del Documento" y "El Item ya esta agregado".
+Para modificarla: seleccione la fila y presione **Editar**, o use **Buscar por número…** y la lupa. Arriba tiene **Atras**, **Eliminar**, **Imprimir** y **Guardar**. Lo que puede cambiar o eliminar depende del estado.
+Notas: al pasar a un estado que aplica la devolución, los productos salen del inventario de la **Bodega**. Si la cantidad supera la existencia: "La cantidad de ... es mayor que la disponible en bodega". Con el ciclo contable cerrado no se puede modificar.
+<!-- REVISAR: nombres de los estados -->
+Ver también: Registrar una orden de compra.
+
+## Registrar una orden de compra
+Ruta: Menú > ADM TALLER > ORD. COMPRA. La lista se llama **ORDEN DE COMPRA**.
+1. Presione **Nuevo**.
+2. En **Datos del documento** indique **Fecha** y elija con **Buscar** el **Proveedor** (**Limpiar** lo borra).
+3. En la tarjeta **Estado** revise **Estado**: viene con una opción ya elegida.
+4. Opcional: pestaña **Referencias** (**Referencia1**, **Referencia2** y **Referencia3**) y pestaña **Comentario** (**Nota**).
+5. En la tarjeta **Detalle** presione **Agregar**, elija el producto y escriba la **Cantidad**. La búsqueda usa el proveedor elegido. Repita por cada producto.
+6. Para quitar un producto, marque su casilla (en el teléfono, **Quitar**) y presione **Eliminar** de esa tarjeta.
+7. Presione **Guardar** (en el teléfono, en la barra inferior). La orden queda abierta en edición.
+Mensajes de validación: "Seleccione un proveedor" (también al presionar **Agregar** sin proveedor), "Establecer Estado", "Escriba la Fecha del Documento" y "El Item ya esta agregado". Al guardar en edición, sin productos: "Agregar el Detalle del Documento".
+Para modificarla: seleccione la fila y presione **Editar**, o escriba en **Buscar por número…** y presione la lupa. Arriba tiene **Atras**, **Eliminar**, **Imprimir** y **Guardar**. **Eliminar** pide confirmar "Desea eliminar este Registro...". La pestaña **Archivos** abre los archivos del documento. Lo que puede cambiar o eliminar depende del estado.
+Notas: la orden de compra no mueve el inventario.
+Aviso: en edición aparecen **Archivo a importar** y **Importar**, pero hoy ese botón no realiza ninguna acción.
+<!-- REVISAR: nombres de los estados; Importar no tiene acción en la pantalla -->
+Ver también: Registrar una compra de mercadería, Registrar una devolución de compra a proveedor.
+
+## Qué contiene el menú CXC
+Ruta: Menú > CXC. Aquí se administran los clientes y sus créditos.
+- **DOCUMENTOS**: consultar o ajustar los documentos de crédito de los clientes.
+- **BURO CREDITO**: consultar el récord de crédito de una persona.
+- **LINEA D. CREDITO**: catálogo de líneas de crédito.
+- **NOTA D. CREDITO**: al aplicarla suma el monto al saldo del cliente.
+- **NOTA D. DEBITO**: al aplicarla resta el monto del saldo del cliente.
+- **CLIENTES**: catálogo de clientes.
+- **PROCESOS**: pantalla **Procesos CxC**. En **Subir carga SIN Riesgo**, **Aceptar** ejecuta la carga en una pestaña nueva.
+- **REPORTES**: reportes de cuentas por cobrar.
+Lo que ve cada usuario depende de los permisos de su rol.
+Notas: en el teléfono el botón **Guardar** está en la barra inferior, y los botones **Buscar** y **Agregar** de los formularios abren una ventana dentro de la misma pantalla. Los montos se muestran con formato 1,500.25.
+Ver también: Crear un cliente; Crear una línea de crédito; Consultar o ajustar documentos de crédito de un cliente; Consultar el buró de crédito de un cliente.
+<!-- REVISAR: en DOCUMENTOS, CLIENTES y LINEA D. CREDITO la caja de busqueda de la lista no tiene accion programada; no se documenta como funcional -->
+
+## Consultar o ajustar documentos de crédito de un cliente
+Ruta: Menú > CXC > DOCUMENTOS. La lista se llama **LISTA DE DOCUMENTOS** y solo tiene **Vistas** y **Editar**: aquí no se crean ni eliminan documentos.
+1. Seleccione la fila y presione **Editar** (sin selección aparece "Seleccionar el Registro...").
+2. Pestaña **ENTIDAD**: datos del cliente, **Balance US$** y, en **DETALLES DE LINEA DE CREDITO**, el **Balance** de cada línea.
+3. Pestaña **Documento**: **Numero** y **Monto Inicial** no se editan. Puede cambiar **Saldo**, **Estado** y **Fecha**. En **Entidades relacionadas** use **Agregar** o marque la fila y use **Editar** o **Eliminar**; **Mostrar** elige las columnas visibles. En la ventana de la entidad complete los datos y presione **Aceptar**.
+4. Pestaña **Amortizacion**: en cada cuota puede cambiar **Fecha**, **Remanente**, **Dias Atrazados**, **Nota**, **Estado** y **Abono al Capital**.
+5. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensaje de validación: "Ingresar Balance".
+Notas:
+- Los valores se guardan tal como los escribe: no registran un abono ni recalculan las demás cuotas. Para registrar un pago use la sección de abonos.
+- Si el balance del cliente o de una línea supera su límite, se guarda igual al límite.
+- El cambio de **Moneda** no se guarda.
+- Lo agregado, cambiado o eliminado en **Entidades relacionadas** se aplica al presionar **Guardar**.
+Ver también: Registrar un abono de un cliente; Abono al capital.
+<!-- REVISAR: la validacion "Escribir Saldo" revisa un campo que no existe en la pantalla, nunca se dispara. El filtro de fecha y Buscar de la lista no tienen accion programada. Falta confirmar desde que operaciones se crean los documentos -->
+
+## Consultar el buró de crédito de un cliente
+Ruta: Menú > CXC > BURO CREDITO. La pantalla se llama **Consultar Record de Credito Historico y Actual**. El uso depende de la configuración de su empresa.
+1. En la caja de búsqueda escriba la identificación (formato 000-000000-0000X) y presione el botón de la lupa.
+2. Revise las pestañas:
+   - **Informacion General.**: **Identificación del Cliente**, **Listado de Telefonos** y **Lista de Direcciones del cliente**.
+   - **Historial de Creditos.**: **Detalle de operaciones de credito** y **Detalle de operaciones de creditos cancelados**, con montos, saldo, mora y cuota.
+   - **Consultas.**: fechas y entidades donde el cliente ha solicitado crédito.
+3. **Imprimir** abre el reporte de la consulta en otra pestaña. **Atras** vuelve a la lista de clientes. **Regresar al cliente** aparece según la configuración de su empresa.
+Arriba se muestra **ULTIMA CONSULTA** con su fecha y el nombre del archivo.
+Restricciones: cada búsqueda por identificación consume una consulta del cupo de su empresa. Al agotarse aparece "NO PUEDE SEGUIR CONSULTADO, CREDITOS AGOTADOS".
+Desde el cliente: según la configuración de su empresa, al editarlo tiene **Acciones** > **001) Ir a Buro** y, en la pestaña **Informacion**, **Ver Buro** con las consultas anteriores.
+Ver también: Crear un cliente.
+<!-- REVISAR: Nuevo falla, defecto previo pendiente -->
+
+## Crear una línea de crédito
+Ruta: Menú > CXC > LINEA D. CREDITO. La lista se llama **LISTA DE LINEA DE CREDITO**.
+Aquí se crea el nombre de la línea. El límite, el interés y el plazo se configuran en cada cliente.
+1. Presione **Nuevo**. Se abre **Agregar Linea de Credito**.
+2. En la tarjeta **Datos de la línea** escriba **Nombre** (obligatorio) y, si desea, **Descripcion**.
+3. Presione **Guardar** (en el teléfono, en la barra inferior). La línea queda abierta en edición y disponible en el campo **Linea** de la pestaña **CXC Lineas.** del cliente.
+Para modificarla, selecciónela en la lista y presione **Editar** (se abre **Editar Linea de Credito**). **Codigo** no se puede cambiar. La descripción aparece en edición con el nombre **Direccion**.
+Para eliminarla, presione **Eliminar** en la lista o en la edición y confirme "Desea eliminar este Registro...". En la lista, sin selección aparece "Seleccionar el Registro...".
+Ver también: Crear un cliente.
+<!-- REVISAR: eliminar no valida si la linea esta asignada a clientes; confirmar el efecto. La etiqueta "Direccion" en edicion parece un error de texto -->
+
+## Registrar una nota de crédito de cliente
+Ruta: Menú > CXC > NOTA D. CREDITO. La lista se llama **LISTA DE NOTAS DE CREDITO DE CLIENTES**.
+1. Presione **Nuevo**. Se abre **Nota de crédito**.
+2. En la tarjeta **Datos de la nota** revise **Fecha** (arranca en hoy), **Estado** (al crear, el único es REGISTRADO) y **Moneda**. Escriba el **Monto** y elija el **Cliente** con **Buscar** (**Limpiar** borra lo elegido).
+3. Opcional, en la tarjeta **Referencias y comentario**: **Referencia 1**, **Referencia 2**, **Referencia 3** y **Comentario**.
+4. Presione **Guardar** (en el teléfono, en la barra inferior). La nota queda REGISTRADA y todavía no cambia el saldo del cliente.
+5. Para aplicarla, ábrala en edición, cambie **Estado** a APLICADO y presione **Guardar**. Solo la pantalla de edición permite este paso. Al aplicarla, el monto se suma al saldo del cliente en la moneda elegida (**Balance Cordobas** o **Balance Dolares** en su ficha).
+Mensajes de validación: "Establecer Fecha al Documento", "El monto no puede ser 0" y "Seleccione el cliente".
+Para modificarla, escriba el número en **Buscar por número…** o seleccione la fila y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Eliminar**, **Imprimir** y **Guardar**. En **Mas** > **Archivos** adjunta documentos.
+Si el estado no lo permite, verá "EL REGISTRO NO PUEDE SER EDITADO POR SU ESTADO ACTUAL" o "EL REGISTRO NO PUEDE SER ELIMINADO POR SU ESTADO ACTUAL".
+Notas: esta pantalla es para clientes; las notas de proveedor están en CXP y las de banco en su propio módulo.
+<!-- REVISAR: confirmar si una nota APLICADA admite editarse o eliminarse; eliminar no revierte el saldo del cliente -->
+Ver también: Registrar una nota de débito de cliente; Notas de crédito y débito de banco.
+
+## Registrar una nota de débito de cliente
+Ruta: Menú > CXC > NOTA D. DEBITO. La lista se llama **LISTA DE NOTAS DE DEBITO DE CLIENTES**.
+1. Presione **Nuevo**. Se abre **Nota de débito**.
+2. En la tarjeta **Datos de la nota** revise **Fecha** (arranca en hoy), **Estado** (al crear, el único es REGISTRADO) y **Moneda**. Escriba el **Monto** y elija el **Cliente** con **Buscar** (**Limpiar** borra lo elegido).
+3. Opcional, en la tarjeta **Referencias y comentario**: **Referencia 1**, **Referencia 2**, **Referencia 3** y **Comentario**.
+4. Presione **Guardar** (en el teléfono, en la barra inferior). La nota queda REGISTRADA y todavía no cambia el saldo del cliente.
+5. Para aplicarla, ábrala en edición, cambie **Estado** a APLICADO y presione **Guardar**. Solo la pantalla de edición permite este paso. Al aplicarla, el monto se resta del saldo del cliente en la moneda elegida (**Balance Cordobas** o **Balance Dolares** en su ficha).
+Mensajes de validación: "Establecer Fecha al Documento", "El monto no puede ser 0" y "Seleccione el cliente".
+Para modificarla, escriba el número en **Buscar por número…** o seleccione la fila y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Eliminar**, **Imprimir** y **Guardar**. En **Mas** > **Archivos** adjunta documentos.
+Si el estado no lo permite, verá "EL REGISTRO NO PUEDE SER EDITADO POR SU ESTADO ACTUAL" o "EL REGISTRO NO PUEDE SER ELIMINADO POR SU ESTADO ACTUAL".
+Notas: esta pantalla es para clientes; las notas de proveedor están en CXP y las de banco en su propio módulo.
+<!-- REVISAR: confirmar si una nota APLICADA admite editarse o eliminarse; eliminar no revierte el saldo del cliente -->
+Ver también: Registrar una nota de crédito de cliente; Notas de crédito y débito de banco.
+
+## Ejecutar procesos de CxC: descargar el archivo de créditos para SIN Riesgo
+Ruta: Menú > CXC > PROCESOS. La pantalla se llama **Procesos CxC**.
+1. En la tarjeta **Subir carga SIN Riesgo** presione **Aceptar**.
+2. Se abre una pestaña nueva y se descarga un archivo CSV con los datos de los créditos. El nombre incluye la fecha del día, por ejemplo `user_20261105.csv`.
+Notas:
+- Aunque la pantalla habla de carga, hoy el proceso solo descarga el archivo: no envía los datos a SIN Riesgo. Esa entrega debe hacerse aparte.
+- El separador de columnas del archivo depende de la configuración de su empresa.
+- Necesita permiso sobre esta opción del menú. Si ocurre un error, el mensaje aparece en la pestaña nueva.
+<!-- REVISAR: qué créditos incluye el archivo y cómo se entrega a SIN Riesgo -->
+
 ## Registrar un gasto
-Ruta: Menú > CXP > GASTOS.
-1. Presione **Nuevo**, indique fecha, concepto, monto y moneda.
-2. Presione **Guardar**. <!-- REVISAR -->
+Ruta: Menú > CXP > GASTOS. La lista se llama **LISTA DE GASTOS**.
+1. Presione **Nuevo**. Se abre **Gasto:#**.
+2. En **Informacion**, tarjeta **Datos del documento**: **Fecha** (arranca en hoy), **Sucursal**, **Estado** y, si quiere, las referencias. **Cambio** y **Aplicado** no se cambian a mano.
+3. En la tarjeta **Clasificación del gasto** elija **Tipo**, **Categoria** (cambia según el **Tipo**) y **Clasificación**.
+4. En **Referencias**, tarjeta **Montos**: **Moneda**, **Monto** (por ejemplo 1,500.25) e **IVA**. **Total** (Monto + IVA) se calcula solo.
+5. Opcional, tarjeta **Proveedor y factura**: con **Buscar** elija **Proveedor** y luego **Factura**, que muestra su saldo pendiente. Cambiar la **Moneda** borra la factura elegida.
+6. Opcional: en **Comentario** escriba la **Descripcion**.
+7. Presione **Guardar** (en el teléfono, en la barra inferior).
+Según la configuración de su empresa, las referencias pueden tener otro nombre, algunos campos pueden ocultarse o los montos pueden aparecer en **Informacion**.
+Mensajes: "Establecer Fecha al Documento", "El monto no puede ser 0", "Categoria de Gasto es obligatorio", "Seleccione el proveedor" y, con el ciclo contable cerrado, "EL DOCUMENTO NO PUEDE INGRESAR, EL CICLO CONTABLE ESTA CERRADO".
+Al pasar **Estado** a APLICADO en la edición, si eligió **Factura** el **Total** se abona a esa factura.
+Para modificarlo, use **Editar**. Arriba: **Nuevo**, **Atras**, **Eliminar**, **Imprimir** y **Guardar**; **Archivos** adjunta documentos. Un gasto aplicado con proveedor solo se elimina si es el último de ese proveedor: "SOLO PUEDE ELIMINAR EL ULTIMO GASTO DEL CLIENTE...".
+<!-- REVISAR: efecto contable de aplicar -->
+Ver también: Crear un proveedor.
+
+## Qué contiene el menú CXP
+Ruta: Menú > CXP (cuentas por pagar).
+- **RETENCION**: retenciones aplicadas a facturas de proveedores.
+- **PROVEEDORES**: catálogo de proveedores.
+- **NOTA D. DEBITO**: notas de débito de proveedor; al aplicarlas restan del saldo del proveedor.
+- **NOTA D. CREDITO**: notas de crédito de proveedor; al aplicarlas suman al saldo del proveedor.
+- **GASTOS**: registro de gastos.
+Las listas tienen los botones **Vistas**, **Editar**, **Eliminar** y **Nuevo**. Seleccione la fila antes de presionar **Editar** o **Eliminar**; si no lo hace aparece "Seleccionar el Registro...". **Eliminar** pide confirmar "Desea eliminar este Registro...".
+Buscar en la lista: en RETENCION, NOTA D. DEBITO, NOTA D. CREDITO y GASTOS escriba en **Buscar por número…** y presione el botón de la lupa o Enter.
+<!-- REVISAR: el buscador "Buscar..." de la lista de PROVEEDORES no tiene acción programada en la pantalla; documentarlo cuando funcione -->
+Notas: en el teléfono el botón **Guardar** está en la barra inferior y los botones **Buscar** abren la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol.
+Ver también: Registrar una retención de proveedor, Crear un proveedor, Registrar una nota de débito de proveedor, Registrar una nota de crédito de proveedor, Registrar un gasto.
+
+## Registrar una retención de proveedor
+Ruta: Menú > CXP > RETENCION. La lista se llama **LISTA DE RETENCIONES DE PROVEEDORES**.
+1. Presione **Nuevo**. Se abre **Retencion:#**.
+2. En la tarjeta **Datos de la retención** indique **Fecha** (arranca en hoy), **Estado** y **Moneda**. En **Proveedor** use **Buscar** (**Limpiar** borra lo elegido). Escriba el número en **Factura** y elija el **Impuesto**.
+3. En la tarjeta **Montos** escriba **Monto de Factura** (por ejemplo 1,500.25). **Monto de Retencion** se calcula solo con el porcentaje del impuesto y no se escribe a mano.
+4. Opcional: en la tarjeta **Referencias y comentario** complete **Referencia 1**, **Referencia 2** y **Comentario**.
+5. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensajes de validación: "Establecer Fecha al Documento", "Seleccione el Proveedor", "Establecer el número de Factura" y "Establecer Monto de la Factura".
+Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Eliminar**, **Imprimir** y **Guardar**. En **Mas** > **Archivos** puede adjuntar documentos.
+Notas: la retención no cambia el saldo del proveedor. Al crearla solo está disponible el estado inicial; los demás estados se eligen en la edición.
+<!-- REVISAR: uso posterior del monto retenido -->
+Ver también: Qué contiene el menú CXP.
+
+## Crear un proveedor
+Ruta: Menú > CXP > PROVEEDORES. La lista se llama **LISTA DE PROVEEDORES**.
+1. Presione **Nuevo**.
+2. En **Informacion**, tarjeta **Datos generales**, escriba al menos uno de **Primer Nombre**, **Segundo Nombre**, **Nombre Legal** o **Nombre Comercial**, y **Identificacion**. Tarjeta **Clasificacion**: revise los combos.
+3. En **Referencias.**, tarjeta **Ubicacion y balance**, elija **Pais**, **Departamento** y **Municipio**. **Balance Cordobas** y **Balance Dolares** no se escriben a mano.
+4. Opcional, con **Agregar**: **Telefonos.**, **Email.** y **CXC Lineas.**. Confirme con **Aceptar**. Para quitar, marque la fila y presione **Eliminar**. En **Mas** está **Direccion**.
+5. Presione **Guardar** (en el teléfono, en la barra inferior).
+Mensajes de validación: "Seleccionar el Pais", "Seleccionar el Departamento", "Seleccionar el Municipio", "Escribir la Identificacion", "Escribir el Nombre" y "La linea ya esta configurada".
+Si no agrega una línea de crédito, se crea una con los valores predeterminados de su empresa.
+Para modificarlo, selecciónelo en la lista y presione **Editar**. Arriba tiene **Atras**, **Eliminar** y **Guardar**. En **CXC Lineas.** aparece también **Editar**, y en **Mas** > **Archivos** puede adjuntar documentos. El proveedor predeterminado del sistema no se elimina: "No es posible eliminar el proveedor, edite el nombre".
+<!-- REVISAR: el botón Imprimir de la edición no tiene acción programada -->
+<!-- REVISAR: significado de Distancia, No. Dias y No. Dias # en la pestaña Referencias. -->
+Ver también: Registrar un gasto.
+
+## Registrar una nota de débito de proveedor
+Ruta: Menú > CXP > NOTA D. DEBITO. La lista se llama **LISTA DE NOTAS DE DEBITO DE PROVEEDORES**.
+1. Presione **Nuevo**. Se abre **Nota de débito:#**.
+2. En la tarjeta **Datos de la nota** indique **Fecha** (arranca en hoy), **Estado**, **Moneda** y **Monto** (por ejemplo 1,500.25). En **Proveedor** use **Buscar** (**Limpiar** borra lo elegido).
+3. Opcional: en la tarjeta **Referencias y comentario** complete **Referencia 1**, **Referencia 2**, **Referencia 3** y **Comentario**.
+4. Presione **Guardar** (en el teléfono, en la barra inferior). Se abre la nota para editarla.
+5. Para que afecte el saldo, cambie **Estado** a APLICADO y presione **Guardar**. Al crearla solo está disponible el estado inicial: APLICADO se elige en la edición.
+Efecto: al aplicarla, el **Monto** se resta del saldo del proveedor en la moneda elegida (**Balance Cordobas** o **Balance Dolares**).
+Mensajes de validación: "Establecer Fecha al Documento", "El monto no puede ser 0" y "Seleccione el Proveedor".
+Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Eliminar**, **Imprimir** y **Guardar**. En **Mas** > **Archivos** puede adjuntar documentos.
+<!-- REVISAR: confirmar que una nota APLICADA no se puede guardar otra vez (volvería a mover el saldo) y que eliminarla no devuelve el saldo -->
+Ver también: Registrar una nota de crédito de proveedor, Crear un proveedor.
+
+## Registrar una nota de crédito de proveedor
+Ruta: Menú > CXP > NOTA D. CREDITO. La lista se llama **LISTA DE NOTAS DE CREDITO DE PROVEEDORES**.
+1. Presione **Nuevo**. Se abre **Nota de crédito:#**.
+2. En la tarjeta **Datos de la nota** indique **Fecha** (arranca en hoy), **Estado**, **Moneda** y **Monto** (por ejemplo 1,500.25). En **Proveedor** use **Buscar** (**Limpiar** borra lo elegido). Según la configuración de su empresa, **Proveedor** puede aparecer con otro nombre.
+3. Opcional: en la tarjeta **Referencias y comentario** complete **Referencia 1**, **Referencia 2**, **Referencia 3** y **Comentario**.
+4. Presione **Guardar** (en el teléfono, en la barra inferior). Se abre la nota para editarla.
+5. Para que afecte el saldo, cambie **Estado** a APLICADO y presione **Guardar**. Al crearla solo está disponible el estado inicial: APLICADO se elige en la edición.
+Efecto: al aplicarla, el **Monto** se suma al saldo del proveedor en la moneda elegida (**Balance Cordobas** o **Balance Dolares**).
+Mensajes de validación: "Establecer Fecha al Documento", "Debe ingresar un monto", "El monto no puede ser 0" y "Seleccione el proveedor".
+Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Eliminar**, **Imprimir** y **Guardar**. En **Mas** > **Archivos** puede adjuntar documentos.
+<!-- REVISAR: confirmar que una nota APLICADA no se puede guardar otra vez (volvería a mover el saldo) y que eliminarla no devuelve el saldo -->
+Ver también: Registrar una nota de débito de proveedor, Crear un proveedor.
 
 ## Qué contiene el menú CAJA
 Ruta: Menú > CAJA.

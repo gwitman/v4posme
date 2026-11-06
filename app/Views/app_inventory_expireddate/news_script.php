@@ -1,7 +1,12 @@
 <!-- ./ page heading -->
 <script>
+	var varUseMobile = '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+
 	$(document).ready(function() 
 	{
+		//Telefono: combo nativo (sin select2). En PC no cambia nada
+		pv2MobileSelects(".pv2 select.select2");
+
 		//Descargar Documento
 		$(document).on("click", "#btnDownload", function() {
 			if($("#txtWarehouseID").val() == "") {

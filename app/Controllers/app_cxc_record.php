@@ -173,6 +173,7 @@ class app_cxc_record extends _BaseController {
 			//Renderizar Resultado
 			$datView["company"]				= $dataSession["company"];
 			$datView["objCustomer"]			= $objCustomer;
+			$datView["useMobile"]			= $dataSession["user"]->useMobile;
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
 			$dataSession["message"]			= $this->core_web_notification->get_message();
 			$dataSession["head"]			= /*--inicio view*/ view('app_cxc_record/edit_head',$datView);//--finview

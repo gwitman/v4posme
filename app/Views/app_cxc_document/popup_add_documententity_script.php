@@ -1,12 +1,14 @@
 <script>
     $(document).ready(function() {
-        $('.txt-numeric').mask('000,000.00', {
-            reverse: true
-        });
-        $("#btnPopupCancelar").click(function() {
+        //Combos nativos en telefono y formato de montos (sin el tope de la mascara 000,000.00)
+        afxBindCommon();
+
+        $("#btnPopupCancelar").click(function(e) {
+            e.preventDefault();
             window.close();
         });
-        $("#btnPopupAceptar").click(function() {
+        $("#btnPopupAceptar").click(function(e) {
+            e.preventDefault();
             var data = {};
 
 
@@ -28,10 +30,11 @@
             data.txtDocumentEntityTypeRecuperation     = $("#txtDocumentEntityTypeRecuperation").val();
             data.txtDocumentEntityTypeRecuperationDesc = $("#txtDocumentEntityTypeRecuperation option:selected").text();
 
-            data.txtRatioDesembolso       = $("#txtRatioDesembolso").val();
-            data.txtRatioBalance          = $("#txtRatioBalance").val();
-            data.txtRatioBalanceExpired   = $("#txtRatioBalanceExpired").val();
-            data.txtRatioShare            = $("#txtRatioShare").val();
+            //A la pantalla padre se entrega el numero puro; ella decide como mostrarlo
+            data.txtRatioDesembolso       = afxMontoPuro($("#txtRatioDesembolso").val());
+            data.txtRatioBalance          = afxMontoPuro($("#txtRatioBalance").val());
+            data.txtRatioBalanceExpired   = afxMontoPuro($("#txtRatioBalanceExpired").val());
+            data.txtRatioShare            = afxMontoPuro($("#txtRatioShare").val());
 
             window.opener.parentNewLine(data);
             window.close();

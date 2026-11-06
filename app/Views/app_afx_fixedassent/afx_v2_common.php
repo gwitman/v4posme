@@ -52,7 +52,7 @@
 	   punto flotante, para que negativos y montos con mas de 2 decimales no se alteren.
 	   Devuelve null si el texto no es un numero. */
 	function afxMontoPartes(value){
-		var texto  = String(value === null || value === undefined ? "" : value).replace(/,/g,"").replace(/\s/g,"");
+		var texto  = String(value === null || value === undefined ? "" : (typeof value === "number" && /e-/i.test(String(value)) ? value.toFixed(10) : value)).replace(/,/g,"").replace(/\s/g,"");
 		var partes = /^(-?)(\d*)(?:\.(\d*))?$/.exec(texto);
 		if(!partes || (partes[2] === "" && !partes[3])) return null;
 

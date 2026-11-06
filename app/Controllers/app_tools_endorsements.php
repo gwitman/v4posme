@@ -49,6 +49,7 @@ class app_tools_endorsements extends _BaseController {
             $objParameterUrlPrinter					            = $this->core_web_parameter->getParameter("ENDORSEMENTS_URL_PRINTER",$companyID);
             $objParameterUrlPrinter 				            = $objParameterUrlPrinter->value;
             $objCatalog                                      	= $this->Catalog_Model->get_rowByName("Tipo de Endoso");
+            $dataView["useMobile"]                              = $dataSession["user"]->useMobile;
             $dataView["objTransactionMaster"]				    = $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
             $dataView["objTransactionMaster"]->transactionOn    = date_format(date_create($dataView["objTransactionMaster"]->transactionOn),"Y-m-d");
             $dataView["objTransactionMasterReference"]          = $this->Transaction_Master_References_Model->get_rowByTransactionMaster($transactionMasterID);
@@ -543,6 +544,7 @@ class app_tools_endorsements extends _BaseController {
             $objComponent	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction");
             $transacciones  = $this->Transaction_Model->getRowByCompanyId($companyID);
 
+            $dataView["useMobile"]              = $dataSession["user"]->useMobile;
             $dataView["tipoTransaccion"]        = $transacciones;
             $dataView["objComponent"]           = $objComponent;
             $dataView["catalogID"]        		= $objCatalog->catalogID;
@@ -599,17 +601,20 @@ class app_tools_endorsements extends _BaseController {
                 throw new \Exception("00409 EL COMPONENTE 'tb_transaction_master_endorsements' NO EXISTE...");
 
 
+            $esMovil = $dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile();
+            $dataViewID = filter_var(helper_SegmentsByIndex($this->uri->getSegments(), 1, $dataViewID), FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE); // Entero o null: el valor llega a SQL en Company_Data_View_Model
+
             //Vista por defecto
             if ($dataViewID == null) {
                 $targetComponentID 			= 0;
                 $parameter["{companyID}"] 	= $this->session->get('user')->companyID;
                 $dataViewData 				= $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
-                $dataViewRender 			= $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+                $dataViewRender 			= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
             } //Otra vista
             else {
                 $parameter["{companyID}"] 	= $this->session->get('user')->companyID;
                 $dataViewData 				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'), $objComponent->componentID, $dataViewID, CALLERID_LIST, $resultPermission, $parameter);
-                $dataViewRender 			= $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
+                $dataViewRender 			= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
             }
 
             //Renderizar Resultado

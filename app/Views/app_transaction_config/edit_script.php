@@ -1,4 +1,24 @@
 				<script>	
+					var varUseMobile				= '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+					var TC_ETIQUETAS				= {
+						ListElementCausal : ["Sucursal","Nombre","Principal","Bodega Origen","Bodega Destino"],
+						ListElementConfig : ["Concepto","Cuenta Debito","CC Debito","Cuenta Credito","CC Credito"]
+					};
+
+					/* fnAddData crea filas sin clase ni data-label. En cada dibujo de la tabla se completan para
+					   que en el telefono se vean como tarjetas. Los hidden de la primera celda no se tocan. */
+					function tcDecorarFilas(oSettings){
+						var etiquetas = TC_ETIQUETAS[oSettings.nTable.id] || [];
+						$(oSettings.nTable).find("tbody tr").each(function(){
+							var $celdas = $(this).children("td");
+							if($celdas.first().hasClass("dataTables_empty")) return;
+							$(this).addClass("row_razon");
+							$celdas.each(function(i){
+								$(this).attr("data-label", etiquetas[i] || "");
+							});
+						});
+					}
+
 					var ListElementCausal			= {};
 					var ListElementProfileDetail	= {};
 					
@@ -9,13 +29,15 @@
 					var transactionProfileDetailID  = 0;
 					
 					$(document).ready(function(){
+						afxBindCommon();
 						ListElementCausal = $("#ListElementCausal").dataTable({
 							"bPaginate"		: false,
 							"bLengthChange"	: false,
 							"bFilter"		: false,
 							"bSort"			: true,
 							"bInfo"			: false,
-							"bAutoWidth"	: true							
+							"bAutoWidth"	: false,
+							"fnDrawCallback": tcDecorarFilas
 						});
 						ListElementProfileDetail = $("#ListElementConfig").dataTable({
 							"bPaginate"		: false,
@@ -23,7 +45,8 @@
 							"bFilter"		: false,
 							"bSort"			: true,
 							"bInfo"			: false,
-							"bAutoWidth"	: true							
+							"bAutoWidth"	: false,
+							"fnDrawCallback": tcDecorarFilas
 						});
 						//Regresar
 						$(document).on("click","#btnBack",function(){
@@ -38,8 +61,7 @@
 						});						
 						//Abrir popup para agregar causal
 						$(document).on("click","#btnNewDetailCausal",function(){
-								window.open("<?php echo base_url(); ?>/app_transaction_config/add_causal","MsgWindow","width=650,height=500");
-								window.parentNewCausal = parentNewCausal;
+								pv2OpenSearch("<?php echo base_url(); ?>/app_transaction_config/add_causal","Agregar causal","parentNewCausal",parentNewCausal,"width=650,height=500");
 						});
 						//Seleccionar un Perfil Detail
 						$(document).on("click","#tbody_detail_config tr",function(event){	

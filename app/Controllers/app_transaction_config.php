@@ -349,6 +349,7 @@ class app_transaction_config extends _BaseController {
 			 	
 			
 			
+			$D["useMobile"]						= $dataSession["user"]->useMobile;
 			$D["objListTransactionConcept"]		= $this->Transaction_Concept_Model->getByCompanyAndTransaction($dataSession["user"]->companyID,$transactionID);
 			$D["objListAccount"]				= $this->Account_Model->getByCompanyOperative($dataSession["user"]->companyID);
 			$D["objListCenterCost"]				= $this->Center_Cost_Model->getByCompany($dataSession["user"]->companyID);
@@ -409,18 +410,21 @@ class app_transaction_config extends _BaseController {
 			throw new \Exception("00409 EL COMPONENTE 'tb_transaction' NO EXISTE...");
 			
 			
-			//Vista por defecto 
+			$esMovil = $dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile();
+			$dataViewID = filter_var(helper_SegmentsByIndex($this->uri->getSegments(), 1, $dataViewID), FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE); // Entero o null: el valor llega a SQL en Company_Data_View_Model
+
+			//Vista por defecto
 			if($dataViewID == null){				
 				$targetComponentID			= 0;	
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewDefault($this->session->get('user'),$objComponent->componentID,CALLERID_LIST,$targetComponentID,$resultPermission,$parameter);			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewRender				= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			}
 			//Otra vista
 			else{									
 				$parameter["{companyID}"]	= $this->session->get('user')->companyID;
 				$dataViewData				= $this->core_web_view->getViewBy_DataViewID($this->session->get('user'),$objComponent->componentID,$dataViewID,CALLERID_LIST,$resultPermission,$parameter); 			
-				$dataViewRender				= $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
+				$dataViewRender				= $esMovil ? $this->core_web_view->renderGreedMobile($dataViewData,'ListView',"fnTableSelectedRow") : $this->core_web_view->renderGreed($dataViewData,'ListView',"fnTableSelectedRow");
 			}
 			 
 			//Renderizar Resultado

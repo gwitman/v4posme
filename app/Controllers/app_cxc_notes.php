@@ -133,7 +133,7 @@ class app_cxc_notes extends _BaseController
             $objTMNew["sign"]                  = $objT->signInventory;
             $objTMNew["reference1"]            = /*inicio get post*/$this->request->getPost("txtReferencia1");
             $objTMNew["reference2"]            = /*inicio get post*/$this->request->getPost("txtReferencia2");
-            $objTMNew["amount"]                = /*inicio get post*/$this->request->getPost("txtCalificacionCuantitativa");
+            $objTMNew["amount"]                = /*inicio get post*/is_null($this->request->getPost("txtCalificacionCuantitativa")) ? null : helper_StringToNumber($this->request->getPost("txtCalificacionCuantitativa"));
             $objTMNew["isApplied"]             = 0;
             $objTMNew["journalEntryID"]        = 0;
             $objTMNew["classID"]               = /*inicio get post*/$this->request->getPost("txtGradoID");
@@ -250,7 +250,7 @@ class app_cxc_notes extends _BaseController
             $objTM["exchangeRate"]          = null;
             $objTM["reference1"]            = /*inicio get post*/$this->request->getPost("txtReferencia1");
             $objTM["reference2"]            = /*inicio get post*/$this->request->getPost("txtReferencia2");
-            $objTM["amount"]                = /*inicio get post*/$this->request->getPost("txtCalificacionCuantitativa");
+            $objTM["amount"]                = /*inicio get post*/is_null($this->request->getPost("txtCalificacionCuantitativa")) ? null : helper_StringToNumber($this->request->getPost("txtCalificacionCuantitativa"));
             $objTM["isApplied"]             = 0;
             $objTM["journalEntryID"]        = 0;
             $objTM["classID"]               = /*inicio get post*/$this->request->getPost("txtGradoID");
@@ -411,6 +411,7 @@ class app_cxc_notes extends _BaseController
             if (!$objComponentMateria)
                 throw new \Exception("EL COMPONENTE 'tb_public_catalog' NO EXISTE...");
 
+            $dataView["useMobile"]              = $dataSession["user"]->useMobile;
             $dataView["companyID"]              = $companyID;
             $dataView["userID"]                 = $userID;
             $dataView["objListAnio"]            = $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_grade_book", "anosID", $companyID);

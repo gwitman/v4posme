@@ -105,7 +105,7 @@
 	
 	function fn_aceptCallback(data){
 			var dataViewID 	= data[0];
-			window.location = "../../app_inventory_item/index/"+dataViewID;   
+			window.location = "<?php echo base_url(); ?>/app_inventory_item_delete/index/"+dataViewID;   
 	}					
 </script>
 

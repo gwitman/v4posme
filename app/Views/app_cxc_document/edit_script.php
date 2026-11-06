@@ -1,6 +1,17 @@
 <style>
+	/* Escritorio: alto limitado y desplazamiento dentro de la tabla. Telefono: las filas pasan a tarjetas */
+	@media (min-width:768px) {
+		.pv2 #cxdAmortizationWrap { max-height:500px; overflow:auto; }
+		.pv2 #tb_detail_amortization { min-width:1180px; }
+		.pv2 #tb_detail_amortization thead th { position:sticky; top:0; z-index:2; }
+		.pv2 #tb_detail_amortization .form-control { min-width:90px; }
+	}
+	@media (max-width:767px) {
+		.pv2-table tr.row_razon td > .cxd-fecha { flex:0 1 60%; width:60%; min-width:0; }
+		.pv2-table tr.row_razon td > .cxd-fecha .form-control { width:100%; }
+	}
+
 	#tb_detail_amortization {
-		table-layout: fixed;
 		width: 100%;
 	}
 
@@ -17,22 +28,24 @@
 	var objTableLineEntity 					= {};
 	var site_url 							= "<?php echo base_url(); ?>/";
 	var userMobile 							= '<?php echo $useMobile; ?>';
+	var varUseMobile 						= '<?php echo isset($useMobile) ? $useMobile : "0"; ?>';
+	var cxdFechaDocumentoOriginal 			= "";
 	var objCustomerCreditAmortizations 		= JSON.parse('<?php echo json_encode($objCustomerCreditAmortization); ?>');
 	var objListWorkflowStageAmortization 	= JSON.parse('<?php echo json_encode($objListWorkflowStageAmortization); ?>');
 	var objCustomerEntityRelated 			= JSON.parse('<?php echo json_encode($objCustomerEntityRelated) ?>');
 	var aCounter 							= 0;
 	var backgroundCall 						= true;
+	//Originales: en telefono pv2OpenSearch reemplaza window.parentNewLine y window.parentEditLineEntity
+	var cxdParentNewLine 					= parentNewLine;
+	var cxdParentEditLineEntity 			= parentEditLineEntity;
 
 
 	$(document).ready(function() {
-		$('#txtDocumentDate').datepicker({format:"yyyy-mm-dd"});						 
-		$("#txtDocumentDate").datepicker("update");
-		
-		$('.txtDateApply').datepicker({format:"yyyy-mm-dd"});						 
-		$(".txtDateApply").datepicker("update");
-		
-		
-		
+		//dateOn es DATETIME y pv2InitDate recorta a 10 caracteres: se guarda el valor completo para no perder la hora
+		cxdFechaDocumentoOriginal = $.trim($("#txtDocumentDate").val());
+		pv2InitDate("txtDocumentDate", false);
+
+
 		<?php echo getBehavio($company->type, "app_cxc_document", "divScriptReady", ""); ?>
 			
 		//Regresar a la lista
@@ -41,13 +54,15 @@
 		});
 
 		//Evento Agregar el Documento
-		$(document).on("click", "#btnAcept", function() {
+		$(document).on("click", "#btnAcept", function(e) {
+			e.preventDefault();
 			$("#form-new-cxc-document").attr("method", "POST");
 			$("#form-new-cxc-document").attr("action", "<?php echo base_url(); ?>/app_cxc_document/save/edit");
 
 			if (validateForm()) {
 				fnWaitOpen();
 				appendEntityHiddenTableDataToForm();
+				cxdPrepararEnvio();
 				$("#form-new-cxc-document").submit();
 			}
 
@@ -60,6 +75,8 @@
 			"bSort": false,
 			"bInfo": false,
 			"bAutoWidth": false,
+			"oLanguage": { "sEmptyTable": "Sin registros" },
+			"fnDrawCallback": cxdEtiquetarFilas,
 			"aaData": [<?php
 						if ($objCustomerCreditLine) {
 							$listrow 	= [];
@@ -212,13 +229,13 @@
 					"aTargets": [16], //Limite,
 					"sClass": "hidden",
 					"mRender": function(data, type, full) {
-						return '<input type="hidden" value="' + data + '" name="txtLineLimit[]" />' + data;
+						return '<input type="hidden" class="afx-monto" value="' + data + '" name="txtLineLimit[]" />' + data;
 					}
 				},
 				{
 					"aTargets": [17], //Balance
 					"mRender": function(data, type, full) {
-						return '<input class="form-control txt-numeric" type="text" value="' + data + '" name="txtLineBalance[]" />';
+						return '<input class="form-control txt-numeric afx-monto pv2-num" type="text" autocomplete="off" value="' + data + '" name="txtLineBalance[]" />';
 					}
 				},
 				{
@@ -273,14 +290,14 @@
 					"sClass": "hidden",
 					"bSearchable": false,
 					"mRender": function(data, type, full) {
-						return '<input type="hidden" value="' + data + '" name="txtInterestYearLael[]" />' + data;
+						return '<input type="hidden" class="afx-monto" value="' + data + '" name="txtInterestYearLael[]" />' + data;
 					}
 				}, {
 					"aTargets": [24], //Term
 					"sClass": "hidden",
 					"bSearchable": false,
 					"mRender": function(data, type, full) {
-						return '<input type="hidden" value="' + data + '" name="txtTermLabel[]" />' + data;
+						return '<input type="hidden" class="afx-monto" value="' + data + '" name="txtTermLabel[]" />' + data;
 					}
 				}, {
 
@@ -302,6 +319,8 @@
 			"bSort": false,
 			"bInfo": false,
 			"bAutoWidth": false,
+			"oLanguage": { "sEmptyTable": "Sin registros" },
+			"fnDrawCallback": cxdEtiquetarFilas,
 			"aaData": [<?php
 						if ($objCustomerCreditAmortization) {
 							$listrow 	= [];
@@ -341,69 +360,61 @@
 				{
 					"aTargets": [3], //Balance Inicial
 					"bVisible": true,
-					"sWidth"  :"120px",
 					"mRender": function(data, type, full) {
-						return '<input type="hidden" value="' + data + '" name="txtBalanceStart[]" />' + data;
+						return '<input type="hidden" value="' + data + '" name="txtBalanceStart[]" />' + pv2Fmt(data);
 					}
 				},
 				{
 					"aTargets": [4], //Date Apply
 					"bVisible": true,
-					"sWidth"  :"200px",
 					"mRender" : function(data, type, full) {
-						
-						
-						return '<div id="datepicker" class="input-group date" data-date-format="yyyy-mm-dd">'+
-							'<input size="16"  class="form-control txtDateApply" type="text" name="txtDateApply[]"  value="'+data+'" >'+
+
+
+						return '<div id="datepicker" class="input-group date cxd-fecha" data-date-format="yyyy-mm-dd">'+
+							'<input size="16"  class="form-control txtDateApply" type="text" autocomplete="off" name="txtDateApply[]"  value="'+data+'" >'+
 							'<span class="input-group-addon"><i class="icon16 i-calendar-4"></i></span>'+
 						'</div>';
-											
+
 					}
 				},
 				{
 					"aTargets": [5], //Interes
 					"bVisible": true,
-					"sWidth"  :"100px",
 					"mRender": function(data, type, full) {
-						return '<input type="hidden" value="' + data + '" name="txtInterest[]" />' + data;
+						return '<input type="hidden" value="' + data + '" name="txtInterest[]" />' + pv2Fmt(data);
 					}
 				},
 				{
 					"aTargets": [6], //Capital
 					"bVisible": true,
-					"sWidth"  :"100px",
 					"mRender": function(data, type, full) {
-						return '<input type="hidden" value="' + data + '" name="txtCapital[]" />' + data;
+						return '<input type="hidden" value="' + data + '" name="txtCapital[]" />' + pv2Fmt(data);
 					}
 				},
 				{
 					"aTargets": [7], //share
 					"bVisible": true,
-					"sWidth"  :"100px",
 					"mRender": function(data, type, full) {
-						return '<input type="hidden" value="' + data + '" name="txtShare[]" />' + data;
+						return '<input type="hidden" value="' + data + '" name="txtShare[]" />' + pv2Fmt(data);
 					}
 				},
 				{
 					"aTargets": [8], //Balance Final
 					"bVisible": true,
-					"sWidth"  :"120px",
 					"mRender": function(data, type, full) {
-						return '<input type="hidden" value="' + data + '" name="txtBalanceEnd[]" />' + data;
+						return '<input type="hidden" value="' + data + '" name="txtBalanceEnd[]" />' + pv2Fmt(data);
 					}
 				},
 				{
 					"aTargets": [9], //Remanente
 					"bVisible": true,
-					"sWidth"  :"100px",
 					"mRender": function(data, type, full) {
-						return '<input class="form-control txt-numeric" type="text" value="' + data + '" name="txtRemaining[]" />';
+						return '<input class="form-control txt-numeric afx-monto pv2-num" type="text" autocomplete="off" value="' + data + '" name="txtRemaining[]" />';
 					}
 				},
 				{
 					"aTargets": [10], //Dias Atrazados
 					"bVisible": true,
-					"sWidth"  :"120px",
 					"mRender": function(data, type, full) {
 						return '<input class="form-control txt-numeric" type="number" value="' + data + '" name="txtDayDelay[]" />';
 					}
@@ -411,18 +422,16 @@
 				{
 					"aTargets": [11], //Nota
 					"bVisible": true,
-					"sWidth"  :"100px",
 					"mRender": function(data, type, full) {
-						return '<input class="form-control type="text" value="' + data + '" name="txtNote[]" />';
+						return '<input class="form-control" type="text" autocomplete="off" value="' + data + '" name="txtNote[]" />';
 					}
 				},
 				{
 					"aTargets": [12], // statusID
 					"bVisible": true,
-					"sWidth"  :"200px",
 					"mRender": function(data, type, full) {
-						return '<select name="txtAmortizationStatusID[]" id="txtAmortizationStatusID[]"  >' + '<option> </option>' + printCustomerAmortization() + '</select>';
-						
+						return '<select class="form-control" name="txtAmortizationStatusID[]" id="txtAmortizationStatusID[]"  >' + '<option> </option>' + printCustomerAmortization() + '</select>';
+
 					}
 				},
 				{
@@ -436,9 +445,8 @@
 				{
 					"aTargets": [14], //Abono al Capital
 					"bVisible": true,
-					"sWidth"  :"150px",
 					"mRender": function(data, type, full) {
-						return '<input class="form-control txt-numeric" type="text" value="' + data + '" name="txtShareCapital[]" />';
+						return '<input class="form-control txt-numeric afx-monto pv2-num" type="text" autocomplete="off" value="' + data + '" name="txtShareCapital[]" />';
 					}
 				}
 			]
@@ -451,6 +459,8 @@
 			"bSort": false,
 			"bInfo": false,
 			"bAutoWidth": false,
+			"oLanguage": { "sEmptyTable": "Sin registros" },
+			"fnDrawCallback": cxdEtiquetarFilas,
 			"aaData": [<?php
 						if ($objCustomerEntityRelated) {
 							$listrow 	= [];
@@ -541,7 +551,7 @@
 					"bVisible": false,
 					"bSearchable": false,
 					"mRender": function(data, type, full) {
-						return '<input type="hidden" value="' + data + '" name="txtRatioDesembolso[]" />' + data;
+						return '<input type="hidden" value="' + data + '" name="txtRatioDesembolso[]" />' + pv2Fmt(data);
 					}
 				},
 				{
@@ -549,14 +559,14 @@
 					"bVisible": false,
 					"bSearchable": false,
 					"mRender": function(data, type, full) {
-						return '<input type="hidden" value="' + data + '" name="txtRatioBalance[]" />' + data;
+						return '<input type="hidden" value="' + data + '" name="txtRatioBalance[]" />' + pv2Fmt(data);
 					}
 				},
 				{
 					"aTargets": [11], //ratioBalanceExpired
 					"bVisible": false,
 					"mRender": function(data, type, full) {
-						return '<input type="hidden" value="' + data + '" name="txtRatioBalanceExpired[]" />' + data;
+						return '<input type="hidden" value="' + data + '" name="txtRatioBalanceExpired[]" />' + pv2Fmt(data);
 					}
 				},
 				{
@@ -564,7 +574,7 @@
 					"bVisible": false,
 					"bSearchable": false,
 					"mRender": function(data, type, full) {
-						return '<input type="hidden" value="' + data + '" name="txtRatioShare[]" />' + data;
+						return '<input type="hidden" value="' + data + '" name="txtRatioShare[]" />' + pv2Fmt(data);
 					}
 				},
 				{
@@ -604,12 +614,16 @@
 		});
 
 
+		//Una sola vez y con las grillas ya dibujadas, para que los montos de sus filas tomen formato
+		afxBindCommon();
+
 		//Evento para manejar las columnas visibles de la tabla de entidades
 		$('a.toggle-vis').on('click', function(e) {
 			e.preventDefault();
 			var iCol = parseInt($(this).attr("data-column"));
 			var bVis = objTableLineEntity.fnSettings().aoColumns[iCol].bVisible;
 			objTableLineEntity.fnSetColumnVis(iCol, bVis ? false : true);
+			cxdEtiquetarFilas(objTableLineEntity.fnSettings());
 			var bVis = $(this).parent().hasClass('active');
 			bVis = bVis ? ($(this).parent().removeClass("active")) : ($(this).parent().addClass("active"));
 		});
@@ -617,8 +631,7 @@
 		//Agregar nueva entidad en vista documento
 		$(document).on("click", "#btnNewEntity", function() {
 			console.info("call click_btnNewEntity");
-			window.open(site_url + "app_cxc_document/add_document_entity", "MsgWindow", "width=700,height=600");
-			window.parentNewLine = parentNewLine;
+			pv2OpenSearch(site_url + "app_cxc_document/add_document_entity", "Agregar entidad", "parentNewLine", cxdParentNewLine, "width=700,height=600");
 		});
 
 		//Borrar linea de entidad en vista documento
@@ -669,9 +682,8 @@
 			if(ccEntityRelatedID == 0)
 			return;
 			
-			window.open(site_url+"app_cxc_document/edit_document_entity/ccEntityRelatedID/"+ccEntityRelatedID,"MsgWindow","width=650,height=500");
-			window.parentEditLineEntity = parentEditLineEntity;
-			
+			pv2OpenSearch(site_url+"app_cxc_document/edit_document_entity/ccEntityRelatedID/"+ccEntityRelatedID, "Editar entidad", "parentEditLineEntity", cxdParentEditLineEntity, "width=650,height=500");
+
 		});	
 
 		refreschChecked();
@@ -705,13 +717,60 @@
 		//});
 		
 		$("[type='checkbox'], [type='radio'], [type='file']").not('.toggle').uniform();
-		$('.txt-numeric').mask('000,000.00', {
-			reverse: true
-		});
-		
-		$('.txtDateApply').datepicker({format:"yyyy-mm-dd"});						 
+		//Montos con formato 1,000.00 sin el tope de la mascara 000,000.00 (tambien en filas redibujadas)
+		afxInitMontos(".pv2");
+
+		cxdInitFechasFila();
+	}
+
+	//Fecha de cada cuota: calendario del tema en PC, selector nativo en telefono. dateApply es DATE, no lleva hora
+	function cxdInitFechasFila() {
+		if (pv2IsMobile()) {
+			$(".txtDateApply").each(function() {
+				if (this.type == "date") return;
+				var valor = $.trim(this.value).substring(0, 10);
+				try { this.type = "date"; } catch (ex) { console.info("cxdInitFechasFila", ex); }
+				this.value = valor;
+				$(this).closest(".input-group").find(".input-group-addon").hide();
+				$(this).closest(".input-group").removeClass("input-group date");
+			});
+			return;
+		}
+
+		$('.txtDateApply').datepicker({format:"yyyy-mm-dd"});
 		$(".txtDateApply").datepicker("update");
-		
+	}
+
+	/* En telefono las filas de la grilla se ven como tarjetas: cada celda necesita la etiqueta de su columna.
+	   Las celdas presentes corresponden, en orden, a las columnas con bVisible; se recalcula en cada dibujo
+	   porque fnAddData y fnSetColumnVis cambian las celdas. No afecta la seleccion de filas. */
+	function cxdEtiquetarFilas(oSettings) {
+		var titulos = [];
+		$.each(oSettings.aoColumns, function(i, columna) {
+			if (columna.bVisible) titulos.push($.trim(String(columna.sTitle).replace(/<.*?>/g, "")) || "Seleccionar");
+		});
+
+		$(oSettings.nTBody).children("tr").each(function() {
+			var $celdas = $(this).children("td");
+			if ($celdas.first().hasClass("dataTables_empty")) return;
+			$(this).addClass("row_razon");
+			$celdas.each(function(i) {
+				$(this).attr("data-label", titulos[i] || "");
+			});
+		});
+	}
+
+	//Justo antes de enviar: montos como numero puro y fecha del documento con su hora original
+	function cxdPrepararEnvio() {
+		afxLimpiarMontos("#form-new-cxc-document");
+
+		//dateOn es DATETIME: si la fecha no se cambio se reenvia completa. En telefono el campo es type=date
+		//y no admite hora, por eso primero vuelve a texto. Si se cambio, se envia solo la fecha (igual que antes)
+		var campoFecha = document.getElementById("txtDocumentDate");
+		if (campoFecha.value == cxdFechaDocumentoOriginal.substring(0, 10)) {
+			try { campoFecha.type = "text"; } catch (ex) { console.info("cxdPrepararEnvio", ex); }
+			campoFecha.value = cxdFechaDocumentoOriginal;
+		}
 	}
 
 	function parentEditLine(data) {

@@ -1,12 +1,14 @@
 <script>
     $(document).ready(function() {
-        $('.txt-numeric').mask('000,000.00', {
-            reverse: true
-        });
-        $("#btnPopupCancelar").click(function() {
+        //Combos nativos en telefono y formato 1,000.00 sin el tope de la mascara anterior
+        afxBindCommon();
+
+        $("#btnPopupCancelar").click(function(e) {
+            e.preventDefault();
             window.close();
         });
-        $("#btnPopupAceptar").click(function() {
+        $("#btnPopupAceptar").click(function(e) {
+            e.preventDefault();
             var data = {};
             data.txtProviderCreditLineID    = $("#providerCreditLineID").val();
 
@@ -19,9 +21,10 @@
             data.txtStatusID                = $("#txtStatusID").val();
             data.txtStatusIDDesc            = $("#txtStatusID option:selected").text();
 
+            //Los montos viajan a la pantalla principal como numero puro, sin comas
             data.txtNumber                  = $("#txtNumber").val();
-            data.txtLimitCredit             = $("#txtLimitCredit").val();
-            data.txtInteresYear             = $("#txtInteresYear").val();
+            data.txtLimitCredit             = afxMontoPuro($("#txtLimitCredit").val());
+            data.txtInteresYear             = afxMontoPuro($("#txtInteresYear").val());
 
             data.txtPeriodPay               = $("#txtPeriodPay").val();
             data.txtPeriodPayDesc           = $("#txtPeriodPay option:selected").text();
@@ -32,7 +35,7 @@
             data.txtDayExcluded             = $("#txtDayExcluded").val();
             data.txtDayExcludedDesc         = $("#txtDayExcluded option:selected").text();
 
-            data.txtTerm                    = $("#txtTerm").val();
+            data.txtTerm                    = afxMontoPuro($("#txtTerm").val());
             data.txtNote                    = $("#txtNote").val();
 
             var tmpFrecuenciaPago           = $("#txtPeriodPay option:selected").data("val") + 0;

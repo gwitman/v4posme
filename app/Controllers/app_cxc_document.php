@@ -41,13 +41,16 @@ class app_cxc_document extends _BaseController
 
             $objFecha       = \DateTime::createFromFormat('Y-m-d', date("Y-m-d"));
             $fecha          = /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "fecha"); //--finuri
-            $fecha          = !$fecha ? $objFecha->format("Y-m-d") : $fecha;
+            $fechaValida    = \DateTime::createFromFormat('Y-m-d', (string) $fecha);
+            $fecha          = ($fechaValida && $fechaValida->format('Y-m-d') === $fecha) ? $fecha : $objFecha->format("Y-m-d"); // Solo fecha real: se sustituye en el sqlScript de la vista
             $objFecha       = \DateTime::createFromFormat('Y-m-d', $fecha);
 
-            $dataViewID     = helper_SegmentsValue($this->uri->getSegments(), "dataViewID");
+            $dataViewID     = filter_var(helper_SegmentsValue($this->uri->getSegments(), "dataViewID"), FILTER_VALIDATE_INT, FILTER_NULL_ON_FAILURE); // Entero o null: el valor llega a SQL en Company_Data_View_Model
 
 
-            //Vista por defecto 
+            $esMovil = $dataSession["user"]->useMobile == 1 || $this->request->getUserAgent()->isMobile();
+
+            //Vista por defecto
             if ($dataViewID == null || $dataViewID == "null") {
                 $targetComponentID           = $this->session->get('company')->flavorID;
                 $parameter["{companyID}"]    = $this->session->get('user')->companyID;
@@ -62,7 +65,7 @@ class app_cxc_document extends _BaseController
                     $dataViewData                = $this->core_web_view->getViewDefault($this->session->get('user'), $objComponent->componentID, CALLERID_LIST, $targetComponentID, $resultPermission, $parameter);
                 }
 
-                if ($dataSession["user"]->useMobile == 1) {
+                if ($esMovil) {
                     $dataViewRender                = $this->core_web_view->renderGreedWithHtmlInFildMobile($dataViewData, 'ListView', "fnTableSelectedRow");
                 } else {
                     $dataViewRender                = $this->core_web_view->renderGreedWithHtmlInFild($dataViewData, 'ListView', "fnTableSelectedRow");
@@ -74,7 +77,7 @@ class app_cxc_document extends _BaseController
                 $parameter["{fecha}"]        = $fecha;
                 $dataViewData                = $this->core_web_view->getViewBy_DataViewID($this->session->get('user'), $objComponent->componentID, $dataViewID, CALLERID_LIST, $resultPermission, $parameter);
 
-                if ($dataSession["user"]->useMobile == 1) {
+                if ($esMovil) {
                     $dataViewRender                = $this->core_web_view->renderGreedMobile($dataViewData, 'ListView', "fnTableSelectedRow");
                 } else {
                     $dataViewRender                = $this->core_web_view->renderGreed($dataViewData, 'ListView', "fnTableSelectedRow");
@@ -360,6 +363,7 @@ class app_cxc_document extends _BaseController
             //Actualizar Documento
             $customerCreditDocumentID                   = /*inicio get post*/ $this->request->getPost("txtCustomerCreditDocumentID");
             $customerCreditDocumentBalance              = /*inicio get post*/ $this->request->getPost("txtCreditDocumentBalance");
+            $customerCreditDocumentBalance              = is_null($customerCreditDocumentBalance) ? null : helper_StringToNumber($customerCreditDocumentBalance);
             $customerCreditDocumentStatusID             = /*inicio get post*/ $this->request->getPost("txtCreditDocumentStatusID");
 			$customerCreditDocumentoDateOn              = /*inicio get post*/ $this->request->getPost("txtDocumentDate");
 			
