@@ -7,8 +7,9 @@ use CodeIgniter\Model;
  * Catalogo de vistas curadas del Constructor de Reportes.
  * Tablas: tb_report_builder_view, tb_report_builder_view_field, tb_dataview.
  *
- * El catalogo es global (no lleva companyID). Solo se exponen las vistas de tb_dataview
- * con callerID = 3 (REPORT_BUILDER). El permiso por requiredAddress lo valida el controlador.
+ * El catalogo es global (no lleva companyID), pero solo se exponen las vistas de tb_dataview con
+ * callerID = 3 (REPORT_BUILDER) que la empresa tenga en tb_company_dataview con su flavorID exacto.
+ * El permiso por requiredAddress lo valida el controlador.
  */
 class Report_Builder_View_Model extends Model
 {
@@ -16,14 +17,16 @@ class Report_Builder_View_Model extends Model
     protected $primaryKey = 'reportBuilderViewID';
 
     /**
-     * Lista las vistas activas del catalogo.
+     * Lista las vistas activas del catalogo disponibles para la empresa y su flavor.
      *
+     * @param int $companyID Empresa de la sesion.
+     * @param int $flavorID  Flavor de la empresa.
      * @return array Filas (objetos) con dataViewID, label, description, requiredAddress y componentID, ordenadas por label.
      */
-    function get_rowsActive()
+    function get_rowsActive($companyID, $flavorID)
     {
         $db  = db_connect();
-        $sql = "
+        $sql = sprintf("
             SELECT
                 v.dataViewID,
                 v.label,
@@ -35,20 +38,32 @@ class Report_Builder_View_Model extends Model
             WHERE d.callerID = 3
                 AND d.isActive = 1
                 AND v.isActive = 1
+                AND EXISTS (
+                    SELECT 1
+                    FROM tb_company_dataview AS c
+                    WHERE c.companyID = %d
+                        AND c.flavorID = %d
+                        AND c.dataViewID = d.dataViewID
+                        AND c.callerID = d.callerID
+                        AND c.componentID = d.componentID
+                        AND c.isActive = 1
+                )
             ORDER BY
                 v.label ASC
-        ";
+        ", $companyID, $flavorID);
 
         return $db->query($sql)->getResult();
     }
 
     /**
-     * Obtiene una vista activa del catalogo.
+     * Obtiene una vista activa del catalogo disponible para la empresa y su flavor.
      *
      * @param int $dataViewID Vista a leer.
-     * @return object|null Fila con dataViewID, label, description, requiredAddress y componentID, o null si no esta en el catalogo activo.
+     * @param int $companyID  Empresa de la sesion.
+     * @param int $flavorID   Flavor de la empresa.
+     * @return object|null Fila con dataViewID, label, description, requiredAddress y componentID, o null si no esta disponible.
      */
-    function get_rowByDataViewID($dataViewID)
+    function get_rowByDataViewID($dataViewID, $companyID, $flavorID)
     {
         $db  = db_connect();
         $sql = sprintf("
@@ -64,7 +79,17 @@ class Report_Builder_View_Model extends Model
                 AND d.callerID = 3
                 AND d.isActive = 1
                 AND v.isActive = 1
-        ", $dataViewID);
+                AND EXISTS (
+                    SELECT 1
+                    FROM tb_company_dataview AS c
+                    WHERE c.companyID = %d
+                        AND c.flavorID = %d
+                        AND c.dataViewID = d.dataViewID
+                        AND c.callerID = d.callerID
+                        AND c.componentID = d.componentID
+                        AND c.isActive = 1
+                )
+        ", $dataViewID, $companyID, $flavorID);
 
         return $db->query($sql)->getRow();
     }
