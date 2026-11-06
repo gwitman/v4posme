@@ -372,12 +372,8 @@ class core_web_view {
 		//Ejecutar Vista.		
 		$queryFill	= str_replace("{filterPermission}", $filterPermission, $queryFill);
 		
-		log_message('debug', '[getViewDefault] SQL a ejecutar: {sql}', [
-			'sql' => $queryFill
-		]);
-		
 		$dataRecordSet				= $Bd_Model->executeRender($queryFill,null);
-		
+
 		log_message('info', '[getViewDefault] Consulta ejecutada - registros obtenidos: {count}', [
 			'count' => is_array($dataRecordSet) ? count($dataRecordSet) : 0
 		]);
