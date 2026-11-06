@@ -67,3 +67,6 @@ build/logs/logfile.xml
 build/logs/testdox.html
 build/logs/testdox.txt
 claude_prompt/prompt_chat_ia_posme.md
+.claude/agents/posme-implementador.md
+.claude/commands/nueva-compania.md
+.claude/commands/personalizar-compania.md
