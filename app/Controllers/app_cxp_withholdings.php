@@ -106,9 +106,9 @@ class app_cxp_withholdings extends _BaseController
 
 			//Guardar o Editar Registro						
 			if ($mode == "new") {
-				$this->insertElement($dataSession);
+				return $this->insertElement($dataSession); //Se devuelve para mostrar la pantalla de error, no una pagina en blanco
 			} else if ($mode == "edit") {
-				$this->updateElement($dataSession);
+				return $this->updateElement($dataSession); //Se devuelve para mostrar la pantalla de error, no una pagina en blanco
 			} else {
 				$stringValidation = "El modo de operacion no es correcto (new|edit)";
 				$this->core_web_notification->set_message(true, $stringValidation);
@@ -326,6 +326,15 @@ class app_cxp_withholdings extends _BaseController
 			$companyID                              = $dataSession["user"]->companyID;
 			$branchID                               = $dataSession["user"]->branchID;
 			
+			//Un monto negativo invertiria el documento; la pantalla ya lo rechaza, esto cubre lo que llegue sin pasar por ella
+			$montoFactura   = helper_StringToNumber($this->request->getPost("txtInvoiceAmount"));
+			$montoRetencion = helper_StringToNumber($this->request->getPost("txtWithholdingAmount"));
+			if ($montoFactura < 0 || $montoRetencion < 0)
+				throw new \Exception("El monto no puede ser negativo");
+
+			if (!is_numeric($montoFactura) || $montoFactura == 0)
+				throw new \Exception("Establecer Monto de la Factura");
+
             //Valores de tasa de cambio
 			date_default_timezone_set(APP_TIMEZONE);
 			$objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
@@ -350,8 +359,8 @@ class app_cxp_withholdings extends _BaseController
 			$objTM["reference3"]                    = /*inicio get post*/ $this->request->getPost("txtInvoice");
 			$objTM["reference4"]                    = /*inicio get post*/ $this->request->getPost("txtTax");
 			$objTM["statusID"]                      = /*inicio get post*/ $this->request->getPost("txtStatusID");
-			$objTM["amount"]                        = /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtInvoiceAmount"));
-			$objTM["discount"]						= /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtWithholdingAmount"));
+			$objTM["amount"]                        = $montoFactura;
+			$objTM["discount"]						= $montoRetencion;
 			$objTM["isActive"]                      = 1;
 			$this->core_web_auditoria->setAuditCreated($objTM, $dataSession, $this->request);
 
@@ -427,6 +436,15 @@ class app_cxp_withholdings extends _BaseController
 
 			$objTM                                  = $this->Transaction_Master_Model->get_rowByPk($companyID, $transactionID, $transactionMasterID);
 
+			//Un monto negativo invertiria el documento; la pantalla ya lo rechaza, esto cubre lo que llegue sin pasar por ella
+			$montoFactura   = helper_StringToNumber($this->request->getPost("txtInvoiceAmount"));
+			$montoRetencion = helper_StringToNumber($this->request->getPost("txtWithholdingAmount"));
+			if ($montoFactura < 0 || $montoRetencion < 0)
+				throw new \Exception("El monto no puede ser negativo");
+
+			if (!is_numeric($montoFactura) || $montoFactura == 0)
+				throw new \Exception("Establecer Monto de la Factura");
+
 			//Valores de tasa de cambio
 			date_default_timezone_set(APP_TIMEZONE);
 			$objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
@@ -445,8 +463,8 @@ class app_cxp_withholdings extends _BaseController
 			$objTMNew["reference3"]                 = /*inicio get post*/ $this->request->getPost("txtInvoice");
 			$objTMNew["reference4"]                 = /*inicio get post*/ $this->request->getPost("txtTax");
 			$objTMNew["statusID"]                   = /*inicio get post*/ $this->request->getPost("txtStatusID");
-			$objTMNew["amount"]                     = /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtInvoiceAmount"));
-			$objTMNew["discount"]				    = /*inicio get post*/ helper_StringToNumber($this->request->getPost("txtWithholdingAmount"));
+			$objTMNew["amount"]                     = $montoFactura;
+			$objTMNew["discount"]				    = $montoRetencion;
 			$objTMNew["isActive"]                   = 1;
 
 			//Validar si el estado permite editar

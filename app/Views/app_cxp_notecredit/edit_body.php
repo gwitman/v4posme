@@ -86,7 +86,7 @@
 
                                 <div class="form-group">
                                     <label class="pv2-label" for="txtAmount">Monto <span class="pv2-req">*</span></label>
-                                    <input class="form-control pv2-num afx-monto" type="text" inputmode="decimal" autocomplete="off" name="txtAmount" id="txtAmount" value="<?php echo sprintf("%01.4f", $objTM->amount); ?>">
+                                    <input class="form-control pv2-num afx-monto afx-sin-negativo" type="text" inputmode="decimal" autocomplete="off" name="txtAmount" id="txtAmount" value="<?php echo sprintf("%01.4f", $objTM->amount); ?>">
                                 </div>
 
                                 <div class="form-group <?php echo getBehavio($company->type, "app_cxp_notecredit", "divCustomerControlBuscar", ""); ?> ">

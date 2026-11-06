@@ -121,11 +121,12 @@
 		afxInitMontos(".pv2");
 		pv2BindMobileBar();
 
-		//Mientras se escribe solo se aceptan digitos, comas, un punto y el signo inicial
+		//Mientras se escribe solo se aceptan digitos, comas, un punto y el signo inicial.
+		//Los campos con la clase afx-sin-negativo no aceptan el signo
 		$(document).on("input",".pv2 input.afx-monto",function(){
 			var original = this.value;
 			var texto    = original.replace(/[^0-9.,\-]/g,"");
-			var negativo = texto.charAt(0) === "-";
+			var negativo = texto.charAt(0) === "-" && !$(this).hasClass("afx-sin-negativo");
 			texto        = texto.replace(/-/g,"");
 			var punto    = texto.indexOf(".");
 			if(punto !== -1){

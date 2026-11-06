@@ -113,7 +113,7 @@
                         <!-- MONTO DE FACTURA -->
                         <div class="form-group">
                             <label class="pv2-label" for="txtInvoiceAmount">Monto de Factura <span class="pv2-req">*</span></label>
-                            <input class="form-control pv2-num afx-monto" type="text" inputmode="decimal" autocomplete="off" name="txtInvoiceAmount" id="txtInvoiceAmount" value="0">
+                            <input class="form-control pv2-num afx-monto afx-sin-negativo" type="text" inputmode="decimal" autocomplete="off" name="txtInvoiceAmount" id="txtInvoiceAmount" value="0">
                         </div>
 
                         <!-- MONTO DE RETENCION -->

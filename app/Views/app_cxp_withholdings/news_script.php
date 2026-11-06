@@ -76,6 +76,12 @@
 				            result = false;
 				        }
 
+						//Un monto negativo invertiria el documento
+						if (pv2Num($("#txtInvoiceAmount").val()) < 0) {
+							fnShowNotification("El monto no puede ser negativo", "error", timerNotification);
+							result = false;
+						}
+
 						//Validar Monto de Factura (pv2Num detecta 0, 0.00 y vacio)
 						if (pv2Num($("#txtInvoiceAmount").val()) == 0) {
 				            fnShowNotification("Establecer Monto de la Factura", "error", timerNotification);

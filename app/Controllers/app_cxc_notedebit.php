@@ -324,6 +324,10 @@ class app_cxc_notedebit extends _BaseController
 			if ($monto < 0)
 				throw new \Exception("El monto no puede ser negativo");
 
+			//La pantalla ya lo rechaza; esta validacion cubre lo que llegue sin pasar por ella
+			if (!is_numeric($monto) || $monto == 0)
+				throw new \Exception("El monto no puede ser 0");
+
 
 			//Valores de tasa de cambio
 			date_default_timezone_set(APP_TIMEZONE);
@@ -428,6 +432,10 @@ class app_cxc_notedebit extends _BaseController
 			//Un monto negativo invertiria el efecto de la nota sobre el saldo
 			if ($monto < 0)
 				throw new \Exception("El monto no puede ser negativo");
+
+			//La pantalla ya lo rechaza; esta validacion cubre lo que llegue sin pasar por ella
+			if (!is_numeric($monto) || $monto == 0)
+				throw new \Exception("El monto no puede ser 0");
 
 			$transactionID                          = $this->request->getPost("txtTransactionID");
 			$transactionMasterID                    = $this->request->getPost("txtTransactionMasterID");

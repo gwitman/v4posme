@@ -518,7 +518,7 @@ Ruta: Menú > CXP > RETENCION. La lista se llama **LISTA DE RETENCIONES DE PROVE
 3. En la tarjeta **Montos** escriba **Monto de Factura** (por ejemplo 1,500.25). **Monto de Retencion** se calcula solo con el porcentaje del impuesto y no se escribe a mano.
 4. Opcional: en la tarjeta **Referencias y comentario** complete **Referencia 1**, **Referencia 2** y **Comentario**.
 5. Presione **Guardar** (en el teléfono, en la barra inferior).
-Mensajes de validación: "Establecer Fecha al Documento", "Seleccione el Proveedor", "Establecer el número de Factura" y "Establecer Monto de la Factura".
+Mensajes de validación: "Establecer Fecha al Documento", "Seleccione el Proveedor", "Establecer el número de Factura", "El monto no puede ser negativo" y "Establecer Monto de la Factura".
 Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Eliminar**, **Imprimir** y **Guardar**. En **Mas** > **Archivos** puede adjuntar documentos.
 Notas: la retención no cambia el saldo del proveedor. Al crearla solo está disponible el estado inicial; los demás estados se eligen en la edición.
 <!-- REVISAR: uso posterior del monto retenido -->
