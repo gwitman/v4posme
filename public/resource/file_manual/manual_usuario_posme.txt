@@ -579,7 +579,7 @@ Ruta: Menú > CXC > NOTA D. CREDITO. La lista se llama LISTA DE NOTAS DE CREDITO
   3. Opcional, en la tarjeta Referencias y comentario: Referencia 1, Referencia 2, Referencia 3 y Comentario.
   4. Presione Guardar (en el teléfono, en la barra inferior). La nota queda REGISTRADA y todavía no cambia el saldo del cliente.
   5. Para aplicarla, ábrala en edición, cambie Estado a APLICADO y presione Guardar. Solo la pantalla de edición permite este paso. Al aplicarla, el monto se suma al saldo del cliente en la moneda elegida (Balance Cordobas o Balance Dolares en su ficha).
-Mensajes de validación: "Establecer Fecha al Documento", "El monto no puede ser 0" y "Seleccione el cliente".
+Mensajes: "Establecer Fecha al Documento", "El monto no puede ser 0", "El monto no puede ser negativo" y "Seleccione el cliente".
 Para modificarla, escriba el número en Buscar por número… o seleccione la fila y presione Editar. Arriba tiene Nuevo, Atras, Eliminar, Imprimir y Guardar. En Mas > Archivos adjunta documentos.
 Si el estado no lo permite, verá "EL REGISTRO NO PUEDE SER EDITADO POR SU ESTADO ACTUAL" o "EL REGISTRO NO PUEDE SER ELIMINADO POR SU ESTADO ACTUAL".
 Notas: esta pantalla es para clientes; las notas de proveedor están en CXP y las de banco en su propio módulo.
@@ -593,7 +593,7 @@ Ruta: Menú > CXC > NOTA D. DEBITO. La lista se llama LISTA DE NOTAS DE DEBITO D
   3. Opcional, en la tarjeta Referencias y comentario: Referencia 1, Referencia 2, Referencia 3 y Comentario.
   4. Presione Guardar (en el teléfono, en la barra inferior). La nota queda REGISTRADA y todavía no cambia el saldo del cliente.
   5. Para aplicarla, ábrala en edición, cambie Estado a APLICADO y presione Guardar. Solo la pantalla de edición permite este paso. Al aplicarla, el monto se resta del saldo del cliente en la moneda elegida (Balance Cordobas o Balance Dolares en su ficha).
-Mensajes de validación: "Establecer Fecha al Documento", "El monto no puede ser 0" y "Seleccione el cliente".
+Mensajes: "Establecer Fecha al Documento", "El monto no puede ser 0", "El monto no puede ser negativo" y "Seleccione el cliente".
 Para modificarla, escriba el número en Buscar por número… o seleccione la fila y presione Editar. Arriba tiene Nuevo, Atras, Eliminar, Imprimir y Guardar. En Mas > Archivos adjunta documentos.
 Si el estado no lo permite, verá "EL REGISTRO NO PUEDE SER EDITADO POR SU ESTADO ACTUAL" o "EL REGISTRO NO PUEDE SER ELIMINADO POR SU ESTADO ACTUAL".
 Notas: esta pantalla es para clientes; las notas de proveedor están en CXP y las de banco en su propio módulo.
@@ -673,7 +673,7 @@ Ruta: Menú > CXP > NOTA D. DEBITO. La lista se llama LISTA DE NOTAS DE DEBITO D
   4. Presione Guardar (en el teléfono, en la barra inferior). Se abre la nota para editarla.
   5. Para que afecte el saldo, cambie Estado a APLICADO y presione Guardar. Al crearla solo está disponible el estado inicial: APLICADO se elige en la edición.
 Efecto: al aplicarla, el Monto se resta del saldo del proveedor en la moneda elegida (Balance Cordobas o Balance Dolares).
-Mensajes de validación: "Establecer Fecha al Documento", "El monto no puede ser 0" y "Seleccione el Proveedor".
+Mensajes de validación: "Establecer Fecha al Documento", "El monto no puede ser 0", "El monto no puede ser negativo" y "Seleccione el Proveedor".
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuevo, Atras, Eliminar, Imprimir y Guardar. En Mas > Archivos puede adjuntar documentos.
 Ver también: Registrar una nota de crédito de proveedor, Crear un proveedor.
 
@@ -686,7 +686,7 @@ Ruta: Menú > CXP > NOTA D. CREDITO. La lista se llama LISTA DE NOTAS DE CREDITO
   4. Presione Guardar (en el teléfono, en la barra inferior). Se abre la nota para editarla.
   5. Para que afecte el saldo, cambie Estado a APLICADO y presione Guardar. Al crearla solo está disponible el estado inicial: APLICADO se elige en la edición.
 Efecto: al aplicarla, el Monto se suma al saldo del proveedor en la moneda elegida (Balance Cordobas o Balance Dolares).
-Mensajes de validación: "Establecer Fecha al Documento", "Debe ingresar un monto", "El monto no puede ser 0" y "Seleccione el proveedor".
+Mensajes de validación: "Establecer Fecha al Documento", "Debe ingresar un monto", "El monto no puede ser 0", "El monto no puede ser negativo" y "Seleccione el proveedor".
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuevo, Atras, Eliminar, Imprimir y Guardar. En Mas > Archivos puede adjuntar documentos.
 Ver también: Registrar una nota de débito de proveedor, Crear un proveedor.
 

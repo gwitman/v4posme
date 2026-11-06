@@ -112,9 +112,9 @@ class app_cxc_notedebit extends _BaseController
 
 			//Guardar o Editar Registro						
 			if ($mode == "new") {
-				$this->insertElement($dataSession);
+				return $this->insertElement($dataSession); //Se devuelve para mostrar la pantalla de error, no una pagina en blanco
 			} else if ($mode == "edit") {
-				$this->updateElement($dataSession);
+				return $this->updateElement($dataSession); //Se devuelve para mostrar la pantalla de error, no una pagina en blanco
 			} else {
 				$stringValidation = "El modo de operacion no es correcto (new|edit)";
 				$this->core_web_notification->set_message(true, $stringValidation);
@@ -320,6 +320,11 @@ class app_cxc_notedebit extends _BaseController
 			$currencyID                             = $this->request->getPost("txtCurrencyID");
 			$monto                                  = helper_StringToNumber($this->request->getPost("txtAmount"));
 
+			//Un monto negativo invertiria el efecto de la nota sobre el saldo
+			if ($monto < 0)
+				throw new \Exception("El monto no puede ser negativo");
+
+
 			//Valores de tasa de cambio
 			date_default_timezone_set(APP_TIMEZONE);
 			$objCurrencyDolares						= $this->core_web_currency->getCurrencyExternal($companyID);
@@ -419,6 +424,11 @@ class app_cxc_notedebit extends _BaseController
 			$entityID                               = $this->request->getPost("txtCustomerEntityID");
 			$currencyID                             = $this->request->getPost("txtCurrencyID");
 			$monto                                  = helper_StringToNumber($this->request->getPost("txtAmount"));
+
+			//Un monto negativo invertiria el efecto de la nota sobre el saldo
+			if ($monto < 0)
+				throw new \Exception("El monto no puede ser negativo");
+
 			$transactionID                          = $this->request->getPost("txtTransactionID");
 			$transactionMasterID                    = $this->request->getPost("txtTransactionMasterID");
 

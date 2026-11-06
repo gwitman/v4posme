@@ -52,6 +52,12 @@
 				            result = false;
 				        }
 
+				        //Un monto negativo invertiria el efecto de la nota sobre el saldo
+				        if (pv2Num($("#txtAmount").val()) < 0) {
+				        	fnShowNotification("El monto no puede ser negativo", "error", timerNotification);
+				        	result = false;
+				        }
+
 				        //Validar Monto (pv2Num detecta 0, 0.00 y vacio)
 				        if (pv2Num($("#txtAmount").val()) == 0) {
 				            fnShowNotification("El monto no puede ser 0", "error", timerNotification);
