@@ -47,8 +47,17 @@ class app_cxc_notes extends _BaseController
             $entityID           = $this->request->getPost("alumnoId");
             $entityIDSecondary  = $this->request->getPost("colaboradorId");
             $areaID             = $this->request->getPost("materiaId");
-            $transactionON      = $this->request->getPost("txtTransactionOn");
-            $objTM              = $this->Transaction_Master_Model->get_RowByNotas($classID, $entityID, $entityIDSecondary, $areaID, $transactionON, null);
+            $transactionON      = $this->request->getPost("transactionOn");
+
+            //Sin todos los datos la busqueda ignora ese filtro y podria eliminar la nota de otro alumno o de otra fecha
+            if (empty($classID) || empty($entityID) || empty($entityIDSecondary) || empty($areaID) || empty($transactionON)) {
+                return $this->response->setJSON(array(
+                    'error'   => true,
+                    'message' => "Debe indicar grado, alumno, profesor, materia y fecha para eliminar la nota"
+                ));//--finjson
+            }
+
+            $objTM              = $this->Transaction_Master_Model->get_RowByNotas($companyID, $classID, $entityID, $entityIDSecondary, $areaID, $transactionON, null);
             if (!$objTM){
                 return $this->response->setJSON(array(
                     'error'   => true,
@@ -318,6 +327,11 @@ class app_cxc_notes extends _BaseController
 
             //Validar Formulario
             $this->validation->setRule("txtTransactionOn", "Fecha", "required");
+            //Sin estos datos la busqueda ignora ese filtro y podria sobrescribir la nota de otro alumno
+            $this->validation->setRule("txtGradoID", "Grado", "required");
+            $this->validation->setRule("txtAlumnoID", "Alumno", "required");
+            $this->validation->setRule("txtColaboradorID", "Profesor", "required");
+            $this->validation->setRule("txtMateriaID", "Materia", "required");
 
             //Validar Formulario
             if (!$this->validation->withRequest($this->request)->run()) {
@@ -344,7 +358,7 @@ class app_cxc_notes extends _BaseController
             $areaID             = $this->request->getPost("txtMateriaID");
             $transactionON      = $this->request->getPost("txtTransactionOn");
             $priorityID         = $this->request->getPost("txtPriorityID");
-            $objTm              = $this->Transaction_Master_Model->get_RowByNotas($classID, $entityID, $entityIDSecondary, $areaID, $transactionON,null);
+            $objTm              = $this->Transaction_Master_Model->get_RowByNotas($dataSession["user"]->companyID, $classID, $entityID, $entityIDSecondary, $areaID, $transactionON,null);
             //Guardar o Editar Registro
             if (is_null($objTm)) {
                 return $this->insertElement($dataSession);
@@ -491,7 +505,7 @@ class app_cxc_notes extends _BaseController
             $mes                = $this->request->getPost("mes");
             $transactionON      = $this->request->getPost("transactionOn");
 
-            $objListTm           = $this->Transaction_Master_Model->get_RowGradeBook($classID, $entityID, $entityIDSecondary, $areaID, $anio, $mes, $transactionON);
+            $objListTm           = $this->Transaction_Master_Model->get_RowGradeBook($companyID, $classID, $entityID, $entityIDSecondary, $areaID, $anio, $mes, $transactionON);
 
             return $this->response->setJSON(array(
                 'error'     => false,

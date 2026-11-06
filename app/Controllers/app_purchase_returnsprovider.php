@@ -288,10 +288,12 @@ class app_purchase_returnsprovider extends _BaseController {
 				foreach($arrayListItemID as $key => $value){	
 					$itemID 								= $value;
 					$transactionDetailID 					= $arrayListTransactionDetail[$key];
-					$quantity 								= helper_StringToNumber($arrayListQuantity[$key]);
-					$lote 									= $arrayListLote[$key];
-					$vencimiento							= $arrayListVencimiento[$key];
-					$tipo									= $arrayListTipo[$key];
+					$quantity 								= helper_StringToNumber($arrayListQuantity[$key] ?? "");
+					if(!is_numeric($quantity) || $quantity <= 0)
+					throw new \Exception("La cantidad de cada producto debe ser mayor que 0");
+					$lote 									= $arrayListLote[$key] ?? ""; //Lote, vencimiento y razon estan fuera del formulario: son opcionales
+					$vencimiento							= $arrayListVencimiento[$key] ?? "";
+					$tipo									= $arrayListTipo[$key] ?? null;
 					
 					$objItem 								= $this->Item_Model->get_rowByPK($objTM["companyID"],$itemID);					
 					$objTMD["companyID"] 					= $objTM["companyID"];
@@ -445,17 +447,19 @@ class app_purchase_returnsprovider extends _BaseController {
 					$objItem 								= $this->Item_Model->get_rowByPK($objTM->companyID,$value);
 					$itemID 								= $value;
 					$warehouseID 							= $objTMNew["sourceWarehouseID"];
-					$quantity 								= helper_StringToNumber($arrayListQuantity[$key]);
-					$tipo 									= $arrayListTipo[$key];
-					$lote 									= $arrayListLote[$key];
-					$vencimiento							= $arrayListVencimiento[$key];
+					$quantity 								= helper_StringToNumber($arrayListQuantity[$key] ?? "");
+					if(!is_numeric($quantity) || $quantity <= 0)
+					throw new \Exception("La cantidad de cada producto debe ser mayor que 0");
+					$tipo 									= $arrayListTipo[$key] ?? null;
+					$lote 									= $arrayListLote[$key] ?? ""; //Lote, vencimiento y razon estan fuera del formulario: son opcionales
+					$vencimiento							= $arrayListVencimiento[$key] ?? "";
 					$objItemWarehouse  						= $this->Itemwarehouse_Model->getByPK($companyID,$itemID,$warehouseID);
 					
-					if($objItemWarehouse->quantity < $quantity )
+					if(!$objItemWarehouse || $objItemWarehouse->quantity < $quantity )
 					throw new \Exception("La cantidad de '" . $objItem->itemNumber . " " . $objItem->name . "' es mayor que la disponible en bodega");
 					
 					//Nuevo Detalle
-					if($transactionMasterDetailID == 0){						
+					if(empty($transactionMasterDetailID)){ //La fila nueva llega con ID vacio, y en PHP 8 "" == 0 es falso						
 						$objTMD 								= array();
 						$objTMD["companyID"] 					= $companyID;
 						$objTMD["transactionID"] 				= $transactionID;
@@ -565,10 +569,10 @@ class app_purchase_returnsprovider extends _BaseController {
 			} 
 			//Guardar o Editar Registro						
 			if($mode == "new"){
-				$this->insertElement($dataSession);
+				return $this->insertElement($dataSession); //Se devuelve para mostrar la pantalla de error, no una pagina en blanco
 			}
 			else if ($mode == "edit"){
-				$this->updateElement($dataSession);
+				return $this->updateElement($dataSession); //Se devuelve para mostrar la pantalla de error, no una pagina en blanco
 			}
 			else{
 				$stringValidation = "El modo de operacion no es correcto (new|edit)";

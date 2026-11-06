@@ -89,10 +89,10 @@ class Transaction_Master_Model extends Model  {
 		$sql = "";
 		$sql = sprintf("select tm.companyID, tm.transactionID, tm.transactionMasterID, tm.branchID, tm.transactionNumber, tm.transactionCausalID,tm.entityID, tm.transactionOn, tm.statusIDChangeOn, tm.componentID,tm.tax1,tm.tax2,tm.tax3,tm.tax4,tm.discount,tm.subAmount, tm.note, tm.sign, tm.currencyID, tm.currencyID2, tm.exchangeRate, tm.reference1, tm.reference2, tm.reference3, tm.reference4, tm.statusID, tm.amount, tm.isApplied, tm.journalEntryID, tm.classID, tm.areaID, tm.sourceWarehouseID, tm.targetWarehouseID, tm.createdBy, tm.createdAt, tm.createdOn, tm.createdIn, tm.isActive ,tm.priorityID, tm.transactionOn2, tm.isTemplate,tm.periodPay,tm.nextVisit,tm.numberPhone ,tm.printerQuantity,tm.entityIDSecondary, tm.dayExcluded ");
 		$sql = $sql.sprintf(" from tb_transaction_master tm");		
-		$sql = $sql.sprintf(" where tm.transactionMasterID = $transactionMasterID");
-		$sql = $sql.sprintf(" and tm.companyID = $companyID");
-		$sql = $sql.sprintf(" and tm.isActive= 1");		
-		
+		$sql = $sql.sprintf(" where tm.transactionMasterID = %d", $transactionMasterID); //Vacio queda en 0: sin fila, no error de SQL
+		$sql = $sql.sprintf(" and tm.companyID = %d", $companyID);
+		$sql = $sql.sprintf(" and tm.isActive= 1");
+
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
@@ -361,7 +361,20 @@ class Transaction_Master_Model extends Model  {
      * ValorCuantitativo -> amount
      * ValorCualitativo -> priorityID
      */
-    function get_RowByNotas($classID, $entityID, $entityIDSecondary, $areaID, $transactionON, $priorityID)
+    /**
+     * Busca la nota de un alumno dentro de la empresa. Los filtros vacios se ignoran, por lo que
+     * quien vaya a modificar o eliminar debe validar antes que vengan todos.
+     *
+     * @param int         $companyID         Empresa de la sesion.
+     * @param int|null    $classID           Grado.
+     * @param int|null    $entityID          Alumno.
+     * @param int|null    $entityIDSecondary Colaborador.
+     * @param int|null    $areaID            Materia.
+     * @param string|null $transactionON     Fecha de la nota.
+     * @param int|null    $priorityID        Valor cualitativo.
+     * @return object|null Nota encontrada o null si no existe.
+     */
+    function get_RowByNotas($companyID, $classID, $entityID, $entityIDSecondary, $areaID, $transactionON, $priorityID)
     {
         $db 		= db_connect();
 
@@ -389,6 +402,7 @@ class Transaction_Master_Model extends Model  {
                      ttm.createdIn,
                      ttm.isActive,
                      ttm.entityIDSecondary");
+        $builder->where("ttm.companyID",$companyID);
         if (!empty($classID)) {
             $builder->where("ttm.classID",$classID);
         }
@@ -413,7 +427,7 @@ class Transaction_Master_Model extends Model  {
     }
 
 	
-    function get_RowGradeBook($classID, $entityID, $entityIDSecondary, $areaID, $anio, $mes, $transactionON)
+    function get_RowGradeBook($companyID, $classID, $entityID, $entityIDSecondary, $areaID, $anio, $mes, $transactionON)
     {
         $db 		= db_connect();
 
@@ -438,6 +452,7 @@ class Transaction_Master_Model extends Model  {
             ->join('tb_public_catalog_detail tpcd', 'ttm.areaID=tpcd.publicCatalogDetailID', 'inner')
             ->join('tb_catalog_item tci', 'ttm.priorityID = tci.catalogItemID', 'inner')
             ->join('tb_catalog_item tci2', 'ttm.classID = tci2.catalogItemID', 'inner');
+        $builder->where("ttm.companyID",$companyID);
         if (!empty($classID)) {
             $builder->where("ttm.classID",$classID);
         }

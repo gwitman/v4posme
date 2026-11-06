@@ -1034,47 +1034,11 @@ class app_cxc_record extends _BaseController {
 						if ($resultPermission 	== PERMISSION_NONE)
 						throw new \Exception(NOT_ALL_INSERT);			
 			
-			}	
-			 
-						
-			$dataView							= null;
-			
-			//Obtener Tasa de Cambio			
-			$companyID 							= $dataSession["user"]->companyID;
-			$branchID 							= $dataSession["user"]->branchID;
-			$roleID 							= $dataSession["role"]->roleID;
-			
-			$objComponentAccount				= $this->core_web_tools->getComponentIDBy_ComponentName("tb_account");
-			if(!$objComponentAccount)
-			throw new \Exception("EL COMPONENTE 'tb_account' NO EXISTE...");
-			
-			
-			$dataView["objListWorkflowStage"]			= $this->core_web_workflow->getWorkflowInitStage("tb_customer","statusID",$companyID,$branchID,$roleID);
-			$dataView["objListIdentificationType"]		= $this->core_web_catalog->getCatalogAllItem("tb_customer","identificationType",$companyID);
-			$dataView["objListCountry"]					= $this->core_web_catalog->getCatalogAllItem("tb_customer","countryID",$companyID);
-			$dataView["objListClasificationID"]			= $this->core_web_catalog->getCatalogAllItem("tb_customer","clasificationID",$companyID);
-			$dataView["objListCustomerTypeID"]			= $this->core_web_catalog->getCatalogAllItem("tb_customer","customerTypeID",$companyID);
-			$dataView["objListCategoryID"]				= $this->core_web_catalog->getCatalogAllItem("tb_customer","categoryID",$companyID);
-			$dataView["objListSubCategoryID"]			= $this->core_web_catalog->getCatalogAllItem("tb_customer","subCategoryID",$companyID);
-			$dataView["objListTypePay"]					= $this->core_web_catalog->getCatalogAllItem("tb_customer","typePay",$companyID);
-			$dataView["objListPayConditionID"]			= $this->core_web_catalog->getCatalogAllItem("tb_customer","payConditionID",$companyID);
-			$dataView["objListSexoID"]					= $this->core_web_catalog->getCatalogAllItem("tb_customer","sexoID",$companyID);
-			$dataView["objListCurrency"]				= $this->Company_Currency_Model->getByCompany($companyID);
-			$objCurrency								= $this->core_web_currency->getCurrencyDefault($companyID);			
-			$dataView["objCurrency"]					= $objCurrency;
-			$dataView["objComponentAccount"]			= $objComponentAccount;
-			
-			
-			
-			//Renderizar Resultado
-			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);			
-			$dataSession["message"]			= $this->core_web_notification->get_message();
-			$dataSession["head"]			= /*--inicio view*/ view('app_cxc_customer/news_head',$dataView);//--finview
-			$dataSession["body"]			= /*--inicio view*/ view('app_cxc_customer/news_body',$dataView);//--finview
-			$dataSession["script"]			= /*--inicio view*/ view('app_cxc_customer/news_script',$dataView);//--finview
-			$dataSession["footer"]			= "";
-			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r
-			
+			}
+
+			//El buro no crea registros propios: este formulario es el de clientes y guarda en app_cxc_customer.
+			//Se redirige a esa pantalla, que prepara todos los datos que sus vistas necesitan.
+			return redirect()->to(base_url()."/app_cxc_customer/add");
 		}
 		catch(\Exception $ex){
 			if (empty($dataSession)) {

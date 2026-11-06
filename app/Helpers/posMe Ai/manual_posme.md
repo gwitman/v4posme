@@ -227,10 +227,8 @@ Ruta: Menú > TRANSA > NOTAS. La pantalla se llama **Notas**.
 Consultar: complete **Grado**, **Año**, **Meses**, **Días** y **Alumno**, y presione **Mostrar**. La tabla **Calificaciones** muestra las notas de esa fecha; **Colaborador** y **Materia** acotan el resultado.
 Eliminar: con los mismos filtros, más **Colaborador** y **Materia**, presione **Eliminar** y confirme. Luego compruebe el resultado con **Mostrar**.
 Certificado: con **Grado**, **Año** y **Alumno**, presione **Certificado**.
-Mensajes de validación: "Debe seleccionar un Grado", "Debe seleccionar un año", "Debe seleccionar un mes", "Debe seleccionar el dia para aplicar", "Debe seleccionar un alumno" (al consultar o imprimir), "Debe seleccionar un Profesor", "Debe seleccionar una Materia", "Debe seleccionar un valor cualitativo" y "Debe especificar un valor cuantitativo".
+Mensajes de validación: "Debe seleccionar un Grado", "Debe seleccionar un año", "Debe seleccionar un mes", "Debe seleccionar el dia para aplicar", "Debe seleccionar un alumno" (al consultar o imprimir), "Debe seleccionar un Alumno" (al guardar o eliminar), "Debe seleccionar un Profesor", "Debe seleccionar una Materia", "Debe seleccionar un valor cualitativo" y "Debe especificar un valor cuantitativo".
 Notas: al cambiar la calificación cualitativa se borra la cuantitativa. Si el número sale del rango, se avisa y se borra.
-<!-- REVISAR: Eliminar no filtra por fecha: puede borrar otra nota del mismo alumno, grado, materia y colaborador. -->
-<!-- REVISAR: Guardar y Eliminar no exigen Alumno: sin el pueden tocar la nota de otro alumno. -->
 
 ## Registrar un endoso
 Ruta: Menú > TRANSA > ENDOSOS. La lista se llama **LISTA DE ENDOSOS**.
@@ -370,12 +368,9 @@ Ruta: Menú > ADM TALLER > DEV. COMPRA. La lista se llama **DEVOLUCION DE COMPRA
 5. En la tarjeta **Detalle** presione **Agregar**, elija el producto y escriba la **Cantidad**. Repita por cada producto.
 6. Para quitar un producto, marque su casilla (en el teléfono, **Quitar**) y presione **Eliminar** de esa tarjeta.
 7. El botón para terminar es **Guardar** (en el teléfono, en la barra inferior).
-Aviso: por ahora, una devolución con productos en el **Detalle** no se guarda; la pantalla queda en blanco. Si le ocurre, avise a soporte.
-<!-- REVISAR: guardar con detalle falla, defecto previo pendiente de decision -->
-Mensajes de validación: "Seleccione un proveedor" (también al presionar **Agregar** sin proveedor), "Establecer Estado", "Escriba la Fecha del Documento" y "El Item ya esta agregado".
+Mensajes de validación: "Seleccione un proveedor" (también al presionar **Agregar** sin proveedor), "Establecer Estado", "Escriba la Fecha del Documento", "La cantidad de cada producto debe ser mayor que 0" y "El Item ya esta agregado".
 Para modificarla: seleccione la fila y presione **Editar**, o use **Buscar por número…** y la lupa. Arriba tiene **Atras**, **Eliminar**, **Imprimir** y **Guardar**. Lo que puede cambiar o eliminar depende del estado.
-Notas: al pasar a un estado que aplica la devolución, los productos salen del inventario de la **Bodega**. Si la cantidad supera la existencia: "La cantidad de ... es mayor que la disponible en bodega". Con el ciclo contable cerrado no se puede modificar.
-<!-- REVISAR: nombres de los estados -->
+Notas: al pasar de REGISTRADA a APLICADA, los productos salen del inventario de la **Bodega**. Si la cantidad supera la existencia: "La cantidad de ... es mayor que la disponible en bodega". Con el ciclo contable cerrado no se puede modificar.
 Ver también: Registrar una orden de compra.
 
 ## Registrar una orden de compra
@@ -437,7 +432,6 @@ Arriba se muestra **ULTIMA CONSULTA** con su fecha y el nombre del archivo.
 Restricciones: cada búsqueda por identificación consume una consulta del cupo de su empresa. Al agotarse aparece "NO PUEDE SEGUIR CONSULTADO, CREDITOS AGOTADOS".
 Desde el cliente: según la configuración de su empresa, al editarlo tiene **Acciones** > **001) Ir a Buro** y, en la pestaña **Informacion**, **Ver Buro** con las consultas anteriores.
 Ver también: Crear un cliente.
-<!-- REVISAR: Nuevo falla, defecto previo pendiente -->
 
 ## Crear una línea de crédito
 Ruta: Menú > CXC > LINEA D. CREDITO. La lista se llama **LISTA DE LINEA DE CREDITO**.

@@ -102,6 +102,14 @@
 							result = false;
 						}
 
+						//Cada producto debe llevar una cantidad mayor que 0
+						$("input[name='txtDetailQuantity[]']").each(function(e,i){
+							if(pv2Num($(i).val()) <= 0) {
+								fnShowNotification("La cantidad de cada producto debe ser mayor que 0","error",timerNotification);
+								result = false;
+							}
+						});
+
 						$("select.select2statusID").each(function(e,i){
 							if($(i).val() == "") {
 								fnShowNotification("Seleccionar la razon de la devolucion","error",timerNotification);

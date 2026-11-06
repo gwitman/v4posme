@@ -437,6 +437,13 @@
             result = false;
         }
 
+        //Sin alumno la busqueda del servidor no sabria a quien pertenece la nota
+        let alumno = $('#txtAlumnoID').val();
+        if (alumno.trim() === "") {
+            fnShowNotification("Debe seleccionar un Alumno", "error", timerNotification)
+            result = false;
+        }
+
         let colaborador = $('#txtColaboradorDescription').val();
         if (colaborador.trim() === "") {
             fnShowNotification("Debe seleccionar un Profesor", "error", timerNotification)
