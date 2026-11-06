@@ -27,17 +27,18 @@ UPDATE tb_company_parameter AS cp
 SET cp.value = '30'
 WHERE p.name = 'REPORT_BUILDER_TIMEOUT_SECONDS'
     AND cp.companyID = 2;
+	
 
---Parámetro					Pagado				Prueba gratis
---AI_ASSISTANT_ENABLED		true				true
---AI_MODEL					claude-haiku-5-5	claude-haiku-5-5
---AI_MAX_TOKENS				1024				600
---AI_MAX_TOOL_ITERATIONS	5					3
---AI_HISTORY_MESSAGES		8					4
---AI_QUOTA_COMPANY_MONTH	1500000				400000
---AI_QUOTA_USER_MONTH		500000				200000
---AI_RATE_PER_MINUTE		5					3
---AI_MAX_QUESTION_LENGTH	800					400
+#--Parámetro					Pagado				Prueba gratis
+#--AI_ASSISTANT_ENABLED			true				true
+#--AI_MODEL						claude-haiku-5-5	claude-haiku-5-5
+#--AI_MAX_TOKENS				1024				600
+#--AI_MAX_TOOL_ITERATIONS		5					3
+#--AI_HISTORY_MESSAGES			8					4
+#--AI_QUOTA_COMPANY_MONTH		1500000				400000
+#--AI_QUOTA_USER_MONTH			500000				200000
+#--AI_RATE_PER_MINUTE			5					3
+#--AI_MAX_QUESTION_LENGTH		800					400
 
 -- 1. AI_ASSISTANT_ENABLED: true = habilitado / false = deshabilitado
 UPDATE tb_company_parameter AS cp

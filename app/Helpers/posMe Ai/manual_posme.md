@@ -287,7 +287,7 @@ Ruta: Menú > TRANSA > BUILDER REPORT. La pantalla tiene las pestañas **1. Vist
 3. Para resumir, en **Agrupar / calcular** elija **Agrupar por este campo** en unas columnas y **Suma**, **Conteo**, **Promedio**, **Mínimo** o **Máximo** en las demás. Da una fila por grupo; no hay subtotales ni total general.
 4. Opcional: **Agregar orden** y **Agregar filtro**. Un filtro sin valor no se aplica.
 5. Presione **Generar**. Vea el **Resultado**; cambie **Filas por página** o avance con las flechas.
-Vistas: aparecen las registradas por el administrador cuyo menú de origen usted tenga permitido. Por ejemplo, **Ventas por cliente** incluye solo facturas aplicadas y exige acceso a Facturación.
+Vistas: aparecen las registradas por el administrador para su empresa y el tipo de negocio (flavor) de esta, siempre que usted tenga permitido su menú de origen. Por ejemplo, **Ventas por cliente** incluye solo facturas aplicadas y exige acceso a Facturación.
 Datos: según el permiso de su rol ve toda la empresa, su sucursal o solo lo que usted creó.
 Teléfono: el resultado se ve en tarjetas y **Generar** queda en la barra inferior.
 Límites, según la configuración de su empresa (valores sugeridos): 100 filas por página, 5,000 filas en pantalla y 30 segundos por consulta.

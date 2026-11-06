@@ -71,18 +71,15 @@ class app_builder_report extends _BaseController
     function getViews()
     {
         try {
-            $access    = $this->authorize('index');
-            $addresses = core_web_ai_tools::getAddressesSesion($access['session']);
-            $views     = [];
+            $access      = $this->authorize('index');
+            $views       = [];
 
-            foreach ($this->Report_Builder_View_Model->get_rowsActive() as $row) {
-                if ($this->core_web_report_builder->hasRequiredAddress($row->requiredAddress, $addresses)) {
-                    $views[] = [
-                        'dataViewID'  => (int) $row->dataViewID,
-                        'label'       => $row->label,
-                        'description' => $row->description,
-                    ];
-                }
+            foreach ($this->getAvailableViews($access['session']) as $row) {
+                $views[] = [
+                    'dataViewID'  => (int) $row->dataViewID,
+                    'label'       => $row->label,
+                    'description' => $row->description,
+                ];
             }
 
             return $this->successResponse(['views' => $views]);
@@ -232,7 +229,8 @@ class app_builder_report extends _BaseController
     }
 
     /**
-     * Consultas recurrentes del usuario.
+     * Consultas recurrentes del usuario. Se ocultan las de vistas no disponibles para el flavor de la
+     * empresa o el menu del usuario, porque no se podrian abrir.
      *
      * @return mixed JSON con queries.
      */
@@ -243,8 +241,13 @@ class app_builder_report extends _BaseController
             $dataSession = $access['session'];
             $queries     = [];
             $rows        = $this->Report_Builder_Model->get_rowsByUser($dataSession["user"]->companyID, $dataSession["user"]->userID);
+            $viewIDs     = array_map('intval', array_column($this->getAvailableViews($dataSession), 'dataViewID'));
 
             foreach ($rows as $row) {
+                if (!in_array((int) $row->dataViewID, $viewIDs, true)) {
+                    continue;
+                }
+
                 $queries[] = [
                     'reportBuilderID' => (int) $row->reportBuilderID,
                     'name'            => $row->name,
@@ -556,6 +559,22 @@ class app_builder_report extends _BaseController
     }
 
     /**
+     * Vistas del catalogo disponibles: las del flavor de la empresa cuyo menu tiene permitido el usuario.
+     *
+     * @param array $dataSession Sesion.
+     * @return array Filas (objetos) de las vistas disponibles.
+     */
+    protected function getAvailableViews(array $dataSession)
+    {
+        $addresses = core_web_ai_tools::getAddressesSesion($dataSession);
+        $rows      = $this->Report_Builder_View_Model->get_rowsActive((int) $dataSession["user"]->companyID, (int) $dataSession["company"]->flavorID);
+
+        return array_values(array_filter($rows, function ($row) use ($addresses) {
+            return $this->core_web_report_builder->hasRequiredAddress($row->requiredAddress, $addresses);
+        }));
+    }
+
+    /**
      * Vista del catalogo activo a la que el usuario tiene acceso. Vista inexistente y vista sin
      * permiso dan la misma respuesta.
      *
@@ -571,7 +590,7 @@ class app_builder_report extends _BaseController
             throw new \Exception(self::MESSAGE_VIEW_NOT_FOUND);
         }
 
-        $view = $this->Report_Builder_View_Model->get_rowByDataViewID($id);
+        $view = $this->Report_Builder_View_Model->get_rowByDataViewID($id, (int) $dataSession["user"]->companyID, (int) $dataSession["company"]->flavorID);
         if (!$view) {
             throw new \Exception(self::MESSAGE_VIEW_NOT_FOUND);
         }
@@ -667,7 +686,8 @@ class app_builder_report extends _BaseController
     }
 
     /**
-     * SQL de la vista: primero por flavor y luego el generico, como core_web_view.php:138-143.
+     * SQL de la vista segun la empresa y su flavorID exacto. A diferencia de core_web_view, no hay
+     * respaldo sin flavor: una vista de otro flavor no esta disponible para la empresa.
      *
      * @param array  $dataSession Sesion.
      * @param mixed  $permission  Valor de urlPermissionCmd "index".
@@ -682,9 +702,6 @@ class app_builder_report extends _BaseController
         $flavorID  = (int) $dataSession["company"]->flavorID;
 
         $companyView = $this->Company_Data_View_Model->get_rowBy_companyIDDataViewIDAndFlavor($companyID, $view->dataViewID, CALLERID_REPORT_BUILDER, $view->componentID, $flavorID);
-        if (!$companyView) {
-            $companyView = $this->Company_Data_View_Model->get_rowBy_companyIDDataViewID($companyID, $view->dataViewID, CALLERID_REPORT_BUILDER, $view->componentID);
-        }
         if (!$companyView) {
             throw new \Exception(self::MESSAGE_VIEW_NOT_FOUND);
         }
