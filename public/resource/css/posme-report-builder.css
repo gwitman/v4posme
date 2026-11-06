@@ -1,0 +1,89 @@
+/* ==========================================================
+   Constructor de reportes (app_builder_report)
+   Todo bajo .pv2.prb; los colores salen de las variables de posme_v2_style.
+   ========================================================== */
+
+/* Vue monta la pantalla dentro de $(function(){...}); hasta entonces no se muestra */
+#app.prb { visibility: hidden; }
+
+/* Pestañas */
+.pv2.prb .prb-tabs { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 14px; }
+.pv2.prb .prb-tab { flex: 1 1 auto; min-height: 44px; padding: 8px 14px; border: 1px solid var(--pv2-border); border-radius: 10px; background: #fff; color: var(--pv2-muted); font-size: 14px; font-weight: 600; cursor: pointer; }
+.pv2.prb .prb-tab.is-active { background: var(--pv2-accent-bg); border-color: var(--pv2-accent); color: var(--pv2-accent); }
+.pv2.prb .prb-tab:disabled { opacity: .55; cursor: not-allowed; }
+
+/* Mensajes */
+.pv2.prb .prb-alert { border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; font-size: 14px; overflow-wrap: anywhere; }
+.pv2.prb .prb-alert ul { margin: 0; padding-left: 18px; }
+.pv2.prb .prb-alert.is-error { background: var(--pv2-bad-bg); color: var(--pv2-bad); }
+.pv2.prb .prb-alert.is-warn { background: var(--pv2-warn-bg); color: var(--pv2-warn); }
+.pv2.prb .prb-alert.is-info { background: var(--pv2-info-bg); color: var(--pv2-info); }
+.pv2.prb .prb-loading { text-align: center; color: var(--pv2-muted); padding: 20px 10px; }
+
+/* Lista de vistas */
+.pv2.prb .prb-vistas { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(240px, 100%), 1fr)); gap: 10px; }
+.pv2.prb .prb-vista { display: block; width: 100%; min-height: 44px; padding: 12px 14px; text-align: left; background: #fff; border: 1px solid var(--pv2-border); border-radius: 10px; cursor: pointer; color: inherit; }
+.pv2.prb .prb-vista:hover, .pv2.prb .prb-vista:focus { border-color: var(--pv2-accent); background: var(--pv2-accent-bg); outline: 0; }
+.pv2.prb .prb-vista.is-active { border-color: var(--pv2-accent); box-shadow: 0 0 0 2px var(--pv2-accent-bg); }
+.pv2.prb .prb-vista-nombre { display: block; font-weight: 700; font-size: 14px; }
+.pv2.prb .prb-vista-desc { display: block; font-size: 12px; color: var(--pv2-muted); margin-top: 2px; }
+
+/* Bloques de configuración */
+.pv2.prb .prb-bloque { border-top: 1px solid var(--pv2-border); padding-top: 12px; margin-top: 12px; }
+.pv2.prb .prb-bloque-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; margin-bottom: 8px; }
+.pv2.prb .prb-bloque-title { font-size: 13px; font-weight: 700; margin: 0; }
+.pv2.prb .prb-agregar { display: flex; gap: 6px; flex: 1 1 260px; max-width: 480px; }
+.pv2.prb .prb-agregar .form-control { flex: 1 1 auto; min-width: 0; }
+.pv2.prb .prb-vacio { font-size: 13px; color: var(--pv2-muted); margin: 0; }
+
+/* Filas editables: se acomodan solas según el ancho disponible */
+.pv2.prb .prb-fila { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 8px; padding: 10px; margin-bottom: 8px; border: 1px solid var(--pv2-border); border-radius: 10px; background: var(--pv2-soft); }
+.pv2.prb .prb-campo { flex: 1 1 130px; min-width: 0; }
+.pv2.prb .prb-campo-ancho { flex: 2 1 190px; }
+.pv2.prb .prb-campo .pv2-label { margin-bottom: 3px; }
+.pv2.prb .prb-campo-texto { min-height: 38px; display: flex; align-items: center; font-weight: 600; font-size: 14px; overflow-wrap: anywhere; }
+.pv2.prb .prb-botones { display: flex; gap: 4px; flex: 0 0 auto; }
+
+/* Botones táctiles de 44px */
+.pv2.prb .prb-btn-icon { width: 44px; height: 44px; padding: 0; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--pv2-border); border-radius: 8px; background: #fff; color: #1f2933; font-size: 14px; line-height: 1; cursor: pointer; }
+.pv2.prb .prb-btn-icon:hover, .pv2.prb .prb-btn-icon:focus { background: var(--pv2-accent-bg); outline: 0; }
+.pv2.prb .prb-btn-icon:disabled { opacity: .4; cursor: not-allowed; }
+.pv2.prb .prb-btn-icon.is-active { background: var(--pv2-accent); border-color: var(--pv2-accent); color: #fff; }
+.pv2.prb .prb-btn-icon.is-danger { color: var(--pv2-bad); }
+.pv2.prb .prb-btn-icon.is-danger:hover, .pv2.prb .prb-btn-icon.is-danger:focus { background: var(--pv2-bad-bg); }
+.pv2.prb .btn { min-height: 38px; border-radius: 8px; }
+
+/* Resumen del modo consulta */
+.pv2.prb .prb-resumen { margin: 0; font-size: 14px; }
+.pv2.prb .prb-resumen dt { font-size: 12px; font-weight: 600; color: var(--pv2-muted); margin-top: 8px; }
+.pv2.prb .prb-resumen dd { margin: 0; overflow-wrap: anywhere; }
+
+/* Barra de acciones */
+.pv2.prb .prb-barra { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; margin-top: 14px; }
+
+/* Resultado */
+.pv2.prb .prb-right { text-align: right; }
+.pv2.prb td.prb-right { font-variant-numeric: tabular-nums; }
+.pv2.prb .prb-paginacion { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-top: 10px; font-size: 13px; }
+.pv2.prb .prb-paginacion-grupo { display: flex; align-items: center; gap: 6px; }
+.pv2.prb .prb-paginacion select.form-control { width: auto; min-width: 84px; }
+.pv2.prb .prb-acciones-fila { display: flex; flex-wrap: wrap; gap: 4px; justify-content: flex-end; }
+.pv2.prb .prb-acciones-fila .btn { min-height: 44px; }
+.pv2.prb .prb-link { padding: 0; border: 0; background: none; color: var(--pv2-accent); font-weight: 700; text-align: left; cursor: pointer; min-height: 44px; }
+
+/* Telefono */
+@media (max-width: 767px) {
+    .pv2.prb .form-control { min-width: 0; }
+    .pv2.prb .prb-fila { align-items: stretch; }
+    .pv2.prb .prb-campo, .pv2.prb .prb-campo-ancho { flex: 1 1 100%; }
+    .pv2.prb .prb-botones { flex: 1 1 100%; justify-content: flex-end; }
+    .pv2.prb .prb-agregar { max-width: none; flex-basis: 100%; }
+    .pv2.prb .prb-barra .btn { flex: 1 1 100%; min-height: 44px; }
+    .pv2.prb .prb-barra .pv2-hide-xs { display: none; }
+    .pv2.prb .pv2-table tr.row_razon td > span { text-align: right; overflow-wrap: anywhere; min-width: 0; }
+    .pv2.prb .pv2-table tr.row_razon td.prb-td-acciones { display: block; padding-top: 8px; }
+    .pv2.prb .pv2-table tr.row_razon td.prb-td-acciones:before { display: none; }
+    .pv2.prb .prb-acciones-fila .btn { flex: 1 1 auto; }
+    .pv2.prb .prb-paginacion { justify-content: center; }
+    .pv2.prb .prb-paginacion select.form-control { width: auto; }
+}

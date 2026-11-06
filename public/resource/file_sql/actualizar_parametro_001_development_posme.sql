@@ -4,6 +4,30 @@
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '5000'
+WHERE p.name = 'REPORT_BUILDER_MAX_ROWS_SCREEN'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '100'
+WHERE p.name = 'REPORT_BUILDER_PAGE_SIZE_MAX'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '50000'
+WHERE p.name = 'REPORT_BUILDER_MAX_ROWS_EXPORT'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '30'
+WHERE p.name = 'REPORT_BUILDER_TIMEOUT_SECONDS'
+    AND cp.companyID = 2;
+
 --Parámetro					Pagado				Prueba gratis
 --AI_ASSISTANT_ENABLED		true				true
 --AI_MODEL					claude-haiku-5-5	claude-haiku-5-5

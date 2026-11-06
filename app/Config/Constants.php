@@ -164,6 +164,7 @@ define('ELEMENT_TYPE_PAGE','1');
 define('ELEMENT_TYPE_TABLE','2');
 define('CALLERID_LIST','1');
 define('CALLERID_SEARCH','2');
+define('CALLERID_REPORT_BUILDER','3');
 
 //Permisos sobre los registros en las vistas
 define('PERMISSION_NONE','-1');

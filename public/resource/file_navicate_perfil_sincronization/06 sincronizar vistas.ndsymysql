@@ -74,6 +74,30 @@
       },
       "Keys": [],
       "Fields": []
-    }
+    },
+	{
+      "Source": {
+        "Name": "tb_report_builder_view",
+        "ObjectType": "Table_MYSQL"
+      },
+      "Target": {
+        "Name": "tb_report_builder_view",
+        "ObjectType": "Table_MYSQL"
+      },
+      "Keys": [],
+      "Fields": []
+    },	
+	{
+      "Source": {
+        "Name": "tb_report_builder_view_field",
+        "ObjectType": "Table_MYSQL"
+      },
+      "Target": {
+        "Name": "tb_report_builder_view_field",
+        "ObjectType": "Table_MYSQL"
+      },
+      "Keys": [],
+      "Fields": []
+    }	
   ]
 }

@@ -203,8 +203,9 @@ El menú TRANSA reúne estas opciones (cada usuario ve las que su rol tenga perm
 - **ENDOSOS**: cambia un dato de un documento ya registrado, dejando constancia del valor anterior y del nuevo.
 - **PRODUCCION**: registra órdenes de producción con sus insumos y resultados.
 - **NOTAS**: registra y consulta las calificaciones de los alumnos.
+- **BUILDER REPORT**: Constructor de Reportes. Arma un reporte eligiendo vista, columnas, agrupación, orden y filtros; guarda consultas para usarlas de nuevo y exporta a Excel.
 Notas: la opción NOTAS de este menú es para calificaciones. No es una nota de crédito ni de débito: esas están en CXC y en CXP.
-Ver también: Configurar documentos del sistema y causales; Registrar un endoso; Registrar calificaciones de un alumno.
+Ver también: Configurar documentos del sistema y causales; Registrar un endoso; Registrar calificaciones de un alumno; Crear un reporte con el Constructor de Reportes (Builder Report).
 
 ## Configurar documentos del sistema y causales
 Ruta: Menú > TRANSA > DOCUMENTOS. La lista se llama **LISTA DE DOCUMENTOS**. Aquí no se crean ni se eliminan documentos: solo se configuran.
@@ -278,6 +279,67 @@ Mensajes:
 - "EL ARCHIVO expired_items.csv NO TIENE EL FORMATO CORRECTO": alguna línea tiene columnas de más o de menos.
 El separador de columnas del archivo depende de la configuración de su empresa.
 <!-- REVISAR: de dónde salen las primeras fechas de expiración de un producto; formato de fecha aceptado al editar en Excel -->
+
+## Crear un reporte con el Constructor de Reportes (Builder Report)
+Ruta: Menú > TRANSA > BUILDER REPORT. La pantalla tiene las pestañas **1. Vistas**, **2. Configurar** y **3. Mis consultas**.
+1. En **1. Vistas** elija una vista; **Buscar vista** filtra la lista.
+2. En **Mostrar** agregue campos con **Agregar columna...** o **Todas**. En cada columna puede cambiar **Título**, **Tipo** y **Alineación**, moverla o quitarla.
+3. Para resumir, en **Agrupar / calcular** elija **Agrupar por este campo** en unas columnas y **Suma**, **Conteo**, **Promedio**, **Mínimo** o **Máximo** en las demás. Da una fila por grupo; no hay subtotales ni total general.
+4. Opcional: **Agregar orden** y **Agregar filtro**. Un filtro sin valor no se aplica.
+5. Presione **Generar**. Vea el **Resultado**; cambie **Filas por página** o avance con las flechas.
+Vistas: aparecen las registradas por el administrador cuyo menú de origen usted tenga permitido. Por ejemplo, **Ventas por cliente** incluye solo facturas aplicadas y exige acceso a Facturación.
+Datos: según el permiso de su rol ve toda la empresa, su sucursal o solo lo que usted creó.
+Teléfono: el resultado se ve en tarjetas y **Generar** queda en la barra inferior.
+Límites, según la configuración de su empresa (valores sugeridos): 100 filas por página, 5,000 filas en pantalla y 30 segundos por consulta.
+Mensajes:
+- "Agregue al menos una columna en "Mostrar"."
+- "Al agrupar, la columna "..." debe agruparse o llevar un cálculo."
+- "La consulta tardo demasiado y fue cancelada. Reduzca el rango de fechas o agregue filtros."
+- "No tiene vistas disponibles para reportes."
+Notas: tras asignarle el permiso, el usuario debe cerrar sesión y volver a entrar.
+Ver también: Guardar una consulta de reporte para usarla de nuevo.
+<!-- REVISAR: confirmar el rótulo del menú en pantalla -->
+
+## Guardar una consulta de reporte para usarla de nuevo
+Ruta: Menú > TRANSA > BUILDER REPORT, pestaña **2. Configurar**.
+1. Configure el reporte (columnas, agrupación, orden y filtros).
+2. Escriba **Nombre de la consulta**.
+3. Presione **Guardar como consulta recurrente**. Aparece "Consulta guardada." y queda en **3. Mis consultas**.
+Un filtro sin valor se guarda y se llena al usar la consulta; mientras esté vacío no se aplica.
+Usar una consulta guardada:
+1. En **3. Mis consultas** haga clic en su nombre. Se abre en modo **Consulta**, con el resumen de lo que muestra, y solo se pueden cambiar los valores de los filtros.
+2. Presione **Generar** o **Exportar a Excel**. La consulta no se ejecuta sola al abrirla.
+Los valores que cambie en modo **Consulta** aplican a esa ejecución y no se guardan. Para conservarlos presione **Editar configuración** y luego **Guardar como consulta recurrente**.
+Restricciones: cada consulta la ve solo su dueño dentro de la empresa.
+Mensajes:
+- "Escriba un nombre para guardar la consulta."
+- "Ya tiene una consulta con ese nombre."
+- "El filtro "..." necesita los dos valores de "Entre"." (al generar con un solo extremo lleno)
+Ver también: Modificar, duplicar o eliminar una consulta de reporte guardada.
+
+## Modificar, duplicar o eliminar una consulta de reporte guardada
+Ruta: Menú > TRANSA > BUILDER REPORT, pestaña **3. Mis consultas**. La lista muestra **Nombre**, **Vista**, **Modificada** y **Acciones**.
+Modificar:
+1. Presione **Editar** en la fila. Desde una consulta abierta, use **Editar configuración**.
+2. Cambie lo que necesite y presione **Guardar como consulta recurrente**. Se actualiza la misma consulta; no se crea otra.
+Duplicar: presione **Duplicar**. Se crea una copia llamada "Copia de" más el nombre original y se abre para editarla.
+Eliminar: presione **Eliminar** y confirme "¿Desea eliminar la consulta "..."?". Aparece "Consulta eliminada.". No se puede recuperar desde la pantalla.
+Notas: si tiene cambios sin guardar, al abrir otra consulta se le avisa: "Tiene cambios sin guardar que se perderán. ¿Desea continuar?".
+Si un campo ya no está disponible, se quita de la consulta y se muestra un aviso.
+Mensaje: "La consulta solicitada no existe o no esta disponible.": la consulta se eliminó o usted ya no tiene acceso a su vista.
+Restricciones: crear, duplicar, modificar y eliminar dependen de los permisos de su rol.
+Ver también: Guardar una consulta de reporte para usarla de nuevo.
+
+## Exportar a Excel un reporte del Constructor de Reportes
+Ruta: Menú > TRANSA > BUILDER REPORT, pestaña **2. Configurar**.
+1. Configure el reporte o abra una consulta guardada.
+2. Presione **Exportar a Excel**. Se descarga un archivo .xlsx con el nombre de la vista y aparece "Archivo generado.".
+El archivo trae todas las filas que cumplen los filtros, no solo la página en pantalla, con los títulos de sus columnas.
+Se exporta la configuración que hay en la pantalla en ese momento, aunque no haya presionado **Generar**. Exportar no cambia el **Resultado** que se ve.
+Límite: según la configuración de su empresa (valor sugerido: 50,000 filas). Si el resultado lo supera, el archivo se corta y aparece "El archivo se limitó al máximo de filas permitido."; su última fila dice "Resultado limitado a" y el máximo de filas.
+Notas: un texto que empieza con = + - @ se muestra en Excel con un apóstrofo inicial. Es normal.
+Mensaje: "La consulta tardo demasiado y fue cancelada. Reduzca el rango de fechas o agregue filtros."
+Ver también: Crear un reporte con el Constructor de Reportes (Builder Report).
 
 ## Registrar una compra de mercadería
 Ruta: Menú > INVENTARIO > COMPRA.
@@ -731,15 +793,17 @@ Ruta: Menú > VENTAS > REPORTES (también FACTURACION > REPORTES).
 2. Indique el rango de fechas y los filtros.
 3. Vea, imprima o exporte el reporte.
 También puede preguntarle a Jordania: "¿Cuánto vendí ayer?" o "¿Cuáles son los productos más vendidos este mes?".
+Ver también: Crear un reporte con el Constructor de Reportes (Builder Report).
 
 ## Reportes de inventario
 Ruta: Menú > INVENTARIO > REPORTES.
 Lista de productos, existencias por bodega, kardex, compras, productos por transacción.
+Ver también: Crear un reporte con el Constructor de Reportes (Builder Report).
 
 ## Reportes de cuentas por cobrar y cobranza
 Ruta: Menú > CXC > REPORTES y COBRANZA > REPORTES.
 Cartera de clientes, documentos de crédito, pagos, estado de cuenta, clientes con mora.
-Ver también: Asignar clientes a un gestor de cobranza.
+Ver también: Asignar clientes a un gestor de cobranza; Crear un reporte con el Constructor de Reportes (Builder Report).
 
 ## Ver estadísticas de inmuebles
 Ruta: Menú > ESTADISTICA > INMUEBLE.

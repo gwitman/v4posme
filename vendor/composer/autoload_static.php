@@ -52,6 +52,10 @@ class ComposerStaticInit9c25b048bb4903ad2b0b2af5541de0c2
             'PhpParser\\' => 10,
             'PhpCsFixer\\' => 11,
         ),
+        'O' => 
+        array (
+            'OpenSpout\\' => 10,
+        ),
         'N' => 
         array (
             'Nexus\\CsConfig\\' => 15,
@@ -192,6 +196,10 @@ class ComposerStaticInit9c25b048bb4903ad2b0b2af5541de0c2
         'PhpCsFixer\\' => 
         array (
             0 => __DIR__ . '/..' . '/friendsofphp/php-cs-fixer/src',
+        ),
+        'OpenSpout\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/openspout/openspout/src',
         ),
         'Nexus\\CsConfig\\' => 
         array (

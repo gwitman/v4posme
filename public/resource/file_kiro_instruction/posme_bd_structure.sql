@@ -383,7 +383,7 @@ CREATE TABLE `tb_caller`  (
   `description` varchar(250) CHARACTER SET latin1 COLLATE latin1_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`callerID`) USING BTREE,
   INDEX `IDX_CALLER_001`(`callerID` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_cash_box
@@ -2757,6 +2757,62 @@ CREATE TABLE `tb_remember`  (
   INDEX `IDX_REMEMBER_004`(`rememberID` ASC) USING BTREE,
   INDEX `IDX_REMEMBER_005`(`tagID` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 65 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for tb_report_builder
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_report_builder`;
+CREATE TABLE `tb_report_builder`  (
+  `reportBuilderID` int NOT NULL AUTO_INCREMENT,
+  `companyID` int NOT NULL,
+  `userID` int NOT NULL COMMENT 'Dueno de la consulta',
+  `dataViewID` int NOT NULL COMMENT 'Vista de sistema usada',
+  `name` varchar(150) NOT NULL COMMENT 'Nombre del reporte',
+  `configJson` mediumtext NOT NULL COMMENT 'Campos, orden, filtros y agrupacion',
+  `createdBy` int NOT NULL DEFAULT 0,
+  `createdOn` datetime NOT NULL,
+  `createdIn` varchar(50) NULL DEFAULT NULL COMMENT 'IP de creacion',
+  `createdAt` int NOT NULL DEFAULT 0 COMMENT 'Sucursal de creacion',
+  `modifiedOn` datetime NULL DEFAULT NULL,
+  `isActive` tinyint(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`reportBuilderID`) USING BTREE,
+  INDEX `IDX_REPORT_BUILDER_001`(`companyID` ASC, `userID` ASC, `isActive` ASC) USING BTREE,
+  CONSTRAINT `CHK_REPORT_BUILDER_001` CHECK (JSON_VALID(`configJson`))
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for tb_report_builder_view
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_report_builder_view`;
+CREATE TABLE `tb_report_builder_view`  (
+  `reportBuilderViewID` int NOT NULL AUTO_INCREMENT,
+  `dataViewID` int NOT NULL COMMENT 'Vista en tb_dataview con callerID = 3',
+  `label` varchar(150) NOT NULL COMMENT 'Nombre visible en la pantalla',
+  `description` varchar(500) NULL DEFAULT NULL COMMENT 'Explicacion visible para el usuario',
+  `requiredAddress` varchar(250) NOT NULL COMMENT 'Menu que el usuario debe tener para ver esta vista',
+  `isActive` tinyint(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`reportBuilderViewID`) USING BTREE,
+  UNIQUE INDEX `UQ_REPORT_BUILDER_VIEW_001`(`dataViewID` ASC) USING BTREE
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
+-- Table structure for tb_report_builder_view_field
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_report_builder_view_field`;
+CREATE TABLE `tb_report_builder_view_field`  (
+  `reportBuilderViewFieldID` int NOT NULL AUTO_INCREMENT,
+  `dataViewID` int NOT NULL,
+  `fieldName` varchar(100) NOT NULL COMMENT 'Alias exacto de la columna en el sqlScript',
+  `label` varchar(150) NOT NULL COMMENT 'Titulo visible',
+  `dataType` varchar(10) NOT NULL DEFAULT 'text' COMMENT 'text, number o date',
+  `alignDefault` varchar(10) NOT NULL DEFAULT 'left' COMMENT 'left o right',
+  `isCost` tinyint(1) NOT NULL DEFAULT 0 COMMENT '1 = solo para quien puede ver costos',
+  `orden` int NOT NULL DEFAULT 0,
+  `isActive` tinyint(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`reportBuilderViewFieldID`) USING BTREE,
+  UNIQUE INDEX `UQ_REPORT_BUILDER_VIEW_FIELD_001`(`dataViewID` ASC, `fieldName` ASC) USING BTREE,
+  INDEX `IDX_REPORT_BUILDER_VIEW_FIELD_001`(`dataViewID` ASC, `isActive` ASC, `orden` ASC) USING BTREE
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_reporting
