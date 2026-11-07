@@ -3113,7 +3113,7 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 			//Logo de la empresa
 			$objLogo        = $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO", $companyID);
 
-			//Obtener las ordenes de taller a notificar (0,1,2,3 dias)
+			//Obtener las ordenes de taller a notificar (0,1,2,3,4,5 dias)
 			$objNotificar   = $this->Transaction_Master_Model->getProgrammingOrdenTallerToNotify($companyID);
 
 			if (!$objNotificar || count($objNotificar) <= 0) {
@@ -3122,7 +3122,7 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 			}
 
 			//Agrupar por dias de anticipacion
-			$grupos = [3 => [], 2 => [], 1 => [], 0 => []];
+			$grupos = [5 => [] , 4 => [],3 => [], 2 => [], 1 => [], 0 => []];
 			foreach ($objNotificar as $i) {
 				$dias = (int) $i->diasRestantes;
 				if (array_key_exists($dias, $grupos)) {
@@ -3131,6 +3131,8 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 			}
 
 			$titulosGrupo = [
+				5 => "Ordenes de taller en 5 dias",
+				4 => "Ordenes de taller en 4 dias",
 				3 => "Ordenes de taller en 3 dias",
 				2 => "Ordenes de taller en 2 dias",
 				1 => "Ordenes de taller manana (1 dia)",
@@ -3139,7 +3141,7 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 
 			//Construir el cuerpo con tablas estilizadas
 			$mensaje = "";
-			foreach ([3, 2, 1, 0] as $dias) {
+			foreach ([ 5, 4, 3, 2, 1, 0] as $dias) {
 				if (count($grupos[$dias]) <= 0) {
 					continue;
 				}
@@ -3207,10 +3209,18 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 				$params_["logoCID"] = $this->email->setAttachmentCID($logoPath);
 			}
 
-			$body = /*--inicio view*/ view('app_notification/orden_taller/email_proxima_visita', $params_); //--finview						
-			$this->email->setMessage($body);
-			$this->email->send();
-			echo "SUCCESS";
+			$body 		= /*--inicio view*/ view('app_notification/orden_taller/email_proxima_visita', $params_); //--finview						
+			$result 	= $this->email->setMessage($body);
+			$resultSend = $this->email->send();
+			
+			echo "</br>";
+			echo "</br>";
+			echo $body;
+			echo "</br>";
+			echo "</br>";
+			echo "<h1 style='text-align: center;'>resulado de envio:".print_r($resultSend,true)." : ".$emailProperty."</h1>";
+			echo "</br>";
+			echo "</br>";
 
 		} catch (\Exception $ex) {
 			log_message('error', '[sendEmailOrdenTallerProximaVisita] Error: ' . $ex->getLine() . " " . $ex->getMessage());

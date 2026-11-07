@@ -1534,7 +1534,7 @@ class Transaction_Master_Model extends Model  {
 			tm.isActive = 1 and
 			tm.companyID = $companyID and
 			tm.transactionID = 40 /*ORDEN DE TALLER*/ and 
-			DATEDIFF(DATE(tm.transactionOn), CURDATE()) in (0,1,2,3)
+			DATEDIFF(DATE(tm.transactionOn), CURDATE()) in (0,1,2,3,4,5)
 		order by
 			tm.transactionOn asc
 		";
