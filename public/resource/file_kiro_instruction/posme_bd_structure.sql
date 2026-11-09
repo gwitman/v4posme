@@ -1457,6 +1457,45 @@ CREATE TABLE `tb_dataview`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 272 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
+-- Table structure for tb_deploy_target
+-- Perfiles de despliegue remoto por compañía (core_merge/deploy). 2026-11-09
+-- agentSecret, ftpPassword y dbPassword: cifrados AES-256-GCM ("v1:..."), llave en writable/posme_deploy/deploy.key
+-- Script: public/resource/file_sql/script_deploy_crear_tb_deploy_target.sql
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_deploy_target`;
+CREATE TABLE `tb_deploy_target`  (
+  `deployTargetID` int NOT NULL AUTO_INCREMENT,
+  `companyID` int NOT NULL DEFAULT 0,
+  `companyFile` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT 'Archivo de file_sql/clientes sin .sql',
+  `agentUrl` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'URL base de la instalación remota',
+  `agentSecret` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'Cifrado',
+  `transportProtocol` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'sftp' COMMENT 'sftp | ftps | ftp | none',
+  `ftpHost` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `ftpPort` int NOT NULL DEFAULT 0,
+  `ftpUser` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `ftpPassword` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'Cifrado',
+  `ftpRootDir` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `ftpAppDir` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `dbMode` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'agent' COMMENT 'agent | direct',
+  `dbHost` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `dbPort` int NOT NULL DEFAULT 3306,
+  `dbName` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `dbUser` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `dbPassword` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'Cifrado',
+  `tableModes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL COMMENT 'JSON tabla => full|upsert|insert|skip',
+  `lastDeployID` varchar(40) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `lastDeployOn` datetime NULL DEFAULT NULL,
+  `lastDeployStatus` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `createdOn` datetime NULL DEFAULT NULL,
+  `createdBy` int NULL DEFAULT NULL,
+  `modifiedOn` datetime NULL DEFAULT NULL,
+  `modifiedBy` int NULL DEFAULT NULL,
+  `isActive` tinyint NOT NULL DEFAULT 1,
+  PRIMARY KEY (`deployTargetID`) USING BTREE,
+  INDEX `IDX_DEPLOY_TARGET_COMPANY_FILE`(`companyID` ASC, `companyFile` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
 -- Table structure for tb_element
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_element`;

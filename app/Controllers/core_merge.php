@@ -25,6 +25,8 @@ class core_merge extends _BaseController {
 	
 	function merge_of_posme_merge_to_posme_structure()
 	{
+		//Seguridad: solo administrador autenticado
+		if(($deny = $this->merge_denyAccess()) !== null) return $deny;
 		
 		//https://codeigniter.com/user_guide/dbmgmt/forge.html
 		//https://codeigniter.com/userguide3/database/utilities.html		
@@ -593,6 +595,8 @@ class core_merge extends _BaseController {
 	
 	function merge_of_posme_merge_to_posme_data_insert_and_update()
 	{
+		//Seguridad: solo administrador autenticado
+		if(($deny = $this->merge_denyAccess()) !== null) return $deny;
 		$this->dbOrigen							= \Config\Database::connect("merge");
 		$this->sourceName						= DB_BDNAME_MERGE;
 		$this->dbDestino						= \Config\Database::connect();
@@ -614,6 +618,9 @@ class core_merge extends _BaseController {
 		if ($sourceName !== null || $targetName !== null ) 
 		{
 			echo "Sincronizndo BASE; ".$sourceName." ---> ".$targetName."</br>";			
+			//Seguridad: solo nombres de base de datos válidos (evita inyección SQL)
+			if(!$this->merge_isSafeIdentifier($sourceName) || !$this->merge_isSafeIdentifier($targetName))
+			return "Nombre de base de datos inválido.";
 			$dbOrigen->query("USE ".$sourceName.";");
 			$dbDestino->query("USE ".$targetName.";");
 			
@@ -695,6 +702,8 @@ class core_merge extends _BaseController {
 	}
 	function merge_of_posme_merge_to_poeme_data_onlyinsert()
 	{
+		//Seguridad: solo administrador autenticado
+		if(($deny = $this->merge_denyAccess()) !== null) return $deny;
 		$this->dbOrigen							= \Config\Database::connect("merge");
 		$this->sourceName						= DB_BDNAME_MERGE;
 		$this->dbDestino						= \Config\Database::connect();
@@ -716,6 +725,9 @@ class core_merge extends _BaseController {
 		if ($sourceName !== null || $targetName !== null ) 
 		{
 			echo "Sincronizndo BASE; ".$sourceName." ---> ".$targetName."</br>";			
+			//Seguridad: solo nombres de base de datos válidos (evita inyección SQL)
+			if(!$this->merge_isSafeIdentifier($sourceName) || !$this->merge_isSafeIdentifier($targetName))
+			return "Nombre de base de datos inválido.";
 			$dbOrigen->query("USE ".$sourceName.";");
 			$dbDestino->query("USE ".$targetName.";");
 			
@@ -781,6 +793,8 @@ class core_merge extends _BaseController {
 	}
 	function merge_of_posme_merge_to_posme_data_delete()
 	{
+		//Seguridad: solo administrador autenticado
+		if(($deny = $this->merge_denyAccess()) !== null) return $deny;
 		
 	
 		$this->dbOrigen							= \Config\Database::connect("merge");
@@ -804,6 +818,9 @@ class core_merge extends _BaseController {
 		if ($sourceName !== null || $targetName !== null ) 
 		{
 			echo "Sincronizndo BASE; ".$sourceName." ---> ".$targetName."</br>";			
+			//Seguridad: solo nombres de base de datos válidos (evita inyección SQL)
+			if(!$this->merge_isSafeIdentifier($sourceName) || !$this->merge_isSafeIdentifier($targetName))
+			return "Nombre de base de datos inválido.";
 			$dbOrigen->query("USE ".$sourceName.";");
 			$dbDestino->query("USE ".$targetName.";");
 			
@@ -894,6 +911,8 @@ class core_merge extends _BaseController {
 	
 	function merge_of_posme_merge_to_posme_initialize()
 	{
+		//Seguridad: solo administrador autenticado
+		if(($deny = $this->merge_denyAccess()) !== null) return $deny;
 		$this->dbOrigen      = \Config\Database::connect("merge");
 		$this->sourceName    = DB_BDNAME_MERGE;
 		$this->dbDestino     = \Config\Database::connect();
@@ -1050,6 +1069,8 @@ class core_merge extends _BaseController {
 
 	function merge_of_posme_merge_to_posme_backup()
 	{
+		//Seguridad: solo administrador autenticado
+		if(($deny = $this->merge_denyAccess()) !== null) return $deny;
 		$objComponentSeguridad			= $this->core_web_tools->getComponentIDBy_ComponentName("0-SEGURIDAD");
 		if(!$objComponentSeguridad)
 		throw new \Exception("EL COMPONENTE '0-SEGURIDAD' NO EXISTE...");
@@ -1075,6 +1096,8 @@ class core_merge extends _BaseController {
 	
 	function merge_of_posme_merge_to_posme_aplicar_parameter()
 	{
+		//Seguridad: solo administrador autenticado
+		if(($deny = $this->merge_denyAccess()) !== null) return $deny;
 		// Conexiones y configuración
 		$this->dbOrigen                         = \Config\Database::connect("merge");
 		$this->sourceName                       = DB_BDNAME_MERGE;
@@ -1095,6 +1118,10 @@ class core_merge extends _BaseController {
 		$targetName         = $this->request->getGet('targetName');
 		$fileTargetName     = "";
 		$syncStructure      = $this->request->getGet('syncStructure');
+
+		//Seguridad: los nombres de archivo no pueden salir de file_sql
+		if(($sourceName !== null && !$this->merge_isSafeName($sourceName)) || !$this->merge_isSafeName($targetName))
+		return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>❌ ERROR: Nombre de archivo inválido.</div>";
 
 		if($syncStructure == "0")
 		{
@@ -1159,6 +1186,9 @@ class core_merge extends _BaseController {
 						🔄 Sincronizando: <strong>{$sourceName}</strong> &rarr; <strong>{$targetName}</strong>
 					  </div>";
 
+				//Seguridad: el nombre viene de la cabecera del archivo; validar antes de usarlo
+				if(!$this->merge_isSafeIdentifier(explode(":", $targetName)[0]))
+				return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>❌ ERROR: Nombre de base de datos inválido en la cabecera.</div>";
 				$dbDestino->query("USE " . (explode(":", $targetName)[0]) . ";");
 
 				echo "<h2 style='color:#1890ff;'>📝 String Origen:</h2>";
@@ -1278,6 +1308,8 @@ class core_merge extends _BaseController {
 
 	function submitapp()
     {
+		//Seguridad: solo administrador autenticado
+		if(($deny = $this->merge_denyAccess()) !== null) return $deny;
 		$dir 		= "../../";
 		$folders 	= array_filter(glob($dir . '*'), 'is_dir');
 
@@ -1332,10 +1364,19 @@ class core_merge extends _BaseController {
 
     function submitprocesapp()
     {
+		//Seguridad: solo administrador autenticado
+		if(($deny = $this->merge_denyAccess()) !== null) return $deny;
+
         helper(['filesystem']);
 		$companyName = $this->request->getPost('company_name');
 		$paramFile   = $this->request->getPost('param_file');
 		$zipFile     = $this->request->getFile('zip_file');
+
+		//Validar nombres recibidos (evita rutas fuera de la carpeta de compañías)
+		if(!$this->merge_isSafeName($companyName) || !$this->merge_isSafeName($paramFile))
+		{
+			return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>❌ Nombre de compañía o de archivo inválido.</div>";
+		}
 
 		// Crear carpeta de trabajo
 		$kkPath = WRITEPATH . 'uploads/';
@@ -1352,6 +1393,16 @@ class core_merge extends _BaseController {
 
 			$zip = new \ZipArchive;
 			if ($zip->open($zipFilePath) === TRUE) {
+				//Seguridad (Zip Slip): rechazar el ZIP si alguna entrada sale de la carpeta de trabajo o es un enlace
+				for ($i = 0; $i < $zip->numFiles; $i++) {
+					$entryName = $zip->getNameIndex($i);
+					if (substr($entryName, -1) === '/') continue;
+					if (\App\Libraries\core_web_deploy\core_deploy_package::safeRelativePath($entryName) === null || \App\Libraries\core_web_deploy\core_deploy_package::isSymlink($zip, $i)) {
+						$zip->close();
+						unlink($zipFilePath);
+						return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>❌ ZIP rechazado: contiene rutas peligrosas.</div>";
+					}
+				}
 				$zip->extractTo($kkPath);
 				$zip->close();
 				unlink($zipFilePath);
@@ -1520,7 +1571,7 @@ class core_merge extends _BaseController {
     }
 	
 	
-	public function recurse_copy($src, $dst) {
+	protected function recurse_copy($src, $dst) {
 		$dir = opendir($src);
 		@mkdir($dst);
 		while (false !== ($file = readdir($dir))) {
@@ -1536,7 +1587,7 @@ class core_merge extends _BaseController {
 	}
 
 	
-	public function eliminarDirectorio($dir) {
+	protected function eliminarDirectorio($dir) {
 		if (!file_exists($dir)) {
 			return true;
 		}
@@ -1548,6 +1599,753 @@ class core_merge extends _BaseController {
 			if (!$this->eliminarDirectorio($dir . DIRECTORY_SEPARATOR . $item)) return false;
 		}
 		return rmdir($dir);
+	}
+
+
+	/* =====================================================================
+	 * SEGURIDAD DE core_merge
+	 * core_merge viaja a todas las instalaciones; sus métodos solo pueden
+	 * usarlos administradores autenticados (tb_role.isAdmin = 1).
+	 * ===================================================================== */
+
+	/**
+	 * Verifica sesión y rol administrador para los métodos heredados (salida HTML).
+	 *
+	 * @return string|null Mensaje HTML de rechazo o null si tiene acceso.
+	 */
+	protected function merge_denyAccess()
+	{
+		if(!$this->core_web_authentication->isAuthenticated())
+		{
+			$this->response->setStatusCode(401);
+			return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>❌ ".USER_NOT_AUTENTICATED."</div>";
+		}
+		$dataSession = $this->session->get();
+		if(!isset($dataSession["role"]) || (int)$dataSession["role"]->isAdmin !== 1)
+		{
+			$this->response->setStatusCode(403);
+			return "<div style='padding:10px; background:#fff1f0; border-left:5px solid #ff4d4f; margin:10px 0;'>❌ ".NOT_ACCESS_CONTROL."</div>";
+		}
+		return null;
+	}
+
+	/**
+	 * Nombre de base de datos o identificador SQL seguro.
+	 *
+	 * @param mixed $value Valor recibido.
+	 * @return bool
+	 */
+	protected function merge_isSafeIdentifier($value)
+	{
+		return is_string($value) && preg_match('/^[A-Za-z0-9_]{1,64}$/', $value) === 1;
+	}
+
+	/**
+	 * Nombre de archivo o carpeta sin rutas (sin "/", "\" ni "..").
+	 *
+	 * @param mixed $value Valor recibido.
+	 * @return bool
+	 */
+	protected function merge_isSafeName($value)
+	{
+		return is_string($value) && $value !== '' && preg_match('/^[A-Za-z0-9_\-\.]{1,150}$/', $value) === 1 && strpos($value, '..') === false;
+	}
+
+
+	/* =====================================================================
+	 * CONSOLA DE DESPLIEGUE REMOTO (core_merge/deploy)
+	 * Sincroniza una instalación remota de posMe: archivos de la aplicación,
+	 * estructura de la base de datos y datos de configuración.
+	 * Requiere: administrador + define('DEPLOY_CONSOLE_ENABLED', true) en
+	 * app/Config/Constants.php del equipo local (en los clientes no existe,
+	 * así que la consola queda apagada allí).
+	 * ===================================================================== */
+
+	/**
+	 * Valida que la consola esté habilitada y que el usuario sea administrador.
+	 *
+	 * @return array Datos de sesión.
+	 */
+	protected function deploy_guard()
+	{
+		if(!defined('DEPLOY_CONSOLE_ENABLED') || DEPLOY_CONSOLE_ENABLED !== true)
+		throw new \Exception("La consola de despliegue no está habilitada en esta instalación.");
+
+		if(!$this->core_web_authentication->isAuthenticated())
+		throw new \Exception(USER_NOT_AUTENTICATED);
+
+		$dataSession = $this->session->get();
+		if(!isset($dataSession["role"]) || (int)$dataSession["role"]->isAdmin !== 1)
+		throw new \Exception(NOT_ACCESS_CONTROL);
+
+		@set_time_limit(600);
+		//Liberar la sesión para no bloquear otras pestañas durante procesos largos
+		session_write_close();
+		return $dataSession;
+	}
+
+	/**
+	 * Respuesta JSON estándar con el token CSRF renovado.
+	 *
+	 * @param array  $data    Datos.
+	 * @param string $message Mensaje.
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	protected function deploy_json($data = [], $message = SUCCESS)
+	{
+		return $this->response->setJSON(array(
+			'error'   => false,
+			'message' => $message,
+			'data'    => $data,
+			'csrf'    => csrf_hash()
+		));
+	}
+
+	/**
+	 * Respuesta JSON de error.
+	 *
+	 * @param \Throwable $ex Excepción.
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	protected function deploy_jsonError($ex)
+	{
+		return $this->response->setJSON(array(
+			'error'   => true,
+			'message' => $ex->getMessage(),
+			'csrf'    => csrf_hash()
+		));
+	}
+
+	/**
+	 * Valor POST (texto) recortado.
+	 *
+	 * @return string
+	 */
+	protected function deploy_post($name, $default = '')
+	{
+		$value = helper_RequestGetValue($this->request->getPost($name), $default);
+		return is_string($value) ? trim($value) : $default;
+	}
+
+	/**
+	 * Pantalla de la consola de despliegue.
+	 *
+	 * @return string
+	 */
+	function deploy()
+	{
+		try
+		{
+			$dataSession = $this->deploy_guard();
+
+			$dataView["companies"]   = $this->core_web_deploy->getCompanies();
+			$dataView["tables"]      = $this->core_web_deploy->getProfileTables();
+			$dataView["csrfName"]    = csrf_token();
+			$dataView["csrfHash"]    = csrf_hash();
+			$dataView["chunkSize"]   = \App\Libraries\core_web_deploy\core_deploy_rules::CHUNK_SIZE;
+			$dataView["maxUpload"]   = \App\Libraries\core_web_deploy\core_deploy_rules::MAX_UPLOAD_BYTES;
+			$dataView["userName"]    = $dataSession["user"]->nickname;
+
+			$dataSession["notification"] = $this->core_web_error->get_error($dataSession["user"]->userID);
+			$dataSession["message"]      = $this->core_web_notification->get_message();
+			$dataSession["head"]         = /*--inicio view*/ view('core_merge/deploy_head',$dataView);//--finview
+			$dataSession["body"]         = /*--inicio view*/ view('core_merge/deploy_body',$dataView);//--finview
+			$dataSession["script"]       = /*--inicio view*/ view('core_merge/deploy_script',$dataView);//--finview
+			$dataSession["footer"]       = "";
+			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r
+		}
+		catch(\Throwable $ex)
+		{
+			return "<div style='font-family:sans-serif; padding:14px; margin:20px; background:#fdecec; color:#c62828; border-radius:8px;'>".htmlspecialchars($ex->getMessage())."</div>";
+		}
+	}
+
+	/**
+	 * Perfil de conexión de una compañía (sin credenciales) + datos de su script.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	function deploy_profile()
+	{
+		try
+		{
+			$dataSession = $this->deploy_guard();
+			$companyKey  = $this->deploy_post("company");
+			$company     = $this->core_web_deploy->getCompany($companyKey);
+			$profile     = $this->core_web_deploy->getProfilePublic($dataSession["user"]->companyID, $companyKey);
+			return $this->deploy_json(array('company' => $company, 'profile' => $profile));
+		}
+		catch(\Throwable $ex)
+		{
+			return $this->deploy_jsonError($ex);
+		}
+	}
+
+	/**
+	 * Guarda el perfil de conexión (credenciales cifradas; vacías = sin cambio).
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	function deploy_profile_save()
+	{
+		try
+		{
+			$dataSession = $this->deploy_guard();
+			$companyKey  = $this->deploy_post("company");
+			$input       = array();
+			foreach(array('agentUrl','transportProtocol','ftpHost','ftpPort','ftpUser','ftpPassword','ftpRootDir','ftpAppDir','dbMode','dbHost','dbPort','dbName','dbUser','dbPassword') as $field)
+			{
+				$input[$field] = $this->deploy_post($field);
+			}
+			$tableModes = json_decode((string)$this->request->getPost("tableModes"), true);
+			if(is_array($tableModes))
+			$input["tableModes"] = $tableModes;
+
+			$this->core_web_deploy->saveProfile($dataSession["user"]->companyID, $dataSession["user"]->userID, $companyKey, $input);
+			$profile = $this->core_web_deploy->getProfilePublic($dataSession["user"]->companyID, $companyKey);
+			return $this->deploy_json(array('profile' => $profile), "Conexión guardada.");
+		}
+		catch(\Throwable $ex)
+		{
+			return $this->deploy_jsonError($ex);
+		}
+	}
+
+	/**
+	 * Genera un secreto nuevo para el agente; se muestra una sola vez.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	function deploy_secret()
+	{
+		try
+		{
+			$dataSession = $this->deploy_guard();
+			$companyKey  = $this->deploy_post("company");
+			$secret      = $this->core_web_deploy->generateAgentSecret($dataSession["user"]->companyID, $dataSession["user"]->userID, $companyKey);
+			return $this->deploy_json(array(
+				'secret'      => $secret,
+				'configPath'  => 'writable/'.\App\Libraries\core_web_deploy\core_deploy_rules::AGENT_DIR.'/agent_config.php',
+				'configFile'  => \App\Libraries\core_web_deploy::agentConfigContent($secret)
+			), "Secreto generado. Cópielo ahora: no se volverá a mostrar.");
+		}
+		catch(\Throwable $ex)
+		{
+			return $this->deploy_jsonError($ex);
+		}
+	}
+
+	/**
+	 * Instala el agente en el servidor por FTP/SFTP.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	function deploy_install()
+	{
+		try
+		{
+			$dataSession = $this->deploy_guard();
+			$companyKey  = $this->deploy_post("company");
+			$this->core_web_deploy->getCompany($companyKey);
+			$profile     = $this->core_web_deploy->getProfileSecret($dataSession["user"]->companyID, $companyKey);
+			$uploaded    = $this->core_web_deploy->installAgent($profile, $this->deploy_post("includeCode") === "1");
+			return $this->deploy_json(array('uploaded' => $uploaded), "Agente instalado.");
+		}
+		catch(\Throwable $ex)
+		{
+			return $this->deploy_jsonError($ex);
+		}
+	}
+
+	/**
+	 * Prueba las conexiones y valida que el destino sea la compañía seleccionada.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	function deploy_test()
+	{
+		try
+		{
+			$dataSession = $this->deploy_guard();
+			$companyKey  = $this->deploy_post("company");
+			$company     = $this->core_web_deploy->getCompany($companyKey);
+			$profile     = $this->core_web_deploy->getProfileSecret($dataSession["user"]->companyID, $companyKey);
+			$checks      = array();
+			$agentInfo   = null;
+
+			//Agente
+			if(!empty($profile->agentUrl))
+			{
+				try
+				{
+					$agentInfo = $this->core_web_deploy->agent($profile)->call('ping');
+					$checks[]  = array('group' => 'Agente', 'label' => 'Agente responde (v'.$agentInfo['agentVersion'].', PHP '.$agentInfo['php'].')', 'ok' => true);
+					$checks[]  = array('group' => 'Agente', 'label' => 'Base de datos del servidor: '.$agentInfo['dbName'].' (esperada: '.$company['dbName'].')', 'ok' => $agentInfo['dbName'] === $company['dbName']);
+					$checks[]  = array('group' => 'Agente', 'label' => 'MySQL '.$agentInfo['dbVersion'], 'ok' => true);
+					$checks[]  = array('group' => 'Agente', 'label' => 'Extensiones zip/mysqli/zlib', 'ok' => $agentInfo['extensions']['zip'] && $agentInfo['extensions']['mysqli'] && $agentInfo['extensions']['zlib']);
+					$notWritable = array_keys(array_filter($agentInfo['writable'], function($ok){ return !$ok; }));
+					$checks[]  = array('group' => 'Agente', 'label' => count($notWritable) ? 'Sin permiso de escritura: '.implode(', ', $notWritable) : 'Permisos de escritura correctos', 'ok' => count($notWritable) === 0);
+					$checks[]  = array('group' => 'Agente', 'label' => 'Espacio libre: '.($agentInfo['diskFree'] === null ? 'no disponible' : number_format($agentInfo['diskFree'] / 1048576, 2).' MB'), 'ok' => $agentInfo['diskFree'] === null || $agentInfo['diskFree'] > 209715200);
+					$checks[]  = array('group' => 'Agente', 'label' => $agentInfo['locked'] ? 'Hay un despliegue en curso: '.$agentInfo['locked'] : 'Sin despliegues en curso', 'ok' => !$agentInfo['locked']);
+				}
+				catch(\Throwable $exAgent)
+				{
+					$checks[] = array('group' => 'Agente', 'label' => $exAgent->getMessage(), 'ok' => false);
+				}
+			}
+			else
+			{
+				$checks[] = array('group' => 'Agente', 'label' => 'Sin URL del agente configurada', 'ok' => false);
+			}
+
+			//FTP / SFTP (opcional)
+			if(!empty($profile->ftpHost) && $profile->transportProtocol !== 'none')
+			{
+				try
+				{
+					$result = $this->core_web_deploy->transport($profile)->test($this->core_web_deploy->remoteAppDir($profile));
+					foreach($result['checks'] as $check)
+					$checks[] = array('group' => strtoupper($profile->transportProtocol), 'label' => $check['label'], 'ok' => $check['ok']);
+				}
+				catch(\Throwable $exFtp)
+				{
+					$checks[] = array('group' => strtoupper($profile->transportProtocol), 'label' => $exFtp->getMessage(), 'ok' => false);
+				}
+			}
+
+			//MySQL directo (opcional)
+			if($this->core_web_deploy->isDirect($profile))
+			{
+				try
+				{
+					$db       = $this->core_web_deploy->directDb($profile);
+					$dbName   = $db->query("SELECT DATABASE() AS d, VERSION() AS v")->getRow();
+					$checks[] = array('group' => 'MySQL directo', 'label' => 'Conectado a '.$dbName->d.' (MySQL '.$dbName->v.')', 'ok' => true);
+					$checks[] = array('group' => 'MySQL directo', 'label' => 'Coincide con la cabecera /*BD:*/ ('.$company['dbName'].')', 'ok' => $dbName->d === $company['dbName']);
+				}
+				catch(\Throwable $exDb)
+				{
+					$checks[] = array('group' => 'MySQL directo', 'label' => \App\Libraries\core_web_deploy\core_deploy_crypto::mask($exDb->getMessage(), $this->core_web_deploy->secretsOf($profile)), 'ok' => false);
+				}
+			}
+
+			return $this->deploy_json(array('checks' => $checks, 'agent' => $agentInfo));
+		}
+		catch(\Throwable $ex)
+		{
+			return $this->deploy_jsonError($ex);
+		}
+	}
+
+	/**
+	 * Recibe el ZIP, lo valida, aplica la lista blanca y genera el paquete limpio.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	function deploy_package()
+	{
+		try
+		{
+			$dataSession = $this->deploy_guard();
+			$companyKey  = $this->deploy_post("company");
+			$company     = $this->core_web_deploy->getCompany($companyKey);
+			$zipFile     = $this->request->getFile('zip_file');
+
+			if(!$zipFile || !$zipFile->isValid())
+			throw new \Exception("Seleccione un archivo ZIP válido.");
+			if(strtolower($zipFile->getClientExtension()) !== 'zip')
+			throw new \Exception("El archivo debe tener extensión .zip.");
+			if($zipFile->getSize() > \App\Libraries\core_web_deploy\core_deploy_rules::MAX_UPLOAD_BYTES)
+			throw new \Exception("El ZIP supera el tamaño máximo permitido.");
+
+			//Reutilizar el despliegue en preparación (conserva análisis de estructura/datos) si es de la misma compañía
+			$state        = null;
+			$prevDeployID = $this->deploy_post("deployID");
+			if($prevDeployID !== "" && preg_match('/^[0-9]{14}_[a-f0-9]{8}$/', $prevDeployID))
+			{
+				try
+				{
+					$prevState = $this->core_web_deploy->readState($prevDeployID);
+					if($prevState["companyKey"] === $companyKey && empty($prevState["steps"]))
+					$state = $prevState;
+				}
+				catch(\Throwable $exPrev)
+				{
+					$state = null;
+				}
+			}
+			if(!$state)
+			$state = $this->core_web_deploy->createDeploy($companyKey, $dataSession["user"]->nickname);
+
+			$deployID = $state["deployID"];
+			$dir      = $this->core_web_deploy->deployDir($deployID);
+			$zipFile->move($dir, 'source.zip', true);
+
+			$report = \App\Libraries\core_web_deploy\core_deploy_package::inspect($dir.'/source.zip');
+			$this->core_web_deploy->log($deployID, 'paquete', 'ZIP recibido ('.$report['size'].' bytes, sha256 '.$report['sha256'].') por '.$dataSession["user"]->nickname.' para '.$companyKey);
+
+			$build = null;
+			if(count($report['errors']) === 0)
+			{
+				$build = \App\Libraries\core_web_deploy\core_deploy_package::build($dir.'/source.zip', $dir.'/package.zip', $report, array('deployID' => $deployID, 'company' => $companyKey, 'user' => $dataSession["user"]->nickname));
+				$this->core_web_deploy->log($deployID, 'paquete', 'Paquete limpio: '.count($build['manifest']['files']).' archivos, sha256 '.$build['sha256'].', errores de sintaxis: '.count($build['lintErrors']));
+			}
+			@unlink($dir.'/source.zip');
+
+			//Listas para la vista (los autorizados solo se cuentan)
+			$lists = array('preserved' => array(), 'ignored' => array(), 'rejected' => array());
+			foreach($report['files'] as $file)
+			{
+				if(isset($lists[$file['category']]) && count($lists[$file['category']]) < 300)
+				$lists[$file['category']][] = array('path' => $file['relative'], 'reason' => $file['reason']);
+			}
+
+			$state["package"] = array(
+				'ok'         => count($report['errors']) === 0 && $build !== null && count($build['lintErrors']) === 0,
+				'sha256'     => $build ? $build['sha256'] : null,
+				'size'       => $build ? $build['size'] : 0,
+				'files'      => $build ? count($build['manifest']['files']) : 0,
+				'chunks'     => $build ? (int)ceil($build['size'] / \App\Libraries\core_web_deploy\core_deploy_rules::CHUNK_SIZE) : 0,
+				'source'     => $report['sha256']
+			);
+			$this->core_web_deploy->writeState($deployID, $state);
+
+			return $this->deploy_json(array(
+				'deployID'   => $deployID,
+				'company'    => $company,
+				'package'    => $state["package"],
+				'prefix'     => $report['prefix'],
+				'totals'     => $report['totals'],
+				'errors'     => $report['errors'],
+				'lintErrors' => $build ? $build['lintErrors'] : array(),
+				'lists'      => $lists
+			));
+		}
+		catch(\Throwable $ex)
+		{
+			return $this->deploy_jsonError($ex);
+		}
+	}
+
+	/**
+	 * Crea un despliegue sin paquete (cuando no se actualizan archivos).
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	function deploy_new()
+	{
+		try
+		{
+			$dataSession = $this->deploy_guard();
+			$companyKey  = $this->deploy_post("company");
+			$this->core_web_deploy->getCompany($companyKey);
+			$state = $this->core_web_deploy->createDeploy($companyKey, $dataSession["user"]->nickname);
+			$this->core_web_deploy->log($state["deployID"], 'inicio', 'Despliegue sin paquete creado por '.$dataSession["user"]->nickname.' para '.$companyKey);
+			return $this->deploy_json(array('deployID' => $state["deployID"]));
+		}
+		catch(\Throwable $ex)
+		{
+			return $this->deploy_jsonError($ex);
+		}
+	}
+
+	/**
+	 * Carga estado + perfil + compañía de un despliegue validando que coincidan.
+	 *
+	 * @return array [state, profile, company]
+	 */
+	protected function deploy_context($dataSession)
+	{
+		$deployID = \App\Libraries\core_web_deploy\core_deploy_files::assertDeployID($this->deploy_post("deployID"));
+		$state    = $this->core_web_deploy->readState($deployID);
+		$company  = $this->core_web_deploy->getCompany($state["companyKey"]);
+		$profile  = $this->core_web_deploy->getProfileSecret($dataSession["user"]->companyID, $state["companyKey"]);
+		return array($state, $profile, $company);
+	}
+
+	/**
+	 * Compara la estructura local con la remota y guarda el plan.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	function deploy_schema()
+	{
+		try
+		{
+			$dataSession = $this->deploy_guard();
+			list($state, $profile, $company) = $this->deploy_context($dataSession);
+
+			$local  = \App\Libraries\core_web_deploy\core_deploy_schema::snapshot(db_connect());
+			$remote = $this->core_web_deploy->remoteSnapshot($profile);
+			if(!isset($remote['tables'], $remote['views'], $remote['functions'], $remote['procedures'], $remote['triggers'], $remote['errors']))
+			throw new \Exception("El servidor remoto no devolvió la estructura de la base de datos. Pruebe las conexiones y reinstale el agente.");
+			if(isset($remote['schema']) && $remote['schema'] !== $company['dbName'])
+			throw new \Exception("La base remota (".$remote['schema'].") no coincide con la cabecera de la compañía (".$company['dbName'].").");
+
+			$plan = \App\Libraries\core_web_deploy\core_deploy_schema::diff($local, $remote);
+			$plan["localVersion"]  = $local['version'];
+			$plan["remoteVersion"] = $remote['version'];
+			$plan["errors"]        = array_merge($local['errors'], $remote['errors']);
+			$state["plan"]         = $plan;
+			$this->core_web_deploy->writeState($state["deployID"], $state);
+			$this->core_web_deploy->log($state["deployID"], 'estructura', 'Plan generado: '.count($plan['steps']).' pasos, '.count($plan['extras']).' objetos solo en destino, hash '.$plan['hash']);
+
+			return $this->deploy_json($plan);
+		}
+		catch(\Throwable $ex)
+		{
+			return $this->deploy_jsonError($ex);
+		}
+	}
+
+	/**
+	 * Analiza los datos de configuración (tablas + scripts) y prepara el paquete de datos.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	function deploy_data()
+	{
+		try
+		{
+			$dataSession = $this->deploy_guard();
+			list($state, $profile, $company) = $this->deploy_context($dataSession);
+
+			$requested  = json_decode((string)$this->request->getPost("tableModes"), true);
+			$tableModes = $this->core_web_deploy->resolveTableModes(is_array($requested) ? $requested : array());
+			$runScripts = $this->deploy_post("runScripts") === "1";
+
+			$summary = $this->core_web_deploy->prepareData($profile, $state["deployID"], $company, $tableModes, $runScripts);
+			$state["data"] = array('tableModes' => $tableModes, 'runScripts' => $runScripts, 'sha256' => $summary['sha256'], 'size' => $summary['size'], 'chunks' => (int)ceil(max(1, $summary['size']) / \App\Libraries\core_web_deploy\core_deploy_rules::CHUNK_SIZE));
+			$this->core_web_deploy->writeState($state["deployID"], $state);
+
+			$totals = array('insert' => 0, 'update' => 0, 'delete' => 0);
+			foreach($summary['tables'] as $item)
+			{
+				if($item['counts'])
+				foreach($totals as $k => $v)
+				$totals[$k] += $item['counts'][$k];
+			}
+			$this->core_web_deploy->log($state["deployID"], 'datos', 'Análisis: '.json_encode($totals).', scripts: '.($runScripts ? 'sí' : 'no'));
+			$summary['totals'] = $totals;
+			return $this->deploy_json($summary);
+		}
+		catch(\Throwable $ex)
+		{
+			return $this->deploy_jsonError($ex);
+		}
+	}
+
+	/**
+	 * Ejecuta un paso del despliegue. Acciones:
+	 * begin, upload, extract, apply_files, schema_apply, data_upload, data_apply,
+	 * verify, finish, rollback_files, data_restore.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	function deploy_step()
+	{
+		$state   = null;
+		$profile = null;
+		try
+		{
+			$dataSession = $this->deploy_guard();
+			list($state, $profile, $company) = $this->deploy_context($dataSession);
+			$deployID = $state["deployID"];
+			$action   = $this->deploy_post("action");
+			$secrets  = $this->core_web_deploy->secretsOf($profile);
+			$options  = isset($state["options"]) ? $state["options"] : array('files' => false, 'schema' => false, 'data' => false);
+			$useAgent = $options['files'] || (($options['schema'] || $options['data']) && !$this->core_web_deploy->isDirect($profile));
+			$result   = array();
+
+			switch($action)
+			{
+				case "begin":
+					$options = array(
+						'files'  => $this->deploy_post("files") === "1",
+						'schema' => $this->deploy_post("schema") === "1",
+						'data'   => $this->deploy_post("data") === "1"
+					);
+					if(!$options['files'] && !$options['schema'] && !$options['data'])
+					throw new \Exception("Seleccione al menos una opción de sincronización.");
+					if($options['files'] && (!$state["package"] || !$state["package"]["ok"]))
+					throw new \Exception("El paquete no está listo (tiene errores o no se cargó).");
+					if($options['schema'] && !$state["plan"])
+					throw new \Exception("Primero analice la estructura.");
+					if($options['data'] && !$state["data"])
+					throw new \Exception("Primero analice los datos.");
+
+					$this->core_web_deploy->lockCompany($state["companyKey"], $deployID);
+					$state["options"] = $options;
+					$useAgent = $options['files'] || (($options['schema'] || $options['data']) && !$this->core_web_deploy->isDirect($profile));
+					if($useAgent)
+					{
+						$ping = $this->core_web_deploy->agent($profile)->call('ping');
+						if($ping['dbName'] !== $company['dbName'])
+						throw new \Exception("El servidor responde con la base ".$ping['dbName']." y la compañía espera ".$company['dbName'].". Despliegue bloqueado.");
+						$this->core_web_deploy->agent($profile)->call('begin', array('deployID' => $deployID));
+					}
+					$this->core_web_deploy->log($deployID, 'inicio', 'Opciones: '.json_encode($options).' por '.$dataSession["user"]->nickname);
+					$result = array('options' => $options);
+					break;
+
+				case "upload":
+				case "data_upload":
+					$kind  = $action === "upload" ? "package" : "data";
+					$file  = $this->core_web_deploy->deployDir($deployID).($kind === "package" ? '/package.zip' : '/data.json.gz');
+					$index = (int)$this->deploy_post("index");
+					$result = $this->core_web_deploy->agent($profile)->uploadChunk($deployID, $kind, $file, $index);
+					if($result['done'])
+					$this->core_web_deploy->log($deployID, 'transferencia', ucfirst($kind).' transferido en '.$result['total'].' bloques; hash verificado por el servidor.');
+					break;
+
+				case "extract":
+					$result = $this->core_web_deploy->agent($profile)->call('extract', array('deployID' => $deployID));
+					$this->core_web_deploy->log($deployID, 'descompresion', 'Extraídos '.$result['extracted'].' archivos y verificados contra el manifiesto.');
+					break;
+
+				case "apply_files":
+					$result = $this->core_web_deploy->agent($profile)->call('apply_files', array('deployID' => $deployID));
+					$this->core_web_deploy->log($deployID, 'archivos', 'Actualizados '.$result['updated'].', nuevos '.$result['created'].', sin cambios '.$result['unchanged'].', errores '.count($result['errors']));
+					foreach($result['errors'] as $error)
+					$this->core_web_deploy->log($deployID, 'archivos', 'ERROR '.$error['path'].': '.$error['error']);
+					break;
+
+				case "schema_apply":
+					if(!$state["plan"])
+					throw new \Exception("No hay plan de estructura.");
+					$ids        = json_decode((string)$this->request->getPost("ids"), true);
+					$ids        = is_array($ids) ? $ids : array();
+					$statements = array();
+					foreach($state["plan"]["steps"] as $step)
+					{
+						if(in_array($step['id'], $ids, true))
+						foreach($step['sql'] as $n => $sql)
+						$statements[] = array('id' => $step['id'].'#'.$n, 'sql' => $sql);
+					}
+					if(count($statements) === 0)
+					throw new \Exception("No se recibieron pasos válidos del plan.");
+					$result = $this->core_web_deploy->remoteExec($profile, $deployID, $statements);
+					foreach($result['results'] as $item)
+					$this->core_web_deploy->log($deployID, 'estructura', ($item['ok'] ? 'OK ' : 'ERROR ').$item['id'].' ('.$item['ms'].' ms)'.($item['ok'] ? '' : ': '.$item['error']), $secrets);
+					break;
+
+				case "data_apply":
+					$result = $this->core_web_deploy->isDirect($profile)
+						? $this->core_web_deploy->applyDataDirect($profile, $deployID)
+						: $this->core_web_deploy->agent($profile)->call('data_apply', array('deployID' => $deployID));
+					$this->core_web_deploy->log($deployID, 'datos', ($result['ok'] ? 'COMMIT ' : 'ROLLBACK ').json_encode($result['tables']).' scripts '.json_encode($result['scripts']).($result['error'] ? ' error: '.$result['error'] : ''), $secrets);
+					break;
+
+				case "verify":
+					$result = array();
+					if($options['files'])
+					$result['files'] = $this->core_web_deploy->agent($profile)->call('verify_files', array('deployID' => $deployID));
+					if($options['schema'])
+					{
+						$local  = \App\Libraries\core_web_deploy\core_deploy_schema::snapshot(db_connect());
+						$remote = $this->core_web_deploy->remoteSnapshot($profile);
+						$after  = \App\Libraries\core_web_deploy\core_deploy_schema::diff($local, $remote);
+						$result['schema'] = array('pending' => count($after['steps']), 'summary' => $after['summary']);
+					}
+					$this->core_web_deploy->log($deployID, 'verificacion', json_encode($result));
+					break;
+
+				case "finish":
+					if($useAgent)
+					$this->core_web_deploy->agent($profile)->call('finish', array('deployID' => $deployID));
+					$this->core_web_deploy->unlockCompany($state["companyKey"], $deployID);
+					$status = $this->deploy_post("status") === "ok" ? "COMPLETADO" : "CON ERRORES";
+					$this->core_web_deploy->markLastDeploy($dataSession["user"]->companyID, $profile, $deployID, $status);
+					$this->core_web_deploy->log($deployID, 'fin', 'Despliegue '.$status);
+					$result = array('status' => $status);
+					break;
+
+				case "rollback_files":
+					$this->core_web_deploy->agent($profile)->call('begin', array('deployID' => $deployID));
+					$result = $this->core_web_deploy->agent($profile)->call('rollback_files', array('deployID' => $deployID));
+					$this->core_web_deploy->agent($profile)->call('finish', array('deployID' => $deployID));
+					$this->core_web_deploy->log($deployID, 'reversion', 'Archivos restaurados '.$result['restored'].', eliminados '.$result['removed']);
+					break;
+
+				case "data_restore":
+					if($this->core_web_deploy->isDirect($profile))
+					{
+						$result = $this->core_web_deploy->restoreDataDirect($profile, $deployID);
+					}
+					else
+					{
+						$this->core_web_deploy->agent($profile)->call('begin', array('deployID' => $deployID));
+						$result = $this->core_web_deploy->agent($profile)->call('data_restore', array('deployID' => $deployID));
+						$this->core_web_deploy->agent($profile)->call('finish', array('deployID' => $deployID));
+					}
+					$this->core_web_deploy->log($deployID, 'reversion', 'Datos restaurados: '.json_encode($result['restored']));
+					break;
+
+				default:
+					throw new \Exception("Acción desconocida.");
+			}
+
+			$state["steps"][] = array('action' => $action, 'on' => helper_getDateTime());
+			$this->core_web_deploy->writeState($deployID, $state);
+			return $this->deploy_json($result);
+		}
+		catch(\Throwable $ex)
+		{
+			if($state)
+			{
+				try
+				{
+					$this->core_web_deploy->log($state["deployID"], 'error', $ex->getMessage(), $profile ? $this->core_web_deploy->secretsOf($profile) : array());
+				}
+				catch(\Throwable $exLog)
+				{
+				}
+			}
+			return $this->deploy_jsonError($ex);
+		}
+	}
+
+	/**
+	 * Devuelve el token CSRF vigente (petición GET, no la valida el filtro).
+	 * La pantalla lo pide cuando una petición POST responde 403 porque el token
+	 * cambió en otra pestaña o venció, y reintenta la operación una vez.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	function deploy_token()
+	{
+		try
+		{
+			$this->deploy_guard();
+			return $this->deploy_json(array());
+		}
+		catch(\Throwable $ex)
+		{
+			return $this->deploy_jsonError($ex);
+		}
+	}
+
+	/**
+	 * Descarga el informe (log) de un despliegue.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	function deploy_log()
+	{
+		try
+		{
+			$this->deploy_guard();
+			$deployID = \App\Libraries\core_web_deploy\core_deploy_files::assertDeployID(helper_RequestGetValue($this->request->getGet("deployID"), ""));
+			$text     = $this->core_web_deploy->readLog($deployID);
+			return $this->response
+				->setHeader('Content-Type', 'text/plain; charset=utf-8')
+				->setHeader('Content-Disposition', 'attachment; filename="despliegue_'.$deployID.'.log"')
+				->setBody($text);
+		}
+		catch(\Throwable $ex)
+		{
+			return $this->response->setStatusCode(400)->setBody($ex->getMessage());
+		}
 	}
 	
 	

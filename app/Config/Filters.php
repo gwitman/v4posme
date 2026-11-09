@@ -60,5 +60,8 @@ class Filters extends BaseConfig
      * Example:
      * 'isLoggedIn' => ['before' => ['account/*', 'profiles/*']]
      */
-    public array $filters = [];
+    public array $filters = [
+        // Consola de despliegue remoto: protección CSRF en sus peticiones POST (2026-11-09)
+        'csrf' => ['before' => ['core_merge/deploy_*']],
+    ];
 }

@@ -44,6 +44,7 @@ use App\Libraries\core_web_whatsap;
 use App\Libraries\core_web_ai;
 use App\Libraries\core_web_ai_tools;
 use App\Libraries\core_web_report_builder;
+use App\Libraries\core_web_deploy;
 use App\Libraries\core_web_pagadito\core_web_pagadito;
 
 
@@ -60,6 +61,7 @@ use App\Libraries\financial\financial_amort;
 use App\Models\Core\Bd_Model;
 use App\Models\Core\Branch_Model;
 use App\Models\Core\Bank_Model;
+use App\Models\Core\Deploy_Target_Model;
 use App\Models\Core\Catalog_Item_convertion_Model;
 use App\Models\Core\Catalog_Item_Model;
 use App\Models\Core\Catalog_Model;
@@ -288,6 +290,7 @@ abstract class _BaseController extends Controller
     protected $core_web_ai;
     protected $core_web_ai_tools;
     protected $core_web_report_builder;
+    protected $core_web_deploy;
     protected $core_web_pagadito;
 
 
@@ -304,6 +307,7 @@ abstract class _BaseController extends Controller
     protected $Bd_Model;
     protected $Branch_Model;
     protected $Bank_Model;
+    protected $Deploy_Target_Model;
     protected $Catalog_Item_convertion_Model;
     protected $Catalog_Item_Model;
     protected $Catalog_Model;
@@ -476,6 +480,7 @@ abstract class _BaseController extends Controller
         $this->core_web_ai = new core_web_ai();
         $this->core_web_ai_tools = new core_web_ai_tools();
         $this->core_web_report_builder = new core_web_report_builder();
+        $this->core_web_deploy = new core_web_deploy();
         $this->core_web_pagadito = new core_web_pagadito();
 
         $this->financial_amort = new financial_amort();
@@ -495,6 +500,7 @@ abstract class _BaseController extends Controller
         $this->Bd_Model = new Bd_Model();
         $this->Branch_Model= new Branch_Model();
         $this->Bank_Model= new Bank_Model();
+        $this->Deploy_Target_Model= new Deploy_Target_Model();
         $this->Catalog_Item_convertion_Model= new Catalog_Item_convertion_Model();
         $this->Catalog_Item_Model= new Catalog_Item_Model();
         $this->Catalog_Model= new Catalog_Model();

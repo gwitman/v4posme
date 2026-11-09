@@ -1615,6 +1615,97 @@ Ruta: Menú > SEGURIDAD > LOG SESSION.
 Ruta: Menú > SEGURIDAD > ACTUALIZAR.
 Opción técnica para que el equipo de soporte de posMe aplique actualizaciones al sistema. No la use salvo que soporte se lo indique.
 
+## Despliegue remoto: qué es y quién puede usarlo (administración del sistema)
+Ruta: Administración del sistema > Despliegue remoto. No aparece en el menú: se abre escribiendo core_merge/deploy después de la dirección de posMe.
+La pantalla **Sincronización de instalación remota** actualiza la instalación de posMe de un cliente (VPS u hosting compartido) desde la instalación local de posMe. Sincroniza tres partes que se eligen por separado:
+- **Archivos de la aplicación** (paquete ZIP).
+- **Estructura de la base de datos** (tablas, columnas, índices, restricciones, vistas, funciones, procedimientos y triggers).
+- **Datos de configuración** (tablas de configuración y scripts de parámetros).
+Restricciones: es una herramienta técnica solo para el administrador de posMe, no para el usuario del negocio. Requiere un usuario con rol administrador y que la instalación local tenga habilitada la consola (constante DEPLOY_CONSOLE_ENABLED de la configuración local). En las instalaciones de los clientes está apagada. Solo se permite un despliegue a la vez por compañía.
+Ver también: Despliegue remoto: preparar la consola y el agente (primera vez); Despliegue remoto: errores frecuentes.
+
+## Despliegue remoto: preparar la consola y el agente (primera vez)
+Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
+Una sola vez en la instalación local:
+1. Ejecute el script public/resource/file_sql/script_deploy_crear_tb_deploy_target.sql en la base de datos local.
+2. Habilite la consola con la constante DEPLOY_CONSOLE_ENABLED de la configuración local.
+Por cada cliente:
+3. Elija la compañía, complete la **Conexión remota** y presione **Guardar conexión**.
+4. En la pestaña **Agente** presione **Generar secreto**. El secreto se muestra **una sola vez**: cópielo antes de cerrar la ventana. Si genera otro, el agente del cliente deja de aceptar la consola hasta que se instale el nuevo.
+5. Instale el agente en el servidor del cliente de una de estas formas:
+   - Con **Instalar agente por SFTP/FTP** y luego **Instalar**: sube writable/posme_agent/agent_config.php (con el secreto) y su protección. Marque **Subir también el código del agente** si el cliente aún no lo tiene.
+   - A mano: cree en el servidor el archivo writable/posme_agent/agent_config.php con el contenido que muestra la ventana del secreto.
+6. Presione **Probar conexiones** para confirmar que el agente responde.
+Ver también: Despliegue remoto: elegir la compañía y configurar la conexión.
+
+## Despliegue remoto: elegir la compañía y configurar la conexión
+Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
+1. En **Compañía a sincronizar** elija la compañía. La lista sale de los scripts de public/resource/file_sql/clientes, uno por compañía (no aparecen 001_default ni los scripts -custom-php). La base de datos esperada se toma de la cabecera /*BD: ... */ del script.
+2. En **Conexión remota** complete las pestañas:
+   - **Agente**: **URL de la instalación remota** (la misma con la que se abre posMe en el navegador; debe usar HTTPS) y el secreto del agente.
+   - **SFTP / FTP**: **Protocolo** (**SFTP (recomendado)**, **FTPS (FTP con TLS)**, **FTP sin cifrado** o **No usar**), **Servidor**, **Puerto**, **Usuario**, **Contraseña**, **Directorio raíz remoto** y **Directorio de la aplicación**.
+   - **MySQL directo**: en **Ejecución de estructura y datos** deje **Por el agente (recomendado, la BD no se expone)**; use **MySQL directo** solo en un VPS con el puerto abierto.
+3. Presione **Guardar conexión**.
+4. Presione **Probar conexiones**: muestra el agente, la base esperada contra la real, extensiones, permisos de escritura, espacio libre, despliegues en curso, FTP y MySQL directo.
+Notas: las contraseñas se guardan cifradas y nunca se vuelven a mostrar; déjelas vacías para conservar las guardadas. Si el servidor responde con una base de datos distinta a la esperada, el despliegue se bloquea.
+
+## Despliegue remoto: subir y validar el paquete ZIP (actualizar archivos)
+Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
+1. En **Paquete de actualización (ZIP)** elija el **Archivo ZIP con la carpeta app/**. La carpeta app/ puede venir dentro de una carpeta raíz.
+2. Presione **Validar paquete**.
+3. Revise el resultado: cuántos archivos se actualizan, se conservan, se ignoran y se rechazan, los errores de sintaxis PHP y el SHA-256 del paquete.
+4. En **Opciones de sincronización** marque **Actualizar archivos de la aplicación**: envía el paquete validado, lo verifica, respalda los archivos que se reemplazan y actualiza solo los autorizados.
+Solo se actualizan app/Config/Routes.php y las carpetas app/Controllers, Models, Libraries, Helpers y Views. Se conservan en el cliente app/Config (salvo Routes.php), .env, writable, vendor y public (incluidos js y css).
+Restricciones: si hay errores de sintaxis PHP no se puede desplegar. Los archivos con rutas peligrosas se rechazan.
+Notas: las tres opciones (archivos, estructura y datos) son casillas independientes; puede marcar solo las que necesite.
+
+## Despliegue remoto: sincronizar la estructura de la base de datos
+Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
+1. En **Opciones de sincronización** marque **Sincronizar estructura de la base de datos**.
+2. Presione **Analizar diferencias**. Se muestra la lista de cambios, cada uno con su casilla; los cambios de riesgo quedan desmarcados.
+3. Revise el SQL de cada cambio y deje marcados solo los que quiera aplicar.
+Notas: nunca elimina tablas ni columnas del destino; los objetos que solo existen en la instalación del cliente no se eliminan. Si la estructura remota ya coincide con la local, se indica que no hay cambios. Al ejecutar, los cambios se aplican en lotes y se detienen en el primer error.
+Ver también: Despliegue remoto: ejecutar la sincronización, ver el avance y revertir.
+
+## Despliegue remoto: sincronizar los datos de configuración
+Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
+1. Marque **Sincronizar datos de configuración**.
+2. Elija el **Modo** de cada tabla (tablas de los perfiles Navicat 01 y 03):
+   - **Completa**: inserta, actualiza y elimina.
+   - **Insertar y actualizar**: no elimina.
+   - **Solo insertar**: modo por defecto de tb_counter; los contadores nuevos nacen en 0.
+   - **No sincronizar**: la tabla no se toca.
+3. Botones rápidos: **Todas: completa**, **Todas: sin eliminar** y **Restablecer perfiles**.
+4. Marque **Ejecutar scripts de parámetros** para ejecutar 001_default.sql y luego el script de la compañía seleccionada.
+5. Presione **Analizar datos**: muestra por tabla las filas a insertar, actualizar y eliminar, y advierte si los scripts tienen sentencias UPDATE sin WHERE.
+Orden: tablas, luego 001_default y luego el script de la compañía, todo en una transacción: si algo falla, se revierte todo.
+Advertencia: el modo **Completa** reemplaza tb_company_parameter; los ajustes del cliente que no estén en su script se pierden.
+
+## Despliegue remoto: ejecutar la sincronización, ver el avance y revertir
+Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
+1. Revise el **Resumen de operaciones**: lista lo que se hará y lo que falta.
+2. Marque **Revisé los cambios**.
+3. Presione **Ejecutar sincronización**, escriba el nombre de la compañía para confirmar y presione **Aceptar**. Si el nombre no coincide no se ejecuta nada.
+4. En **Ejecución** siga las 8 etapas, con su estado, la barra de progreso y el registro:
+   - **Validación de conexiones** y **Preparación del paquete**.
+   - **Transferencia**: por bloques, verificados con hash.
+   - **Descompresión y verificación**.
+   - **Actualización de archivos**: con respaldo de lo reemplazado.
+   - **Estructura de BD**: en lotes; se detiene en el primer error.
+   - **Datos de configuración** y **Verificación final**.
+5. Presione **Informe** para descargar el registro del despliegue.
+Para deshacer: **Revertir archivos** o **Revertir datos** restauran el respaldo tomado en ese despliegue.
+Restricciones: solo un despliegue a la vez por compañía.
+
+## Despliegue remoto: errores frecuentes
+Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
+- **Firma inválida o vencida**: el secreto guardado en la consola no es el mismo del agente, o el reloj del equipo está desfasado más de 5 minutos. Genere e instale de nuevo el secreto, o corrija la hora del equipo.
+- **El agente solo acepta HTTPS**: la URL de la instalación remota debe empezar con https://.
+- **Agente no habilitado**: falta el archivo writable/posme_agent/agent_config.php en el servidor del cliente. Instálelo con **Instalar agente por SFTP/FTP** o créelo a mano.
+- **La base remota no coincide**: el servidor respondió con una base de datos distinta a la de la cabecera /*BD: ... */ del script de la compañía. Revise la compañía elegida; el despliegue queda bloqueado.
+- **Ya hay otro despliegue en curso**: espere a que termine; el candado caduca solo a las 2 horas.
+Ver también: Despliegue remoto: preparar la consola y el agente (primera vez).
+
 ## Parámetros de la empresa
 Los parámetros controlan el comportamiento de posMe por empresa (por ejemplo, orden de aplicación de abonos, lista de precios por defecto, formato de impresión).
 Los parámetros contables se editan en CONTABILIDAD > PARAMETROS; el resto los configura el equipo de soporte de posMe.
