@@ -529,7 +529,8 @@ class core_dashboards extends _BaseController {
 		$objListVentaDiaria = array();
 		while($objFirstDate <= $objNowDate)
 		{				
-			$objListVentaDiariaTemporal = $this->Transaction_Master_Detail_Model->GlobalPro_get_Day_Sales($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d"),$objFirstDate->format("Y-m-d") );
+			//transactionOn es datetime: el rango debe cubrir el dia completo (00:00:00 a 23:59:59)
+			$objListVentaDiariaTemporal = $this->Transaction_Master_Detail_Model->GlobalPro_get_Day_Sales($dataSession["user"]->companyID, $objFirstDate->format("Y-m-d")." 00:00:00",$objFirstDate->format("Y-m-d")." 23:59:59" );
 			if($objListVentaDiariaTemporal)
 			{
 				array_push($objListVentaDiaria, $objListVentaDiariaTemporal[0]);
