@@ -794,8 +794,26 @@
 
 	//Llena el combo con los .csv del documento (el servidor los devuelve del mas nuevo al mas antiguo).
 	//Conserva la seleccion actual si el archivo sigue existiendo.
+	//El tema (theme-genyx/js/app.js) aplica uniform() a todos los select: lo envuelve en div.selector de ancho fijo
+	//y tapa el texto con su propia flecha. Este combo usa el select nativo con el estilo de resumen_flotante.php.
+	function fnImportQuitarUniform()
+	{
+		var $combo = $("#txtFileImport");
+		if($combo.parent().hasClass("selector"))
+		{
+			if($.uniform && typeof $.uniform.restore == "function")
+				$.uniform.restore($combo);
+			else
+			{
+				$combo.siblings("span").remove();
+				$combo.unwrap().css("opacity","");
+			}
+		}
+	}
+
 	function fnImportCargarArchivos(avisar)
 	{
+		fnImportQuitarUniform();
 		var $combo 		= $("#txtFileImport");
 		var actual 		= $combo.val();
 		$.ajax({
@@ -815,6 +833,7 @@
 					return;
 				}
 
+				fnImportQuitarUniform();
 				$combo.find("option").not("[value='.csv']").remove();
 
 				//Sin datos
