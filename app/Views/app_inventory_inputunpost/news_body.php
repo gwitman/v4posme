@@ -1,4 +1,4 @@
-<div class="pv2 pinv pinv-compra pv2-has-mbar">
+<div class="pv2 pinv pinv-compra pinv-inputunpost pv2-has-mbar">
 
 	<!-- encabezado y acciones -->
 	<div class="pv2-card pv2-header">
@@ -24,7 +24,7 @@
 			<div class="col-xs-12 col-md-8">
 
 				<!-- documento -->
-				<div class="pv2-card">
+				<div class="pv2-card pinv-card-doc">
 					<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-file"></i></span> Documento</p>
 
 					<!--tab menu-->
@@ -86,9 +86,9 @@
 											if($objListCurrency)
 											foreach($objListCurrency as $currency){
 												if($count == 0 )
-												echo "<option value='".$currency->currencyID."' selected >".$currency->name."</option>";
+												echo "<option value='".$currency->currencyID."' data-simbol='".htmlspecialchars((string)$currency->simbol,ENT_QUOTES)."' selected >".$currency->name."</option>";
 												else
-												echo "<option value='".$currency->currencyID."'  >".$currency->name."</option>";
+												echo "<option value='".$currency->currencyID."' data-simbol='".htmlspecialchars((string)$currency->simbol,ENT_QUOTES)."'  >".$currency->name."</option>";
 												$count++;
 											}
 											?>
@@ -147,7 +147,7 @@
 				<!-- /documento -->
 
 				<!-- proveedor -->
-				<div class="pv2-card">
+				<div class="pv2-card pinv-card-prov">
 					<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-user"></i></span> Proveedor</p>
 					<div class="row">
 						<div class="col-xs-12 col-sm-6 form-group">
@@ -219,23 +219,23 @@
 					<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-calculate"></i></span> Resumen</p>
 					<div class="pinv-summary-row">
 						<label for="txtSubTotal">Sub total</label>
-						<input type="text" id="txtSubTotal" name="txtSubTotal" readonly class="form-control" value="0" style="text-align:right"/>
+						<input type="text" id="txtSubTotal" name="txtSubTotal" readonly class="form-control" value="0.00" style="text-align:right"/>
 					</div>
 					<div class="pinv-summary-row">
 						<label for="txtDiscount">Descuento</label>
-						<input type="text" id="txtDiscount" name="txtDiscount"  class="form-control" value="0" style="text-align:right"/>
+						<input type="text" id="txtDiscount" name="txtDiscount"  class="form-control" value="0.00" style="text-align:right"/>
 					</div>
 					<div class="pinv-summary-row">
 						<label for="txtIva">IVA</label>
-						<input type="text" id="txtIva" name="txtIva"  class="form-control" value="0" style="text-align:right" readonly="readonly"/>
+						<input type="text" id="txtIva" name="txtIva"  class="form-control" value="0.00" style="text-align:right" readonly="readonly"/>
 					</div>
 					<div class="pinv-summary-row <?php  echo $pantallaCompra_hiddenSummaryISC; ?>">
 						<label for="txtIsc">ISC</label>
-						<input type="text" id="txtIsc" name="txtIsc"  class="form-control" value="0" style="text-align:right" readonly="readonly"/>
+						<input type="text" id="txtIsc" name="txtIsc"  class="form-control" value="0.00" style="text-align:right" readonly="readonly"/>
 					</div>
 					<div class="pv2-total">
-						<label class="pv2-label" for="txtTotal">Total</label>
-						<input type="text" id="txtTotal" name="txtTotal" readonly value="0" style="text-align:right"/>
+						<label class="pv2-label" for="txtTotal">Total <span class="pinv-moneda-simbolo"></span></label>
+						<div class="pinv-total-valor"><span class="pinv-moneda-simbolo"></span><input type="text" id="txtTotal" name="txtTotal" readonly value="0.00" style="text-align:right"/></div>
 					</div>
 				</div>
 				<!-- /resumen -->
@@ -244,7 +244,7 @@
 		</div>
 
 		<!-- detalle del movimiento-->
-		<div class="pv2-card">
+		<div class="pv2-card pinv-card-detalle">
 			<div class="pv2-detail-head">
 				<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-list-2"></i></span> Detalle <span class="pinv-count">0</span></p>
 				<div class="pv2-actions">

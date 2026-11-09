@@ -1971,9 +1971,14 @@ class app_inventory_inputunpost extends _BaseController {
 			$arrayIva 									= /*inicio get post*/ $this->request->getPost("txtDetailIva");			
 			$arrayIsc	 								= /*inicio get post*/ $this->request->getPost("txtDetailIsc");
 			$arrayCategoria								= /*inicio get post*/ $this->request->getPost("txtCategoria");
-			
-						
-			if($archivoCSV != ".csv")
+			$archivoImportadoPorLotes					= /*inicio get post*/ $this->request->getPost("txtFileImportProcesado");
+
+
+			if($archivoCSV != ".csv" && $archivoImportadoPorLotes == "1")
+			{
+				//El detalle ya fue importado por lotes desde la pantalla (importarArchivoLote): no se vuelve a procesar
+			}
+			else if($archivoCSV != ".csv")
 			{
 				$this->updateElementDetailByFile(
 					$dataSession,
@@ -2411,277 +2416,768 @@ class app_inventory_inputunpost extends _BaseController {
 		$arrayCategoria
 	)
 	{
+		//Importacion completa en una sola peticion (se conserva por compatibilidad).
+		//La pantalla usa validarArchivoImportacion + importarArchivoLote para evitar el timeout del servidor.
 		$this->Transaction_Master_Detail_Model->deleteWhereTM($companyID,$transactionID,$transactionMasterID);
-				
-		//Leer archivo
-		$objComponent		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_inputunpost");
-		if(!$objComponent)
-		throw new \Exception("EL COMPONENTE 'tb_transaction_master_inputunpost' NO EXISTE...");
-	
-		$objComponentItem						= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
-		if(!$objComponentItem)
-		throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
-			
-			
-		
-		$path 	= PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$transactionMasterID;			
-		$path 	= $path.'/'.$archivoCSV;
-		
-		if (!file_exists($path))
-		throw new \Exception("NO EXISTE EL ARCHIVO PARA IMPORTAR LOS PRECIOS");
-		
-		$objParameter				= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
-		$characterSplie 			= $objParameter->value;
-		$objParameterPriceDefault	= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID);
-		$listPriceID 				= $objParameterPriceDefault->value;
-		
-		$this->csvreader->separator = $characterSplie;
-		$table 						= $this->csvreader->parse_file($path); 
-		$fila 						= 0;
-		if($table){
-			
-			//if (count($table) > 7000){	
-			//	throw new \Exception("Archivo con mas de 200 registros");
-			//}
-			
-			if (count($table) >= 1){	
 
-				
-				if(!array_key_exists("Codigo",$table[0])){
-					throw new \Exception("Columna 'Codigo' no existe en el archivo .csv");
-				}
-				if(!array_key_exists("Nombre",$table[0])){
-					throw new \Exception("Columna 'Nombre' no existe en el archivo .csv");
-				}
-				if(!array_key_exists("Cantidad",$table[0])){
-					throw new \Exception("Columna 'Cantidad' no existe en el archivo .csv");
-				}
-				if(!array_key_exists("Costo",$table[0])){
-					throw new \Exception("Columna 'Costo' no existe en el archivo .csv");
-				}
-				if(!array_key_exists("Precio",$table[0])){
-					throw new \Exception("Columna 'Costo' no existe en el archivo .csv");
-				}
-				if(!array_key_exists("Lote",$table[0])){
-					throw new \Exception("Columna 'Lote' no existe en el archivo .csv");
-				}
-				if(!array_key_exists("Vencimiento",$table[0])){
-					throw new \Exception("Columna 'Vencimiento' no existe en el archivo .csv");
-				}
-				if(!array_key_exists("IVA",$table[0])){
-					throw new \Exception("Columna 'IVA' no existe en el archivo .csv");
-				}
-				if(!array_key_exists("ISC",$table[0])){
-					throw new \Exception("Columna 'ISC' no existe en el archivo .csv");
-				}
-				if(!array_key_exists("Categoria",$table[0])){
-					throw new \Exception("Columna 'Categoria' no existe en el archivo .csv");
+		$modoRepetidos 	= $this->importacionModoRepetidos(/*inicio get post*/ $this->request->getPost("txtImportModoRepetidos"));
+		$table 			= $this->importacionLeerArchivo($companyID,$transactionMasterID,$archivoCSV);
+		$resumen 		= $this->importacionValidarArchivo($table);
+		if(count($resumen["errores"]) > 0)
+			throw new \Exception("El archivo tiene errores: ".implode(" | ",array_slice($resumen["errores"],0,10)));
+
+		$contexto 		= $this->importacionCrearContexto($dataSession,$companyID,$branchID,$roleID,$transactionID,$transactionMasterID,$objTMNew);
+		foreach($table as $index => $row)
+		{
+			$this->importacionProcesarFila($contexto,$row,$resumen["ocurrencia"][$index],$modoRepetidos);
+		}
+	}
+
+	/**
+	 * Lista los archivos .csv subidos en la pestana Archivos del documento,
+	 * del mas nuevo al mas antiguo (fecha de modificacion), para el combo de importacion.
+	 * POST: transactionID, transactionMasterID
+	 * @return JSON { error, message, data: [ { nombre, fecha } ] }
+	 */
+	function listarArchivosImportacion()
+	{
+		try{
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession 			= $this->session->get();
+
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				if(!$permited)
+				throw new \Exception(NOT_ACCESS_CONTROL);
+			}
+
+			$companyID 				= $dataSession["user"]->companyID;
+			$transactionID 			= (int) /*inicio get post*/ $this->request->getPost("transactionID");
+			$transactionMasterID 	= (int) /*inicio get post*/ $this->request->getPost("transactionMasterID");
+
+			$objTM 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			if(!$objTM)
+			throw new \Exception("EL DOCUMENTO NO EXISTE");
+
+			$objComponent 			= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_inputunpost");
+			if(!$objComponent)
+			throw new \Exception("EL COMPONENTE 'tb_transaction_master_inputunpost' NO EXISTE...");
+
+			//Misma carpeta que usa importacionLeerArchivo
+			$carpeta 				= PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$transactionMasterID;
+			$archivos 				= array();
+			if(is_dir($carpeta))
+			{
+				foreach(scandir($carpeta) as $nombre)
+				{
+					$ruta = $carpeta."/".$nombre;
+					if(!is_file($ruta) || strtolower(pathinfo($nombre,PATHINFO_EXTENSION)) != "csv")
+					continue;
+
+					$archivos[] = array(
+						'nombre' 	=> $nombre,
+						'tiempo' 	=> filemtime($ruta)
+					);
 				}
 			}
-			
-			
-			foreach ($table as $row) 
-			{	
-				$fila++;
-				
-				if(count($row) == 0 )
+
+			//Del mas nuevo al mas antiguo
+			usort($archivos,function($a,$b){ return $b["tiempo"] - $a["tiempo"]; });
+			foreach($archivos as $i => $archivo)
+				$archivos[$i] = array(
+					'nombre' 	=> $archivo["nombre"],
+					'fecha' 	=> date("Y-m-d H:i",$archivo["tiempo"])
+				);
+
+			return $this->importacionRespuestaJSON(array(
+				'error' 	=> false,
+				'message' 	=> SUCCESS,
+				'data' 		=> $archivos
+			));
+		}
+		catch(\Exception $ex){
+			return $this->importacionRespuestaJSON(array(
+				'error' 	=> true,
+				'message' 	=> $ex->getMessage()
+			));
+		}
+	}
+
+	/**
+	 * Valida el archivo CSV de importacion SIN grabar nada.
+	 * Revisa columnas, numeros, fechas y codigos repetidos dentro del archivo.
+	 * POST: transactionID, transactionMasterID, fileName
+	 * @return JSON { error, message, data: { totalFilas, filasConDatos, errores[], cantidadErrores, repetidos[], cantidadCodigosRepetidos, cantidadFilasRepetidas } }
+	 */
+	function validarArchivoImportacion()
+	{
+		try{
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession 			= $this->session->get();
+
+			$companyID 				= $dataSession["user"]->companyID;
+			$transactionID 			= (int) /*inicio get post*/ $this->request->getPost("transactionID");
+			$transactionMasterID 	= (int) /*inicio get post*/ $this->request->getPost("transactionMasterID");
+			$archivoCSV 			= /*inicio get post*/ $this->request->getPost("fileName");
+
+			$this->importacionValidarDocumento($dataSession,$transactionID,$transactionMasterID);
+			$table 					= $this->importacionLeerArchivo($companyID,$transactionMasterID,$archivoCSV);
+			$resumen 				= $this->importacionValidarArchivo($table);
+
+			//Filas extra que generan los codigos repetidos (la primera aparicion no cuenta)
+			$cantidadFilasRepetidas = 0;
+			foreach($resumen["repetidos"] as $repetido)
+				$cantidadFilasRepetidas = $cantidadFilasRepetidas + (count($repetido["filas"]) - 1);
+
+			return $this->importacionRespuestaJSON(array(
+				'error' 	=> false,
+				'message' 	=> SUCCESS,
+				'data' 		=> array(
+					'totalFilas' 				=> count($table),
+					'filasConDatos' 			=> $resumen["filasConDatos"],
+					'errores' 					=> array_slice($resumen["errores"],0,50),
+					'cantidadErrores' 			=> count($resumen["errores"]),
+					'repetidos' 				=> array_slice($resumen["repetidos"],0,100),
+					'cantidadCodigosRepetidos' 	=> count($resumen["repetidos"]),
+					'cantidadFilasRepetidas' 	=> $cantidadFilasRepetidas
+				)
+			));
+		}
+		catch(\Exception $ex){
+			return $this->importacionRespuestaJSON(array(
+				'error' 	=> true,
+				'message' 	=> $ex->getMessage()
+			));
+		}
+	}
+
+	/**
+	 * Importa un lote de filas del archivo CSV al detalle del documento.
+	 * La pantalla lo llama varias veces (offset 0, 200, 400...) para que ninguna
+	 * peticion supere el tiempo maximo del servidor. Con offset 0 se borra el detalle anterior.
+	 * POST: transactionID, transactionMasterID, fileName, offset, limite, modoRepetidos (omitir|nuevo),
+	 *       txtProviderID, txtWarehouseID, txtCurrencyID (valores actuales del formulario)
+	 * @return JSON { error, message, data: { total, siguiente, terminado, insertadas, omitidas, productosNuevos } }
+	 */
+	function importarArchivoLote()
+	{
+		try{
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession 			= $this->session->get();
+
+			@set_time_limit(300);
+
+			$companyID 				= $dataSession["user"]->companyID;
+			$branchID 				= $dataSession["user"]->branchID;
+			$roleID 				= $dataSession["role"]->roleID;
+			$transactionID 			= (int) /*inicio get post*/ $this->request->getPost("transactionID");
+			$transactionMasterID 	= (int) /*inicio get post*/ $this->request->getPost("transactionMasterID");
+			$archivoCSV 			= /*inicio get post*/ $this->request->getPost("fileName");
+			$offset 				= max(0,(int) /*inicio get post*/ $this->request->getPost("offset"));
+			$limite 				= (int) /*inicio get post*/ $this->request->getPost("limite");
+			$modoRepetidos 			= $this->importacionModoRepetidos(/*inicio get post*/ $this->request->getPost("modoRepetidos"));
+
+			//Tamano de lote entre 1 y 500 filas por peticion
+			if($limite <= 0 || $limite > 500)
+				$limite = 200;
+
+			$objTM 					= $this->importacionValidarDocumento($dataSession,$transactionID,$transactionMasterID);
+			$table 					= $this->importacionLeerArchivo($companyID,$transactionMasterID,$archivoCSV);
+			$resumen 				= $this->importacionValidarArchivo($table);
+			if(count($resumen["errores"]) > 0)
+				throw new \Exception("El archivo tiene errores: ".implode(" | ",array_slice($resumen["errores"],0,10)));
+
+			//Primer lote: se reemplaza el detalle anterior del documento
+			if($offset == 0)
+				$this->Transaction_Master_Detail_Model->deleteWhereTM($companyID,$transactionID,$transactionMasterID);
+
+			//Datos del maestro tomados del formulario (aun no se ha guardado)
+			$objTMNew 							= array();
+			$objTMNew["entityID"] 				= helper_RequestGetValue(/*inicio get post*/ $this->request->getPost("txtProviderID"),$objTM->entityID);
+			$objTMNew["currencyID"] 			= helper_RequestGetValue(/*inicio get post*/ $this->request->getPost("txtCurrencyID"),$objTM->currencyID);
+			$objTMNew["sourceWarehouseID"] 		= NULL;
+			$objTMNew["targetWarehouseID"] 		= helper_RequestGetValue(/*inicio get post*/ $this->request->getPost("txtWarehouseID"),$objTM->targetWarehouseID);
+
+			$contexto 				= $this->importacionCrearContexto($dataSession,$companyID,$branchID,$roleID,$transactionID,$transactionMasterID,$objTMNew);
+			$total 					= count($table);
+			$fin 					= min($offset + $limite,$total);
+			$insertadas 			= 0;
+			$omitidas 				= 0;
+			$productosNuevos 		= 0;
+
+			for($index = $offset; $index < $fin; $index++)
+			{
+				$resultado = $this->importacionProcesarFila($contexto,$table[$index],$resumen["ocurrencia"][$index],$modoRepetidos);
+				if($resultado == "omitida")
+					$omitidas++;
+				if($resultado == "insertada" || $resultado == "nueva")
+					$insertadas++;
+				if($resultado == "nueva")
+					$productosNuevos++;
+			}
+
+			return $this->importacionRespuestaJSON(array(
+				'error' 	=> false,
+				'message' 	=> SUCCESS,
+				'data' 		=> array(
+					'total' 			=> $total,
+					'siguiente' 		=> $fin,
+					'terminado' 		=> $fin >= $total,
+					'insertadas' 		=> $insertadas,
+					'omitidas' 			=> $omitidas,
+					'productosNuevos' 	=> $productosNuevos
+				)
+			));
+		}
+		catch(\Exception $ex){
+			log_message("error","app_inventory_inputunpost/importarArchivoLote: ".$ex->getLine()." ".$ex->getMessage());
+			return $this->importacionRespuestaJSON(array(
+				'error' 	=> true,
+				'message' 	=> $ex->getMessage()
+			));
+		}
+	}
+
+	/**
+	 * Devuelve JSON con estado 200. Se limpia la cabecera Location porque el alta de
+	 * productos (app_inventory_item "apinew") puede dejar un redirect en la respuesta compartida.
+	 * @param array $datos
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	private function importacionRespuestaJSON($datos)
+	{
+		$this->response->removeHeader("Location");
+		$this->response->setStatusCode(200);
+		return $this->response->setJSON($datos);
+	}
+
+	/**
+	 * Normaliza la opcion elegida para los codigos repetidos.
+	 * @param string|null $valor
+	 * @return string "omitir" | "nuevo" | "" (sin opcion: comportamiento anterior)
+	 */
+	private function importacionModoRepetidos($valor)
+	{
+		$valor = strtolower(trim((string)$valor));
+		return in_array($valor,["omitir","nuevo"]) ? $valor : "";
+	}
+
+	/**
+	 * Valida permisos de edicion, estado del workflow y ciclo contable del documento.
+	 * @param array $dataSession
+	 * @param int   $transactionID
+	 * @param int   $transactionMasterID
+	 * @return object registro de tb_transaction_master
+	 */
+	private function importacionValidarDocumento($dataSession,$transactionID,$transactionMasterID)
+	{
+		$companyID 			= $dataSession["user"]->companyID;
+		$resultPermission 	= 0;
+
+		//PERMISO SOBRE LA FUNCION (mismo criterio que updateElement)
+		if(APP_NEED_AUTHENTICATION == true){
+			$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+			if(!$permited)
+			throw new \Exception(NOT_ACCESS_CONTROL);
+
+			$resultPermission 	= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+			if($resultPermission == PERMISSION_NONE)
+			throw new \Exception(NOT_ALL_EDIT);
+		}
+
+		$objTM = $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+		if(!$objTM)
+		throw new \Exception("EL DOCUMENTO NO EXISTE");
+
+		if($resultPermission == PERMISSION_ME && ($objTM->createdBy != $dataSession["user"]->userID))
+		throw new \Exception(NOT_EDIT);
+
+		if(!$this->core_web_workflow->validateWorkflowStage("tb_transaction_master_inputunpost","statusID",$objTM->statusID,COMMAND_EDITABLE_TOTAL,$companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
+		throw new \Exception(NOT_WORKFLOW_EDIT);
+
+		if($this->core_web_accounting->cycleIsCloseByDate($companyID,$objTM->transactionOn))
+		throw new \Exception("EL DOCUMENTO NO PUEDE ACTUALIZARCE, EL CICLO CONTABLE ESTA CERRADO");
+
+		return $objTM;
+	}
+
+	/**
+	 * Lee el archivo CSV de importacion guardado en la carpeta de archivos del documento
+	 * y valida que existan todas las columnas de la plantilla.
+	 * @param int    $companyID
+	 * @param int    $transactionMasterID
+	 * @param string $archivoCSV nombre del archivo subido en la pestana Archivos
+	 * @return array filas del archivo (cada fila indexada por el encabezado)
+	 */
+	private function importacionLeerArchivo($companyID,$transactionMasterID,$archivoCSV)
+	{
+		$objComponent 	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_inputunpost");
+		if(!$objComponent)
+		throw new \Exception("EL COMPONENTE 'tb_transaction_master_inputunpost' NO EXISTE...");
+
+		//basename evita leer archivos fuera de la carpeta del documento
+		$archivoCSV 	= basename(trim((string)$archivoCSV));
+		$path 			= PATH_FILE_OF_APP."/company_".$companyID."/component_".$objComponent->componentID."/component_item_".$transactionMasterID."/".$archivoCSV;
+		if($archivoCSV == "" || $archivoCSV == ".csv" || !file_exists($path))
+		throw new \Exception("NO EXISTE EL ARCHIVO '".$archivoCSV."' EN LOS ARCHIVOS DEL DOCUMENTO");
+
+		$objParameter 				= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT",$companyID);
+		$this->csvreader->separator = $objParameter->value;
+		$table 						= $this->csvreader->parse_file($path);
+		if(!$table || count($table) == 0)
+		throw new \Exception("EL ARCHIVO '".$archivoCSV."' NO TIENE FILAS PARA IMPORTAR");
+
+		$table 		= array_values($table);
+		$columnas 	= ["Codigo","Nombre","Cantidad","Costo","Precio","Lote","Vencimiento","IVA","ISC","Categoria"];
+		foreach($columnas as $columna)
+		{
+			if(!array_key_exists($columna,$table[0]))
+			throw new \Exception("Columna '".$columna."' no existe en el archivo .csv");
+		}
+
+		return $table;
+	}
+
+	/**
+	 * Indica si la fila del CSV no tiene datos (se ignora al importar).
+	 * @param array $row
+	 * @return bool
+	 */
+	private function importacionFilaVacia($row)
+	{
+		if(count($row) == 0)
+			return true;
+
+		return
+			trim($row["Codigo"] ?? "") 		== "" &&
+			trim($row["Nombre"] ?? "") 		== "" &&
+			trim($row["Cantidad"] ?? "") 	== "" &&
+			trim($row["Costo"] ?? "") 		== "" &&
+			trim($row["Precio"] ?? "") 		== "";
+	}
+
+	/**
+	 * Convierte la fecha de vencimiento del CSV a AAAA-MM-DD.
+	 * Acepta AAAA-MM-DD, AAAA/MM/DD (con hora opcional) y DD/MM/AAAA o DD-MM-AAAA.
+	 * @param string $valor
+	 * @return string|false fecha normalizada o false si no es valida
+	 */
+	private function importacionNormalizarFecha($valor)
+	{
+		$valor = trim((string)$valor);
+		if(preg_match('/^(\d{4})[\/\-](\d{1,2})[\/\-](\d{1,2})/',$valor,$m))
+		{
+			$anio 	= (int)$m[1];
+			$mes 	= (int)$m[2];
+			$dia 	= (int)$m[3];
+		}
+		else if(preg_match('/^(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})$/',$valor,$m))
+		{
+			$dia 	= (int)$m[1];
+			$mes 	= (int)$m[2];
+			$anio 	= (int)$m[3];
+		}
+		else
+		{
+			return false;
+		}
+
+		if(!checkdate($mes,$dia,$anio))
+			return false;
+
+		return sprintf("%04d-%02d-%02d",$anio,$mes,$dia);
+	}
+
+	/**
+	 * Valida las filas del CSV sin grabar nada: nombre/codigo, numeros, fechas y codigos repetidos.
+	 * @param array $table filas del archivo
+	 * @return array [
+	 *     filasConDatos => int,
+	 *     errores       => string[],
+	 *     repetidos     => [ [codigo, nombre, filas[]] ],
+	 *     ocurrencia    => [ indiceFila => n ]  (n = que vez aparece el codigo: 1 primera, 2 segunda...; 0 fila vacia o sin codigo)
+	 * ]
+	 */
+	private function importacionValidarArchivo($table)
+	{
+		$errores 		= [];
+		$ocurrencia 	= [];
+		$codigos 		= [];
+		$filasConDatos 	= 0;
+
+		foreach($table as $index => $row)
+		{
+			//+2 = encabezado + conteo desde 1, para que coincida con la fila que ve el usuario en Excel
+			$fila 					= $index + 2;
+			$ocurrencia[$index] 	= 0;
+
+			if($this->importacionFilaVacia($row))
+				continue;
+
+			$filasConDatos++;
+			$codigo 	= trim($row["Codigo"] ?? "");
+			$nombre 	= trim($row["Nombre"] ?? "");
+
+			if($codigo == "" && $nombre == "")
+				$errores[] = "Fila ".$fila.": no tiene Codigo ni Nombre";
+
+			//Valores numericos: vacio = 0, se permiten comas de miles
+			foreach(["Cantidad","Costo","Precio","IVA","ISC"] as $columna)
+			{
+				$valor = trim($row[$columna] ?? "");
+				if($valor == "")
 					continue;
-				
-				$codigo 		= $row["Codigo"];
-				$description 	= $row["Nombre"];
-				$cantidad 		= ltrim(rtrim($row["Cantidad"]));
-				$costo 			= ltrim(rtrim($row["Costo"]));			
-				$lote 			= $row["Lote"];
-				$vencimiento	= $row["Vencimiento"];
-				$precio			= ltrim(rtrim($row["Precio"]));
-				$iva			= ltrim(rtrim($row["IVA"]));
-				$isc			= ltrim(rtrim($row["ISC"]));
-				$categoriaName	= helper_QuitarAcentos(ltrim(rtrim($row["Categoria"])));
-				$objItem		= $this->Item_Model->get_rowByCode($companyID,$codigo);	
-				
-				if($categoriaName == "")
-				   $categoriaName = "General";
-					
-				if($codigo == '' && $description=='' && $cantidad =='' && $costo =='' && $precio=='')
-					continue;
-				
-				if(!$objItem) {
-					$objItem		= $this->Item_Model->get_rowByCodeBarra($companyID,$codigo);		
-					
-				}		
-				
-				//Ingresar la categoria
-				$objCategory 						= $this->Itemcategory_Model->getByName($companyID,$categoriaName);								
-				$objNewApiInventoryCategoryID		= 0;
-				if(!$objCategory)
+
+				$valorNumero = helper_StringToNumber($valor);
+				if(!is_numeric($valorNumero))
+					$errores[] = "Fila ".$fila.": ".$columna." '".$valor."' no es un numero";
+				else if((float)$valorNumero < 0)
+					$errores[] = "Fila ".$fila.": ".$columna." no puede ser negativo";
+			}
+
+			$vencimiento = trim($row["Vencimiento"] ?? "");
+			if($vencimiento != "" && $this->importacionNormalizarFecha($vencimiento) === false)
+				$errores[] = "Fila ".$fila.": Vencimiento '".$vencimiento."' no es una fecha valida (use AAAA-MM-DD o DD/MM/AAAA)";
+
+			//Codigos repetidos dentro del archivo (sin distinguir mayusculas)
+			if($codigo != "")
+			{
+				$clave = mb_strtoupper($codigo);
+				if(!isset($codigos[$clave]))
+					$codigos[$clave] = ["codigo" => $codigo, "nombre" => $nombre, "filas" => []];
+
+				$codigos[$clave]["filas"][] 	= $fila;
+				$ocurrencia[$index] 			= count($codigos[$clave]["filas"]);
+			}
+		}
+
+		$repetidos = [];
+		foreach($codigos as $codigo)
+		{
+			if(count($codigo["filas"]) > 1)
+				$repetidos[] = $codigo;
+		}
+
+		return [
+			"filasConDatos" => $filasConDatos,
+			"errores" 		=> $errores,
+			"repetidos" 	=> $repetidos,
+			"ocurrencia" 	=> $ocurrencia
+		];
+	}
+
+	/**
+	 * Precarga una sola vez los datos que se repiten en cada fila (catalogos, parametros,
+	 * estado inicial del producto, controladores de alta). Antes se consultaban por cada fila.
+	 * @return array contexto que se pasa a importacionProcesarFila
+	 */
+	private function importacionCrearContexto($dataSession,$companyID,$branchID,$roleID,$transactionID,$transactionMasterID,$objTMNew)
+	{
+		$objComponentItem 	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+		if(!$objComponentItem)
+		throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+
+		$listPriceID 		= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID)->value;
+		$listFamily 		= $this->core_web_catalog->getCatalogAllItem("tb_item","familyID",$companyID);
+		$listUnitMeasure 	= $this->core_web_catalog->getCatalogAllItem("tb_item","unitMeasureID",$companyID);
+		$listDisplay 		= $this->core_web_catalog->getCatalogAllItem("tb_item","displayID",$companyID);
+		$listDisplayUnit 	= $this->core_web_catalog->getCatalogAllItem("tb_item","displayUnitMeasureID",$companyID);
+		$listTypePrice 		= $this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID);
+		$objStatusItem 		= $this->core_web_workflow->getWorkflowInitStage("tb_item","statusID",$companyID,$branchID,$roleID);
+
+		if(!$listFamily || !$listUnitMeasure || !$listDisplay || !$listDisplayUnit || !$listTypePrice || !$objStatusItem)
+		throw new \Exception("Faltan catalogos de producto (familia, unidad, presentacion, tipo de precio o estado inicial) para crear productos nuevos");
+
+		//Mismos 5 tipos de precio que se usaban antes al crear el producto
+		$typePriceIDs 		= [];
+		foreach(array_slice($listTypePrice,0,5) as $typePrice)
+			$typePriceIDs[] = $typePrice->catalogItemID;
+
+		return [
+			"dataSession" 			=> $dataSession,
+			"companyID" 			=> $companyID,
+			"branchID" 				=> $branchID,
+			"transactionID" 		=> $transactionID,
+			"transactionMasterID" 	=> $transactionMasterID,
+			"objTMNew" 				=> $objTMNew,
+			"componentItemID" 		=> $objComponentItem->componentID,
+			"listPriceID" 			=> $listPriceID,
+			"familyID" 				=> $listFamily[0]->catalogItemID,
+			"unitMeasureID" 		=> $listUnitMeasure[0]->catalogItemID,
+			"displayID" 			=> $listDisplay[0]->catalogItemID,
+			"displayUnitMeasureID" 	=> $listDisplayUnit[0]->catalogItemID,
+			"typePriceIDs" 			=> $typePriceIDs,
+			"statusItemID" 			=> $objStatusItem[0]->workflowStageID,
+			"controllerItem" 		=> null,
+			"controllerCategory" 	=> null,
+			"categorias" 			=> [],
+			"proveedorItem" 		=> []
+		];
+	}
+
+	/**
+	 * Devuelve el inventoryCategoryID por nombre; si no existe la crea. Usa cache por importacion.
+	 * @param array  $contexto (por referencia)
+	 * @param string $categoriaName
+	 * @return int
+	 */
+	private function importacionObtenerCategoria(&$contexto,$categoriaName)
+	{
+		$clave = mb_strtoupper($categoriaName);
+		if(isset($contexto["categorias"][$clave]))
+			return $contexto["categorias"][$clave];
+
+		$objCategory = $this->Itemcategory_Model->getByName($contexto["companyID"],db_connect()->escapeString($categoriaName));
+		if($objCategory)
+		{
+			$categoryID = $objCategory->inventoryCategoryID;
+		}
+		else
+		{
+			if($contexto["controllerCategory"] == null)
+			{
+				$contexto["controllerCategory"] = new app_inventory_category();
+				$contexto["controllerCategory"]->initController($this->request, $this->response, $this->logger);
+			}
+			$categoryID = $contexto["controllerCategory"]->save("apinew", ["txtName" => $categoriaName, "txtDescription" => $categoriaName], $contexto["dataSession"]);
+		}
+
+		$contexto["categorias"][$clave] = $categoryID;
+		return $categoryID;
+	}
+
+	/**
+	 * Busca el producto por codigo, codigo de barras exacto o dentro de una lista de codigos de barra.
+	 * @param int    $companyID
+	 * @param string $codigo
+	 * @return object|null
+	 */
+	private function importacionBuscarProducto($companyID,$codigo)
+	{
+		//Se escapa el codigo: un apostrofe rompia la consulta
+		$codigoSql 	= db_connect()->escapeString($codigo);
+		$objItem 	= $this->Item_Model->get_rowByCode($companyID,$codigoSql);
+		if($objItem)
+			return $objItem;
+
+		$objItem 	= $this->Item_Model->get_rowByCodeBarra($companyID,$codigoSql);
+		if($objItem)
+			return $objItem;
+
+		//Productos con varios codigos de barra separados por coma
+		$listSimilar = $this->Item_Model->get_rowByCodeBarraSimilar($companyID,$codigoSql);
+		if($listSimilar)
+		{
+			foreach($listSimilar as $objSimilar)
+			{
+				foreach(explode(",",$objSimilar->barCode) as $barCode)
 				{
-					$controllerApi_InventoryCategory 	= new app_inventory_category();
-					$controllerApi_InventoryCategory->initController($this->request, $this->response, $this->logger);
-					$objNewApiInventoryCategory			= [
-						"txtName" 			=> $categoriaName,
-						"txtDescription" 	=> $categoriaName
-					];
-					$objNewApiInventoryCategoryID		= $controllerApi_InventoryCategory->save("apinew", $objNewApiInventoryCategory, $dataSession);	
-				}
-				else 
-				{
-					$objNewApiInventoryCategoryID = $objCategory->inventoryCategoryID;
-				}
-				
-				//Agregar productos nuevos
-				if(!$objItem) 
-				{
-					$controllerApi 									= new app_inventory_item();
-					$controllerApi->initController($this->request, $this->response, $this->logger);									
-					$objItemNewApi 					= [
-								'txtCallback' 						=> 'fnCollback',
-								'txtComando' 						=> 'false',
-								'txtInventoryCategoryID'			=> $objNewApiInventoryCategoryID,
-								'txtName'							=> $description,
-								'txtFamilyID'						=> $this->core_web_catalog->getCatalogAllItem("tb_item","familyID",$companyID)[0]->catalogItemID,
-								'txtBarCode'						=> $codigo,
-								'txtDescription'					=> $description,
-								'txtUnitMeasureID'					=> $this->core_web_catalog->getCatalogAllItem("tb_item","unitMeasureID",$companyID)[0]->catalogItemID,
-								'txtDisplayID'						=> $this->core_web_catalog->getCatalogAllItem("tb_item","displayID",$companyID)[0]->catalogItemID,
-								'txtCapacity'						=> 1,
-								'txtDisplayUnitMeasureID'			=> $this->core_web_catalog->getCatalogAllItem("tb_item","displayUnitMeasureID",$companyID)[0]->catalogItemID,
-								'txtDefaultWarehouseID'				=> $objTMNew["targetWarehouseID"],
-								'txtQuantityMax'					=> 1000,
-								'txtQuantityMin'					=> 0,
-								'txtReference1'						=> '-',
-								'txtReference2'						=> '-',
-								'txtReference3'						=> '-',
-								'txtStatusID'						=> $this->core_web_workflow->getWorkflowInitStage("tb_item","statusID",$companyID,$branchID,$roleID)[0]->workflowStageID,
-								'txtIsPerishable'					=> 0,
-								'txtIsServices'						=> 0,
-								'txtIsInvoiceQuantityZero'			=> true,
-								'txtIsInvoice'						=> true,
-								'txtFactorBox'						=> 1,
-								'txtFactorProgram'					=> 1,
-								'txtCurrencyID'						=> $objTMNew["currencyID"],
-								'txtQuantity'						=> 0,
-								'txtCost'							=> 0,
-										
-								'txtDetailWarehouseID'				=> [$objTMNew["targetWarehouseID"]],
-								'txtDetailQuantityMax'				=> [1000],
-								'txtDetailQuantityMin'				=> [0],
-										
-								'txtDetailSkuCatalogItemID'			=> [$this->core_web_catalog->getCatalogAllItem("tb_item","unitMeasureID",$companyID)[0]->catalogItemID],
-								'txtDetailSkuValue'					=> [1],
-										
-								'txtDetailTypePriceValue'			=> [0,0,0,0,0],
-								'txtDetailTypeComisionValue'		=> [0,0,0,0,0],
-								'txtDetailTypePriceID'				=> [
-																	$this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID)[0]->catalogItemID,
-																	$this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID)[1]->catalogItemID,
-																	$this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID)[2]->catalogItemID,
-																	$this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID)[3]->catalogItemID,
-																	$this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID)[4]->catalogItemID
-															   ],
-								'txtDetailListPriceID'				=> [
-																	$this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID)->value,
-																	$this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID)->value,
-																	$this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID)->value,
-																	$this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID)->value,
-																	$this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID)->value
-															   ],
-								'txtRealStateEmail'					=> "",
-								'txtRealStatePhone'					=> "",
-								'txtRealStateLinkYoutube'			=> "",
-								'txtRealStateLinkPaginaWeb'			=> "",
-								'txtRealStateLinkPhontos'			=> "",
-								'txtRealStateLinkGoogleMaps'		=> "",
-								'txtRealStateLinkOther'				=> "",
-								'txtRealStateStyleKitchen'			=> "",
-								'txtRealStateReferenceUbicacion'	=> "",
-								'txtRealStateReferenceCondominio'	=> "",
-								'txtRealStateReferenceZone'			=> "",
-								'txtRealStateGerenciaExclusive'		=> "",
-								
-					];
-					
-					
-					$objItemNewApiID	= $controllerApi->save("apinew", $objItemNewApi, $dataSession);	
-					log_message("error",print_r($objItemNewApiID,true));						
-					$objItem			= $this->Item_Model->get_rowByPK($companyID,$objItemNewApiID);
-					if(!$objItem)
-					{
-						throw new \Exception("El siguiente producto no existe en inventario: ". $codigo."");
-					}
-					
-				}
-					
-				
-				if(!$objItem)
-					continue;
-				
-				$transactionMasterDetailID				= 0;					
-				$itemID 								= $objItem->itemID;
-				$quantity 								= helper_StringToNumber(ltrim(rtrim($cantidad)));
-				$cost 									= helper_StringToNumber(ltrim(rtrim($costo)));	
-				
-				//Ingrear al provedor si no existe. 
-				$objProviderItemModel = $this->Provideritem_Model->getByPK($companyID,$itemID,$objTMNew["entityID"]);						
-				if(!$objProviderItemModel){
-					
-					$objPIMNew["companyID"]	= $companyID;
-					$objPIMNew["branchID"]	= $branchID;
-					$objPIMNew["entityID"]	= $objTMNew["entityID"];
-					$objPIMNew["itemID"]	= $itemID;
-					$this->Provideritem_Model->insert_app_posme($objPIMNew);
-				}
-				
-				//Actualizar tipo de precio 1 ---> 154 ---->PUBLICO
-				if($precio > 0){
-					
-					$typePriceID					= 154;
-					$dataUpdatePrice["price"] 		= $precio;
-					$dataUpdatePrice["percentage"] 	= 
-													$objItem->cost == 0 ? 
-														($precio / 100) : 
-														(((100 * $precio) / $objItem->cost) - 100);
-					$objPrice = $this->Price_Model->update_app_posme($companyID,$listPriceID,$itemID,$typePriceID,$dataUpdatePrice);
-				}
-				
-				
-				
-				//Nuevo Detalle
-				if($transactionMasterDetailID == 0 ){						
-					$objTMD 								= array();
-					$objTMD["companyID"] 					= $companyID;
-					$objTMD["transactionID"] 				= $transactionID;
-					$objTMD["transactionMasterID"] 			= $transactionMasterID;
-					$objTMD["componentID"]					= $objComponentItem->componentID;
-					$objTMD["componentItemID"] 				= $itemID;//itemID
-					$objTMD["quantity"] 					= $quantity;
-					$objTMD["unitaryCost"]					= $cost;
-					$objTMD["cost"] 						= (int)$quantity * (float)$cost;
-					$objTMD["unitaryAmount"]				= $precio;
-					$objTMD["amount"] 						= (float)$cost * (float)$precio;
-					$objTMD["discount"]						= 0;
-					$objTMD["unitaryPrice"]					= $precio;
-					$objTMD["promotionID"] 					= 0;
-					$objTMD["lote"]							= $lote;
-					$objTMD["expirationDate"]				= $vencimiento == "" ? '1900-01-01':  $vencimiento;
-					$objTMD["reference3"]					= '0|0';
-					$objTMD["reference4"]					= '';//si se carga mediatne un excel no exsite el reference4, por que los valores de exencion de codigo, se deben de modificar, en la pantalla propiamente
-					$objTMD["catalogStatusID"]				= 0;
-					$objTMD["inventoryStatusID"]			= 0;
-					$objTMD["isActive"]						= 1;
-					$objTMD["quantityStock"]				= 0;
-					$objTMD["quantiryStockInTraffic"]		= 0;
-					$objTMD["quantityStockUnaswared"]		= 0;
-					$objTMD["remaingStock"]					= 0;	
-					$objTMD["tax1"]							= $iva;
-					$objTMD["tax2"]							= $isc;
-					$objTMD["inventoryWarehouseSourceID"]	= $objTMNew["sourceWarehouseID"];
-					$objTMD["inventoryWarehouseTargetID"]	= $objTMNew["targetWarehouseID"];
-					$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
-					
+					if(strtoupper(trim($barCode)) == strtoupper($codigo))
+						return $this->Item_Model->get_rowByPK($companyID,$objSimilar->itemID);
 				}
 			}
 		}
-				
+
+		return null;
+	}
+
+	/**
+	 * Crea un producto nuevo con los valores por defecto de la importacion.
+	 * @param array  $contexto (por referencia)
+	 * @param string $codigo codigo de barras; vacio = el sistema genera el codigo automatico
+	 * @param string $description
+	 * @param int    $categoryID
+	 * @return int|null itemID creado
+	 */
+	private function importacionCrearProducto(&$contexto,$codigo,$description,$categoryID)
+	{
+		if($contexto["controllerItem"] == null)
+		{
+			$contexto["controllerItem"] = new app_inventory_item();
+			$contexto["controllerItem"]->initController($this->request, $this->response, $this->logger);
+		}
+
+		$objTMNew 			= $contexto["objTMNew"];
+		$cantidadPrecios 	= count($contexto["typePriceIDs"]);
+		$objItemNewApi 		= [
+			'txtCallback' 						=> 'fnCollback',
+			'txtComando' 						=> 'false',
+			'txtInventoryCategoryID'			=> $categoryID,
+			'txtName'							=> $description,
+			'txtFamilyID'						=> $contexto["familyID"],
+			'txtBarCode'						=> $codigo,
+			'txtDescription'					=> $description,
+			'txtUnitMeasureID'					=> $contexto["unitMeasureID"],
+			'txtDisplayID'						=> $contexto["displayID"],
+			'txtCapacity'						=> 1,
+			'txtDisplayUnitMeasureID'			=> $contexto["displayUnitMeasureID"],
+			'txtDefaultWarehouseID'				=> $objTMNew["targetWarehouseID"],
+			'txtQuantityMax'					=> 1000,
+			'txtQuantityMin'					=> 0,
+			'txtReference1'						=> '-',
+			'txtReference2'						=> '-',
+			'txtReference3'						=> '-',
+			'txtStatusID'						=> $contexto["statusItemID"],
+			'txtIsPerishable'					=> 0,
+			'txtIsServices'						=> 0,
+			'txtIsInvoiceQuantityZero'			=> true,
+			'txtIsInvoice'						=> true,
+			'txtFactorBox'						=> 1,
+			'txtFactorProgram'					=> 1,
+			'txtCurrencyID'						=> $objTMNew["currencyID"],
+			'txtQuantity'						=> 0,
+			'txtCost'							=> 0,
+			'txtDetailWarehouseID'				=> [$objTMNew["targetWarehouseID"]],
+			'txtDetailQuantityMax'				=> [1000],
+			'txtDetailQuantityMin'				=> [0],
+			'txtDetailSkuCatalogItemID'			=> [$contexto["unitMeasureID"]],
+			'txtDetailSkuValue'					=> [1],
+			'txtDetailTypePriceValue'			=> array_fill(0,$cantidadPrecios,0),
+			'txtDetailTypeComisionValue'		=> array_fill(0,$cantidadPrecios,0),
+			'txtDetailTypePriceID'				=> $contexto["typePriceIDs"],
+			'txtDetailListPriceID'				=> array_fill(0,$cantidadPrecios,$contexto["listPriceID"]),
+			'txtRealStateEmail'					=> "",
+			'txtRealStatePhone'					=> "",
+			'txtRealStateLinkYoutube'			=> "",
+			'txtRealStateLinkPaginaWeb'			=> "",
+			'txtRealStateLinkPhontos'			=> "",
+			'txtRealStateLinkGoogleMaps'		=> "",
+			'txtRealStateLinkOther'				=> "",
+			'txtRealStateStyleKitchen'			=> "",
+			'txtRealStateReferenceUbicacion'	=> "",
+			'txtRealStateReferenceCondominio'	=> "",
+			'txtRealStateReferenceZone'			=> "",
+			'txtRealStateGerenciaExclusive'		=> "",
+		];
+
+		return $contexto["controllerItem"]->save("apinew", $objItemNewApi, $contexto["dataSession"]);
+	}
+
+	/**
+	 * Procesa una fila del CSV: busca o crea el producto, lo asocia al proveedor,
+	 * actualiza el precio publico e inserta la linea en el detalle del documento.
+	 * @param array  $contexto      (por referencia) creado por importacionCrearContexto
+	 * @param array  $row           fila del CSV
+	 * @param int    $ocurrencia    que vez aparece el codigo en el archivo (1 = primera)
+	 * @param string $modoRepetidos "omitir" | "nuevo" | ""
+	 * @return string "vacia" | "omitida" | "insertada" | "nueva" (insertada creando producto)
+	 */
+	private function importacionProcesarFila(&$contexto,$row,$ocurrencia,$modoRepetidos)
+	{
+		if($this->importacionFilaVacia($row))
+			return "vacia";
+
+		//Codigos repetidos: la primera aparicion se importa normal; las siguientes segun la opcion elegida
+		$esRepetido 		= $ocurrencia > 1;
+		if($esRepetido && $modoRepetidos == "omitir")
+			return "omitida";
+		$generarCodigoNuevo = $esRepetido && $modoRepetidos == "nuevo";
+
+		$companyID 		= $contexto["companyID"];
+		$objTMNew 		= $contexto["objTMNew"];
+		$codigo 		= trim($row["Codigo"] ?? "");
+		$description 	= trim($row["Nombre"] ?? "");
+		$cantidad 		= (float)helper_StringToNumber(trim($row["Cantidad"] ?? ""));
+		$costo 			= (float)helper_StringToNumber(trim($row["Costo"] ?? ""));
+		$precio 		= (float)helper_StringToNumber(trim($row["Precio"] ?? ""));
+		$iva 			= (float)helper_StringToNumber(trim($row["IVA"] ?? ""));
+		$isc 			= (float)helper_StringToNumber(trim($row["ISC"] ?? ""));
+		$lote 			= trim($row["Lote"] ?? "");
+		$vencimiento 	= trim($row["Vencimiento"] ?? "");
+		$vencimiento 	= $vencimiento == "" ? "1900-01-01" : $this->importacionNormalizarFecha($vencimiento);
+		$categoriaName 	= helper_QuitarAcentos(trim($row["Categoria"] ?? ""));
+		if($categoriaName == "")
+			$categoriaName = "General";
+
+		//Buscar el producto (los repetidos con "generar codigo nuevo" siempre se crean)
+		$objItem 		= null;
+		if(!$generarCodigoNuevo && $codigo != "")
+			$objItem 	= $this->importacionBuscarProducto($companyID,$codigo);
+
+		//Agregar productos nuevos (codigo vacio = el sistema genera el codigo automatico)
+		$productoNuevo 	= false;
+		if(!$objItem)
+		{
+			$categoryID 	= $this->importacionObtenerCategoria($contexto,$categoriaName);
+			$itemIDNuevo 	= $this->importacionCrearProducto($contexto,$generarCodigoNuevo ? "" : $codigo,$description,$categoryID);
+			$objItem 		= $itemIDNuevo ? $this->Item_Model->get_rowByPK($companyID,$itemIDNuevo) : null;
+			if(!$objItem)
+			throw new \Exception("No se pudo crear el producto '".$codigo."' ".$description.". Revise si el codigo de barras ya existe en otro producto.");
+
+			$productoNuevo 	= true;
+		}
+
+		$itemID 		= $objItem->itemID;
+
+		//Ingresar al proveedor si no existe (cache para no repetir la consulta)
+		if(!isset($contexto["proveedorItem"][$itemID]))
+		{
+			$objProviderItemModel = $this->Provideritem_Model->getByPK($companyID,$itemID,$objTMNew["entityID"]);
+			if(!$objProviderItemModel)
+			{
+				$objPIMNew 				= array();
+				$objPIMNew["companyID"]	= $companyID;
+				$objPIMNew["branchID"]	= $contexto["branchID"];
+				$objPIMNew["entityID"]	= $objTMNew["entityID"];
+				$objPIMNew["itemID"]	= $itemID;
+				$this->Provideritem_Model->insert_app_posme($objPIMNew);
+			}
+			$contexto["proveedorItem"][$itemID] = true;
+		}
+
+		//Actualizar tipo de precio 1 ---> 154 ---->PUBLICO
+		if($precio > 0)
+		{
+			$typePriceID 					= 154;
+			$dataUpdatePrice 				= array();
+			$dataUpdatePrice["price"] 		= $precio;
+			$dataUpdatePrice["percentage"] 	=
+											$objItem->cost == 0 ?
+												($precio / 100) :
+												(((100 * $precio) / $objItem->cost) - 100);
+			$this->Price_Model->update_app_posme($companyID,$contexto["listPriceID"],$itemID,$typePriceID,$dataUpdatePrice);
+		}
+
+		//Nuevo Detalle
+		$objTMD 								= array();
+		$objTMD["companyID"] 					= $companyID;
+		$objTMD["transactionID"] 				= $contexto["transactionID"];
+		$objTMD["transactionMasterID"] 			= $contexto["transactionMasterID"];
+		$objTMD["componentID"]					= $contexto["componentItemID"];
+		$objTMD["componentItemID"] 				= $itemID;
+		$objTMD["quantity"] 					= $cantidad;
+		$objTMD["unitaryCost"]					= $costo;
+		$objTMD["cost"] 						= $cantidad * $costo;
+		$objTMD["unitaryAmount"]				= $precio;
+		$objTMD["amount"] 						= $cantidad * $costo;
+		$objTMD["discount"]						= 0;
+		$objTMD["unitaryPrice"]					= $precio;
+		$objTMD["promotionID"] 					= 0;
+		$objTMD["lote"]							= $lote;
+		$objTMD["expirationDate"]				= $vencimiento;
+		$objTMD["reference3"]					= '0|0';
+		$objTMD["reference4"]					= '';//si se carga mediante un csv no existe el reference4, los codigos extra se modifican en la pantalla
+		$objTMD["catalogStatusID"]				= 0;
+		$objTMD["inventoryStatusID"]			= 0;
+		$objTMD["isActive"]						= 1;
+		$objTMD["quantityStock"]				= 0;
+		$objTMD["quantiryStockInTraffic"]		= 0;
+		$objTMD["quantityStockUnaswared"]		= 0;
+		$objTMD["remaingStock"]					= 0;
+		$objTMD["tax1"]							= $iva;
+		$objTMD["tax2"]							= $isc;
+		$objTMD["inventoryWarehouseSourceID"]	= $objTMNew["sourceWarehouseID"];
+		$objTMD["inventoryWarehouseTargetID"]	= $objTMNew["targetWarehouseID"];
+		$this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
+
+		return $productoNuevo ? "nueva" : "insertada";
 	}
 	
 	function save($mode=""){

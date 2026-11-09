@@ -9,6 +9,7 @@
 				<?php echo view('core_template/posme_v2_common'); ?>
 				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-inventory.css?v=1" rel="stylesheet" />
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme-inventory.js?v=2"></script>
+				<?php echo view('app_inventory_inputunpost/resumen_flotante'); ?>
 				
 				<div id="heading" class="page-header">
 							<h1><i class="icon20 i-last"></i>EDITAR COMPRA</h1>

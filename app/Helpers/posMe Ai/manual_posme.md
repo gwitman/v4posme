@@ -453,6 +453,35 @@ Ruta: Menú > INVENTARIO > COMPRA.
 1. Presione **Nuevo**, seleccione el proveedor, la bodega y la fecha.
 2. Agregue los productos con su cantidad y costo.
 3. Guarde y aplique la compra para que aumente el inventario. <!-- REVISAR -->
+Pantalla: la información está en tarjetas de color: **Documento**, **Proveedor**, **Resumen** y **Detalle**. El total se muestra con fondo de color y las filas del detalle se ven alternadas para leerlas mejor.
+Resumen siempre visible: en computadora o laptop, al bajar en la pantalla el **Resumen** (Sub total, Descuento, IVA, ISC y Total) queda fijo como una franja en la parte de arriba. En el teléfono los totales siguen en la barra de abajo, como siempre.
+Ver también: Importar el detalle de una compra desde un archivo CSV; Errores y códigos repetidos al importar una compra.
+
+## Importar el detalle de una compra desde un archivo CSV
+Ruta: Menú > INVENTARIO > COMPRA, abra una compra ya guardada (la importación se hace al editar, no en la compra nueva).
+1. Al guardar una compra nueva, en la pestaña **Archivos** queda una plantilla llamada ejemplo_(fecha).csv. Descárguela y llénela con las columnas: Codigo, Nombre, Cantidad, Costo, Precio, Lote, Vencimiento, IVA, ISC, Categoria (el separador de columnas depende de la configuración de su empresa).
+2. En la pestaña **Archivos** suba su archivo .csv.
+3. En la tarjeta **Detalle**, elija el archivo en la lista que está junto al botón **Importar**. La lista muestra los archivos .csv subidos en **Archivos**, del más nuevo al más antiguo, con su fecha. Si acaba de subir uno y no aparece, pulse el botón de actualizar que está a la derecha de la lista.
+4. Presione **Importar** (o **Guardar**).
+5. El sistema primero revisa el archivo. Si está bien, lo importa por lotes de 200 filas y muestra la ventana **Importando archivo** con una barra de avance.
+6. Al terminar, la compra se guarda sola con el detalle importado.
+Notas: no cierre ni recargue la página mientras avanza la barra, sobre todo con archivos grandes (más de 1000 líneas). Si el código de una fila ya existe en el inventario, se usa ese producto. Si elige otro archivo, debe importar de nuevo.
+Ver también: Errores y códigos repetidos al importar una compra; Registrar una compra de mercadería.
+
+## Errores y códigos repetidos al importar una compra
+Ruta: Menú > INVENTARIO > COMPRA > botón **Importar** del detalle.
+Antes de importar, el sistema revisa el archivo .csv. Si encuentra errores, muestra la fila de cada error y no importa nada. Se revisa:
+- Que estén todas las columnas de la plantilla.
+- Filas sin código ni nombre.
+- Cantidad, Costo, Precio, IVA o ISC que no sean números o que sean negativos.
+- Fechas de Vencimiento inválidas. Formatos aceptados: AAAA-MM-DD, AAAA/MM/DD, DD/MM/AAAA y DD-MM-AAAA.
+Corrija el archivo, súbalo otra vez en **Archivos** y presione **Importar**.
+Códigos repetidos: si un mismo código aparece varias veces en el archivo, se abre una ventana con la lista de códigos repetidos, su nombre y las filas donde aparecen. Elija:
+- **Omitir repetidos**: solo se importa la primera fila de cada código.
+- **Generar codigo nuevo**: la primera fila conserva el código; las demás se crean como productos nuevos con código automático del sistema.
+- **Cancelar**: no se importa nada.
+Notas: un código que ya existe en el inventario no cuenta como repetido; se usa ese producto. Si la importación se detiene por un error, el aviso indica la fila; al importar de nuevo se reemplaza todo el detalle.
+Ver también: Importar el detalle de una compra desde un archivo CSV.
 
 ## Qué contiene el menú ADM TALLER
 Ruta: Menú > ADM TALLER.

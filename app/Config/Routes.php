@@ -977,6 +977,12 @@ $routes->match(['get', 'post'], 'app_inventory_inputunpost/index', 'app_inventor
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/index/(:any)', 'app_inventory_inputunpost::index');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/add_masinformacion', 'app_inventory_inputunpost::add_masinformacion');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/add_masinformacion/(:any)', 'app_inventory_inputunpost::add_masinformacion');
+$routes->match(['get', 'post'], 'app_inventory_inputunpost/listarArchivosImportacion', 'app_inventory_inputunpost::listarArchivosImportacion');
+$routes->match(['get', 'post'], 'app_inventory_inputunpost/listarArchivosImportacion/(:any)', 'app_inventory_inputunpost::listarArchivosImportacion');
+$routes->match(['get', 'post'], 'app_inventory_inputunpost/validarArchivoImportacion', 'app_inventory_inputunpost::validarArchivoImportacion');
+$routes->match(['get', 'post'], 'app_inventory_inputunpost/validarArchivoImportacion/(:any)', 'app_inventory_inputunpost::validarArchivoImportacion');
+$routes->match(['get', 'post'], 'app_inventory_inputunpost/importarArchivoLote', 'app_inventory_inputunpost::importarArchivoLote');
+$routes->match(['get', 'post'], 'app_inventory_inputunpost/importarArchivoLote/(:any)', 'app_inventory_inputunpost::importarArchivoLote');
 $routes->match(['get', 'post'], 'app_inventory_cost_adjustment/viewRegisterFormatoDB', 'app_inventory_cost_adjustment::viewRegisterFormatoDB');
 $routes->match(['get', 'post'], 'app_inventory_cost_adjustment/viewRegisterFormatoDB/(:any)', 'app_inventory_cost_adjustment::viewRegisterFormatoDB');
 $routes->match(['get', 'post'], 'app_inventory_cost_adjustment/searchTransactionMaster', 'app_inventory_cost_adjustment::searchTransactionMaster');

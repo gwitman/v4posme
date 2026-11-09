@@ -1,4 +1,4 @@
-<div class="pv2 pinv pinv-compra pv2-has-mbar">
+<div class="pv2 pinv pinv-compra pinv-inputunpost pv2-has-mbar">
 
 	<!-- encabezado y acciones -->
 	<div class="pv2-card pv2-header">
@@ -31,7 +31,7 @@
 			<div class="col-xs-12 col-md-8">
 
 				<!-- documento -->
-				<div class="pv2-card">
+				<div class="pv2-card pinv-card-doc">
 					<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-file"></i></span> Documento</p>
 
 					<!--tab menu-->
@@ -93,9 +93,9 @@
 											if($objListCurrency)
 											foreach($objListCurrency as $currency){
 												if($currency->currencyID == $objTM->currencyID )
-													echo "<option value='".$currency->currencyID."' selected >".$currency->name."</option>";
+													echo "<option value='".$currency->currencyID."' data-simbol='".htmlspecialchars((string)$currency->simbol,ENT_QUOTES)."' selected >".$currency->name."</option>";
 												else
-													echo "<option value='".$currency->currencyID."'  >".$currency->name."</option>";
+													echo "<option value='".$currency->currencyID."' data-simbol='".htmlspecialchars((string)$currency->simbol,ENT_QUOTES)."'  >".$currency->name."</option>";
 												$count++;
 											}
 											?>
@@ -159,7 +159,7 @@
 				<!-- /documento -->
 
 				<!-- proveedor -->
-				<div class="pv2-card">
+				<div class="pv2-card pinv-card-prov">
 					<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-user"></i></span> Proveedor</p>
 					<div class="row">
 						<div class="col-xs-12 col-sm-6 form-group">
@@ -239,23 +239,23 @@
 					<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-calculate"></i></span> Resumen</p>
 					<div class="pinv-summary-row">
 						<label for="txtSubTotal">Sub total</label>
-						<input type="text" id="txtSubTotal" name="txtSubTotal" readonly class="form-control" value="<?php echo floor($objTM->subAmount * 100) / 100; ?>" style="text-align:right"/>
+						<input type="text" id="txtSubTotal" name="txtSubTotal" readonly class="form-control" value="<?php echo number_format(floor($objTM->subAmount * 100) / 100,2,".",","); ?>" style="text-align:right"/>
 					</div>
 					<div class="pinv-summary-row">
 						<label for="txtDiscount">Descuento</label>
-						<input type="text" id="txtDiscount" name="txtDiscount"  class="form-control" value="<?php echo floor($objTM->discount * 100) / 100;  ?>" style="text-align:right"/>
+						<input type="text" id="txtDiscount" name="txtDiscount"  class="form-control" value="<?php echo number_format(floor($objTM->discount * 100) / 100,2,".",",");  ?>" style="text-align:right"/>
 					</div>
 					<div class="pinv-summary-row">
 						<label for="txtIva">IVA</label>
-						<input type="text" id="txtIva" name="txtIva"  class="form-control" readonly="readonly" value="<?php echo floor($objTM->tax1 * 100) / 100;  ?>" style="text-align:right"/>
+						<input type="text" id="txtIva" name="txtIva"  class="form-control" readonly="readonly" value="<?php echo number_format(floor($objTM->tax1 * 100) / 100,2,".",",");  ?>" style="text-align:right"/>
 					</div>
 					<div class="pinv-summary-row <?php  echo $pantallaCompra_hiddenSummaryISC; ?>">
 						<label for="txtIsc">ISC</label>
-						<input type="text" id="txtIsc" name="txtIsc"  class="form-control" readonly="readonly" value="<?php echo floor($objTM->tax2 * 100) / 100;  ?>" style="text-align:right"/>
+						<input type="text" id="txtIsc" name="txtIsc"  class="form-control" readonly="readonly" value="<?php echo number_format(floor($objTM->tax2 * 100) / 100,2,".",",");  ?>" style="text-align:right"/>
 					</div>
 					<div class="pv2-total">
-						<label class="pv2-label" for="txtTotal">Total</label>
-						<input type="text" id="txtTotal" name="txtTotal" readonly value="<?php echo floor($objTM->amount * 100) / 100;  ?>" style="text-align:right"/>
+						<label class="pv2-label" for="txtTotal">Total <span class="pinv-moneda-simbolo"></span></label>
+						<div class="pinv-total-valor"><span class="pinv-moneda-simbolo"></span><input type="text" id="txtTotal" name="txtTotal" readonly value="<?php echo number_format(floor($objTM->amount * 100) / 100,2,".",",");  ?>" style="text-align:right"/></div>
 					</div>
 				</div>
 				<!-- /resumen -->
@@ -264,13 +264,20 @@
 		</div>
 
 		<!-- detalle del movimiento-->
-		<div class="pv2-card">
+		<div class="pv2-card pinv-card-detalle">
 			<div class="pv2-detail-head">
 				<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-list-2"></i></span> Detalle <span class="pinv-count">0</span></p>
 				<div class="pv2-actions">
 					<span class="pinv-import">
 						<a href="#" class="btn btn-default btn-sm" id="btnImportDetailTransaction" ><i class="icon16 i-upload"></i> Importar</a>
-						<input class="form-control"  type="text"  name="txtFileImport" id="txtFileImport" value=".csv" title="Extension del archivo a importar">
+						<!-- archivos .csv de la pestana Archivos, del mas nuevo al mas antiguo (se llena por AJAX: listarArchivosImportacion) -->
+						<select class="form-control" name="txtFileImport" id="txtFileImport" autocomplete="off" title="Archivo .csv subido en Archivos">
+							<option value=".csv">Seleccione archivo .csv</option>
+						</select>
+						<a href="#" class="btn btn-default btn-sm" id="btnImportRefrescarArchivos" title="Actualizar lista de archivos"><i class="icon16 i-loop-4"></i></a>
+						<!-- importacion por lotes: 1 = el detalle ya se importo; modo de codigos repetidos: omitir | nuevo -->
+						<input type="hidden" name="txtFileImportProcesado" id="txtFileImportProcesado" value="0">
+						<input type="hidden" name="txtImportModoRepetidos" id="txtImportModoRepetidos" value="">
 					</span>
 					<a href="#" class="btn btn-default btn-sm" id="btnPrinterDetailTransaction" ><i class="icon16 i-print"></i> Imprimir</a>
 					<a href="#" class="btn btn-default btn-sm" id="btnClearCache" ><i class="icon16 i-loop-4"></i> Limpiar cache</a>
@@ -321,6 +328,58 @@
 
 	<div id="modalDialogOpenPrimter" title="Formato de Impresion" class="dialog">
 		<p>Seleccione el formato que desea imprimir la factura</p>
+	</div>
+
+	<!-- Importacion CSV: aviso de codigos repetidos -->
+	<div id="modalDialogImportRepetidos" title="Productos con codigos repetidos" class="dialog">
+		<div class="pimp">
+			<div class="pimp-head pimp-head-warn">
+				<div class="pimp-icon">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+				</div>
+				<div class="pimp-head-text">
+					<p class="pimp-title">Codigos repetidos en el archivo</p>
+					<p class="pimp-sub" id="lblImportRepetidosResumen"></p>
+				</div>
+			</div>
+			<div class="pimp-body">
+				<div id="divImportRepetidosLista" class="pimp-lista"></div>
+				<div class="pimp-opciones">
+					<div class="pimp-opcion"><b>Omitir repetidos</b>Se importa solo la primera fila de cada codigo.</div>
+					<div class="pimp-opcion"><b>Generar codigo nuevo</b>Las filas repetidas se crean como productos nuevos con codigo automatico.</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Importacion CSV: progreso por lotes -->
+	<div id="modalDialogImportProgreso" title="Importando archivo" class="dialog">
+		<div class="pimp" id="divImportProgreso">
+			<div class="pimp-head">
+				<div class="pimp-icon">
+					<svg class="pimp-ico-subir" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+					<svg class="pimp-ico-ok" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+				</div>
+				<div class="pimp-head-text">
+					<p class="pimp-title" id="lblImportTitulo">Importando productos</p>
+					<p class="pimp-sub" id="lblImportArchivo"></p>
+				</div>
+				<div class="pimp-pct" id="lblImportPorcentaje">0%</div>
+			</div>
+			<div class="pimp-body">
+				<div class="pimp-bar"><div id="barImportProgreso" class="pimp-bar-fill" style="width:0%"></div></div>
+				<p class="pimp-status" id="lblImportProgreso">Preparando...</p>
+				<div class="pimp-stats">
+					<div class="pimp-stat pimp-stat-ok"><span id="lblImportInsertadas">0</span><small>Lineas</small></div>
+					<div class="pimp-stat pimp-stat-new"><span id="lblImportNuevos">0</span><small>Productos nuevos</small></div>
+					<div class="pimp-stat pimp-stat-skip"><span id="lblImportOmitidas">0</span><small>Omitidas</small></div>
+				</div>
+				<div class="pimp-note">
+					<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+					No cierre ni recargue la pagina hasta que termine.
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<!-- barra inferior (telefono) -->

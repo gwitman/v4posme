@@ -748,9 +748,10 @@
 		
 		iva				= 0;
 		isc				= 0;
-		discount		= fnFormatFloat(fnFormatNumber(discount,numberDecimal));
-		$("#txtDiscount").val(discount);
-		
+		//El descuento puede venir con comas de miles: se quitan antes de convertirlo
+		discount		= fnFormatFloat(fnFormatNumber(String(discount).replace(/,/g,""),numberDecimal));
+		if(isNaN(discount)) discount = 0;
+
 		for(var i = 0; i < objTableDetailTransaction.fnGetData().length; i++){
 			var row 		= objTableDetailTransaction.fnGetData()[i];
 			var quantity 	= row[columnIndexCantidad];
@@ -778,10 +779,12 @@
 		subtotal		= fnFormatFloat(fnFormatNumber(subtotal ,numberDecimalSummary));
 		total			= parseInt(((subtotal + iva + isc) - discount) * 100) / 100;
 		total			= fnFormatFloat(fnFormatNumber(total,numberDecimalSummary));
-		$("#txtSubTotal").val(subtotal);
-		$("#txtTotal").val(total);	
-		$("#txtIsc").val(isc);		
-		$("#txtIva").val(iva);				
+		//Resumen visual: miles con coma y dos decimales (el servidor quita las comas con helper_StringToNumber)
+		$("#txtDiscount").val(fnResumenDosDecimales(discount));
+		$("#txtSubTotal").val(fnResumenDosDecimales(subtotal));
+		$("#txtTotal").val(fnResumenDosDecimales(total));
+		$("#txtIsc").val(fnResumenDosDecimales(isc));
+		$("#txtIva").val(fnResumenDosDecimales(iva));
 		//fnShowNotification("TOTAL: C$ " +  $.number(total) ,"success");
 		
 	}

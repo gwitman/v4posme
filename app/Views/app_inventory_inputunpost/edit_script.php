@@ -354,13 +354,83 @@
 		$(document).on("click","#btnAcept",function(){
 				$( "#form-new-transaction" ).attr("method","POST");
 				$( "#form-new-transaction" ).attr("action","<?php echo base_url(); ?>/app_inventory_inputunpost/save/edit");
-				
+
+				//Campo de archivo vacio = sin importacion
+				if($.trim($("#txtFileImport").val()) == "")
+					$("#txtFileImport").val(".csv");
+
 				if(validateForm()){
+
+					//Si hay un archivo .csv: validar, importar por lotes y luego guardar
+					if(fnImportHayArchivo() && $("#txtFileImportProcesado").val() != "1")
+					{
+						fnImportValidarArchivo();
+						return;
+					}
+
 					fnWaitOpen();
 					$( "#form-new-transaction" ).submit();
 				}
-				
-		});	
+
+		});
+
+		//Importar: mismo flujo que guardar con archivo (validar, lotes, guardar)
+		$(document).on("click","#btnImportDetailTransaction",function(e){
+				e.preventDefault();
+				if(!fnImportHayArchivo())
+				{
+					fnShowNotification("Seleccione el archivo .csv subido en Archivos","error",8000);
+					return;
+				}
+				$("#txtFileImportProcesado").val("0");
+				$("#btnAcept").trigger("click");
+		});
+
+		//Si cambia el archivo se debe volver a importar
+		$(document).on("change","#txtFileImport",function(){
+				$("#txtFileImportProcesado").val("0");
+				$("#txtImportModoRepetidos").val("");
+		});
+
+		//Recargar el combo de archivos (por si se subio uno nuevo en Archivos)
+		$(document).on("click","#btnImportRefrescarArchivos",function(e){
+				e.preventDefault();
+				fnImportCargarArchivos(true);
+		});
+		fnImportCargarArchivos(false);
+
+		//Dialogo de codigos repetidos (3 opciones)
+		//(pimp-dialog: estilo moderno definido en resumen_flotante.php; el encabezado va dentro del contenido)
+		$("#modalDialogImportRepetidos").dialog({
+				autoOpen	: false,
+				modal		: true,
+				width		: Math.min(600, $(window).width() - 32),
+				dialogClass	: "dialog pimp-dialog",
+				open		: fnImportDialogoAbierto,
+				buttons		: [
+					{ text : "Cancelar", "class" : "pimp-btn", click : function(){
+						$(this).dialog("close");
+					}},
+					{ text : "Omitir repetidos", "class" : "pimp-btn pimp-btn-warn", click : function(){
+						$(this).dialog("close");
+						fnImportIniciarLotes("omitir");
+					}},
+					{ text : "Generar codigo nuevo", "class" : "pimp-btn pimp-btn-primary", click : function(){
+						$(this).dialog("close");
+						fnImportIniciarLotes("nuevo");
+					}}
+				]
+		});
+
+		//Dialogo de progreso de la importacion (sin boton cerrar: no se debe interrumpir)
+		$("#modalDialogImportProgreso").dialog({
+				autoOpen		: false,
+				modal			: true,
+				width			: Math.min(480, $(window).width() - 32),
+				dialogClass		: "dialog pimp-dialog",
+				closeOnEscape	: false,
+				open			: fnImportDialogoAbierto
+		});
 		
 		$(document).on("change","#txtCurrencyID",function(){
 			objTableDetailTransaction.fnClearTable();
@@ -710,6 +780,262 @@
 		return result;
 	}
 
+	/////////////////////////////////////////////
+	//Importacion de archivo .csv por lotes
+	/////////////////////////////////////////////
+	var importTamanoLote = 200; //filas por peticion: cada una termina antes del timeout del servidor
+
+	//Hay archivo cuando el campo tiene un nombre distinto a la extension por defecto
+	function fnImportHayArchivo()
+	{
+		var archivo = $.trim($("#txtFileImport").val());
+		return archivo != "" && archivo != ".csv";
+	}
+
+	//Llena el combo con los .csv del documento (el servidor los devuelve del mas nuevo al mas antiguo).
+	//Conserva la seleccion actual si el archivo sigue existiendo.
+	function fnImportCargarArchivos(avisar)
+	{
+		var $combo 		= $("#txtFileImport");
+		var actual 		= $combo.val();
+		$.ajax({
+			cache 		: false,
+			dataType 	: "json",
+			type 		: "POST",
+			url 		: "<?php echo base_url(); ?>/app_inventory_inputunpost/listarArchivosImportacion",
+			data 		: {
+				transactionID 		: <?php echo $objTM->transactionID;?>,
+				transactionMasterID : <?php echo $objTM->transactionMasterID;?>
+			},
+			success 	: function(json){
+				//Error
+				if(json.error)
+				{
+					if(avisar) fnShowNotification(fnImportEscapar(json.message),"error",8000);
+					return;
+				}
+
+				$combo.find("option").not("[value='.csv']").remove();
+
+				//Sin datos
+				if(!json.data || json.data.length == 0)
+				{
+					$combo.val(".csv");
+					if(avisar) fnShowNotification("No hay archivos .csv en Archivos","error",6000);
+					return;
+				}
+
+				//Con datos
+				$.each(json.data,function(i,archivo){
+					$combo.append($("<option></option>").val(archivo.nombre).text(archivo.nombre + "  (" + archivo.fecha + ")"));
+				});
+				$combo.val($combo.find("option[value='" + String(actual).replace(/'/g,"\\'") + "']").length ? actual : ".csv");
+				if(avisar) fnShowNotification(json.data.length + " archivo(s) .csv encontrados","success",4000);
+			},
+			error 		: function(){
+				if(avisar) fnShowNotification("No se pudo obtener la lista de archivos","error",8000);
+			}
+		});
+	}
+
+	//Parametros comunes de las peticiones de importacion
+	function fnImportParametros()
+	{
+		return {
+			transactionID 		: <?php echo $objTM->transactionID;?>,
+			transactionMasterID : <?php echo $objTM->transactionMasterID;?>,
+			fileName 			: $.trim($("#txtFileImport").val())
+		};
+	}
+
+	//Paso 1: validar el archivo sin grabar (columnas, numeros, fechas y codigos repetidos)
+	function fnImportValidarArchivo()
+	{
+		fnWaitOpen();
+		$.ajax({
+			cache 		: false,
+			dataType 	: 'json',
+			type 		: 'POST',
+			url 		: "<?php echo base_url(); ?>/app_inventory_inputunpost/validarArchivoImportacion",
+			data 		: fnImportParametros(),
+			success 	: function(json){
+				fnWaitClose();
+
+				//Error
+				if(json.error === true)
+				{
+					fnShowNotification(fnImportEscapar(json.message),"error",15000);
+					return;
+				}
+
+				//Sin datos
+				if(!json.data || json.data.filasConDatos == 0)
+				{
+					fnShowNotification("El archivo no tiene filas para importar","error",15000);
+					return;
+				}
+
+				//Con datos: errores de contenido bloquean la importacion
+				if(json.data.cantidadErrores > 0)
+				{
+					var mensaje = "El archivo tiene " + json.data.cantidadErrores + " error(es):<br/>" + json.data.errores.slice(0,10).map(fnImportEscapar).join("<br/>");
+					if(json.data.cantidadErrores > 10)
+						mensaje = mensaje + "<br/>...";
+					fnShowNotification(mensaje,"error",30000);
+					return;
+				}
+
+				//Codigos repetidos: preguntar si se omiten o se genera codigo nuevo
+				if(json.data.cantidadCodigosRepetidos > 0)
+				{
+					fnImportMostrarRepetidos(json.data);
+					return;
+				}
+
+				fnImportIniciarLotes("");
+			},
+			error 		: function(xhr){
+				fnWaitClose();
+				fnShowNotification("No se pudo validar el archivo (error " + xhr.status + ")","error",15000);
+			}
+		});
+	}
+
+	//Muestra la lista de codigos repetidos y las opciones
+	function fnImportMostrarRepetidos(data)
+	{
+		$("#lblImportRepetidosResumen").html(
+			"<b>" + fnImportMiles(data.cantidadCodigosRepetidos) + "</b> codigo(s) repetidos &middot; " +
+			"<b>" + fnImportMiles(data.cantidadFilasRepetidas) + "</b> fila(s) de mas. ¿Que desea hacer?"
+		);
+
+		var html = "<table class='pimp-tabla'><thead><tr><th>Codigo</th><th>Nombre</th><th>Filas</th></tr></thead><tbody>";
+		for(var i = 0; i < data.repetidos.length; i++)
+		{
+			var r 		= data.repetidos[i];
+			var filas 	= "";
+			for(var j = 0; j < r.filas.length; j++)
+				filas += "<span class='pimp-chip'>" + fnImportEscapar(r.filas[j]) + "</span>";
+			html += "<tr><td class='pimp-codigo'>" + fnImportEscapar(r.codigo) + "</td><td>" + fnImportEscapar(r.nombre) + "</td><td>" + filas + "</td></tr>";
+		}
+		if(data.cantidadCodigosRepetidos > data.repetidos.length)
+			html += "<tr><td colspan='3' class='pimp-mas'>... y " + fnImportMiles(data.cantidadCodigosRepetidos - data.repetidos.length) + " codigo(s) mas</td></tr>";
+		html += "</tbody></table>";
+
+		$("#divImportRepetidosLista").html(html);
+		$("#modalDialogImportRepetidos").dialog("open");
+	}
+
+	//Paso 2: importar el archivo en lotes consecutivos
+	function fnImportIniciarLotes(modoRepetidos)
+	{
+		$("#txtImportModoRepetidos").val(modoRepetidos);
+		$("#divImportProgreso").removeClass("pimp-terminado");
+		$("#lblImportTitulo").text("Importando productos");
+		$("#lblImportArchivo").text($.trim($("#txtFileImport").val()));
+		$("#lblImportProgreso").text("Preparando...");
+		fnImportPintarAvance(0, {insertadas:0, omitidas:0, productosNuevos:0});
+		$("#modalDialogImportProgreso").dialog("open");
+		fnImportEnviarLote(0, modoRepetidos, {insertadas:0, omitidas:0, productosNuevos:0});
+	}
+
+	function fnImportEnviarLote(offset, modoRepetidos, acumulado)
+	{
+		var parametros 				= fnImportParametros();
+		parametros.offset 			= offset;
+		parametros.limite 			= importTamanoLote;
+		parametros.modoRepetidos 	= modoRepetidos;
+		parametros.txtProviderID 	= $("#txtProviderID").val();
+		parametros.txtWarehouseID 	= $("#txtWarehouseID").val();
+		parametros.txtCurrencyID 	= $("#txtCurrencyID").val();
+
+		$.ajax({
+			cache 		: false,
+			dataType 	: 'json',
+			type 		: 'POST',
+			url 		: "<?php echo base_url(); ?>/app_inventory_inputunpost/importarArchivoLote",
+			data 		: parametros,
+			success 	: function(json){
+
+				//Error: se detiene; al reintentar se reemplaza todo el detalle (offset 0)
+				if(json.error === true)
+				{
+					$("#modalDialogImportProgreso").dialog("close");
+					fnShowNotification("Error importando a partir de la fila " + (offset + 2) + ": " + fnImportEscapar(json.message),"error",30000);
+					return;
+				}
+
+				//Sin datos
+				if(!json.data)
+				{
+					$("#modalDialogImportProgreso").dialog("close");
+					fnShowNotification("El servidor no devolvio el avance de la importacion","error",15000);
+					return;
+				}
+
+				//Con datos: acumular y mostrar avance
+				acumulado.insertadas 		+= json.data.insertadas;
+				acumulado.omitidas 			+= json.data.omitidas;
+				acumulado.productosNuevos 	+= json.data.productosNuevos;
+
+				var porcentaje = json.data.total == 0 ? 100 : Math.round((json.data.siguiente * 100) / json.data.total);
+				fnImportPintarAvance(porcentaje, acumulado);
+				$("#lblImportProgreso").text("Procesadas " + fnImportMiles(json.data.siguiente) + " de " + fnImportMiles(json.data.total) + " filas");
+
+				if(!json.data.terminado)
+				{
+					fnImportEnviarLote(json.data.siguiente, modoRepetidos, acumulado);
+					return;
+				}
+
+				//Paso 3: detalle importado, guardar el documento sin reprocesar el archivo
+				//La ventana queda abierta en estado "completado" mientras se guarda (la pagina se recarga al terminar)
+				$("#divImportProgreso").addClass("pimp-terminado");
+				$("#lblImportTitulo").text("Importacion completa");
+				$("#lblImportProgreso").text("Guardando la compra...");
+				fnShowNotification(
+					"Importacion completa: " + fnImportMiles(acumulado.insertadas) + " linea(s), " +
+					fnImportMiles(acumulado.productosNuevos) + " producto(s) nuevo(s), " +
+					fnImportMiles(acumulado.omitidas) + " omitida(s). Guardando...","success",15000
+				);
+				$("#txtFileImportProcesado").val("1");
+				$("#form-new-transaction").submit();
+			},
+			error 		: function(xhr){
+				$("#modalDialogImportProgreso").dialog("close");
+				fnShowNotification("Error de conexion importando a partir de la fila " + (offset + 2) + " (error " + xhr.status + "). Intente de nuevo.","error",30000);
+			}
+		});
+	}
+
+	//Actualiza porcentaje, barra y contadores de la ventana de progreso
+	function fnImportPintarAvance(porcentaje, acumulado)
+	{
+		$("#barImportProgreso").css("width", porcentaje + "%");
+		$("#lblImportPorcentaje").text(porcentaje + "%");
+		$("#lblImportInsertadas").text(fnImportMiles(acumulado.insertadas));
+		$("#lblImportNuevos").text(fnImportMiles(acumulado.productosNuevos));
+		$("#lblImportOmitidas").text(fnImportMiles(acumulado.omitidas));
+	}
+
+	//Al abrir una ventana de importacion: fondo oscuro difuminado propio (el overlay de jQuery UI esta fuera del dialogo)
+	function fnImportDialogoAbierto()
+	{
+		$(".ui-widget-overlay").last().addClass("pimp-overlay");
+	}
+
+	//Formato de miles para los contadores
+	function fnImportMiles(numero)
+	{
+		return Number(numero).toLocaleString("en-US");
+	}
+
+	//Evita inyectar HTML con los textos del archivo
+	function fnImportEscapar(texto)
+	{
+		return $("<div>").text(texto == null ? "" : texto).html();
+	}
+
 	function fnClearCreditLine()
 	{
 		$("#txtCreditLineID").val("");
@@ -878,9 +1204,10 @@
 		var iva			= 0;
 		var isc			= 0;
 		
-		discount		= fnFormatFloat(fnFormatNumber(discount,numberDecimal));
-		$("#txtDiscount").val(discount);
-		
+		//El descuento puede venir con comas de miles: se quitan antes de convertirlo
+		discount		= fnFormatFloat(fnFormatNumber(String(discount).replace(/,/g,""),numberDecimal));
+		if(isNaN(discount)) discount = 0;
+
 		for(var i = 0; i < objTableDetailTransaction.fnGetData().length; i++){
 			var row 		= objTableDetailTransaction.fnGetData()[i];
 			console.log(row);
@@ -897,10 +1224,12 @@
 		subtotal		= fnFormatFloat(fnFormatNumber(subtotal ,numberDecimalSummary));
 		total			= parseInt(((subtotal + iva + isc) - discount) * 100) / 100;
 		total			= fnFormatFloat(fnFormatNumber(total,numberDecimalSummary));
-		$("#txtSubTotal").val(subtotal);
-		$("#txtTotal").val(total);
-		$("#txtIsc").val(isc);		
-		$("#txtIva").val(iva);	
+		//Resumen visual: miles con coma y dos decimales (el servidor quita las comas con helper_StringToNumber)
+		$("#txtDiscount").val(fnResumenDosDecimales(discount));
+		$("#txtSubTotal").val(fnResumenDosDecimales(subtotal));
+		$("#txtTotal").val(fnResumenDosDecimales(total));
+		$("#txtIsc").val(fnResumenDosDecimales(isc));
+		$("#txtIva").val(fnResumenDosDecimales(iva));
 		
 		//fnShowNotification("TOTAL: C$ " +  $.number(total) ,"success");
 	}
