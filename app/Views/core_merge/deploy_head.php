@@ -32,6 +32,13 @@
 					.dpl-option input[type=checkbox] { width:20px; height:20px; margin:2px 0 0; flex:0 0 20px; }
 					.dpl-option-title { font-weight:700; font-size:14px; margin:0; }
 					.dpl-option-desc { font-size:12px; color:var(--abv2-muted); margin:2px 0 0; }
+					.dpl-option.is-danger .dpl-option-title { color:#c0392b; }
+					.dpl-option.is-danger.is-on { border-color:#e74c3c; background:#fdecea; }
+					/* pestañas principales: Sincronización / Limpieza de servidor */
+					.dpl-maintabs { display:flex; gap:8px; margin:0 0 14px; flex-wrap:wrap; }
+					.dpl-maintab { flex:1 1 180px; min-height:44px; border:1px solid var(--abv2-border); border-radius:10px; background:#fff; font-weight:700; font-size:14px; color:var(--abv2-muted); cursor:pointer; }
+					.dpl-maintab.is-active { border-color:var(--abv2-accent); background:var(--abv2-accent-bg); color:var(--abv2-accent); }
+					.dpl-table tr.is-locked td { color:var(--abv2-muted); }
 					.dpl-sub { border-left:3px solid var(--abv2-accent-bg); padding:4px 0 4px 12px; margin:-2px 0 12px; }
 					.dpl-scroll { max-height:340px; overflow:auto; border:1px solid var(--abv2-border); border-radius:8px; }
 					.dpl-table { width:100%; border-collapse:collapse; }

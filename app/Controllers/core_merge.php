@@ -2326,6 +2326,62 @@ class core_merge extends _BaseController {
 	}
 
 	/**
+	 * Limpieza de servidor: el agente de la compañía elegida lista las instalaciones
+	 * posMe de su hosting y cuánto ocupa cada categoría. No borra nada.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	function deploy_cleanup_scan()
+	{
+		try
+		{
+			$dataSession = $this->deploy_guard();
+			$companyKey  = $this->deploy_post("company");
+			$categories  = json_decode((string)$this->request->getPost("categories"), true);
+			$profile     = $this->core_web_deploy->getProfileSecret($dataSession["user"]->companyID, $companyKey);
+			$result      = $this->core_web_deploy->cleanupScan($profile, is_array($categories) ? $categories : array());
+			return $this->deploy_json($result);
+		}
+		catch(\Throwable $ex)
+		{
+			return $this->deploy_jsonError($ex);
+		}
+	}
+
+	/**
+	 * Limpieza de servidor: borra las categorías elegidas en una instalación del hosting
+	 * del agente. Trabaja por tramos de tiempo: la pantalla repite mientras complete = false.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	function deploy_cleanup_apply()
+	{
+		try
+		{
+			$dataSession  = $this->deploy_guard();
+			$companyKey   = $this->deploy_post("company");
+			$installation = $this->deploy_post("installation");
+			$categories   = json_decode((string)$this->request->getPost("categories"), true);
+
+			// Confirmación escrita obligatoria: la limpieza no tiene reversa
+			if($this->deploy_post("confirm") !== "LIMPIAR")
+			throw new \Exception("Escriba LIMPIAR para confirmar.");
+			if(!is_array($categories) || !$categories)
+			throw new \Exception("Seleccione al menos una categoría.");
+
+			$profile = $this->core_web_deploy->getProfileSecret($dataSession["user"]->companyID, $companyKey);
+			$secrets = $this->core_web_deploy->secretsOf($profile);
+			$result  = $this->core_web_deploy->cleanupApply($profile, $installation, $categories);
+			$this->core_web_deploy->cleanupLog("agente ".$companyKey." | ".$installation." | ".implode(",", $categories)." | ".($result["complete"] ? "completa" : "parcial")." | ".json_encode($result["categories"])." | por ".$dataSession["user"]->nickname, $secrets);
+			return $this->deploy_json($result);
+		}
+		catch(\Throwable $ex)
+		{
+			return $this->deploy_jsonError($ex);
+		}
+	}
+
+	/**
 	 * Descarga el informe (log) de un despliegue.
 	 *
 	 * @return \CodeIgniter\HTTP\ResponseInterface

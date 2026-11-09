@@ -8,6 +8,7 @@ use App\Libraries\core_web_deploy\core_deploy_files;
 use App\Libraries\core_web_deploy\core_deploy_package;
 use App\Libraries\core_web_deploy\core_deploy_schema;
 use App\Libraries\core_web_deploy\core_deploy_data;
+use App\Libraries\core_web_deploy\core_deploy_cleanup;
 
 /**
  * Agente de despliegue remoto de posMe.
@@ -58,6 +59,10 @@ class core_deploy_agent extends _BaseController
     function data_restore()    { return $this->handle('data_restore', true); }
     /** Devuelve el log de un despliegue. */
     function log()             { return $this->handle('log', false); }
+    /** Limpieza: lista las instalaciones vecinas y lo que se liberaría (no borra). */
+    function cleanup_scan()    { return $this->handle('cleanup_scan', false); }
+    /** Limpieza: borra las categorías pedidas de una instalación (por tramos de tiempo). */
+    function cleanup_apply()   { return $this->handle('cleanup_apply', false); }
 
     /**
      * Flujo común: configuración → HTTPS → bloqueo por fallos → firma → candado → acción.
@@ -513,5 +518,51 @@ class core_deploy_agent extends _BaseController
         $file = $this->deployDir() . '/log.txt';
         $text = is_file($file) ? file_get_contents($file) : '';
         return ['log' => substr($text, -20000)];
+    }
+
+    /**
+     * Limpieza: instalaciones posMe de la carpeta padre y lo que ocuparía cada categoría.
+     * Payload: categories (lista).
+     *
+     * @return array ['parent', 'self', 'installations' => [['name', 'self', 'locked', 'stats']]]
+     */
+    private function action_cleanup_scan()
+    {
+        $categories = core_deploy_cleanup::categories(isset($this->payload['categories']) ? $this->payload['categories'] : []);
+        $deadline   = microtime(true) + core_deploy_cleanup::TIME_BUDGET;
+        $root       = realpath(ROOTPATH);
+        $result     = ['parent' => basename(dirname($root)), 'self' => basename($root), 'installations' => []];
+        foreach (core_deploy_cleanup::installations(ROOTPATH) as $item) {
+            $result['installations'][] = [
+                'name'   => $item['name'],
+                'self'   => $item['self'],
+                'locked' => core_deploy_cleanup::isLocked($item['path']),
+                'stats'  => core_deploy_cleanup::scan($item['path'], $categories, $deadline),
+            ];
+        }
+        return $result;
+    }
+
+    /**
+     * Limpieza: borra el contenido de las categorías en una instalación vecina (o la propia).
+     * Payload: installation (nombre de carpeta), categories (lista).
+     * Si se agota el tiempo devuelve complete = false y la consola vuelve a llamar.
+     *
+     * @return array ['installation', 'complete', 'categories']
+     */
+    private function action_cleanup_apply()
+    {
+        $categories = core_deploy_cleanup::categories(isset($this->payload['categories']) ? $this->payload['categories'] : []);
+        if (!$categories) {
+            throw new \Exception('No se indicaron categorías de limpieza.');
+        }
+        $item = core_deploy_cleanup::findInstallation(ROOTPATH, isset($this->payload['installation']) ? $this->payload['installation'] : '');
+        if (core_deploy_cleanup::isLocked($item['path'])) {
+            throw new \Exception('La instalación ' . $item['name'] . ' tiene un despliegue en curso; no se limpia.');
+        }
+        $result = core_deploy_cleanup::apply($item['path'], $categories, microtime(true) + core_deploy_cleanup::TIME_BUDGET);
+        $result['installation'] = $item['name'];
+        $this->log_line('cleanup_apply', $item['name'] . ' ' . json_encode($result['categories']));
+        return $result;
     }
 }

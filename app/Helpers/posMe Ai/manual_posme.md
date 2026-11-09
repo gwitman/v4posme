@@ -1627,7 +1627,7 @@ Ver también: Despliegue remoto: preparar la consola y el agente (primera vez); 
 ## Despliegue remoto: preparar la consola y el agente (primera vez)
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 Una sola vez en la instalación local:
-1. Ejecute el script public/resource/file_sql/script_deploy_crear_tb_deploy_target.sql en la base de datos local.
+1. Cree la tabla tb_deploy_target en la base de datos local (su definición está en public/resource/file_kiro_instruction/posme_bd_structure.sql).
 2. Habilite la consola con la constante DEPLOY_CONSOLE_ENABLED de la configuración local.
 Por cada cliente:
 3. Elija la compañía, complete la **Conexión remota** y presione **Guardar conexión**.
@@ -1705,6 +1705,16 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 - **La base remota no coincide**: el servidor respondió con una base de datos distinta a la de la cabecera /*BD: ... */ del script de la compañía. Revise la compañía elegida; el despliegue queda bloqueado.
 - **Ya hay otro despliegue en curso**: espere a que termine; el candado caduca solo a las 2 horas.
 Ver también: Despliegue remoto: preparar la consola y el agente (primera vez).
+
+## Despliegue remoto: limpieza de servidor (liberar espacio e inodos)
+Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pestaña **Limpieza de servidor** (junto a **Sincronización**).
+1. En **Agente que hará la limpieza** elija la **Compañía con conexión guardada** (con el agente instalado y actualizado). Su agente revisa la carpeta donde está instalado y limpia las instalaciones posMe vecinas del mismo hosting. Para otro hosting, elija una compañía de ese hosting.
+2. En **Qué limpiar** deje marcado lo que desea limpiar (todo viene marcado): **Logs**, **Caché**, **Debugbar**, **Uploads**, **Sesiones** (todas: los usuarios deberán volver a iniciar sesión), **Despliegues del agente** (respaldos, staging y log; esos despliegues ya no se podrán revertir) y **Archivos de compañía** (vacía las carpetas component_* de cada compañía: se pierden imágenes, adjuntos, reportes y respaldos .sql; no se puede revertir).
+3. Presione **Analizar** (no borra nada). En **Instalaciones del hosting** verá los MB y archivos de cada categoría por instalación; los valores con + son parciales por tiempo. Marque una, varias o todas; las que dicen **despliegue en curso** no se pueden marcar.
+4. En **Confirmar limpieza** escriba LIMPIAR, presione **Limpiar** y confírmelo en la ventana.
+5. En **Avance** siga la limpieza instalación por instalación; si una tiene muchos archivos sigue por tramos sola. Al terminar presione **Analizar** para ver el espacio actual.
+Notas: nunca se borran el código, .env, app/Config, la base de datos, agent_config.php ni los index.html/.htaccess de protección. Reemplaza a la antigua URL core_merge/merge_of_posme_merge_to_posme_initialize/2, que sigue existiendo.
+Ver también: Despliegue remoto: errores frecuentes.
 
 ## Parámetros de la empresa
 Los parámetros controlan el comportamiento de posMe por empresa (por ejemplo, orden de aplicación de abonos, lista de precios por defecto, formato de impresión).

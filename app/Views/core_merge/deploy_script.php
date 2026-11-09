@@ -828,7 +828,218 @@
             window.open(BASE + '/core_merge/deploy_log?deployID=' + encodeURIComponent(st.deployID), '_blank');
         });
 
+        // ============================================================ pestañas principales
+
+        qsa('.dpl-maintab').forEach(function (tab) {
+            tab.addEventListener('click', function () {
+                qsa('.dpl-maintab').forEach(function (t) {
+                    t.classList.toggle('is-active', t === tab);
+                    $(t.getAttribute('data-dpl-pane')).style.display = t === tab ? '' : 'none';
+                });
+            });
+        });
+
+        // ============================================================ limpieza de servidor
+
+        var cl = { scan: null, company: '', categories: [], running: false };
+
+        /** Línea en el registro de limpieza. */
+        function cleanLog(message) {
+            var box  = $('dplCleanLog');
+            var time = new Date().toTimeString().substr(0, 8);
+            box.textContent += '[' + time + '] ' + message + '\n';
+            box.scrollTop = box.scrollHeight;
+        }
+
+        /** Categorías marcadas. */
+        function cleanCategories() {
+            return qsa('.dpl-clean-cat').filter(function (c) { return c.checked; }).map(function (c) { return c.value; });
+        }
+
+        /** Instalaciones marcadas en la tabla del análisis. */
+        function cleanSelected() {
+            return qsa('#dplCleanResult .dpl-clean-inst').filter(function (c) { return c.checked && !c.disabled; }).map(function (c) { return c.value; });
+        }
+
+        /** El análisis deja de valer si cambia la compañía o las categorías. */
+        function cleanInvalidate() {
+            cl.scan = null;
+            $('dplCleanResult').innerHTML = '<p class="dpl-hint">Pulse Analizar para ver las instalaciones y el espacio que se liberaría. Analizar no borra nada.</p>';
+            renderCleanSummary();
+        }
+
+        /** Totales estimados (archivos y bytes) de las instalaciones marcadas. */
+        function cleanTotals() {
+            var totals = { files: 0, bytes: 0 };
+            if (!cl.scan) { return totals; }
+            var selected = cleanSelected();
+            cl.scan.installations.forEach(function (inst) {
+                if (selected.indexOf(inst.name) < 0) { return; }
+                cl.categories.forEach(function (cat) {
+                    var s = inst.stats[cat];
+                    if (s) { totals.files += s.files; totals.bytes += s.bytes; }
+                });
+            });
+            return totals;
+        }
+
+        /** Resumen y validaciones antes de habilitar el botón Limpiar. */
+        function renderCleanSummary() {
+            var issues = [];
+            var selected = cleanSelected();
+            if (!$('dplCleanCompany').value) { issues.push('Seleccione la compañía cuyo agente hará la limpieza.'); }
+            if (!cleanCategories().length) { issues.push('Seleccione al menos una categoría.'); }
+            if (!cl.scan) { issues.push('Pulse Analizar.'); }
+            if (cl.scan && !selected.length) { issues.push('Marque al menos una instalación.'); }
+            if ($('dplCleanConfirm').value.trim() !== 'LIMPIAR') { issues.push('Escriba LIMPIAR para confirmar.'); }
+
+            var totals = cleanTotals();
+            var html = '<li>🖥️ Agente: <b>' + esc($('dplCleanCompany').value || 'sin seleccionar') + '</b></li>';
+            if (cl.scan) {
+                html += '<li>📁 Hosting: <b>' + esc(cl.scan.parent) + '</b></li>' +
+                    '<li>🏢 Instalaciones: <b>' + fmtInt(selected.length) + '</b> de ' + fmtInt(cl.scan.installations.length) + '</li>' +
+                    '<li>🧹 Se liberarían: <b>' + fmtMB(totals.bytes) + '</b> en ' + fmtInt(totals.files) + ' archivos</li>';
+            }
+            if (cleanCategories().indexOf('file_company') >= 0) {
+                html += '<li style="color:#c0392b;">⚠ Incluye archivos de compañía (imágenes, adjuntos, respaldos)</li>';
+            }
+            issues.forEach(function (i) { html += '<li class="is-off">⚠ ' + esc(i) + '</li>'; });
+            $('dplCleanSummary').innerHTML = html;
+            $('dplBtnClean').disabled = issues.length > 0 || cl.running;
+        }
+
+        /** Tabla de instalaciones con lo que ocupa cada categoría analizada. */
+        function renderCleanResult() {
+            var labels = <?php echo json_encode(array_map(function ($c) { return $c[0]; }, \App\Libraries\core_web_deploy\core_deploy_cleanup::$CATEGORIES), JSON_UNESCAPED_UNICODE); ?>;
+            var scan = cl.scan;
+            if (!scan.installations.length) {
+                $('dplCleanResult').innerHTML = alertHtml('warn', 'No se encontraron instalaciones posMe en la carpeta ' + esc(scan.parent) + '.');
+                renderCleanSummary();
+                return;
+            }
+            var head = '<th><input type="checkbox" id="dplCleanAll" checked aria-label="Todas"></th><th>Instalación</th>';
+            cl.categories.forEach(function (cat) { head += '<th class="dpl-n">' + esc(labels[cat] || cat) + '</th>'; });
+            head += '<th class="dpl-n">Total</th>';
+            var partial = false;
+            var rows = scan.installations.map(function (inst) {
+                var total = { files: 0, bytes: 0 };
+                var cells = cl.categories.map(function (cat) {
+                    var s = inst.stats[cat] || { files: 0, bytes: 0, partial: false };
+                    total.files += s.files; total.bytes += s.bytes;
+                    if (s.partial) { partial = true; }
+                    return '<td class="dpl-n">' + fmtMB(s.bytes) + (s.partial ? '+' : '') + '<br><small>' + fmtInt(s.files) + ' arch.</small></td>';
+                }).join('');
+                var badges = (inst.self ? ' <span class="dpl-badge is-new">agente</span>' : '') +
+                    (inst.locked ? ' <span class="dpl-badge is-risk">despliegue en curso</span>' : '');
+                return '<tr class="' + (inst.locked ? 'is-locked' : '') + '">' +
+                    '<td><input type="checkbox" class="dpl-clean-inst" value="' + esc(inst.name) + '"' + (inst.locked ? ' disabled' : ' checked') + ' aria-label="' + esc(inst.name) + '"></td>' +
+                    '<td>' + esc(inst.name) + badges + '</td>' + cells +
+                    '<td class="dpl-n"><b>' + fmtMB(total.bytes) + '</b><br><small>' + fmtInt(total.files) + ' arch.</small></td></tr>';
+            }).join('');
+            $('dplCleanResult').innerHTML =
+                '<p class="dpl-hint">Hosting <b>' + esc(scan.parent) + '</b>: ' + fmtInt(scan.installations.length) + ' instalaciones posMe. Marque las que desea limpiar.</p>' +
+                (partial ? alertHtml('warn', 'El análisis se detuvo por tiempo: los valores con + son parciales. La limpieza sí recorre todo.') : '') +
+                '<div class="dpl-scroll"><table class="dpl-table"><thead><tr>' + head + '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+
+            $('dplCleanAll').addEventListener('change', function () {
+                var on = this.checked;
+                qsa('#dplCleanResult .dpl-clean-inst').forEach(function (c) { if (!c.disabled) { c.checked = on; } });
+                renderCleanSummary();
+            });
+            qsa('#dplCleanResult .dpl-clean-inst').forEach(function (c) { c.addEventListener('change', renderCleanSummary); });
+            renderCleanSummary();
+        }
+
+        qsa('.dpl-clean-cat').forEach(function (c) {
+            c.closest('.dpl-option').classList.toggle('is-on', c.checked);
+            c.addEventListener('change', function () {
+                c.closest('.dpl-option').classList.toggle('is-on', c.checked);
+                cleanInvalidate();
+            });
+        });
+        $('dplCleanCompany').addEventListener('change', cleanInvalidate);
+        $('dplCleanConfirm').addEventListener('input', renderCleanSummary);
+
+        // Analizar: el agente lista las instalaciones vecinas y mide cada categoría (no borra)
+        $('dplBtnCleanScan').addEventListener('click', function () {
+            var company    = $('dplCleanCompany').value;
+            var categories = cleanCategories();
+            if (!company || !categories.length) { renderCleanSummary(); return; }
+            $('dplCleanResult').innerHTML = '<p class="dpl-hint">Analizando el hosting… puede tardar si hay muchos archivos.</p>';
+            busy(this, api('deploy_cleanup_scan', { company: company, categories: JSON.stringify(categories) })).then(function (data) {
+                if (!data.installations) { throw new Error('El agente no devolvió instalaciones.'); }
+                cl.scan       = data;
+                cl.company    = company;
+                cl.categories = categories;
+                renderCleanResult();
+            }).catch(function (e) {
+                cl.scan = null;
+                $('dplCleanResult').innerHTML = alertHtml('bad', esc(e.message));
+                renderCleanSummary();
+            });
+        });
+
+        /** Limpia una instalación repitiendo mientras el agente indique que quedó parcial. */
+        function cleanInstallation(name, rounds) {
+            return api('deploy_cleanup_apply', {
+                company     : cl.company,
+                installation: name,
+                categories  : JSON.stringify(cl.categories),
+                confirm     : 'LIMPIAR'
+            }).then(function (r) {
+                Object.keys(r.categories || {}).forEach(function (cat) {
+                    var s = r.categories[cat];
+                    cleanLog(name + ' · ' + cat + ': ' + fmtInt(s.files) + ' archivos, ' + fmtMB(s.bytes) + (s.errors ? ', ' + fmtInt(s.errors) + ' no se pudieron borrar' : ''));
+                });
+                if (!r.complete) {
+                    if (rounds >= 50) { throw new Error('Se alcanzó el máximo de tramos; vuelva a ejecutar la limpieza.'); }
+                    cleanLog(name + ': continúa (tramo ' + (rounds + 1) + ')…');
+                    return cleanInstallation(name, rounds + 1);
+                }
+            });
+        }
+
+        $('dplBtnClean').addEventListener('click', function () {
+            var selected = cleanSelected();
+            var totals   = cleanTotals();
+            var button   = this;
+            if (!selected.length || cl.running) { return; }
+            dialog('Confirmar limpieza',
+                (cl.categories.indexOf('file_company') >= 0 ? alertHtml('bad', 'Se borrarán imágenes, adjuntos, reportes y respaldos de las compañías. No se puede revertir.') : '') +
+                '<p>Agente: <b>' + esc(cl.company) + '</b> — hosting <b>' + esc(cl.scan.parent) + '</b></p>' +
+                '<p>Se limpiarán <b>' + fmtInt(selected.length) + '</b> instalaciones (aprox. ' + fmtMB(totals.bytes) + ', ' + fmtInt(totals.files) + ' archivos):</p>' +
+                '<div class="dpl-secret">' + selected.map(esc).join(', ') + '</div>',
+                'Limpiar').then(function (ok) {
+                if (!ok) { return; }
+                cl.running = true;
+                button.disabled = true;
+                $('dplCleanLog').textContent = '';
+                var done = 0, failed = 0;
+                var chain = Promise.resolve();
+                selected.forEach(function (name) {
+                    chain = chain.then(function () {
+                        $('dplCleanText').textContent = 'Limpiando ' + name + ' (' + fmtInt(done + 1) + ' de ' + fmtInt(selected.length) + ')…';
+                        return cleanInstallation(name, 0).catch(function (e) {
+                            failed++;
+                            cleanLog('ERROR ' + name + ': ' + e.message);
+                        }).then(function () {
+                            done++;
+                            $('dplCleanBar').style.width = Math.round(100 * done / selected.length) + '%';
+                        });
+                    });
+                });
+                return chain.then(function () {
+                    cl.running = false;
+                    $('dplCleanConfirm').value = '';
+                    $('dplCleanText').textContent = failed ? 'Terminado con ' + fmtInt(failed) + ' instalaciones con error.' : 'Limpieza terminada.';
+                    cleanLog('Fin: ' + fmtInt(done - failed) + ' instalaciones limpiadas, ' + fmtInt(failed) + ' con error. Pulse Analizar para ver el espacio actual.');
+                    cleanInvalidate();
+                });
+            });
+        });
+
         syncOptions();
         renderSummary();
+        renderCleanSummary();
     })();
 </script>

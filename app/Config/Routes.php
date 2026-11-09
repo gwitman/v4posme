@@ -1924,6 +1924,10 @@ $routes->match(['get', 'post'], 'core_merge/deploy_data', 'core_merge::deploy_da
 $routes->match(['get', 'post'], 'core_merge/deploy_data/(:any)', 'core_merge::deploy_data');
 $routes->match(['get', 'post'], 'core_merge/deploy_step', 'core_merge::deploy_step');
 $routes->match(['get', 'post'], 'core_merge/deploy_step/(:any)', 'core_merge::deploy_step');
+$routes->match(['get', 'post'], 'core_merge/deploy_cleanup_scan', 'core_merge::deploy_cleanup_scan');
+$routes->match(['get', 'post'], 'core_merge/deploy_cleanup_scan/(:any)', 'core_merge::deploy_cleanup_scan');
+$routes->match(['get', 'post'], 'core_merge/deploy_cleanup_apply', 'core_merge::deploy_cleanup_apply');
+$routes->match(['get', 'post'], 'core_merge/deploy_cleanup_apply/(:any)', 'core_merge::deploy_cleanup_apply');
 $routes->match(['get', 'post'], 'core_merge/deploy_token', 'core_merge::deploy_token');
 $routes->match(['get', 'post'], 'core_merge/deploy_token/(:any)', 'core_merge::deploy_token');
 $routes->match(['get', 'post'], 'core_merge/deploy_log', 'core_merge::deploy_log');
@@ -1958,6 +1962,10 @@ $routes->match(['get', 'post'], 'core_deploy_agent/data_restore', 'core_deploy_a
 $routes->match(['get', 'post'], 'core_deploy_agent/data_restore/(:any)', 'core_deploy_agent::data_restore');
 $routes->match(['get', 'post'], 'core_deploy_agent/log', 'core_deploy_agent::log');
 $routes->match(['get', 'post'], 'core_deploy_agent/log/(:any)', 'core_deploy_agent::log');
+$routes->match(['get', 'post'], 'core_deploy_agent/cleanup_scan', 'core_deploy_agent::cleanup_scan');
+$routes->match(['get', 'post'], 'core_deploy_agent/cleanup_scan/(:any)', 'core_deploy_agent::cleanup_scan');
+$routes->match(['get', 'post'], 'core_deploy_agent/cleanup_apply', 'core_deploy_agent::cleanup_apply');
+$routes->match(['get', 'post'], 'core_deploy_agent/cleanup_apply/(:any)', 'core_deploy_agent::cleanup_apply');
 $routes->match(['get', 'post'], 'app_lab_examen/index', 'app_lab_examen::index');
 $routes->match(['get', 'post'], 'app_lab_examen/index/(:any)', 'app_lab_examen::index');
 $routes->match(['get', 'post'], 'app_lab_examen/edit', 'app_lab_examen::edit');

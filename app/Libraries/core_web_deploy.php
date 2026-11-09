@@ -11,6 +11,7 @@ use App\Libraries\core_web_deploy\core_deploy_transport;
 use App\Libraries\core_web_deploy\core_deploy_schema;
 use App\Libraries\core_web_deploy\core_deploy_data;
 use App\Libraries\core_web_deploy\core_deploy_sql_splitter;
+use App\Libraries\core_web_deploy\core_deploy_cleanup;
 
 /**
  * Orquestador de la consola de despliegue remoto (core_merge::deploy).
@@ -479,6 +480,53 @@ class core_web_deploy
     {
         $file = $this->deployDir($deployID) . '/log.txt';
         return is_file($file) ? (string) file_get_contents($file) : '';
+    }
+
+    // ---------------------------------------------------------------- limpieza
+
+    /**
+     * Pide al agente la lista de instalaciones de su hosting y lo que ocupa cada categoría.
+     *
+     * @param object $profile    Perfil con credenciales.
+     * @param array  $categories Categorías a medir.
+     * @return array ['parent', 'self', 'installations']
+     */
+    function cleanupScan($profile, array $categories)
+    {
+        $result = $this->agent($profile)->call('cleanup_scan', ['categories' => core_deploy_cleanup::categories($categories)]);
+        if (!isset($result['installations']) || !is_array($result['installations'])) {
+            throw new \Exception('El agente no devolvió las instalaciones; actualice el agente en ese servidor.');
+        }
+        return $result;
+    }
+
+    /**
+     * Ordena al agente limpiar una instalación (un tramo de tiempo; repetir mientras complete = false).
+     *
+     * @param object $profile      Perfil con credenciales.
+     * @param string $installation Nombre de la carpeta de la instalación.
+     * @param array  $categories   Categorías a borrar.
+     * @return array ['installation', 'complete', 'categories']
+     */
+    function cleanupApply($profile, $installation, array $categories)
+    {
+        $result = $this->agent($profile)->call('cleanup_apply', ['installation' => (string) $installation, 'categories' => core_deploy_cleanup::categories($categories)]);
+        if (!isset($result['complete'], $result['categories'])) {
+            throw new \Exception('Respuesta de limpieza inválida del agente.');
+        }
+        return $result;
+    }
+
+    /**
+     * Agrega una línea al log local de limpiezas (writable/posme_deploy/cleanup.log).
+     *
+     * @return void
+     */
+    function cleanupLog($message, array $secrets = [])
+    {
+        $dir  = core_deploy_files::ensureDir(WRITEPATH . core_deploy_rules::CONSOLE_DIR);
+        $line = '[' . helper_getDateTime() . '] ' . core_deploy_crypto::mask((string) $message, $secrets) . "\n";
+        file_put_contents($dir . '/cleanup.log', $line, FILE_APPEND | LOCK_EX);
     }
 
     /**

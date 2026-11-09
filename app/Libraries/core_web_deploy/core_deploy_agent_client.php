@@ -88,9 +88,10 @@ class core_deploy_agent_client
             throw new \Exception('No se pudo contactar al agente: ' . $error);
         }
         $json = json_decode((string) $response, true);
-        // Un 404 de CodeIgniter también es JSON (en modo development): sin la ruta del agente no hay agente
-        if ($status === 404) {
-            throw new \Exception('El agente no está instalado en el servidor remoto (HTTP 404: no existe la ruta core_deploy_agent/' . $action . '). Use "Instalar agente por SFTP/FTP" con "Subir también el código del agente".');
+        // El agente responde 404 "Agente no habilitado" con error=true; un 404 sin esa forma
+        // (página o JSON de CodeIgniter en development) significa que la ruta no existe
+        if ($status === 404 && !(is_array($json) && isset($json['error'], $json['message']) && $json['error'] === true && count($json) === 2)) {
+            throw new \Exception('El servidor remoto no tiene el agente o tiene una versión anterior (HTTP 404: no existe la ruta core_deploy_agent/' . $action . '). Instálelo o actualícelo: despliegue de archivos con un ZIP nuevo, o "Instalar agente por SFTP/FTP" con "Subir también el código del agente".');
         }
         if (!is_array($json)) {
             throw new \Exception('Respuesta inválida del agente (HTTP ' . $status . ').');

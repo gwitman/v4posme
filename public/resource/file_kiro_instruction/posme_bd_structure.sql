@@ -1460,7 +1460,6 @@ CREATE TABLE `tb_dataview`  (
 -- Table structure for tb_deploy_target
 -- Perfiles de despliegue remoto por compañía (core_merge/deploy). 2026-11-09
 -- agentSecret, ftpPassword y dbPassword: cifrados AES-256-GCM ("v1:..."), llave en writable/posme_deploy/deploy.key
--- Script: public/resource/file_sql/script_deploy_crear_tb_deploy_target.sql
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_deploy_target`;
 CREATE TABLE `tb_deploy_target`  (

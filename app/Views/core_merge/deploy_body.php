@@ -16,6 +16,13 @@
 		</div>
 	</div>
 
+	<!-- pestañas principales -->
+	<div class="dpl-maintabs" role="tablist">
+		<button type="button" class="dpl-maintab is-active" data-dpl-pane="dplPaneSync" role="tab"><i class="icon16 i-loop-4"></i> Sincronización</button>
+		<button type="button" class="dpl-maintab" data-dpl-pane="dplPaneClean" role="tab"><i class="icon16 i-remove"></i> Limpieza de servidor</button>
+	</div>
+
+	<div id="dplPaneSync">
 	<div class="row">
 		<div class="col-md-8 col-lg-8">
 
@@ -254,6 +261,73 @@
 				</div>
 			</div>
 		</div>
+	</div>
+	</div>
+
+	<!-- ============================================================ limpieza de servidor -->
+	<div id="dplPaneClean" style="display:none;">
+	<div class="row">
+		<div class="col-md-8 col-lg-8">
+
+			<!-- 1. agente -->
+			<div class="abv2-card">
+				<p class="abv2-card-title"><span class="dpl-step-num">1</span> Agente que hará la limpieza</p>
+				<div class="form-group">
+					<label class="abv2-label" for="dplCleanCompany">Compañía con conexión guardada</label>
+					<select id="dplCleanCompany" name="dplCleanCompany" class="form-control" autocomplete="off">
+						<option value="">Seleccione una compañía...</option>
+						<?php foreach($companies as $c){ if(!$c['valid']) continue; ?>
+						<option value="<?php echo htmlspecialchars($c['key']); ?>"><?php echo htmlspecialchars($c['key']); ?></option>
+						<?php } ?>
+					</select>
+					<p class="dpl-hint">Su agente revisa la carpeta donde está instalado y limpia las instalaciones posMe vecinas del mismo hosting. Para otro hosting, elija una compañía de ese hosting.</p>
+				</div>
+			</div>
+
+			<!-- 2. categorías -->
+			<div class="abv2-card">
+				<p class="abv2-card-title"><span class="dpl-step-num">2</span> Qué limpiar</p>
+				<?php foreach(\App\Libraries\core_web_deploy\core_deploy_cleanup::$CATEGORIES as $key => $cat){ ?>
+				<label class="dpl-option<?php echo $key === 'file_company' ? ' is-danger' : ''; ?>" for="dplCleanCat_<?php echo $key; ?>">
+					<input type="checkbox" class="dpl-clean-cat" id="dplCleanCat_<?php echo $key; ?>" value="<?php echo $key; ?>" checked>
+					<span><p class="dpl-option-title"><?php echo htmlspecialchars($cat[0]); ?></p>
+					<p class="dpl-option-desc"><?php echo htmlspecialchars($cat[1]); ?></p></span>
+				</label>
+				<?php } ?>
+				<div class="dpl-alert is-bad" style="margin-top:8px;"><b>Archivos de compañía</b> vacía las carpetas component_* de cada compañía: se pierden imágenes de productos, adjuntos, reportes y respaldos .sql. No se puede revertir.</div>
+				<div class="dpl-btns" style="margin-top:10px;">
+					<button type="button" class="btn btn-default" id="dplBtnCleanScan"><i class="icon16 i-search"></i> Analizar</button>
+				</div>
+			</div>
+
+			<!-- 3. instalaciones -->
+			<div class="abv2-card">
+				<p class="abv2-card-title"><span class="dpl-step-num">3</span> Instalaciones del hosting</p>
+				<div id="dplCleanResult"><p class="dpl-hint">Pulse Analizar para ver las instalaciones y el espacio que se liberaría. Analizar no borra nada.</p></div>
+			</div>
+		</div>
+
+		<div class="col-md-4 col-lg-4">
+			<div class="abv2-sticky">
+				<div class="abv2-card">
+					<p class="abv2-card-title"><span class="dpl-step-num">4</span> Confirmar limpieza</p>
+					<ul class="dpl-summary" id="dplCleanSummary"></ul>
+					<div class="form-group" style="margin-top:10px;">
+						<label class="abv2-label" for="dplCleanConfirm">Escriba LIMPIAR para confirmar</label>
+						<input type="text" class="form-control" id="dplCleanConfirm" autocomplete="off">
+					</div>
+					<button type="button" class="btn btn-danger btn-block" id="dplBtnClean" disabled style="height:44px;"><i class="icon16 i-remove"></i> Limpiar</button>
+				</div>
+
+				<div class="abv2-card">
+					<p class="abv2-card-title"><span class="dpl-step-num">5</span> Avance</p>
+					<div class="dpl-progress"><div id="dplCleanBar"></div></div>
+					<p class="dpl-hint" id="dplCleanText">En espera.</p>
+					<pre class="dpl-log" id="dplCleanLog"></pre>
+				</div>
+			</div>
+		</div>
+	</div>
 	</div>
 </form>
 
