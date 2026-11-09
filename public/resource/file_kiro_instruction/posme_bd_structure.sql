@@ -2769,6 +2769,11 @@ CREATE TABLE `tb_report_builder`  (
   `dataViewID` int NOT NULL COMMENT 'Vista de sistema usada',
   `name` varchar(150) NOT NULL COMMENT 'Nombre del reporte',
   `configJson` mediumtext NOT NULL COMMENT 'Campos, orden, filtros y agrupacion',
+  `isShared` tinyint(1) NOT NULL DEFAULT 0,
+  `viewTypeCatalogItemID` int NOT NULL DEFAULT 0,
+  `dashboardCatalogItemID` int NOT NULL DEFAULT 0,
+  `orden` int NOT NULL DEFAULT 0,
+  `displayJson` mediumtext NULL,
   `createdBy` int NOT NULL DEFAULT 0,
   `createdOn` datetime NOT NULL,
   `createdIn` varchar(50) NULL DEFAULT NULL COMMENT 'IP de creacion',
@@ -2777,6 +2782,7 @@ CREATE TABLE `tb_report_builder`  (
   `isActive` tinyint(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`reportBuilderID`) USING BTREE,
   INDEX `IDX_REPORT_BUILDER_001`(`companyID` ASC, `userID` ASC, `isActive` ASC) USING BTREE,
+  INDEX `IDX_REPORT_BUILDER_DASHBOARD`(`companyID` ASC, `dashboardCatalogItemID` ASC, `isActive` ASC, `orden` ASC) USING BTREE,
   CONSTRAINT `CHK_REPORT_BUILDER_001` CHECK (JSON_VALID(`configJson`))
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 ROW_FORMAT = DYNAMIC;
 
@@ -2888,6 +2894,7 @@ CREATE TABLE `tb_role`  (
   `name` varchar(250) CHARACTER SET latin1 COLLATE latin1_general_ci NULL DEFAULT NULL,
   `description` varchar(250) CHARACTER SET latin1 COLLATE latin1_general_ci NULL DEFAULT NULL,
   `isAdmin` tinyint(1) NULL DEFAULT NULL,
+  `isAdminCompany` tinyint(1) NOT NULL DEFAULT 0,
   `createdOn` datetime NULL DEFAULT NULL,
   `urlDefault` varchar(250) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '0',
   `isActive` tinyint(1) NULL DEFAULT NULL,

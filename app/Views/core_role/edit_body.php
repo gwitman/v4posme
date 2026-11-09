@@ -58,6 +58,16 @@
 											<?php } ?>
 										</select>
 									</div>
+									<?php if(isset($canEditAdminCompany) && $canEditAdminCompany){ ?>
+									<?php $isAdminCompanyActual = (isset($objRole->isAdminCompany) && (int)$objRole->isAdminCompany === 1) ? "1" : "0"; ?>
+									<div class="pm-role-campo">
+										<label for="txtIsAdminCompany">Administrador de compañía</label>
+										<select class="form-control" name="txtIsAdminCompany" id="txtIsAdminCompany">
+											<option value="0" <?php echo ($isAdminCompanyActual === "0") ? 'selected="selected"' : ''; ?>>No</option>
+											<option value="1" <?php echo ($isAdminCompanyActual === "1") ? 'selected="selected"' : ''; ?>>Sí</option>
+										</select>
+									</div>
+									<?php } ?>
 									<div class="pm-role-campo pm-role-campo-ancho">
 										<label for="txtDescription">Descripción <span class="pm-role-req">*</span></label>
 										<textarea class="form-control" id="txtDescription" name="txtDescription" rows="2"><?php echo htmlspecialchars($objRole->description);?></textarea>

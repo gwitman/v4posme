@@ -49,6 +49,28 @@
     /* Mismos topes que valida el servidor */
     var LIMITES = { columnas: 40, orden: 10, filtros: 30, agrupar: 20, titulo: 150, nombre: 150 };
 
+    /*
+     * Fechas dinámicas de un filtro de fecha. Viajan como {"dynamic":"<codigo>"} y las resuelve el
+     * servidor al ejecutar (core_web_report_builder::resolveDynamicDate); el navegador nunca calcula la fecha.
+     */
+    var FECHAS_DESDE = [
+        { value: 'inicio_dia', label: 'Inicio del día' },
+        { value: 'inicio_mes', label: 'Inicio del mes' },
+        { value: 'inicio_anio', label: 'Inicio del año' }
+    ];
+    var FECHAS_HASTA = [
+        { value: 'fin_dia', label: 'Fin del día' },
+        { value: 'hoy', label: 'Día de hoy' },
+        { value: 'fin_mes', label: 'Fin del mes' },
+        { value: 'fin_anio', label: 'Fin del año' }
+    ];
+
+    /* Formatos del indicador de un dashboard */
+    var FORMATOS_INDICADOR = [
+        { value: 'number', label: 'Número' },
+        { value: 'money', label: 'Moneda' }
+    ];
+
     var contadorUid = 0;
 
     function nuevoUid() {
@@ -219,6 +241,38 @@
         return anio > 0 && fecha.getUTCFullYear() === anio && fecha.getUTCMonth() === mes - 1 && fecha.getUTCDate() === dia;
     }
 
+    function codigoFechaValido(codigo) {
+        return FECHAS_DESDE.concat(FECHAS_HASTA).some(function (opcion) {
+            return opcion.value === codigo;
+        });
+    }
+
+    /* true si el valor es {dynamic: codigo} con un código conocido */
+    function esFechaDinamica(valor) {
+        return !!valor && typeof valor === 'object' && typeof valor.dynamic === 'string' && codigoFechaValido(valor.dynamic);
+    }
+
+    /**
+     * Fechas dinámicas que se ofrecen según operador y extremo del filtro:
+     * Desde => inicios; Hasta => finales; Entre => inicios en "value" y finales en "value2"; Igual => todas.
+     *
+     * @param {string} operador Operador del filtro.
+     * @param {string} extremo 'value' o 'value2'.
+     * @return {Array} Opciones {value, label}.
+     */
+    function opcionesFechaDinamica(operador, extremo) {
+        if (operador === 'from') {
+            return FECHAS_DESDE;
+        }
+        if (operador === 'to') {
+            return FECHAS_HASTA;
+        }
+        if (operador === 'between') {
+            return extremo === 'value2' ? FECHAS_HASTA : FECHAS_DESDE;
+        }
+        return FECHAS_DESDE.concat(FECHAS_HASTA);
+    }
+
     /* Tal como llega; la fecha cero de MySQL queda vacía, igual que en el Excel */
     function formatearFecha(valor) {
         var texto = textoDe(valor);
@@ -387,8 +441,31 @@
             column: campo.name,
             operator: operadoresDeTipo(campo.type, permitidos)[0].value,
             value: '',
-            value2: ''
+            value2: '',
+            /* Código de fecha dinámica por extremo; '' = fecha manual */
+            dinamico: '',
+            dinamico2: ''
         };
+    }
+
+    /**
+     * Valor de un extremo del filtro tal como viaja al servidor: {dynamic} si es un campo de fecha con
+     * fecha dinámica elegida; si no, el texto (los números sin comas).
+     *
+     * @param {Object} filtro Filtro del estado de la pantalla.
+     * @param {Object|null} campo Campo del catálogo.
+     * @param {string} extremo 'value' o 'value2'.
+     * @return {string|Object} Valor a enviar.
+     */
+    function valorExtremoFiltro(filtro, campo, extremo) {
+        var codigo = textoDe(filtro[extremo === 'value2' ? 'dinamico2' : 'dinamico']);
+        if (!!campo && campo.type === 'date' && codigo !== '' && codigoFechaValido(codigo)) {
+            return { dynamic: codigo };
+        }
+        if (!!campo && campo.type === 'number') {
+            return limpiarNumero(filtro[extremo]);
+        }
+        return textoDe(filtro[extremo]);
     }
 
     function claveOrden(nombre, fn) {
@@ -453,9 +530,8 @@
         var resultado = [];
         (filtros || []).forEach(function (filtro) {
             var campo = buscarCampo(catalogo, filtro.column);
-            var esNumero = !!campo && campo.type === 'number';
-            var valor = esNumero ? limpiarNumero(filtro.value) : textoDe(filtro.value);
-            var valor2 = esNumero ? limpiarNumero(filtro.value2) : textoDe(filtro.value2);
+            var valor = valorExtremoFiltro(filtro, campo, 'value');
+            var valor2 = valorExtremoFiltro(filtro, campo, 'value2');
 
             if (filtro.operator === 'between') {
                 if (valor !== '' || valor2 !== '') {
@@ -481,9 +557,8 @@
     function construirFiltrosParaGuardar(filtros, catalogo) {
         return (filtros || []).map(function (filtro) {
             var campo = buscarCampo(catalogo, filtro.column);
-            var esNumero = !!campo && campo.type === 'number';
-            var valor = esNumero ? limpiarNumero(filtro.value) : textoDe(filtro.value);
-            var valor2 = esNumero ? limpiarNumero(filtro.value2) : textoDe(filtro.value2);
+            var valor = valorExtremoFiltro(filtro, campo, 'value');
+            var valor2 = valorExtremoFiltro(filtro, campo, 'value2');
             return {
                 column: filtro.column,
                 operator: filtro.operator,
@@ -605,10 +680,16 @@
                 return;
             }
             var esNumero = campo.type === 'number';
+            var esFecha = campo.type === 'date';
             var item = nuevoFiltro(campo, permitidos);
             item.operator = textoDe(filtro.operator) || item.operator;
-            item.value = esNumero ? formatearEntradaNumero(filtro.value) : textoDe(filtro.value);
-            item.value2 = esNumero ? formatearEntradaNumero(filtro.value2) : textoDe(filtro.value2);
+            /* Una fecha dinámica guardada se preselecciona en su combo y deja vacío el campo manual */
+            item.dinamico = esFecha && esFechaDinamica(filtro.value) ? filtro.value.dynamic : '';
+            item.dinamico2 = esFecha && esFechaDinamica(filtro.value2) ? filtro.value2.dynamic : '';
+            item.value = (filtro.value && typeof filtro.value === 'object') ? ''
+                : (esNumero ? formatearEntradaNumero(filtro.value) : textoDe(filtro.value));
+            item.value2 = (filtro.value2 && typeof filtro.value2 === 'object') ? ''
+                : (esNumero ? formatearEntradaNumero(filtro.value2) : textoDe(filtro.value2));
             filtros.push(item);
         });
 
@@ -651,8 +732,14 @@
             errores.push('El filtro "' + etiqueta + '" necesita los dos valores de "Entre".');
             return;
         }
+        var hayDinamica = false;
         for (var i = 0; i < valores.length; i += 1) {
             if (permitirVacios && esVacio(valores[i])) {
+                continue;
+            }
+            /* La fecha dinámica la resuelve el servidor: aquí basta con que el código sea conocido */
+            if (tipo === 'date' && esFechaDinamica(valores[i])) {
+                hayDinamica = true;
                 continue;
             }
             if (tipo === 'number' && !esNumeroValido(valores[i])) {
@@ -664,7 +751,8 @@
                 return;
             }
         }
-        if (filtro.operator === 'between' && !faltaExtremo) {
+        /* Con una fecha dinámica el orden de los extremos depende del día de ejecución: lo revisa el servidor */
+        if (filtro.operator === 'between' && !faltaExtremo && !hayDinamica) {
             var invertido = tipo === 'number'
                 ? Number(filtro.value) > Number(filtro.value2)
                 : filtro.value > filtro.value2;
@@ -809,6 +897,261 @@
         };
     }
 
+    /* ---------------- Combos excluyentes (Mostrar y Ordenar) ---------------- */
+
+    /*
+     * Campos que aún se pueden agregar en Mostrar. Misma regla que "Todas": un campo ya mostrado sin
+     * función no se repite; si solo se usa con función agregada (SUM, COUNT...) sigue disponible.
+     */
+    function camposDisponibles(catalogo, columnas) {
+        return (catalogo || []).filter(function (campo) {
+            return !(columnas || []).some(function (columna) {
+                return columna.name === campo.name && !esFuncion(columna.modo);
+            });
+        });
+    }
+
+    /**
+     * Opciones de un combo de Ordenar sin las claves que ya usan los otros órdenes.
+     *
+     * @param {Array} opciones Resultado de opcionesOrden.
+     * @param {Array} orden Órdenes del estado {uid, clave, dir}.
+     * @param {string|null} uidActual Orden dueño del combo (conserva su clave); null = solo las libres.
+     * @return {Array} Opciones disponibles.
+     */
+    function opcionesOrdenLibres(opciones, orden, uidActual) {
+        var usadas = {};
+        (orden || []).forEach(function (item) {
+            if (item.uid !== uidActual) {
+                usadas[item.clave] = true;
+            }
+        });
+        return (opciones || []).filter(function (opcion) {
+            return !usadas[opcion.clave];
+        });
+    }
+
+    /* ---------------- Presentación (modal Guardar / dashboards) ---------------- */
+
+    /* Estado vacío de la presentación. Los campos de columna se guardan por uid de columna, no por posición */
+    function presentacionVacia() {
+        return {
+            isShared: 0,
+            viewTypeCatalogItemID: 0,
+            dashboardCatalogItemID: 0,
+            orden: 0,
+            cardTypeCatalogItemID: 0,
+            widthCatalogItemID: 0,
+            chartTypeCatalogItemID: 0,
+            title: '',
+            labelUid: '',
+            valueUids: [],
+            seriesUid: '',
+            indicatorUid: '',
+            indicatorFormat: 'number'
+        };
+    }
+
+    function copiarPresentacion(origen) {
+        var base = presentacionVacia();
+        var datos = origen || {};
+        Object.keys(base).forEach(function (clave) {
+            if (datos[clave] !== undefined) {
+                base[clave] = clave === 'valueUids' ? (Array.isArray(datos.valueUids) ? datos.valueUids.slice() : []) : datos[clave];
+            }
+        });
+        return base;
+    }
+
+    /* Ítem de catálogo por id; null si no está */
+    function buscarItemCatalogo(lista, id) {
+        var numero = Number(id) || 0;
+        var items = lista || [];
+        for (var i = 0; i < items.length; i += 1) {
+            if (Number(items[i].catalogItemID) === numero) {
+                return items[i];
+            }
+        }
+        return null;
+    }
+
+    /* Tipo de tarjeta por el name del catálogo, sin mayúsculas ni tildes: 'grafico' | 'tabla' | 'indicador' | '' */
+    function tipoTarjeta(item) {
+        var nombre = normalizarBusqueda(item ? item.name : '');
+        return ['grafico', 'tabla', 'indicador'].indexOf(nombre) !== -1 ? nombre : '';
+    }
+
+    /* Columnas para los campos de la presentación: clave posicional "c" + índice en config.columns */
+    function opcionesColumnasPresentacion(columnas, catalogo) {
+        return (columnas || []).map(function (columna, indice) {
+            var fn = esFuncion(columna.modo) ? columna.modo : '';
+            var titulo = textoDe(columna.label).trim() || etiquetaCampo(catalogo, columna.name);
+            return { uid: columna.uid, key: 'c' + indice, label: titulo + (fn ? ' (' + etiquetaFuncion(fn) + ')' : '') };
+        });
+    }
+
+    /* uid => "c" + índice actual; '' si la columna ya no está */
+    function claveDeColumna(columnas, uid) {
+        if (esVacio(uid)) {
+            return '';
+        }
+        var lista = columnas || [];
+        for (var i = 0; i < lista.length; i += 1) {
+            if (lista[i].uid === uid) {
+                return 'c' + i;
+            }
+        }
+        return '';
+    }
+
+    /* "c" + índice => uid de la columna en esa posición; '' si no existe */
+    function uidDeClave(columnas, clave) {
+        var coincide = /^c(\d+)$/.exec(textoDe(clave));
+        var lista = columnas || [];
+        if (!coincide || Number(coincide[1]) >= lista.length) {
+            return '';
+        }
+        return lista[Number(coincide[1])].uid;
+    }
+
+    /**
+     * Convierte la consulta cargada (loadQuery) a la presentación de la pantalla. Las claves guardadas
+     * (c0, c1...) se pasan a uid de las columnas ya cargadas, para que sobrevivan a reordenar o quitar columnas.
+     *
+     * @param {Object} consulta query de loadQuery.
+     * @param {Array} columnas Columnas del estado (desdeConfig).
+     * @return {Object} Presentación.
+     */
+    function presentacionDesdeConsulta(consulta, columnas) {
+        var datos = consulta || {};
+        var display = datos.display && typeof datos.display === 'object' ? datos.display : {};
+        var presentacion = presentacionVacia();
+        presentacion.isShared = datos.isShared === true || Number(datos.isShared) === 1 ? 1 : 0;
+        presentacion.viewTypeCatalogItemID = Number(datos.viewTypeCatalogItemID) || 0;
+        presentacion.dashboardCatalogItemID = Number(datos.dashboardCatalogItemID) || 0;
+        presentacion.orden = Math.max(0, parseInt(datos.orden, 10) || 0);
+        presentacion.cardTypeCatalogItemID = Number(display.cardTypeCatalogItemID) || 0;
+        presentacion.widthCatalogItemID = Number(display.widthCatalogItemID) || 0;
+        presentacion.chartTypeCatalogItemID = Number(display.chartTypeCatalogItemID) || 0;
+        presentacion.title = textoDe(display.title);
+        presentacion.labelUid = uidDeClave(columnas, display.labelField);
+        presentacion.valueUids = (Array.isArray(display.valueFields) ? display.valueFields : []).map(function (clave) {
+            return uidDeClave(columnas, clave);
+        }).filter(function (uid) {
+            return uid !== '';
+        });
+        presentacion.seriesUid = uidDeClave(columnas, display.seriesField);
+        presentacion.indicatorUid = uidDeClave(columnas, display.indicatorField);
+        presentacion.indicatorFormat = display.indicatorFormat === 'money' ? 'money' : 'number';
+        return presentacion;
+    }
+
+    /**
+     * Quita de la presentación las columnas que ya no están en Mostrar.
+     *
+     * @return {Array} Nombres de los campos de la presentación que se limpiaron.
+     */
+    function limpiarPresentacion(presentacion, columnas) {
+        var existe = function (uid) {
+            return claveDeColumna(columnas, uid) !== '';
+        };
+        var limpiados = [];
+        if (presentacion.labelUid !== '' && !existe(presentacion.labelUid)) {
+            presentacion.labelUid = '';
+            limpiados.push('Campo etiqueta');
+        }
+        var valores = presentacion.valueUids.filter(existe);
+        if (valores.length !== presentacion.valueUids.length) {
+            presentacion.valueUids = valores;
+            limpiados.push('Campos valor');
+        }
+        if (presentacion.seriesUid !== '' && !existe(presentacion.seriesUid)) {
+            presentacion.seriesUid = '';
+            limpiados.push('Campo serie');
+        }
+        if (presentacion.indicatorUid !== '' && !existe(presentacion.indicatorUid)) {
+            presentacion.indicatorUid = '';
+            limpiados.push('Campo valor principal');
+        }
+        return limpiados;
+    }
+
+    /**
+     * Revisa la presentación antes de guardar (el servidor valida igual).
+     *
+     * @param {Object} presentacion Estado del modal.
+     * @param {Array} columnas Columnas del estado.
+     * @param {Object} catalogos builderCatalogs.
+     * @return {Array} Mensajes; vacío si está bien.
+     */
+    function validarPresentacion(presentacion, columnas, catalogos) {
+        var errores = [];
+        var cat = catalogos || {};
+        var orden = Number(presentacion.orden);
+        if (textoDe(presentacion.orden).trim() === '' || !isFinite(orden) || orden < 0 || Math.floor(orden) !== orden) {
+            errores.push('El orden debe ser un número entero mayor o igual a 0.');
+        }
+        if (!presentacion.dashboardCatalogItemID) {
+            return errores;
+        }
+        var tarjeta = tipoTarjeta(buscarItemCatalogo(cat.cardType, presentacion.cardTypeCatalogItemID));
+        if (!buscarItemCatalogo(cat.cardType, presentacion.cardTypeCatalogItemID)) {
+            errores.push('Seleccione el tipo de tarjeta.');
+        }
+        if (!buscarItemCatalogo(cat.width, presentacion.widthCatalogItemID)) {
+            errores.push('Seleccione el ancho de la tarjeta.');
+        }
+        if (textoDe(presentacion.title).length > LIMITES.titulo) {
+            errores.push('El título puede tener hasta ' + LIMITES.titulo + ' caracteres.');
+        }
+        if (tarjeta === 'grafico') {
+            if (!buscarItemCatalogo(cat.chartType, presentacion.chartTypeCatalogItemID)) {
+                errores.push('Seleccione el tipo de gráfico.');
+            }
+            if (claveDeColumna(columnas, presentacion.labelUid) === '') {
+                errores.push('Seleccione el campo etiqueta del gráfico.');
+            }
+            if (presentacion.valueUids.filter(function (uid) { return claveDeColumna(columnas, uid) !== ''; }).length === 0) {
+                errores.push('Seleccione al menos un campo valor del gráfico.');
+            }
+        }
+        if (tarjeta === 'indicador' && claveDeColumna(columnas, presentacion.indicatorUid) === '') {
+            errores.push('Seleccione el campo valor principal del indicador.');
+        }
+        return errores;
+    }
+
+    /**
+     * Arma "display" del contrato de saveQuery; null si no hay dashboard. Las columnas se convierten
+     * a su clave posicional actual ("c" + índice) en este momento.
+     *
+     * @return {Object|null} display.
+     */
+    function construirDisplay(presentacion, columnas, catalogos) {
+        if (!presentacion.dashboardCatalogItemID) {
+            return null;
+        }
+        var cat = catalogos || {};
+        var tarjeta = tipoTarjeta(buscarItemCatalogo(cat.cardType, presentacion.cardTypeCatalogItemID));
+        var esGrafico = tarjeta === 'grafico';
+        var esIndicador = tarjeta === 'indicador';
+        return {
+            cardTypeCatalogItemID: Number(presentacion.cardTypeCatalogItemID) || 0,
+            widthCatalogItemID: Number(presentacion.widthCatalogItemID) || 0,
+            chartTypeCatalogItemID: esGrafico ? (Number(presentacion.chartTypeCatalogItemID) || 0) : 0,
+            title: textoDe(presentacion.title).trim().substring(0, LIMITES.titulo),
+            labelField: esGrafico ? claveDeColumna(columnas, presentacion.labelUid) : '',
+            valueFields: esGrafico ? presentacion.valueUids.map(function (uid) {
+                return claveDeColumna(columnas, uid);
+            }).filter(function (clave) {
+                return clave !== '';
+            }) : [],
+            seriesField: esGrafico ? claveDeColumna(columnas, presentacion.seriesUid) : '',
+            indicatorField: esIndicador ? claveDeColumna(columnas, presentacion.indicatorUid) : '',
+            indicatorFormat: esIndicador && presentacion.indicatorFormat === 'money' ? 'money' : 'number'
+        };
+    }
+
     /* ---------------- Utilidades de lista y descarga ---------------- */
 
     /* Devuelve una lista nueva con el elemento movido; si se sale de los límites queda igual */
@@ -895,7 +1238,24 @@
         resumirConfig: resumirConfig,
         moverElemento: moverElemento,
         tipoRespuestaExcel: tipoRespuestaExcel,
-        nombreDescarga: nombreDescarga
+        nombreDescarga: nombreDescarga,
+        FORMATOS_INDICADOR: FORMATOS_INDICADOR,
+        esFechaDinamica: esFechaDinamica,
+        opcionesFechaDinamica: opcionesFechaDinamica,
+        valorExtremoFiltro: valorExtremoFiltro,
+        camposDisponibles: camposDisponibles,
+        opcionesOrdenLibres: opcionesOrdenLibres,
+        presentacionVacia: presentacionVacia,
+        copiarPresentacion: copiarPresentacion,
+        buscarItemCatalogo: buscarItemCatalogo,
+        tipoTarjeta: tipoTarjeta,
+        opcionesColumnasPresentacion: opcionesColumnasPresentacion,
+        claveDeColumna: claveDeColumna,
+        uidDeClave: uidDeClave,
+        presentacionDesdeConsulta: presentacionDesdeConsulta,
+        limpiarPresentacion: limpiarPresentacion,
+        validarPresentacion: validarPresentacion,
+        construirDisplay: construirDisplay
     };
 
     if (root) {

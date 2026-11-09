@@ -1356,6 +1356,10 @@ $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNo
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1DB', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1DB');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1DB/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1DB');
+$routes->match(['get', 'post'], 'app_invoice_billing/qzCertificate', 'app_invoice_billing::qzCertificate');
+$routes->match(['get', 'post'], 'app_invoice_billing/qzCertificate/(:any)', 'app_invoice_billing::qzCertificate');
+$routes->match(['get', 'post'], 'app_invoice_billing/qzSign', 'app_invoice_billing::qzSign');
+$routes->match(['get', 'post'], 'app_invoice_billing/qzSign/(:any)', 'app_invoice_billing::qzSign');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1DBLotificadoraCA', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1DBLotificadoraCA');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1DBLotificadoraCA/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1DBLotificadoraCA');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1DBLotificadoraCAPrima', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1DBLotificadoraCAPrima');
@@ -1675,6 +1679,12 @@ $routes->match(['get', 'post'], 'app_builder_report/deleteQuery', 'app_builder_r
 $routes->match(['get', 'post'], 'app_builder_report/deleteQuery/(:any)', 'app_builder_report::deleteQuery');
 $routes->match(['get', 'post'], 'app_builder_report/exportExcel', 'app_builder_report::exportExcel');
 $routes->match(['get', 'post'], 'app_builder_report/exportExcel/(:any)', 'app_builder_report::exportExcel');
+$routes->match(['get', 'post'], 'app_builder_report/viewResult', 'app_builder_report::viewResult');
+$routes->match(['get', 'post'], 'app_builder_report/viewResult/(:any)', 'app_builder_report::viewResult');
+$routes->match(['get', 'post'], 'app_builder_report/getDashboardCards', 'app_builder_report::getDashboardCards');
+$routes->match(['get', 'post'], 'app_builder_report/getDashboardCards/(:any)', 'app_builder_report::getDashboardCards');
+$routes->match(['get', 'post'], 'app_builder_report/getCardData', 'app_builder_report::getCardData');
+$routes->match(['get', 'post'], 'app_builder_report/getCardData/(:any)', 'app_builder_report::getCardData');
 $routes->match(['get', 'post'], 'app_sales_report/index', 'app_sales_report::index');
 $routes->match(['get', 'post'], 'app_sales_report/index/(:any)', 'app_sales_report::index');
 $routes->match(['get', 'post'], 'app_sales_report/sales_detail', 'app_sales_report::sales_detail');

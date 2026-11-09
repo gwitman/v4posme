@@ -3,13 +3,27 @@
 </script>
 <?php echo view('core_template/posme_v2_common'); ?>
 <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
-<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme-report-builder.js?v=1"></script>
+<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme-report-builder.js?v=2"></script>
 <script>
 (function () {
     'use strict';
 
     var URL_BASE = '<?php echo base_url(); ?>/app_builder_report/';
     var PRB      = window.PosmeReportBuilder;
+
+    /* Catálogos del modal Guardar (JSON ya seguro para <script>) y si el usuario administra la compañía */
+    var CATALOGOS_SERVIDOR = <?php echo isset($builderCatalogs) ? $builderCatalogs : 'null'; ?>;
+    var ES_ADMIN_COMPANIA  = <?php echo !empty($isAdminCompany) ? 'true' : 'false'; ?>;
+
+    /* Cada catálogo llega siempre como lista; si uno falló viene vacío y su mensaje está en errors */
+    function normalizarCatalogos(datos) {
+        var origen    = (datos && typeof datos === 'object') ? datos : {};
+        var resultado = { errors: Array.isArray(origen.errors) ? origen.errors : [] };
+        ['viewType', 'dashboard', 'cardType', 'width', 'chartType'].forEach(function (clave) {
+            resultado[clave] = Array.isArray(origen[clave]) ? origen[clave] : [];
+        });
+        return resultado;
+    }
 
     var MENSAJE_SESION = 'El servidor no respondió como se esperaba. Es posible que su sesión haya vencido: recargue la página e inicie sesión.';
     var MENSAJE_RED    = 'Error de conexión con el servidor. Verifique su red e intente de nuevo.';
@@ -102,6 +116,16 @@
                     erroresConfig:     [],
                     errorGeneral:      '',
 
+                    /* Modal Guardar: presentacion es lo guardado; formGuardar, la copia que edita el modal */
+                    catalogos:          normalizarCatalogos(CATALOGOS_SERVIDOR),
+                    esAdminCompania:    ES_ADMIN_COMPANIA,
+                    formatosIndicador:  PRB.FORMATOS_INDICADOR,
+                    presentacion:       PRB.presentacionVacia(),
+                    formGuardar:        PRB.presentacionVacia(),
+                    compartidaOriginal: false,
+                    erroresModal:       [],
+                    avisosPresentacion: [],
+
                     /* Resultado */
                     generando:         false,
                     generado:          false,
@@ -171,6 +195,29 @@
                 opcionesDeOrden: function () {
                     return PRB.opcionesOrden(this.columnas, this.catalogo);
                 },
+                /* Claves de orden que ningún orden usa todavía (habilita "Agregar orden") */
+                opcionesOrdenLibres: function () {
+                    return PRB.opcionesOrdenLibres(this.opcionesDeOrden, this.orden, null);
+                },
+                /* Combo "Agregar columna": sin los campos ya mostrados (salvo los usados con función) */
+                catalogoDisponible: function () {
+                    return PRB.camposDisponibles(this.catalogo, this.columnas);
+                },
+                /* Mismas reglas que Generar: habilita "Abrir en nueva página" */
+                configValida: function () {
+                    return this.hayVista && PRB.validarConfig(this.configActual, this.catalogo).length === 0;
+                },
+                /* Opciones de los campos de la presentación, según config.columns actual */
+                columnasPresentacion: function () {
+                    return PRB.opcionesColumnasPresentacion(this.columnas, this.catalogo);
+                },
+                tipoTarjetaModal: function () {
+                    return PRB.tipoTarjeta(PRB.buscarItemCatalogo(this.catalogos.cardType, this.formGuardar.cardTypeCatalogItemID));
+                },
+                /* Cambia al agregar o quitar columnas (no al reordenarlas) */
+                firmaUidsColumnas: function () {
+                    return this.columnas.map(function (columna) { return columna.uid; }).sort().join(',');
+                },
                 avisoMoneda: function () {
                     return PRB.debeAvisarMoneda(this.configActual, this.catalogo);
                 },
@@ -191,6 +238,17 @@
                 },
                 maxRowsTexto: function () {
                     return PRB.formatearEntero(this.maxRows);
+                }
+            },
+            watch: {
+                /* Si se quita de Mostrar una columna usada en la presentación, ese campo se limpia y se avisa */
+                firmaUidsColumnas: function () {
+                    var limpiados = PRB.limpiarPresentacion(this.presentacion, this.columnas);
+                    if (limpiados.length > 0) {
+                        var aviso = 'Se quitó una columna usada en la presentación del dashboard (' + limpiados.join(', ') + '). Revísela al guardar.';
+                        this.avisosPresentacion = [aviso];
+                        notificar(aviso, 'warning');
+                    }
                 }
             },
             methods: {
@@ -219,6 +277,13 @@
                 },
                 tieneFuncion: function (columna) {
                     return PRB.esFuncion(columna.modo);
+                },
+                /* Cada combo de Ordenar excluye lo que usan los otros órdenes y conserva su propia clave */
+                opcionesOrdenDe: function (item) {
+                    return PRB.opcionesOrdenLibres(this.opcionesDeOrden, this.orden, item.uid);
+                },
+                opcionesFecha: function (filtro, extremo) {
+                    return PRB.opcionesFechaDinamica(filtro.operator, extremo);
                 },
                 celda: function (fila, columna) {
                     return PRB.formatearCelda(fila[columna.key], columna);
@@ -317,6 +382,8 @@
                     this.avisos          = [];
                     this.erroresConfig   = [];
                     this.firmaGuardada   = '';
+                    this.presentacion       = PRB.presentacionVacia();
+                    this.avisosPresentacion = [];
                     this.limpiarResultado();
                 },
                 /* Los operadores vienen por tipo y limitan los combos de filtros */
@@ -373,6 +440,8 @@
                         this.filtros         = [];
                         this.avisos          = [];
                         this.erroresConfig   = [];
+                        this.presentacion       = PRB.presentacionVacia();
+                        this.avisosPresentacion = [];
                         this.firmaGuardada   = this.firmaEditor;
                         this.seccion         = 'configurar';
                     } finally {
@@ -425,8 +494,11 @@
                         this.columnas        = estado.columnas;
                         this.orden           = estado.orden;
                         this.filtros         = estado.filtros;
-                        this.avisos          = (jsonConsulta.warnings || []).concat(estado.avisos);
+                        this.avisos          = (jsonConsulta.warnings || []).concat(estado.avisos, jsonConsulta.displayWarnings || []);
                         this.erroresConfig   = [];
+                        /* Las claves guardadas (c0, c1...) se convierten a uid de las columnas recién cargadas */
+                        this.presentacion       = PRB.presentacionDesdeConsulta(consulta, estado.columnas);
+                        this.avisosPresentacion = (jsonConsulta.displayWarnings || []).slice();
                         this.firmaGuardada   = this.firmaEditor;
                         this.seccion         = 'configurar';
                     } finally {
@@ -489,7 +561,9 @@
                         notificar('Puede ordenar hasta por ' + PRB.LIMITES.orden + ' campos.', 'warning');
                         return;
                     }
-                    this.orden.push({ uid: PRB.nuevoUid(), clave: this.opcionesDeOrden[0].clave, dir: 'ASC' });
+                    /* Toma la primera clave que ningún otro orden usa */
+                    if (this.opcionesOrdenLibres.length === 0) { return; }
+                    this.orden.push({ uid: PRB.nuevoUid(), clave: this.opcionesOrdenLibres[0].clave, dir: 'ASC' });
                 },
 
                 /* ---------------- Filtros ---------------- */
@@ -508,10 +582,21 @@
                     filtro.operator = PRB.operadoresDeTipo(campo.type, this.operadoresPermitidos)[0].value;
                     filtro.value    = '';
                     filtro.value2   = '';
+                    filtro.dinamico  = '';
+                    filtro.dinamico2 = '';
                 },
+                /* La fecha dinámica elegida se conserva solo si el nuevo operador la ofrece */
                 cambiarOperadorFiltro: function (filtro) {
                     if (filtro.operator !== 'between') {
-                        filtro.value2 = '';
+                        filtro.value2    = '';
+                        filtro.dinamico2 = '';
+                    }
+                    var codigo = filtro.dinamico;
+                    var sigue  = PRB.opcionesFechaDinamica(filtro.operator, 'value').some(function (opcion) {
+                        return opcion.value === codigo;
+                    });
+                    if (!sigue) {
+                        filtro.dinamico = '';
                     }
                 },
                 /* Solo cambia lo que se ve: construirConfig envía el número sin comas */
@@ -595,40 +680,120 @@
                     }
                 },
 
-                /* ---------------- Guardar ---------------- */
-                guardar: async function () {
-                    var nombre = this.nombre.trim();
+                /* ---------------- Guardar (modal) ---------------- */
+                /* Valida la configuración y abre el modal con una copia de la presentación guardada */
+                abrirModalGuardar: function () {
                     this.errorGeneral = '';
                     if (!this.validarAntesDeGuardar()) { return; }
+                    this.formGuardar        = PRB.copiarPresentacion(this.presentacion);
+                    this.compartidaOriginal = this.presentacion.isShared === 1;
+                    /* Sin permiso de administrador la consulta solo puede quedar privada (el servidor lo valida igual) */
+                    if (!this.esAdminCompania) {
+                        this.formGuardar.isShared = 0;
+                    }
+                    this.erroresModal = [];
+                    $('#prbModalGuardar').modal('show');
+                },
+                /* Cancelar descarta lo editado en el modal; el nombre digitado se conserva */
+                cerrarModalGuardar: function () {
+                    if (this.guardando) { return; }
+                    $('#prbModalGuardar').modal('hide');
+                },
+                mostrarErroresModal: function (errores) {
+                    this.erroresModal = errores;
+                    this.$nextTick(function () {
+                        var caja = document.getElementById('prbErroresModal');
+                        if (caja && caja.scrollIntoView) {
+                            caja.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                    });
+                },
+                /**
+                 * Envía saveQuery con la configuración y la presentación. Las columnas de la presentación se
+                 * convierten aquí a su clave posicional actual ("c" + índice en config.columns).
+                 */
+                confirmarGuardar: async function () {
+                    if (this.guardando) { return; }
+                    var nombre  = this.nombre.trim();
+                    var errores = [];
                     if (nombre === '') {
-                        this.erroresConfig = ['Escriba un nombre para guardar la consulta.'];
-                        this.irAElemento('prbErrores');
+                        errores.push('Escriba un nombre para guardar la consulta.');
+                    }
+                    errores = errores.concat(PRB.validarPresentacion(this.formGuardar, this.columnas, this.catalogos));
+                    var erroresConfig = PRB.validarConfig(this.configParaGuardar, this.catalogo, { permitirVacios: true });
+                    errores = errores.concat(erroresConfig);
+                    if (errores.length > 0) {
+                        this.mostrarErroresModal(errores);
                         return;
                     }
 
                     /* Firma tomada antes de enviar: lo editado mientras se guarda sigue contando como cambio */
-                    var firma = this.firmaEditor;
-                    var datos = { name: nombre, config: JSON.parse(JSON.stringify(this.configParaGuardar)) };
+                    var firma        = this.firmaEditor;
+                    var presentacion = PRB.copiarPresentacion(this.formGuardar);
+                    var datos        = {
+                        name:                   nombre,
+                        config:                 JSON.parse(JSON.stringify(this.configParaGuardar)),
+                        isShared:               (this.esAdminCompania && presentacion.isShared === 1) ? 1 : 0,
+                        viewTypeCatalogItemID:  Number(presentacion.viewTypeCatalogItemID) || 0,
+                        dashboardCatalogItemID: Number(presentacion.dashboardCatalogItemID) || 0,
+                        orden:                  Number(presentacion.orden) || 0,
+                        display:                PRB.construirDisplay(presentacion, this.columnas, this.catalogos)
+                    };
                     if (this.reportBuilderID) {
                         datos.reportBuilderID = this.reportBuilderID;
                     }
 
-                    this.guardando = true;
+                    this.guardando    = true;
+                    this.erroresModal = [];
                     try {
                         var json = await llamar('saveQuery', datos);
+                        /* Caso error: el mensaje del servidor queda visible dentro del modal */
                         if (json.error === true) {
-                            this.mostrarError(json.message);
+                            this.mostrarErroresModal([json.message]);
                             return;
                         }
-                        this.reportBuilderID = json.reportBuilderID || this.reportBuilderID;
-                        this.modo            = 'edicion';
-                        this.firmaGuardada   = firma;
-                        this.avisos          = [];
+                        presentacion.isShared   = datos.isShared;
+                        presentacion.orden      = datos.orden;
+                        this.presentacion       = presentacion;
+                        this.avisosPresentacion = [];
+                        this.reportBuilderID    = json.reportBuilderID || this.reportBuilderID;
+                        this.modo               = 'edicion';
+                        this.firmaGuardada      = firma;
+                        this.avisos             = [];
+                        this.erroresConfig      = [];
+                        this.guardando          = false;
+                        $('#prbModalGuardar').modal('hide');
                         notificar('Consulta guardada.', 'success');
                         this.cargarConsultas();
                     } finally {
                         this.guardando = false;
                     }
+                },
+
+                /* ---------------- Abrir en nueva página ---------------- */
+                /**
+                 * Envía la configuración actual (con filtros dinámicos, sin guardar) por un formulario normal a
+                 * viewResult en otra pestaña; esa página vuelve a ejecutar generate paginado a ancho completo.
+                 */
+                abrirNuevaPagina: function () {
+                    if (!this.validarAntesDeEnviar()) { return; }
+                    var config     = JSON.parse(this.firmaConfig);
+                    var formulario = document.createElement('form');
+                    formulario.method = 'post';
+                    formulario.action = URL_BASE + 'viewResult';
+                    formulario.target = '_blank';
+                    formulario.setAttribute('autocomplete', 'off');
+                    formulario.style.display = 'none';
+                    [['config', JSON.stringify(config)], ['dataViewID', String(config.dataViewID || '')]].forEach(function (par) {
+                        var campo   = document.createElement('input');
+                        campo.type  = 'hidden';
+                        campo.name  = par[0];
+                        campo.value = par[1];
+                        formulario.appendChild(campo);
+                    });
+                    document.body.appendChild(formulario);
+                    formulario.submit();
+                    document.body.removeChild(formulario);
                 },
 
                 /* ---------------- Mis consultas ---------------- */
@@ -716,6 +881,11 @@
             mounted: function () {
                 document.getElementById('app').style.visibility = 'visible';
                 pv2BindMobileBar();
+                /* Si el modal se cierra con Esc, se limpian sus mensajes */
+                var self = this;
+                $('#prbModalGuardar').on('hidden.bs.modal', function () {
+                    self.erroresModal = [];
+                });
                 this.cargarVistas();
                 this.cargarConsultas();
             }

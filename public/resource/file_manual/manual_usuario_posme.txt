@@ -1,132 +1,142 @@
 MANUAL DE USUARIO DE POSME
 ======================================================================
-Actualizado: 2026-11-06
+Actualizado: 2026-11-08
 
 INDICE
 ----------------------------------------------------------------------
 1. Cómo funcionan las pantallas de posMe (listas y registros)
 2. Facturar (crear una factura de venta)
-3. Anular una factura
-4. Registrar un abono de un cliente
-5. Cancelar una factura de crédito (pago total)
-6. Abono al capital
-7. Ver el estado de cuenta de un cliente
-8. Asignar clientes a un gestor de cobranza
-9. Cambiar el orden de visita o quitar un cliente de un gestor
-10. Crear un cliente
-11. Crear un producto
-12. Cambiar precios de productos
-13. Crear una tarjeta de fidelidad
-14. Ajustar el inventario
-15. Imprimir códigos de barra de productos (OPERACIONES o acciones sobre productos)
-16. Ejecutar procesos de inventario (salidas por fórmulas y XML para Encuentra24)
-17. Ver, reactivar o eliminar inmuebles desactivados (INMUEBLES DESAC)
-18. Qué contiene el menú TRANSA
-19. Configurar documentos del sistema y causales
-20. Registrar calificaciones de un alumno
-21. Registrar un endoso
-22. Registrar una orden de producción (insumos y resultados)
-23. Registrar el vencimiento de productos (fecha de expiración)
-24. Crear un reporte con el Constructor de Reportes (Builder Report)
-25. Guardar una consulta de reporte para usarla de nuevo
-26. Modificar, duplicar o eliminar una consulta de reporte guardada
-27. Exportar a Excel un reporte del Constructor de Reportes
-28. Registrar una compra de mercadería
-29. Qué contiene el menú ADM TALLER
-30. Registrar una orden de taller
-31. Registrar un pedido
-32. Registrar una zona de cliente
-33. Registrar una garantía
-34. Registrar una devolución de compra a proveedor
-35. Registrar una orden de compra
-36. Qué contiene el menú CXC
-37. Consultar o ajustar documentos de crédito de un cliente
-38. Consultar el buró de crédito de un cliente
-39. Crear una línea de crédito
-40. Registrar una nota de crédito de cliente
-41. Registrar una nota de débito de cliente
-42. Ejecutar procesos de CxC: descargar el archivo de créditos para SIN Riesgo
-43. Registrar un gasto
-44. Qué contiene el menú CXP
-45. Registrar una retención de proveedor
-46. Crear un proveedor
-47. Registrar una nota de débito de proveedor
-48. Registrar una nota de crédito de proveedor
-49. Qué contiene el menú CAJA
-50. Abrir caja
-51. Cerrar caja (cierre / arqueo)
-52. Ingresos y egresos de caja
-53. Crear o administrar cajas (ADM CAJA)
-54. Registrar una provisión de caja
-55. Registrar la asistencia de un cliente
-56. Qué contiene el menú BANCO
-57. Crear una cuenta bancaria
-58. Crear una chequera
-59. Emitir un cheque
-60. Notas de crédito y débito de banco
-61. Reportes de ventas
-62. Reportes de inventario
-63. Reportes de cuentas por cobrar y cobranza
-64. Ver estadísticas de inmuebles
-65. Ver estadísticas de clientes
-66. Ver el calendario de programación
-67. Programar una tarea o visita en el calendario
-68. Modificar, eliminar o imprimir un evento del calendario
-69. Qué contiene el menú CONTABILIDAD
-70. Configurar los niveles de cuenta
-71. Configurar la naturaleza de las cuentas
-72. Centros de costo
-73. Crear una cuenta contable
-74. Modificar o eliminar una cuenta contable
-75. Configurar monedas
-76. Actualizar el tipo de cambio (herramienta de monedas)
-77. Crear periodos y ciclos contables
-78. Abrir y cerrar periodos contables
-79. Registrar un comprobante contable
-80. Buscar, modificar, imprimir o eliminar un comprobante
-81. Contabilizar documentos
-82. Mayorizar y cerrar un ciclo contable
-83. Configurar los parámetros contables
-84. Indicadores contables
-85. Qué contiene el menú ACTIVOS FIJOS
-86. Crear un activo fijo
-87. Modificar o eliminar un activo fijo
-88. Registrar una entrada de activos
-89. Registrar una salida de activos
-90. Registrar la depreciación de activos
-91. Registrar la valoración de activos
-92. Trasladar piezas entre activos (traslado o transferencia de piezas)
-93. Qué contiene el menú PLANILLA
-94. Crear una planilla de pago
-95. Registrar adelantos a colaboradores
-96. Registrar la liquidación de un colaborador
-97. Registrar un permiso de un colaborador
-98. Qué contiene el menú de colaboradores (RRHH)
-99. Crear un colaborador
-100. Modificar o eliminar un colaborador
-101. Agregar teléfonos y correos de un colaborador
-102. Registrar la asistencia de un colaborador
-103. Ver la ubicación de los colaboradores en el mapa (GPS)
-104. Crear una tarea para un colaborador
-105. Modificar o eliminar una tarea
-106. Ver las tareas en el tablero Kanban
-107. Seguridad: qué contiene el menú SEGURIDAD
-108. Iniciar sesión en posMe
-109. Olvidé mi contraseña (reenviar contraseña)
-110. Cerrar sesión (salir, salgo de posMe)
-111. Cambiar mi contraseña o mi correo (editar perfil)
-112. Crear un usuario (creo un usuario nuevo)
-113. Modificar o eliminar un usuario
-114. Crear un rol
-115. Permisos por pantalla de un rol (ver, crear, editar, eliminar)
-116. Autorizaciones de un rol
-117. Dar acceso al asistente Jordania (Asistente IA)
-118. Sucursales
-119. Notificaciones y recordatorios (CONFIG. NOTI)
-120. Ver quién entró: sesiones y actividad de un usuario (LOG SESSION)
-121. Actualizar (uso de soporte)
-122. Parámetros de la empresa
-123. Soporte
+3. Imprimir una factura (Preview, A4 o directo a la impresora)
+4. Preparar un equipo para imprimir facturas con QZ Tray
+5. Avisos al imprimir facturas con QZ Tray y qué hacer
+6. Anular una factura
+7. Registrar un abono de un cliente
+8. Cancelar una factura de crédito (pago total)
+9. Abono al capital
+10. Ver el estado de cuenta de un cliente
+11. Asignar clientes a un gestor de cobranza
+12. Cambiar el orden de visita o quitar un cliente de un gestor
+13. Crear un cliente
+14. Crear un producto
+15. Cambiar precios de productos
+16. Crear una tarjeta de fidelidad
+17. Ajustar el inventario
+18. Imprimir códigos de barra de productos (OPERACIONES o acciones sobre productos)
+19. Ejecutar procesos de inventario (salidas por fórmulas y XML para Encuentra24)
+20. Ver, reactivar o eliminar inmuebles desactivados (INMUEBLES DESAC)
+21. Qué contiene el menú TRANSA
+22. Configurar documentos del sistema y causales
+23. Registrar calificaciones de un alumno
+24. Registrar un endoso
+25. Registrar una orden de producción (insumos y resultados)
+26. Registrar el vencimiento de productos (fecha de expiración)
+27. Crear un reporte con el Constructor de Reportes (Builder Report)
+28. Vistas, datos y límites del Constructor de Reportes
+29. Filtrar por fechas que se calculan solas en el Constructor de Reportes (inicio del mes, hoy)
+30. Abrir el resultado del Constructor de Reportes en una nueva página
+31. Guardar una consulta de reporte para usarla de nuevo
+32. Compartir una consulta de reporte con todos los usuarios
+33. Mostrar una consulta de reporte como tarjeta en un dashboard (gráfico, tabla o indicador)
+34. Modificar, duplicar o eliminar una consulta de reporte guardada
+35. Exportar a Excel un reporte del Constructor de Reportes
+36. Ver las tarjetas de reportes en el dashboard
+37. Registrar una compra de mercadería
+38. Qué contiene el menú ADM TALLER
+39. Registrar una orden de taller
+40. Registrar un pedido
+41. Registrar una zona de cliente
+42. Registrar una garantía
+43. Registrar una devolución de compra a proveedor
+44. Registrar una orden de compra
+45. Qué contiene el menú CXC
+46. Consultar o ajustar documentos de crédito de un cliente
+47. Consultar el buró de crédito de un cliente
+48. Crear una línea de crédito
+49. Registrar una nota de crédito de cliente
+50. Registrar una nota de débito de cliente
+51. Ejecutar procesos de CxC: descargar el archivo de créditos para SIN Riesgo
+52. Registrar un gasto
+53. Qué contiene el menú CXP
+54. Registrar una retención de proveedor
+55. Crear un proveedor
+56. Registrar una nota de débito de proveedor
+57. Registrar una nota de crédito de proveedor
+58. Qué contiene el menú CAJA
+59. Abrir caja
+60. Cerrar caja (cierre / arqueo)
+61. Ingresos y egresos de caja
+62. Crear o administrar cajas (ADM CAJA)
+63. Registrar una provisión de caja
+64. Registrar la asistencia de un cliente
+65. Qué contiene el menú BANCO
+66. Crear una cuenta bancaria
+67. Crear una chequera
+68. Emitir un cheque
+69. Notas de crédito y débito de banco
+70. Reportes de ventas
+71. Reportes de inventario
+72. Reportes de cuentas por cobrar y cobranza
+73. Ver estadísticas de inmuebles
+74. Ver estadísticas de clientes
+75. Ver el calendario de programación
+76. Programar una tarea o visita en el calendario
+77. Modificar, eliminar o imprimir un evento del calendario
+78. Qué contiene el menú CONTABILIDAD
+79. Configurar los niveles de cuenta
+80. Configurar la naturaleza de las cuentas
+81. Centros de costo
+82. Crear una cuenta contable
+83. Modificar o eliminar una cuenta contable
+84. Configurar monedas
+85. Actualizar el tipo de cambio (herramienta de monedas)
+86. Crear periodos y ciclos contables
+87. Abrir y cerrar periodos contables
+88. Registrar un comprobante contable
+89. Buscar, modificar, imprimir o eliminar un comprobante
+90. Contabilizar documentos
+91. Mayorizar y cerrar un ciclo contable
+92. Configurar los parámetros contables
+93. Indicadores contables
+94. Qué contiene el menú ACTIVOS FIJOS
+95. Crear un activo fijo
+96. Modificar o eliminar un activo fijo
+97. Registrar una entrada de activos
+98. Registrar una salida de activos
+99. Registrar la depreciación de activos
+100. Registrar la valoración de activos
+101. Trasladar piezas entre activos (traslado o transferencia de piezas)
+102. Qué contiene el menú PLANILLA
+103. Crear una planilla de pago
+104. Registrar adelantos a colaboradores
+105. Registrar la liquidación de un colaborador
+106. Registrar un permiso de un colaborador
+107. Qué contiene el menú de colaboradores (RRHH)
+108. Crear un colaborador
+109. Modificar o eliminar un colaborador
+110. Agregar teléfonos y correos de un colaborador
+111. Registrar la asistencia de un colaborador
+112. Ver la ubicación de los colaboradores en el mapa (GPS)
+113. Crear una tarea para un colaborador
+114. Modificar o eliminar una tarea
+115. Ver las tareas en el tablero Kanban
+116. Seguridad: qué contiene el menú SEGURIDAD
+117. Iniciar sesión en posMe
+118. Olvidé mi contraseña (reenviar contraseña)
+119. Cerrar sesión (salir, salgo de posMe)
+120. Cambiar mi contraseña o mi correo (editar perfil)
+121. Crear un usuario (creo un usuario nuevo)
+122. Modificar o eliminar un usuario
+123. Crear un rol
+124. Marcar un rol como administrador de compañía
+125. Permisos por pantalla de un rol (ver, crear, editar, eliminar)
+126. Autorizaciones de un rol
+127. Dar acceso al asistente Jordania (Asistente IA)
+128. Sucursales
+129. Notificaciones y recordatorios (CONFIG. NOTI)
+130. Ver quién entró: sesiones y actividad de un usuario (LOG SESSION)
+131. Actualizar (uso de soporte)
+132. Parámetros de la empresa
+133. Soporte
 
 1. CÓMO FUNCIONAN LAS PANTALLAS DE POSME (LISTAS Y REGISTROS)
 ----------------------------------------------------------------------
@@ -149,8 +159,42 @@ Ruta: Menú > FACTURACION > FACTURAR (o FACTURACION > NUEVA FACTURA).
   6. Presione PROCESAR PAGO, registre lo recibido (efectivo, tarjeta, transferencia, córdobas o dólares) y aplique la factura.
   7. Use IMPRIMIR para imprimir el ticket o factura.
 Notas: algunas cajas exigen tener la caja abierta (ABRIR CAJA) antes de facturar.
+Ver también: Imprimir una factura (Preview, A4 o directo a la impresora).
 
-3. ANULAR UNA FACTURA
+3. IMPRIMIR UNA FACTURA (PREVIEW, A4 O DIRECTO A LA IMPRESORA)
+----------------------------------------------------------------------
+Ruta: Menú > FACTURACION > FACTURAR (nueva factura o edición de una factura).
+  1. Con la factura guardada, presione IMPRIMIR.
+  2. Según la configuración de su empresa, se abre la ventana Opciones de impresion. Presione el formato que desea: Preview (documento), Preview A4 o Preview A4 Blanco. Los botones visibles y sus nombres dependen de la configuración de su empresa. Cerrar cierra la ventana sin imprimir.
+  3. Normalmente se abre una pestaña nueva con la vista de impresión; imprima desde allí con el diálogo del navegador.
+Impresión directa con QZ Tray: si su empresa tiene activada la impresión con QZ Tray, al presionar Preview la factura se envía directo a la impresora configurada para su empresa (o a la impresora predeterminada del equipo), sin abrir la vista ni el diálogo de impresión. Aparece el aviso "Documento enviado a la impresora: ..." con el nombre de la impresora.
+Si no se puede imprimir con QZ Tray aparece el aviso "No se pudo imprimir con QZ Tray: (motivo). Se abrirá la vista de impresión." y se abre la vista de impresión de siempre, para imprimir de la forma normal.
+Notas: Preview A4 y Preview A4 Blanco siguen abriendo la vista de impresión. Si QZ Tray no está activado para su empresa, todo funciona como antes.
+Ver también: Preparar un equipo para imprimir facturas con QZ Tray; Avisos al imprimir facturas con QZ Tray y qué hacer.
+
+4. PREPARAR UN EQUIPO PARA IMPRIMIR FACTURAS CON QZ TRAY
+----------------------------------------------------------------------
+Lo realiza el técnico o implementador de posMe, una vez en cada computadora que imprime facturas.
+  1. Instalar el programa QZ Tray (versión 2.2) y dejarlo abierto; se ve como un ícono en la bandeja, junto al reloj de Windows.
+  2. Copiar el certificado de la empresa en la carpeta de instalación de QZ Tray con el nombre override.crt y reiniciar QZ Tray.
+  3. Verificar que la impresora esté instalada en Windows con el nombre exacto configurado para la empresa, o que sea la impresora predeterminada del equipo.
+  4. En el navegador, permitir las ventanas emergentes del sitio de posMe. Si se bloquean, la vista de impresión de respaldo no se abre.
+  5. Hacer una factura de prueba y presionar IMPRIMIR > Preview. La primera vez QZ Tray puede pedir permiso: marque "Remember this decision" y presione Allow. Desde entonces imprime sin preguntar.
+Notas: la activación de QZ Tray y el nombre de la impresora se configuran por empresa. Los pasos técnicos completos están en el instructivo QZ_TRAY_INSTALACION.md, que tiene el técnico.
+Ver también: Imprimir una factura (Preview, A4 o directo a la impresora).
+
+5. AVISOS AL IMPRIMIR FACTURAS CON QZ TRAY Y QUÉ HACER
+----------------------------------------------------------------------
+Ruta: Menú > FACTURACION > FACTURAR > IMPRIMIR > Preview.
+Cuando aparece un aviso de QZ Tray, la factura no se envía a la impresora y se abre la vista de impresión normal para imprimir de la forma de siempre.
+  * "QZ Tray no está instalado o no está abierto en este equipo": abra QZ Tray (o pida al técnico que lo instale) y vuelva a imprimir.
+  * "No se encontró la impresora ..." o "No hay impresora predeterminada configurada": la impresora no existe en Windows con ese nombre o el equipo no tiene impresora predeterminada. Avise al técnico.
+  * "La vista de impresión no devolvió un PDF" (o "devolvió un PDF vacío"): el formato de impresión configurado para su empresa no genera PDF. Avise al administrador o al técnico.
+  * QZ Tray muestra "Untrusted website" (sitio no confiable) o falla la firma: el equipo no tiene el certificado override.crt o no es el de su empresa. Avise al técnico.
+  * Falla QZ Tray y no se abre ninguna vista de impresión: el navegador bloqueó la ventana emergente. Permita las ventanas emergentes del sitio de posMe.
+Ver también: Preparar un equipo para imprimir facturas con QZ Tray.
+
+6. ANULAR UNA FACTURA
 ----------------------------------------------------------------------
 Ruta: Menú > FACTURACION > FACTURAR.
   1. Busque la factura en la lista y ábrala.
@@ -160,7 +204,7 @@ Ruta: Menú > FACTURACION > FACTURAR.
 Restricciones: no se puede anular una factura de crédito que ya tiene abonos, ni una factura de un periodo contable cerrado. Se requiere permiso de eliminar en FACTURAR.
 Ver también: Mayorizar y cerrar un ciclo contable.
 
-4. REGISTRAR UN ABONO DE UN CLIENTE
+7. REGISTRAR UN ABONO DE UN CLIENTE
 ----------------------------------------------------------------------
 Ruta: Menú > CAJA > ABONO.
   1. Entre a CAJA > ABONO y presione Nuevo.
@@ -171,20 +215,20 @@ Ruta: Menú > CAJA > ABONO.
   6. Use Ver movimientos para ver los movimientos del documento.
 Ver también: CAJA > CANC FAC (cancelar el total de una factura de crédito) y CAJA > ABONO CAP (abono directo al capital).
 
-5. CANCELAR UNA FACTURA DE CRÉDITO (PAGO TOTAL)
+8. CANCELAR UNA FACTURA DE CRÉDITO (PAGO TOTAL)
 ----------------------------------------------------------------------
 Ruta: Menú > CAJA > CANC FAC.
   1. Presione Nuevo y seleccione el cliente.
   2. Presione Agregar documento y elija la factura a cancelar.
   3. Revise el monto y presione Guardar.
 
-6. ABONO AL CAPITAL
+9. ABONO AL CAPITAL
 ----------------------------------------------------------------------
 Ruta: Menú > CAJA > ABONO CAP.
   1. Presione Nuevo, seleccione el cliente y el documento.
   2. Indique el monto a abonar al capital y presione Guardar.
 
-7. VER EL ESTADO DE CUENTA DE UN CLIENTE
+10. VER EL ESTADO DE CUENTA DE UN CLIENTE
 ----------------------------------------------------------------------
 Ruta: Menú > CXC > REPORTES (Estado de cuenta / Estado del cliente).
   1. Entre a CXC > REPORTES y elija el reporte de estado de cuenta del cliente.
@@ -192,7 +236,7 @@ Ruta: Menú > CXC > REPORTES (Estado de cuenta / Estado del cliente).
   3. Presione el botón para ver el reporte; se puede imprimir o exportar.
 También puede preguntarle a Jordania: "¿Cuánto me debe <cliente>?".
 
-8. ASIGNAR CLIENTES A UN GESTOR DE COBRANZA
+11. ASIGNAR CLIENTES A UN GESTOR DE COBRANZA
 ----------------------------------------------------------------------
 Ruta: Menú > COBRANZA > GESTORES.
 Sirve para indicar qué clientes visita cada gestor (cobrador o asesor) y en qué orden de visita (ruta de cobro).
@@ -209,7 +253,7 @@ Mensajes de validación:
 Notas: si deja Orden No vacío el cliente se agrega sin un número de orden fijo. Según la configuración de su empresa los nombres pueden cambiar (por ejemplo Ruta en lugar de Colaborador y "CLIENTES POR RUTAS" como título de la lista).
 Ver también: Cambiar el orden de visita o quitar un cliente de un gestor.
 
-9. CAMBIAR EL ORDEN DE VISITA O QUITAR UN CLIENTE DE UN GESTOR
+12. CAMBIAR EL ORDEN DE VISITA O QUITAR UN CLIENTE DE UN GESTOR
 ----------------------------------------------------------------------
 Ruta: Menú > COBRANZA > GESTORES.
 Cambiar el gestor o el orden de visita de un cliente:
@@ -223,7 +267,7 @@ Quitar un cliente de un gestor:
   2. Confirme el mensaje "Desea eliminar este Registro...".
 Ver también: Asignar clientes a un gestor de cobranza.
 
-10. CREAR UN CLIENTE
+13. CREAR UN CLIENTE
 ----------------------------------------------------------------------
 Ruta: Menú > CXC > CLIENTES. La lista se llama LISTA DE CLIENTES. Según la configuración de su empresa, títulos, campos y pestañas pueden cambiar.
   1. Presione Nuevo.
@@ -238,7 +282,7 @@ Notas: Limite de Credito y Balance traen un valor inicial alto: revíselos. Si n
 Para modificarlo, selecciónelo y presione Editar. Si el balance supera el límite aparece "BALANCE NO PUEDE SER MAYOR QUE EL LIMITE EN LA LINEA".
 Ver también: Crear una línea de crédito.
 
-11. CREAR UN PRODUCTO
+14. CREAR UN PRODUCTO
 ----------------------------------------------------------------------
 Ruta: Menú > INVENTARIO > PRODUCTO.
   1. Presione Nuevo.
@@ -248,7 +292,7 @@ Ruta: Menú > INVENTARIO > PRODUCTO.
   5. Opcional: pestaña Sku para presentaciones (caja, paquete) con Agregar SKU.
   6. Presione Guardar.
 
-12. CAMBIAR PRECIOS DE PRODUCTOS
+15. CAMBIAR PRECIOS DE PRODUCTOS
 ----------------------------------------------------------------------
 Ruta: Menú > FACTURACION > PRECIOS. La lista se llama LISTA DE PRECIO. Aquí se cambian los precios de toda una lista con un archivo.
 Para un solo producto use Menú > INVENTARIO > PRODUCTO, pestaña Precios (lista predeterminada de su empresa).
@@ -265,7 +309,7 @@ Notas:
   * La columna Costo no cambia el costo del producto.
   * Según su estado, la lista puede no permitir cambios o permitir solo cambiar el Estado; en ese caso no se importa ni se genera el archivo.
 
-13. CREAR UNA TARJETA DE FIDELIDAD
+16. CREAR UNA TARJETA DE FIDELIDAD
 ----------------------------------------------------------------------
 Ruta: Menú > VENTAS > FIDELIDAD. La lista se llama LISTA DE TARJETAS DE FIDELIDAD.
   1. Presione Nuevo. Se abre la pantalla de la tarjeta.
@@ -279,7 +323,7 @@ Notas:
   * Imprimir genera la tarjeta en PDF.
 Para modificarla, selecciónela en la lista y presione Editar, o escriba su número en Buscar por número… y presione el botón de buscar. Arriba tiene Nuevo, Atras, Eliminar, Imprimir y Guardar; en Mas > Archivos adjunta documentos en una ventana nueva. Según su estado, la tarjeta puede no permitir cambios, permitir solo cambiar el Estado o no permitir eliminarla.
 
-14. AJUSTAR EL INVENTARIO
+17. AJUSTAR EL INVENTARIO
 ----------------------------------------------------------------------
 Ruta: Menú > INVENTARIO > AJUSTE.
   1. Presione Nuevo, elija la bodega y la fecha.
@@ -287,7 +331,7 @@ Ruta: Menú > INVENTARIO > AJUSTE.
   3. Presione Guardar y aplique el documento para que afecte la existencia.
 Otras opciones: INVENTARIO > O. ENTRADAS (otras entradas), INVENTARIO > O. SALIDAS (otras salidas), INVENTARIO > T. SALIDA y T. ENTRADA (traslados entre bodegas).
 
-15. IMPRIMIR CÓDIGOS DE BARRA DE PRODUCTOS (OPERACIONES O ACCIONES SOBRE PRODUCTOS)
+18. IMPRIMIR CÓDIGOS DE BARRA DE PRODUCTOS (OPERACIONES O ACCIONES SOBRE PRODUCTOS)
 ----------------------------------------------------------------------
 Ruta: Menú > INVENTARIO > OPERACIONES. La lista se llama ACCIONES SOBRE PRODUCTOS.
   1. En la fila de cada producto escriba cuántas etiquetas quiere imprimir. Deje vacío o en 0 los que no quiera imprimir.
@@ -299,7 +343,7 @@ Notas:
   * Escriba las cantidades e imprima sin cambiar de página ni filtrar la tabla: solo se toman los productos que se ven en ese momento.
 Ver también: Crear un producto.
 
-16. EJECUTAR PROCESOS DE INVENTARIO (SALIDAS POR FÓRMULAS Y XML PARA ENCUENTRA24)
+19. EJECUTAR PROCESOS DE INVENTARIO (SALIDAS POR FÓRMULAS Y XML PARA ENCUENTRA24)
 ----------------------------------------------------------------------
 Ruta: Menú > INVENTARIO > PROCESOS. La pantalla se llama Procesos de inventario y tiene dos tarjetas.
 Salidas de inventario por fórmulas: crea la salida de inventario de los productos que componen a los productos formulados vendidos en el ciclo elegido.
@@ -311,7 +355,7 @@ Notas: toma solo facturas en estado APLICADO. La salida se registra en la bodega
 XML para Encuentra24:
   1. En la tarjeta XML para Encuentra24 presione Aceptar. Se abre una pestaña nueva y se descarga un archivo XML con los inmuebles.
 
-17. VER, REACTIVAR O ELIMINAR INMUEBLES DESACTIVADOS (INMUEBLES DESAC)
+20. VER, REACTIVAR O ELIMINAR INMUEBLES DESACTIVADOS (INMUEBLES DESAC)
 ----------------------------------------------------------------------
 Ruta: Menú > INVENTARIO > INMUEBLES DESAC. La lista se llama LISTA DE INMUEBLES DESACTIVADOS.
 Reactivar un inmueble:
@@ -325,7 +369,7 @@ Notas:
   * Si escribe el código de un registro activo, se abre su edición.
 Ver también: Crear un producto.
 
-18. QUÉ CONTIENE EL MENÚ TRANSA
+21. QUÉ CONTIENE EL MENÚ TRANSA
 ----------------------------------------------------------------------
 Ruta: Menú > TRANSA.
 El menú TRANSA reúne estas opciones (cada usuario ve las que su rol tenga permitidas):
@@ -338,7 +382,7 @@ El menú TRANSA reúne estas opciones (cada usuario ve las que su rol tenga perm
 Notas: la opción NOTAS de este menú es para calificaciones. No es una nota de crédito ni de débito: esas están en CXC y en CXP.
 Ver también: Configurar documentos del sistema y causales; Registrar un endoso; Registrar calificaciones de un alumno; Crear un reporte con el Constructor de Reportes (Builder Report).
 
-19. CONFIGURAR DOCUMENTOS DEL SISTEMA Y CAUSALES
+22. CONFIGURAR DOCUMENTOS DEL SISTEMA Y CAUSALES
 ----------------------------------------------------------------------
 Ruta: Menú > TRANSA > DOCUMENTOS. La lista se llama LISTA DE DOCUMENTOS. Aquí no se crean ni se eliminan documentos: solo se configuran.
   1. Seleccione el documento y presione Editar.
@@ -351,7 +395,7 @@ Mensaje de validación: "Siempre el documento tiene que tener un Causal Principa
 Notas: si falta Concepto, Cuenta o el causal, o en Agregar causal falta Sucursal o Nombre, el botón no hace nada ni muestra aviso. Un causal recién agregado no carga configuración hasta presionar Guardar.
 Ver también: Contabilizar documentos.
 
-20. REGISTRAR CALIFICACIONES DE UN ALUMNO
+23. REGISTRAR CALIFICACIONES DE UN ALUMNO
 ----------------------------------------------------------------------
 Ruta: Menú > TRANSA > NOTAS. La pantalla se llama Notas.
   1. En Filtrar por elija Grado, Año, Meses y Días (Meses se habilita al elegir el año).
@@ -364,7 +408,7 @@ Certificado: con Grado, Año y Alumno, presione Certificado.
 Mensajes de validación: "Debe seleccionar un Grado", "Debe seleccionar un año", "Debe seleccionar un mes", "Debe seleccionar el dia para aplicar", "Debe seleccionar un alumno" (al consultar o imprimir), "Debe seleccionar un Alumno" (al guardar o eliminar), "Debe seleccionar un Profesor", "Debe seleccionar una Materia", "Debe seleccionar un valor cualitativo" y "Debe especificar un valor cuantitativo".
 Notas: al cambiar la calificación cualitativa se borra la cuantitativa. Si el número sale del rango, se avisa y se borra.
 
-21. REGISTRAR UN ENDOSO
+24. REGISTRAR UN ENDOSO
 ----------------------------------------------------------------------
 Ruta: Menú > TRANSA > ENDOSOS. La lista se llama LISTA DE ENDOSOS.
 Un endoso cambia un dato de una factura, una compra o un activo fijo y guarda el valor anterior y el nuevo.
@@ -378,7 +422,7 @@ Mensaje de validación: "Seleccionar un valor nuevo para endoso".
 Para modificarlo, búsquelo por número o selecciónelo en la lista y presione Editar. Arriba tiene Nuevo, Atras, Imprimir, Eliminar y Guardar. Eliminar pide confirmar "Desea eliminar este Registro...".
 Restricciones: un endoso APLICADO ya no se puede modificar ni eliminar. Tampoco se puede modificar si su ciclo contable está cerrado ("EL DOCUMENTO NO PUEDE ACTUALIZARCE, EL CICLO CONTABLE ESTA CERRADO").
 
-22. REGISTRAR UNA ORDEN DE PRODUCCIÓN (INSUMOS Y RESULTADOS)
+25. REGISTRAR UNA ORDEN DE PRODUCCIÓN (INSUMOS Y RESULTADOS)
 ----------------------------------------------------------------------
 Ruta: Menú > TRANSA > PRODUCCION. La lista se llama LISTA DE ORDENES DE PRODUCCION.
   1. Presione Nuevo. Se abre Agregar Orden De Produccion.
@@ -392,7 +436,7 @@ Quitar o cambiar una línea: márquela y presione Eliminar o Editar.
 Para modificarla, selecciónela en la lista y presione Editar, o use Buscar por número…. Arriba tiene Nuevo, Atras, Eliminar, Imprimir y Guardar; adjuntos en Mas > Archivos.
 El inventario se mueve al guardar en estado APLICADO: sale cada insumo de su Bodega Origen y entra cada resultado en su Bodega Destino.
 
-23. REGISTRAR EL VENCIMIENTO DE PRODUCTOS (FECHA DE EXPIRACIÓN)
+26. REGISTRAR EL VENCIMIENTO DE PRODUCTOS (FECHA DE EXPIRACIÓN)
 ----------------------------------------------------------------------
 Ruta: Menú > TRANSA > VENCIMIENTO. La pantalla se llama FECHA DE EXPIRACION.
 Las fechas se cambian con un archivo: se descarga, se corrige en el equipo, se sube y se procesa.
@@ -412,17 +456,23 @@ Mensajes:
   * "EL ARCHIVO expired_items.csv NO TIENE EL FORMATO CORRECTO": alguna línea tiene columnas de más o de menos.
 El separador de columnas del archivo depende de la configuración de su empresa.
 
-24. CREAR UN REPORTE CON EL CONSTRUCTOR DE REPORTES (BUILDER REPORT)
+27. CREAR UN REPORTE CON EL CONSTRUCTOR DE REPORTES (BUILDER REPORT)
 ----------------------------------------------------------------------
 Ruta: Menú > TRANSA > BUILDER REPORT. La pantalla tiene las pestañas 1. Vistas, 2. Configurar y 3. Mis consultas.
   1. En 1. Vistas elija una vista; Buscar vista filtra la lista.
   2. En Mostrar agregue campos con Agregar columna... o Todas. En cada columna puede cambiar Título, Tipo y Alineación, moverla o quitarla.
   3. Para resumir, en Agrupar / calcular elija Agrupar por este campo en unas columnas y Suma, Conteo, Promedio, Mínimo o Máximo en las demás. Da una fila por grupo; no hay subtotales ni total general.
-  4. Opcional: Agregar orden y Agregar filtro. Un filtro sin valor no se aplica.
+  4. Opcional: Agregar orden y Agregar filtro. Un filtro sin valor no se aplica. Puede filtrar el mismo campo más de una vez.
   5. Presione Generar. Vea el Resultado; cambie Filas por página o avance con las flechas.
+Listas: Mostrar, Ordenar y Filtrar tienen su propia barra de desplazamiento. Los combos de Mostrar y Ordenar no repiten los campos ya agregados (salvo los que llevan un cálculo, como Suma); al quitar uno vuelve a aparecer.
+Teléfono: el resultado se ve en tarjetas y Generar queda en la barra inferior.
+Ver también: Vistas, datos y límites del Constructor de Reportes; Filtrar por fechas que se calculan solas en el Constructor de Reportes; Abrir el resultado del Constructor de Reportes en una nueva página; Guardar una consulta de reporte para usarla de nuevo.
+
+28. VISTAS, DATOS Y LÍMITES DEL CONSTRUCTOR DE REPORTES
+----------------------------------------------------------------------
+Ruta: Menú > TRANSA > BUILDER REPORT.
 Vistas: aparecen las registradas por el administrador para su empresa y el tipo de negocio (flavor) de esta, siempre que usted tenga permitido su menú de origen. Por ejemplo, Ventas por cliente incluye solo facturas aplicadas y exige acceso a Facturación.
 Datos: según el permiso de su rol ve toda la empresa, su sucursal o solo lo que usted creó.
-Teléfono: el resultado se ve en tarjetas y Generar queda en la barra inferior.
 Límites, según la configuración de su empresa (valores sugeridos): 100 filas por página, 5,000 filas en pantalla y 30 segundos por consulta.
 Mensajes:
   * "Agregue al menos una columna en "Mostrar"."
@@ -430,33 +480,91 @@ Mensajes:
   * "La consulta tardo demasiado y fue cancelada. Reduzca el rango de fechas o agregue filtros."
   * "No tiene vistas disponibles para reportes."
 Notas: tras asignarle el permiso, el usuario debe cerrar sesión y volver a entrar.
-Ver también: Guardar una consulta de reporte para usarla de nuevo.
+Ver también: Crear un reporte con el Constructor de Reportes (Builder Report).
 
-25. GUARDAR UNA CONSULTA DE REPORTE PARA USARLA DE NUEVO
+29. FILTRAR POR FECHAS QUE SE CALCULAN SOLAS EN EL CONSTRUCTOR DE REPORTES (INICIO DEL MES, HOY)
+----------------------------------------------------------------------
+Ruta: Menú > TRANSA > BUILDER REPORT, pestaña 2. Configurar, bloque Filtrar.
+En un filtro de un campo de fecha, cada fecha tiene un combo para elegir cómo se toma:
+  1. Fecha manual: escriba o elija la fecha en el calendario. Queda fija.
+  2. Una fecha que se calcula cada vez que se ejecuta el reporte, según el día de hoy:
+     * Desde: Inicio del día, Inicio del mes o Inicio del año.
+     * Hasta: Fin del día, Día de hoy, Fin del mes o Fin del año.
+     * En los demás tipos de filtro (Valor) se ofrecen según la condición elegida.
+Ejemplo "Ventas del mes": filtre la fecha con Entre, Desde = Inicio del mes y Hasta = Fin del mes. Al guardarla, cada mes muestra solo las ventas de ese mes sin cambiar nada.
+Las fechas calculadas se respetan igual al Generar, al Exportar a Excel, en Abrir en nueva página y en las tarjetas de los dashboards.
+Notas: puede filtrar el mismo campo más de una vez (por ejemplo, una condición "mayor o igual" y otra "menor o igual"). Fin del día y Día de hoy dan el mismo resultado.
+Ver también: Crear un reporte con el Constructor de Reportes (Builder Report).
+
+30. ABRIR EL RESULTADO DEL CONSTRUCTOR DE REPORTES EN UNA NUEVA PÁGINA
+----------------------------------------------------------------------
+Ruta: Menú > TRANSA > BUILDER REPORT, pestaña 2. Configurar.
+  1. Configure el reporte o abra una consulta guardada.
+  2. Presione Abrir en nueva página. Se abre otra pestaña del navegador con solo el Resultado, a todo el ancho de la pantalla.
+  3. Use Filas por página y las flechas Anterior y Siguiente igual que en el constructor.
+Se usan las columnas, el orden y los filtros que hay en pantalla en ese momento, aunque no estén guardados.
+Restricciones: el botón se habilita cuando la configuración está completa (las mismas reglas que Generar).
+Mensajes:
+  * "No hay datos para los criterios seleccionados."
+  * "No se recibió la configuración del reporte. Vuelva a abrirlo desde el constructor.": vuelva a presionar el botón desde el constructor.
+  * Si aparece un error, presione Reintentar.
+Ver también: Crear un reporte con el Constructor de Reportes (Builder Report).
+
+31. GUARDAR UNA CONSULTA DE REPORTE PARA USARLA DE NUEVO
 ----------------------------------------------------------------------
 Ruta: Menú > TRANSA > BUILDER REPORT, pestaña 2. Configurar.
   1. Configure el reporte (columnas, agrupación, orden y filtros).
-  2. Escriba Nombre de la consulta.
-  3. Presione Guardar como consulta recurrente. Aparece "Consulta guardada." y queda en 3. Mis consultas.
+  2. Presione Guardar como consulta recurrente. Se abre la ventana Guardar consulta.
+  3. Escriba Nombre de la consulta (obligatorio).
+  4. Elija Visibilidad: Solo para mí o Para todos los usuarios (esta opción solo la ven los administradores de compañía).
+  5. Opcional: Tipo de vista (Gráfico o Reporte), Dashboard donde se mostrará y Orden. Con — Ninguno — en Dashboard la consulta no aparece en ningún dashboard.
+  6. Presione Guardar. Aparece "Consulta guardada." y queda en 3. Mis consultas. Cancelar cierra la ventana sin guardar.
 Un filtro sin valor se guarda y se llena al usar la consulta; mientras esté vacío no se aplica.
 Usar una consulta guardada:
   1. En 3. Mis consultas haga clic en su nombre. Se abre en modo Consulta, con el resumen de lo que muestra, y solo se pueden cambiar los valores de los filtros.
   2. Presione Generar o Exportar a Excel. La consulta no se ejecuta sola al abrirla.
 Los valores que cambie en modo Consulta aplican a esa ejecución y no se guardan. Para conservarlos presione Editar configuración y luego Guardar como consulta recurrente.
-Restricciones: cada consulta la ve solo su dueño dentro de la empresa.
+Restricciones: en 3. Mis consultas cada usuario ve solo las consultas que creó.
 Mensajes:
   * "Escriba un nombre para guardar la consulta."
   * "Ya tiene una consulta con ese nombre."
   * "El filtro "..." necesita los dos valores de "Entre"." (al generar con un solo extremo lleno)
-Ver también: Modificar, duplicar o eliminar una consulta de reporte guardada.
+Ver también: Compartir una consulta de reporte con todos los usuarios; Mostrar una consulta de reporte como tarjeta en un dashboard.
 
-26. MODIFICAR, DUPLICAR O ELIMINAR UNA CONSULTA DE REPORTE GUARDADA
+32. COMPARTIR UNA CONSULTA DE REPORTE CON TODOS LOS USUARIOS
+----------------------------------------------------------------------
+Ruta: Menú > TRANSA > BUILDER REPORT > Guardar como consulta recurrente > ventana Guardar consulta.
+  1. En Visibilidad elija Para todos los usuarios.
+  2. Elija el Dashboard donde se mostrará y configure la tarjeta.
+  3. Presione Guardar. En 3. Mis consultas la consulta lleva la marca Compartida.
+Qué ven los demás: una consulta compartida aparece como tarjeta en el dashboard elegido para todos los usuarios de la empresa, con los datos de toda la compañía. No aparece en su 3. Mis consultas y no la pueden modificar ni eliminar.
+Una consulta Solo para mí solo la ve quien la creó, también en los dashboards.
+Restricciones: solo un usuario con un rol marcado como Administrador de compañía ve la opción Para todos los usuarios. Si otro usuario modifica una consulta que estaba compartida, se le avisa: "Esta consulta estaba compartida; solo un administrador puede compartirla, al guardar quedará solo para usted."
+Mensaje: "Solo un administrador de la compania puede compartir consultas con todos."
+Ver también: Marcar un rol como administrador de compañía; Ver las tarjetas de reportes en el dashboard.
+
+33. MOSTRAR UNA CONSULTA DE REPORTE COMO TARJETA EN UN DASHBOARD (GRÁFICO, TABLA O INDICADOR)
+----------------------------------------------------------------------
+Ruta: Menú > TRANSA > BUILDER REPORT > Guardar como consulta recurrente > ventana Guardar consulta.
+  1. En Dashboard elija Dashboard principal o el dashboard de productos. Aparece Presentación en el dashboard.
+  2. Orden: número de posición entre las tarjetas (0 o mayor; las de menor número van primero).
+  3. Tipo de tarjeta: Gráfico, Tabla o Indicador. Ancho: 20%, 50% o 100%.
+  4. Título: si lo deja vacío se usa el nombre de la consulta.
+  5. Si es Gráfico: Tipo de gráfico (Barras, Circular, Columna o Línea), Campo etiqueta, Campos valor (uno o varios) y Campo serie (opcional).
+  6. Si es Indicador: Campo valor principal y Formato (Número o Moneda).
+  7. Presione Guardar.
+Los campos salen de las columnas de Mostrar, incluidas las de Suma o Conteo. Si quita una columna usada por la tarjeta, se limpia y se avisa: "Se quitó una columna usada en la presentación del dashboard (...). Revísela al guardar."
+Mensajes: "Seleccione el tipo de tarjeta.", "Seleccione el ancho de la tarjeta.", "Seleccione el tipo de gráfico.", "Seleccione el campo etiqueta del gráfico.", "Seleccione al menos un campo valor del gráfico.", "Seleccione el campo valor principal del indicador."
+Notas: cada consulta se muestra en un solo dashboard. Para verla en otro, use Duplicar y elija el otro dashboard en la copia.
+
+34. MODIFICAR, DUPLICAR O ELIMINAR UNA CONSULTA DE REPORTE GUARDADA
 ----------------------------------------------------------------------
 Ruta: Menú > TRANSA > BUILDER REPORT, pestaña 3. Mis consultas. La lista muestra Nombre, Vista, Modificada y Acciones.
+Solo aparecen las consultas que usted creó. Bajo el nombre se ven marcas: Compartida, el tipo de vista y el dashboard con su orden. Las consultas compartidas por otros usuarios no aparecen aquí; solo se ven en los dashboards.
 Modificar:
   1. Presione Editar en la fila. Desde una consulta abierta, use Editar configuración.
-  2. Cambie lo que necesite y presione Guardar como consulta recurrente. Se actualiza la misma consulta; no se crea otra.
-Duplicar: presione Duplicar. Se crea una copia llamada "Copia de" más el nombre original y se abre para editarla.
+  2. Cambie lo que necesite y presione Guardar como consulta recurrente; revise la ventana Guardar consulta y presione Guardar. Se actualiza la misma consulta; no se crea otra.
+Duplicar: presione Duplicar. Se crea una copia llamada "Copia de" más el nombre original, Solo para mí, con el mismo dashboard, y se abre para editarla. Úsela para mostrar la consulta en otro dashboard.
 Eliminar: presione Eliminar y confirme "¿Desea eliminar la consulta "..."?". Aparece "Consulta eliminada.". No se puede recuperar desde la pantalla.
 Notas: si tiene cambios sin guardar, al abrir otra consulta se le avisa: "Tiene cambios sin guardar que se perderán. ¿Desea continuar?".
 Si un campo ya no está disponible, se quita de la consulta y se muestra un aviso.
@@ -464,7 +572,7 @@ Mensaje: "La consulta solicitada no existe o no esta disponible.": la consulta s
 Restricciones: crear, duplicar, modificar y eliminar dependen de los permisos de su rol.
 Ver también: Guardar una consulta de reporte para usarla de nuevo.
 
-27. EXPORTAR A EXCEL UN REPORTE DEL CONSTRUCTOR DE REPORTES
+35. EXPORTAR A EXCEL UN REPORTE DEL CONSTRUCTOR DE REPORTES
 ----------------------------------------------------------------------
 Ruta: Menú > TRANSA > BUILDER REPORT, pestaña 2. Configurar.
   1. Configure el reporte o abra una consulta guardada.
@@ -476,14 +584,30 @@ Notas: un texto que empieza con = + - @ se muestra en Excel con un apóstrofo in
 Mensaje: "La consulta tardo demasiado y fue cancelada. Reduzca el rango de fechas o agregue filtros."
 Ver también: Crear un reporte con el Constructor de Reportes (Builder Report).
 
-28. REGISTRAR UNA COMPRA DE MERCADERÍA
+36. VER LAS TARJETAS DE REPORTES EN EL DASHBOARD
+----------------------------------------------------------------------
+Ruta: Dashboard principal o dashboard de inventario (productos).
+Las consultas del Constructor de Reportes guardadas con un Dashboard aparecen como tarjetas ARRIBA de la información habitual del dashboard, en el Orden configurado.
+Tipos de tarjeta:
+  * Indicador: el título y un número grande con formato 1,000.00.
+  * Gráfico: el gráfico elegido, con los valores en formato 1,000.00.
+  * Tabla: las primeras 10 filas del resultado.
+Ancho: en computadora cada tarjeta usa su ancho (20%, 50% o 100%); en tablet las de 20% se ven al 50%; en teléfono todas se ven a lo ancho.
+Quién ve cada tarjeta:
+  * Consulta compartida (Para todos los usuarios): la ven todos los usuarios, con los datos de toda la compañía.
+  * Consulta Solo para mí: solo la ve quien la creó, con los datos que su rol le permite ver.
+Las fechas calculadas (por ejemplo Inicio del mes) se calculan cada vez que se abre el dashboard.
+Notas: mientras carga, cada tarjeta muestra "Cargando...". Si una tarjeta falla, solo esa muestra el aviso (por ejemplo "No se pudieron cargar los datos."); las demás y el resto del dashboard siguen normales. Si no hay datos se ve "Sin datos para mostrar.". Si no hay tarjetas, el dashboard se ve igual que siempre.
+Ver también: Mostrar una consulta de reporte como tarjeta en un dashboard (gráfico, tabla o indicador); Compartir una consulta de reporte con todos los usuarios.
+
+37. REGISTRAR UNA COMPRA DE MERCADERÍA
 ----------------------------------------------------------------------
 Ruta: Menú > INVENTARIO > COMPRA.
   1. Presione Nuevo, seleccione el proveedor, la bodega y la fecha.
   2. Agregue los productos con su cantidad y costo.
   3. Guarde y aplique la compra para que aumente el inventario.
 
-29. QUÉ CONTIENE EL MENÚ ADM TALLER
+38. QUÉ CONTIENE EL MENÚ ADM TALLER
 ----------------------------------------------------------------------
 Ruta: Menú > ADM TALLER.
   * TALLER: órdenes de taller o de trabajo.
@@ -497,7 +621,7 @@ Buscar en la lista: escriba en Buscar por número… y presione la lupa o Enter;
 Notas: en el teléfono Guardar está en la barra inferior y Buscar abre la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol. Según la configuración de su empresa, el menú y los campos pueden tener otros nombres.
 Ver también: Registrar una orden de taller, Registrar un pedido, Registrar una zona de cliente.
 
-30. REGISTRAR UNA ORDEN DE TALLER
+39. REGISTRAR UNA ORDEN DE TALLER
 ----------------------------------------------------------------------
 Ruta: Menú > ADM TALLER > TALLER. La lista se llama LISTA DE TALLER.
   1. Presione Nuevo.
@@ -512,7 +636,7 @@ Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuev
 Crear orden: indique antes Fecha de siguiente orden, abra Opciones > Crear orden, revise Problema y Nota y acepte. La nueva orden queda en esa fecha, con estado inicial y monto 0.
 Notas: al guardar se puede enviar un WhatsApp al cliente según el Estado del equipo; si no se envía, la orden igual se guarda y se avisa en pantalla.
 
-31. REGISTRAR UN PEDIDO
+40. REGISTRAR UN PEDIDO
 ----------------------------------------------------------------------
 Ruta: Menú > ADM TALLER > PEDIDOS. La lista se llama LISTA DE PEDIDOS.
   1. Presione Nuevo.
@@ -526,7 +650,7 @@ Mensajes de validación: "El monto no puede ser 0", "Seleccionar cliente" y "Sel
 Para modificarlo, selecciónelo en la lista y presione Editar. Arriba tiene Nuevo, Atras, Eliminar, Imprimir y Guardar.
 Notas: según la configuración de su empresa, al guardar cambios se puede enviar un WhatsApp al cliente; si no se envía, el pedido igual se guarda y se avisa en pantalla.
 
-32. REGISTRAR UNA ZONA DE CLIENTE
+41. REGISTRAR UNA ZONA DE CLIENTE
 ----------------------------------------------------------------------
 Ruta: Menú > ADM TALLER > ZONA DE CLIENTE. La lista se llama LIST ZONA DE CLIENTE.
   1. Presione Nuevo.
@@ -539,7 +663,7 @@ Ruta: Menú > ADM TALLER > ZONA DE CLIENTE. La lista se llama LIST ZONA DE CLIEN
 Mensajes de validación: "Establecer Fecha al Documento" y "Seleccionar cliente". Al modificar también se exige el técnico: "Seleccionar tecnico". Según la configuración de su empresa pueden pedirse otros campos, y los nombres y campos visibles pueden cambiar.
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuevo, Atras, Eliminar, Auditoria, Imprimir E., Imprimir S. y Guardar. Auditoria muestra el historial de cambios: fecha, usuario, campo, valor anterior y valor nuevo.
 
-33. REGISTRAR UNA GARANTÍA
+42. REGISTRAR UNA GARANTÍA
 ----------------------------------------------------------------------
 Ruta: Menú > ADM TALLER > GARANTIA. La lista se llama LISTA DE GARANTIAS.
   1. Presione Nuevo.
@@ -553,7 +677,7 @@ Para modificarla: seleccione la fila y presione Editar, o escriba en Buscar por 
 Notas: según la configuración, al guardar se envía un WhatsApp al cliente. Si aparece "Garantia guardado correctamente, WhatsApp no enviado...", la garantía sí se guardó. Con el ciclo contable cerrado no se puede crear, modificar ni eliminar.
 Ver también: Registrar una orden de compra.
 
-34. REGISTRAR UNA DEVOLUCIÓN DE COMPRA A PROVEEDOR
+43. REGISTRAR UNA DEVOLUCIÓN DE COMPRA A PROVEEDOR
 ----------------------------------------------------------------------
 Ruta: Menú > ADM TALLER > DEV. COMPRA. La lista se llama DEVOLUCION DE COMPRA.
   1. Presione Nuevo.
@@ -568,7 +692,7 @@ Para modificarla: seleccione la fila y presione Editar, o use Buscar por número
 Notas: al pasar de REGISTRADA a APLICADA, los productos salen del inventario de la Bodega. Si la cantidad supera la existencia: "La cantidad de ... es mayor que la disponible en bodega". Con el ciclo contable cerrado no se puede modificar.
 Ver también: Registrar una orden de compra.
 
-35. REGISTRAR UNA ORDEN DE COMPRA
+44. REGISTRAR UNA ORDEN DE COMPRA
 ----------------------------------------------------------------------
 Ruta: Menú > ADM TALLER > ORD. COMPRA. La lista se llama ORDEN DE COMPRA.
   1. Presione Nuevo.
@@ -584,7 +708,7 @@ Notas: la orden de compra no mueve el inventario.
 Aviso: en edición aparecen Archivo a importar y Importar, pero hoy ese botón no realiza ninguna acción.
 Ver también: Registrar una compra de mercadería, Registrar una devolución de compra a proveedor.
 
-36. QUÉ CONTIENE EL MENÚ CXC
+45. QUÉ CONTIENE EL MENÚ CXC
 ----------------------------------------------------------------------
 Ruta: Menú > CXC. Aquí se administran los clientes y sus créditos.
   * DOCUMENTOS: consultar o ajustar los documentos de crédito de los clientes.
@@ -599,7 +723,7 @@ Lo que ve cada usuario depende de los permisos de su rol.
 Notas: en el teléfono el botón Guardar está en la barra inferior, y los botones Buscar y Agregar de los formularios abren una ventana dentro de la misma pantalla. Los montos se muestran con formato 1,500.25.
 Ver también: Crear un cliente; Crear una línea de crédito; Consultar o ajustar documentos de crédito de un cliente; Consultar el buró de crédito de un cliente.
 
-37. CONSULTAR O AJUSTAR DOCUMENTOS DE CRÉDITO DE UN CLIENTE
+46. CONSULTAR O AJUSTAR DOCUMENTOS DE CRÉDITO DE UN CLIENTE
 ----------------------------------------------------------------------
 Ruta: Menú > CXC > DOCUMENTOS. La lista se llama LISTA DE DOCUMENTOS y solo tiene Vistas y Editar: aquí no se crean ni eliminan documentos.
   1. Seleccione la fila y presione Editar (sin selección aparece "Seleccionar el Registro...").
@@ -615,7 +739,7 @@ Notas:
   * Lo agregado, cambiado o eliminado en Entidades relacionadas se aplica al presionar Guardar.
 Ver también: Registrar un abono de un cliente; Abono al capital.
 
-38. CONSULTAR EL BURÓ DE CRÉDITO DE UN CLIENTE
+47. CONSULTAR EL BURÓ DE CRÉDITO DE UN CLIENTE
 ----------------------------------------------------------------------
 Ruta: Menú > CXC > BURO CREDITO. La pantalla se llama Consultar Record de Credito Historico y Actual. El uso depende de la configuración de su empresa.
   1. En la caja de búsqueda escriba la identificación (formato 000-000000-0000X) y presione el botón de la lupa.
@@ -629,7 +753,7 @@ Restricciones: cada búsqueda por identificación consume una consulta del cupo 
 Desde el cliente: según la configuración de su empresa, al editarlo tiene Acciones > 001) Ir a Buro y, en la pestaña Informacion, Ver Buro con las consultas anteriores.
 Ver también: Crear un cliente.
 
-39. CREAR UNA LÍNEA DE CRÉDITO
+48. CREAR UNA LÍNEA DE CRÉDITO
 ----------------------------------------------------------------------
 Ruta: Menú > CXC > LINEA D. CREDITO. La lista se llama LISTA DE LINEA DE CREDITO.
 Aquí se crea el nombre de la línea. El límite, el interés y el plazo se configuran en cada cliente.
@@ -640,7 +764,7 @@ Para modificarla, selecciónela en la lista y presione Editar (se abre Editar Li
 Para eliminarla, presione Eliminar en la lista o en la edición y confirme "Desea eliminar este Registro...". En la lista, sin selección aparece "Seleccionar el Registro...".
 Ver también: Crear un cliente.
 
-40. REGISTRAR UNA NOTA DE CRÉDITO DE CLIENTE
+49. REGISTRAR UNA NOTA DE CRÉDITO DE CLIENTE
 ----------------------------------------------------------------------
 Ruta: Menú > CXC > NOTA D. CREDITO. La lista se llama LISTA DE NOTAS DE CREDITO DE CLIENTES.
   1. Presione Nuevo. Se abre Nota de crédito.
@@ -654,7 +778,7 @@ Si el estado no lo permite, verá "EL REGISTRO NO PUEDE SER EDITADO POR SU ESTAD
 Notas: esta pantalla es para clientes; las notas de proveedor están en CXP y las de banco en su propio módulo.
 Ver también: Registrar una nota de débito de cliente; Notas de crédito y débito de banco.
 
-41. REGISTRAR UNA NOTA DE DÉBITO DE CLIENTE
+50. REGISTRAR UNA NOTA DE DÉBITO DE CLIENTE
 ----------------------------------------------------------------------
 Ruta: Menú > CXC > NOTA D. DEBITO. La lista se llama LISTA DE NOTAS DE DEBITO DE CLIENTES.
   1. Presione Nuevo. Se abre Nota de débito.
@@ -668,7 +792,7 @@ Si el estado no lo permite, verá "EL REGISTRO NO PUEDE SER EDITADO POR SU ESTAD
 Notas: esta pantalla es para clientes; las notas de proveedor están en CXP y las de banco en su propio módulo.
 Ver también: Registrar una nota de crédito de cliente; Notas de crédito y débito de banco.
 
-42. EJECUTAR PROCESOS DE CXC: DESCARGAR EL ARCHIVO DE CRÉDITOS PARA SIN RIESGO
+51. EJECUTAR PROCESOS DE CXC: DESCARGAR EL ARCHIVO DE CRÉDITOS PARA SIN RIESGO
 ----------------------------------------------------------------------
 Ruta: Menú > CXC > PROCESOS. La pantalla se llama Procesos CxC.
   1. En la tarjeta Subir carga SIN Riesgo presione Aceptar.
@@ -678,7 +802,7 @@ Notas:
   * El separador de columnas del archivo depende de la configuración de su empresa.
   * Necesita permiso sobre esta opción del menú. Si ocurre un error, el mensaje aparece en la pestaña nueva.
 
-43. REGISTRAR UN GASTO
+52. REGISTRAR UN GASTO
 ----------------------------------------------------------------------
 Ruta: Menú > CXP > GASTOS. La lista se llama LISTA DE GASTOS.
   1. Presione Nuevo. Se abre Gasto:#.
@@ -694,7 +818,7 @@ Al pasar Estado a APLICADO en la edición, si eligió Factura el Total se abona 
 Para modificarlo, use Editar. Arriba: Nuevo, Atras, Eliminar, Imprimir y Guardar; Archivos adjunta documentos. Un gasto aplicado con proveedor solo se elimina si es el último de ese proveedor: "SOLO PUEDE ELIMINAR EL ULTIMO GASTO DEL CLIENTE...".
 Ver también: Crear un proveedor.
 
-44. QUÉ CONTIENE EL MENÚ CXP
+53. QUÉ CONTIENE EL MENÚ CXP
 ----------------------------------------------------------------------
 Ruta: Menú > CXP (cuentas por pagar).
   * RETENCION: retenciones aplicadas a facturas de proveedores.
@@ -707,7 +831,7 @@ Buscar en la lista: en RETENCION, NOTA D. DEBITO, NOTA D. CREDITO y GASTOS escri
 Notas: en el teléfono el botón Guardar está en la barra inferior y los botones Buscar abren la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol.
 Ver también: Registrar una retención de proveedor, Crear un proveedor, Registrar una nota de débito de proveedor, Registrar una nota de crédito de proveedor, Registrar un gasto.
 
-45. REGISTRAR UNA RETENCIÓN DE PROVEEDOR
+54. REGISTRAR UNA RETENCIÓN DE PROVEEDOR
 ----------------------------------------------------------------------
 Ruta: Menú > CXP > RETENCION. La lista se llama LISTA DE RETENCIONES DE PROVEEDORES.
   1. Presione Nuevo. Se abre Retencion:#.
@@ -720,7 +844,7 @@ Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuev
 Notas: la retención no cambia el saldo del proveedor. Al crearla solo está disponible el estado inicial; los demás estados se eligen en la edición.
 Ver también: Qué contiene el menú CXP.
 
-46. CREAR UN PROVEEDOR
+55. CREAR UN PROVEEDOR
 ----------------------------------------------------------------------
 Ruta: Menú > CXP > PROVEEDORES. La lista se llama LISTA DE PROVEEDORES.
   1. Presione Nuevo.
@@ -733,7 +857,7 @@ Si no agrega una línea de crédito, se crea una con los valores predeterminados
 Para modificarlo, selecciónelo en la lista y presione Editar. Arriba tiene Atras, Eliminar y Guardar. En CXC Lineas. aparece también Editar, y en Mas > Archivos puede adjuntar documentos. El proveedor predeterminado del sistema no se elimina: "No es posible eliminar el proveedor, edite el nombre".
 Ver también: Registrar un gasto.
 
-47. REGISTRAR UNA NOTA DE DÉBITO DE PROVEEDOR
+56. REGISTRAR UNA NOTA DE DÉBITO DE PROVEEDOR
 ----------------------------------------------------------------------
 Ruta: Menú > CXP > NOTA D. DEBITO. La lista se llama LISTA DE NOTAS DE DEBITO DE PROVEEDORES.
   1. Presione Nuevo. Se abre Nota de débito:#.
@@ -746,7 +870,7 @@ Mensajes de validación: "Establecer Fecha al Documento", "El monto no puede ser
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuevo, Atras, Eliminar, Imprimir y Guardar. En Mas > Archivos puede adjuntar documentos.
 Ver también: Registrar una nota de crédito de proveedor, Crear un proveedor.
 
-48. REGISTRAR UNA NOTA DE CRÉDITO DE PROVEEDOR
+57. REGISTRAR UNA NOTA DE CRÉDITO DE PROVEEDOR
 ----------------------------------------------------------------------
 Ruta: Menú > CXP > NOTA D. CREDITO. La lista se llama LISTA DE NOTAS DE CREDITO DE PROVEEDORES.
   1. Presione Nuevo. Se abre Nota de crédito:#.
@@ -759,7 +883,7 @@ Mensajes de validación: "Establecer Fecha al Documento", "Debe ingresar un mont
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuevo, Atras, Eliminar, Imprimir y Guardar. En Mas > Archivos puede adjuntar documentos.
 Ver también: Registrar una nota de débito de proveedor, Crear un proveedor.
 
-49. QUÉ CONTIENE EL MENÚ CAJA
+58. QUÉ CONTIENE EL MENÚ CAJA
 ----------------------------------------------------------------------
 Ruta: Menú > CAJA.
 Entre otras, el menú CAJA tiene estas opciones:
@@ -775,7 +899,7 @@ Buscar en la lista:
 Notas: en el teléfono el botón Guardar está en la barra inferior. Lo que ve cada usuario depende de los permisos de su rol.
 Ver también: Abrir caja, Cerrar caja (cierre / arqueo), Ingresos y egresos de caja.
 
-50. ABRIR CAJA
+59. ABRIR CAJA
 ----------------------------------------------------------------------
 Ruta: Menú > CAJA > ABRIR. La lista se llama LISTA DE APERTURA A CAJA.
   1. Presione Nuevo. Se abre APERTURA:#.
@@ -787,7 +911,7 @@ Mensajes de validación: "Establecer Fecha al Documento" y "El monto no puede se
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuevo, Atras, Archivos, Imprimir, Eliminar y Guardar. Eliminar pide confirmar "Desea eliminar este Registro...".
 Ver también: Cerrar caja (cierre / arqueo).
 
-51. CERRAR CAJA (CIERRE / ARQUEO)
+60. CERRAR CAJA (CIERRE / ARQUEO)
 ----------------------------------------------------------------------
 Ruta: Menú > CAJA > CERRAR. La lista se llama LISTA DE CIERRE DE CAJA.
   1. Presione Nuevo. Se abre CIERRE:#.
@@ -800,7 +924,7 @@ Para modificarlo, selecciónelo en la lista y presione Editar. Arriba tiene Nuev
 Para revisar lo cobrado use CAJA > REPORTES (abonos, resumen de abonos, cierre de operaciones).
 Ver también: Abrir caja.
 
-52. INGRESOS Y EGRESOS DE CAJA
+61. INGRESOS Y EGRESOS DE CAJA
 ----------------------------------------------------------------------
 Ruta: Menú > CAJA > ING A CAJA o CAJA > EGS A CAJA. Las listas se llaman LISTA DE INGRESOS A CAJA y LISTA DE EGRESOS A CAJA.
   1. Presione Nuevo. Se abre INGRESO:# o EGRESO:#.
@@ -813,7 +937,7 @@ Ruta: Menú > CAJA > ING A CAJA o CAJA > EGS A CAJA. Las listas se llaman LISTA 
 Mensajes de validación: "Establecer Fecha al Documento" y "El monto no puede ser 0".
 Para modificarlo, selecciónelo en la lista y presione Editar. Arriba tiene Nuevo, Atras, Archivos, Imprimir, Eliminar y Guardar. Eliminar pide confirmar "Desea eliminar este Registro...".
 
-53. CREAR O ADMINISTRAR CAJAS (ADM CAJA)
+62. CREAR O ADMINISTRAR CAJAS (ADM CAJA)
 ----------------------------------------------------------------------
 Ruta: Menú > CAJA > ADM CAJA. La lista se llama LISTA DE CAJAS.
   1. Presione Nuevo. Se abre CAJA: #.
@@ -823,7 +947,7 @@ Mensajes de validación: "Nombre de la caja no puede estar vacío" y "Descripci�
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuevo, Atras, Eliminar y Guardar. Eliminar pide confirmar "Desea eliminar este Registro...".
 Para encontrar una caja escriba en Buscar caja…: la lista se filtra mientras escribe.
 
-54. REGISTRAR UNA PROVISIÓN DE CAJA
+63. REGISTRAR UNA PROVISIÓN DE CAJA
 ----------------------------------------------------------------------
 Ruta: Menú > CAJA > PROVISION. La lista se llama LISTA DE PROVISIONES.
   1. Presione Nuevo. Se abre PROVISION:#.
@@ -839,7 +963,7 @@ Mensajes de validación:
   * "El Documento no puede tener mas de un item" / "El Documento ya esta agregado".
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Atras, Archivos, Eliminar y Guardar. En la edición los campos se llaman Cliente Ref. e ID Cliente Ref., y además se muestra Cliente.
 
-55. REGISTRAR LA ASISTENCIA DE UN CLIENTE
+64. REGISTRAR LA ASISTENCIA DE UN CLIENTE
 ----------------------------------------------------------------------
 Ruta: Menú > CAJA > ASISTENCIA. La lista se llama LISTA DE ASISTENCIA.
   1. Presione Nuevo. Se abre ASISTENCIA:#.
@@ -853,7 +977,7 @@ Mensajes:
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuevo, Nuevo e Imprimir, Atras, el menú Imprimir (Imprimir preview e Imprimir direct), Eliminar y Guardar. En la edición no aparece Huella.
 Ver también: Registrar la asistencia de un colaborador.
 
-56. QUÉ CONTIENE EL MENÚ BANCO
+65. QUÉ CONTIENE EL MENÚ BANCO
 ----------------------------------------------------------------------
 Ruta: Menú > BANCO.
   * CUENT. BANK: cuentas bancarias.
@@ -868,7 +992,7 @@ Buscar en la lista:
 Notas: en el teléfono el botón Guardar está en la barra inferior y los botones Buscar abren la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol.
 Ver también: Crear una cuenta bancaria, Crear una chequera, Emitir un cheque, Notas de crédito y débito de banco.
 
-57. CREAR UNA CUENTA BANCARIA
+66. CREAR UNA CUENTA BANCARIA
 ----------------------------------------------------------------------
 Ruta: Menú > BANCO > CUENT. BANK. La lista se llama LISTA DE BANCOS.
   1. Presione Nuevo. Se abre Formulario de Datos.
@@ -881,7 +1005,7 @@ Mensajes de validación: "El nombre es requerido", "La moneda es requerida" y "E
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Atras, Eliminar y Guardar. Eliminar pide confirmar "Desea eliminar este Registro...".
 Ver también: Crear una chequera.
 
-58. CREAR UNA CHEQUERA
+67. CREAR UNA CHEQUERA
 ----------------------------------------------------------------------
 Ruta: Menú > BANCO > CHEQUERA. La lista se llama LISTA DE CHEQUERAS.
   1. Presione Nuevo. Se abre CHEQUERA:#.
@@ -895,7 +1019,7 @@ Mensajes de validación:
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuevo, Atras, Eliminar y Guardar. Eliminar pide confirmar "Desea eliminar este Registro...".
 Ver también: Emitir un cheque.
 
-59. EMITIR UN CHEQUE
+68. EMITIR UN CHEQUE
 ----------------------------------------------------------------------
 Ruta: Menú > BANCO > EMITIR CHEQUE. La lista se llama LISTA DE EMISION DE CHEQUE.
   1. Presione Nuevo. Se abre Emision De Cheque:#.
@@ -911,7 +1035,7 @@ Mensajes de validación:
 Para modificarlo, selecciónelo en la lista y presione Editar. Arriba tiene Nuevo, Atras, Archivos, Imprimir, Eliminar y Guardar. Eliminar pide confirmar "Desea eliminar este Registro...".
 Ver también: Crear una chequera.
 
-60. NOTAS DE CRÉDITO Y DÉBITO DE BANCO
+69. NOTAS DE CRÉDITO Y DÉBITO DE BANCO
 ----------------------------------------------------------------------
 Ruta: Menú > BANCO > BANK NC o BANCO > BANK ND. Las listas se llaman LISTA DE NOTAS DE CREDITO DE BANCO y LISTA DE NOTAS DE DEBITO DE BANCO.
   1. Presione Nuevo. Se abre Nota de Credito:# o Nota de Debito:#.
@@ -923,7 +1047,7 @@ Mensajes de validación: "Ingrese la Fecha", "El monto no puede ser 0" y "Selecc
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuevo, Atras, Archivos, Imprimir, Eliminar y Guardar. Eliminar pide confirmar "Desea eliminar este Registro...".
 Ver también: Crear una cuenta bancaria.
 
-61. REPORTES DE VENTAS
+70. REPORTES DE VENTAS
 ----------------------------------------------------------------------
 Ruta: Menú > VENTAS > REPORTES (también FACTURACION > REPORTES).
   1. Elija el reporte: detalle de ventas, resumen de ventas, ventas por cliente, utilidad, etc.
@@ -932,19 +1056,19 @@ Ruta: Menú > VENTAS > REPORTES (también FACTURACION > REPORTES).
 También puede preguntarle a Jordania: "¿Cuánto vendí ayer?" o "¿Cuáles son los productos más vendidos este mes?".
 Ver también: Crear un reporte con el Constructor de Reportes (Builder Report).
 
-62. REPORTES DE INVENTARIO
+71. REPORTES DE INVENTARIO
 ----------------------------------------------------------------------
 Ruta: Menú > INVENTARIO > REPORTES.
 Lista de productos, existencias por bodega, kardex, compras, productos por transacción.
 Ver también: Crear un reporte con el Constructor de Reportes (Builder Report).
 
-63. REPORTES DE CUENTAS POR COBRAR Y COBRANZA
+72. REPORTES DE CUENTAS POR COBRAR Y COBRANZA
 ----------------------------------------------------------------------
 Ruta: Menú > CXC > REPORTES y COBRANZA > REPORTES.
 Cartera de clientes, documentos de crédito, pagos, estado de cuenta, clientes con mora.
 Ver también: Asignar clientes a un gestor de cobranza; Crear un reporte con el Constructor de Reportes (Builder Report).
 
-64. VER ESTADÍSTICAS DE INMUEBLES
+73. VER ESTADÍSTICAS DE INMUEBLES
 ----------------------------------------------------------------------
 Ruta: Menú > ESTADISTICA > INMUEBLE.
   1. Entre a ESTADISTICA > INMUEBLE. Se abre Estadísticas de inmuebles, un tablero de Google Data Studio con el comportamiento de las propiedades.
@@ -953,7 +1077,7 @@ Ruta: Menú > ESTADISTICA > INMUEBLE.
 Notas: el tablero se carga desde internet; si no se muestra, revise su conexión o use Abrir en pestaña nueva.
 Ver también: Ver estadísticas de clientes.
 
-65. VER ESTADÍSTICAS DE CLIENTES
+74. VER ESTADÍSTICAS DE CLIENTES
 ----------------------------------------------------------------------
 Ruta: Menú > ESTADISTICA > CLIENTES.
 La pantalla Estadísticas de clientes muestra fuentes de contacto, intereses, agentes y cierres de clientes en un rango de fechas.
@@ -968,7 +1092,7 @@ Mensajes al filtrar:
 Notas: para entrar a esta pantalla su rol necesita acceso a ESTADISTICA > INMUEBLE.
 Ver también: Ver estadísticas de inmuebles.
 
-66. VER EL CALENDARIO DE PROGRAMACIÓN
+75. VER EL CALENDARIO DE PROGRAMACIÓN
 ----------------------------------------------------------------------
 Ruta: Menú > CALENDARIO > PROGRAMACION.
 La pantalla Programación muestra en un calendario las tareas, visitas y citas programadas, y además eventos automáticos de documentos: facturas, órdenes de taller (fecha de siguiente visita) y abonos.
@@ -980,7 +1104,7 @@ Eventos automáticos: al hacer clic en una factura, orden de taller o abono se a
 Notas: qué facturas aparecen (registradas o aplicadas, con o sin hora) depende de la configuración de su empresa.
 Ver también: Programar una tarea o visita en el calendario; Modificar, eliminar o imprimir un evento del calendario.
 
-67. PROGRAMAR UNA TAREA O VISITA EN EL CALENDARIO
+76. PROGRAMAR UNA TAREA O VISITA EN EL CALENDARIO
 ----------------------------------------------------------------------
 Ruta: Menú > CALENDARIO > PROGRAMACION.
 Sirve para agendar una tarea, visita, cita o recordatorio.
@@ -996,7 +1120,7 @@ Mensajes de validación (debajo de cada campo):
   * "Debe seleccionar una etiqueta."
 Ver también: Modificar, eliminar o imprimir un evento del calendario, Crear una tarea para un colaborador.
 
-68. MODIFICAR, ELIMINAR O IMPRIMIR UN EVENTO DEL CALENDARIO
+77. MODIFICAR, ELIMINAR O IMPRIMIR UN EVENTO DEL CALENDARIO
 ----------------------------------------------------------------------
 Ruta: Menú > CALENDARIO > PROGRAMACION.
 Modificar una programación:
@@ -1012,7 +1136,7 @@ Imprimir:
 Notas: Eliminar e Imprimir solo aparecen al editar una programación existente. Si la programación ya no existe aparece "No se encontró la programación seleccionada".
 Ver también: Ver el calendario de programación.
 
-69. QUÉ CONTIENE EL MENÚ CONTABILIDAD
+78. QUÉ CONTIENE EL MENÚ CONTABILIDAD
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD.
 El menú CONTABILIDAD agrupa las opciones para llevar la contabilidad de la empresa:
@@ -1029,7 +1153,7 @@ El menú CONTABILIDAD agrupa las opciones para llevar la contabilidad de la empr
 Orden recomendado al empezar: niveles, naturaleza, centros de costo, monedas, cuentas, periodos y ciclos; después comprobantes y procesos.
 Notas: en el teléfono el botón Guardar está en la barra inferior de la pantalla. Lo que ve cada usuario depende de los permisos de su rol.
 
-70. CONFIGURAR LOS NIVELES DE CUENTA
+79. CONFIGURAR LOS NIVELES DE CUENTA
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > NIVEL DE CUENTA.
 El nivel define cómo se escriben los códigos de las cuentas (por ejemplo 1, 1-01, 1-01-001).
@@ -1044,7 +1168,7 @@ El nivel define cómo se escriben los códigos de las cuentas (por ejemplo 1, 1-
 Para modificarlo ábralo en la lista (Nivel de cuenta); para darlo de baja presione Eliminar.
 Ver también: Crear una cuenta contable.
 
-71. CONFIGURAR LA NATURALEZA DE LAS CUENTAS
+80. CONFIGURAR LA NATURALEZA DE LAS CUENTAS
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > NATURALEZA.
 La naturaleza indica si la cuenta aumenta con el débito (deudora, D: activos, costos, gastos) o con el crédito (acreedora, C: pasivos, capital, ingresos).
@@ -1053,7 +1177,7 @@ La naturaleza indica si la cuenta aumenta con el débito (deudora, D: activos, c
   3. Presione Guardar.
 Para modificarla ábrala en la lista (Naturaleza de cuenta); para darla de baja presione Eliminar.
 
-72. CENTROS DE COSTO
+81. CENTROS DE COSTO
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > CENTRO DE COSTO.
 Los centros de costo permiten separar los movimientos por área, sucursal o proyecto.
@@ -1063,7 +1187,7 @@ Los centros de costo permiten separar los movimientos por área, sucursal o proy
 Para modificarlo ábralo en la lista (Centro de costo); para darlo de baja presione Eliminar.
 El centro de costo se asigna a la cuenta (campo Centro de costo) y a cada línea del comprobante (columna CC).
 
-73. CREAR UNA CUENTA CONTABLE
+82. CREAR UNA CUENTA CONTABLE
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > CUENTAS.
   1. En CATALOGO DE CUENTAS presione Nuevo. Se abre Nueva cuenta contable.
@@ -1077,7 +1201,7 @@ Restricciones:
   * Es operativa debe coincidir con lo definido en el nivel; si no, "OPERATIVIDAD DE LA CUENTA NO ES VALIDA".
 Ver también: Configurar los niveles de cuenta.
 
-74. MODIFICAR O ELIMINAR UNA CUENTA CONTABLE
+83. MODIFICAR O ELIMINAR UNA CUENTA CONTABLE
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > CUENTAS.
   1. Busque la cuenta con Buscar cuenta… y ábrala. Se abre Cuenta contable.
@@ -1086,7 +1210,7 @@ Ruta: Menú > CONTABILIDAD > CUENTAS.
   4. Para darla de baja presione Eliminar y confirme.
 Restricciones: no se puede eliminar una cuenta que tiene subcuentas ("ELIMINAR PRIMERAMENTE LAS CUENTAS DE MAS BAJO NIVEL") ni una cuenta con saldo o movimientos. Si su permiso es Propios, solo puede eliminar las cuentas que usted creó.
 
-75. CONFIGURAR MONEDAS
+84. CONFIGURAR MONEDAS
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > MONEDAS.
   1. En MONEDAS presione Nuevo. Se abre Nueva moneda.
@@ -1096,7 +1220,7 @@ Para cambiar el símbolo abra la moneda en la lista y presione Guardar; para qui
 Botones de la lista: Herramienta (abre la herramienta de tipo de cambio) y Archivos (subir el archivo de tasas de cambio).
 Ver también: Actualizar el tipo de cambio (herramienta de monedas).
 
-76. ACTUALIZAR EL TIPO DE CAMBIO (HERRAMIENTA DE MONEDAS)
+85. ACTUALIZAR EL TIPO DE CAMBIO (HERRAMIENTA DE MONEDAS)
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > MONEDAS > Herramienta.
 Se abre Herramientas de monedas con tres tarjetas:
@@ -1106,7 +1230,7 @@ Se abre Herramientas de monedas con tres tarjetas:
 También puede descargar el tipo de cambio del BCN en CONTABILIDAD > PROCESOS, tarjeta Tipo de cambio: elija Periodo y Ciclo y presione Actualizar tipo de cambio (requiere internet y que el servicio esté configurado para su empresa).
 Notas: los comprobantes necesitan tipo de cambio en su fecha.
 
-77. CREAR PERIODOS Y CICLOS CONTABLES
+86. CREAR PERIODOS Y CICLOS CONTABLES
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > PERIODOS.
 Un periodo es normalmente un año contable y se divide en ciclos (normalmente meses).
@@ -1121,7 +1245,7 @@ Restricciones:
   * Cada ciclo debe tener estado, fecha inicial y fecha final, quedar dentro de las fechas del periodo y no solaparse con otro ciclo.
   * No se puede quitar un ciclo que tiene comprobantes o que está cerrado, ni eliminar un periodo que tiene comprobantes.
 
-78. ABRIR Y CERRAR PERIODOS CONTABLES
+87. ABRIR Y CERRAR PERIODOS CONTABLES
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > PERIODOS y CONTABILIDAD > PROCESOS.
   * Abrir un periodo: créelo en PERIODOS con sus ciclos en estado abierto (ver Crear periodos y ciclos contables).
@@ -1130,7 +1254,7 @@ Ruta: Menú > CONTABILIDAD > PERIODOS y CONTABILIDAD > PROCESOS.
   * Antes de cerrar el último ciclo del año cree el periodo siguiente, porque el cierre exige que exista el ciclo siguiente.
 Notas: con el ciclo cerrado no se pueden registrar ni anular documentos con fechas de ese ciclo.
 
-79. REGISTRAR UN COMPROBANTE CONTABLE
+88. REGISTRAR UN COMPROBANTE CONTABLE
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > COMPROBANTES.
   1. En LISTA DE COMPROBANTES presione Nuevo. Se abre Nuevo comprobante.
@@ -1143,7 +1267,7 @@ Usar una plantilla: presione Abrir plantilla y elija un comprobante modelo; posM
 Restricciones: el comprobante debe estar cuadrado; la fecha debe estar dentro de un ciclo contable abierto ("TODO COMPROBANTE DEBE DE PERTENECER A UN CICLO" o "EL CICLO ESTA CERRADO..."); y debe existir tipo de cambio para esa fecha ("NO EXISTE LA TASA DE CAMBIO PARA: ...").
 Ver también: Actualizar el tipo de cambio (herramienta de monedas).
 
-80. BUSCAR, MODIFICAR, IMPRIMIR O ELIMINAR UN COMPROBANTE
+89. BUSCAR, MODIFICAR, IMPRIMIR O ELIMINAR UN COMPROBANTE
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > COMPROBANTES.
   1. Escriba el número en Buscar por número de comprobante… y presione Enter o la lupa; también puede abrirlo desde la lista.
@@ -1154,7 +1278,7 @@ Ruta: Menú > CONTABILIDAD > COMPROBANTES.
   6. Para eliminarlo presione Eliminar y confirme.
 Restricciones: no se puede modificar ni eliminar un comprobante de un ciclo cerrado ("EL CICLO ESTA CERRADO, EL COMPROBANTE NO PUEDE SER EDITADO") ni pasarlo a un ciclo cerrado; el estado del comprobante debe permitir eliminarlo. Si el comprobante venía de un documento (factura, abono...), al eliminarlo el documento queda pendiente de contabilizar.
 
-81. CONTABILIZAR DOCUMENTOS
+90. CONTABILIZAR DOCUMENTOS
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > PROCESOS, tarjeta Contabilizar documentos.
 Genera los comprobantes contables de los documentos (facturas, abonos, compras, etc.) que aún no tienen comprobante.
@@ -1164,7 +1288,7 @@ Genera los comprobantes contables de los documentos (facturas, abonos, compras, 
 Notas: las cuentas que usa cada documento dependen de la configuración de su empresa.
 Otra tarjeta de PROCESOS, Notificaciones: elija la Notificación y presione Ejecutar para correr ese proceso de notificación, o Limpiar para borrar las notificaciones de esa etiqueta.
 
-82. MAYORIZAR Y CERRAR UN CICLO CONTABLE
+91. MAYORIZAR Y CERRAR UN CICLO CONTABLE
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > PROCESOS.
 Mayorizar:
@@ -1177,7 +1301,7 @@ Reglas del cierre: el ciclo anterior debe estar cerrado; debe existir el ciclo s
 Después del cierre no se pueden registrar, modificar ni eliminar comprobantes de ese ciclo, ni registrar o anular facturas y otros documentos con fecha de ese periodo cerrado.
 Notas: en Ciclo solo aparecen los ciclos abiertos; "Sin ciclos abiertos en este periodo" indica que todos sus ciclos ya están cerrados. Mayorice el ciclo antes de cerrarlo.
 
-83. CONFIGURAR LOS PARÁMETROS CONTABLES
+92. CONFIGURAR LOS PARÁMETROS CONTABLES
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > PARAMETROS.
 Se abre Parámetros contables con estas tarjetas:
@@ -1188,7 +1312,7 @@ Se abre Parámetros contables con estas tarjetas:
 Presione Guardar.
 Notas: el cierre de ciclo usa la cuenta de utilidades acumuladas. Cambie estos valores solo con su contador o con el soporte de posMe.
 
-84. INDICADORES CONTABLES
+93. INDICADORES CONTABLES
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > INDICADORES.
 Los indicadores son valores financieros calculados que posMe muestra, por ejemplo, en la aplicación móvil.
@@ -1199,7 +1323,7 @@ Los indicadores son valores financieros calculados que posMe muestra, por ejempl
 Para modificarlo ábralo en la lista (Indicador #); para darlo de baja presione Eliminar.
 Notas: el Script es técnico; pídalo al equipo de soporte de posMe.
 
-85. QUÉ CONTIENE EL MENÚ ACTIVOS FIJOS
+94. QUÉ CONTIENE EL MENÚ ACTIVOS FIJOS
 ----------------------------------------------------------------------
 Ruta: Menú > ACTIVOS FIJOS.
   * ACTIVOS F.: catálogo de activos fijos.
@@ -1216,7 +1340,7 @@ Buscar en la lista:
 Notas: en el teléfono el botón Guardar está en la barra inferior y los botones Buscar abren la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol.
 Ver también: Crear un activo fijo.
 
-86. CREAR UN ACTIVO FIJO
+95. CREAR UN ACTIVO FIJO
 ----------------------------------------------------------------------
 Ruta: Menú > ACTIVOS FIJOS > ACTIVOS F. La lista se llama LISTA DE ACTIVOS FIJOS.
   1. Presione Nuevo. Se abre Activo Fijo.
@@ -1228,7 +1352,7 @@ Ruta: Menú > ACTIVOS FIJOS > ACTIVOS F. La lista se llama LISTA DE ACTIVOS FIJO
 Mensajes de validación: "Seleccionar la Categoria", "Seleccionar el Tipo" y "Escribir el Nombre".
 Ver también: Modificar o eliminar un activo fijo.
 
-87. MODIFICAR O ELIMINAR UN ACTIVO FIJO
+96. MODIFICAR O ELIMINAR UN ACTIVO FIJO
 ----------------------------------------------------------------------
 Ruta: Menú > ACTIVOS FIJOS > ACTIVOS F.
   1. En la lista escriba en Buscar en la lista… para filtrar, seleccione la fila y presione Editar.
@@ -1238,7 +1362,7 @@ Arriba tiene Atras, Archivos, Eliminar y Guardar. Eliminar pide confirmar "Desea
 En la edición aparece además la pestaña Expediente, con el historial de órdenes de taller del activo.
 Ver también: Crear un activo fijo.
 
-88. REGISTRAR UNA ENTRADA DE ACTIVOS
+97. REGISTRAR UNA ENTRADA DE ACTIVOS
 ----------------------------------------------------------------------
 Ruta: Menú > ACTIVOS FIJOS > ENT. ACTIVOS. La lista se llama LISTA DE ENTRADA DE ACTIVOS FIJOS.
   1. Presione Nuevo. Se abre Entrada de Activo Fijo.
@@ -1252,7 +1376,7 @@ Mensajes de validación:
   * "Seleccione Un Activo a Asignar" / "El Activo Fijo ya existe en el detalle".
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Atras, Nuevo, Archivos, Imprimir, Eliminar y Guardar.
 
-89. REGISTRAR UNA SALIDA DE ACTIVOS
+98. REGISTRAR UNA SALIDA DE ACTIVOS
 ----------------------------------------------------------------------
 Ruta: Menú > ACTIVOS FIJOS > SAL. ACTIVOS. La lista se llama LISTA DE SALIDAS DE ACTIVOS FIJOS.
   1. Presione Nuevo. Se abre Salida de Activo Fijo.
@@ -1266,7 +1390,7 @@ Mensajes de validación:
   * "Seleccione Un Activo a Retirar" / "El Activo Fijo ya existe en el detalle".
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Atras, Nuevo, Archivos, Imprimir, Eliminar y Guardar.
 
-90. REGISTRAR LA DEPRECIACIÓN DE ACTIVOS
+99. REGISTRAR LA DEPRECIACIÓN DE ACTIVOS
 ----------------------------------------------------------------------
 Ruta: Menú > ACTIVOS FIJOS > DEPRECIACION. La lista se llama LISTA DE DEPRECIACION DE ACTIVOS FIJOS.
   1. Presione Nuevo. Se abre Depreciación de Activo Fijo.
@@ -1282,7 +1406,7 @@ Mensajes de validación:
   * "El Activo Fijo ya existe en el detalle".
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Atras, Nuevo, Archivos, Imprimir, Eliminar y Guardar.
 
-91. REGISTRAR LA VALORACIÓN DE ACTIVOS
+100. REGISTRAR LA VALORACIÓN DE ACTIVOS
 ----------------------------------------------------------------------
 Ruta: Menú > ACTIVOS FIJOS > ACT VALORACION. La lista se llama LISTA DE VALORACION DE ACTIVOS FIJOS.
   1. Presione Nuevo. Se abre Valoración de Activo Fijo.
@@ -1296,7 +1420,7 @@ Mensajes de validación:
   * "El Ratio no puede ser cero o vacio" / "El Activo Fijo ya existe en el detalle".
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Atras, Nuevo, Archivos, Imprimir, Eliminar y Guardar.
 
-92. TRASLADAR PIEZAS ENTRE ACTIVOS (TRASLADO O TRANSFERENCIA DE PIEZAS)
+101. TRASLADAR PIEZAS ENTRE ACTIVOS (TRASLADO O TRANSFERENCIA DE PIEZAS)
 ----------------------------------------------------------------------
 Ruta: Menú > ACTIVOS FIJOS > TRA. PIEZA. La lista se llama LISTA DE TRANSFERENCIA DE PIEZAS.
   1. Presione Nuevo. Se abre Transferencia de Piezas.
@@ -1311,7 +1435,7 @@ Mensajes de validación:
   * "Seleccione al menos un Activo (Origen o Destino)".
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Atras, Nuevo, Eliminar y Guardar.
 
-93. QUÉ CONTIENE EL MENÚ PLANILLA
+102. QUÉ CONTIENE EL MENÚ PLANILLA
 ----------------------------------------------------------------------
 Ruta: Menú > PLANILLA.
   * P. PLANILLA: planillas de pago.
@@ -1326,7 +1450,7 @@ Al editar, las cuatro pantallas tienen arriba solo Atrás y Guardar.
 Notas: en el teléfono el botón Guardar está en la barra inferior y los botones Buscar abren la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol.
 Ver también: Crear una planilla de pago, Registrar adelantos a colaboradores, Registrar la liquidación de un colaborador, Registrar un permiso de un colaborador.
 
-94. CREAR UNA PLANILLA DE PAGO
+103. CREAR UNA PLANILLA DE PAGO
 ----------------------------------------------------------------------
 Ruta: Menú > PLANILLA > P. PLANILLA. La lista se llama LISTA DE PLANILLAS.
   1. Presione Nuevo. Se abre PLANILLA:#.
@@ -1342,7 +1466,7 @@ Mensajes de validación: "Ingrese el Nombre", "Agregue al menos un colaborador" 
 Para modificarla, selecciónela en la lista y presione Editar.
 Ver también: Registrar adelantos a colaboradores.
 
-95. REGISTRAR ADELANTOS A COLABORADORES
+104. REGISTRAR ADELANTOS A COLABORADORES
 ----------------------------------------------------------------------
 Ruta: Menú > PLANILLA > ADELANTOS. La lista se llama LISTA DE ADELANTOS.
   1. Presione Nuevo. Se abre ADELANTO:#.
@@ -1357,7 +1481,7 @@ Mensajes de validación: "Agregue al menos un colaborador", "Ingrese el monto de
 Para modificarlo, selecciónelo en la lista y presione Editar.
 Ver también: Crear una planilla de pago.
 
-96. REGISTRAR LA LIQUIDACIÓN DE UN COLABORADOR
+105. REGISTRAR LA LIQUIDACIÓN DE UN COLABORADOR
 ----------------------------------------------------------------------
 Ruta: Menú > PLANILLA > LIQUIDACION. La lista se llama LISTA DE LIQUIDACIÓN.
   1. Presione Nuevo. Se abre LIQUIDACIÓN:#.
@@ -1369,7 +1493,7 @@ Ruta: Menú > PLANILLA > LIQUIDACION. La lista se llama LISTA DE LIQUIDACIÓN.
 Mensajes de validación: "Seleccione el colaborador", y "El dato ... no es una entrada Válida" si un monto no es válido.
 Para modificarla, selecciónela en la lista y presione Editar.
 
-97. REGISTRAR UN PERMISO DE UN COLABORADOR
+106. REGISTRAR UN PERMISO DE UN COLABORADOR
 ----------------------------------------------------------------------
 Ruta: Menú > PLANILLA > PERMISO. La lista se llama LISTA DE PERMISOS.
   1. Presione Nuevo. Se abre PERMISO:#.
@@ -1383,7 +1507,7 @@ Mensajes de validación:
   * "La Fecha de Integración del Colaborador Está Mal Configurada".
 Para modificarlo, selecciónelo en la lista y presione Editar.
 
-98. QUÉ CONTIENE EL MENÚ DE COLABORADORES (RRHH)
+107. QUÉ CONTIENE EL MENÚ DE COLABORADORES (RRHH)
 ----------------------------------------------------------------------
 Ruta: Menú > COLABORADORES, ASIS. COL, GPS y TASK.
   * COLABORADORES: datos de cada colaborador.
@@ -1395,7 +1519,7 @@ Buscar en la lista: en ASIS. COL y TASK escriba en Buscar por número… y presi
 Notas: en el teléfono el botón Guardar está en la barra inferior y los botones Buscar abren la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol.
 Ver también: Crear un colaborador, Registrar la asistencia de un colaborador, Ver la ubicación de los colaboradores en el mapa (GPS), Crear una tarea para un colaborador.
 
-99. CREAR UN COLABORADOR
+108. CREAR UN COLABORADOR
 ----------------------------------------------------------------------
 Ruta: Menú > COLABORADORES. La lista se llama LISTA DE COLABORADORES; según la configuración de su empresa puede tener otro nombre.
   1. Presione Nuevo. Se abre CODIGO:#, con todos los datos en tarjetas en una sola pantalla.
@@ -1411,7 +1535,7 @@ Mensajes de validación:
   * "Escribir la Identificacion" / "Escribir el Nombre".
 Ver también: Agregar teléfonos y correos de un colaborador, Modificar o eliminar un colaborador.
 
-100. MODIFICAR O ELIMINAR UN COLABORADOR
+109. MODIFICAR O ELIMINAR UN COLABORADOR
 ----------------------------------------------------------------------
 Ruta: Menú > COLABORADORES.
   1. Seleccione el colaborador en la lista y presione Editar. Arriba tiene Atras, Eliminar y Guardar.
@@ -1421,7 +1545,7 @@ Eliminar: use Eliminar en la lista o al editar, y confirme "Desea eliminar este 
 Según la configuración de su empresa también aparece el botón Url Menu.
 Ver también: Crear un colaborador, Agregar teléfonos y correos de un colaborador.
 
-101. AGREGAR TELÉFONOS Y CORREOS DE UN COLABORADOR
+110. AGREGAR TELÉFONOS Y CORREOS DE UN COLABORADOR
 ----------------------------------------------------------------------
 Ruta: Menú > COLABORADORES > Nuevo o Editar.
 Agregar un teléfono:
@@ -1436,7 +1560,7 @@ Quitar: marque la casilla de la fila y presione Eliminar en esa misma tarjeta.
 Presione Guardar en la pantalla del colaborador para conservar los cambios.
 Restricciones: el teléfono y el correo no aceptan vacío. Si los deja en blanco aparece "Escriba el número de teléfono." o "Escriba el correo.".
 
-102. REGISTRAR LA ASISTENCIA DE UN COLABORADOR
+111. REGISTRAR LA ASISTENCIA DE UN COLABORADOR
 ----------------------------------------------------------------------
 Ruta: Menú > ASIS. COL. La lista se llama LISTA DE ASISTENCIA COLABORADOR.
   1. Presione Nuevo. Se abre ASISTENCIA:#.
@@ -1450,7 +1574,7 @@ Huella: en PC, al crear, se muestra el campo Huella; en el teléfono no aparece.
 Notas: esta pantalla no tiene Imprimir. Eliminar puede no estar permitido según el estado del registro.
 Ver también: Registrar la asistencia de un cliente.
 
-103. VER LA UBICACIÓN DE LOS COLABORADORES EN EL MAPA (GPS)
+112. VER LA UBICACIÓN DE LOS COLABORADORES EN EL MAPA (GPS)
 ----------------------------------------------------------------------
 Ruta: Menú > GPS. La pantalla se llama Google Maps.
   1. En la tarjeta Filtro de búsqueda elija la Compañia y el Colaborador, o déjelos en TODAS para ver todos. Al cambiar la compañía se actualiza la lista de colaboradores.
@@ -1462,7 +1586,7 @@ Mensajes:
   * "Completar los Parametros".
 Ver también: Qué contiene el menú de colaboradores (RRHH).
 
-104. CREAR UNA TAREA PARA UN COLABORADOR
+113. CREAR UNA TAREA PARA UN COLABORADOR
 ----------------------------------------------------------------------
 Ruta: Menú > TASK. La lista se llama LISTA DE TAREAS.
   1. Presione Nuevo. Se abre TAREA:#.
@@ -1479,7 +1603,7 @@ Mensajes de validación:
   * "Este campo no puede estar vacío": al presionar Agregar en Seguimiento sin descripción.
 Ver también: Modificar o eliminar una tarea, Ver las tareas en el tablero Kanban, Programar una tarea o visita en el calendario.
 
-105. MODIFICAR O ELIMINAR UNA TAREA
+114. MODIFICAR O ELIMINAR UNA TAREA
 ----------------------------------------------------------------------
 Ruta: Menú > TASK.
   1. Seleccione la tarea en la lista y presione Editar. Se abre en otra pestaña. Arriba tiene Nuevo, Atras, Eliminar y Guardar.
@@ -1490,7 +1614,7 @@ Archivos: en la tarjeta Archivos presione Abrir archivos. Esta tarjeta solo apar
 Eliminar: use Eliminar en la lista o al editar, y confirme "Desea eliminar este Registro...". Puede no estar permitido según el estado de la tarea.
 Ver también: Crear una tarea para un colaborador, Ver las tareas en el tablero Kanban.
 
-106. VER LAS TAREAS EN EL TABLERO KANBAN
+115. VER LAS TAREAS EN EL TABLERO KANBAN
 ----------------------------------------------------------------------
 Ruta: Menú > TASK > botón Kanban. Se abre Tablero Kanban, con una columna por responsable.
 Cada tarea muestra título, descripción, Prioridad, Entrega, Estado, Orden, el botón Editar y el número de documento. El número es solo una etiqueta, no un botón.
@@ -1507,7 +1631,7 @@ Otros botones:
 Mensajes: "No hay tareas pendientes.", "No hay tareas asignadas a ..." y "No se pudo guardar el orden."
 Ver también: Crear una tarea para un colaborador, Modificar o eliminar una tarea.
 
-107. SEGURIDAD: QUÉ CONTIENE EL MENÚ SEGURIDAD
+116. SEGURIDAD: QUÉ CONTIENE EL MENÚ SEGURIDAD
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD.
 El menú SEGURIDAD agrupa las opciones para controlar quién entra a posMe y qué puede hacer:
@@ -1521,7 +1645,7 @@ El menú SEGURIDAD agrupa las opciones para controlar quién entra a posMe y qu�
   * ACTUALIZAR: uso exclusivo del equipo de soporte de posMe.
 Lo que cada persona ve en el menú depende de los permisos de su rol.
 
-108. INICIAR SESIÓN EN POSME
+117. INICIAR SESIÓN EN POSME
 ----------------------------------------------------------------------
 Ruta: pantalla de inicio de posMe.
   1. Escriba su Usuario y su Contraseña.
@@ -1529,7 +1653,7 @@ Ruta: pantalla de inicio de posMe.
   3. Presione Ingresar.
 Notas: si posMe pide PERMISO DE LOCALIZACION REQUERIDO, debe permitir la ubicación en el navegador para poder entrar. Si los datos son incorrectos se muestra un mensaje y no se ingresa. Si no tiene usuario, pídalo al administrador de su empresa.
 
-109. OLVIDÉ MI CONTRASEÑA (REENVIAR CONTRASEÑA)
+118. OLVIDÉ MI CONTRASEÑA (REENVIAR CONTRASEÑA)
 ----------------------------------------------------------------------
 Ruta: pantalla de inicio de posMe > Reenviar Contraseña?
   1. En la pantalla de inicio presione Reenviar Contraseña?.
@@ -1537,14 +1661,14 @@ Ruta: pantalla de inicio de posMe > Reenviar Contraseña?
   3. Revise su correo.
 Si no recibe el correo, pida al administrador de su empresa que le asigne una nueva contraseña en SEGURIDAD > USUARIOS.
 
-110. CERRAR SESIÓN (SALIR, SALGO DE POSME)
+119. CERRAR SESIÓN (SALIR, SALGO DE POSME)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > SALIR.
   1. Entre a SEGURIDAD > SALIR. posMe cierra la sesión y vuelve a la pantalla de inicio.
 Así es como se sale de posMe o se cambia de usuario.
 Cierre siempre la sesión al terminar, sobre todo en equipos compartidos.
 
-111. CAMBIAR MI CONTRASEÑA O MI CORREO (EDITAR PERFIL)
+120. CAMBIAR MI CONTRASEÑA O MI CORREO (EDITAR PERFIL)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > EDITAR PERFIL.
   1. Entre a SEGURIDAD > EDITAR PERFIL. Se abre Mi perfil con su Codigo y el Colaborador asociado.
@@ -1553,7 +1677,7 @@ Ruta: Menú > SEGURIDAD > EDITAR PERFIL.
   4. Cierre sesión y vuelva a entrar con la nueva contraseña.
 El botón Imprimir imprime los datos del perfil.
 
-112. CREAR UN USUARIO (CREO UN USUARIO NUEVO)
+121. CREAR UN USUARIO (CREO UN USUARIO NUEVO)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > USUARIOS.
   1. En la Lista de Usuarios presione Nuevo. Se abre Nuevo usuario.
@@ -1567,7 +1691,7 @@ Ruta: Menú > SEGURIDAD > USUARIOS.
   5. Presione Guardar.
 Notas: para quitar una bodega o caja, toque la fila para seleccionarla y presione Quitar seleccionada. El usuario solo ve el menú que permite su rol (ver Roles).
 
-113. MODIFICAR O ELIMINAR UN USUARIO
+122. MODIFICAR O ELIMINAR UN USUARIO
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > USUARIOS.
   1. Busque el usuario en la lista (campo Buscar usuario…) y ábralo.
@@ -1577,7 +1701,7 @@ Ruta: Menú > SEGURIDAD > USUARIOS.
 Para cambiar la contraseña de otro usuario escriba la nueva en Password y guarde.
 Restricciones: se requiere permiso de editar o eliminar en USUARIOS; si su permiso es Propios, solo puede modificar o eliminar los usuarios que usted creó.
 
-114. CREAR UN ROL
+123. CREAR UN ROL
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES.
 Un rol es un perfil de permisos (por ejemplo CAJERO, VENDEDOR, CONTADOR) que se asigna a los usuarios.
@@ -1585,11 +1709,24 @@ Un rol es un perfil de permisos (por ejemplo CAJERO, VENDEDOR, CONTADOR) que se 
   2. En Datos del rol escriba el Nombre (obligatorio) y la Descripción.
   3. Url por defecto: pantalla que se abre al iniciar sesión (por ejemplo core_dashboards/index).
   4. Tipo de app: déjelo en el valor indicado por soporte (normalmente default).
-  5. Defina los Permisos por pantalla y las Autorizaciones (ver las secciones siguientes).
-  6. Presione Guardar.
+  5. Administrador de compañía: elija No o Sí (solo aparece si su propio rol es administrador o administrador de compañía; ver la sección siguiente).
+  6. Defina los Permisos por pantalla y las Autorizaciones (ver las secciones siguientes).
+  7. Presione Guardar.
+Para modificar un rol, ábralo en la lista, cambie lo necesario y presione Guardar. El Tipo de app se conserva tal como está guardado.
 Notas: los cambios en el menú se ven cuando el usuario vuelve a iniciar sesión.
 
-115. PERMISOS POR PANTALLA DE UN ROL (VER, CREAR, EDITAR, ELIMINAR)
+124. MARCAR UN ROL COMO ADMINISTRADOR DE COMPAÑÍA
+----------------------------------------------------------------------
+Ruta: Menú > SEGURIDAD > ROLES > Nuevo o abrir el rol.
+El campo Administrador de compañía identifica a los roles que administran la empresa. posMe lo usa en otras funciones del sistema para reconocer a esos administradores; por ejemplo, solo ellos pueden compartir consultas del Constructor de Reportes Para todos los usuarios.
+  1. En Datos del rol busque Administrador de compañía.
+  2. Elija Sí para marcar el rol como administrador de compañía, o No para quitarlo.
+  3. Presione Guardar.
+Restricciones: el campo solo lo ve y lo puede cambiar un usuario cuyo propio rol sea administrador o administrador de compañía. Si otro usuario edita el rol, el valor que ya tenía se conserva.
+Notas: marcar un rol como administrador de compañía no le da acceso a pantallas; el acceso se sigue definiendo en Permisos por pantalla.
+Ver también: Crear un rol; Permisos por pantalla de un rol; Compartir una consulta de reporte con todos los usuarios.
+
+125. PERMISOS POR PANTALLA DE UN ROL (VER, CREAR, EDITAR, ELIMINAR)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
   1. En Permisos por pantalla active el interruptor de cada pantalla a la que el rol tendrá acceso. Use Buscar pantalla… para encontrarla y Solo con acceso para ver solo las que ya tienen acceso.
@@ -1600,9 +1737,9 @@ Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
      * Propios: solo los registros que creó el mismo usuario.
   3. Botones rápidos sobre las pantallas visibles: Acceso total, Solo ver y Quitar todo. También hay botones por módulo.
   4. Presione Guardar y pida a los usuarios del rol cerrar sesión y volver a entrar.
-Notas: si el rol es administrador tiene acceso a todo y estos permisos no se aplican. Si edita su propio rol y le quita el acceso a ROLES, perderá acceso a esa pantalla.
+Notas: los niveles y el acceso se guardan exactamente como los eligió y se muestran igual al volver a abrir el rol, aunque tenga cientos de pantallas. Los permisos de pantallas que no aparecen en la lista (por ejemplo, módulos que su empresa no tiene) se conservan al guardar. Si el rol es administrador tiene acceso a todo y estos permisos no se aplican. Si edita su propio rol y le quita el acceso a ROLES, perderá acceso a esa pantalla.
 
-116. AUTORIZACIONES DE UN ROL
+126. AUTORIZACIONES DE UN ROL
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES > abrir el rol > Autorizaciones.
 Las autorizaciones son permisos especiales que no dependen de una pantalla (por ejemplo ADMINISTRADOR, CAJERO, CONTADOR, o autorizaciones de usuario interno o externo de taller). Según la configuración de la empresa, habilitan acciones como aprobar documentos o ver información restringida.
@@ -1610,7 +1747,7 @@ Las autorizaciones son permisos especiales que no dependen de una pantalla (por 
   2. Marque las que correspondan (Marcar todas / Ninguna para marcar o desmarcar todo).
   3. Presione Guardar.
 
-117. DAR ACCESO AL ASISTENTE JORDANIA (ASISTENTE IA)
+127. DAR ACCESO AL ASISTENTE JORDANIA (ASISTENTE IA)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
   1. En Permisos por pantalla busque Asistente IA y active el acceso.
@@ -1618,7 +1755,7 @@ Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
   3. Los usuarios del rol deben cerrar sesión y volver a entrar; verán el botón del asistente en la pantalla.
 Notas: además del permiso, la empresa debe tener habilitado el asistente (lo configura soporte de posMe).
 
-118. SUCURSALES
+128. SUCURSALES
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > SUCURSAL.
   1. Para crear una sucursal presione Nuevo. Se abre Nueva sucursal.
@@ -1627,7 +1764,7 @@ Ruta: Menú > SEGURIDAD > SUCURSAL.
 Para modificarla, ábrala en la lista, cambie los datos y presione Guardar; para darla de baja presione Eliminar.
 Después asigne la sucursal a los usuarios en SEGURIDAD > USUARIOS (campo Sucursal).
 
-119. NOTIFICACIONES Y RECORDATORIOS (CONFIG. NOTI)
+129. NOTIFICACIONES Y RECORDATORIOS (CONFIG. NOTI)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > CONFIG. NOTI.
 Permite configurar recordatorios periódicos que posMe muestra o envía a los usuarios.
@@ -1639,7 +1776,7 @@ Permite configurar recordatorios periódicos que posMe muestra o envía a los us
 Para que un usuario reciba la notificación, asígnela en SEGURIDAD > USUARIOS > pestaña Notificaciones.
 Ver también: Programar una tarea o visita en el calendario.
 
-120. VER QUIÉN ENTRÓ: SESIONES Y ACTIVIDAD DE UN USUARIO (LOG SESSION)
+130. VER QUIÉN ENTRÓ: SESIONES Y ACTIVIDAD DE UN USUARIO (LOG SESSION)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > LOG SESSION.
   1. En Usuario elija el usuario y presione Consultar.
@@ -1648,17 +1785,17 @@ Ruta: Menú > SEGURIDAD > LOG SESSION.
      * Últimas 5 Sesiones con IP, Plataforma (navegador/dispositivo), Último Movimiento y Detalle.
 Útil para revisar quién entró al sistema, desde dónde y cuánto trabajo ha registrado.
 
-121. ACTUALIZAR (USO DE SOPORTE)
+131. ACTUALIZAR (USO DE SOPORTE)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ACTUALIZAR.
 Opción técnica para que el equipo de soporte de posMe aplique actualizaciones al sistema. No la use salvo que soporte se lo indique.
 
-122. PARÁMETROS DE LA EMPRESA
+132. PARÁMETROS DE LA EMPRESA
 ----------------------------------------------------------------------
 Los parámetros controlan el comportamiento de posMe por empresa (por ejemplo, orden de aplicación de abonos, lista de precios por defecto, formato de impresión).
 Los parámetros contables se editan en CONTABILIDAD > PARAMETROS; el resto los configura el equipo de soporte de posMe.
 Ver también: Configurar los parámetros contables.
 
-123. SOPORTE
+133. SOPORTE
 ----------------------------------------------------------------------
 Si no encuentra cómo hacer algo o hay un error en el sistema, contacte al equipo de soporte de posMe.

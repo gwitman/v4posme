@@ -1,8 +1,13 @@
 <!-- ./ https://fontawesome.com/v3/icon/print -->
 <!-- ./ page heading -->
-<script>	
+<?php $varParameterQzTrayView = isset($objParameterInvoiceUserQsTray) ? $objParameterInvoiceUserQsTray : "false"; ?>
+<?php if ($varParameterQzTrayView === "true") { ?>
+<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/qz-tray/qz-tray.js"></script>
+<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme-qztray.js?v=1"></script>
+<?php } ?>
+<script>
 
-	//fnWaitOpenV2();	
+	//fnWaitOpenV2();
 	
 	/*
 	try {
@@ -28,6 +33,8 @@
 	var objTableProductosSearch 			= null;	
 	var objRowTableProductosSearch 			= null;	
 	var varBaseUrl							= '<?php echo base_url(); ?>';
+	var varParameterQzTray					= <?php echo json_encode((string)$varParameterQzTrayView, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>;
+	var varQzPrinterName					= <?php echo json_encode((string)(isset($objParameterInvoiceQsTrayPrinterName) ? $objParameterInvoiceQsTrayPrinterName : ""), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>;
 	var varStatusInvoiceAplicado			= 67; //Estado Aplicada
 	var varStatusInvoiceAnular				= 68; //Anular
 	var varCurrencyDefaultSimbol			= '<?php echo $objCurrency->simbol; ?>';
@@ -1107,8 +1114,19 @@
 	
 	$("#btnAceptarDialogPrinterV2AceptarDocument").click(function(){
 		fnWaitOpenV2();
-		window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>", '_blank');
-		fnWaitCloseV2();	
+		var urlImpresionDocumento = "<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/<?php echo $objTransactionMaster->companyID;?>/transactionID/<?php echo $objTransactionMaster->transactionID;?>/transactionMasterID/<?php echo $objTransactionMaster->transactionMasterID;?>";
+		if (varParameterQzTray === 'true' && typeof PosmeQzTray !== 'undefined') {
+			// Impresión directa con QZ Tray; si falla, respaldo con la vista de impresión actual
+			PosmeQzTray.imprimirDocumento({
+				baseUrl: varBaseUrl,
+				url: urlImpresionDocumento,
+				printerName: varQzPrinterName,
+				onFallback: function(){ window.open(urlImpresionDocumento, '_blank'); }
+			});
+		} else {
+			window.open(urlImpresionDocumento, '_blank');
+		}
+		fnWaitCloseV2();
 		cerrarModal("ModalOpcionesImpresion");
 	});
 	$("#btnAceptarDialogPrinterV2AceptarDocumentA4").click(function(){

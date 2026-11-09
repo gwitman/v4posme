@@ -1,4 +1,9 @@
 <!-- ./ page heading -->
+<?php $varParameterQzTrayView = isset($objParameterInvoiceUserQsTray) ? $objParameterInvoiceUserQsTray : "false"; ?>
+<?php if ($varParameterQzTrayView === "true") { ?>
+<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/qz-tray/qz-tray.js"></script>
+<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme-qztray.js?v=1"></script>
+<?php } ?>
 <script>
     var heigthTop							= 0;
 	var objTableDetail 						= {};
@@ -15,6 +20,8 @@
 	var objTableProductosSearch 			= null;
 	var objRowTableProductosSearch 			= null;
 	var varBaseUrl							= '<?php echo base_url(); ?>';
+	var varParameterQzTray					= <?php echo json_encode((string)$varParameterQzTrayView, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>;
+	var varQzPrinterName					= <?php echo json_encode((string)(isset($objParameterInvoiceQsTrayPrinterName) ? $objParameterInvoiceQsTrayPrinterName : ""), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP); ?>;
     var varStatusInvoiceAplicado			= 67; //Estado Aplicada
     var varStatusInvoiceAnular				= 68; //Anular
 	var varStatusInvoiceRegistrado			= 66; //Registrado
@@ -1220,8 +1227,19 @@
 		var minuto 		= String(ahora.getMinutes()).padStart(2, '0');
 		var segundo 	= String(ahora.getSeconds()).padStart(2, '0');
 		var fechaHora 	= `${año}${mes}${dia}${hora}${minuto}${segundo}`;
-		
-		window.open("<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/2/transactionID/19/transactionMasterID/"+$("#txtTransactionMasterID").val()+"/"+fechaHora, '_blank');
+		var urlImpresionDocumento = "<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/2/transactionID/19/transactionMasterID/"+$("#txtTransactionMasterID").val()+"/"+fechaHora;
+
+		if (varParameterQzTray === 'true' && typeof PosmeQzTray !== 'undefined') {
+			// Impresión directa con QZ Tray; si falla, respaldo con la vista de impresión actual
+			PosmeQzTray.imprimirDocumento({
+				baseUrl: varBaseUrl,
+				url: urlImpresionDocumento,
+				printerName: varQzPrinterName,
+				onFallback: function(){ window.open(urlImpresionDocumento, '_blank'); }
+			});
+		} else {
+			window.open(urlImpresionDocumento, '_blank');
+		}
 		cerrarModal('ModalCargandoDatos');
 		cerrarModal("ModalOpcionesImpresion");
 	});

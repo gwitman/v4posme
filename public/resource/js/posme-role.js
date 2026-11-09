@@ -7,9 +7,10 @@
  * 2) Capa DOM: PosmeRole.init(config) (jQuery 1.9 + Bootstrap 3 del masterpage).
  *
  * Contrato del POST a core_role/save (NO cambiar):
- *   txtElementID[], txtSelectedID[id], txtInsertedID[id], txtDeletedID[id], txtEditedID[id],
- *   txtComponentAutorizationID[]
- * Los hidden se generan dentro de #pmRolePost justo antes del submit.
+ *   UN solo hidden txtPermissionJson (evita el limite max_input_vars de PHP):
+ *   {"elements":[{"elementID":12,"selected":0,"inserted":-1,"deleted":-1,"edited":2}],
+ *    "autorizations":[5,9]}
+ * El hidden se genera dentro de #pmRolePost justo antes del submit.
  * ES5: sin arrow functions, let/const ni template literals.
  * ========================================================================== */
 (function (root) {
@@ -224,36 +225,50 @@
 		return nuevo;
 	};
 
-	/* Lista [{name,value}] para el POST de core_role/save */
-	PosmeRole.camposPost = function (estado, autorizacionIDs) {
-		var campos	= [];
-		var ids		= [];
-		var k;
+	/*
+	 * Objeto de permisos para core_role/save:
+	 * { elements: [{elementID, selected, inserted, deleted, edited}], autorizations: [id, ...] }
+	 * Todos los valores son numeros; solo van las pantallas con acceso (las que estan en el estado),
+	 * ordenadas por elementID, y las autorizaciones sin duplicados ni valores no numericos.
+	 */
+	PosmeRole.permisosJson = function (estado, autorizacionIDs) {
+		var elementos		= [];
+		var autorizacionesN	= [];
+		var ids				= [];
+		var vistas			= {};
+		var i, k;
+
 		if (estado) {
 			for (k in estado) {
 				if (Object.prototype.hasOwnProperty.call(estado, k) && clave(k) !== null) ids.push(parseInt(k, 10));
 			}
 		}
 		ids.sort(function (a, b) { return a - b; });
-		for (var i = 0; i < ids.length; i++) {
-			var id	= ids[i];
-			var e	= estado[String(id)];
-			campos.push({ name: 'txtElementID[]', value: String(id) });
-			campos.push({ name: 'txtSelectedID[' + id + ']', value: String(nivelValido(e.selected)) });
-			campos.push({ name: 'txtInsertedID[' + id + ']', value: String(nivelValido(e.inserted)) });
-			campos.push({ name: 'txtDeletedID[' + id + ']', value: String(nivelValido(e.deleted)) });
-			campos.push({ name: 'txtEditedID[' + id + ']', value: String(nivelValido(e.edited)) });
+		for (i = 0; i < ids.length; i++) {
+			var e = estado[String(ids[i])];
+			elementos.push({
+				elementID	: ids[i],
+				selected	: nivelValido(e.selected),
+				inserted	: nivelValido(e.inserted),
+				deleted		: nivelValido(e.deleted),
+				edited		: nivelValido(e.edited)
+			});
 		}
-		var auts	= comoLista(autorizacionIDs);
-		var vistas	= {};
-		for (var j = 0; j < auts.length; j++) {
-			if (esVacio(auts[j])) continue;
-			var a = String(auts[j]);
-			if (vistas[a]) continue;
-			vistas[a] = true;
-			campos.push({ name: 'txtComponentAutorizationID[]', value: a });
+
+		/* autorizaciones: numeros, sin duplicados (los checkbox devuelven strings) */
+		var auts = comoLista(autorizacionIDs);
+		for (i = 0; i < auts.length; i++) {
+			var a = aEntero(auts[i]);
+			if (isNaN(a) || vistas[String(a)]) continue;
+			vistas[String(a)] = true;
+			autorizacionesN.push(a);
 		}
-		return campos;
+		return { elements: elementos, autorizations: autorizacionesN };
+	};
+
+	/* Lista [{name,value}] para el POST de core_role/save: un solo campo txtPermissionJson */
+	PosmeRole.camposPost = function (estado, autorizacionIDs) {
+		return [{ name: 'txtPermissionJson', value: JSON.stringify(PosmeRole.permisosJson(estado, autorizacionIDs)) }];
 	};
 
 	/* Cantidad de pantallas visibles con acceso */
@@ -598,6 +613,7 @@
 			return true;
 		}
 		function enviar() {
+			/* el estado (checkbox Acceso + combos) viaja en un solo hidden txtPermissionJson; submit normal */
 			var $post	= $('#pmRolePost');
 			var campos	= PosmeRole.camposPost(estado, autorizacionesMarcadas());
 			$post.empty();

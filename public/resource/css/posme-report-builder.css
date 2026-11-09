@@ -71,8 +71,44 @@
 .pv2.prb .prb-acciones-fila .btn { min-height: 44px; }
 .pv2.prb .prb-link { padding: 0; border: 0; background: none; color: var(--pv2-accent); font-weight: 700; text-align: left; cursor: pointer; min-height: 44px; }
 
+/* Listas largas de Mostrar, Ordenar y Filtros: scroll propio para que la página no crezca */
+.pv2.prb .prb-bloque-lista { max-height: 45vh; overflow-y: auto; overflow-x: hidden; padding-right: 2px; }
+
+/* Insignias de Mis consultas */
+.pv2.prb .prb-badges { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 2px; }
+.pv2.prb .prb-badge { display: inline-block; font-size: 11px; font-weight: 700; padding: 1px 8px; border-radius: 20px; background: var(--pv2-accent-bg); color: var(--pv2-accent); }
+.pv2.prb .prb-badge.is-ok { background: var(--pv2-ok-bg); color: var(--pv2-ok); }
+.pv2.prb .prb-badge.is-muted { background: var(--pv2-soft); color: var(--pv2-muted); border: 1px solid var(--pv2-border); }
+.pv2.prb .prb-badge.is-info { background: var(--pv2-info-bg); color: var(--pv2-info); }
+
+/* Combo de fecha dinámica sobre el campo de fecha manual */
+.pv2.prb .prb-fecha-tipo { margin-bottom: 4px; }
+
+/* Modal Guardar (Bootstrap 3 del tema; el contenido lleva .pv2.prb para reutilizar estilos) */
+.prb-modal-dialog { width: auto; max-width: 760px; margin: 20px auto; padding: 0 10px; }
+.modal-content.pv2.prb { border-radius: 12px; border: 0; }
+.pv2.prb .prb-modal-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 16px; }
+.pv2.prb .prb-modal-header .modal-title { font-size: 16px; font-weight: 700; margin: 0; }
+.pv2.prb .prb-modal-body { padding: 14px 16px; }
+.pv2.prb .prb-modal-footer { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; padding: 12px 16px; }
+.pv2.prb .prb-modal-footer .btn + .btn { margin-left: 0; }
+.pv2.prb .prb-modal-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 0 12px; }
+.pv2.prb .prb-checks { display: flex; flex-wrap: wrap; gap: 6px; }
+.pv2.prb .prb-check { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; padding: 6px 10px; margin: 0; border: 1px solid var(--pv2-border); border-radius: 8px; background: #fff; font-weight: 600; font-size: 13px; cursor: pointer; }
+.pv2.prb .prb-check input { margin: 0; }
+.pv2.prb .prb-subtitulo { font-size: 13px; font-weight: 700; margin: 6px 0 8px; padding-top: 10px; border-top: 1px solid var(--pv2-border); }
+
+/* Página "Abrir en nueva página" (view_result) */
+.prb-view { padding: 12px; }
+.pv2.prb .prb-view-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+
 /* Telefono */
 @media (max-width: 767px) {
+    .pv2.prb .prb-bloque-lista { max-height: none; overflow: visible; padding-right: 0; }
+    .prb-modal-dialog { margin: 0 auto; padding: 0; }
+    .modal-content.pv2.prb { border-radius: 0; min-height: 100vh; }
+    .pv2.prb .prb-modal-footer .btn { flex: 1 1 100%; min-height: 44px; }
+    .prb-view { padding: 6px; }
     .pv2.prb .form-control { min-width: 0; }
     .pv2.prb .prb-fila { align-items: stretch; }
     .pv2.prb .prb-campo, .pv2.prb .prb-campo-ancho { flex: 1 1 100%; }

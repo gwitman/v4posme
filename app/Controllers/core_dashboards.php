@@ -183,6 +183,7 @@ class core_dashboards extends _BaseController {
 
             $dataSession["script"]			= "";
             $dataSession["footer"]			= "";
+            $dataSession["body"]			= view('core_dasboard/builder_cards', array('dashboardCode' => 'core_dashboards/index')) . $dataSession["body"];
             return view("core_masterpage/default_masterpage",$dataSession);//--finview-r
         }
         catch(\Exception $ex){

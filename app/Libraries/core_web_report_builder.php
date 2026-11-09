@@ -49,6 +49,40 @@ class core_web_report_builder
     const EXCEL_FORMAT_DATE = 'yyyy-mm-dd';
     const EXCEL_FORMAT_DATETIME = 'yyyy-mm-dd hh:mm:ss';
 
+    /**
+     * Codigos de fecha dinamica de un filtro de fecha: {"dynamic":"<codigo>"}. Son logica de calculo,
+     * no configuracion; las etiquetas visibles estan en la vista. Se resuelven al ejecutar, nunca al guardar.
+     */
+    const DATE_INICIO_DIA = 'inicio_dia';
+    const DATE_INICIO_MES = 'inicio_mes';
+    const DATE_INICIO_ANIO = 'inicio_anio';
+    const DATE_FIN_DIA = 'fin_dia';
+    const DATE_HOY = 'hoy';
+    const DATE_FIN_MES = 'fin_mes';
+    const DATE_FIN_ANIO = 'fin_anio';
+    const DYNAMIC_DATES_FROM = ['inicio_dia', 'inicio_mes', 'inicio_anio'];
+    const DYNAMIC_DATES_TO = ['fin_dia', 'hoy', 'fin_mes', 'fin_anio'];
+
+    /** Nombres exactos (tb_catalog.name) de los catalogos del Builder. Se cargan por nombre, nunca por ID. */
+    const CATALOG_VIEW_TYPE = 'Builder Report Tipo Vista';
+    const CATALOG_DASHBOARD = 'Builder Report Dashboard';
+    const CATALOG_CARD_TYPE = 'Builder Report Tipo Tarjeta';
+    const CATALOG_WIDTH = 'Builder Report Ancho';
+    const CATALOG_CHART_TYPE = 'Builder Report Tipo Grafico';
+
+    /** Tipos de tarjeta segun el name del item del catalogo "Builder Report Tipo Tarjeta" (normalizado). */
+    const CARD_TYPE_CHART = 'grafico';
+    const CARD_TYPE_TABLE = 'tabla';
+    const CARD_TYPE_INDICATOR = 'indicador';
+
+    /** Formatos del valor de una tarjeta Indicador. */
+    const INDICATOR_FORMATS = ['number', 'money'];
+
+    /** Filas que pide cada tipo de tarjeta de dashboard (pagina 1). Nunca superan REPORT_BUILDER_PAGE_SIZE_MAX. */
+    const CARD_PAGE_SIZE_INDICATOR = 1;
+    const CARD_PAGE_SIZE_CHART = 100;
+    const CARD_PAGE_SIZE_TABLE = 10;
+
     /** Operadores permitidos segun el tipo de CATALOGO del campo. */
     private static $OPERATORS = [
         'text'   => ['eq', 'contains', 'starts'],
@@ -820,8 +854,9 @@ class core_web_report_builder
                 throw new \Exception('El operador del filtro no es valido para el campo ' . $field['label'] . '.');
             }
 
-            $value1  = $this->readFilterValue($filter['value'] ?? null);
-            $value2  = $this->readFilterValue($filter['value2'] ?? null);
+            // Un campo de fecha acepta {"dynamic":"<codigo>"}: se conserva el token y se resuelve al ejecutar
+            $value1  = $this->readDynamicDate($filter['value'] ?? null, $field) ?? $this->readFilterValue($filter['value'] ?? null);
+            $value2  = $this->readDynamicDate($filter['value2'] ?? null, $field) ?? $this->readFilterValue($filter['value2'] ?? null);
             $normal  = [
                 'column'   => $field['name'],
                 'operator' => $operator,
@@ -844,7 +879,12 @@ class core_web_report_builder
                 }
                 $value1 = $this->normalizeFilterValue($value1, $field);
                 $value2 = $this->normalizeFilterValue($value2, $field);
-                $isInverted = ($field['type'] === 'number') ? ((float) $value1 > (float) $value2) : ($value1 > $value2);
+                // Con una fecha dinamica el orden depende del dia de ejecucion: se revisa en resolveDynamicFilters()
+                if (is_array($value1) || is_array($value2)) {
+                    $isInverted = false;
+                } else {
+                    $isInverted = ($field['type'] === 'number') ? ((float) $value1 > (float) $value2) : ($value1 > $value2);
+                }
                 if ($isInverted) {
                     throw new \Exception('Los extremos del filtro del campo ' . $field['label'] . ' estan invertidos.');
                 }
@@ -891,13 +931,19 @@ class core_web_report_builder
     /**
      * Normaliza el valor de un filtro segun el tipo de catalogo.
      *
-     * @param string $value Valor en texto.
-     * @param array  $field Entrada del catalogo.
-     * @return string Valor listo para el bind.
+     * Una fecha dinamica ya validada por readDynamicDate() se devuelve tal cual (token sin resolver).
+     *
+     * @param string|array $value Valor en texto, o ['dynamic' => codigo] en un campo de fecha.
+     * @param array        $field Entrada del catalogo.
+     * @return string|array Valor listo para el bind, o el token dinamico.
      * @throws \Exception Si no corresponde al tipo.
      */
     private function normalizeFilterValue($value, array $field)
     {
+        if (is_array($value)) {
+            return $this->readDynamicDate($value, $field);
+        }
+
         if ($field['type'] === 'number') {
             $number = trim($value);
             if (!is_numeric($number) || !is_finite((float) $number)) {
@@ -935,6 +981,98 @@ class core_web_report_builder
         }
 
         throw new \Exception('El filtro del campo ' . $label . ' debe ser una fecha valida con formato AAAA-MM-DD.');
+    }
+
+    /**
+     * Lee una fecha dinamica {"dynamic":"<codigo>"}. Solo se acepta en campos de fecha y con un codigo
+     * conocido (Desde o Hasta, en cualquier extremo: la interfaz decide cuales ofrece en cada uno).
+     *
+     * @param mixed $value Valor recibido.
+     * @param array $field Entrada del catalogo.
+     * @return array|null ['dynamic' => codigo], o null si el valor no es un arreglo (no es dinamica).
+     * @throws \Exception Si es un arreglo en un campo que no es fecha o con un codigo invalido.
+     */
+    private function readDynamicDate($value, array $field)
+    {
+        if (!is_array($value)) {
+            return null;
+        }
+        if ($field['type'] !== 'date' || !array_key_exists('dynamic', $value)) {
+            throw new \Exception('El valor de un filtro no es valido.');
+        }
+
+        $code = $value['dynamic'];
+        if (!is_string($code) || !in_array($code, array_merge(self::DYNAMIC_DATES_FROM, self::DYNAMIC_DATES_TO), true)) {
+            throw new \Exception('La fecha dinamica del filtro del campo ' . $field['label'] . ' no es valida.');
+        }
+
+        return ['dynamic' => $code];
+    }
+
+    /**
+     * Resuelve un codigo de fecha dinamica contra una fecha de referencia. Funcion pura.
+     * inicio_* = primer dia del dia/mes/anio; fin_dia y hoy = el dia; fin_mes = ultimo dia del mes;
+     * fin_anio = 31 de diciembre. Como el filtro de fecha compara por dia, fin_dia y hoy son equivalentes.
+     *
+     * @param string             $code Codigo (constantes DATE_*).
+     * @param \DateTimeInterface $now  Fecha de referencia; en ejecucion, helper_getDateTime_Object().
+     * @return string Fecha Y-m-d.
+     * @throws \Exception Si el codigo no existe.
+     */
+    function resolveDynamicDate($code, \DateTimeInterface $now)
+    {
+        switch ($code) {
+            case self::DATE_INICIO_DIA:
+            case self::DATE_FIN_DIA:
+            case self::DATE_HOY:
+                return $now->format('Y-m-d');
+            case self::DATE_INICIO_MES:
+                return $now->format('Y-m-01');
+            case self::DATE_FIN_MES:
+                return $now->format('Y-m-t');
+            case self::DATE_INICIO_ANIO:
+                return $now->format('Y-01-01');
+            case self::DATE_FIN_ANIO:
+                return $now->format('Y-12-31');
+        }
+
+        throw new \Exception('La fecha dinamica del filtro no es valida.');
+    }
+
+    /**
+     * Sustituye las fechas dinamicas de una configuracion ya validada (validateConfig) por fechas Y-m-d.
+     * Se llama justo antes de ejecutar (generar, exportar, dashboards); nunca antes de guardar.
+     *
+     * @param array              $config Configuracion normalizada.
+     * @param \DateTimeInterface $now    Fecha de referencia (helper_getDateTime_Object()).
+     * @return array Configuracion sin tokens dinamicos.
+     * @throws \Exception Si un between queda con los extremos invertidos ese dia.
+     */
+    function resolveDynamicFilters(array $config, \DateTimeInterface $now)
+    {
+        $filters = [];
+        foreach ($this->toList($config['filters'] ?? null) as $filter) {
+            if (!is_array($filter)) {
+                throw new \Exception('La configuracion del reporte tiene un formato invalido.');
+            }
+
+            foreach (['value', 'value2'] as $key) {
+                if (isset($filter[$key]) && is_array($filter[$key])) {
+                    $filter[$key] = $this->resolveDynamicDate($filter[$key]['dynamic'] ?? null, $now);
+                }
+            }
+
+            if (($filter['operator'] ?? '') === 'between' && ($filter['dataType'] ?? '') === 'date'
+                && is_string($filter['value'] ?? null) && is_string($filter['value2'] ?? null)
+                && $filter['value'] > $filter['value2']) {
+                throw new \Exception('Los extremos del filtro de fecha del campo ' . ($filter['column'] ?? '') . ' quedan invertidos con la fecha de hoy.');
+            }
+
+            $filters[] = $filter;
+        }
+
+        $config['filters'] = $filters;
+        return $config;
     }
 
     /**
@@ -1053,7 +1191,7 @@ class core_web_report_builder
         $select  = [];
         $columns = [];
         foreach ($this->toList($config['columns'] ?? null) as $i => $column) {
-            $key       = 'c' . $i;
+            $key       = $this->buildColumnKey($i);
             $fn        = $column['fn'] ?? null;
             $select[]  = $this->buildExpression($column['name'] ?? null, $fn) . ' AS ' . $key;
             $columns[] = [
@@ -1196,6 +1334,11 @@ class core_web_report_builder
         $dataType = $filter['dataType'] ?? '';
         $value    = $filter['value'] ?? null;
         $value2   = $filter['value2'] ?? null;
+
+        // Falla cerrado: una fecha dinamica debe llegar resuelta por resolveDynamicFilters()
+        if (is_array($value) || is_array($value2)) {
+            throw new \Exception('La fecha dinamica del filtro no se resolvio antes de ejecutar.');
+        }
 
         if ($dataType === 'date') {
             // Se compara por rango para no perder las filas con hora dentro del dia
@@ -1611,5 +1754,397 @@ class core_web_report_builder
         $text = preg_replace('/[^A-Za-z0-9_\-]+/', '_', is_string($name) ? $name : '');
         $text = trim(substr((string) $text, 0, 80), '_-');
         return (($text === '') ? 'reporte' : $text) . '.xlsx';
+    }
+
+    /* =================================================================================
+       VISIBILIDAD, CATALOGOS Y PRESENTACION (DASHBOARDS)
+    ================================================================================= */
+
+    /**
+     * Indica si el rol en sesion es administrador de la compania (isAdminCompany = 1) o administrador
+     * general (isAdmin = 1). Solo un administrador puede compartir consultas y editar las compartidas de otros.
+     *
+     * @param array $dataSession Sesion.
+     * @return bool
+     */
+    function isAdminCompany(array $dataSession)
+    {
+        $role = $dataSession["role"] ?? null;
+        if (!is_object($role)) {
+            return false;
+        }
+
+        return (int) ($role->isAdminCompany ?? 0) === 1 || (int) ($role->isAdmin ?? 0) === 1;
+    }
+
+    /**
+     * Carga por nombre los catalogos del Builder. Un catalogo que falla (por ejemplo, sin flavor para la
+     * empresa) no rompe la pantalla: queda como lista vacia y su mensaje va en errors.
+     * Es el unico metodo de esta clase, ademas de execute(), que toca la BD.
+     *
+     * @param int         $companyID      Empresa de la sesion.
+     * @param object|null $catalogLibrary Instancia de core_web_catalog; null crea una (permite probar sin BD).
+     * @return array [viewType, dashboard, cardType, width, chartType, errors]; cada item {catalogItemID, name, display}.
+     */
+    function loadBuilderCatalogs($companyID, $catalogLibrary = null)
+    {
+        $catalogLibrary = $catalogLibrary ?? new core_web_catalog();
+        $names          = [
+            'viewType'  => self::CATALOG_VIEW_TYPE,
+            'dashboard' => self::CATALOG_DASHBOARD,
+            'cardType'  => self::CATALOG_CARD_TYPE,
+            'width'     => self::CATALOG_WIDTH,
+            'chartType' => self::CATALOG_CHART_TYPE,
+        ];
+        $result = [];
+        $errors = [];
+
+        foreach ($names as $key => $name) {
+            $result[$key] = [];
+            try {
+                $rows = $catalogLibrary->getCatalogAllItemByNameCatalogo($name, $companyID);
+                foreach ((is_array($rows) ? $rows : []) as $row) {
+                    $item = (array) $row;
+                    if (!isset($item['catalogItemID'])) {
+                        continue;
+                    }
+                    $result[$key][] = [
+                        'catalogItemID' => (int) $item['catalogItemID'],
+                        'name'          => (string) ($item['name'] ?? ''),
+                        'display'       => (string) ($item['display'] ?? ($item['name'] ?? '')),
+                    ];
+                }
+            } catch (\Throwable $ex) {
+                // Solo los \Exception simples son mensajes propios de core_web_catalog; el resto se oculta
+                if (get_class($ex) === 'Exception') {
+                    $message = $ex->getMessage();
+                } else {
+                    log_message('error', 'core_web_report_builder: catalogo ' . $name . ': ' . get_class($ex) . ': ' . $ex->getMessage());
+                    $message = 'No se pudo leer el catalogo.';
+                }
+                $errors[] = 'Catalogo "' . $name . '": ' . $message;
+            }
+        }
+
+        $result['errors'] = $errors;
+        return $result;
+    }
+
+    /**
+     * Item de un catalogo cargado por loadBuilderCatalogs(), buscado por catalogItemID.
+     *
+     * @param mixed $id    ID recibido.
+     * @param array $items Items del catalogo.
+     * @return array|null Item, o null si el ID no pertenece al catalogo.
+     */
+    function findCatalogItem($id, array $items)
+    {
+        $value = $this->toCatalogID($id);
+        if ($value === null || $value < 1) {
+            return null;
+        }
+        foreach ($items as $item) {
+            if ((int) ($item['catalogItemID'] ?? 0) === $value) {
+                return $item;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Clave (alias SQL) de la columna seleccionada en la posicion $index: es la clave con la que llegan
+     * las filas del resultado (generate devuelve columns[i].key). composeQuery() usa este mismo metodo.
+     *
+     * @param int $index Posicion de la columna en config.columns (desde 0).
+     * @return string Clave, por ejemplo "c0".
+     */
+    function buildColumnKey($index)
+    {
+        return 'c' . (int) $index;
+    }
+
+    /**
+     * Claves de las columnas seleccionadas de una configuracion normalizada, en su orden.
+     *
+     * @param array $config Configuracion (validateConfig o reconcileConfig).
+     * @return array clave => true
+     */
+    function getColumnKeys(array $config)
+    {
+        $keys = [];
+        $list = isset($config['columns']) && is_array($config['columns']) ? array_values($config['columns']) : [];
+        foreach ($list as $i => $column) {
+            $keys[$this->buildColumnKey($i)] = true;
+        }
+        return $keys;
+    }
+
+    /**
+     * Revisa, sin fallar, que los campos de una presentacion guardada sigan entre las columnas
+     * seleccionadas de la configuracion (por ejemplo, despues de quitar columnas que ya no existen).
+     *
+     * @param array $display Presentacion guardada.
+     * @param array $config  Configuracion ya reconciliada.
+     * @return array Mensajes de advertencia.
+     */
+    function checkDisplayColumns(array $display, array $config)
+    {
+        $keys     = $this->getColumnKeys($config);
+        $warnings = [];
+        $used     = [];
+
+        foreach (['labelField', 'seriesField', 'indicatorField'] as $property) {
+            if (isset($display[$property]) && is_string($display[$property]) && $display[$property] !== '') {
+                $used[] = $display[$property];
+            }
+        }
+        foreach ((isset($display['valueFields']) && is_array($display['valueFields'])) ? $display['valueFields'] : [] as $key) {
+            if (is_string($key) && $key !== '') {
+                $used[] = $key;
+            }
+        }
+
+        foreach (array_unique($used) as $key) {
+            if (!isset($keys[$key])) {
+                $warnings[] = 'La presentacion usa la columna ' . $key . ', que ya no esta entre las columnas seleccionadas. Revise la presentacion.';
+            }
+        }
+        return $warnings;
+    }
+
+    /**
+     * Valida y normaliza la presentacion de una consulta en un dashboard (displayJson). Los IDs deben
+     * pertenecer a su catalogo. labelField, valueFields, seriesField e indicatorField son CLAVES de las
+     * columnas seleccionadas (c0, c1, ... segun buildColumnKey), incluidas las que tienen funcion
+     * agregada, porque el dashboard pinta las filas del resultado. El tipo de tarjeta se interpreta por
+     * el name del item: Grafico exige tipo de grafico, campo etiqueta y al menos un campo valor;
+     * Indicador exige campo indicador; Tabla no exige nada mas.
+     *
+     * @param array $display  Presentacion recibida.
+     * @param array $config   Configuracion normalizada por validateConfig() (sus columns definen las claves).
+     * @param array $catalogs Resultado de loadBuilderCatalogs().
+     * @return array Presentacion normalizada.
+     * @throws \Exception Si algo no es valido.
+     */
+    function validateDisplay(array $display, array $config, array $catalogs)
+    {
+        $catalog  = $this->getColumnKeys($config);
+        $cardItem = $this->findCatalogItem($display['cardTypeCatalogItemID'] ?? null, $catalogs['cardType'] ?? []);
+        if ($cardItem === null) {
+            throw new \Exception('Debe indicar un tipo de tarjeta valido.');
+        }
+        $widthItem = $this->findCatalogItem($display['widthCatalogItemID'] ?? null, $catalogs['width'] ?? []);
+        if ($widthItem === null) {
+            throw new \Exception('Debe indicar un ancho de tarjeta valido.');
+        }
+
+        $cardType = $this->normalizeCatalogName($cardItem['name']);
+        if (!in_array($cardType, [self::CARD_TYPE_CHART, self::CARD_TYPE_TABLE, self::CARD_TYPE_INDICATOR], true)) {
+            throw new \Exception('El tipo de tarjeta ' . $cardItem['display'] . ' no es soportado.');
+        }
+
+        $title = trim($this->optionalString($display, 'title', ''));
+        if (mb_strlen($title, 'UTF-8') > self::MAX_LABEL_LENGTH) {
+            throw new \Exception('El titulo de la tarjeta no debe pasar de ' . self::MAX_LABEL_LENGTH . ' caracteres.');
+        }
+
+        $labelField     = $this->optionalDisplayField($display, 'labelField', $catalog);
+        $seriesField    = $this->optionalDisplayField($display, 'seriesField', $catalog);
+        $indicatorField = $this->optionalDisplayField($display, 'indicatorField', $catalog);
+
+        $valueFields = [];
+        foreach ($this->toList($display['valueFields'] ?? null) as $key) {
+            $key = $this->requireColumnKey($key, $catalog);
+            if (!in_array($key, $valueFields, true)) {
+                $valueFields[] = $key;
+            }
+        }
+        if (count($valueFields) > self::MAX_COLUMNS) {
+            throw new \Exception('No puede usar mas de ' . self::MAX_COLUMNS . ' campos valor.');
+        }
+
+        $indicatorFormat = $this->optionalString($display, 'indicatorFormat', 'number');
+        if ($indicatorFormat === '') {
+            $indicatorFormat = 'number';
+        }
+        if (!in_array($indicatorFormat, self::INDICATOR_FORMATS, true)) {
+            throw new \Exception('El formato del indicador no es valido.');
+        }
+
+        $chartTypeID = 0;
+        if ($cardType === self::CARD_TYPE_CHART) {
+            $chartItem = $this->findCatalogItem($display['chartTypeCatalogItemID'] ?? null, $catalogs['chartType'] ?? []);
+            if ($chartItem === null) {
+                throw new \Exception('Debe indicar un tipo de grafico valido.');
+            }
+            if ($labelField === '') {
+                throw new \Exception('El grafico necesita un campo etiqueta.');
+            }
+            if (count($valueFields) === 0) {
+                throw new \Exception('El grafico necesita al menos un campo valor.');
+            }
+            $chartTypeID = (int) $chartItem['catalogItemID'];
+        }
+        if ($cardType === self::CARD_TYPE_INDICATOR && $indicatorField === '') {
+            throw new \Exception('El indicador necesita un campo indicador.');
+        }
+
+        return [
+            'cardTypeCatalogItemID'  => (int) $cardItem['catalogItemID'],
+            'widthCatalogItemID'     => (int) $widthItem['catalogItemID'],
+            'chartTypeCatalogItemID' => $chartTypeID,
+            'title'                  => $title,
+            'labelField'             => $labelField,
+            'valueFields'            => $valueFields,
+            'seriesField'            => $seriesField,
+            'indicatorField'         => $indicatorField,
+            'indicatorFormat'        => $indicatorFormat,
+        ];
+    }
+
+    /**
+     * Item del catalogo "Builder Report Dashboard" cuyo name coincide con el codigo del dashboard
+     * (por ejemplo "core_dashboards/index"). Compara sin espacios en los extremos y sin distinguir
+     * mayusculas.
+     *
+     * @param mixed $dashboard Codigo recibido.
+     * @param array $items     Items del catalogo (loadBuilderCatalogs()['dashboard']).
+     * @return array|null Item, o null si no existe.
+     */
+    function findDashboardByName($dashboard, array $items)
+    {
+        if (!is_string($dashboard) || trim($dashboard) === '') {
+            return null;
+        }
+        $code = mb_strtolower(trim($dashboard), 'UTF-8');
+        foreach ($items as $item) {
+            if (mb_strtolower(trim((string) ($item['name'] ?? '')), 'UTF-8') === $code) {
+                return $item;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Describe la tarjeta de una presentacion guardada (displayJson ya decodificado) con los names de sus
+     * items de catalogo. No lanza excepcion: una presentacion invalida o con un catalogo que ya no existe
+     * devuelve null y el dashboard la descarta. Un grafico exige tipo de grafico valido.
+     *
+     * @param mixed $display  Presentacion decodificada.
+     * @param array $catalogs Resultado de loadBuilderCatalogs().
+     * @return array|null [cardType (name del item), cardKind (grafico|tabla|indicador), width (name), chartType (name o '')]
+     */
+    function describeCard($display, array $catalogs)
+    {
+        if (!is_array($display)) {
+            return null;
+        }
+        $cardItem  = $this->findCatalogItem($display['cardTypeCatalogItemID'] ?? null, $catalogs['cardType'] ?? []);
+        $widthItem = $this->findCatalogItem($display['widthCatalogItemID'] ?? null, $catalogs['width'] ?? []);
+        if ($cardItem === null || $widthItem === null) {
+            return null;
+        }
+
+        $cardKind = $this->normalizeCatalogName($cardItem['name']);
+        if (!in_array($cardKind, [self::CARD_TYPE_CHART, self::CARD_TYPE_TABLE, self::CARD_TYPE_INDICATOR], true)) {
+            return null;
+        }
+
+        $chartType = '';
+        if ($cardKind === self::CARD_TYPE_CHART) {
+            $chartItem = $this->findCatalogItem($display['chartTypeCatalogItemID'] ?? null, $catalogs['chartType'] ?? []);
+            if ($chartItem === null) {
+                return null;
+            }
+            $chartType = (string) $chartItem['name'];
+        }
+
+        return [
+            'cardType'  => (string) $cardItem['name'],
+            'cardKind'  => $cardKind,
+            'width'     => (string) $widthItem['name'],
+            'chartType' => $chartType,
+        ];
+    }
+
+    /**
+     * Filas que pide una tarjeta segun su tipo, sin superar el tamano maximo de pagina de la empresa.
+     *
+     * @param string $cardKind    grafico, tabla o indicador (describeCard()['cardKind']).
+     * @param int    $pageSizeMax REPORT_BUILDER_PAGE_SIZE_MAX normalizado.
+     * @return int Tamano de pagina (minimo 1).
+     */
+    function resolveCardPageSize($cardKind, $pageSizeMax)
+    {
+        $sizes = [
+            self::CARD_TYPE_INDICATOR => self::CARD_PAGE_SIZE_INDICATOR,
+            self::CARD_TYPE_CHART     => self::CARD_PAGE_SIZE_CHART,
+            self::CARD_TYPE_TABLE     => self::CARD_PAGE_SIZE_TABLE,
+        ];
+        $size = $sizes[$cardKind] ?? self::CARD_PAGE_SIZE_TABLE;
+        return max(1, min($size, (int) $pageSizeMax));
+    }
+
+    /**
+     * Campo opcional de la presentacion: vacio o la clave de una columna seleccionada.
+     *
+     * @param array  $display Presentacion recibida.
+     * @param string $key     Propiedad.
+     * @param array  $keys    Claves de columnas (getColumnKeys).
+     * @return string Clave de la columna o ''.
+     * @throws \Exception Si no es texto o la columna no esta seleccionada.
+     */
+    private function optionalDisplayField(array $display, $key, array $keys)
+    {
+        $value = $this->optionalString($display, $key, '');
+        if ($value === '') {
+            return '';
+        }
+        return $this->requireColumnKey($value, $keys);
+    }
+
+    /**
+     * Clave de una columna seleccionada.
+     *
+     * @param mixed $key  Clave recibida.
+     * @param array $keys Claves de columnas (getColumnKeys).
+     * @return string
+     * @throws \Exception Si no es una columna seleccionada.
+     */
+    private function requireColumnKey($key, array $keys)
+    {
+        if (!is_string($key) || !isset($keys[$key])) {
+            throw new \Exception('La presentacion usa una columna que no esta seleccionada en la consulta.');
+        }
+        return $key;
+    }
+
+    /**
+     * ID de catalogo: entero no negativo o texto de digitos.
+     *
+     * @param mixed $value Valor recibido.
+     * @return int|null El entero, o null si no es valido.
+     */
+    private function toCatalogID($value)
+    {
+        if (is_int($value)) {
+            return $value >= 0 ? $value : null;
+        }
+        if (is_string($value) && ctype_digit($value) && strlen($value) <= 18) {
+            return (int) $value;
+        }
+        return null;
+    }
+
+    /**
+     * Name de un item de catalogo en minusculas, sin tildes ni espacios en los extremos.
+     *
+     * @param mixed $name Name del item.
+     * @return string
+     */
+    private function normalizeCatalogName($name)
+    {
+        $text = mb_strtolower(trim((string) $name), 'UTF-8');
+        return strtr($text, ['á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'ñ' => 'n']);
     }
 }

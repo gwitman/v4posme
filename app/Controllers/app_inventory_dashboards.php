@@ -37,8 +37,9 @@ class app_inventory_dashboards extends _BaseController {
 			$dataSession["head"]			= "";
 			$dataSession["body"]			= /*--inicio view*/ view('core_dasboard/dashboards_inventory',$dataSession);//--finview
 			$dataSession["script"]			= ""; 
-			$dataSession["footer"]			= ""; 
-			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r	
+			$dataSession["footer"]			= "";
+			$dataSession["body"]			= view('core_dasboard/builder_cards', array('dashboardCode' => 'app_inventory_dashboards/index')) . $dataSession["body"];
+			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r
 		}
 		catch(\Exception $ex){
 			if (empty($dataSession)) {

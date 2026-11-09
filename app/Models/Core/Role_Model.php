@@ -16,8 +16,14 @@ class Role_Model extends Model  {
 		$data["description"] 	= $obj["description"];
 		$data["urlDefault"] 	= $obj["urlDefault"];
 		$data["isAdmin"] 		= $obj["isAdmin"];		
-		$data["isActive"] 		= $obj["isActive"];   
-		
+		$data["isActive"] 		= $obj["isActive"];
+
+		//Solo actualizar typeApp / isAdminCompany si vienen en $obj (no pisar con null)
+		if(array_key_exists("typeApp",$obj))
+		$data["typeApp"] 		= $obj["typeApp"];
+		if(array_key_exists("isAdminCompany",$obj))
+		$data["isAdminCompany"] = $obj["isAdminCompany"];
+
 		$builder->where("companyID",$companyID);
 		$builder->where("branchID",$branchID);
 		$builder->where("roleID",$roleID);
@@ -36,7 +42,9 @@ class Role_Model extends Model  {
 		$data["description"] 	= $obj["description"];
 		$data["urlDefault"] 	= $obj["urlDefault"];
 		$data["isAdmin"] 		= $obj["isAdmin"];
-		$data["createdOn"] 		= date("Y-m-d H:i:s");
+		$data["isAdminCompany"] = array_key_exists("isAdminCompany",$obj) ? $obj["isAdminCompany"] : 0;
+		helper("web_tools");
+		$data["createdOn"] 		= helper_getDateTime();
 		$data["createdBy"] 		= $obj["createdBy"];
 		$data["isActive"] 		= $obj["isActive"];
 		$data["typeApp"] 		= $obj["typeApp"];
@@ -50,7 +58,7 @@ class Role_Model extends Model  {
 		$db 	= db_connect();    
 		$sql = "";
 		$sql = sprintf("select companyID,branchID,roleID,name,description,isAdmin,createdOn,isActive,urlDefault,createdBy,
-						typeApp ");
+						typeApp,isAdminCompany ");
 		$sql = $sql.sprintf(" from tb_role");
 		$sql = $sql.sprintf(" where companyID = $companyID");
 		$sql = $sql.sprintf(" and branchID = $branchID");
@@ -64,7 +72,7 @@ class Role_Model extends Model  {
 		$db 	= db_connect();    
 		$sql = "";
 		$sql = sprintf("select companyID,branchID,roleID,name,description,isAdmin,createdOn,isActive,urlDefault,createdBy,
-						typeApp ");
+						typeApp,isAdminCompany ");
 		$sql = $sql.sprintf(" from tb_role");
 		$sql = $sql.sprintf(" where companyID = $companyID");
 		$sql = $sql.sprintf(" and branchID = $branchID"); 

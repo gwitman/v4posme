@@ -70,3 +70,6 @@ claude_prompt/prompt_chat_ia_posme.md
 .claude/agents/posme-implementador.md
 .claude/commands/nueva-compania.md
 .claude/commands/personalizar-compania.md
+
+# Certificado y clave privada de QZ Tray (nunca versionar)
+qz_certificate/

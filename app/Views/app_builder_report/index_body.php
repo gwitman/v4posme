@@ -64,11 +64,7 @@
 
                 <div v-for="aviso in avisos" :key="aviso" class="prb-alert is-warn">{{ aviso }}</div>
 
-                <!-- Nombre -->
-                <div class="form-group">
-                    <label class="pv2-label" for="prbNombre">Nombre de la consulta</label>
-                    <input type="text" id="prbNombre" class="form-control" maxlength="150" autocomplete="off" :readonly="esConsulta" placeholder="Solo es necesario para guardarla" v-model="nombre">
-                </div>
+                <!-- El nombre de la consulta se captura en el modal Guardar (#prbNombre) -->
 
                 <!-- Modo consulta: la configuración es un resumen -->
                 <div v-if="esConsulta" class="prb-bloque">
@@ -94,12 +90,13 @@
                             <div class="prb-agregar">
                                 <select class="form-control" aria-label="Agregar columna" v-model="campoNuevo" @change="agregarColumna">
                                     <option value="">Agregar columna...</option>
-                                    <option v-for="campo in catalogo" :key="campo.name" :value="campo.name">{{ campo.label }}</option>
+                                    <option v-for="campo in catalogoDisponible" :key="campo.name" :value="campo.name">{{ campo.label }}</option>
                                 </select>
-                                <button type="button" class="btn btn-default" @click="agregarTodas">Todas</button>
+                                <button type="button" class="btn btn-default" :disabled="catalogoDisponible.length === 0" @click="agregarTodas">Todas</button>
                             </div>
                         </div>
                         <p v-if="columnas.length === 0" class="prb-vacio">Agregue las columnas que desea ver.</p>
+                        <div class="prb-bloque-lista">
                         <div v-for="(columna, indice) in columnas" :key="columna.uid" class="prb-fila">
                             <div class="prb-campo prb-campo-ancho">
                                 <label class="pv2-label" :for="columna.uid + 't'">Título ({{ etiquetaCatalogo(columna.name) }})</label>
@@ -132,6 +129,7 @@
                                 <button type="button" class="prb-btn-icon is-danger" aria-label="Quitar columna" title="Quitar" @click="quitarColumna(indice)">&#10005;</button>
                             </div>
                         </div>
+                        </div>
                         <div v-if="avisoMoneda" class="prb-alert is-warn">Está sumando importes sin agrupar por moneda: el resultado puede mezclar monedas distintas.</div>
                     </div>
 
@@ -139,14 +137,15 @@
                     <div class="prb-bloque">
                         <div class="prb-bloque-head">
                             <p class="prb-bloque-title">Ordenar <span class="pv2-count">{{ orden.length }}</span></p>
-                            <button type="button" class="btn btn-default" :disabled="opcionesDeOrden.length === 0" @click="agregarOrden"><i class="icon16 i-plus"></i> Agregar orden</button>
+                            <button type="button" class="btn btn-default" :disabled="opcionesOrdenLibres.length === 0" @click="agregarOrden"><i class="icon16 i-plus"></i> Agregar orden</button>
                         </div>
                         <p v-if="orden.length === 0" class="prb-vacio">Sin orden definido.</p>
+                        <div class="prb-bloque-lista">
                         <div v-for="(item, indice) in orden" :key="item.uid" class="prb-fila">
                             <div class="prb-campo prb-campo-ancho">
                                 <label class="pv2-label" :for="item.uid">Campo</label>
                                 <select class="form-control" :id="item.uid" v-model="item.clave">
-                                    <option v-for="opcion in opcionesDeOrden" :key="opcion.clave" :value="opcion.clave">{{ opcion.label }}</option>
+                                    <option v-for="opcion in opcionesOrdenDe(item)" :key="opcion.clave" :value="opcion.clave">{{ opcion.label }}</option>
                                 </select>
                             </div>
                             <div class="prb-botones">
@@ -154,6 +153,7 @@
                                 <button type="button" class="prb-btn-icon" :class="{ 'is-active': item.dir === 'DESC' }" aria-label="Descendente" title="Descendente" :aria-pressed="item.dir === 'DESC'" @click="item.dir = 'DESC'">&#9660;</button>
                                 <button type="button" class="prb-btn-icon is-danger" aria-label="Quitar orden" title="Quitar" @click="orden.splice(indice, 1)">&#10005;</button>
                             </div>
+                        </div>
                         </div>
                     </div>
                 </template>
@@ -165,6 +165,7 @@
                         <button v-if="!esConsulta" type="button" class="btn btn-default" :disabled="catalogo.length === 0" @click="agregarFiltro"><i class="icon16 i-plus"></i> Agregar filtro</button>
                     </div>
                     <p v-if="filtros.length === 0" class="prb-vacio">Sin filtros.</p>
+                    <div class="prb-bloque-lista">
                     <div v-for="(filtro, indice) in filtros" :key="filtro.uid" class="prb-fila">
                         <div class="prb-campo prb-campo-ancho">
                             <template v-if="esConsulta">
@@ -185,16 +186,27 @@
                             </select>
                         </div>
                         <div class="prb-campo">
-                            <label class="pv2-label" :for="filtro.uid + 'v'">{{ filtro.operator === 'between' ? 'Desde' : 'Valor' }}</label>
-                            <input class="form-control" :id="filtro.uid + 'v'" autocomplete="off"
+                            <label class="pv2-label" :for="filtro.uid + (tipoCampo(filtro.column) === 'date' ? 'vd' : 'v')">{{ filtro.operator === 'between' ? 'Desde' : 'Valor' }}</label>
+                            <!-- Fecha: "Fecha manual" usa el calendario nativo; las demás opciones las resuelve el servidor al ejecutar -->
+                            <select v-if="tipoCampo(filtro.column) === 'date'" class="form-control prb-fecha-tipo" :id="filtro.uid + 'vd'" v-model="filtro.dinamico">
+                                <option value="">Fecha manual</option>
+                                <option v-for="opcion in opcionesFecha(filtro, 'value')" :key="opcion.value" :value="opcion.value">{{ opcion.label }}</option>
+                            </select>
+                            <input v-if="!(tipoCampo(filtro.column) === 'date' && filtro.dinamico)" class="form-control" :id="filtro.uid + 'v'" autocomplete="off"
+                                   :aria-label="tipoCampo(filtro.column) === 'date' ? 'Fecha' : null"
                                    :class="{ 'pv2-num': tipoCampo(filtro.column) === 'number' }"
                                    :type="tipoCampo(filtro.column) === 'date' ? 'date' : 'text'"
                                    :inputmode="tipoCampo(filtro.column) === 'number' ? 'decimal' : 'text'"
                                    v-model="filtro.value" @blur="formatearValorFiltro(filtro, 'value')">
                         </div>
                         <div v-if="filtro.operator === 'between'" class="prb-campo">
-                            <label class="pv2-label" :for="filtro.uid + 'w'">Hasta</label>
-                            <input class="form-control" :id="filtro.uid + 'w'" autocomplete="off"
+                            <label class="pv2-label" :for="filtro.uid + (tipoCampo(filtro.column) === 'date' ? 'wd' : 'w')">Hasta</label>
+                            <select v-if="tipoCampo(filtro.column) === 'date'" class="form-control prb-fecha-tipo" :id="filtro.uid + 'wd'" v-model="filtro.dinamico2">
+                                <option value="">Fecha manual</option>
+                                <option v-for="opcion in opcionesFecha(filtro, 'value2')" :key="opcion.value" :value="opcion.value">{{ opcion.label }}</option>
+                            </select>
+                            <input v-if="!(tipoCampo(filtro.column) === 'date' && filtro.dinamico2)" class="form-control" :id="filtro.uid + 'w'" autocomplete="off"
+                                   :aria-label="tipoCampo(filtro.column) === 'date' ? 'Fecha' : null"
                                    :class="{ 'pv2-num': tipoCampo(filtro.column) === 'number' }"
                                    :type="tipoCampo(filtro.column) === 'date' ? 'date' : 'text'"
                                    :inputmode="tipoCampo(filtro.column) === 'number' ? 'decimal' : 'text'"
@@ -203,6 +215,7 @@
                         <div v-if="!esConsulta" class="prb-botones">
                             <button type="button" class="prb-btn-icon is-danger" aria-label="Quitar filtro" title="Quitar" @click="filtros.splice(indice, 1)">&#10005;</button>
                         </div>
+                    </div>
                     </div>
                     <span v-if="esConsulta" class="pv2-help">Los valores que cambie aquí solo se usan para esta consulta; no se guardan.</span>
                     <span v-else class="pv2-help">Un filtro sin valor se guarda con la consulta y se llena al usarla; mientras esté vacío no se aplica.</span>
@@ -217,8 +230,9 @@
                 <div class="prb-barra">
                     <button v-if="esConsulta" type="button" class="btn btn-default" @click="pasarAEdicion"><i class="icon16 i-pencil-4"></i> Editar configuración</button>
                     <button type="button" class="btn btn-primary pv2-hide-xs" :disabled="generando" @click="generar"><i class="icon16 i-play-2"></i> {{ generando ? 'Generando...' : 'Generar' }}</button>
-                    <button v-if="!esConsulta" type="button" class="btn btn-default" :disabled="guardando" @click="guardar"><i class="icon16 i-checkmark-4"></i> {{ guardando ? 'Guardando...' : 'Guardar como consulta recurrente' }}</button>
+                    <button v-if="!esConsulta" type="button" class="btn btn-default" :disabled="guardando" @click="abrirModalGuardar"><i class="icon16 i-checkmark-4"></i> {{ guardando ? 'Guardando...' : 'Guardar como consulta recurrente' }}</button>
                     <button type="button" class="btn btn-default" :disabled="exportando" @click="exportar"><i class="icon16 i-file-excel"></i> {{ exportando ? 'Exportando...' : 'Exportar a Excel' }}</button>
+                    <button type="button" class="btn btn-default" :disabled="generando || !configValida" :title="configValida ? 'Abre el resultado paginado en otra pestaña' : 'Complete la configuración para poder generar'" @click="abrirNuevaPagina"><i class="icon16 i-new-tab"></i> Abrir en nueva página</button>
                 </div>
             </div>
 
@@ -289,7 +303,17 @@
                     </thead>
                     <tbody>
                         <tr v-for="consulta in consultas" :key="consulta.reportBuilderID" class="row_razon">
-                            <td data-label="Nombre"><button type="button" class="prb-link" :disabled="cargandoConfig" @click="abrirConsulta(consulta.reportBuilderID, 'consulta')">{{ consulta.name }}</button></td>
+                            <td data-label="Nombre">
+                                <div>
+                                    <button type="button" class="prb-link" :disabled="cargandoConfig" @click="abrirConsulta(consulta.reportBuilderID, 'consulta')">{{ consulta.name }}</button>
+                                    <div v-if="consulta.isShared || !consulta.isOwner || consulta.dashboardName || consulta.viewTypeName" class="prb-badges">
+                                        <span v-if="consulta.isShared" class="prb-badge is-ok">Compartida</span>
+                                        <span v-if="!consulta.isOwner" class="prb-badge is-muted">de {{ consulta.ownerNickname }}</span>
+                                        <span v-if="consulta.viewTypeName" class="prb-badge">{{ consulta.viewTypeName }}</span>
+                                        <span v-if="consulta.dashboardName" class="prb-badge is-info">{{ consulta.dashboardName }} · Orden {{ consulta.orden }}</span>
+                                    </div>
+                                </div>
+                            </td>
                             <td data-label="Vista"><span>{{ nombreVista(consulta.dataViewID) }}</span></td>
                             <td data-label="Modificada"><span>{{ fechaConsulta(consulta.modifiedOn) }}</span></td>
                             <td class="prb-td-acciones">
@@ -314,4 +338,141 @@
             <button type="button" class="btn btn-primary" :disabled="generando" @click="generar"><i class="icon16 i-play-2"></i> {{ generando ? 'Generando...' : 'Generar' }}</button>
         </div>
     </form>
+
+    <!-- Modal Guardar consulta: modal Bootstrap 3 del tema, teletransportado a body para quedar sobre el fondo oscuro -->
+    <teleport to="body">
+        <div class="modal fade" id="prbModalGuardar" tabindex="-1" role="dialog" aria-labelledby="prbModalGuardarTitulo" aria-hidden="true" data-backdrop="static">
+            <div class="modal-dialog prb-modal-dialog" role="document">
+                <form class="modal-content pv2 prb" autocomplete="off" @submit.prevent="confirmarGuardar">
+                    <div class="modal-header prb-modal-header">
+                        <h4 class="modal-title" id="prbModalGuardarTitulo">Guardar consulta</h4>
+                        <button type="button" class="prb-btn-icon" aria-label="Cerrar" title="Cerrar" :disabled="guardando" @click="cerrarModalGuardar">&#10005;</button>
+                    </div>
+                    <div class="modal-body prb-modal-body">
+                        <div v-if="erroresModal.length > 0" id="prbErroresModal" class="prb-alert is-error" role="alert">
+                            <ul><li v-for="error in erroresModal" :key="error">{{ error }}</li></ul>
+                        </div>
+                        <div v-for="aviso in avisosPresentacion" :key="aviso" class="prb-alert is-warn">{{ aviso }}</div>
+                        <div v-if="catalogos.errors.length > 0" class="prb-alert is-info">Algunas listas no se pudieron cargar: {{ catalogos.errors.join(' ') }}</div>
+
+                        <div class="form-group">
+                            <label class="pv2-label" for="prbNombre">Nombre de la consulta <span class="pv2-req">*</span></label>
+                            <input type="text" id="prbNombre" class="form-control" maxlength="150" autocomplete="off" placeholder="Ej.: Ventas del mes" v-model="nombre">
+                        </div>
+
+                        <div class="prb-modal-grid">
+                            <div class="form-group">
+                                <label class="pv2-label" for="prbVisibilidad">Visibilidad</label>
+                                <select id="prbVisibilidad" class="form-control" v-model.number="formGuardar.isShared">
+                                    <option :value="0">Solo para mí</option>
+                                    <option v-if="esAdminCompania" :value="1">Para todos los usuarios</option>
+                                </select>
+                                <span v-if="!esAdminCompania && compartidaOriginal" class="pv2-help">Esta consulta estaba compartida; solo un administrador puede compartirla, al guardar quedará solo para usted.</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="pv2-label" for="prbTipoVista">Tipo de vista</label>
+                                <select id="prbTipoVista" class="form-control" v-model.number="formGuardar.viewTypeCatalogItemID">
+                                    <option :value="0">— Ninguno —</option>
+                                    <option v-for="item in catalogos.viewType" :key="item.catalogItemID" :value="item.catalogItemID">{{ item.display }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="pv2-label" for="prbDashboard">Dashboard</label>
+                                <select id="prbDashboard" class="form-control" v-model.number="formGuardar.dashboardCatalogItemID">
+                                    <option :value="0">— Ninguno —</option>
+                                    <option v-for="item in catalogos.dashboard" :key="item.catalogItemID" :value="item.catalogItemID">{{ item.display }}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="pv2-label" for="prbOrdenDashboard">Orden</label>
+                                <input type="number" id="prbOrdenDashboard" class="form-control pv2-num" min="0" step="1" inputmode="numeric" autocomplete="off" v-model="formGuardar.orden">
+                            </div>
+                        </div>
+
+                        <!-- Presentación en el dashboard: solo si eligió uno -->
+                        <template v-if="formGuardar.dashboardCatalogItemID">
+                            <p class="prb-subtitulo">Presentación en el dashboard</p>
+                            <div class="prb-modal-grid">
+                                <div class="form-group">
+                                    <label class="pv2-label" for="prbTipoTarjeta">Tipo de tarjeta <span class="pv2-req">*</span></label>
+                                    <select id="prbTipoTarjeta" class="form-control" v-model.number="formGuardar.cardTypeCatalogItemID">
+                                        <option :value="0">Seleccione...</option>
+                                        <option v-for="item in catalogos.cardType" :key="item.catalogItemID" :value="item.catalogItemID">{{ item.display }}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="pv2-label" for="prbAncho">Ancho <span class="pv2-req">*</span></label>
+                                    <select id="prbAncho" class="form-control" v-model.number="formGuardar.widthCatalogItemID">
+                                        <option :value="0">Seleccione...</option>
+                                        <option v-for="item in catalogos.width" :key="item.catalogItemID" :value="item.catalogItemID">{{ item.display }}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="pv2-label" for="prbTituloTarjeta">Título</label>
+                                    <input type="text" id="prbTituloTarjeta" class="form-control" maxlength="150" autocomplete="off" placeholder="Si se deja vacío se usa el nombre" v-model="formGuardar.title">
+                                </div>
+                            </div>
+
+                            <!-- Gráfico -->
+                            <template v-if="tipoTarjetaModal === 'grafico'">
+                                <div class="prb-modal-grid">
+                                    <div class="form-group">
+                                        <label class="pv2-label" for="prbTipoGrafico">Tipo de gráfico <span class="pv2-req">*</span></label>
+                                        <select id="prbTipoGrafico" class="form-control" v-model.number="formGuardar.chartTypeCatalogItemID">
+                                            <option :value="0">Seleccione...</option>
+                                            <option v-for="item in catalogos.chartType" :key="item.catalogItemID" :value="item.catalogItemID">{{ item.display }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="pv2-label" for="prbCampoEtiqueta">Campo etiqueta <span class="pv2-req">*</span></label>
+                                        <select id="prbCampoEtiqueta" class="form-control" v-model="formGuardar.labelUid">
+                                            <option value="">Seleccione...</option>
+                                            <option v-for="opcion in columnasPresentacion" :key="opcion.uid" :value="opcion.uid">{{ opcion.label }}</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="pv2-label" for="prbCampoSerie">Campo serie (opcional)</label>
+                                        <select id="prbCampoSerie" class="form-control" v-model="formGuardar.seriesUid">
+                                            <option value="">— Ninguno —</option>
+                                            <option v-for="opcion in columnasPresentacion" :key="opcion.uid" :value="opcion.uid">{{ opcion.label }}</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <span class="pv2-label">Campos valor <span class="pv2-req">*</span> (uno o varios)</span>
+                                    <div class="prb-checks">
+                                        <label v-for="opcion in columnasPresentacion" :key="opcion.uid" class="prb-check">
+                                            <input type="checkbox" :value="opcion.uid" v-model="formGuardar.valueUids"> {{ opcion.label }}
+                                        </label>
+                                    </div>
+                                </div>
+                            </template>
+
+                            <!-- Indicador -->
+                            <div v-if="tipoTarjetaModal === 'indicador'" class="prb-modal-grid">
+                                <div class="form-group">
+                                    <label class="pv2-label" for="prbCampoIndicador">Campo valor principal <span class="pv2-req">*</span></label>
+                                    <select id="prbCampoIndicador" class="form-control" v-model="formGuardar.indicatorUid">
+                                        <option value="">Seleccione...</option>
+                                        <option v-for="opcion in columnasPresentacion" :key="opcion.uid" :value="opcion.uid">{{ opcion.label }}</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="pv2-label" for="prbFormatoIndicador">Formato</label>
+                                    <select id="prbFormatoIndicador" class="form-control" v-model="formGuardar.indicatorFormat">
+                                        <option v-for="formato in formatosIndicador" :key="formato.value" :value="formato.value">{{ formato.label }}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <span class="pv2-help">Los campos salen de las columnas de "Mostrar" en su orden actual.</span>
+                        </template>
+                    </div>
+                    <div class="modal-footer prb-modal-footer">
+                        <button type="button" class="btn btn-default" :disabled="guardando" @click="cerrarModalGuardar">Cancelar</button>
+                        <button type="submit" class="btn btn-primary" :disabled="guardando"><i class="icon16 i-checkmark-4"></i> {{ guardando ? 'Guardando...' : 'Guardar' }}</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </teleport>
 </script>

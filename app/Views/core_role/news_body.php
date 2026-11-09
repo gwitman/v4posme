@@ -48,6 +48,15 @@
 											<?php } ?>
 										</select>
 									</div>
+									<?php if(isset($canEditAdminCompany) && $canEditAdminCompany){ ?>
+									<div class="pm-role-campo">
+										<label for="txtIsAdminCompany">Administrador de compañía</label>
+										<select class="form-control" name="txtIsAdminCompany" id="txtIsAdminCompany">
+											<option value="0" selected="selected">No</option>
+											<option value="1">Sí</option>
+										</select>
+									</div>
+									<?php } ?>
 									<div class="pm-role-campo pm-role-campo-ancho">
 										<label for="txtDescription">Descripción <span class="pm-role-req">*</span></label>
 										<textarea class="form-control" id="txtDescription" name="txtDescription" rows="2"></textarea>

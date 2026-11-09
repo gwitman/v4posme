@@ -4,6 +4,19 @@
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/
+
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'default81MM'
+WHERE p.name = 'APP_INVOICE_QSTRAY_PRINTER_NAME'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'false'
+WHERE p.name = 'APP_INVOICE_USER_QSTRAY'
+    AND cp.companyID = 2;
+
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = '5000'

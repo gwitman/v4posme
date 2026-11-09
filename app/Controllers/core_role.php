@@ -97,28 +97,10 @@ class core_role extends _BaseController {
 			$this->validation->setRule("txtDescription","Descripcion ","required");    			
 						
 			
-			 
-			//Permisos enviados: un solo registro por elemento y niveles validos (-1,0,1,2)
-			$listPermission			= array();
-			$listNivelValido		= array(PERMISSION_NONE,PERMISSION_ALL,PERMISSION_BRANCH,PERMISSION_ME);
-			$elementIDArray			= /*inicio get post*/ $this->request->getPost("txtElementID");
-			$txtSelectedIDArray		= /*inicio get post*/ $this->request->getPost("txtSelectedID");
-			$txtInsertedIDArray		= /*inicio get post*/ $this->request->getPost("txtInsertedID");
-			$txtDeletedIDArray		= /*inicio get post*/ $this->request->getPost("txtDeletedID");
-			$txtEditedIDArray		= /*inicio get post*/ $this->request->getPost("txtEditedID");
-			if($elementIDArray)
-			foreach($elementIDArray as $key => $value){
-				$elementID = intval($value);
-				if($elementID <= 0 || array_key_exists($elementID,$listPermission))
-				continue;
 
-				$nivel = array();
-				foreach(array("selected" => $txtSelectedIDArray,"inserted" => $txtInsertedIDArray,"deleted" => $txtDeletedIDArray,"edited" => $txtEditedIDArray) as $flag => $arrayFlag){
-					$valueFlag		= ($arrayFlag && isset($arrayFlag[$value])) ? intval($arrayFlag[$value]) : PERMISSION_NONE;
-					$nivel[$flag]	= in_array($valueFlag,$listNivelValido,true) ? $valueFlag : PERMISSION_NONE;
-				}
-				$listPermission[$elementID] = $nivel;
-			}
+			//Solo un rol en sesion administrador o administrador de compania puede cambiar isAdminCompany
+			$canEditAdminCompany	= $this->canEditAdminCompany($dataSession);
+			$isAdminCompanyPost		= (/*inicio get post*/ $this->request->getPost("txtIsAdminCompany") == "1") ? 1 : 0;
 
 			//Nuevo Registro
 			$companyID 	= /*inicio get post*/ $this->request->getPost("companyID");
@@ -138,27 +120,33 @@ class core_role extends _BaseController {
 							if ($resultPermission 	== PERMISSION_NONE)
 							throw new \Exception(NOT_ACCESS_FUNCTION);			
 						
-					}	 					
-					
+					}
+
+					//Permisos enviados en JSON, filtrados a los elementos que la pantalla puede editar
+					$listElementIDEditable	= $this->getListElementIDEditable($dataSession["user"]->companyID);
+					$objPermissionPost		= $this->getPermissionFromPost($listElementIDEditable);
+					$listPermission			= $objPermissionPost["elements"];
+
 					$db=db_connect();
-			$db->transStart();
+					$db->transStart();
 					//Crear Rol
-					$obj["companyID"]		= $dataSession["user"]->companyID;					
-					$obj["branchID"] 		= $dataSession["user"]->branchID;					
+					$obj["companyID"]		= $dataSession["user"]->companyID;
+					$obj["branchID"] 		= $dataSession["user"]->branchID;
 					$obj["name"] 			= /*inicio get post*/ $this->request->getPost("txtName");
 					$obj["description"] 	= /*inicio get post*/ $this->request->getPost("txtDescription");
 					$obj["urlDefault"] 		= /*inicio get post*/ $this->request->getPost("txtUrlDefault");
 					$obj["isAdmin"] 		= false;
-					$obj["isActive"] 		= true;		
+					$obj["isAdminCompany"] 	= $canEditAdminCompany ? $isAdminCompanyPost : 0;
+					$obj["isActive"] 		= true;
 					$obj["createdBy"] 		= $dataSession["user"]->userID;
 					$obj["typeApp"] 		= /*inicio get post*/ $this->request->getPost("txtTypeApp");
 					$roleID 				= $this->Role_Model->insert_app_posme($obj);
 					$companyID 				= $obj["companyID"];
 					$branchID 				= $obj["branchID"];
-					 
+
 					//Eliminar Elementos
 					$this->User_Permission_Model->delete_ByRole($companyID,$branchID,$roleID);
-					
+
 					//Insert Elementos
 					foreach($listPermission as $elementID => $nivel){
 							$objUserPermission["companyID"]		= $companyID;
@@ -173,26 +161,24 @@ class core_role extends _BaseController {
 					}
 					
 					//Insertar Autorizaciones
-					$listsComponentAutorizationID = /*inicio get post*/ $this->request->getPost("txtComponentAutorizationID");
-					if($listsComponentAutorizationID)
-					foreach($listsComponentAutorizationID as $key => $value){
+					foreach($objPermissionPost["autorizations"] as $value){
 						$data["componentAutorizationID"] 	= $value;
 						$data["companyID"] 					= $companyID;
 						$data["roleID"] 					= $roleID;
 						$data["branchID"] 					= $branchID;
 						$this->Role_Autorization_Model->insert_app_posme($data);
-					} 
-					 
+					}
+
+					//transComplete hace commit o rollback segun el estado de la transaccion
+					$db->transComplete();
 					if($db->transStatus() !== false){
-						$db->transCommit();						
 						$this->core_web_notification->set_message(false,SUCCESS);
-						$this->response->redirect(base_url()."/".'core_role/edit/companyID/'.$companyID."/branchID/".$branchID."/roleID/".$roleID);						
+						$this->response->redirect(base_url()."/".'core_role/edit/companyID/'.$companyID."/branchID/".$branchID."/roleID/".$roleID);
 					}
 					else{
-						$db->transRollback();
 						$this->core_web_notification->set_message(true,$db->error()["message"]);
 						$this->response->redirect(base_url()."/".'core_role/add');
-					}				
+					}
 					 
 			} 
 			//Editar Registro
@@ -222,8 +208,12 @@ class core_role extends _BaseController {
 
 					if ($resultPermission 	== PERMISSION_ME && ($objOld->createdBy != $dataSession["user"]->userID))
 					throw new \Exception(NOT_EDIT);
-			
-			
+
+					//Permisos enviados en JSON, filtrados a los elementos que la pantalla puede editar (C2)
+					$listElementIDEditable	= $this->getListElementIDEditable($dataSession["user"]->companyID);
+					$objPermissionPost		= $this->getPermissionFromPost($listElementIDEditable);
+					$listPermission			= $objPermissionPost["elements"];
+
 					$db=db_connect();
 					$db->transStart();
 					//Actualizar Rol
@@ -232,11 +222,13 @@ class core_role extends _BaseController {
 					$obj["urlDefault"] 		= /*inicio get post*/ $this->request->getPost("txtUrlDefault");
 					$obj["typeApp"] 		= /*inicio get post*/ $this->request->getPost("txtTypeApp");
 					$obj["isAdmin"] 		= $objOld->isAdmin;	//conservar: antes se forzaba false y el rol perdia el administrador
+					$obj["isAdminCompany"] 	= $canEditAdminCompany ? $isAdminCompanyPost : (isset($objOld->isAdminCompany) ? intval($objOld->isAdminCompany) : 0);
 					$obj["isActive"] 		= true;
 					$result 				= $this->Role_Model->update_app_posme($companyID,$branchID,$roleID,$obj);
 
-					//Eliminar Elementos
-					$this->User_Permission_Model->delete_ByRole($companyID,$branchID,$roleID);
+					//Eliminar Elementos: solo los que la pantalla puede editar; los demas permisos del rol quedan intactos
+					if(!empty($listElementIDEditable))
+					$this->User_Permission_Model->delete_ByRoleAndElements($companyID,$branchID,$roleID,array_keys($listElementIDEditable));
 
 					//Insert Elementos
 					foreach($listPermission as $elementID => $nivel){
@@ -256,31 +248,32 @@ class core_role extends _BaseController {
 					
 					
 					//Insertar Autorizaciones
-					$listsComponentAutorizationID = /*inicio get post*/ $this->request->getPost("txtComponentAutorizationID");
-					if($listsComponentAutorizationID)
-					foreach($listsComponentAutorizationID as $key => $value){
+					foreach($objPermissionPost["autorizations"] as $value){
 						$data["componentAutorizationID"] 	= $value;
 						$data["companyID"] 					= $companyID;
 						$data["roleID"] 					= $roleID;
 						$data["branchID"] 					= $branchID;
 						$this->Role_Autorization_Model->insert_app_posme($data);
-					} 
-					
-					
+					}
+
+					//transComplete hace commit o rollback segun el estado de la transaccion
+					$db->transComplete();
 					if($db->transStatus() !== false){
-						$db->transCommit();
 						$this->core_web_notification->set_message(false,SUCCESS);
 					}
 					else{
-						$db->transRollback();
 						$this->core_web_notification->set_message(true,$db->error()["message"]);
 					}
 					$this->response->redirect(base_url()."/".'core_role/edit/companyID/'.$companyID."/branchID/".$branchID."/roleID/".$roleID);
-			}  
+			}
 			else{
 				$this->core_web_notification->set_message(true,$this->validation->getErrors());
-				$this->response->redirect(base_url()."/".'core_role/add');	
-			} 
+				//Si se estaba editando un rol se vuelve a su pantalla de edicion
+				if($companyID && $branchID && $roleID)
+				$this->response->redirect(base_url()."/".'core_role/edit/companyID/'.$companyID."/branchID/".$branchID."/roleID/".$roleID);
+				else
+				$this->response->redirect(base_url()."/".'core_role/add');
+			}
 			
 		}
 		catch(\Exception $ex){
@@ -349,6 +342,7 @@ class core_role extends _BaseController {
 			$datView["listMenuElement"]				= $this->Menu_Element_Model->get_rowByCompanyIDForRole($dataSession["user"]->companyID);
 			$datView["listComponentAutorizationAll"]= $this->Component_Autorization_Model->get_rowByCompanyID($dataSession["user"]->companyID);
 			$datView["isOwnRole"]					= ($dataSession["role"]->roleID == $roleID);
+			$datView["canEditAdminCompany"]			= $this->canEditAdminCompany($dataSession);
 
 			
 			//Renderizar Resultado
@@ -401,6 +395,7 @@ class core_role extends _BaseController {
 			//Matriz de permisos: todas las pantallas y todas las autorizaciones de la empresa
 			$datView["listMenuElement"]				= $this->Menu_Element_Model->get_rowByCompanyIDForRole($dataSession["user"]->companyID);
 			$datView["listComponentAutorizationAll"]= $this->Component_Autorization_Model->get_rowByCompanyID($dataSession["user"]->companyID);
+			$datView["canEditAdminCompany"]			= $this->canEditAdminCompany($dataSession);
 
 			//Renderizar Resultado
 			$dataSession["notification"]	= $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -564,9 +559,96 @@ class core_role extends _BaseController {
 			$dataSession["head"]		= /*--inicio view*/ view('core_role/popup_add_head');//--finview
 			$dataSession["body"]		= /*--inicio view*/ view('core_role/popup_add_body',$data);//--finview
 			$dataSession["script"]		= /*--inicio view*/ view('core_role/popup_add_script');//--finview
-			return view("core_masterpage/default_popup",$dataSession);//--finview-r			
-			
+			return view("core_masterpage/default_popup",$dataSession);//--finview-r
+
 	}
-	
-} 
+
+	/**
+	 * Indica si el usuario en sesion puede marcar o desmarcar el campo isAdminCompany de un rol.
+	 * Solo puede hacerlo si su rol en sesion es administrador (isAdmin = 1) o administrador de compania (isAdminCompany = 1).
+	 *
+	 * @param array $dataSession Datos de la sesion actual (debe traer "role").
+	 * @return bool true si puede editar isAdminCompany.
+	 */
+	protected function canEditAdminCompany($dataSession)
+	{
+		return (
+			$dataSession["role"]->isAdmin == 1 ||
+			(isset($dataSession["role"]->isAdminCompany) && $dataSession["role"]->isAdminCompany == 1)
+		);
+	}
+
+	/**
+	 * Obtiene los elementID que la pantalla de roles puede editar para la empresa.
+	 * Usa la misma fuente que alimenta la matriz de permisos en add/edit (Menu_Element_Model->get_rowByCompanyIDForRole),
+	 * de modo que el guardado solo borra e inserta permisos de elementos visibles en la pantalla.
+	 *
+	 * @param int $companyID Empresa de la sesion.
+	 * @return array Arreglo asociativo elementID => true.
+	 */
+	protected function getListElementIDEditable($companyID)
+	{
+		$listElementIDEditable	= array();
+		$listMenuElement		= $this->Menu_Element_Model->get_rowByCompanyIDForRole($companyID);
+		if($listMenuElement)
+		foreach($listMenuElement as $objMenuElement){
+			$elementID = intval($objMenuElement->elementID);
+			if($elementID > 0)
+			$listElementIDEditable[$elementID] = true;
+		}
+		return $listElementIDEditable;
+	}
+
+	/**
+	 * Lee y valida los permisos enviados en el POST "txtPermissionJson" (un solo campo para no superar max_input_vars).
+	 * Formato esperado: {"elements":[{"elementID":12,"selected":0,"inserted":-1,"deleted":-1,"edited":2},...],"autorizations":[5,9,...]}
+	 * Reglas: un solo registro por elementID (se conserva el primero), solo elementos de la lista editable,
+	 * niveles validos -1,0,1,2 (cualquier otro valor o un nivel ausente se guarda como PERMISSION_NONE),
+	 * autorizaciones enteras positivas y sin repetir.
+	 *
+	 * @param array $listElementIDEditable Arreglo elementID => true con los elementos que la pantalla puede editar.
+	 * @return array ["elements" => [elementID => ["selected","inserted","deleted","edited"]], "autorizations" => [componentAutorizationID,...]]
+	 * @throws \Exception Si el JSON no es valido o no trae la lista "elements"; en ese caso no se guarda nada.
+	 */
+	protected function getPermissionFromPost($listElementIDEditable)
+	{
+		$txtPermissionJson	= /*inicio get post*/ $this->request->getPost("txtPermissionJson");
+		$objPermission		= is_string($txtPermissionJson) ? json_decode($txtPermissionJson,true) : null;
+		if(!is_array($objPermission) || !array_key_exists("elements",$objPermission) || !is_array($objPermission["elements"]))
+		throw new \Exception("Los permisos enviados no son validos (txtPermissionJson). No se guardo ningun cambio, recargue la pantalla e intente de nuevo.");
+
+		$listNivelValido	= array(PERMISSION_NONE,PERMISSION_ALL,PERMISSION_BRANCH,PERMISSION_ME);
+		$listPermission		= array();
+		foreach($objPermission["elements"] as $objElement){
+			if(!is_array($objElement) || !isset($objElement["elementID"]))
+			continue;
+
+			$elementID = intval($objElement["elementID"]);
+			if($elementID <= 0 || array_key_exists($elementID,$listPermission) || !array_key_exists($elementID,$listElementIDEditable))
+			continue;
+
+			$nivel = array();
+			foreach(array("selected","inserted","deleted","edited") as $flag){
+				//Las constantes PERMISSION_* son string ('-1','0','1','2'): normalizar a string para que la comparacion estricta funcione
+				$valueFlag		= (isset($objElement[$flag]) && is_numeric($objElement[$flag])) ? strval(intval($objElement[$flag])) : PERMISSION_NONE;
+				$nivel[$flag]	= in_array($valueFlag,$listNivelValido,true) ? $valueFlag : PERMISSION_NONE;
+			}
+			$listPermission[$elementID] = $nivel;
+		}
+
+		$listAutorization = array();
+		if(isset($objPermission["autorizations"]) && is_array($objPermission["autorizations"]))
+		foreach($objPermission["autorizations"] as $value){
+			$componentAutorizationID = is_numeric($value) ? intval($value) : 0;
+			if($componentAutorizationID > 0 && !in_array($componentAutorizationID,$listAutorization,true))
+			$listAutorization[] = $componentAutorizationID;
+		}
+
+		return array(
+			"elements"		=> $listPermission,
+			"autorizations"	=> $listAutorization
+		);
+	}
+
+}
 ?>

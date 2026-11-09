@@ -20,7 +20,8 @@ class app_builder_report extends _BaseController
 {
     const MESSAGE_VIEW_NOT_FOUND  = 'La vista solicitada no existe o no esta disponible.';
     const MESSAGE_QUERY_NOT_FOUND = 'La consulta solicitada no existe o no esta disponible.';
-    const MESSAGE_GENERIC_ERROR   = 'No se pudo completar la operacion. Intente de nuevo o contacte al administrador.';
+    const MESSAGE_CARD_NOT_FOUND  = 'La tarjeta solicitada no esta disponible.';
+    const MESSAGE_GENERIC_ERROR   ='No se pudo completar la operacion. Intente de nuevo o contacte al administrador.';
     const EXCEL_CONTENT_TYPE      = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
 
     /**
@@ -38,6 +39,9 @@ class app_builder_report extends _BaseController
             $dataView["companyPageSetting"] = $dataSession["companyPageSetting"];
             $dataView["title"]              = "Constructor de Reportes";
             $dataView["useMobile"]          = $dataSession["user"]->useMobile;
+            // Catalogos del modal Guardar (JSON para la vista); un catalogo con error llega vacio y se informa en errors
+            $dataView["builderCatalogs"]    = $this->encodeForScript($this->core_web_report_builder->loadBuilderCatalogs($dataSession["user"]->companyID));
+            $dataView["isAdminCompany"]     = $this->core_web_report_builder->isAdminCompany($dataSession);
 
             $dataSession["notification"] = $this->core_web_error->get_error($dataSession["user"]->userID);
             $dataSession["message"]      = "";
@@ -144,27 +148,16 @@ class app_builder_report extends _BaseController
                 throw new \Exception('Solo se pueden navegar ' . number_format($maxRows) . ' filas. Agregue filtros o exporte a Excel.');
             }
 
-            $offset  = ($page - 1) * $pageSize;
-            $builder = $this->core_web_report_builder;
-            $db      = db_connect();
-            $this->extendTimeLimit($limits['timeoutSeconds'] * 3);
-
-            // Se pide una fila de mas para saber si hay otra pagina
-            $select = $builder->buildSelect($context['baseSql'], $context['config'], $companyID, $pageSize + 1, $offset);
-            $rows   = $builder->execute($db, $select['sql'], $select['binds'], $limits['timeoutSeconds']);
-
-            $count     = $builder->buildCount($context['baseSql'], $context['config'], $companyID, $maxRows);
-            $countRows = $builder->execute($db, $count['sql'], $count['binds'], $limits['timeoutSeconds']);
-            $total     = isset($countRows[0]['total']) ? (int) $countRows[0]['total'] : 0;
+            $result = $this->runQueryPage($context, $companyID, $limits, $page, $pageSize, $maxRows, true);
 
             return $this->successResponse([
-                'columns'       => $select['columns'],
-                'rows'          => array_slice($rows, 0, $pageSize),
+                'columns'       => $result['columns'],
+                'rows'          => $result['rows'],
                 'page'          => $page,
                 'pageSize'      => $pageSize,
-                'hasMore'       => count($rows) > $pageSize && ($offset + $pageSize) < $maxRows,
-                'total'         => min($total, $maxRows),
-                'totalIsCapped' => $total > $maxRows,
+                'hasMore'       => $result['hasMore'],
+                'total'         => $result['total'],
+                'totalIsCapped' => $result['totalIsCapped'],
                 'maxRows'       => $maxRows,
                 'pageSizeMax'   => $limits['pageSizeMax'],
             ]);
@@ -174,8 +167,11 @@ class app_builder_report extends _BaseController
     }
 
     /**
-     * Crea (sin ID) o actualiza (con ID) una consulta recurrente del usuario. Conserva los filtros sin
-     * valor: el valor se indica cada vez que se usa la consulta.
+     * Crea (sin ID) o actualiza (con ID) una consulta recurrente. Conserva los filtros sin valor y las
+     * fechas dinamicas sin resolver: se resuelven cada vez que se usa la consulta.
+     * Ademas guarda visibilidad (isShared, solo administrador), tipo de vista, dashboard, orden y la
+     * presentacion (displayJson). Al editar no cambia el dueno: un administrador puede editar las
+     * compartidas de otros usuarios.
      *
      * @return mixed JSON con reportBuilderID.
      */
@@ -189,14 +185,19 @@ class app_builder_report extends _BaseController
             $dataSession     = $access['session'];
             $companyID       = (int) $dataSession["user"]->companyID;
             $userID          = (int) $dataSession["user"]->userID;
+            $isAdminCompany  = $this->core_web_report_builder->isAdminCompany($dataSession);
+            $canEditShared   = $this->canEditSharedOfOthers($dataSession);
             $reportBuilderID = 0;
+            $ownerID         = $userID;
 
             if ($isEdit) {
                 $reportBuilderID = $this->toPositiveInt($rawID);
-                // update_app_posme devuelve true aunque ninguna fila coincida
-                if ($reportBuilderID < 1 || !$this->Report_Builder_Model->get_rowByPK($companyID, $userID, $reportBuilderID)) {
+                // update_app_posme_editable devuelve true aunque ninguna fila coincida
+                $row = ($reportBuilderID < 1) ? null : $this->Report_Builder_Model->get_rowEditableByPK($companyID, $userID, $reportBuilderID, $canEditShared);
+                if (!$row) {
                     throw new \Exception(self::MESSAGE_QUERY_NOT_FOUND);
                 }
+                $ownerID = (int) $row->userID;
             }
 
             $name   = $this->core_web_report_builder->normalizeQueryName($body['name'] ?? null);
@@ -204,22 +205,25 @@ class app_builder_report extends _BaseController
             $view   = $this->requireView($dataSession, $config['dataViewID'] ?? null);
             $fields = $this->getCatalogFields($dataSession, $view->dataViewID);
             $normal = $this->core_web_report_builder->validateConfig($config, $fields, ['keepEmptyFilters' => true]);
+            $extra  = $this->readDisplaySettings($body, $normal, $companyID, $isAdminCompany);
 
-            if ($this->Report_Builder_Model->existsName($companyID, $userID, $name, $reportBuilderID, $this->getAvailableViewIDs($dataSession))) {
-                throw new \Exception('Ya tiene una consulta con ese nombre.');
+            // El nombre es unico por dueno: al editar una consulta ajena (administrador) se valida con el dueno
+            if ($this->Report_Builder_Model->existsName($companyID, $ownerID, $name, $reportBuilderID, $this->getAvailableViewIDs($dataSession))) {
+                throw new \Exception(($ownerID === $userID) ? 'Ya tiene una consulta con ese nombre.' : 'El dueno de la consulta ya tiene otra con ese nombre.');
             }
 
             $configJson = $this->encodeConfig($normal);
 
             if ($isEdit) {
-                $this->Report_Builder_Model->update_app_posme($companyID, $userID, $reportBuilderID, [
+                // Sin userID en los datos: el dueno no cambia
+                $this->Report_Builder_Model->update_app_posme_editable($companyID, $userID, $reportBuilderID, $canEditShared, array_merge([
                     'name'       => $name,
                     'dataViewID' => (int) $view->dataViewID,
                     'configJson' => $configJson,
                     'modifiedOn' => helper_getDateTime(),
-                ]);
+                ], $extra));
             } else {
-                $reportBuilderID = $this->insertQuery($dataSession, (int) $view->dataViewID, $name, $configJson);
+                $reportBuilderID = $this->insertQuery($dataSession, (int) $view->dataViewID, $name, $configJson, $extra);
             }
 
             return $this->successResponse(['reportBuilderID' => (int) $reportBuilderID]);
@@ -229,30 +233,44 @@ class app_builder_report extends _BaseController
     }
 
     /**
-     * Consultas recurrentes del usuario. Se ocultan las de vistas no disponibles para el flavor de la
-     * empresa o el menu del usuario, porque no se podrian abrir.
+     * Mis consultas (pestana 3): solo las del usuario que las creo, esten o no compartidas.
+     * Las compartidas de otros usuarios solo se ven en los dashboards. Se ocultan las de vistas
+     * no disponibles para el flavor de la empresa o el menu del usuario, porque no se podrian abrir.
      *
      * @return mixed JSON con queries.
      */
     function listQueries()
     {
         try {
-            $access      = $this->authorize('index');
-            $dataSession = $access['session'];
-            $queries     = [];
-            $rows        = $this->Report_Builder_Model->get_rowsByUser($dataSession["user"]->companyID, $dataSession["user"]->userID);
-            $viewIDs     = $this->getAvailableViewIDs($dataSession);
+            $access         = $this->authorize('index');
+            $dataSession    = $access['session'];
+            $companyID      = (int) $dataSession["user"]->companyID;
+            $queries        = [];
+            $rows           = $this->Report_Builder_Model->get_rowsEditableByUser($companyID, (int) $dataSession["user"]->userID, $this->canEditSharedOfOthers($dataSession));
+            $viewIDs        = $this->getAvailableViewIDs($dataSession);
+            $catalogs       = $this->core_web_report_builder->loadBuilderCatalogs($companyID);
 
             foreach ($rows as $row) {
                 if (!in_array((int) $row->dataViewID, $viewIDs, true)) {
                     continue;
                 }
 
+                $viewType  = $this->core_web_report_builder->findCatalogItem((int) $row->viewTypeCatalogItemID, $catalogs['viewType']);
+                $dashboard = $this->core_web_report_builder->findCatalogItem((int) $row->dashboardCatalogItemID, $catalogs['dashboard']);
+
                 $queries[] = [
-                    'reportBuilderID' => (int) $row->reportBuilderID,
-                    'name'            => $row->name,
-                    'dataViewID'      => (int) $row->dataViewID,
-                    'modifiedOn'      => $row->modifiedOn,
+                    'reportBuilderID'        => (int) $row->reportBuilderID,
+                    'name'                   => $row->name,
+                    'dataViewID'             => (int) $row->dataViewID,
+                    'modifiedOn'             => $row->modifiedOn,
+                    'isOwner'                => (int) $row->isOwner === 1,
+                    'ownerNickname'          => (string) $row->ownerNickname,
+                    'isShared'               => (int) $row->isShared === 1,
+                    'viewTypeCatalogItemID'  => (int) $row->viewTypeCatalogItemID,
+                    'viewTypeName'           => $viewType ? $viewType['display'] : '',
+                    'dashboardCatalogItemID' => (int) $row->dashboardCatalogItemID,
+                    'dashboardName'          => $dashboard ? $dashboard['display'] : '',
+                    'orden'                  => (int) $row->orden,
                 ];
             }
 
@@ -263,8 +281,9 @@ class app_builder_report extends _BaseController
     }
 
     /**
-     * Abre una consulta recurrente. Una consulta ajena o inexistente da la misma respuesta, y los campos
-     * que ya no estan en el catalogo se quitan y se informan en warnings.
+     * Abre una consulta recurrente editable (propia, o compartida si es administrador). Una consulta no
+     * editable o inexistente da la misma respuesta, y los campos que ya no estan en el catalogo se quitan
+     * y se informan en warnings.
      *
      * @return mixed JSON con query y warnings.
      */
@@ -274,7 +293,7 @@ class app_builder_report extends _BaseController
             $access      = $this->authorize('index');
             $dataSession = $access['session'];
             $body        = $this->readBody();
-            $row         = $this->requireOwnQuery($dataSession, $body['reportBuilderID'] ?? null);
+            $row         = $this->requireEditableQuery($dataSession, $body['reportBuilderID'] ?? null);
             $view        = $this->requireVisibleQueryView($dataSession, $row);
             $fields      = $this->getCatalogFields($dataSession, $view->dataViewID);
 
@@ -286,14 +305,31 @@ class app_builder_report extends _BaseController
 
             $result = $this->core_web_report_builder->reconcileConfig($config, $fields);
 
+            // La presentacion guardada se devuelve tal cual; si no es JSON valido se trata como sin presentacion
+            $display         = json_decode((string) $row->displayJson, true);
+            $displayWarnings = is_array($display) ? $this->core_web_report_builder->checkDisplayColumns($display, $result['config']) : [];
+            // Las claves son posicionales (c0, c1...): si se quitaron columnas, las restantes cambian de clave
+            $savedColumns = (isset($config['columns']) && is_array($config['columns'])) ? count($config['columns']) : 0;
+            $loadColumns  = (isset($result['config']['columns']) && is_array($result['config']['columns'])) ? count($result['config']['columns']) : 0;
+            if (is_array($display) && $savedColumns !== $loadColumns) {
+                $displayWarnings[] = 'Cambiaron las columnas de la consulta: revise los campos de la presentacion antes de guardar.';
+            }
+
             return $this->successResponse([
                 'query'    => [
-                    'reportBuilderID' => (int) $row->reportBuilderID,
-                    'name'            => $row->name,
-                    'dataViewID'      => (int) $row->dataViewID,
-                    'config'          => $result['config'],
+                    'reportBuilderID'        => (int) $row->reportBuilderID,
+                    'name'                   => $row->name,
+                    'dataViewID'             => (int) $row->dataViewID,
+                    'config'                 => $result['config'],
+                    'isOwner'                => (int) $row->userID === (int) $dataSession["user"]->userID,
+                    'isShared'               => (int) $row->isShared === 1,
+                    'viewTypeCatalogItemID'  => (int) $row->viewTypeCatalogItemID,
+                    'dashboardCatalogItemID' => (int) $row->dashboardCatalogItemID,
+                    'orden'                  => (int) $row->orden,
+                    'display'                => is_array($display) ? $display : null,
                 ],
-                'warnings' => $result['warnings'],
+                'warnings'        => $result['warnings'],
+                'displayWarnings' => $displayWarnings,
             ]);
         } catch (\Throwable $ex) {
             return $this->failResponse($ex);
@@ -301,7 +337,8 @@ class app_builder_report extends _BaseController
     }
 
     /**
-     * Duplica una consulta del usuario.
+     * Duplica una consulta editable. La copia pertenece al usuario actual, es privada (isShared = 0) y
+     * conserva tipo de vista, dashboard, orden y presentacion.
      *
      * @return mixed JSON con reportBuilderID.
      */
@@ -311,7 +348,7 @@ class app_builder_report extends _BaseController
             $access      = $this->authorize('add');
             $dataSession = $access['session'];
             $body        = $this->readBody();
-            $row         = $this->requireOwnQuery($dataSession, $body['reportBuilderID'] ?? null);
+            $row         = $this->requireEditableQuery($dataSession, $body['reportBuilderID'] ?? null);
             $view        = $this->requireVisibleQueryView($dataSession, $row);
             $rawName     = $body['name'] ?? null;
 
@@ -324,7 +361,13 @@ class app_builder_report extends _BaseController
                 $name = $this->buildCopyName($dataSession, (string) $row->name);
             }
 
-            $reportBuilderID = $this->insertQuery($dataSession, (int) $view->dataViewID, $name, (string) $row->configJson);
+            $reportBuilderID = $this->insertQuery($dataSession, (int) $view->dataViewID, $name, (string) $row->configJson, [
+                'isShared'               => 0,
+                'viewTypeCatalogItemID'  => (int) $row->viewTypeCatalogItemID,
+                'dashboardCatalogItemID' => (int) $row->dashboardCatalogItemID,
+                'orden'                  => (int) $row->orden,
+                'displayJson'            => ($row->displayJson === null || $row->displayJson === '') ? null : (string) $row->displayJson,
+            ]);
 
             return $this->successResponse(['reportBuilderID' => (int) $reportBuilderID]);
         } catch (\Throwable $ex) {
@@ -333,7 +376,7 @@ class app_builder_report extends _BaseController
     }
 
     /**
-     * Elimina (soft delete) una consulta del usuario.
+     * Elimina (soft delete) una consulta editable (propia, o compartida si es administrador).
      *
      * @return mixed JSON estandar.
      */
@@ -343,14 +386,69 @@ class app_builder_report extends _BaseController
             $access      = $this->authorize('delete');
             $dataSession = $access['session'];
             $body        = $this->readBody();
-            // delete_app_posme devuelve true aunque ninguna fila coincida
-            $row = $this->requireOwnQuery($dataSession, $body['reportBuilderID'] ?? null);
+            // delete_app_posme_editable devuelve true aunque ninguna fila coincida
+            $row = $this->requireEditableQuery($dataSession, $body['reportBuilderID'] ?? null);
 
-            $this->Report_Builder_Model->delete_app_posme($dataSession["user"]->companyID, $dataSession["user"]->userID, $row->reportBuilderID);
+            $this->Report_Builder_Model->delete_app_posme_editable($dataSession["user"]->companyID, $dataSession["user"]->userID, $row->reportBuilderID, $this->canEditSharedOfOthers($dataSession));
 
             return $this->successResponse([]);
         } catch (\Throwable $ex) {
             return $this->failResponse($ex);
+        }
+    }
+
+    /**
+     * Pagina limpia a ancho completo con el resultado de la configuracion actual (sin guardar). Recibe
+     * por POST de un formulario normal (target _blank) los campos config (JSON en texto) y dataViewID.
+     * Solo valida igual que generate: la tabla paginada la llena el JS de la vista llamando a generate,
+     * que vuelve a validar y resuelve las fechas dinamicas en cada pagina.
+     *
+     * @return mixed Vista app_builder_report/view_result (con errorMessage si algo falla).
+     */
+    function viewResult()
+    {
+        $dataView = [
+            "company"            => null,
+            "companyPageSetting" => null,
+            "useMobile"          => 0,
+            "title"              => "Constructor de Reportes",
+            "viewLabel"          => "",
+            "dataViewID"         => 0,
+            "configJson"         => "null",
+            "errorMessage"       => "",
+        ];
+
+        try {
+            $access      = $this->authorize('index');
+            $dataSession = $access['session'];
+
+            $config = json_decode((string) $this->request->getPost("config"), true);
+            $config = $this->requireConfigArray($config);
+            if ($this->toPositiveInt($this->request->getPost("dataViewID")) !== $this->toPositiveInt($config['dataViewID'] ?? null)) {
+                throw new \Exception(self::MESSAGE_VIEW_NOT_FOUND);
+            }
+
+            // Misma validacion que generate (vista, campos, filtros y SQL de la vista); no ejecuta la consulta
+            $context = $this->buildQueryContext($dataSession, $access['permission'], $config);
+
+            $dataView["company"]            = $dataSession["company"];
+            $dataView["companyPageSetting"] = $dataSession["companyPageSetting"];
+            $dataView["useMobile"]          = $dataSession["user"]->useMobile;
+            $dataView["title"]              = "Constructor de Reportes - " . $context['view']->label;
+            $dataView["viewLabel"]          = (string) $context['view']->label;
+            $dataView["dataViewID"]         = (int) $context['view']->dataViewID;
+            // Se envia la configuracion validada SIN resolver: cada llamada a generate resuelve las fechas dinamicas
+            $dataView["configJson"]         = $this->encodeForScript($context['savedConfig']);
+
+            return view('app_builder_report/view_result', $dataView);
+        } catch (\Throwable $ex) {
+            $session = $this->session->get();
+            if (empty($session["user"])) {
+                return redirect()->to(base_url("core_acount/login"));
+            }
+
+            $dataView["errorMessage"] = $this->resolveClientMessage($ex);
+            return view('app_builder_report/view_result', $dataView);
         }
     }
 
@@ -470,6 +568,134 @@ class app_builder_report extends _BaseController
         }
     }
 
+    /**
+     * Tarjetas de un dashboard: consultas activas de la compania asignadas a ese dashboard, propias o
+     * compartidas, ordenadas por orden y reportBuilderID. Solo exige sesion: los usuarios del dashboard
+     * pueden no tener el menu del Builder. Se descartan, sin fallar, las tarjetas con presentacion
+     * invalida o cuya vista de datos no esta disponible para la compania (tb_company_dataview por
+     * companyID y flavorID). Un dashboard que no existe en el catalogo devuelve cards vacio.
+     * Entrada (POST JSON): {dashboard: name del item del catalogo "Builder Report Dashboard"}.
+     *
+     * @return mixed JSON con cards: [{reportBuilderID, name, orden, title, cardType, width, chartType, display}].
+     */
+    function getDashboardCards()
+    {
+        try {
+            $access      = $this->authorizeDashboard();
+            $dataSession = $access['session'];
+            $companyID   = (int) $dataSession["user"]->companyID;
+            $userID      = (int) $dataSession["user"]->userID;
+            $body        = $this->readBody();
+            $builder     = $this->core_web_report_builder;
+            $catalogs    = $builder->loadBuilderCatalogs($companyID);
+            $dashboard   = $builder->findDashboardByName($body['dashboard'] ?? null, $catalogs['dashboard']);
+            $cards       = [];
+
+            if ($dashboard === null) {
+                return $this->successResponse(['cards' => $cards]);
+            }
+
+            $rows      = $this->Report_Builder_Model->get_rowsByDashboard($companyID, $userID, (int) $dashboard['catalogItemID']);
+            $viewCache = [];
+
+            foreach ((is_array($rows) ? $rows : []) as $row) {
+                $display = json_decode((string) $row->displayJson, true);
+                $card    = $builder->describeCard($display, $catalogs);
+                if ($card === null) {
+                    continue;
+                }
+
+                $dataViewID = (int) $row->dataViewID;
+                if (!array_key_exists($dataViewID, $viewCache)) {
+                    $viewCache[$dataViewID] = $this->findCompanyView($dataSession, $dataViewID) !== null;
+                }
+                if (!$viewCache[$dataViewID]) {
+                    continue;
+                }
+
+                $title   = trim((string) ($display['title'] ?? ''));
+                $cards[] = [
+                    'reportBuilderID' => (int) $row->reportBuilderID,
+                    'name'            => (string) $row->name,
+                    'orden'           => (int) $row->orden,
+                    'title'           => ($title !== '') ? $title : (string) $row->name,
+                    'cardType'        => $card['cardType'],
+                    'cardKind'        => $card['cardKind'],
+                    'width'           => $card['width'],
+                    'chartType'       => $card['chartType'],
+                    'display'         => $display,
+                ];
+            }
+
+            return $this->successResponse(['cards' => $cards]);
+        } catch (\Throwable $ex) {
+            return $this->failResponse($ex);
+        }
+    }
+
+    /**
+     * Datos de una tarjeta de dashboard: ejecuta la consulta guardada (pagina 1) igual que generate, con
+     * la configuracion reconciliada contra las columnas actuales de la vista y las fechas dinamicas
+     * resueltas con la fecha del servidor. Filas segun el tipo: Indicador 1, Grafico hasta 100, Tabla 10
+     * (sin superar REPORT_BUILDER_PAGE_SIZE_MAX). Solo la Tabla calcula total.
+     * Entrada (POST JSON): {reportBuilderID}.
+     *
+     * @return mixed JSON con columns, rows, display, cardType, chartType, width, title y, en Tabla, total y totalIsCapped.
+     */
+    function getCardData()
+    {
+        try {
+            $access      = $this->authorizeDashboard();
+            $dataSession = $access['session'];
+            $companyID   = (int) $dataSession["user"]->companyID;
+            $body        = $this->readBody();
+            $builder     = $this->core_web_report_builder;
+            $id          = $this->toPositiveInt($body['reportBuilderID'] ?? null);
+
+            $row = ($id < 1) ? null : $this->Report_Builder_Model->get_rowVisibleByPK($companyID, (int) $dataSession["user"]->userID, $id);
+            if (!$row || (int) $row->dashboardCatalogItemID < 1) {
+                throw new \Exception(self::MESSAGE_CARD_NOT_FOUND);
+            }
+
+            $display = json_decode((string) $row->displayJson, true);
+            $card    = $builder->describeCard($display, $builder->loadBuilderCatalogs($companyID));
+            if ($card === null) {
+                throw new \Exception(self::MESSAGE_CARD_NOT_FOUND);
+            }
+
+            // Regla del usuario (2026-11-08): en una tarjeta compartida todos ven los datos de toda la compania
+            // ({filterPermission} = PERMISSION_ALL). Una tarjeta privada solo la ve su creador y conserva su permiso.
+            $permission = ((int) $row->isShared === 1) ? PERMISSION_ALL : $access['permission'];
+
+            $limits   = $this->readLimits($companyID);
+            $context  = $this->buildSavedQueryContext($dataSession, $permission, $row);
+            $maxRows  = $limits['maxRowsScreen'];
+            $pageSize = min($builder->resolveCardPageSize($card['cardKind'], $limits['pageSizeMax']), $maxRows);
+            $isTable  = $card['cardKind'] === $builder::CARD_TYPE_TABLE;
+            $result   = $this->runQueryPage($context, $companyID, $limits, 1, $pageSize, $maxRows, $isTable);
+            $title    = trim((string) ($display['title'] ?? ''));
+
+            $data = [
+                'columns'   => $result['columns'],
+                'rows'      => $result['rows'],
+                'display'   => $display,
+                'cardType'  => $card['cardType'],
+                'cardKind'  => $card['cardKind'],
+                'chartType' => $card['chartType'],
+                'width'     => $card['width'],
+                'title'     => ($title !== '') ? $title : (string) $row->name,
+            ];
+            if ($isTable) {
+                $data['total']         = $result['total'];
+                $data['totalIsCapped'] = $result['totalIsCapped'];
+            }
+
+            return $this->successResponse($data);
+        } catch (\Throwable $ex) {
+            return $this->failResponse($ex);
+        }
+    }
+
     /* =================================================================================
        AUXILIARES
     ================================================================================= */
@@ -509,6 +735,43 @@ class app_builder_report extends _BaseController
         }
 
         if ($requirePost) {
+            session_write_close();
+        }
+
+        return ['session' => $dataSession, 'permission' => $permission];
+    }
+
+    /**
+     * Acceso de los endpoints de dashboard: exige sesion y POST, pero no el menu del Builder. El filtro
+     * de datos de la vista ({filterPermission}) usa el permiso "index" del Builder si el usuario lo tiene;
+     * si no, el mas restrictivo (PERMISSION_ME: solo los registros creados por el usuario), para no
+     * mostrar datos de otros usuarios a quien no tiene permiso para verlos.
+     *
+     * @return array [session, permission]
+     * @throws \Exception Si no hay sesion o el verbo no es POST.
+     */
+    protected function authorizeDashboard()
+    {
+        if (!$this->core_web_authentication->isAuthenticated()) {
+            throw new \Exception(USER_NOT_AUTENTICATED);
+        }
+        if (strtolower((string) $this->request->getMethod()) !== 'post') {
+            throw new \Exception('Metodo no permitido.');
+        }
+
+        $dataSession = $this->session->get();
+        $permission  = PERMISSION_ME;
+
+        try {
+            $access     = $this->authorize('index');
+            $permission = $access['permission'];
+        } catch (\Exception $ex) {
+            // Sin menu o sin permiso del Builder: se conserva PERMISSION_ME
+            $permission = PERMISSION_ME;
+        }
+
+        // authorize ya cierra la sesion cuando tiene exito; si fallo se cierra aqui
+        if (session_status() === PHP_SESSION_ACTIVE) {
             session_write_close();
         }
 
@@ -601,7 +864,7 @@ class app_builder_report extends _BaseController
             throw new \Exception(self::MESSAGE_VIEW_NOT_FOUND);
         }
 
-        $view = $this->Report_Builder_View_Model->get_rowByDataViewID($id, (int) $dataSession["user"]->companyID, (int) $dataSession["company"]->flavorID);
+        $view = $this->findCompanyView($dataSession, $id);
         if (!$view) {
             throw new \Exception(self::MESSAGE_VIEW_NOT_FOUND);
         }
@@ -615,21 +878,56 @@ class app_builder_report extends _BaseController
     }
 
     /**
-     * Consulta guardada del usuario. Ajena o inexistente dan la misma respuesta.
+     * Vista activa del catalogo (callerID 3) disponible para la compania: existe en tb_company_dataview
+     * con la companyID y el flavorID exactos de la sesion. No revisa el menu del usuario (requiredAddress):
+     * eso lo agrega requireView para el Builder.
+     *
+     * @param array $dataSession Sesion.
+     * @param int   $dataViewID  Vista.
+     * @return object|null Fila de la vista, o null si no esta disponible.
+     */
+    protected function findCompanyView(array $dataSession, $dataViewID)
+    {
+        $id = (int) $dataViewID;
+        if ($id < 1) {
+            return null;
+        }
+
+        $view = $this->Report_Builder_View_Model->get_rowByDataViewID($id, (int) $dataSession["user"]->companyID, (int) $dataSession["company"]->flavorID);
+        return $view ? $view : null;
+    }
+
+    /**
+     * Indica si el usuario puede abrir, editar, duplicar o eliminar consultas compartidas de otros
+     * usuarios desde Mis consultas. Regla del usuario (2026-11-08): nadie puede; en la pestana 3 cada
+     * usuario solo ve y edita las que creo. Las compartidas de otros solo se ven en los dashboards.
+     * El administrador de la compania conserva unicamente el permiso de marcar una consulta como compartida.
+     *
+     * @param array $dataSession Sesion.
+     * @return bool Siempre false con la regla vigente.
+     */
+    protected function canEditSharedOfOthers(array $dataSession)
+    {
+        return false;
+    }
+
+    /**
+     * Consulta guardada que el usuario puede editar: solo la propia (ver canEditSharedOfOthers).
+     * No editable o inexistente dan la misma respuesta.
      *
      * @param array $dataSession     Sesion.
      * @param mixed $reportBuilderID Consulta solicitada.
      * @return object Fila de la consulta.
-     * @throws \Exception Si no existe o es ajena.
+     * @throws \Exception Si no existe o no es editable.
      */
-    protected function requireOwnQuery(array $dataSession, $reportBuilderID)
+    protected function requireEditableQuery(array $dataSession, $reportBuilderID)
     {
         $id = $this->toPositiveInt($reportBuilderID);
         if ($id < 1) {
             throw new \Exception(self::MESSAGE_QUERY_NOT_FOUND);
         }
 
-        $row = $this->Report_Builder_Model->get_rowByPK($dataSession["user"]->companyID, $dataSession["user"]->userID, $id);
+        $row = $this->Report_Builder_Model->get_rowEditableByPK($dataSession["user"]->companyID, $dataSession["user"]->userID, $id, $this->canEditSharedOfOthers($dataSession));
         if (!$row) {
             throw new \Exception(self::MESSAGE_QUERY_NOT_FOUND);
         }
@@ -674,12 +972,13 @@ class app_builder_report extends _BaseController
 
     /**
      * Valida la configuracion y resuelve el SQL de la vista para generar o exportar. Omite los filtros
-     * sin valor.
+     * sin valor y resuelve las fechas dinamicas con la fecha del servidor (helper_getDateTime_Object
+     * aplica APP_HOUR_DIFERENCE_PHP).
      *
      * @param array $dataSession Sesion.
      * @param mixed $permission  Valor de urlPermissionCmd "index" de este controlador.
      * @param mixed $config      Configuracion recibida.
-     * @return array [view, config, baseSql]
+     * @return array [view, config (fechas resueltas, lista para ejecutar), savedConfig (validada, con tokens dinamicos), baseSql]
      * @throws \Exception Si algo no es valido.
      */
     protected function buildQueryContext(array $dataSession, $permission, $config)
@@ -689,11 +988,200 @@ class app_builder_report extends _BaseController
         $fields = $this->getCatalogFields($dataSession, $view->dataViewID);
         $normal = $this->core_web_report_builder->validateConfig($config, $fields, []);
 
+        return $this->composeQueryContext($dataSession, $permission, $view, $normal);
+    }
+
+    /**
+     * Contexto de una consulta guardada para ejecutarla (tarjetas de dashboard). La vista debe estar
+     * disponible para la compania (findCompanyView); la configuracion guardada se reconcilia con las
+     * columnas actuales de la vista y luego se valida igual que generate (los filtros sin valor se omiten).
+     *
+     * @param array  $dataSession Sesion.
+     * @param mixed  $permission  Permiso con el que se filtra la vista ({filterPermission}).
+     * @param object $row         Fila de tb_report_builder.
+     * @return array Igual que buildQueryContext.
+     * @throws \Exception Si la vista no esta disponible o la consulta ya no es valida.
+     */
+    protected function buildSavedQueryContext(array $dataSession, $permission, $row)
+    {
+        $view = $this->findCompanyView($dataSession, (int) $row->dataViewID);
+        if (!$view) {
+            throw new \Exception(self::MESSAGE_CARD_NOT_FOUND);
+        }
+
+        $fields = $this->getCatalogFields($dataSession, $view->dataViewID);
+        $config = json_decode((string) $row->configJson, true);
+        if (!is_array($config)) {
+            $config = [];
+        }
+        $config['dataViewID'] = (int) $row->dataViewID;
+
+        $reconciled = $this->core_web_report_builder->reconcileConfig($config, $fields);
+        $normal     = $this->core_web_report_builder->validateConfig($reconciled['config'], $fields, []);
+
+        return $this->composeQueryContext($dataSession, $permission, $view, $normal);
+    }
+
+    /**
+     * Parte comun de buildQueryContext y buildSavedQueryContext: resuelve las fechas dinamicas con la
+     * fecha del servidor (helper_getDateTime_Object aplica APP_HOUR_DIFERENCE_PHP) y el SQL de la vista.
+     *
+     * @param array  $dataSession Sesion.
+     * @param mixed  $permission  Permiso con el que se filtra la vista.
+     * @param object $view        Fila de la vista.
+     * @param array  $normal      Configuracion validada (con tokens dinamicos).
+     * @return array [view, config (fechas resueltas), savedConfig, baseSql]
+     * @throws \Exception Si el SQL de la vista no esta disponible o no es valido.
+     */
+    protected function composeQueryContext(array $dataSession, $permission, $view, array $normal)
+    {
         return [
-            'view'    => $view,
-            'config'  => $normal,
-            'baseSql' => $this->resolveViewSql($dataSession, $permission, $view),
+            'view'        => $view,
+            'config'      => $this->core_web_report_builder->resolveDynamicFilters($normal, helper_getDateTime_Object()),
+            'savedConfig' => $normal,
+            'baseSql'     => $this->resolveViewSql($dataSession, $permission, $view),
         ];
+    }
+
+    /**
+     * Ejecuta una pagina de un contexto ya validado (lo comparten generate y getCardData). Pide una fila
+     * de mas para saber si hay otra pagina y, si se indica, cuenta el total hasta maxRows.
+     *
+     * @param array $context   Resultado de buildQueryContext o buildSavedQueryContext.
+     * @param int   $companyID Empresa de la sesion.
+     * @param array $limits    Resultado de readLimits.
+     * @param int   $page      Pagina (desde 1), ya validada.
+     * @param int   $pageSize  Filas por pagina, ya validado.
+     * @param int   $maxRows   Tope de filas navegables.
+     * @param bool  $withCount true para ejecutar tambien el conteo.
+     * @return array [columns, rows, hasMore, total, totalIsCapped]; sin conteo total es null y totalIsCapped false.
+     * @throws \Throwable Errores de la BD o de tiempo de espera.
+     */
+    protected function runQueryPage(array $context, $companyID, array $limits, $page, $pageSize, $maxRows, $withCount)
+    {
+        $offset  = ($page - 1) * $pageSize;
+        $builder = $this->core_web_report_builder;
+        $db      = db_connect();
+        $this->extendTimeLimit($limits['timeoutSeconds'] * 3);
+
+        // Se pide una fila de mas para saber si hay otra pagina
+        $select = $builder->buildSelect($context['baseSql'], $context['config'], $companyID, $pageSize + 1, $offset);
+        $rows   = $builder->execute($db, $select['sql'], $select['binds'], $limits['timeoutSeconds']);
+
+        $total = null;
+        if ($withCount) {
+            $count     = $builder->buildCount($context['baseSql'], $context['config'], $companyID, $maxRows);
+            $countRows = $builder->execute($db, $count['sql'], $count['binds'], $limits['timeoutSeconds']);
+            $total     = isset($countRows[0]['total']) ? (int) $countRows[0]['total'] : 0;
+        }
+
+        return [
+            'columns'       => $select['columns'],
+            'rows'          => array_slice($rows, 0, $pageSize),
+            'hasMore'       => count($rows) > $pageSize && ($offset + $pageSize) < $maxRows,
+            'total'         => ($total === null) ? null : min($total, $maxRows),
+            'totalIsCapped' => ($total !== null) && $total > $maxRows,
+        ];
+    }
+
+    /**
+     * Lee y valida los datos de visibilidad y presentacion de saveQuery. companyID y userID nunca salen
+     * del POST.
+     *
+     * @param array $body           Cuerpo recibido.
+     * @param array $config         Configuracion normalizada: sus columnas definen las claves validas del display.
+     * @param int   $companyID      Empresa de la sesion.
+     * @param bool  $isAdminCompany Administrador de la compania.
+     * @return array [isShared, viewTypeCatalogItemID, dashboardCatalogItemID, orden, displayJson]
+     * @throws \Exception Si algo no es valido.
+     */
+    protected function readDisplaySettings(array $body, array $config, $companyID, $isAdminCompany)
+    {
+        $builder  = $this->core_web_report_builder;
+        $isShared = $this->toFlag($body['isShared'] ?? 0);
+
+        // Regla de seguridad: aunque la interfaz oculte la opcion, solo un administrador comparte
+        if ($isShared === 1 && !$isAdminCompany) {
+            throw new \Exception('Solo un administrador de la compania puede compartir consultas con todos.');
+        }
+
+        $viewTypeID  = $this->toNonNegativeInt($body['viewTypeCatalogItemID'] ?? 0, 'El tipo de vista no es valido.');
+        $dashboardID = $this->toNonNegativeInt($body['dashboardCatalogItemID'] ?? 0, 'El dashboard no es valido.');
+        $orden       = $this->toNonNegativeInt($body['orden'] ?? 0, 'El orden debe ser un numero entero mayor o igual a 0.');
+        $display     = $body['display'] ?? null;
+
+        if ($display !== null && !is_array($display)) {
+            throw new \Exception('La presentacion de la consulta tiene un formato invalido.');
+        }
+
+        $catalogs = $builder->loadBuilderCatalogs($companyID);
+        if ($viewTypeID > 0 && $builder->findCatalogItem($viewTypeID, $catalogs['viewType']) === null) {
+            throw new \Exception('El tipo de vista no es valido.');
+        }
+        if ($dashboardID > 0 && $builder->findCatalogItem($dashboardID, $catalogs['dashboard']) === null) {
+            throw new \Exception('El dashboard no es valido.');
+        }
+
+        // Sin dashboard ni presentacion no se guarda displayJson
+        $displayJson = null;
+        if ($dashboardID > 0 || (is_array($display) && count($display) > 0)) {
+            $displayJson = $this->encodeConfig($builder->validateDisplay(is_array($display) ? $display : [], $config, $catalogs));
+        }
+
+        return [
+            'isShared'               => $isShared,
+            'viewTypeCatalogItemID'  => $viewTypeID,
+            'dashboardCatalogItemID' => $dashboardID,
+            'orden'                  => $orden,
+            'displayJson'            => $displayJson,
+        ];
+    }
+
+    /**
+     * Bandera 0/1: "1", 1, true y "true" son 1; cualquier otro valor es 0.
+     *
+     * @param mixed $value Valor recibido.
+     * @return int
+     */
+    protected function toFlag($value)
+    {
+        return ($value === true || $value === 1 || $value === '1' || $value === 'true') ? 1 : 0;
+    }
+
+    /**
+     * Entero mayor o igual a 0; null y '' equivalen a 0.
+     *
+     * @param mixed  $value   Valor recibido.
+     * @param string $message Mensaje si no es valido.
+     * @return int
+     * @throws \Exception Si no es un entero no negativo.
+     */
+    protected function toNonNegativeInt($value, $message)
+    {
+        if ($value === null || $value === '' || $value === 0 || $value === '0') {
+            return 0;
+        }
+        $number = $this->toPositiveInt($value);
+        if ($number < 1 || $number > 2147483647) {
+            throw new \Exception($message);
+        }
+        return $number;
+    }
+
+    /**
+     * JSON seguro para incrustar en un <script> o atributo (escapa < > & ' ").
+     *
+     * @param mixed $data Datos.
+     * @return string JSON.
+     * @throws \RuntimeException Si no se puede codificar.
+     */
+    protected function encodeForScript($data)
+    {
+        $json = json_encode($data, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT);
+        if ($json === false) {
+            throw new \RuntimeException('No se pudo codificar la informacion de la pantalla: ' . json_last_error_msg());
+        }
+        return $json;
     }
 
     /**
@@ -760,14 +1248,16 @@ class app_builder_report extends _BaseController
      * @param int    $dataViewID  Vista.
      * @param string $name        Nombre validado.
      * @param string $configJson  Configuracion en JSON.
+     * @param array  $extra       Opcional: isShared, viewTypeCatalogItemID, dashboardCatalogItemID, orden, displayJson.
      * @return int reportBuilderID.
      */
-    protected function insertQuery(array $dataSession, $dataViewID, $name, $configJson)
+    protected function insertQuery(array $dataSession, $dataViewID, $name, $configJson, array $extra = [])
     {
         $user = $dataSession["user"];
         $now  = helper_getDateTime();
 
-        return $this->Report_Builder_Model->insert_app_posme([
+        // El dueno y la empresa siempre salen de la sesion: van despues de $extra para que no se sobrescriban
+        return $this->Report_Builder_Model->insert_app_posme(array_merge($extra, [
             'companyID'  => (int) $user->companyID,
             'userID'     => (int) $user->userID,
             'dataViewID' => (int) $dataViewID,
@@ -779,7 +1269,7 @@ class app_builder_report extends _BaseController
             'createdAt'  => (int) $user->branchID,
             'modifiedOn' => $now,
             'isActive'   => 1,
-        ]);
+        ]));
     }
 
     /**

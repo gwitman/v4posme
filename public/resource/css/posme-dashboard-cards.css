@@ -1,0 +1,131 @@
+/*
+ * Tarjetas del Builder Report en los dashboards (parcial core_dasboard/builder_cards).
+ * Replica la estética de .abv2-card (estándar ABONOS) sin depender de share_v2_style.
+ * Grilla flex propia: no usa columnas de Bootstrap 3.
+ */
+.pdash {
+    --pdash-accent: #2f6fb5;
+    --pdash-accent-bg: #eaf2fb;
+    --pdash-bad: #c62828;
+    --pdash-bad-bg: #fdecec;
+    --pdash-border: #e3e6ea;
+    --pdash-muted: #6b7280;
+    --pdash-soft: #f6f7f9;
+    color: #1f2933;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+    margin-bottom: 6px;
+}
+.pdash *, .pdash *:before, .pdash *:after { box-sizing: border-box; }
+
+/* Grilla: en teléfono todo al 100% */
+.pdash-grid { display: flex; flex-wrap: wrap; margin: 0 -7px; }
+.pdash-col { flex: 0 0 100%; max-width: 100%; min-width: 0; padding: 0 7px; display: flex; }
+.pdash-w100 { flex-basis: 100%; max-width: 100%; }
+
+@media (min-width: 768px) {
+    .pdash-w50 { flex-basis: 50%; max-width: 50%; }
+    .pdash-w20 { flex-basis: 50%; max-width: 50%; }
+}
+@media (min-width: 1200px) {
+    .pdash-w20 { flex-basis: 20%; max-width: 20%; }
+}
+
+/* Tarjeta (igual a .abv2-card) */
+.pdash-card {
+    background: #fff;
+    border: 1px solid var(--pdash-border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 14px;
+    width: 100%;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+.pdash-card-title {
+    font-size: 14px;
+    font-weight: 700;
+    margin: 0 0 12px;
+    color: #1f2933;
+    line-height: 1.3;
+    word-wrap: break-word;
+}
+.pdash-card-body { flex: 1 1 auto; min-width: 0; }
+
+/* Estados */
+.pdash-loading { display: flex; align-items: center; gap: 8px; color: var(--pdash-muted); font-size: 13px; padding: 10px 0; }
+.pdash-spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--pdash-accent-bg);
+    border-top-color: var(--pdash-accent);
+    border-radius: 50%;
+    display: inline-block;
+    animation: pdash-giro 0.8s linear infinite;
+}
+@keyframes pdash-giro { to { transform: rotate(360deg); } }
+.pdash-msg { font-size: 12px; color: var(--pdash-muted); padding: 8px 10px; background: var(--pdash-soft); border-radius: 8px; }
+.pdash-msg.is-error { color: var(--pdash-bad); background: var(--pdash-bad-bg); }
+
+/* Indicador */
+.pdash-indicator {
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--pdash-accent);
+    font-variant-numeric: tabular-nums;
+    line-height: 1.2;
+    word-break: break-all;
+}
+
+/* Tabla: scroll interno de la tarjeta, nunca de la página */
+.pdash-table-wrap { width: 100%; max-width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; max-height: 420px; overflow-y: auto; }
+.pdash-table { width: 100%; margin: 0; border-collapse: collapse; }
+.pdash-table th {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--pdash-muted);
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--pdash-border);
+    background: #fff;
+    position: sticky;
+    top: 0;
+    white-space: nowrap;
+    text-align: left;
+}
+.pdash-table td { padding: 8px 10px; border-bottom: 1px solid var(--pdash-border); vertical-align: middle; font-size: 14px; }
+.pdash-table .pdash-num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* Gráfico */
+.pdash-chart { width: 100%; height: 300px; }
+
+/* Teléfono: tabla apilada (cada fila como bloque con etiqueta) */
+@media (max-width: 767px) {
+    .pdash-card { padding: 12px; }
+    .pdash-indicator { font-size: 22px; }
+    .pdash-chart { height: 260px; }
+    .pdash-table-wrap { overflow-x: hidden; }
+    .pdash-table thead { display: none; }
+    .pdash-table, .pdash-table tbody, .pdash-table tr, .pdash-table td { display: block; width: 100%; }
+    .pdash-table tr { border: 1px solid var(--pdash-border); border-radius: 8px; margin-bottom: 8px; padding: 4px 0; }
+    .pdash-table td {
+        border-bottom: 0;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 6px 10px;
+        text-align: right;
+        word-break: break-word;
+    }
+    .pdash-table td:before {
+        content: attr(data-label);
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--pdash-muted);
+        text-align: left;
+        flex: 0 0 auto;
+        max-width: 50%;
+    }
+    .pdash-table .pdash-num { white-space: normal; }
+}

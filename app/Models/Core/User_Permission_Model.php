@@ -26,7 +26,34 @@ class User_Permission_Model extends Model  {
 		$result	= $build->delete();		
 		return $result; 	
 			
-		
+
+   }
+   /**
+    * Elimina (borrado fisico, igual que delete_ByRole) los permisos de un rol
+    * solo para los elementos indicados. Los permisos de otros elementos del rol
+    * no se tocan.
+    *
+    * @param int   $companyID      Identificador de la empresa.
+    * @param int   $branchID       Identificador de la sucursal.
+    * @param int   $roleID         Identificador del rol.
+    * @param array $arrayElementID Lista de elementID a eliminar del rol.
+    * @return int Cantidad de filas eliminadas (0 si el array viene vacio).
+    */
+   function delete_ByRoleAndElements($companyID,$branchID,$roleID,$arrayElementID){
+		//Sin elementos no se elimina nada (evita borrar todo el rol)
+		if(empty($arrayElementID) || !is_array($arrayElementID))
+			return 0;
+
+		$db 	= db_connect();
+		$build  = $db->table("tb_user_permission");
+
+		$build->where("companyID",$companyID);
+		$build->where("branchID",$branchID);
+		$build->where("roleID",$roleID);
+		$build->whereIn("elementID",array_values($arrayElementID));
+
+		$build->delete();
+		return $db->affectedRows();
    }
    function get_rowByCompanyIDyBranchIDyRoleID($companyID,$branchID,$roleID){
 		$db 	= db_connect(); 	

@@ -305,6 +305,11 @@ class app_invoice_billing extends _BaseController {
             $dataView["objParameterINVOICE_BILLING_PRINTER_DIRECT_URL_BAR"]							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_URL_BAR")->value;
             $dataView["objParameterINVOICE_BILLING_PRINTER_URL_BAR"]								= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_URL_BAR")->value;
             $dataView["objParameterINVOICE_BILLING_SELECTITEM"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_SELECTITEM")->value;
+            //QZ Tray: lectura segura (getParameterFiltered devuelve false si el parametro no existe para la empresa)
+            $objParameterInvoiceUserQsTray															= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"APP_INVOICE_USER_QSTRAY");
+            $objParameterInvoiceQsTrayPrinterName													= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"APP_INVOICE_QSTRAY_PRINTER_NAME");
+            $dataView["objParameterInvoiceUserQsTray"]												= $objParameterInvoiceUserQsTray ? $objParameterInvoiceUserQsTray->value : "false";
+            $dataView["objParameterInvoiceQsTrayPrinterName"]										= $objParameterInvoiceQsTrayPrinterName ? $objParameterInvoiceQsTrayPrinterName->value : "";
             //$dataView["objListParameterJavaScript"]													= $this->core_web_parameter->getParameterAllToJavaScript($companyID);
             $dataView["objParameterCXC_DAY_EXCLUDED_IN_CREDIT"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"CXC_DAY_EXCLUDED_IN_CREDIT")->value;
             $dataView["objParameterINVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE")->value;
@@ -4233,9 +4238,14 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objListParameterJavaScript"]													= $this->core_web_parameter->getParameterAllToJavaScript($companyID);			
 			$dataView["urlPrinterDocument"]															= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_URL_PRINTER")->value;
 			$dataView["urlPrinterDocumentDirect"]													= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_URL")->value;
-			
-			
-			$objParameterUrlServidorDeImpresion														= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_SERVER_PATH");
+			//QZ Tray: lectura segura (getParameterFiltered devuelve false si el parametro no existe para la empresa)
+			$objParameterInvoiceUserQsTray															= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"APP_INVOICE_USER_QSTRAY");
+			$objParameterInvoiceQsTrayPrinterName													= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"APP_INVOICE_QSTRAY_PRINTER_NAME");
+			$dataView["objParameterInvoiceUserQsTray"]												= $objParameterInvoiceUserQsTray ? $objParameterInvoiceUserQsTray->value : "false";
+			$dataView["objParameterInvoiceQsTrayPrinterName"]										= $objParameterInvoiceQsTrayPrinterName ? $objParameterInvoiceQsTrayPrinterName->value : "";
+
+
+			$objParameterUrlServidorDeImpresion													= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_SERVER_PATH");
 			$objParameterUrlServidorDeImpresion														= $objParameterUrlServidorDeImpresion->value;
 			$dataView["objParameterUrlServidorDeImpresion"] 										= $objParameterUrlServidorDeImpresion;
 
@@ -17535,6 +17545,116 @@ class app_invoice_billing extends _BaseController {
 				"message"	=> $ex->getLine()." ".$ex->getMessage(),
 				"data"		=> array()
 			));
+		}
+	}
+
+	/**
+	 * Obtiene la carpeta donde se guardan el certificado publico y la clave privada de QZ Tray.
+	 *
+	 * La carpeta esta FUERA de public para que la clave privada nunca sea accesible por URL.
+	 * Por defecto es ROOTPATH/qz_certificate/; se puede sobrescribir definiendo la constante
+	 * APP_QZ_CERTIFICATE_PATH. La ruta devuelta siempre termina con separador de directorio.
+	 *
+	 * @return string Ruta absoluta de la carpeta del certificado, con separador final.
+	 */
+	protected function getQzCertificatePath()
+	{
+		$path = defined('APP_QZ_CERTIFICATE_PATH') ? APP_QZ_CERTIFICATE_PATH : ROOTPATH.'qz_certificate'.DIRECTORY_SEPARATOR;
+		$path = rtrim($path, "/\\").DIRECTORY_SEPARATOR;
+		return $path;
+	}
+
+	/**
+	 * Devuelve el certificado publico (digital-certificate.txt) que QZ Tray usa para
+	 * confiar en las solicitudes de impresion (qz.security.setCertificatePromise).
+	 *
+	 * Excepcion justificada a la respuesta JSON estandar: qz.security consume el
+	 * certificado PEM como texto plano, por eso se responde text/plain.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface 200 con el certificado PEM;
+	 *         401 con cuerpo vacio si no hay sesion; 500 con mensaje si no existe el archivo.
+	 */
+	function qzCertificate(){
+		try
+		{
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+				return $this->response->setStatusCode(401)->setContentType("text/plain")->setBody("");
+
+			$certificateFile	= $this->getQzCertificatePath()."digital-certificate.txt";
+			if(!is_file($certificateFile))
+			{
+				log_message("error", "QZ Tray: no existe el certificado publico en ".$certificateFile);
+				return $this->response->setStatusCode(500)->setContentType("text/plain")->setBody("No se encontro el certificado digital de QZ Tray en el servidor.");
+			}
+
+			$certificate		= file_get_contents($certificateFile);
+			if($certificate === false)
+				throw new \Exception("No se pudo leer el certificado publico de QZ Tray");
+
+			return $this->response->setStatusCode(200)->setContentType("text/plain")->setBody($certificate);
+		}
+		catch(\Exception $ex)
+		{
+			log_message("error", "QZ Tray qzCertificate: ".$ex->getLine()." ".$ex->getMessage());
+			return $this->response->setStatusCode(500)->setContentType("text/plain")->setBody("Error al obtener el certificado digital de QZ Tray.");
+		}
+	}
+
+	/**
+	 * Firma con la clave privada (SHA512) el texto que envia QZ Tray
+	 * (qz.security.setSignaturePromise) y devuelve la firma en base64.
+	 *
+	 * Solo acepta POST y exige sesion valida, para no exponer un firmador publico.
+	 * Acepta el texto a firmar como campo de formulario "request" o como JSON {"request": "..."}.
+	 * La clave privada nunca se envia al navegador ni se incluye en respuestas o logs.
+	 *
+	 * Excepcion justificada a la respuesta JSON estandar: qz.security espera la firma
+	 * como texto plano, por eso se responde text/plain.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface 200 con la firma base64; 401 sin sesion;
+	 *         405 si no es POST; 400 si el texto es vacio o excede 8192 caracteres; 500 si falla la firma.
+	 */
+	function qzSign(){
+		try
+		{
+			//SOLO POST
+			if(strtolower($this->request->getMethod()) !== "post")
+				return $this->response->setStatusCode(405)->setContentType("text/plain")->setBody("Metodo no permitido.");
+
+			//AUTENTICADO: sin sesion no se firma nada
+			if(!$this->core_web_authentication->isAuthenticated())
+				return $this->response->setStatusCode(401)->setContentType("text/plain")->setBody("");
+
+			//Texto a firmar: campo de formulario o cuerpo JSON
+			$requestToSign		= $this->request->getPost("request");
+			if($requestToSign === null || $requestToSign === "")
+			{
+				$json			= json_decode((string)$this->request->getBody(), true);
+				$requestToSign	= (is_array($json) && isset($json["request"])) ? $json["request"] : "";
+			}
+
+			if(!is_string($requestToSign) || $requestToSign === "" || strlen($requestToSign) > 8192)
+				return $this->response->setStatusCode(400)->setContentType("text/plain")->setBody("Solicitud de firma invalida.");
+
+			$privateKeyFile		= $this->getQzCertificatePath()."private-key.pem";
+			if(!is_file($privateKeyFile))
+				throw new \Exception("No existe la clave privada de QZ Tray en la carpeta del certificado");
+
+			$privateKey			= openssl_pkey_get_private(file_get_contents($privateKeyFile));
+			if($privateKey === false)
+				throw new \Exception("No se pudo cargar la clave privada de QZ Tray: ".openssl_error_string());
+
+			$signature			= "";
+			if(!openssl_sign($requestToSign, $signature, $privateKey, OPENSSL_ALGO_SHA512))
+				throw new \Exception("openssl_sign fallo: ".openssl_error_string());
+
+			return $this->response->setStatusCode(200)->setContentType("text/plain")->setBody(base64_encode($signature));
+		}
+		catch(\Exception $ex)
+		{
+			log_message("error", "QZ Tray qzSign: ".$ex->getLine()." ".$ex->getMessage());
+			return $this->response->setStatusCode(500)->setContentType("text/plain")->setBody("Error al firmar la solicitud de impresion.");
 		}
 	}
 

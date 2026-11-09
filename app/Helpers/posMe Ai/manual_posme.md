@@ -25,6 +25,37 @@ Ruta: Menú > FACTURACION > FACTURAR (o FACTURACION > NUEVA FACTURA).
 6. Presione **PROCESAR PAGO**, registre lo recibido (efectivo, tarjeta, transferencia, córdobas o dólares) y aplique la factura.
 7. Use **IMPRIMIR** para imprimir el ticket o factura.
 Notas: algunas cajas exigen tener la caja abierta (**ABRIR CAJA**) antes de facturar. <!-- REVISAR: confirmar el orden exacto de PROCESAR PAGO / aplicar segun la configuracion -->
+Ver también: Imprimir una factura (Preview, A4 o directo a la impresora).
+
+## Imprimir una factura (Preview, A4 o directo a la impresora)
+Ruta: Menú > FACTURACION > FACTURAR (nueva factura o edición de una factura).
+1. Con la factura guardada, presione **IMPRIMIR**.
+2. Según la configuración de su empresa, se abre la ventana **Opciones de impresion**. Presione el formato que desea: **Preview** (documento), **Preview A4** o **Preview A4 Blanco**. Los botones visibles y sus nombres dependen de la configuración de su empresa. **Cerrar** cierra la ventana sin imprimir.
+3. Normalmente se abre una pestaña nueva con la vista de impresión; imprima desde allí con el diálogo del navegador.
+Impresión directa con QZ Tray: si su empresa tiene activada la impresión con QZ Tray, al presionar **Preview** la factura se envía directo a la impresora configurada para su empresa (o a la impresora predeterminada del equipo), sin abrir la vista ni el diálogo de impresión. Aparece el aviso "Documento enviado a la impresora: ..." con el nombre de la impresora.
+Si no se puede imprimir con QZ Tray aparece el aviso "No se pudo imprimir con QZ Tray: (motivo). Se abrirá la vista de impresión." y se abre la vista de impresión de siempre, para imprimir de la forma normal.
+Notas: **Preview A4** y **Preview A4 Blanco** siguen abriendo la vista de impresión. Si QZ Tray no está activado para su empresa, todo funciona como antes.
+Ver también: Preparar un equipo para imprimir facturas con QZ Tray; Avisos al imprimir facturas con QZ Tray y qué hacer.
+
+## Preparar un equipo para imprimir facturas con QZ Tray
+Lo realiza el técnico o implementador de posMe, una vez en cada computadora que imprime facturas.
+1. Instalar el programa QZ Tray (versión 2.2) y dejarlo abierto; se ve como un ícono en la bandeja, junto al reloj de Windows.
+2. Copiar el certificado de la empresa en la carpeta de instalación de QZ Tray con el nombre override.crt y reiniciar QZ Tray.
+3. Verificar que la impresora esté instalada en Windows con el nombre exacto configurado para la empresa, o que sea la impresora predeterminada del equipo.
+4. En el navegador, permitir las ventanas emergentes del sitio de posMe. Si se bloquean, la vista de impresión de respaldo no se abre.
+5. Hacer una factura de prueba y presionar **IMPRIMIR** > **Preview**. La primera vez QZ Tray puede pedir permiso: marque "Remember this decision" y presione **Allow**. Desde entonces imprime sin preguntar.
+Notas: la activación de QZ Tray y el nombre de la impresora se configuran por empresa. Los pasos técnicos completos están en el instructivo QZ_TRAY_INSTALACION.md, que tiene el técnico.
+Ver también: Imprimir una factura (Preview, A4 o directo a la impresora).
+
+## Avisos al imprimir facturas con QZ Tray y qué hacer
+Ruta: Menú > FACTURACION > FACTURAR > **IMPRIMIR** > **Preview**.
+Cuando aparece un aviso de QZ Tray, la factura no se envía a la impresora y se abre la vista de impresión normal para imprimir de la forma de siempre.
+- "QZ Tray no está instalado o no está abierto en este equipo": abra QZ Tray (o pida al técnico que lo instale) y vuelva a imprimir.
+- "No se encontró la impresora ..." o "No hay impresora predeterminada configurada": la impresora no existe en Windows con ese nombre o el equipo no tiene impresora predeterminada. Avise al técnico.
+- "La vista de impresión no devolvió un PDF" (o "devolvió un PDF vacío"): el formato de impresión configurado para su empresa no genera PDF. Avise al administrador o al técnico.
+- QZ Tray muestra "Untrusted website" (sitio no confiable) o falla la firma: el equipo no tiene el certificado override.crt o no es el de su empresa. Avise al técnico.
+- Falla QZ Tray y no se abre ninguna vista de impresión: el navegador bloqueó la ventana emergente. Permita las ventanas emergentes del sitio de posMe.
+Ver también: Preparar un equipo para imprimir facturas con QZ Tray.
 
 ## Anular una factura
 Ruta: Menú > FACTURACION > FACTURAR.
@@ -285,11 +316,17 @@ Ruta: Menú > TRANSA > BUILDER REPORT. La pantalla tiene las pestañas **1. Vist
 1. En **1. Vistas** elija una vista; **Buscar vista** filtra la lista.
 2. En **Mostrar** agregue campos con **Agregar columna...** o **Todas**. En cada columna puede cambiar **Título**, **Tipo** y **Alineación**, moverla o quitarla.
 3. Para resumir, en **Agrupar / calcular** elija **Agrupar por este campo** en unas columnas y **Suma**, **Conteo**, **Promedio**, **Mínimo** o **Máximo** en las demás. Da una fila por grupo; no hay subtotales ni total general.
-4. Opcional: **Agregar orden** y **Agregar filtro**. Un filtro sin valor no se aplica.
+4. Opcional: **Agregar orden** y **Agregar filtro**. Un filtro sin valor no se aplica. Puede filtrar el mismo campo más de una vez.
 5. Presione **Generar**. Vea el **Resultado**; cambie **Filas por página** o avance con las flechas.
+Listas: **Mostrar**, **Ordenar** y **Filtrar** tienen su propia barra de desplazamiento. Los combos de **Mostrar** y **Ordenar** no repiten los campos ya agregados (salvo los que llevan un cálculo, como Suma); al quitar uno vuelve a aparecer.
+Teléfono: el resultado se ve en tarjetas y **Generar** queda en la barra inferior.
+Ver también: Vistas, datos y límites del Constructor de Reportes; Filtrar por fechas que se calculan solas en el Constructor de Reportes; Abrir el resultado del Constructor de Reportes en una nueva página; Guardar una consulta de reporte para usarla de nuevo.
+<!-- REVISAR: confirmar el rótulo del menú en pantalla -->
+
+## Vistas, datos y límites del Constructor de Reportes
+Ruta: Menú > TRANSA > BUILDER REPORT.
 Vistas: aparecen las registradas por el administrador para su empresa y el tipo de negocio (flavor) de esta, siempre que usted tenga permitido su menú de origen. Por ejemplo, **Ventas por cliente** incluye solo facturas aplicadas y exige acceso a Facturación.
 Datos: según el permiso de su rol ve toda la empresa, su sucursal o solo lo que usted creó.
-Teléfono: el resultado se ve en tarjetas y **Generar** queda en la barra inferior.
 Límites, según la configuración de su empresa (valores sugeridos): 100 filas por página, 5,000 filas en pantalla y 30 segundos por consulta.
 Mensajes:
 - "Agregue al menos una columna en "Mostrar"."
@@ -297,32 +334,86 @@ Mensajes:
 - "La consulta tardo demasiado y fue cancelada. Reduzca el rango de fechas o agregue filtros."
 - "No tiene vistas disponibles para reportes."
 Notas: tras asignarle el permiso, el usuario debe cerrar sesión y volver a entrar.
-Ver también: Guardar una consulta de reporte para usarla de nuevo.
-<!-- REVISAR: confirmar el rótulo del menú en pantalla -->
+Ver también: Crear un reporte con el Constructor de Reportes (Builder Report).
+
+## Filtrar por fechas que se calculan solas en el Constructor de Reportes (inicio del mes, hoy)
+Ruta: Menú > TRANSA > BUILDER REPORT, pestaña **2. Configurar**, bloque **Filtrar**.
+En un filtro de un campo de fecha, cada fecha tiene un combo para elegir cómo se toma:
+1. **Fecha manual**: escriba o elija la fecha en el calendario. Queda fija.
+2. Una fecha que se calcula cada vez que se ejecuta el reporte, según el día de hoy:
+   - **Desde**: **Inicio del día**, **Inicio del mes** o **Inicio del año**.
+   - **Hasta**: **Fin del día**, **Día de hoy**, **Fin del mes** o **Fin del año**.
+   - En los demás tipos de filtro (**Valor**) se ofrecen según la condición elegida.
+Ejemplo "Ventas del mes": filtre la fecha con **Entre**, **Desde** = **Inicio del mes** y **Hasta** = **Fin del mes**. Al guardarla, cada mes muestra solo las ventas de ese mes sin cambiar nada.
+Las fechas calculadas se respetan igual al **Generar**, al **Exportar a Excel**, en **Abrir en nueva página** y en las tarjetas de los dashboards.
+Notas: puede filtrar el mismo campo más de una vez (por ejemplo, una condición "mayor o igual" y otra "menor o igual"). **Fin del día** y **Día de hoy** dan el mismo resultado.
+Ver también: Crear un reporte con el Constructor de Reportes (Builder Report).
+
+## Abrir el resultado del Constructor de Reportes en una nueva página
+Ruta: Menú > TRANSA > BUILDER REPORT, pestaña **2. Configurar**.
+1. Configure el reporte o abra una consulta guardada.
+2. Presione **Abrir en nueva página**. Se abre otra pestaña del navegador con solo el **Resultado**, a todo el ancho de la pantalla.
+3. Use **Filas por página** y las flechas **Anterior** y **Siguiente** igual que en el constructor.
+Se usan las columnas, el orden y los filtros que hay en pantalla en ese momento, aunque no estén guardados.
+Restricciones: el botón se habilita cuando la configuración está completa (las mismas reglas que **Generar**).
+Mensajes:
+- "No hay datos para los criterios seleccionados."
+- "No se recibió la configuración del reporte. Vuelva a abrirlo desde el constructor.": vuelva a presionar el botón desde el constructor.
+- Si aparece un error, presione **Reintentar**.
+Ver también: Crear un reporte con el Constructor de Reportes (Builder Report).
 
 ## Guardar una consulta de reporte para usarla de nuevo
 Ruta: Menú > TRANSA > BUILDER REPORT, pestaña **2. Configurar**.
 1. Configure el reporte (columnas, agrupación, orden y filtros).
-2. Escriba **Nombre de la consulta**.
-3. Presione **Guardar como consulta recurrente**. Aparece "Consulta guardada." y queda en **3. Mis consultas**.
+2. Presione **Guardar como consulta recurrente**. Se abre la ventana **Guardar consulta**.
+3. Escriba **Nombre de la consulta** (obligatorio).
+4. Elija **Visibilidad**: **Solo para mí** o **Para todos los usuarios** (esta opción solo la ven los administradores de compañía).
+5. Opcional: **Tipo de vista** (**Gráfico** o **Reporte**), **Dashboard** donde se mostrará y **Orden**. Con **— Ninguno —** en **Dashboard** la consulta no aparece en ningún dashboard.
+6. Presione **Guardar**. Aparece "Consulta guardada." y queda en **3. Mis consultas**. **Cancelar** cierra la ventana sin guardar.
 Un filtro sin valor se guarda y se llena al usar la consulta; mientras esté vacío no se aplica.
 Usar una consulta guardada:
 1. En **3. Mis consultas** haga clic en su nombre. Se abre en modo **Consulta**, con el resumen de lo que muestra, y solo se pueden cambiar los valores de los filtros.
 2. Presione **Generar** o **Exportar a Excel**. La consulta no se ejecuta sola al abrirla.
 Los valores que cambie en modo **Consulta** aplican a esa ejecución y no se guardan. Para conservarlos presione **Editar configuración** y luego **Guardar como consulta recurrente**.
-Restricciones: cada consulta la ve solo su dueño dentro de la empresa.
+Restricciones: en **3. Mis consultas** cada usuario ve solo las consultas que creó.
 Mensajes:
 - "Escriba un nombre para guardar la consulta."
 - "Ya tiene una consulta con ese nombre."
 - "El filtro "..." necesita los dos valores de "Entre"." (al generar con un solo extremo lleno)
-Ver también: Modificar, duplicar o eliminar una consulta de reporte guardada.
+Ver también: Compartir una consulta de reporte con todos los usuarios; Mostrar una consulta de reporte como tarjeta en un dashboard.
+
+## Compartir una consulta de reporte con todos los usuarios
+Ruta: Menú > TRANSA > BUILDER REPORT > **Guardar como consulta recurrente** > ventana **Guardar consulta**.
+1. En **Visibilidad** elija **Para todos los usuarios**.
+2. Elija el **Dashboard** donde se mostrará y configure la tarjeta.
+3. Presione **Guardar**. En **3. Mis consultas** la consulta lleva la marca **Compartida**.
+Qué ven los demás: una consulta compartida aparece como tarjeta en el dashboard elegido para todos los usuarios de la empresa, con los datos de toda la compañía. No aparece en su **3. Mis consultas** y no la pueden modificar ni eliminar.
+Una consulta **Solo para mí** solo la ve quien la creó, también en los dashboards.
+Restricciones: solo un usuario con un rol marcado como **Administrador de compañía** ve la opción **Para todos los usuarios**. Si otro usuario modifica una consulta que estaba compartida, se le avisa: "Esta consulta estaba compartida; solo un administrador puede compartirla, al guardar quedará solo para usted."
+Mensaje: "Solo un administrador de la compania puede compartir consultas con todos."
+Ver también: Marcar un rol como administrador de compañía; Ver las tarjetas de reportes en el dashboard.
+
+## Mostrar una consulta de reporte como tarjeta en un dashboard (gráfico, tabla o indicador)
+Ruta: Menú > TRANSA > BUILDER REPORT > **Guardar como consulta recurrente** > ventana **Guardar consulta**.
+1. En **Dashboard** elija **Dashboard principal** o el dashboard de productos. Aparece **Presentación en el dashboard**.
+2. **Orden**: número de posición entre las tarjetas (0 o mayor; las de menor número van primero).
+3. **Tipo de tarjeta**: **Gráfico**, **Tabla** o **Indicador**. **Ancho**: **20%**, **50%** o **100%**.
+4. **Título**: si lo deja vacío se usa el nombre de la consulta.
+5. Si es **Gráfico**: **Tipo de gráfico** (Barras, Circular, Columna o Línea), **Campo etiqueta**, **Campos valor** (uno o varios) y **Campo serie (opcional)**.
+6. Si es **Indicador**: **Campo valor principal** y **Formato** (**Número** o **Moneda**).
+7. Presione **Guardar**.
+Los campos salen de las columnas de **Mostrar**, incluidas las de **Suma** o **Conteo**. Si quita una columna usada por la tarjeta, se limpia y se avisa: "Se quitó una columna usada en la presentación del dashboard (...). Revísela al guardar."
+Mensajes: "Seleccione el tipo de tarjeta.", "Seleccione el ancho de la tarjeta.", "Seleccione el tipo de gráfico.", "Seleccione el campo etiqueta del gráfico.", "Seleccione al menos un campo valor del gráfico.", "Seleccione el campo valor principal del indicador."
+Notas: cada consulta se muestra en un solo dashboard. Para verla en otro, use **Duplicar** y elija el otro dashboard en la copia.
+<!-- REVISAR: nombres exactos de los tipos de gráfico y del dashboard de productos en los catálogos de la BD -->
 
 ## Modificar, duplicar o eliminar una consulta de reporte guardada
 Ruta: Menú > TRANSA > BUILDER REPORT, pestaña **3. Mis consultas**. La lista muestra **Nombre**, **Vista**, **Modificada** y **Acciones**.
+Solo aparecen las consultas que usted creó. Bajo el nombre se ven marcas: **Compartida**, el tipo de vista y el dashboard con su orden. Las consultas compartidas por otros usuarios no aparecen aquí; solo se ven en los dashboards.
 Modificar:
 1. Presione **Editar** en la fila. Desde una consulta abierta, use **Editar configuración**.
-2. Cambie lo que necesite y presione **Guardar como consulta recurrente**. Se actualiza la misma consulta; no se crea otra.
-Duplicar: presione **Duplicar**. Se crea una copia llamada "Copia de" más el nombre original y se abre para editarla.
+2. Cambie lo que necesite y presione **Guardar como consulta recurrente**; revise la ventana **Guardar consulta** y presione **Guardar**. Se actualiza la misma consulta; no se crea otra.
+Duplicar: presione **Duplicar**. Se crea una copia llamada "Copia de" más el nombre original, **Solo para mí**, con el mismo dashboard, y se abre para editarla. Úsela para mostrar la consulta en otro dashboard.
 Eliminar: presione **Eliminar** y confirme "¿Desea eliminar la consulta "..."?". Aparece "Consulta eliminada.". No se puede recuperar desde la pantalla.
 Notas: si tiene cambios sin guardar, al abrir otra consulta se le avisa: "Tiene cambios sin guardar que se perderán. ¿Desea continuar?".
 Si un campo ya no está disponible, se quita de la consulta y se muestra un aviso.
@@ -340,6 +431,22 @@ Límite: según la configuración de su empresa (valor sugerido: 50,000 filas). 
 Notas: un texto que empieza con = + - @ se muestra en Excel con un apóstrofo inicial. Es normal.
 Mensaje: "La consulta tardo demasiado y fue cancelada. Reduzca el rango de fechas o agregue filtros."
 Ver también: Crear un reporte con el Constructor de Reportes (Builder Report).
+
+## Ver las tarjetas de reportes en el dashboard
+Ruta: Dashboard principal o dashboard de inventario (productos).
+Las consultas del Constructor de Reportes guardadas con un **Dashboard** aparecen como tarjetas ARRIBA de la información habitual del dashboard, en el **Orden** configurado.
+Tipos de tarjeta:
+- **Indicador**: el título y un número grande con formato 1,000.00.
+- **Gráfico**: el gráfico elegido, con los valores en formato 1,000.00.
+- **Tabla**: las primeras 10 filas del resultado.
+Ancho: en computadora cada tarjeta usa su ancho (20%, 50% o 100%); en tablet las de 20% se ven al 50%; en teléfono todas se ven a lo ancho.
+Quién ve cada tarjeta:
+- Consulta compartida (**Para todos los usuarios**): la ven todos los usuarios, con los datos de toda la compañía.
+- Consulta **Solo para mí**: solo la ve quien la creó, con los datos que su rol le permite ver.
+Las fechas calculadas (por ejemplo **Inicio del mes**) se calculan cada vez que se abre el dashboard.
+Notas: mientras carga, cada tarjeta muestra "Cargando...". Si una tarjeta falla, solo esa muestra el aviso (por ejemplo "No se pudieron cargar los datos."); las demás y el resto del dashboard siguen normales. Si no hay datos se ve "Sin datos para mostrar.". Si no hay tarjetas, el dashboard se ve igual que siempre.
+Ver también: Mostrar una consulta de reporte como tarjeta en un dashboard (gráfico, tabla o indicador); Compartir una consulta de reporte con todos los usuarios.
+<!-- REVISAR: ruta de menú exacta del dashboard de inventario (app_inventory_dashboards) -->
 
 ## Registrar una compra de mercadería
 Ruta: Menú > INVENTARIO > COMPRA.
@@ -1420,9 +1527,21 @@ Un rol es un perfil de permisos (por ejemplo CAJERO, VENDEDOR, CONTADOR) que se 
 2. En **Datos del rol** escriba el **Nombre** (obligatorio) y la **Descripción**.
 3. **Url por defecto**: pantalla que se abre al iniciar sesión (por ejemplo core_dashboards/index).
 4. **Tipo de app**: déjelo en el valor indicado por soporte (normalmente default).
-5. Defina los **Permisos por pantalla** y las **Autorizaciones** (ver las secciones siguientes).
-6. Presione **Guardar**.
+5. **Administrador de compañía**: elija **No** o **Sí** (solo aparece si su propio rol es administrador o administrador de compañía; ver la sección siguiente).
+6. Defina los **Permisos por pantalla** y las **Autorizaciones** (ver las secciones siguientes).
+7. Presione **Guardar**.
+Para modificar un rol, ábralo en la lista, cambie lo necesario y presione **Guardar**. El **Tipo de app** se conserva tal como está guardado.
 Notas: los cambios en el menú se ven cuando el usuario vuelve a iniciar sesión.
+
+## Marcar un rol como administrador de compañía
+Ruta: Menú > SEGURIDAD > ROLES > **Nuevo** o abrir el rol.
+El campo **Administrador de compañía** identifica a los roles que administran la empresa. posMe lo usa en otras funciones del sistema para reconocer a esos administradores; por ejemplo, solo ellos pueden compartir consultas del Constructor de Reportes **Para todos los usuarios**.
+1. En **Datos del rol** busque **Administrador de compañía**.
+2. Elija **Sí** para marcar el rol como administrador de compañía, o **No** para quitarlo.
+3. Presione **Guardar**.
+Restricciones: el campo solo lo ve y lo puede cambiar un usuario cuyo propio rol sea administrador o administrador de compañía. Si otro usuario edita el rol, el valor que ya tenía se conserva.
+Notas: marcar un rol como administrador de compañía no le da acceso a pantallas; el acceso se sigue definiendo en **Permisos por pantalla**.
+Ver también: Crear un rol; Permisos por pantalla de un rol; Compartir una consulta de reporte con todos los usuarios.
 
 ## Permisos por pantalla de un rol (ver, crear, editar, eliminar)
 Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
@@ -1434,7 +1553,7 @@ Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
    - **Propios**: solo los registros que creó el mismo usuario.
 3. Botones rápidos sobre las pantallas visibles: **Acceso total**, **Solo ver** y **Quitar todo**. También hay botones por módulo.
 4. Presione **Guardar** y pida a los usuarios del rol cerrar sesión y volver a entrar.
-Notas: si el rol es administrador tiene acceso a todo y estos permisos no se aplican. Si edita su propio rol y le quita el acceso a ROLES, perderá acceso a esa pantalla.
+Notas: los niveles y el acceso se guardan exactamente como los eligió y se muestran igual al volver a abrir el rol, aunque tenga cientos de pantallas. Los permisos de pantallas que no aparecen en la lista (por ejemplo, módulos que su empresa no tiene) se conservan al guardar. Si el rol es administrador tiene acceso a todo y estos permisos no se aplican. Si edita su propio rol y le quita el acceso a ROLES, perderá acceso a esa pantalla.
 
 ## Autorizaciones de un rol
 Ruta: Menú > SEGURIDAD > ROLES > abrir el rol > **Autorizaciones**.
