@@ -12,6 +12,8 @@
     --pdash-muted: #6b7280;
     --pdash-soft: #f6f7f9;
     color: #1f2933;
+    /* Va al final del dashboard: empieza debajo de las columnas flotantes de Bootstrap 3 */
+    clear: both;
     width: 100%;
     max-width: 100%;
     overflow: hidden;

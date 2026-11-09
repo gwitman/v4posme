@@ -450,7 +450,7 @@
             return;
         }
 
-        /* Con tarjetas: grilla arriba del dashboard original */
+        /* Con tarjetas: grilla al final del dashboard original */
         var grilla = contenedor.querySelector('.pdash-grid');
         if (!grilla) {
             grilla = crear('div', 'pdash-grid');
@@ -480,12 +480,28 @@
         }, 250);
     });
 
+    /**
+     * Coloca las tarjetas al final del contenido del dashboard, despues de los paneles que ya existen:
+     * se mueven al final del mismo contenedor donde esta el titulo (#heading.page-header), para que
+     * queden dentro del mismo marco de la pantalla. Si la pantalla no tiene titulo, quedan donde las
+     * dejo el controlador (al final del cuerpo).
+     *
+     * @param {HTMLElement} contenedor Contenedor .pdash del parcial.
+     */
+    function ubicarAlFinal(contenedor) {
+        var titulo = document.querySelector('#heading.page-header');
+        if (titulo && titulo.parentNode && titulo.parentNode !== contenedor.parentNode) {
+            titulo.parentNode.appendChild(contenedor);
+        }
+    }
+
     function arrancar() {
         var contenedores = document.querySelectorAll('.pdash[data-dashboard]');
         for (var i = 0; i < contenedores.length; i++) {
             if (contenedores[i].getAttribute('data-pdash-init') === '1') {
                 continue;
             }
+            ubicarAlFinal(contenedores[i]);
             contenedores[i].setAttribute('data-pdash-init', '1');
             iniciar(contenedores[i]);
         }

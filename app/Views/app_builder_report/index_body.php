@@ -44,7 +44,7 @@
             <div v-if="cargandoVistas" class="prb-loading">Cargando vistas...</div>
             <div v-else-if="errorVistas" class="prb-alert is-error" role="alert">
                 {{ errorVistas }}
-                <div><button type="button" class="btn btn-default" @click="cargarVistas">Reintentar</button></div>
+                <div><button type="button" class="btn btn-default prb-btn-soft" @click="cargarVistas">Reintentar</button></div>
             </div>
             <div v-else-if="vistas.length === 0" class="pv2-empty">No tiene vistas disponibles para reportes.</div>
             <div v-else-if="vistasFiltradas.length === 0" class="pv2-empty">Ninguna vista coincide con la búsqueda.</div>
@@ -92,7 +92,7 @@
                                     <option value="">Agregar columna...</option>
                                     <option v-for="campo in catalogoDisponible" :key="campo.name" :value="campo.name">{{ campo.label }}</option>
                                 </select>
-                                <button type="button" class="btn btn-default" :disabled="catalogoDisponible.length === 0" @click="agregarTodas">Todas</button>
+                                <button type="button" class="btn btn-default prb-btn-soft" :disabled="catalogoDisponible.length === 0" @click="agregarTodas">Todas</button>
                             </div>
                         </div>
                         <p v-if="columnas.length === 0" class="prb-vacio">Agregue las columnas que desea ver.</p>
@@ -137,7 +137,7 @@
                     <div class="prb-bloque">
                         <div class="prb-bloque-head">
                             <p class="prb-bloque-title">Ordenar <span class="pv2-count">{{ orden.length }}</span></p>
-                            <button type="button" class="btn btn-default" :disabled="opcionesOrdenLibres.length === 0" @click="agregarOrden"><i class="icon16 i-plus"></i> Agregar orden</button>
+                            <button type="button" class="btn btn-default prb-btn-soft" :disabled="opcionesOrdenLibres.length === 0" @click="agregarOrden"><i class="icon16 i-plus"></i> Agregar orden</button>
                         </div>
                         <p v-if="orden.length === 0" class="prb-vacio">Sin orden definido.</p>
                         <div class="prb-bloque-lista">
@@ -162,7 +162,7 @@
                 <div class="prb-bloque">
                     <div class="prb-bloque-head">
                         <p class="prb-bloque-title">Filtros <span class="pv2-count">{{ filtros.length }}</span></p>
-                        <button v-if="!esConsulta" type="button" class="btn btn-default" :disabled="catalogo.length === 0" @click="agregarFiltro"><i class="icon16 i-plus"></i> Agregar filtro</button>
+                        <button v-if="!esConsulta" type="button" class="btn btn-default prb-btn-soft" :disabled="catalogo.length === 0" @click="agregarFiltro"><i class="icon16 i-plus"></i> Agregar filtro</button>
                     </div>
                     <p v-if="filtros.length === 0" class="prb-vacio">Sin filtros.</p>
                     <div class="prb-bloque-lista">
@@ -228,11 +228,11 @@
 
                 <!-- Acciones -->
                 <div class="prb-barra">
-                    <button v-if="esConsulta" type="button" class="btn btn-default" @click="pasarAEdicion"><i class="icon16 i-pencil-4"></i> Editar configuración</button>
+                    <button v-if="esConsulta" type="button" class="btn btn-default prb-btn-purple" @click="pasarAEdicion"><i class="icon16 i-pencil-4"></i> Editar configuración</button>
                     <button type="button" class="btn btn-primary pv2-hide-xs" :disabled="generando" @click="generar"><i class="icon16 i-play-2"></i> {{ generando ? 'Generando...' : 'Generar' }}</button>
-                    <button v-if="!esConsulta" type="button" class="btn btn-default" :disabled="guardando" @click="abrirModalGuardar"><i class="icon16 i-checkmark-4"></i> {{ guardando ? 'Guardando...' : 'Guardar como consulta recurrente' }}</button>
-                    <button type="button" class="btn btn-default" :disabled="exportando" @click="exportar"><i class="icon16 i-file-excel"></i> {{ exportando ? 'Exportando...' : 'Exportar a Excel' }}</button>
-                    <button type="button" class="btn btn-default" :disabled="generando || !configValida" :title="configValida ? 'Abre el resultado paginado en otra pestaña' : 'Complete la configuración para poder generar'" @click="abrirNuevaPagina"><i class="icon16 i-new-tab"></i> Abrir en nueva página</button>
+                    <button v-if="!esConsulta" type="button" class="btn btn-default prb-btn-teal" :disabled="guardando" @click="abrirModalGuardar"><i class="icon16 i-checkmark-4"></i> {{ guardando ? 'Guardando...' : 'Guardar como consulta recurrente' }}</button>
+                    <button type="button" class="btn btn-default prb-btn-green" :disabled="exportando" @click="exportar"><i class="icon16 i-file-excel"></i> {{ exportando ? 'Exportando...' : 'Exportar a Excel' }}</button>
+                    <button type="button" class="btn btn-default prb-btn-blue" :disabled="generando || !configValida" :title="configValida ? 'Abre el resultado paginado en otra pestaña' : 'Complete la configuración para poder generar'" @click="abrirNuevaPagina"><i class="icon16 i-new-tab"></i> Abrir en nueva página</button>
                 </div>
             </div>
 
@@ -288,7 +288,7 @@
             <div v-if="cargandoConsultas" class="prb-loading">Cargando consultas...</div>
             <div v-else-if="errorConsultas" class="prb-alert is-error" role="alert">
                 {{ errorConsultas }}
-                <div><button type="button" class="btn btn-default" @click="cargarConsultas">Reintentar</button></div>
+                <div><button type="button" class="btn btn-default prb-btn-soft" @click="cargarConsultas">Reintentar</button></div>
             </div>
             <div v-else-if="consultas.length === 0" class="pv2-empty">Aún no tiene consultas guardadas.</div>
             <div v-else class="pv2-table-wrap">
@@ -318,8 +318,8 @@
                             <td data-label="Modificada"><span>{{ fechaConsulta(consulta.modifiedOn) }}</span></td>
                             <td class="prb-td-acciones">
                                 <div class="prb-acciones-fila">
-                                    <button type="button" class="btn btn-default" :disabled="cargandoConfig" @click="abrirConsulta(consulta.reportBuilderID, 'edicion')"><i class="icon16 i-pencil-4"></i> Editar</button>
-                                    <button type="button" class="btn btn-default" :disabled="cargandoConfig" @click="duplicarConsulta(consulta)"><i class="icon16 i-copy"></i> Duplicar</button>
+                                    <button type="button" class="btn btn-default prb-btn-purple" :disabled="cargandoConfig" @click="abrirConsulta(consulta.reportBuilderID, 'edicion')"><i class="icon16 i-pencil-4"></i> Editar</button>
+                                    <button type="button" class="btn btn-default prb-btn-blue" :disabled="cargandoConfig" @click="duplicarConsulta(consulta)"><i class="icon16 i-copy"></i> Duplicar</button>
                                     <button type="button" class="btn btn-danger" :disabled="cargandoConfig" @click="eliminarConsulta(consulta)"><i class="icon16 i-remove"></i> Eliminar</button>
                                 </div>
                             </td>
@@ -345,8 +345,8 @@
             <div class="modal-dialog prb-modal-dialog" role="document">
                 <form class="modal-content pv2 prb" autocomplete="off" @submit.prevent="confirmarGuardar">
                     <div class="modal-header prb-modal-header">
-                        <h4 class="modal-title" id="prbModalGuardarTitulo">Guardar consulta</h4>
-                        <button type="button" class="prb-btn-icon" aria-label="Cerrar" title="Cerrar" :disabled="guardando" @click="cerrarModalGuardar">&#10005;</button>
+                        <div class="prb-modal-head-info"><span class="prb-modal-icon"><i class="icon20 i-checkmark-4"></i></span><div><h4 class="modal-title" id="prbModalGuardarTitulo">Guardar consulta</h4><p class="prb-modal-sub">Nombre, visibilidad y presentación en los dashboards</p></div></div>
+                        <button type="button" class="prb-btn-icon prb-modal-close" aria-label="Cerrar" title="Cerrar" :disabled="guardando" @click="cerrarModalGuardar">&#10005;</button>
                     </div>
                     <div class="modal-body prb-modal-body">
                         <div v-if="erroresModal.length > 0" id="prbErroresModal" class="prb-alert is-error" role="alert">
@@ -468,8 +468,8 @@
                         </template>
                     </div>
                     <div class="modal-footer prb-modal-footer">
-                        <button type="button" class="btn btn-default" :disabled="guardando" @click="cerrarModalGuardar">Cancelar</button>
-                        <button type="submit" class="btn btn-primary" :disabled="guardando"><i class="icon16 i-checkmark-4"></i> {{ guardando ? 'Guardando...' : 'Guardar' }}</button>
+                        <button type="button" class="btn btn-default prb-btn-soft" :disabled="guardando" @click="cerrarModalGuardar">Cancelar</button>
+                        <button type="submit" class="btn btn-primary prb-btn-teal-solid" :disabled="guardando"><i class="icon16 i-checkmark-4"></i> {{ guardando ? 'Guardando...' : 'Guardar' }}</button>
                     </div>
                 </form>
             </div>

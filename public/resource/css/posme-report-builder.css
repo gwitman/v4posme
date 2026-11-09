@@ -98,6 +98,72 @@
 .pv2.prb .prb-check input { margin: 0; }
 .pv2.prb .prb-subtitulo { font-size: 13px; font-weight: 700; margin: 6px 0 8px; padding-top: 10px; border-top: 1px solid var(--pv2-border); }
 
+/* ==========================================================
+   Botones con color (misma paleta de posme_v2_style / ABONOS)
+   Cada acción tiene su color para reconocerla de un vistazo.
+   ========================================================== */
+.pv2.prb .btn { font-weight: 600; transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease, transform .1s ease; }
+.pv2.prb .btn:active:not(:disabled) { transform: translateY(1px); }
+.pv2.prb .btn-primary { background: linear-gradient(135deg, var(--pv2-accent), #5c6bc0); border-color: var(--pv2-accent); color: #fff; box-shadow: 0 2px 6px rgba(57, 73, 171, .25); }
+.pv2.prb .btn-primary:hover, .pv2.prb .btn-primary:focus { background: linear-gradient(135deg, #303f9f, var(--pv2-accent)); border-color: #303f9f; color: #fff; }
+.pv2.prb .btn-danger { background: var(--pv2-bad-bg); border-color: #f5c2c2; color: var(--pv2-bad); }
+.pv2.prb .btn-danger:hover, .pv2.prb .btn-danger:focus { background: var(--pv2-bad); border-color: var(--pv2-bad); color: #fff; }
+
+/* Variantes suaves: fondo tenue del color y texto del color; al pasar el mouse se rellenan */
+.pv2.prb .btn.prb-btn-soft { background: var(--pv2-accent-bg); border-color: #c5cae9; color: var(--pv2-accent); }
+.pv2.prb .btn.prb-btn-soft:hover, .pv2.prb .btn.prb-btn-soft:focus { background: var(--pv2-accent); border-color: var(--pv2-accent); color: #fff; }
+.pv2.prb .btn.prb-btn-teal { background: #e0f2f1; border-color: #b2dfdb; color: var(--pv2-accent-2); }
+.pv2.prb .btn.prb-btn-teal:hover, .pv2.prb .btn.prb-btn-teal:focus { background: var(--pv2-accent-2); border-color: var(--pv2-accent-2); color: #fff; }
+.pv2.prb .btn.prb-btn-green { background: var(--pv2-ok-bg); border-color: #c8e6c9; color: var(--pv2-ok); }
+.pv2.prb .btn.prb-btn-green:hover, .pv2.prb .btn.prb-btn-green:focus { background: var(--pv2-ok); border-color: var(--pv2-ok); color: #fff; }
+.pv2.prb .btn.prb-btn-blue { background: var(--pv2-info-bg); border-color: #bbdefb; color: var(--pv2-info); }
+.pv2.prb .btn.prb-btn-blue:hover, .pv2.prb .btn.prb-btn-blue:focus { background: var(--pv2-info); border-color: var(--pv2-info); color: #fff; }
+.pv2.prb .btn.prb-btn-purple { background: var(--pv2-purple-bg); border-color: #e1bee7; color: var(--pv2-purple); }
+.pv2.prb .btn.prb-btn-purple:hover, .pv2.prb .btn.prb-btn-purple:focus { background: var(--pv2-purple); border-color: var(--pv2-purple); color: #fff; }
+.pv2.prb .btn.prb-btn-teal-solid { background: linear-gradient(135deg, var(--pv2-accent-2), #26a69a); border-color: var(--pv2-accent-2); color: #fff; box-shadow: 0 2px 6px rgba(0, 137, 123, .3); }
+.pv2.prb .btn.prb-btn-teal-solid:hover, .pv2.prb .btn.prb-btn-teal-solid:focus { background: linear-gradient(135deg, #00796b, var(--pv2-accent-2)); border-color: #00796b; color: #fff; }
+.pv2.prb .btn:disabled, .pv2.prb .btn.disabled { opacity: .55; box-shadow: none; }
+
+/* Botones de icono con color al pasar el mouse */
+.pv2.prb .prb-btn-icon { color: var(--pv2-accent); transition: background-color .15s ease, color .15s ease; }
+.pv2.prb .prb-btn-icon:hover:not(:disabled), .pv2.prb .prb-btn-icon:focus:not(:disabled) { background: var(--pv2-accent); border-color: var(--pv2-accent); color: #fff; }
+.pv2.prb .prb-btn-icon.is-danger:hover:not(:disabled), .pv2.prb .prb-btn-icon.is-danger:focus:not(:disabled) { background: var(--pv2-bad); border-color: var(--pv2-bad); color: #fff; }
+
+/* Pestañas: la activa con el degradado del encabezado */
+.pv2.prb .prb-tab { transition: background-color .15s ease, border-color .15s ease, color .15s ease; }
+.pv2.prb .prb-tab:hover:not(:disabled):not(.is-active) { border-color: var(--pv2-accent); color: var(--pv2-accent); background: var(--pv2-accent-bg); }
+.pv2.prb .prb-tab.is-active { background: linear-gradient(135deg, var(--pv2-accent), var(--pv2-accent-2)); border-color: transparent; color: #fff; box-shadow: 0 3px 8px rgba(57, 73, 171, .25); }
+.pv2.prb .prb-tab.is-active .pv2-count { background: rgba(255, 255, 255, .25); color: #fff; }
+
+/* Títulos de bloque con una barra de color a la izquierda */
+.pv2.prb .prb-bloque-title { padding-left: 8px; border-left: 3px solid var(--pv2-accent); }
+
+/* ==========================================================
+   Modal Guardar consulta: encabezado con degradado, cuerpo en
+   secciones y pie fijo. Sigue siendo el modal Bootstrap 3 del tema.
+   ========================================================== */
+.modal-backdrop.in { opacity: .55; }
+.modal-content.pv2.prb { border-radius: 16px; overflow: hidden; box-shadow: 0 18px 48px rgba(17, 24, 39, .28); }
+.modal.fade .prb-modal-dialog { transform: translateY(-16px) scale(.98); transition: transform .2s ease-out; }
+.modal.in .prb-modal-dialog { transform: none; }
+.pv2.prb .prb-modal-header { background: linear-gradient(135deg, var(--pv2-accent), var(--pv2-accent-2)); color: #fff; border-bottom: 0; padding: 16px 18px; }
+.pv2.prb .prb-modal-head-info { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.pv2.prb .prb-modal-icon { flex: 0 0 auto; width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(255, 255, 255, .2); color: #fff; }
+.pv2.prb .prb-modal-header .modal-title { color: #fff; font-size: 17px; }
+.pv2.prb .prb-modal-sub { margin: 2px 0 0; font-size: 12px; color: rgba(255, 255, 255, .85); }
+.pv2.prb .prb-btn-icon.prb-modal-close { flex: 0 0 auto; background: rgba(255, 255, 255, .15); border-color: rgba(255, 255, 255, .35); color: #fff; }
+.pv2.prb .prb-btn-icon.prb-modal-close:hover:not(:disabled), .pv2.prb .prb-btn-icon.prb-modal-close:focus:not(:disabled) { background: #fff; border-color: #fff; color: var(--pv2-accent); }
+.pv2.prb .prb-modal-body { background: var(--pv2-soft); padding: 18px; max-height: calc(100vh - 220px); overflow-y: auto; }
+.pv2.prb .prb-modal-body > .form-group, .pv2.prb .prb-modal-body > .prb-modal-grid { background: #fff; border: 1px solid var(--pv2-border); border-radius: 12px; padding: 12px 14px 2px; margin-bottom: 12px; }
+.pv2.prb .prb-modal-body > .form-group { padding-bottom: 12px; }
+.pv2.prb .prb-modal-body .form-control:focus { border-color: var(--pv2-accent); box-shadow: 0 0 0 3px var(--pv2-accent-bg); }
+.pv2.prb .prb-modal-body .prb-subtitulo { display: flex; align-items: center; gap: 8px; margin: 16px 0 10px; padding: 0; border-top: 0; color: var(--pv2-accent); text-transform: uppercase; letter-spacing: .04em; font-size: 12px; }
+.pv2.prb .prb-modal-body .prb-subtitulo:after { content: ""; flex: 1 1 auto; height: 1px; background: var(--pv2-border); }
+.pv2.prb .prb-modal-body .prb-check { transition: border-color .15s ease, background-color .15s ease; }
+.pv2.prb .prb-modal-body .prb-check:hover { border-color: var(--pv2-accent); background: var(--pv2-accent-bg); }
+.pv2.prb .prb-modal-footer { background: #fff; border-top: 1px solid var(--pv2-border); padding: 12px 18px; }
+.pv2.prb .prb-modal-footer .btn { min-width: 120px; }
+
 /* Página "Abrir en nueva página" (view_result) */
 .prb-view { padding: 12px; }
 .pv2.prb .prb-view-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
@@ -106,7 +172,9 @@
 @media (max-width: 767px) {
     .pv2.prb .prb-bloque-lista { max-height: none; overflow: visible; padding-right: 0; }
     .prb-modal-dialog { margin: 0 auto; padding: 0; }
-    .modal-content.pv2.prb { border-radius: 0; min-height: 100vh; }
+    .modal-content.pv2.prb { border-radius: 0; min-height: 100vh; box-shadow: none; }
+    .pv2.prb .prb-modal-body { max-height: none; padding: 12px; }
+    .pv2.prb .prb-modal-footer .btn { min-width: 0; }
     .pv2.prb .prb-modal-footer .btn { flex: 1 1 100%; min-height: 44px; }
     .prb-view { padding: 6px; }
     .pv2.prb .form-control { min-width: 0; }

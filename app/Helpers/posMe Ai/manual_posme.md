@@ -434,7 +434,7 @@ Ver también: Crear un reporte con el Constructor de Reportes (Builder Report).
 
 ## Ver las tarjetas de reportes en el dashboard
 Ruta: Dashboard principal o dashboard de inventario (productos).
-Las consultas del Constructor de Reportes guardadas con un **Dashboard** aparecen como tarjetas ARRIBA de la información habitual del dashboard, en el **Orden** configurado.
+Las consultas del Constructor de Reportes guardadas con un **Dashboard** aparecen como tarjetas AL FINAL de la información habitual del dashboard (después de los paneles que ya existen), en el **Orden** configurado.
 Tipos de tarjeta:
 - **Indicador**: el título y un número grande con formato 1,000.00.
 - **Gráfico**: el gráfico elegido, con los valores en formato 1,000.00.

@@ -2,6 +2,9 @@
 //posme:2026-11-06
 namespace App\Libraries;
 
+use App\Models\Core\Catalog_Item_Model;
+use App\Models\Core\Catalog_Model;
+
 /**
  * Generador de consultas del Constructor de Reportes (Builder Report).
  *
@@ -1778,18 +1781,22 @@ class core_web_report_builder
     }
 
     /**
-     * Carga por nombre los catalogos del Builder. Un catalogo que falla (por ejemplo, sin flavor para la
-     * empresa) no rompe la pantalla: queda como lista vacia y su mensaje va en errors.
+     * Carga por nombre los catalogos del Builder directamente desde los modelos (tb_catalog y
+     * tb_catalog_item), siempre con flavorID = 0. No usa core_web_catalog porque este exige un flavor
+     * configurado por componente, y estos catalogos son comunes a toda la empresa.
+     * Un catalogo que falla no rompe la pantalla: queda como lista vacia y su mensaje va en errors.
      * Es el unico metodo de esta clase, ademas de execute(), que toca la BD.
      *
-     * @param int         $companyID      Empresa de la sesion.
-     * @param object|null $catalogLibrary Instancia de core_web_catalog; null crea una (permite probar sin BD).
+     * @param int         $companyID        Empresa de la sesion (cada empresa tiene su propia BD; se conserva por compatibilidad).
+     * @param object|null $catalogModel     Instancia de Catalog_Model; null crea una (permite probar sin BD).
+     * @param object|null $catalogItemModel Instancia de Catalog_Item_Model; null crea una.
      * @return array [viewType, dashboard, cardType, width, chartType, errors]; cada item {catalogItemID, name, display}.
      */
-    function loadBuilderCatalogs($companyID, $catalogLibrary = null)
+    function loadBuilderCatalogs($companyID, $catalogModel = null, $catalogItemModel = null)
     {
-        $catalogLibrary = $catalogLibrary ?? new core_web_catalog();
-        $names          = [
+        $catalogModel     = $catalogModel ?? new Catalog_Model();
+        $catalogItemModel = $catalogItemModel ?? new Catalog_Item_Model();
+        $names            = [
             'viewType'  => self::CATALOG_VIEW_TYPE,
             'dashboard' => self::CATALOG_DASHBOARD,
             'cardType'  => self::CATALOG_CARD_TYPE,
@@ -1802,7 +1809,12 @@ class core_web_report_builder
         foreach ($names as $key => $name) {
             $result[$key] = [];
             try {
-                $rows = $catalogLibrary->getCatalogAllItemByNameCatalogo($name, $companyID);
+                // Los items del Builder se registran con flavorID = 0
+                $catalog = $catalogModel->get_rowByName($name);
+                if (!$catalog) {
+                    throw new \Exception('NO EXISTE EL CATALOGO');
+                }
+                $rows = $catalogItemModel->get_rowByCatalogIDAndFlavorID((int) $catalog->catalogID, 0);
                 foreach ((is_array($rows) ? $rows : []) as $row) {
                     $item = (array) $row;
                     if (!isset($item['catalogItemID'])) {
@@ -1815,7 +1827,7 @@ class core_web_report_builder
                     ];
                 }
             } catch (\Throwable $ex) {
-                // Solo los \Exception simples son mensajes propios de core_web_catalog; el resto se oculta
+                // Solo los \Exception simples son mensajes propios; el resto se oculta
                 if (get_class($ex) === 'Exception') {
                     $message = $ex->getMessage();
                 } else {
