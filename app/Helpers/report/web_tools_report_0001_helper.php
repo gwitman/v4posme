@@ -10517,11 +10517,11 @@ function helper_reporte80mmTransactionMasterMiniShalom(
 )
 {
     $path    = PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;
-    
+
     $type    = pathinfo($path, PATHINFO_EXTENSION);
     $data    = file_get_contents($path);
     $base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
-    
+
     $html    = "";
     $html    = "
                     <!--
@@ -10530,13 +10530,13 @@ function helper_reporte80mmTransactionMasterMiniShalom(
                     -->
                     <!DOCTYPE html>
                     <html lang='en'>
-        
+
                     <head>
                       <meta charset='UTF-8' />
                       <meta name='viewport' content='width=device-width, initial-scale=1.0' />
                       <style>
-                        @page {       
-                          size: 2.7in 30in;                  
+                        @page {
+                          size: 2.7in 30in;
                           margin-top:0px;
                           margin-left:0px;
                           margin-right:5px;
@@ -10548,22 +10548,31 @@ function helper_reporte80mmTransactionMasterMiniShalom(
                         }
                       </style>
                     </head>
-        
+
                     <body>
-        
+
                       <table style='width:100%'>
                         <tr>
                           <td colspan='3' style='text-align:center'>
                             <img  src='".$base64."' width='110'  >
                           </td>
                         </tr>
-                                
+
                         <tr>
                           <td colspan='3' style='text-align:center'>
                             ".strtoupper($objCompany->name)."
                           </td>
                         </tr>";
-    
+
+          //Telefono(s) de la empresa, parametro CORE_PHONE
+          if($objParameterTelefono != null && trim($objParameterTelefono->value) != "")
+          {
+            $html	= $html."<tr>
+    						  <td colspan='3' style='text-align:center'>
+                                TEL: ".  $objParameterTelefono->value ."
+                              </td>
+                            </tr>";
+          }
 
           if($userNickName != "")
           {
