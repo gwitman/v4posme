@@ -14,7 +14,9 @@ namespace App\Libraries\core_web_deploy;
  */
 class core_deploy_rules
 {
-    const VERSION            = '1.0.0';
+    const VERSION            = '1.1.0';
+    // Versión mínima del agente que tiene las acciones de configuración y logos
+    const VERSION_COMPANY_FILES = '1.1.0';
 
     // Directorios de trabajo (dentro de WRITEPATH)
     const AGENT_DIR          = 'posme_agent';
@@ -50,6 +52,39 @@ class core_deploy_rules
     // Scripts de parámetros
     const SQL_CLIENT_DIR     = 'resource/file_sql/clientes/';
     const SQL_DEFAULT_FILE   = '001_default.sql';
+
+    // Configuración y logos de cada compañía (pestaña "Configuración y logos")
+    const CONFIG_DIR            = 'app/Config/';
+    const CONFIG_MAX_BYTES      = 524288;        // 512 KB por archivo de configuración
+    const FILES_BACKUP_DIR      = 'files_backup'; // dentro de WRITEPATH/posme_agent
+    const FILES_KEEP_BACKUPS    = 20;            // respaldos de archivos que se conservan
+    const CONFIG_CONFIRM_NO_BACKUP = 'GUARDAR SIN RESPALDO';
+    const LOGO_DIR              = 'resource/img/logos/'; // relativo a FCPATH
+    const LOGO_MAX_BYTES        = 1048576;       // 1 MB por logo (recibido y convertido)
+    const LOGO_MAX_PIXELS       = 4000;          // ancho y alto máximos
+    const LOGO_TICKET_MAX_WIDTH = 576;           // ancho útil de una impresora de 80 mm
+
+    /** Archivos de app/Config que se listan pero no se editan desde la consola. */
+    public static $CONFIG_READONLY = [
+        'Routes.php',
+    ];
+
+    /** Archivos de app/Config cuyo error deja caído el sistema completo. */
+    public static $CONFIG_CRITICAL = [
+        'Constants.php',
+        'Database.php',
+        'App.php',
+        'Autoload.php',
+        'Filters.php',
+    ];
+
+    /** Logos que se pueden reemplazar (el orden corresponde a los campos logo_1..logo_4). */
+    public static $LOGO_FILES = [
+        'logo-micro-finanza.png',
+        'logo-micro-finanza.jpg',
+        'direct-ticket-logo-micro-finanza.png',
+        'direct-ticket-logo-micro-finanza.jpg',
+    ];
 
     /** Archivos sueltos que sí se actualizan. */
     public static $ALLOWED_FILES = [
@@ -188,5 +223,88 @@ class core_deploy_rules
     public static function dataModes()
     {
         return [self::MODE_FULL, self::MODE_UPSERT, self::MODE_INSERT, self::MODE_SKIP];
+    }
+
+    /**
+     * Indica si un nombre es un archivo de configuración editable/listable:
+     * solo primer nivel de app/Config, letras, números y guion bajo, extensión .php.
+     *
+     * @param string $name Nombre del archivo (sin ruta).
+     * @return bool
+     */
+    public static function isConfigName($name)
+    {
+        return is_string($name) && preg_match('/^[A-Za-z0-9_]+\.php$/D', $name) === 1;
+    }
+
+    /**
+     * Indica si un archivo de configuración es de solo lectura en la consola.
+     *
+     * @param string $name Nombre del archivo.
+     * @return bool
+     */
+    public static function isConfigReadonly($name)
+    {
+        return in_array($name, self::$CONFIG_READONLY, true);
+    }
+
+    /**
+     * Indica si un archivo de configuración es crítico (su error tumba el sistema).
+     *
+     * @param string $name Nombre del archivo.
+     * @return bool
+     */
+    public static function isConfigCritical($name)
+    {
+        return in_array($name, self::$CONFIG_CRITICAL, true);
+    }
+
+    /**
+     * Indica si un nombre pertenece a la lista fija de logos reemplazables.
+     *
+     * @param string $name Nombre del archivo.
+     * @return bool
+     */
+    public static function isLogoName($name)
+    {
+        return is_string($name) && in_array($name, self::$LOGO_FILES, true);
+    }
+
+    /**
+     * Formato de imagen esperado según la extensión del logo.
+     *
+     * @param string $name Nombre del logo.
+     * @return string 'png' | 'jpg'
+     */
+    public static function logoFormat($name)
+    {
+        return strtolower(pathinfo((string) $name, PATHINFO_EXTENSION)) === 'png' ? 'png' : 'jpg';
+    }
+
+    /**
+     * Indica si el logo es de ticket (direct-ticket-*), que se imprime en 80 mm.
+     *
+     * @param string $name Nombre del logo.
+     * @return bool
+     */
+    public static function isTicketLogo($name)
+    {
+        return strpos((string) $name, 'direct-ticket-') === 0;
+    }
+
+    /**
+     * Indica si la versión de un agente soporta configuración y logos.
+     *
+     * @param string $version  Versión reportada por ping.
+     * @param array  $features Funciones reportadas por ping.
+     * @param string $feature  Función requerida ('config' | 'logos').
+     * @return bool
+     */
+    public static function agentSupports($version, $features, $feature)
+    {
+        return is_string($version)
+            && version_compare($version, self::VERSION_COMPANY_FILES, '>=')
+            && is_array($features)
+            && in_array($feature, $features, true);
     }
 }

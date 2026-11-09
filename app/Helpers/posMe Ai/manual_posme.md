@@ -1621,8 +1621,9 @@ La pantalla **Sincronización de instalación remota** actualiza la instalación
 - **Archivos de la aplicación** (paquete ZIP).
 - **Estructura de la base de datos** (tablas, columnas, índices, restricciones, vistas, funciones, procedimientos y triggers).
 - **Datos de configuración** (tablas de configuración y scripts de parámetros).
+La pantalla tiene tres pestañas: **Sincronización** (lo anterior), **Limpieza de servidor** (liberar espacio) y **Configuración y logos** (editar los archivos de app/Config y cargar los logos de la compañía en el servidor del cliente).
 Restricciones: es una herramienta técnica solo para el administrador de posMe, no para el usuario del negocio. Requiere un usuario con rol administrador y que la instalación local tenga habilitada la consola (constante DEPLOY_CONSOLE_ENABLED de la configuración local). En las instalaciones de los clientes está apagada. Solo se permite un despliegue a la vez por compañía.
-Ver también: Despliegue remoto: preparar la consola y el agente (primera vez); Despliegue remoto: errores frecuentes.
+Ver también: Despliegue remoto: preparar la consola y el agente (primera vez); Despliegue remoto: errores frecuentes; Despliegue remoto: editar la configuración (app/Config); Despliegue remoto: cargar los logos.
 
 ## Despliegue remoto: preparar la consola y el agente (primera vez)
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
@@ -1707,7 +1708,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 Ver también: Despliegue remoto: preparar la consola y el agente (primera vez).
 
 ## Despliegue remoto: limpieza de servidor (liberar espacio e inodos)
-Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pestaña **Limpieza de servidor** (junto a **Sincronización**).
+Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pestaña **Limpieza de servidor** (entre **Sincronización** y **Configuración y logos**).
 1. En **Agente que hará la limpieza** elija la **Compañía con conexión guardada** (con el agente instalado y actualizado). Su agente revisa la carpeta donde está instalado y limpia las instalaciones posMe vecinas del mismo hosting. Para otro hosting, elija una compañía de ese hosting.
 2. En **Qué limpiar** deje marcado lo que desea limpiar (todo viene marcado): **Logs**, **Caché**, **Debugbar**, **Uploads**, **Sesiones** (todas: los usuarios deberán volver a iniciar sesión), **Despliegues del agente** (respaldos, staging y log; esos despliegues ya no se podrán revertir) y **Archivos de compañía** (vacía las carpetas component_* de cada compañía: se pierden imágenes, adjuntos, reportes y respaldos .sql; no se puede revertir).
 3. Presione **Analizar** (no borra nada). En **Instalaciones del hosting** verá los MB y archivos de cada categoría por instalación; los valores con + son parciales por tiempo. Marque una, varias o todas; las que dicen **despliegue en curso** no se pueden marcar.
@@ -1715,6 +1716,27 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pest
 5. En **Avance** siga la limpieza instalación por instalación; si una tiene muchos archivos sigue por tramos sola. Al terminar presione **Analizar** para ver el espacio actual.
 Notas: nunca se borran el código, .env, app/Config, la base de datos, agent_config.php ni los index.html/.htaccess de protección. Reemplaza a la antigua URL core_merge/merge_of_posme_merge_to_posme_initialize/2, que sigue existiendo.
 Ver también: Despliegue remoto: errores frecuentes.
+
+## Despliegue remoto: editar la configuración (app/Config)
+Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pestaña **Configuración y logos**.
+1. En **Compañía con conexión guardada** elija la compañía. Si no tiene conexión, configúrela en **Sincronización**.
+2. En **Archivos de configuración (app/Config)** aparecen los archivos .php de app/Config del servidor (no las subcarpetas). Routes.php es de **solo lectura** (se actualiza con Sincronización). Constants, Database, App, Autoload y Filters están marcados como **crítico**.
+3. Presione **Abrir** (o **Ver**) en el archivo y edítelo en **Contenido del archivo**. Si hay **Cambios sin guardar**, se pide confirmar antes de cambiar de archivo, de compañía o salir.
+4. Presione **Guardar** y confirme. **Descartar y recargar** vuelve al contenido del servidor.
+Al guardar: se valida la sintaxis PHP (si hay error no se envía y se indica la línea); se respalda el archivo en writable/posme_agent/files_backup/<fecha>/ del servidor (se conservan los 20 últimos) y se comprueba que el sistema remoto siga respondiendo. Si no responde, se restaura el original por FTP/SFTP (sus cambios quedan en el editor). Se conservan los saltos de línea originales.
+Restricciones: si el archivo cambió en el servidor desde que lo abrió, se rechaza: vuelva a abrirlo. Si la compañía no tiene FTP/SFTP y el archivo es crítico, escriba GUARDAR SIN RESPALDO para confirmar: no habrá restauración automática; se restaura a mano desde el respaldo.
+Notas: requiere agente 1.1.0 o superior; si es anterior aparece un aviso. Actualícelo en **Sincronización** con **Instalar agente por SFTP/FTP** marcando **Subir también el código del agente** (también sube el Routes.php local).
+Ver también: Despliegue remoto: cargar los logos.
+
+## Despliegue remoto: cargar los logos
+Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pestaña **Configuración y logos** > **Logos de la compañía**.
+1. Elija la compañía en **Compañía con conexión guardada**.
+2. Adjunte la imagen solo en las casillas que desea reemplazar: logo-micro-finanza.png, logo-micro-finanza.jpg, direct-ticket-logo-micro-finanza.png y direct-ticket-logo-micro-finanza.jpg (carpeta public/resource/img/logos del servidor). Verá una vista previa; **Quitar** la descarta.
+3. Si adjuntó exactamente una imagen, puede marcar **Usar esta misma imagen para los 4 nombres**.
+4. Presione **Enviar logos**. El resultado muestra cada archivo como guardado o error, con su tamaño y medidas.
+Restricciones: PNG o JPG de hasta 1 MB y hasta 4000 x 4000 px. Solo se envían las imágenes adjuntadas.
+Notas: el sistema convierte cada imagen al formato del nombre (.png o .jpg; al pasar de PNG a JPG usa fondo blanco) y respalda el logo anterior. Avisa si el logo direct-ticket mide más de 576 px de ancho (impresora térmica) y si la ruta de archivos configurada en el servidor del cliente apunta a otra carpeta (los PDF no tomarían el logo). El logo nuevo puede tardar en verse por la caché del navegador.
+Ver también: Despliegue remoto: editar la configuración (app/Config).
 
 ## Parámetros de la empresa
 Los parámetros controlan el comportamiento de posMe por empresa (por ejemplo, orden de aplicación de abonos, lista de precios por defecto, formato de impresión).

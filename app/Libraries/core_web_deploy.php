@@ -12,6 +12,8 @@ use App\Libraries\core_web_deploy\core_deploy_schema;
 use App\Libraries\core_web_deploy\core_deploy_data;
 use App\Libraries\core_web_deploy\core_deploy_sql_splitter;
 use App\Libraries\core_web_deploy\core_deploy_cleanup;
+use App\Libraries\core_web_deploy\core_deploy_package;
+use App\Libraries\core_web_deploy\core_deploy_company_files;
 
 /**
  * Orquestador de la consola de despliegue remoto (core_merge::deploy).
@@ -673,6 +675,288 @@ class core_web_deploy
     function restoreDataDirect($profile, $deployID)
     {
         return ['restored' => core_deploy_data::restore($this->directDb($profile), $this->deployDir($deployID) . '/backup_data.json.gz')];
+    }
+
+    // ------------------------------------------------------------ configuración y logos
+
+    /** Mensaje para agentes sin las acciones de configuración y logos. */
+    const MSG_AGENT_OUTDATED = "El agente de esta compañía es anterior a 1.1.0: actualícelo con Instalar agente marcando 'con código'.";
+
+    /** Indica si el perfil tiene FTP/SFTP para restaurar archivos si el agente deja de responder. */
+    function hasTransport($profile)
+    {
+        return !empty($profile->transportProtocol) && $profile->transportProtocol !== 'none' && !empty($profile->ftpHost);
+    }
+
+    /**
+     * Llama una acción del agente traduciendo "ruta inexistente" / "no habilitado"
+     * al aviso de actualizar el agente.
+     *
+     * @return array
+     */
+    private function companyFilesCall($profile, $action, array $payload = [])
+    {
+        try {
+            return $this->agent($profile)->call($action, $payload);
+        } catch (\Throwable $ex) {
+            $message = $ex->getMessage();
+            if (strpos($message, 'HTTP 404') !== false || stripos($message, 'no habilitado') !== false) {
+                throw new \Exception(self::MSG_AGENT_OUTDATED);
+            }
+            throw $ex;
+        }
+    }
+
+    /**
+     * Verifica con ping que el agente remoto soporte la función pedida.
+     *
+     * @param object $profile Perfil con credenciales.
+     * @param string $feature 'config' | 'logos'
+     * @return array Respuesta de ping.
+     */
+    function assertAgentFeature($profile, $feature)
+    {
+        $ping = $this->companyFilesCall($profile, 'ping');
+        if (!core_deploy_rules::agentSupports(isset($ping['agentVersion']) ? $ping['agentVersion'] : null, isset($ping['features']) ? $ping['features'] : null, $feature)) {
+            throw new \Exception(self::MSG_AGENT_OUTDATED);
+        }
+        return $ping;
+    }
+
+    /**
+     * Lista los archivos de app/Config del servidor remoto.
+     *
+     * @param object $profile Perfil con credenciales.
+     * @return array ['hasTransport', 'critical', 'files']
+     */
+    function configList($profile)
+    {
+        $this->assertAgentFeature($profile, 'config');
+        $result = $this->companyFilesCall($profile, 'config_list');
+        if (!isset($result['files']) || !is_array($result['files'])) {
+            throw new \Exception('Respuesta inválida del agente (config_list).');
+        }
+        return [
+            'hasTransport' => $this->hasTransport($profile),
+            'critical'     => isset($result['critical']) && is_array($result['critical']) ? $result['critical'] : core_deploy_rules::$CONFIG_CRITICAL,
+            'files'        => $result['files'],
+        ];
+    }
+
+    /**
+     * Lectura cruda de un archivo de app/Config remoto (contenido binario y su hash).
+     *
+     * @return array ['content', 'sha256', 'readonly']
+     */
+    private function configReadRaw($profile, $name)
+    {
+        if (!core_deploy_rules::isConfigName($name)) {
+            throw new \Exception('Nombre de archivo de configuración inválido.');
+        }
+        $result  = $this->companyFilesCall($profile, 'config_read', ['name' => $name]);
+        $content = isset($result['content64']) ? base64_decode((string) $result['content64'], true) : false;
+        if ($content === false || !isset($result['sha256']) || !hash_equals((string) $result['sha256'], hash('sha256', $content))) {
+            throw new \Exception('El archivo llegó dañado desde el servidor (hash distinto).');
+        }
+        return ['content' => $content, 'sha256' => $result['sha256'], 'readonly' => !empty($result['readonly'])];
+    }
+
+    /**
+     * Contenido de un archivo de app/Config remoto para el editor (texto UTF-8 tal cual).
+     *
+     * @param object $profile Perfil con credenciales.
+     * @param string $name    Nombre del archivo.
+     * @return array ['name', 'content', 'sha256', 'eol', 'size', 'readonly']
+     */
+    function configRead($profile, $name)
+    {
+        $raw = $this->configReadRaw($profile, $name);
+        if (!core_deploy_company_files::isUtf8($raw['content'])) {
+            throw new \Exception('El archivo no está en UTF-8 válido; no se puede editar desde la consola.');
+        }
+        return [
+            'name'     => $name,
+            'content'  => $raw['content'],
+            'sha256'   => $raw['sha256'],
+            'eol'      => core_deploy_company_files::detectEol($raw['content']),
+            'size'     => strlen($raw['content']),
+            'readonly' => $raw['readonly'] || core_deploy_rules::isConfigReadonly($name),
+        ];
+    }
+
+    /** Ping de salud tras guardar: true si el sistema remoto responde. */
+    private function remoteAlive($profile)
+    {
+        try {
+            $this->agent($profile)->call('ping');
+            return true;
+        } catch (\Throwable $ex) {
+            return false;
+        }
+    }
+
+    /**
+     * Guardado seguro de un archivo de app/Config remoto:
+     * lint local → hash esperado → EOL original → config_write (respaldo + escritura atómica)
+     * → ping → si no responde, restaura el original por FTP/SFTP (o por el agente) y vuelve a hacer ping.
+     *
+     * @param object $profile  Perfil con credenciales.
+     * @param string $name     Nombre del archivo.
+     * @param string $content  Contenido del editor (LF).
+     * @param string $sha      SHA-256 que el navegador leyó al abrir el archivo.
+     * @param string $confirm  Texto de confirmación (críticos sin FTP/SFTP).
+     * @param string $userName Usuario (para el log).
+     * @param string $companyKey Compañía (para el log).
+     * @return array ['sha256', 'backup', 'pingOk', 'restored']
+     */
+    function configSaveSafe($profile, $name, $content, $sha, $confirm, $userName, $companyKey)
+    {
+        if (!core_deploy_rules::isConfigName($name)) {
+            throw new \Exception('Nombre de archivo de configuración inválido.');
+        }
+        if (core_deploy_rules::isConfigReadonly($name)) {
+            throw new \Exception('app/Config/' . $name . ' es de solo lectura en la consola.');
+        }
+        if (!is_string($content) || trim($content) === '') {
+            throw new \Exception('El contenido está vacío.');
+        }
+        if (!core_deploy_company_files::isUtf8($content)) {
+            throw new \Exception('El contenido no es UTF-8 válido.');
+        }
+        if (strlen($content) > core_deploy_rules::CONFIG_MAX_BYTES) {
+            throw new \Exception('El contenido supera 512 KB.');
+        }
+        $lint = core_deploy_package::lintPhp($content);
+        if ($lint !== null) {
+            throw new \Exception('Error de sintaxis: ' . $lint);
+        }
+        $hasTransport = $this->hasTransport($profile);
+        if (core_deploy_rules::isConfigCritical($name) && !$hasTransport && $confirm !== core_deploy_rules::CONFIG_CONFIRM_NO_BACKUP) {
+            throw new \Exception('app/Config/' . $name . ' es crítico y esta compañía no tiene FTP/SFTP para restaurarlo si el sistema deja de responder. Escriba ' . core_deploy_rules::CONFIG_CONFIRM_NO_BACKUP . ' para continuar.');
+        }
+
+        $this->assertAgentFeature($profile, 'config');
+        $original = $this->configReadRaw($profile, $name);
+        if (!is_string($sha) || !hash_equals($original['sha256'], $sha)) {
+            throw new \Exception('El archivo cambió en el servidor; vuelva a abrirlo');
+        }
+        // El navegador envía LF: se devuelve al fin de línea que tenía el archivo
+        $final = core_deploy_company_files::applyEol($content, core_deploy_company_files::detectEol($original['content']));
+
+        $write    = $this->companyFilesCall($profile, 'config_write', [
+            'name'        => $name,
+            'content64'   => base64_encode($final),
+            'expectedSha' => $original['sha256'],
+        ]);
+        $pingOk   = $this->remoteAlive($profile);
+        $restored = false;
+        $via      = '';
+        $pingBack = null;
+        if (!$pingOk) {
+            // El agente vive en la misma aplicación: si la configuración la rompió, el agente tampoco responde
+            if ($hasTransport) {
+                try {
+                    $transport = $this->transport($profile);
+                    $transport->connect();
+                    try {
+                        $transport->putContents($original['content'], $this->remoteAppDir($profile) . '/' . core_deploy_rules::CONFIG_DIR . $name);
+                    } finally {
+                        $transport->close();
+                    }
+                    $restored = true;
+                    $via      = 'ftp';
+                } catch (\Throwable $exRestore) {
+                    $restored = false;
+                }
+            }
+            if (!$restored && isset($write['backupID'])) {
+                try {
+                    $this->agent($profile)->call('config_restore', ['name' => $name, 'backupID' => $write['backupID']]);
+                    $restored = true;
+                    $via      = 'agente';
+                } catch (\Throwable $exRestore) {
+                    $restored = false;
+                }
+            }
+            if ($restored) {
+                $pingBack = $this->remoteAlive($profile);
+            }
+        }
+
+        $this->filesLog('config | ' . $companyKey . ' | app/Config/' . $name
+            . ' | antes ' . $original['sha256'] . ' | después ' . (isset($write['sha256']) ? $write['sha256'] : '?')
+            . ' | pingOk ' . ($pingOk ? 'si' : 'no') . ' | restored ' . ($restored ? 'si (' . $via . ')' : 'no')
+            . ($pingBack === null ? '' : ' | ping tras restaurar ' . ($pingBack ? 'si' : 'no'))
+            . ' | por ' . $userName, $this->secretsOf($profile));
+
+        return [
+            'sha256'   => isset($write['sha256']) ? $write['sha256'] : hash('sha256', $final),
+            'backup'   => isset($write['backup']) ? $write['backup'] : '',
+            'pingOk'   => $pingOk,
+            'restored' => $restored,
+        ];
+    }
+
+    /**
+     * Prepara (re-codifica con GD) y envía logos al servidor remoto. Procesa cada uno
+     * aunque otro falle.
+     *
+     * @param object $profile    Perfil con credenciales.
+     * @param array  $items      Lista de ['name' => logo destino, 'binary' => string|null, 'error' => string|null].
+     * @param string $userName   Usuario (para el log).
+     * @param string $companyKey Compañía (para el log).
+     * @return array ['files' => [['name','ok','size','width','height','message']], 'warnings' => [texto]]
+     */
+    function logoUpload($profile, array $items, $userName, $companyKey)
+    {
+        $this->assertAgentFeature($profile, 'logos');
+        $files    = [];
+        $warnings = [];
+        $mismatch = false;
+        foreach ($items as $item) {
+            $name  = isset($item['name']) ? (string) $item['name'] : '';
+            $entry = ['name' => $name, 'ok' => false, 'size' => 0, 'width' => 0, 'height' => 0, 'message' => ''];
+            try {
+                if (!empty($item['error'])) {
+                    throw new \Exception($item['error']);
+                }
+                $logo   = core_deploy_company_files::prepareLogo(isset($item['binary']) ? $item['binary'] : null, $name);
+                $result = $this->companyFilesCall($profile, 'logo_write', [
+                    'name'      => $name,
+                    'content64' => base64_encode($logo['binary']),
+                    'sha256'    => hash('sha256', $logo['binary']),
+                ]);
+                $entry['ok']      = true;
+                $entry['size']    = strlen($logo['binary']);
+                $entry['width']   = $logo['width'];
+                $entry['height']  = $logo['height'];
+                $entry['message'] = 'Actualizado.';
+                $warnings         = array_merge($warnings, $logo['warnings']);
+                $mismatch         = $mismatch || !empty($result['pathMismatch']);
+                $this->filesLog('logo | ' . $companyKey . ' | ' . $name . ' | sha ' . hash('sha256', $logo['binary']) . ' | ' . $logo['width'] . 'x' . $logo['height'] . ' | por ' . $userName, $this->secretsOf($profile));
+            } catch (\Throwable $ex) {
+                $entry['message'] = $ex->getMessage();
+                $this->filesLog('logo | ' . $companyKey . ' | ' . $name . ' | ERROR ' . $ex->getMessage() . ' | por ' . $userName, $this->secretsOf($profile));
+            }
+            $files[] = $entry;
+        }
+        if ($mismatch) {
+            $warnings[] = 'En el servidor, PATH_FILE_OF_APP_ROOT no apunta a public/resource de esta instalación: los tickets pueden seguir usando otro logo.';
+        }
+        return ['files' => $files, 'warnings' => $warnings];
+    }
+
+    /**
+     * Agrega una línea al log local de configuración y logos (writable/posme_deploy/files.log).
+     * Nunca registra contenido de archivos.
+     *
+     * @return void
+     */
+    function filesLog($message, array $secrets = [])
+    {
+        $dir  = core_deploy_files::ensureDir(WRITEPATH . core_deploy_rules::CONSOLE_DIR);
+        $line = '[' . helper_getDateTime() . '] ' . core_deploy_crypto::mask((string) $message, $secrets) . "\n";
+        file_put_contents($dir . '/files.log', $line, FILE_APPEND | LOCK_EX);
     }
 
     // ------------------------------------------------------------ instalación del agente

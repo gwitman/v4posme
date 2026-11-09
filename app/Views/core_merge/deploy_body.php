@@ -20,6 +20,7 @@
 	<div class="dpl-maintabs" role="tablist">
 		<button type="button" class="dpl-maintab is-active" data-dpl-pane="dplPaneSync" role="tab"><i class="icon16 i-loop-4"></i> Sincronización</button>
 		<button type="button" class="dpl-maintab" data-dpl-pane="dplPaneClean" role="tab"><i class="icon16 i-remove"></i> Limpieza de servidor</button>
+		<button type="button" class="dpl-maintab" data-dpl-pane="dplPaneFiles" role="tab"><i class="icon16 i-cog"></i> Configuración y logos</button>
 	</div>
 
 	<div id="dplPaneSync">
@@ -327,6 +328,77 @@
 					<p class="dpl-hint" id="dplCleanText">En espera.</p>
 					<pre class="dpl-log" id="dplCleanLog"></pre>
 				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+
+	<!-- ============================================================ configuración y logos -->
+	<div id="dplPaneFiles" style="display:none;">
+	<div class="row">
+		<div class="col-md-8 col-lg-8">
+
+			<!-- 1. compañía -->
+			<div class="abv2-card">
+				<p class="abv2-card-title"><span class="dpl-step-num">1</span> Compañía</p>
+				<div class="form-group">
+					<label class="abv2-label" for="dplCfgCompany">Compañía con conexión guardada</label>
+					<select id="dplCfgCompany" name="dplCfgCompany" class="form-control" autocomplete="off">
+						<option value="">Seleccione una compañía...</option>
+						<?php foreach($companies as $c){ if(!$c['valid']) continue; ?>
+						<option value="<?php echo htmlspecialchars($c['key']); ?>"><?php echo htmlspecialchars($c['key']); ?></option>
+						<?php } ?>
+					</select>
+					<p class="dpl-hint">Los archivos se leen y se guardan en la instalación remota de esta compañía por medio de su agente (versión 1.1.0 o superior).</p>
+				</div>
+				<div class="dpl-chips" id="dplCfgChips"></div>
+			</div>
+
+			<!-- 2. archivos de configuración -->
+			<div class="abv2-card">
+				<p class="abv2-card-title"><span class="dpl-step-num">2</span> Archivos de configuración (app/Config)</p>
+				<div class="dpl-btns">
+					<button type="button" class="btn btn-default" id="dplBtnCfgList" disabled><i class="icon16 i-loop-4"></i> Actualizar lista</button>
+				</div>
+				<div id="dplCfgList"><p class="dpl-hint">Seleccione una compañía para ver sus archivos de configuración.</p></div>
+				<div id="dplCfgEditorBox" style="display:none; margin-top:12px;">
+					<div class="dpl-chips" id="dplCfgFileChips"></div>
+					<label class="abv2-label" for="dplCfgEditor" style="margin-top:10px;">Contenido del archivo</label>
+					<textarea id="dplCfgEditor" class="dpl-editor" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" wrap="off"></textarea>
+					<p class="dpl-hint">Tab inserta una tabulación; Shift+Tab sale del editor. Se conserva el fin de línea original del archivo.</p>
+					<div class="dpl-btns">
+						<button type="button" class="btn btn-primary" id="dplBtnCfgSave" disabled><i class="icon16 i-checkmark-4"></i> Guardar</button>
+						<button type="button" class="btn btn-default" id="dplBtnCfgReload" disabled><i class="icon16 i-undo"></i> Descartar y recargar</button>
+					</div>
+				</div>
+				<div id="dplCfgResult"></div>
+			</div>
+		</div>
+
+		<div class="col-md-4 col-lg-4">
+			<!-- 3. logos -->
+			<div class="abv2-card">
+				<p class="abv2-card-title"><span class="dpl-step-num">3</span> Logos de la compañía</p>
+				<p class="dpl-hint" style="margin:0 0 10px;">Adjunte solo los que desea reemplazar. Se acepta PNG o JPG de hasta 1 MB: el servidor convierte cada imagen al formato del nombre (.png o .jpg).</p>
+				<?php foreach(array(1 => 'logo-micro-finanza.png', 2 => 'logo-micro-finanza.jpg', 3 => 'direct-ticket-logo-micro-finanza.png', 4 => 'direct-ticket-logo-micro-finanza.jpg') as $logoN => $logoName){ ?>
+				<div class="dpl-logo" id="dplLogo<?php echo $logoN; ?>">
+					<p class="dpl-logo-name"><?php echo $logoName; ?></p>
+					<label class="abv2-label" for="dplLogoFile<?php echo $logoN; ?>">Imagen PNG o JPG (máx. 1 MB)</label>
+					<input type="file" class="form-control dpl-logo-file" id="dplLogoFile<?php echo $logoN; ?>" name="logo_<?php echo $logoN; ?>" data-n="<?php echo $logoN; ?>" data-field="logo_<?php echo $logoN; ?>" data-target="<?php echo $logoName; ?>" accept="image/png,image/jpeg" disabled>
+					<img class="dpl-logo-prev" id="dplLogoPrev<?php echo $logoN; ?>" alt="Vista previa de <?php echo $logoName; ?>" style="display:none;">
+					<p class="dpl-hint" id="dplLogoInfo<?php echo $logoN; ?>"></p>
+					<div class="dpl-btns">
+						<button type="button" class="btn btn-default btn-sm dpl-logo-clear" data-n="<?php echo $logoN; ?>" style="display:none;"><i class="icon16 i-remove"></i> Quitar</button>
+					</div>
+				</div>
+				<?php } ?>
+				<label class="dpl-option" for="dplLogoSame">
+					<input type="checkbox" id="dplLogoSame" disabled>
+					<span><p class="dpl-option-title">Usar esta misma imagen para los 4 nombres</p>
+					<p class="dpl-option-desc">Disponible cuando hay exactamente una imagen adjunta.</p></span>
+				</label>
+				<button type="button" class="btn btn-primary btn-block" id="dplBtnLogoSend" disabled style="height:44px;"><i class="icon16 i-upload"></i> Enviar logos</button>
+				<div id="dplLogoResult"></div>
 			</div>
 		</div>
 	</div>

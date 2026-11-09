@@ -2390,6 +2390,158 @@ class core_merge extends _BaseController {
 	}
 
 	/**
+	 * Configuración y logos: lista los archivos de app/Config del servidor de la compañía.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	function deploy_config_list()
+	{
+		try
+		{
+			$dataSession = $this->deploy_guard();
+			$companyKey  = $this->deploy_post("company");
+			$this->core_web_deploy->getCompany($companyKey);
+			$profile     = $this->core_web_deploy->getProfileSecret($dataSession["user"]->companyID, $companyKey);
+			return $this->deploy_json($this->core_web_deploy->configList($profile));
+		}
+		catch(\Throwable $ex)
+		{
+			return $this->deploy_jsonError($ex);
+		}
+	}
+
+	/**
+	 * Configuración y logos: contenido de un archivo de app/Config remoto (texto en claro, nunca se registra).
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	function deploy_config_read()
+	{
+		try
+		{
+			$dataSession = $this->deploy_guard();
+			$companyKey  = $this->deploy_post("company");
+			$this->core_web_deploy->getCompany($companyKey);
+			$profile     = $this->core_web_deploy->getProfileSecret($dataSession["user"]->companyID, $companyKey);
+			return $this->deploy_json($this->core_web_deploy->configRead($profile, $this->deploy_post("name")));
+		}
+		catch(\Throwable $ex)
+		{
+			return $this->deploy_jsonError($ex);
+		}
+	}
+
+	/**
+	 * Configuración y logos: guarda un archivo de app/Config remoto con revisión de sintaxis,
+	 * control de cambios (sha), respaldo y restauración automática si el sistema deja de responder.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	function deploy_config_save()
+	{
+		try
+		{
+			$dataSession = $this->deploy_guard();
+			$companyKey  = $this->deploy_post("company");
+			$this->core_web_deploy->getCompany($companyKey);
+			$profile     = $this->core_web_deploy->getProfileSecret($dataSession["user"]->companyID, $companyKey);
+			//El contenido se toma sin recortar: los espacios y saltos de línea son parte del archivo
+			$content     = $this->request->getPost("content");
+			$result      = $this->core_web_deploy->configSaveSafe(
+				$profile,
+				$this->deploy_post("name"),
+				is_string($content) ? $content : "",
+				$this->deploy_post("sha"),
+				$this->deploy_post("confirm"),
+				$dataSession["user"]->nickname,
+				$companyKey
+			);
+
+			if(!$result["pingOk"] && $result["restored"])
+			throw new \Exception("Guardado, pero el sistema remoto no respondió: se restauró el original.");
+			if(!$result["pingOk"])
+			throw new \Exception("Guardado, pero el sistema remoto no respondió y NO se pudo restaurar el original: restáurelo manualmente desde ".$result["backup"].".");
+
+			return $this->deploy_json($result, "Guardado.");
+		}
+		catch(\Throwable $ex)
+		{
+			return $this->deploy_jsonError($ex);
+		}
+	}
+
+	/**
+	 * Configuración y logos: recibe hasta 4 logos (campos logo_1..logo_4), los re-codifica
+	 * al formato de cada destino y los envía al servidor. sameForAll = 1: un solo archivo para los 4.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	function deploy_logo_upload()
+	{
+		try
+		{
+			$dataSession = $this->deploy_guard();
+			$companyKey  = $this->deploy_post("company");
+			$this->core_web_deploy->getCompany($companyKey);
+			$logoNames   = \App\Libraries\core_web_deploy\core_deploy_rules::$LOGO_FILES;
+			$maxBytes    = \App\Libraries\core_web_deploy\core_deploy_rules::LOGO_MAX_BYTES;
+			$sameForAll  = $this->deploy_post("sameForAll") === "1";
+
+			//Archivos adjuntos por campo (logo_1..logo_4 → posición 0..3 de la lista fija)
+			$received = array();
+			foreach($logoNames as $index => $logoName)
+			{
+				$file = $this->request->getFile("logo_".($index + 1));
+				if(!$file || $file->getError() === UPLOAD_ERR_NO_FILE)
+				continue;
+
+				$item = array('name' => $logoName, 'binary' => null, 'error' => null);
+				if(!$file->isValid())
+				$item["error"] = "No se recibió el archivo: ".$file->getErrorString();
+				else if($file->getSize() > $maxBytes)
+				$item["error"] = "La imagen recibida supera 1 MB.";
+				else
+				$item["binary"] = (string)file_get_contents($file->getTempName());
+				$received[] = $item;
+			}
+
+			$items = array();
+			if($sameForAll)
+			{
+				if(count($received) !== 1)
+				throw new \Exception("Con 'el mismo logo para todos' adjunte exactamente un archivo.");
+				foreach($logoNames as $logoName)
+				$items[] = array('name' => $logoName, 'binary' => $received[0]["binary"], 'error' => $received[0]["error"]);
+			}
+			else
+			{
+				if(count($received) === 0)
+				throw new \Exception("Adjunte al menos un logo.");
+				$items = $received;
+			}
+
+			$profile = $this->core_web_deploy->getProfileSecret($dataSession["user"]->companyID, $companyKey);
+			$result  = $this->core_web_deploy->logoUpload($profile, $items, $dataSession["user"]->nickname, $companyKey);
+
+			$okCount = count(array_filter($result["files"], function($f){ return $f["ok"]; }));
+			if($okCount === 0)
+			{
+				return $this->response->setJSON(array(
+					'error'   => true,
+					'message' => "No se pudo actualizar ningún logo: ".implode(" | ", array_map(function($f){ return $f["name"].": ".$f["message"]; }, $result["files"])),
+					'data'    => $result,
+					'csrf'    => csrf_hash()
+				));
+			}
+			return $this->deploy_json($result, $okCount === count($result["files"]) ? "Logos actualizados." : "Algunos logos no se actualizaron.");
+		}
+		catch(\Throwable $ex)
+		{
+			return $this->deploy_jsonError($ex);
+		}
+	}
+
+	/**
 	 * Descarga el informe (log) de un despliegue.
 	 *
 	 * @return \CodeIgniter\HTTP\ResponseInterface

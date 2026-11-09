@@ -1057,8 +1057,484 @@
             });
         });
 
+        // ============================================================ configuración y logos
+
+        var LOGO_MAX = 1048576;   // 1 MB por imagen (validación en el cliente)
+
+        // Estado de la pestaña
+        var cf = {
+            company     : '',     // compañía seleccionada
+            hasTransport: null,   // la compañía tiene FTP/SFTP para restaurar (lo informa deploy_config_list)
+            critical    : [],     // nombres de archivos críticos
+            files       : [],     // archivos listados
+            name        : '',     // archivo abierto en el editor
+            sha         : '',     // sha256 del contenido leído/guardado (control de concurrencia)
+            original    : '',     // contenido leído/guardado
+            eol         : '',     // fin de línea original del archivo
+            readonly    : false,
+            isCritical  : false,
+            dirty       : false,
+            busy        : false,
+            logoBusy    : false,
+            previews    : {}      // URL de vista previa por bloque (createObjectURL)
+        };
+
+        /** Tamaño legible: bytes, KB o MB con separador de miles. */
+        function fmtBytes(bytes) {
+            var n = Number(bytes || 0);
+            if (n < 1024) { return fmtInt(n) + ' bytes'; }
+            if (n < 1048576) { return (n / 1024).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' KB'; }
+            return fmtMB(n);
+        }
+
+        /** Fecha legible: acepta marca Unix (segundos) o texto del servidor. */
+        function fmtDate(value) {
+            if (value === null || value === undefined || value === '') { return '-'; }
+            if (!/^\d+$/.test(String(value))) { return String(value); }
+            var d   = new Date(Number(value) * 1000);
+            var pad = function (x) { return (x < 10 ? '0' : '') + x; };
+            return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()) + ' ' + pad(d.getHours()) + ':' + pad(d.getMinutes());
+        }
+
+        /** El textarea normaliza los saltos a \n: se compara siempre normalizado. */
+        function normEol(text) {
+            return String(text === null || text === undefined ? '' : text).replace(/\r\n?/g, '\n');
+        }
+
+        /** Contenido del editor con el fin de línea original del archivo. */
+        function editorContent() {
+            var text = normEol($('dplCfgEditor').value);
+            return /crlf|\r\n/i.test(cf.eol) ? text.replace(/\n/g, '\r\n') : text;
+        }
+
+        /** Habilita o deshabilita los controles según el estado. */
+        function renderCfgButtons() {
+            var has = !!cf.company;
+            $('dplBtnCfgList').disabled   = !has || cf.busy;
+            $('dplBtnCfgSave').disabled   = !has || cf.busy || !cf.name || cf.readonly || !cf.dirty;
+            $('dplBtnCfgReload').disabled = !has || cf.busy || !cf.name;
+            qsa('#dplCfgList .dpl-cfg-open').forEach(function (b) { b.disabled = !has || cf.busy; });
+            renderCfgFileChips();
+            updateLogoState();
+        }
+
+        /** Chips del archivo abierto: nombre, tamaño, fin de línea, solo lectura, crítico, cambios. */
+        function renderCfgFileChips() {
+            if (!cf.name) { $('dplCfgFileChips').innerHTML = ''; return; }
+            $('dplCfgFileChips').innerHTML =
+                '<span class="dpl-chip">Archivo: <b>' + esc(cf.name) + '</b></span>' +
+                (cf.eol ? '<span class="dpl-chip">Fin de línea: <b>' + esc(cf.eol) + '</b></span>' : '') +
+                (cf.readonly ? '<span class="dpl-chip is-warn">Solo lectura</span>' : '') +
+                (cf.isCritical ? '<span class="dpl-chip is-bad">Crítico</span>' : '') +
+                (cf.dirty ? '<span class="dpl-chip is-warn">Cambios sin guardar</span>' : (cf.readonly ? '' : '<span class="dpl-chip is-ok">Sin cambios</span>'));
+        }
+
+        /** Pide confirmación para descartar los cambios sin guardar. Resuelve true si se puede continuar. */
+        function confirmDiscard() {
+            if (!cf.dirty) { return Promise.resolve(true); }
+            return dialog('Cambios sin guardar',
+                alertHtml('warn', 'El archivo <b>' + esc(cf.name) + '</b> tiene cambios sin guardar. Si continúa, se perderán.'),
+                'Descartar cambios');
+        }
+
+        /** Cierra el editor y olvida el archivo abierto. */
+        function closeEditor() {
+            cf.name = ''; cf.sha = ''; cf.original = ''; cf.eol = '';
+            cf.readonly = false; cf.isCritical = false; cf.dirty = false;
+            $('dplCfgEditor').value    = '';
+            $('dplCfgEditor').readOnly = false;
+            $('dplCfgEditorBox').style.display = 'none';
+        }
+
+        /** Marca en la tabla la fila del archivo abierto. */
+        function markCurrentRow() {
+            qsa('#dplCfgList .dpl-cfg-row').forEach(function (tr) {
+                tr.classList.toggle('is-current', tr.getAttribute('data-name') === cf.name);
+            });
+        }
+
+        /** Cambia de compañía: limpia editor, lista y logos, y carga los datos de la nueva. */
+        function setCfgCompany(key) {
+            cf.company = key; cf.hasTransport = null; cf.critical = []; cf.files = [];
+            cf.busy    = false; cf.logoBusy = false;
+            closeEditor();
+            clearLogos();
+            $('dplCfgChips').innerHTML  = '';
+            $('dplCfgResult').innerHTML = '';
+            $('dplLogoResult').innerHTML = '';
+            $('dplCfgList').innerHTML   = '<p class="dpl-hint">' + (key ? 'Cargando...' : 'Seleccione una compañía para ver sus archivos de configuración.') + '</p>';
+            renderCfgButtons();
+            if (!key) { return; }
+
+            // Perfil guardado (sin credenciales): chips de conexión y, si existe, lista de archivos
+            api('deploy_profile', { company: key }).then(function (data) {
+                if (cf.company !== key) { renderCfgButtons(); return; }   // la compañía cambió mientras se cargaba
+                if (!data.company || !data.profile) { throw new Error('Sin datos de la compañía.'); }
+                var c = data.company, p = data.profile;
+                var transport = p.transportProtocol && p.transportProtocol !== 'none';
+                $('dplCfgChips').innerHTML =
+                    '<span class="dpl-chip">BD esperada: <b>' + esc(c.dbName) + '</b></span>' +
+                    '<span class="dpl-chip ' + (p.exists ? 'is-ok' : 'is-warn') + '">' + (p.exists ? 'Conexión guardada' : 'Sin conexión guardada') + '</span>' +
+                    (p.agentUrl ? '<span class="dpl-chip">Agente: <b>' + esc(p.agentUrl) + '</b></span>' : '') +
+                    '<span class="dpl-chip ' + (transport ? 'is-ok' : 'is-warn') + '">FTP/SFTP: <b>' + esc(transport ? String(p.transportProtocol).toUpperCase() : 'no configurado') + '</b></span>';
+                if (!p.exists) {
+                    $('dplCfgList').innerHTML = alertHtml('warn', 'Esta compañía no tiene conexión guardada. Configúrela en la pestaña Sincronización.');
+                    return;
+                }
+                return loadCfgList();
+            }).catch(function (e) {
+                if (cf.company !== key) { renderCfgButtons(); return; }   // la compañía cambió mientras se esperaba
+                $('dplCfgChips').innerHTML = '<span class="dpl-chip is-bad">' + esc(e.message) + '</span>';
+                $('dplCfgList').innerHTML  = '';
+            });
+        }
+
+        $('dplCfgCompany').addEventListener('change', function () {
+            var select = this;
+            var next   = select.value;
+            if (next === cf.company) { return; }
+            confirmDiscard().then(function (ok) {
+                // Si no se descartan los cambios se regresa a la compañía anterior
+                if (!ok) { select.value = cf.company; return; }
+                setCfgCompany(next);
+            });
+        });
+
+        /** Tabla de archivos de configuración de la compañía. */
+        function renderCfgList() {
+            var html = '';
+            if (cf.hasTransport === false) {
+                html += alertHtml('warn', 'La compañía no tiene FTP/SFTP configurado: si un archivo crítico deja el sistema sin responder no habrá restauración automática.');
+            }
+            if (!cf.files.length) {
+                $('dplCfgList').innerHTML = html + alertHtml('info', 'El agente no devolvió archivos de configuración.');
+                return;
+            }
+            html += '<div class="dpl-scroll" style="margin-top:8px;"><table class="dpl-table"><thead><tr><th>Archivo</th><th class="dpl-n">Tamaño</th><th></th></tr></thead><tbody>' +
+                cf.files.map(function (f) {
+                    var critical = !!f.critical || cf.critical.indexOf(f.name) >= 0;
+                    return '<tr class="dpl-cfg-row" data-name="' + esc(f.name) + '">' +
+                        '<td><b>' + esc(f.name) + '</b>' +
+                        (f.readonly ? '<span class="dpl-badge">solo lectura</span>' : '') +
+                        (critical ? '<span class="dpl-badge is-risk">crítico</span>' : '') +
+                        '<div class="dpl-hint">Modificado: ' + esc(fmtDate(f.mtime)) + '</div></td>' +
+                        '<td class="dpl-n">' + esc(fmtBytes(f.size)) + '</td>' +
+                        '<td class="dpl-cfg-act"><button type="button" class="btn btn-default btn-sm dpl-cfg-open" data-name="' + esc(f.name) + '">' + (f.readonly ? 'Ver' : 'Abrir') + '</button></td></tr>';
+                }).join('') + '</tbody></table></div>';
+            $('dplCfgList').innerHTML = html;
+            qsa('#dplCfgList .dpl-cfg-open').forEach(function (button) {
+                button.addEventListener('click', function (ev) {
+                    ev.stopPropagation();
+                    openCfgFile(button.getAttribute('data-name'), button);
+                });
+            });
+            // La fila completa también abre el archivo (blanco táctil más grande)
+            qsa('#dplCfgList .dpl-cfg-row').forEach(function (tr) {
+                tr.addEventListener('click', function () {
+                    var button = tr.querySelector('.dpl-cfg-open');
+                    if (!button.disabled) { openCfgFile(tr.getAttribute('data-name'), button); }
+                });
+            });
+            markCurrentRow();
+            renderCfgButtons();
+        }
+
+        /** Lista los archivos de app/Config de la compañía (agente 1.1.0 o superior). */
+        function loadCfgList(button) {
+            var key = cf.company;
+            if (!key) { return Promise.resolve(); }
+            $('dplCfgList').innerHTML = '<p class="dpl-hint">Consultando los archivos al agente...</p>';
+            cf.busy = true;
+            renderCfgButtons();
+            var request = api('deploy_config_list', { company: key });
+            return (button ? busy(button, request) : request).then(function (data) {
+                if (cf.company !== key) { renderCfgButtons(); return; }   // la compañía cambió mientras se esperaba
+                cf.hasTransport = data.hasTransport === true ? true : (data.hasTransport === false ? false : null);
+                cf.critical     = data.critical || [];
+                cf.files        = data.files || [];
+                cf.busy         = false;
+                renderCfgList();
+            }).catch(function (e) {
+                if (cf.company !== key) { renderCfgButtons(); return; }   // la compañía cambió mientras se esperaba
+                cf.busy  = false;
+                cf.files = [];
+                // Agente desactualizado: aviso (no error) con la forma de resolverlo
+                var old = /1\.1\.0|anterior|actualice/i.test(e.message);
+                $('dplCfgList').innerHTML = old
+                    ? alertHtml('warn', esc(e.message) + '<br>Actualice el agente con "Instalar agente por SFTP/FTP" (subiendo también el código) en la pestaña Sincronización.')
+                    : alertHtml('bad', esc(e.message));
+                renderCfgButtons();
+            });
+        }
+
+        $('dplBtnCfgList').addEventListener('click', function () {
+            var button = this;
+            confirmDiscard().then(function (ok) {
+                if (!ok) { return; }
+                closeEditor();
+                $('dplCfgResult').innerHTML = '';
+                loadCfgList(button);
+            });
+        });
+
+        /** Lee un archivo y lo carga en el editor. */
+        function readCfgFile(name, button) {
+            var key = cf.company;
+            cf.busy = true;
+            renderCfgButtons();
+            $('dplCfgResult').innerHTML = alertHtml('info', 'Leyendo ' + esc(name) + '...');
+            return busy(button, api('deploy_config_read', { company: key, name: name })).then(function (data) {
+                if (cf.company !== key) { renderCfgButtons(); return; }   // la compañía cambió mientras se esperaba
+                cf.busy = false;
+                if (data.content === undefined || data.content === null) { throw new Error('El agente no devolvió el contenido de ' + name + '.'); }
+                var entry     = cf.files.filter(function (f) { return f.name === (data.name || name); })[0] || {};
+                cf.name       = data.name || name;
+                cf.sha        = data.sha256 || '';
+                cf.original   = data.content;
+                cf.eol        = data.eol || '';
+                cf.readonly   = !!data.readonly;
+                cf.isCritical = !!entry.critical || cf.critical.indexOf(cf.name) >= 0;
+                cf.dirty      = false;
+                $('dplCfgEditor').value    = data.content;
+                $('dplCfgEditor').readOnly = cf.readonly;
+                $('dplCfgEditorBox').style.display = '';
+                $('dplCfgResult').innerHTML = cf.readonly
+                    ? alertHtml('info', 'Archivo de solo lectura: se muestra para consulta y no se puede guardar desde aquí (se actualiza con el paquete de Sincronización).')
+                    : '';
+                markCurrentRow();
+                renderCfgButtons();
+            }).catch(function (e) {
+                if (cf.company !== key) { renderCfgButtons(); return; }   // la compañía cambió mientras se esperaba
+                cf.busy = false;
+                $('dplCfgResult').innerHTML = alertHtml('bad', esc(e.message));
+                renderCfgButtons();
+            });
+        }
+
+        /** Abre un archivo pidiendo descartar los cambios pendientes del actual. */
+        function openCfgFile(name, button) {
+            if (!cf.company || cf.busy) { return; }
+            confirmDiscard().then(function (ok) {
+                if (!ok) { return; }
+                readCfgFile(name, button);
+            });
+        }
+
+        $('dplBtnCfgReload').addEventListener('click', function () {
+            var button = this;
+            if (!cf.name) { return; }
+            confirmDiscard().then(function (ok) {
+                if (!ok) { return; }
+                readCfgFile(cf.name, button);
+            });
+        });
+
+        // Cada cambio en el editor recalcula si hay cambios sin guardar
+        $('dplCfgEditor').addEventListener('input', function () {
+            if (!cf.name || cf.readonly) { return; }
+            var dirty = normEol(this.value) !== normEol(cf.original);
+            if (dirty !== cf.dirty) { cf.dirty = dirty; renderCfgButtons(); }
+        });
+
+        // Tab inserta una tabulación (Shift+Tab conserva la navegación para salir del editor)
+        $('dplCfgEditor').addEventListener('keydown', function (ev) {
+            if (ev.key !== 'Tab' || ev.shiftKey || ev.ctrlKey || ev.altKey || ev.metaKey || this.readOnly) { return; }
+            ev.preventDefault();
+            var inserted = false;
+            try { inserted = document.execCommand('insertText', false, '\t'); } catch (e) { inserted = false; }   // conserva deshacer (Ctrl+Z)
+            if (!inserted) {
+                var start = this.selectionStart, end = this.selectionEnd;
+                this.value = this.value.substring(0, start) + '\t' + this.value.substring(end);
+                this.selectionStart = this.selectionEnd = start + 1;
+                this.dispatchEvent(new Event('input'));
+            }
+        });
+
+        $('dplBtnCfgSave').addEventListener('click', function () {
+            var button = this;
+            var key    = cf.company;
+            var name   = cf.name;
+            if (!key || !name || cf.readonly || !cf.dirty || cf.busy) { return; }
+            // Archivo crítico sin FTP/SFTP: no hay restauración automática, se exige confirmación escrita
+            var needText = cf.isCritical && cf.hasTransport === false;
+            var html = alertHtml('warn', 'Se validará la sintaxis PHP, se respaldará el archivo y se comprobará que el sistema remoto siga respondiendo; si no responde se restaurará el original.') +
+                '<p style="margin-top:10px;">Archivo: <b>' + esc(name) + '</b> — compañía <b>' + esc(key) + '</b></p>';
+            if (needText) {
+                html += alertHtml('bad', '<b>' + esc(name) + '</b> es un archivo crítico y esta compañía no tiene FTP/SFTP configurado: si el sistema remoto deja de responder <b>no habrá restauración automática</b> y habrá que corregirlo a mano en el servidor.') +
+                    '<div class="form-group" style="margin-top:10px;"><label class="abv2-label" for="dplCfgConfirmText">Escriba GUARDAR SIN RESPALDO para continuar</label>' +
+                    '<input type="text" class="form-control" id="dplCfgConfirmText" autocomplete="off" autocapitalize="characters"></div>';
+            }
+            dialog('Guardar archivo de configuración', html, 'Guardar').then(function (ok) {
+                if (!ok) { return; }
+                var confirmText = '';
+                if (needText) {
+                    confirmText = $('dplCfgConfirmText').value.trim();
+                    if (confirmText !== 'GUARDAR SIN RESPALDO') {
+                        $('dplCfgResult').innerHTML = alertHtml('bad', 'La confirmación no coincide. No se guardó nada.');
+                        return;
+                    }
+                }
+                var content = editorContent();
+                cf.busy = true;
+                renderCfgButtons();
+                $('dplCfgResult').innerHTML = alertHtml('info', 'Validando, respaldando y guardando ' + esc(name) + '...');
+                busy(button, api('deploy_config_save', { company: key, name: name, content: content, sha: cf.sha, confirm: confirmText })).then(function (data) {
+                    if (cf.company !== key || cf.name !== name) { renderCfgButtons(); return; }
+                    cf.busy = false;
+                    if (data.restored) {
+                        // El remoto dejó de responder y el agente devolvió el original: el texto se conserva para corregirlo
+                        $('dplCfgResult').innerHTML = alertHtml('bad', 'El sistema remoto dejó de responder y se restauró el archivo original. Revise el contenido; sus cambios siguen en el editor.');
+                        renderCfgButtons();
+                        return;
+                    }
+                    cf.sha      = data.sha256 || cf.sha;
+                    cf.original = content;
+                    cf.dirty    = normEol($('dplCfgEditor').value) !== normEol(content);   // por si escribió mientras se guardaba
+                    $('dplCfgResult').innerHTML = alertHtml('ok', 'Archivo guardado.' +
+                        (data.backup ? ' Respaldo: <b>' + esc(data.backup) + '</b>.' : ' Sin respaldo.') +
+                        (data.pingOk ? ' El sistema remoto responde.' : ''));
+                    renderCfgButtons();
+                }).catch(function (e) {
+                    if (cf.company !== key) { renderCfgButtons(); return; }   // la compañía cambió mientras se esperaba
+                    cf.busy = false;
+                    $('dplCfgResult').innerHTML = alertHtml('bad', esc(e.message));
+                    renderCfgButtons();
+                });
+            });
+        });
+
+        // Aviso del navegador al salir con cambios sin guardar
+        window.addEventListener('beforeunload', function (ev) {
+            if (!cf.dirty) { return; }
+            ev.preventDefault();
+            ev.returnValue = '';
+            return '';
+        });
+
+        // ---------------------------------------------------------- logos
+
+        /** Archivos de logo adjuntos (los inválidos ya se quitaron al elegirlos). */
+        function logoFiles() {
+            return qsa('.dpl-logo-file').filter(function (input) { return input.files && input.files.length; });
+        }
+
+        /** Quita el adjunto y la vista previa de un bloque. */
+        function clearLogo(n, message) {
+            var input = $('dplLogoFile' + n);
+            input.value = '';
+            if (cf.previews[n]) { URL.revokeObjectURL(cf.previews[n]); delete cf.previews[n]; }
+            $('dplLogoPrev' + n).removeAttribute('src');
+            $('dplLogoPrev' + n).style.display = 'none';
+            $('dplLogoInfo' + n).innerHTML = message || '';
+            $('dplLogo' + n).classList.remove('is-on');
+            document.querySelector('.dpl-logo-clear[data-n="' + n + '"]').style.display = 'none';
+        }
+
+        function clearLogos() {
+            qsa('.dpl-logo-file').forEach(function (input) { clearLogo(input.getAttribute('data-n')); });
+        }
+
+        /** Casilla "misma imagen" solo con un adjunto; Enviar solo con compañía y adjuntos. */
+        function updateLogoState() {
+            var count = logoFiles().length;
+            var same  = $('dplLogoSame');
+            qsa('.dpl-logo-file').forEach(function (input) { input.disabled = !cf.company || cf.logoBusy; });
+            if (count !== 1) { same.checked = false; }
+            same.disabled = count !== 1 || !cf.company || cf.logoBusy;
+            same.closest('.dpl-option').classList.toggle('is-on', same.checked);
+            $('dplBtnLogoSend').disabled = !cf.company || count === 0 || cf.logoBusy;
+        }
+
+        // Validación al elegir: solo PNG/JPEG y máximo 1 MB; vista previa local
+        qsa('.dpl-logo-file').forEach(function (input) {
+            input.addEventListener('change', function () {
+                var n    = input.getAttribute('data-n');
+                var file = input.files && input.files[0];
+                if (!file) { clearLogo(n); updateLogoState(); return; }
+                var typeOk = /^image\/(png|jpeg)$/i.test(file.type) || (!file.type && /\.(png|jpe?g)$/i.test(file.name));
+                if (!typeOk) {
+                    clearLogo(n, '<span style="color:var(--abv2-bad);">' + esc(file.name) + ': solo se aceptan imágenes PNG o JPG.</span>');
+                    updateLogoState();
+                    return;
+                }
+                if (file.size > LOGO_MAX) {
+                    clearLogo(n, '<span style="color:var(--abv2-bad);">' + esc(file.name) + ' pesa ' + esc(fmtBytes(file.size)) + ': el máximo es 1 MB.</span>');
+                    updateLogoState();
+                    return;
+                }
+                if (cf.previews[n]) { URL.revokeObjectURL(cf.previews[n]); }
+                cf.previews[n] = URL.createObjectURL(file);
+                $('dplLogoPrev' + n).src = cf.previews[n];
+                $('dplLogoPrev' + n).style.display = '';
+                $('dplLogoInfo' + n).innerHTML = esc(file.name) + ' · ' + esc(fmtBytes(file.size)) + ' → se guardará como <b>' + esc(input.getAttribute('data-target')) + '</b>';
+                $('dplLogo' + n).classList.add('is-on');
+                document.querySelector('.dpl-logo-clear[data-n="' + n + '"]').style.display = '';
+                $('dplLogoResult').innerHTML = '';
+                updateLogoState();
+            });
+        });
+
+        qsa('.dpl-logo-clear').forEach(function (button) {
+            button.addEventListener('click', function () {
+                clearLogo(button.getAttribute('data-n'));
+                updateLogoState();
+            });
+        });
+
+        $('dplLogoSame').addEventListener('change', function () {
+            this.closest('.dpl-option').classList.toggle('is-on', this.checked);
+        });
+
+        $('dplBtnLogoSend').addEventListener('click', function () {
+            var button = this;
+            var key    = cf.company;
+            var inputs = logoFiles();
+            if (!key || !inputs.length || cf.logoBusy) { return; }
+
+            var form = new FormData();
+            form.append('company', key);
+            form.append('sameForAll', $('dplLogoSame').checked && inputs.length === 1 ? '1' : '0');
+            inputs.forEach(function (input) { form.append(input.getAttribute('data-field'), input.files[0]); });
+
+            cf.logoBusy = true;
+            updateLogoState();
+            $('dplLogoResult').innerHTML = alertHtml('info', 'Enviando ' + fmtInt(inputs.length) + ' imagen(es)...');
+            busy(button, api('deploy_logo_upload', form, true)).then(function (data) {
+                if (cf.company !== key) { renderCfgButtons(); return; }   // la compañía cambió mientras se esperaba
+                cf.logoBusy = false;
+                var files = data.files || [];
+                var html  = '';
+                if (!files.length) {
+                    html = alertHtml('warn', 'El servidor no devolvió resultados por archivo.');
+                } else {
+                    var failed = files.filter(function (f) { return !f.ok; }).length;
+                    html = alertHtml(failed ? 'bad' : 'ok', failed ? fmtInt(failed) + ' de ' + fmtInt(files.length) + ' logos no se pudieron guardar.' : fmtInt(files.length) + ' logos guardados.') +
+                        '<div class="dpl-scroll" style="margin-top:8px;"><table class="dpl-table"><thead><tr><th>Archivo</th><th class="dpl-n">Tamaño</th><th class="dpl-n">Medidas</th></tr></thead><tbody>' +
+                        files.map(function (f) {
+                            return '<tr><td><b>' + esc(f.name) + '</b> <span class="dpl-badge ' + (f.ok ? 'is-new' : 'is-risk') + '">' + (f.ok ? 'guardado' : 'error') + '</span>' +
+                                (f.message ? '<div class="dpl-hint">' + esc(f.message) + '</div>' : '') + '</td>' +
+                                '<td class="dpl-n">' + (f.size ? esc(fmtBytes(f.size)) : '-') + '</td>' +
+                                '<td class="dpl-n">' + (f.width && f.height ? fmtInt(f.width) + ' × ' + fmtInt(f.height) : '-') + '</td></tr>';
+                        }).join('') + '</tbody></table></div>';
+                    // Si todo se guardó se limpian los adjuntos para no reenviarlos
+                    if (!failed) { clearLogos(); }
+                }
+                if (data.warnings && data.warnings.length) {
+                    html += alertHtml('warn', data.warnings.map(esc).join('<br>'));
+                }
+                $('dplLogoResult').innerHTML = html;
+                updateLogoState();
+            }).catch(function (e) {
+                if (cf.company !== key) { renderCfgButtons(); return; }   // la compañía cambió mientras se esperaba
+                cf.logoBusy = false;
+                $('dplLogoResult').innerHTML = alertHtml('bad', esc(e.message));
+                updateLogoState();
+            });
+        });
+
         syncOptions();
         renderSummary();
         renderCleanSummary();
+        renderCfgButtons();
     })();
 </script>

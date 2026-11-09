@@ -74,11 +74,27 @@
 					.dpl-dialog { background:#fff; border-radius:12px; max-width:560px; width:100%; padding:18px; max-height:90vh; overflow:auto; }
 					.dpl-dialog h4 { margin:0 0 10px; font-weight:700; }
 					.dpl-secret { font:13px Consolas, monospace; background:var(--abv2-soft); border-radius:6px; padding:8px; word-break:break-all; user-select:all; }
+					/* pestaña Configuración y logos */
+					.dpl-editor { display:block; width:100%; max-width:100%; box-sizing:border-box; height:440px; margin:0; padding:10px; border:1px solid var(--abv2-border); border-radius:8px; background:#fff; color:#1f2933; font:13px/1.45 Consolas, monospace; tab-size:4; -moz-tab-size:4; white-space:pre; overflow:auto; resize:vertical; }
+					.dpl-editor:focus { outline:none; border-color:var(--abv2-accent); }
+					.dpl-editor[readonly] { background:var(--abv2-soft); color:var(--abv2-muted); }
+					.dpl-cfg-row { cursor:pointer; }
+					.dpl-cfg-row.is-current td { background:var(--abv2-accent-bg); }
+					.dpl-cfg-row td.dpl-cfg-act { text-align:right; white-space:nowrap; width:1%; }
+					.dpl-cfg-row .dpl-badge { margin-left:4px; }
+					.dpl-logo { border:1px solid var(--abv2-border); border-radius:10px; padding:10px 12px; margin-bottom:10px; }
+					.dpl-logo.is-on { border-color:var(--abv2-accent); background:var(--abv2-accent-bg); }
+					.dpl-logo-name { font-weight:700; font-size:13px; margin:0 0 6px; word-break:break-all; }
+					.dpl-logo input[type=file] { max-width:100%; height:auto; }
+					.dpl-logo-prev { display:block; max-width:100%; max-height:90px; margin:8px 0 6px; border-radius:6px; border:1px solid var(--abv2-border); background:var(--abv2-soft); }
 					@media (max-width:767px) {
 						.dpl-table select.form-control { min-width:120px; height:40px; font-size:15px; }
 						.dpl-option input[type=checkbox] { width:24px; height:24px; }
 						.dpl-btns .btn { flex:1 1 auto; min-height:44px; }
 						.dpl-checks .dpl-group { display:none; }
+						.dpl-editor { height:300px; font-size:16px; }
+						.dpl-cfg-row .btn, .dpl-logo .btn { min-height:44px; min-width:44px; }
+						.dpl-logo input[type=file] { min-height:44px; }
 					}
 				</style>
 

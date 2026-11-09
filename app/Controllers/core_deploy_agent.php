@@ -9,6 +9,7 @@ use App\Libraries\core_web_deploy\core_deploy_package;
 use App\Libraries\core_web_deploy\core_deploy_schema;
 use App\Libraries\core_web_deploy\core_deploy_data;
 use App\Libraries\core_web_deploy\core_deploy_cleanup;
+use App\Libraries\core_web_deploy\core_deploy_company_files;
 
 /**
  * Agente de despliegue remoto de posMe.
@@ -63,6 +64,16 @@ class core_deploy_agent extends _BaseController
     function cleanup_scan()    { return $this->handle('cleanup_scan', false); }
     /** Limpieza: borra las categorías pedidas de una instalación (por tramos de tiempo). */
     function cleanup_apply()   { return $this->handle('cleanup_apply', false); }
+    /** Configuración: lista los archivos de primer nivel de app/Config. */
+    function config_list()     { return $this->handle('config_list', false); }
+    /** Configuración: devuelve el contenido de un archivo de app/Config. */
+    function config_read()     { return $this->handle('config_read', false); }
+    /** Configuración: reemplaza un archivo de app/Config con respaldo previo. */
+    function config_write()    { return $this->handle('config_write', false); }
+    /** Configuración: restaura un archivo de app/Config desde un respaldo. */
+    function config_restore()  { return $this->handle('config_restore', false); }
+    /** Logos: reemplaza un logo de la lista fija con respaldo previo. */
+    function logo_write()      { return $this->handle('logo_write', false); }
 
     /**
      * Flujo común: configuración → HTTPS → bloqueo por fallos → firma → candado → acción.
@@ -240,6 +251,7 @@ class core_deploy_agent extends _BaseController
             'memoryLimit'      => ini_get('memory_limit'),
             'locked'           => $lock && (time() - $lock['time']) <= core_deploy_rules::LOCK_TTL ? $lock['deployID'] : null,
             'lastDeploy'       => isset($state['lastDeploy']) ? $state['lastDeploy'] : null,
+            'features'         => ['config', 'logos'],
         ];
     }
 
@@ -564,5 +576,270 @@ class core_deploy_agent extends _BaseController
         $result['installation'] = $item['name'];
         $this->log_line('cleanup_apply', $item['name'] . ' ' . json_encode($result['categories']));
         return $result;
+    }
+
+    // ------------------------------------------------------- configuración y logos
+
+    /** Rechaza la operación si hay un despliegue en curso (candado vigente). */
+    private function assertNoDeployLock()
+    {
+        $lock = core_deploy_files::readJson($this->agentDir . '/lock.json');
+        if ($lock && isset($lock['time']) && (time() - $lock['time']) <= core_deploy_rules::LOCK_TTL) {
+            throw new \Exception('Hay un despliegue en curso en este servidor (' . (isset($lock['deployID']) ? $lock['deployID'] : '') . '); intente cuando termine.');
+        }
+    }
+
+    /** Carpeta real app/Config de la instalación. */
+    private function configDir()
+    {
+        $dir = realpath(ROOTPATH . core_deploy_rules::CONFIG_DIR);
+        if ($dir === false || !is_dir($dir)) {
+            throw new \Exception('No se encontró la carpeta app/Config.');
+        }
+        return $dir;
+    }
+
+    /**
+     * Ruta segura de un archivo de app/Config: nombre válido, existente, sin enlaces
+     * simbólicos y resuelto dentro de la propia carpeta.
+     *
+     * @param string $name Nombre del archivo.
+     * @return string Ruta absoluta.
+     */
+    private function configPath($name)
+    {
+        if (!core_deploy_rules::isConfigName($name)) {
+            throw new \Exception('Nombre de archivo de configuración inválido.');
+        }
+        $dir  = $this->configDir();
+        $path = $dir . DIRECTORY_SEPARATOR . $name;
+        if (!is_file($path) || is_link($path)) {
+            throw new \Exception('No existe el archivo app/Config/' . $name . '.');
+        }
+        $real = realpath($path);
+        if ($real === false || !core_deploy_company_files::samePath(dirname($real), $dir)) {
+            throw new \Exception('Ruta no permitida: app/Config/' . $name . '.');
+        }
+        return $real;
+    }
+
+    /**
+     * Crea una carpeta de respaldo nueva y conserva solo las más recientes.
+     *
+     * @return array ['id', 'dir']
+     */
+    private function newFilesBackup()
+    {
+        $parent = core_deploy_files::ensureDir($this->agentDir . '/' . core_deploy_rules::FILES_BACKUP_DIR);
+        $id     = core_deploy_company_files::newBackupID();
+        $dir    = core_deploy_files::ensureDir($parent . '/' . $id);
+        core_deploy_files::pruneDirs($parent, core_deploy_rules::FILES_KEEP_BACKUPS, $id);
+        return ['id' => $id, 'dir' => $dir];
+    }
+
+    /** Copia un archivo existente a la carpeta de respaldo conservando su ruta relativa. */
+    private function backupFile($source, $backupDir, $relative)
+    {
+        $target = $backupDir . '/' . $relative;
+        if (!is_dir(dirname($target)) && !@mkdir(dirname($target), 0755, true) && !is_dir(dirname($target))) {
+            throw new \Exception('No se pudo crear la carpeta de respaldo.');
+        }
+        if (!@copy($source, $target)) {
+            throw new \Exception('No se pudo respaldar ' . $relative . '.');
+        }
+    }
+
+    /** Invalida la caché de opcode de un archivo recién escrito. */
+    private function invalidateOpcache($path)
+    {
+        if (function_exists('opcache_invalidate')) {
+            @opcache_invalidate($path, true);
+        }
+    }
+
+    /**
+     * Lista los .php de primer nivel de app/Config (Boot/ y subcarpetas excluidas).
+     *
+     * @return array ['critical' => [nombres], 'files' => [['name','size','mtime','sha256','readonly','critical']]]
+     */
+    private function action_config_list()
+    {
+        $this->assertNoDeployLock();
+        $dir   = $this->configDir();
+        $files = [];
+        foreach (scandir($dir) ?: [] as $name) {
+            $path = $dir . DIRECTORY_SEPARATOR . $name;
+            if (!core_deploy_rules::isConfigName($name) || !is_file($path) || is_link($path)) {
+                continue;
+            }
+            $real = realpath($path);
+            if ($real === false || !core_deploy_company_files::samePath(dirname($real), $dir)) {
+                continue;
+            }
+            $files[] = [
+                'name'     => $name,
+                'size'     => filesize($real),
+                'mtime'    => date('Y-m-d H:i:s', filemtime($real)),
+                'sha256'   => hash_file('sha256', $real),
+                'readonly' => core_deploy_rules::isConfigReadonly($name),
+                'critical' => core_deploy_rules::isConfigCritical($name),
+            ];
+        }
+        usort($files, function ($a, $b) {
+            return strcasecmp($a['name'], $b['name']);
+        });
+        return ['critical' => core_deploy_rules::$CONFIG_CRITICAL, 'files' => $files];
+    }
+
+    /**
+     * Contenido de un archivo de app/Config (en base64: puede no ser UTF-8).
+     * Payload: name.
+     *
+     * @return array ['name', 'content64', 'sha256', 'size', 'mtime', 'readonly']
+     */
+    private function action_config_read()
+    {
+        $this->assertNoDeployLock();
+        $name = isset($this->payload['name']) ? (string) $this->payload['name'] : '';
+        $path = $this->configPath($name);
+        if (filesize($path) > core_deploy_rules::CONFIG_MAX_BYTES) {
+            throw new \Exception('El archivo supera 512 KB; no se edita desde la consola.');
+        }
+        $content = (string) file_get_contents($path);
+        return [
+            'name'      => $name,
+            'content64' => base64_encode($content),
+            'sha256'    => hash('sha256', $content),
+            'size'      => strlen($content),
+            'mtime'     => date('Y-m-d H:i:s', filemtime($path)),
+            'readonly'  => core_deploy_rules::isConfigReadonly($name),
+        ];
+    }
+
+    /**
+     * Reemplaza un archivo de app/Config: revisa sintaxis, exige el SHA-256 que la consola
+     * leyó (nadie lo cambió entretanto), respalda y escribe de forma atómica.
+     * Payload: name, content64, expectedSha.
+     *
+     * @return array ['name', 'sha256', 'previousSha', 'backupID', 'backup']
+     */
+    private function action_config_write()
+    {
+        $this->assertNoDeployLock();
+        $name = isset($this->payload['name']) ? (string) $this->payload['name'] : '';
+        if (core_deploy_rules::isConfigReadonly($name)) {
+            throw new \Exception('app/Config/' . $name . ' es de solo lectura en la consola.');
+        }
+        $path    = $this->configPath($name);
+        $content = base64_decode(isset($this->payload['content64']) ? (string) $this->payload['content64'] : '', true);
+        if ($content === false || $content === '') {
+            throw new \Exception('Contenido inválido.');
+        }
+        if (strlen($content) > core_deploy_rules::CONFIG_MAX_BYTES) {
+            throw new \Exception('El contenido supera 512 KB.');
+        }
+        $lint = core_deploy_package::lintPhp($content);
+        if ($lint !== null) {
+            // Solo la línea: el detalle del parser puede citar valores del archivo y este mensaje se registra en el log
+            $line = preg_match('/línea\s+(\d+)/u', $lint, $m) ? $m[1] : '?';
+            throw new \Exception('Error de sintaxis: línea ' . $line . ' (revisado en el servidor).');
+        }
+        $previous = (string) file_get_contents($path);
+        $expected = isset($this->payload['expectedSha']) ? (string) $this->payload['expectedSha'] : '';
+        if (!hash_equals(hash('sha256', $previous), $expected)) {
+            throw new \Exception('El archivo cambió en el servidor; vuelva a abrirlo.');
+        }
+
+        $relative = core_deploy_rules::CONFIG_DIR . $name;
+        $backup   = $this->newFilesBackup();
+        $this->backupFile($path, $backup['dir'], $relative);
+        core_deploy_files::writeAtomic($path, $content);
+        $this->invalidateOpcache($path);
+
+        return [
+            'name'        => $name,
+            'sha256'      => hash('sha256', $content),
+            'previousSha' => hash('sha256', $previous),
+            'backupID'    => $backup['id'],
+            'backup'      => 'writable/' . core_deploy_rules::AGENT_DIR . '/' . core_deploy_rules::FILES_BACKUP_DIR . '/' . $backup['id'] . '/' . $relative,
+        ];
+    }
+
+    /**
+     * Restaura un archivo de app/Config desde un respaldo de config_write.
+     * Payload: name, backupID.
+     *
+     * @return array ['name', 'sha256']
+     */
+    private function action_config_restore()
+    {
+        $this->assertNoDeployLock();
+        $name     = isset($this->payload['name']) ? (string) $this->payload['name'] : '';
+        $backupID = isset($this->payload['backupID']) ? (string) $this->payload['backupID'] : '';
+        if (!core_deploy_company_files::isBackupID($backupID)) {
+            throw new \Exception('Identificador de respaldo inválido.');
+        }
+        $path   = $this->configPath($name);
+        $source = $this->agentDir . '/' . core_deploy_rules::FILES_BACKUP_DIR . '/' . $backupID . '/' . core_deploy_rules::CONFIG_DIR . $name;
+        if (!is_file($source)) {
+            throw new \Exception('No existe el respaldo de app/Config/' . $name . '.');
+        }
+        $content = (string) file_get_contents($source);
+        core_deploy_files::writeAtomic($path, $content);
+        $this->invalidateOpcache($path);
+        return ['name' => $name, 'sha256' => hash('sha256', $content)];
+    }
+
+    /**
+     * Reemplaza un logo de la lista fija en public/resource/img/logos con respaldo previo.
+     * Payload: name, content64, sha256.
+     *
+     * @return array ['name', 'size', 'width', 'height', 'sha256', 'backup', 'pathMismatch']
+     */
+    private function action_logo_write()
+    {
+        $this->assertNoDeployLock();
+        $name    = isset($this->payload['name']) ? (string) $this->payload['name'] : '';
+        $content = base64_decode(isset($this->payload['content64']) ? (string) $this->payload['content64'] : '', true);
+        if ($content === false) {
+            throw new \Exception('Contenido inválido.');
+        }
+        if (!hash_equals(isset($this->payload['sha256']) ? (string) $this->payload['sha256'] : '', hash('sha256', $content))) {
+            throw new \Exception('La imagen llegó dañada (hash distinto).');
+        }
+        $size = core_deploy_company_files::checkLogoBinary($content, $name);
+
+        // Sin ensureDir: esa carpeta es pública y no debe recibir el .htaccess de bloqueo
+        $dir = FCPATH . core_deploy_rules::LOGO_DIR;
+        if (!is_dir($dir) && !@mkdir($dir, 0755, true) && !is_dir($dir)) {
+            throw new \Exception('No se pudo crear la carpeta ' . core_deploy_rules::LOGO_DIR . '.');
+        }
+        $target = $dir . $name;
+        if (is_link($target)) {
+            throw new \Exception('Ruta no permitida: ' . $name . '.');
+        }
+        $backupPath = null;
+        if (is_file($target)) {
+            $backup     = $this->newFilesBackup();
+            $relative   = 'public/' . core_deploy_rules::LOGO_DIR . $name;
+            $this->backupFile($target, $backup['dir'], $relative);
+            $backupPath = 'writable/' . core_deploy_rules::AGENT_DIR . '/' . core_deploy_rules::FILES_BACKUP_DIR . '/' . $backup['id'] . '/' . $relative;
+        }
+        core_deploy_files::writeAtomic($target, $content);
+
+        // Los tickets leen el logo desde PATH_FILE_OF_APP_ROOT: avisar si no es esta instalación
+        $pathMismatch = false;
+        if (defined('PATH_FILE_OF_APP_ROOT')) {
+            $pathMismatch = !core_deploy_company_files::samePath(realpath(constant('PATH_FILE_OF_APP_ROOT')), realpath(FCPATH . 'resource'));
+        }
+        return [
+            'name'         => $name,
+            'size'         => strlen($content),
+            'width'        => $size['width'],
+            'height'       => $size['height'],
+            'sha256'       => hash('sha256', $content),
+            'backup'       => $backupPath,
+            'pathMismatch' => $pathMismatch,
+        ];
     }
 }
