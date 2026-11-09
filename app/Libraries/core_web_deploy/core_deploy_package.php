@@ -376,4 +376,58 @@ class core_deploy_package
 
         return ['manifest' => $manifest, 'extracted' => $count, 'errors' => $errors];
     }
+
+    /**
+     * Comprime en un ZIP la carpeta app/ de esta instalación (equipo local).
+     * Solo incluye lo que el paquete actualiza (Routes.php y las carpetas autorizadas),
+     * con el prefijo "app/", para que pase directo por inspect() y build().
+     *
+     * @param string $appPath   Carpeta app/ local (APPPATH).
+     * @param string $targetZip ZIP que se genera (se sobrescribe).
+     * @return array ['files' => int, 'bytes' => int]
+     */
+    static function zipLocalApp($appPath, $targetZip)
+    {
+        $base = realpath($appPath);
+        if ($base === false || !is_dir($base)) {
+            throw new \Exception('No se encontró la carpeta app/ local.');
+        }
+        $base = str_replace('\\', '/', $base);
+
+        $zip = new \ZipArchive();
+        if ($zip->open($targetZip, \ZipArchive::CREATE | \ZipArchive::OVERWRITE) !== true) {
+            throw new \Exception('No se pudo crear el ZIP de la carpeta app/.');
+        }
+
+        $count    = 0;
+        $bytes    = 0;
+        $iterator = new \RecursiveIteratorIterator(
+            new \RecursiveDirectoryIterator($base, \FilesystemIterator::SKIP_DOTS),
+            \RecursiveIteratorIterator::LEAVES_ONLY
+        );
+        foreach ($iterator as $file) {
+            // No se siguen enlaces simbólicos ni se incluyen carpetas
+            if ($file->isLink() || !$file->isFile()) {
+                continue;
+            }
+            $relative = 'app/' . ltrim(substr(str_replace('\\', '/', $file->getPathname()), strlen($base)), '/');
+            $class    = core_deploy_rules::classify($relative);
+            if ($class['category'] !== 'update') {
+                continue;
+            }
+            if (!$zip->addFile($file->getPathname(), $relative)) {
+                $zip->close();
+                @unlink($targetZip);
+                throw new \Exception('No se pudo agregar al ZIP: ' . $relative);
+            }
+            $count++;
+            $bytes += $file->getSize();
+        }
+
+        if (!$zip->close() || $count === 0) {
+            @unlink($targetZip);
+            throw new \Exception('No se generó el ZIP de la carpeta app/ (sin archivos autorizados).');
+        }
+        return ['files' => $count, 'bytes' => $bytes];
+    }
 }

@@ -1949,14 +1949,19 @@ class core_merge extends _BaseController {
 			$dataSession = $this->deploy_guard();
 			$companyKey  = $this->deploy_post("company");
 			$company     = $this->core_web_deploy->getCompany($companyKey);
-			$zipFile     = $this->request->getFile('zip_file');
+			//fromLocalApp = 1: en lugar de adjuntar un archivo, se comprime la carpeta app/ de este equipo
+			$fromLocalApp = $this->deploy_post("fromLocalApp") === "1";
+			$zipFile      = $fromLocalApp ? null : $this->request->getFile('zip_file');
 
-			if(!$zipFile || !$zipFile->isValid())
-			throw new \Exception("Seleccione un archivo ZIP válido.");
-			if(strtolower($zipFile->getClientExtension()) !== 'zip')
-			throw new \Exception("El archivo debe tener extensión .zip.");
-			if($zipFile->getSize() > \App\Libraries\core_web_deploy\core_deploy_rules::MAX_UPLOAD_BYTES)
-			throw new \Exception("El ZIP supera el tamaño máximo permitido.");
+			if(!$fromLocalApp)
+			{
+				if(!$zipFile || !$zipFile->isValid())
+				throw new \Exception("Seleccione un archivo ZIP válido.");
+				if(strtolower($zipFile->getClientExtension()) !== 'zip')
+				throw new \Exception("El archivo debe tener extensión .zip.");
+				if($zipFile->getSize() > \App\Libraries\core_web_deploy\core_deploy_rules::MAX_UPLOAD_BYTES)
+				throw new \Exception("El ZIP supera el tamaño máximo permitido.");
+			}
 
 			//Reutilizar el despliegue en preparación (conserva análisis de estructura/datos) si es de la misma compañía
 			$state        = null;
@@ -1979,10 +1984,13 @@ class core_merge extends _BaseController {
 
 			$deployID = $state["deployID"];
 			$dir      = $this->core_web_deploy->deployDir($deployID);
+			if($fromLocalApp)
+			\App\Libraries\core_web_deploy\core_deploy_package::zipLocalApp(APPPATH, $dir.'/source.zip');
+			else
 			$zipFile->move($dir, 'source.zip', true);
 
 			$report = \App\Libraries\core_web_deploy\core_deploy_package::inspect($dir.'/source.zip');
-			$this->core_web_deploy->log($deployID, 'paquete', 'ZIP recibido ('.$report['size'].' bytes, sha256 '.$report['sha256'].') por '.$dataSession["user"]->nickname.' para '.$companyKey);
+			$this->core_web_deploy->log($deployID, 'paquete', ($fromLocalApp ? 'ZIP generado de la carpeta app/ local' : 'ZIP recibido').' ('.$report['size'].' bytes, sha256 '.$report['sha256'].') por '.$dataSession["user"]->nickname.' para '.$companyKey);
 
 			$build = null;
 			if(count($report['errors']) === 0)

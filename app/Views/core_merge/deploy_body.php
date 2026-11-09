@@ -155,7 +155,9 @@
 				</div>
 				<div class="dpl-btns">
 					<button type="button" class="btn btn-primary" id="dplBtnPackage"><i class="icon16 i-checkmark-4"></i> Validar paquete</button>
+					<button type="button" class="btn btn-default" id="dplBtnZipApp"><i class="icon16 i-archive"></i> Comprimir en ZIP la carpeta app/</button>
 				</div>
+				<p class="dpl-hint">"Comprimir en ZIP la carpeta app/" toma la carpeta app/ de este equipo, la comprime y la valida sin tener que adjuntar el archivo.</p>
 				<div id="dplPackageResult"></div>
 			</div>
 

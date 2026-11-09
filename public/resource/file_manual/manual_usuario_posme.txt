@@ -1855,7 +1855,7 @@ Notas: las contraseñas se guardan cifradas y nunca se vuelven a mostrar; déjel
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. En Paquete de actualización (ZIP) elija el Archivo ZIP con la carpeta app/. La carpeta app/ puede venir dentro de una carpeta raíz.
-  2. Presione Validar paquete.
+  2. Presione Validar paquete. Si no quiere armar el ZIP a mano, presione Comprimir en ZIP la carpeta app/: el sistema comprime la carpeta app/ de este equipo (solo Routes.php y las carpetas autorizadas) y la valida en un solo clic, sin adjuntar archivo.
   3. Revise el resultado: cuántos archivos se actualizan, se conservan, se ignoran y se rechazan, los errores de sintaxis PHP y el SHA-256 del paquete.
   4. En Opciones de sincronización marque Actualizar archivos de la aplicación: envía el paquete validado, lo verifica, respalda los archivos que se reemplazan y actualiza solo los autorizados.
 Solo se actualizan app/Config/Routes.php y las carpetas app/Controllers, Models, Libraries, Helpers y Views. Se conservan en el cliente app/Config (salvo Routes.php), .env, writable, vendor y public (incluidos js y css).

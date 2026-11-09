@@ -407,7 +407,26 @@
             form.append('zip_file', file);
             $('dplPackageResult').innerHTML = alertHtml('info', 'Subiendo y validando ' + esc(file.name) + ' (' + fmtMB(file.size) + ')...');
 
-            busy(this, api('deploy_package', form, true)).then(function (data) {
+            sendPackage(this, form);
+        });
+
+        // Comprime en el servidor local la carpeta app/ y la valida (sin adjuntar archivo)
+        $('dplBtnZipApp').addEventListener('click', function () {
+            try { requireCompany(); } catch (e) { $('dplPackageResult').innerHTML = alertHtml('bad', esc(e.message)); return; }
+
+            var form = new FormData();
+            form.append('company', st.company.key);
+            form.append('deployID', st.deployID || '');
+            form.append('fromLocalApp', '1');
+            $('dplZip').value = '';
+            $('dplPackageResult').innerHTML = alertHtml('info', 'Comprimiendo y validando la carpeta app/ local...');
+
+            sendPackage(this, form);
+        });
+
+        /** Envía el paquete (adjunto o carpeta app/ local) y muestra el resultado de la validación. */
+        function sendPackage(button, form) {
+            busy(button, api('deploy_package', form, true)).then(function (data) {
                 st.deployID = data.deployID;
                 st.pkg      = data;
                 $('dplBtnLog').classList.remove('disabled');
@@ -435,7 +454,7 @@
                 $('dplPackageResult').innerHTML = alertHtml('bad', esc(e.message));
                 renderSummary();
             });
-        });
+        }
 
         // ---------------------------------------------------------- opciones
 
