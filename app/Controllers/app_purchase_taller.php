@@ -249,9 +249,25 @@ class app_purchase_taller extends _BaseController {
 			if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_workshop_taller","statusID",$objTM->statusID,COMMAND_ELIMINABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
 			throw new \Exception(NOT_WORKFLOW_DELETE);
 			
-			//Eliminar el Registro			
-			$this->Transaction_Master_Model->delete_app_posme($companyID,$transactionID,$transactionMasterID);			
-			
+			//Google Calendar: IDs de los eventos antes de eliminar
+			$objTMIGoogle			= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$googleEventIDOrden		= $this->googleCalendarNormalizeID($objTM->descriptionReference);
+			$googleEventIDVisita	= $this->googleCalendarNormalizeID(helper_RequestGetValueObjet($objTMIGoogle,"receiptAmountBankReference",""));
+
+			//Eliminar el Registro
+			$resultDelete			= $this->Transaction_Master_Model->delete_app_posme($companyID,$transactionID,$transactionMasterID);
+
+			//Eliminar los eventos de Google Calendar (los errores solo se registran en el log)
+			if($resultDelete && $this->googleCalendarEnable($companyID))
+			{
+				$googleErrores		= array();
+				if($googleEventIDOrden != "")
+				$this->googleCalendarSync($companyID,"delete",$googleEventIDOrden,null,"",$googleErrores);
+
+				if($googleEventIDVisita != "")
+				$this->googleCalendarSync($companyID,"delete",$googleEventIDVisita,null,"",$googleErrores);
+			}
+
 			
 			return $this->response->setJSON(array(
 				'error'   => false,
@@ -334,7 +350,7 @@ class app_purchase_taller extends _BaseController {
 			
 			//Actualizar Maestro			
 			$objTMNew["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
-			$objTMNew["statusIDChangeOn"]				= date("Y-m-d H:m:s");			
+			$objTMNew["statusIDChangeOn"]				= helper_getDateTime();			
 			$objTMNew["branchID"]						= /*inicio get post*/ $this->request->getPost("txtBranchID");
 			$objTMNew["currencyID"] 					= /*inicio get post*/ $this->request->getPost("txtCurrencyID");//--fin peticion get o post			
 			$objTMNew["exchangeRate"]					= $this->core_web_currency->getRatio($dataSession["user"]->companyID,date("Y-m-d"),1,$objTM->currencyID2,$objTMNew["currencyID"]);
@@ -357,10 +373,15 @@ class app_purchase_taller extends _BaseController {
 			$objTMNew["note"] 							= /*inicio get post*/ $this->request->getPost("txtNote");
 			$objTMNew["nextVisit"] 						= /*inicio get post*/ $this->request->getPost("txtNextVisit") ? $this->request->getPost("txtNextVisit") : NULL;
 			$objTMNew["periodPay"] 						= /*inicio get post*/ $this->request->getPost("txtFixedAssetID") ? $this->request->getPost("txtFixedAssetID") : NULL;
-			
+
+			//Google Calendar: IDs de los eventos anteriores (antes de actualizar)
+			$objTMIGoogleOld							= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$googleEventIDOrdenOld						= $this->googleCalendarNormalizeID($objTM->descriptionReference);
+			$googleEventIDVisitaOld						= $this->googleCalendarNormalizeID(helper_RequestGetValueObjet($objTMIGoogleOld,"receiptAmountBankReference",""));
+
 			$db=db_connect();
 			$db->transStart();
-			
+
 			//El Estado solo permite editar el workflow
 			$actualizarTransaccionPermtida				= true;
 			if($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_workshop_taller","statusID",$objTM->statusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)){
@@ -593,10 +614,65 @@ class app_purchase_taller extends _BaseController {
 			if($db->transStatus() !== false)
 			{
 				
-				$db->transCommit();	
+				$db->transCommit();
 				if($warrning == false )
-				$this->core_web_notification->set_message(false,SUCCESS);		
-			
+				$this->core_web_notification->set_message(false,SUCCESS);
+
+				//Sincronizar con Google Calendar (si la etapa solo permite cambiar el estado no se sincroniza)
+				if($actualizarTransaccionPermtida == true && $this->googleCalendarEnable($companyID))
+				{
+					$googleErrores			= array();
+					$googleEventIDOrden		= $googleEventIDOrdenOld;
+					$googleEventIDVisita	= $googleEventIDVisitaOld;
+					$googleFechaOrden		= $this->googleCalendarNormalizeDate($objTMNew["transactionOn"]);
+					$googleFechaVisita		= $this->googleCalendarNormalizeDate($objTMNew["nextVisit"]);
+					$googleCambioTexto		= 	trim((string)$objTMNew["reference1"]) != trim((string)$objTM->reference1) ||
+												trim((string)$objTMNew["reference2"]) != trim((string)$objTM->reference2) ||
+												trim((string)$objTMNew["entityID"])   != trim((string)$objTM->entityID);
+					$googleCambioOrden		= $googleCambioTexto || $googleFechaOrden  != $this->googleCalendarNormalizeDate($objTM->transactionOn);
+					$googleCambioVisita		= $googleCambioTexto || $googleFechaVisita != $this->googleCalendarNormalizeDate($objTM->nextVisit);
+
+					//Evento de la fecha de la orden: crear si no existe; actualizar si cambio (si falla, se crea de nuevo)
+					if($googleEventIDOrden == "" || $googleCambioOrden)
+					{
+						$googleTexto		= $this->googleCalendarBuildTexto($companyID,false,$objTM->transactionNumber,$objTMNew["entityID"],$objTMNew["reference2"],$objTMNew["reference1"]);
+						$googleEventIDOrden	= $this->googleCalendarUpsert($companyID,$googleEventIDOrden,$googleTexto,$objTMNew["transactionOn"],$googleErrores);
+					}
+
+					//Evento de la siguiente visita
+					if($googleFechaVisita == "")
+					{
+						//Se quito la fecha: eliminar el evento y limpiar el ID
+						if($googleEventIDVisita != "")
+						{
+							$googleResult	= $this->googleCalendarSync($companyID,"delete",$googleEventIDVisita,null,"",$googleErrores);
+							if(!$googleResult["error"])
+							$googleEventIDVisita = "";
+						}
+					}
+					else if($googleEventIDVisita == "" || $googleCambioVisita)
+					{
+						$googleTexto		= $this->googleCalendarBuildTexto($companyID,true,$objTM->transactionNumber,$objTMNew["entityID"],$objTMNew["reference2"],$objTMNew["reference1"]);
+						$googleEventIDVisita	= $this->googleCalendarUpsert($companyID,$googleEventIDVisita,$googleTexto,$objTMNew["nextVisit"],$googleErrores);
+					}
+
+					//Guardar solo los IDs que cambiaron
+					if($googleEventIDOrden != $googleEventIDOrdenOld || $googleEventIDVisita != $googleEventIDVisitaOld)
+					{
+						$this->googleCalendarSaveIDs(
+							$companyID,
+							$transactionID,
+							$transactionMasterID,
+							($googleEventIDOrden  != $googleEventIDOrdenOld  ? $googleEventIDOrden  : null),
+							($googleEventIDVisita != $googleEventIDVisitaOld ? $googleEventIDVisita : null),
+							$googleErrores
+						);
+					}
+
+					if(count($googleErrores) > 0)
+					$this->core_web_notification->set_message(true,"Orden guardada; no se sincronizó con Google Calendar: ".implode("; ",$googleErrores));
+				}
+
 				$this->response->redirect(base_url()."/".'app_purchase_taller/edit/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID);
 				
 			}
@@ -669,8 +745,8 @@ class app_purchase_taller extends _BaseController {
 			$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_workshop_taller",0);
 			$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($dataSession["user"]->companyID,$transactionID);			
 			$objTM["transactionOn"]					= /*inicio get post*/ $this->request->getPost("txtDate");
-			$objTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
-			$objTM["componentID"] 					= $objComponentShare->componentID;			
+			$objTM["statusIDChangeOn"]				= helper_getDateTime();
+			$objTM["componentID"] 					= $objComponentShare->componentID;
 			$objTM["sign"] 							= $objT->signInventory;
 			$objTM["currencyID"]					= /*inicio get post*/ $this->request->getPost("txtCurrencyID");//--fin peticion get o post
 			$objTM["currencyID2"]					= $this->core_web_currency->getCurrencyExternal($dataSession["user"]->companyID)->currencyID;
@@ -935,11 +1011,44 @@ class app_purchase_taller extends _BaseController {
 			
 			
 			if($db->transStatus() !== false){
-				$db->transCommit();						
-				
+				$db->transCommit();
+
 				if($warrning == false )
-				$this->core_web_notification->set_message(false,SUCCESS);		
-			
+				$this->core_web_notification->set_message(false,SUCCESS);
+
+				//Sincronizar con Google Calendar (fuera de la transaccion; un fallo no revierte la orden)
+				if($this->googleCalendarEnable($companyID))
+				{
+					$googleErrores			= array();
+					$googleEventIDOrden		= "";
+					$googleEventIDVisita	= "";
+
+					//Evento de la fecha de la orden
+					$googleResult			= $this->googleCalendarSync($companyID,"add","",$this->googleCalendarBuildTexto($companyID,false,$objTM["transactionNumber"],$objTM["entityID"],$objTM["reference2"],$objTM["reference1"]),$objTM["transactionOn"],$googleErrores);
+					if(!$googleResult["error"])
+					$googleEventIDOrden		= $googleResult["eventID"];
+
+					//Evento de la siguiente visita (solo si tiene fecha)
+					if($this->googleCalendarNormalizeDate($objTM["nextVisit"]) != "")
+					{
+						$googleResult		= $this->googleCalendarSync($companyID,"add","",$this->googleCalendarBuildTexto($companyID,true,$objTM["transactionNumber"],$objTM["entityID"],$objTM["reference2"],$objTM["reference1"]),$objTM["nextVisit"],$googleErrores);
+						if(!$googleResult["error"])
+						$googleEventIDVisita = $googleResult["eventID"];
+					}
+
+					$this->googleCalendarSaveIDs(
+						$companyID,
+						$objTM["transactionID"],
+						$transactionMasterID,
+						($googleEventIDOrden != "" ? $googleEventIDOrden : null),
+						($googleEventIDVisita != "" ? $googleEventIDVisita : null),
+						$googleErrores
+					);
+
+					if(count($googleErrores) > 0)
+					$this->core_web_notification->set_message(true,"Orden guardada; no se sincronizó con Google Calendar: ".implode("; ",$googleErrores));
+				}
+
 				$this->response->redirect(base_url()."/".'app_purchase_taller/edit/companyID/'.$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID);
 			}
 			else{
@@ -1068,7 +1177,7 @@ class app_purchase_taller extends _BaseController {
 		$objTM["transactionNumber"]				= $this->core_web_counter->goNextNumber($companyID,$dataSession["user"]->branchID,"tb_transaction_master_workshop_taller",0);
 		$objTM["transactionCausalID"] 			= $this->core_web_transaction->getDefaultCausalID($companyID,$transactionID);
 		$objTM["transactionOn"]					= $nextVisit; //La nueva orden se agenda en la fecha de la siguiente visita
-		$objTM["statusIDChangeOn"]				= date("Y-m-d H:m:s");
+		$objTM["statusIDChangeOn"]				= helper_getDateTime();
 		$objTM["componentID"] 					= $objComponentShare->componentID;
 		$objTM["sign"] 							= $objT->signInventory;
 		$objTM["currencyID"]					= $objTMOld->currencyID;
@@ -1138,7 +1247,243 @@ class app_purchase_taller extends _BaseController {
 		}
 
 		$db->transCommit();
+
+		//Sincronizar con Google Calendar (fuera de la transaccion; los errores solo se registran en el log)
+		if($this->googleCalendarEnable($companyID))
+		{
+			$googleErrores			= array();
+
+			//La siguiente visita de la orden origen ya se convirtio en orden: eliminar su evento de visita y limpiar el ID
+			$googleEventIDVisitaOld	= $this->googleCalendarNormalizeID(helper_RequestGetValueObjet($objTMIOld,"receiptAmountBankReference",""));
+			if($googleEventIDVisitaOld != "")
+			{
+				$googleResult		= $this->googleCalendarSync($companyID,"delete",$googleEventIDVisitaOld,null,"",$googleErrores);
+				if(!$googleResult["error"])
+				$this->googleCalendarSaveIDs($companyID,$transactionID,$transactionMasterID,null,"",$googleErrores);
+			}
+
+			//Evento de la fecha de la nueva orden (la nueva orden no lleva evento de visita)
+			$googleTexto			= $this->googleCalendarBuildTexto($companyID,false,$objTM["transactionNumber"],$objTM["entityID"],$objTM["reference2"],$objTM["reference1"]);
+			$googleResult			= $this->googleCalendarSync($companyID,"add","",$googleTexto,$objTM["transactionOn"],$googleErrores);
+			if(!$googleResult["error"])
+			$this->googleCalendarSaveIDs($companyID,$transactionID,$transactionMasterIDNew,$googleResult["eventID"],null,$googleErrores);
+		}
+
 		return $transactionMasterIDNew;
+	}
+
+	/**
+	 * Indica si la integracion con Google Calendar esta habilitada para la empresa.
+	 * Lee el parametro APP_GOOGLE_CLENDAR_ENABLE; cualquier error se interpreta como deshabilitado.
+	 *
+	 * @param int $companyID Identificador de la empresa.
+	 * @return bool true solo si el valor del parametro es "true".
+	 */
+	private function googleCalendarEnable($companyID){
+		try{
+			$objParameter = $this->core_web_parameter->getParameter("APP_GOOGLE_CLENDAR_ENABLE",$companyID);
+			if(!$objParameter)
+			return false;
+
+			return strtolower(trim((string)$objParameter->value)) == "true";
+		}
+		catch(\Throwable $ex){
+			return false;
+		}
+	}
+
+	/**
+	 * Normaliza el ID de un evento de Google guardado en BD.
+	 * NULL, '' y '0' (default de tb_transaction_master.descriptionReference) se tratan como sin evento.
+	 *
+	 * @param mixed $eventID Valor leido de la BD.
+	 * @return string ID del evento o cadena vacia si no hay evento.
+	 */
+	private function googleCalendarNormalizeID($eventID){
+		$eventID = trim((string)$eventID);
+		return ($eventID === "0") ? "" : $eventID;
+	}
+
+	/**
+	 * Normaliza una fecha/hora al formato "Y-m-d H:i" para comparar y sincronizar.
+	 * NULL, cadena vacia, '0000-00-00 00:00:00' o fechas no validas se devuelven como cadena vacia.
+	 *
+	 * @param mixed $fecha Fecha en texto (Y-m-d o Y-m-d H:i:s).
+	 * @return string Fecha normalizada "Y-m-d H:i" o cadena vacia.
+	 */
+	private function googleCalendarNormalizeDate($fecha){
+		$fecha = trim((string)$fecha);
+		if($fecha == "" || substr($fecha,0,10) == "0000-00-00")
+		return "";
+
+		$objFecha = date_create($fecha);
+		if(!$objFecha)
+		return "";
+
+		return date_format($objFecha,"Y-m-d H:i");
+	}
+
+	/**
+	 * Construye el titulo y la descripcion del evento de Google Calendar de una orden de taller.
+	 *
+	 * @param int    $companyID         Identificador de la empresa.
+	 * @param bool   $esVisita          true = evento de siguiente visita; false = evento de la fecha de la orden.
+	 * @param string $transactionNumber Numero de la orden.
+	 * @param int    $entityID          Entidad del cliente.
+	 * @param string $problema          Problema reportado (reference2).
+	 * @param string $nota              Nota de la orden (reference1).
+	 * @return array ['titulo' => string, 'descripcion' => string]; el titulo nunca es vacio.
+	 */
+	private function googleCalendarBuildTexto($companyID,$esVisita,$transactionNumber,$entityID,$problema,$nota){
+		//Nombre del cliente: persona natural (nombre y apellido) o, en su defecto, nombre comercial
+		$nombreCliente = "";
+		try{
+			$objCustomer = $entityID ? $this->Customer_Model->get_rowByEntity($companyID,$entityID) : null;
+			if($objCustomer)
+			{
+				$objCustomerNatural	= $this->Natural_Model->get_rowByPK($objCustomer->companyID,$objCustomer->branchID,$objCustomer->entityID);
+				$objCustomerLegal	= $this->Legal_Model->get_rowByPK($objCustomer->companyID,$objCustomer->branchID,$objCustomer->entityID);
+				$nombreCliente		= trim(helper_RequestGetValueObjet($objCustomerNatural,"firstName","")." ".helper_RequestGetValueObjet($objCustomerNatural,"lastName",""));
+				if($nombreCliente == "")
+				$nombreCliente		= trim(helper_RequestGetValueObjet($objCustomerLegal,"comercialName",""));
+			}
+		}
+		catch(\Throwable $ex){
+			$nombreCliente = "";
+		}
+
+		$numero	= trim((string)$transactionNumber);
+		$titulo	= trim("Orden ".$numero);
+		if($nombreCliente != "")
+		$titulo	= $titulo." - ".$nombreCliente;
+		if($esVisita)
+		$titulo	= "Visita: ".$titulo;
+
+		$descripcion =	"Cliente: ".$nombreCliente."\n".
+						"Orden: ".$numero."\n".
+						"Problema: ".trim((string)$problema)."\n".
+						"Nota: ".trim((string)$nota);
+
+		return array("titulo" => $titulo, "descripcion" => $descripcion);
+	}
+
+	/**
+	 * Ejecuta un comando (add|update|delete) contra Google Calendar para una orden de taller.
+	 * La fecha se separa en dia (Y-m-d) y hora (H:i); la hora 00:00 se envia como hora normal (no todo el dia).
+	 * Nunca lanza excepcion: si falla, registra el error en el log y lo acumula en $errores.
+	 *
+	 * @param int        $companyID Identificador de la empresa.
+	 * @param string     $comando   add | update | delete.
+	 * @param string     $eventID   ID del evento (requerido en update/delete).
+	 * @param array|null $texto     Resultado de googleCalendarBuildTexto (null en delete).
+	 * @param string     $fechaHora Fecha del evento (no se usa en delete).
+	 * @param array      $errores   Acumulador de mensajes de error (por referencia).
+	 * @return array ['error'=>bool, 'message'=>string, 'eventID'=>string]
+	 */
+	private function googleCalendarSync($companyID,$comando,$eventID,$texto,$fechaHora,&$errores){
+		$fecha			= "";
+		$hora			= "";
+		$titulo			= $texto ? $texto["titulo"] : "";
+		$descripcion	= $texto ? $texto["descripcion"] : "";
+
+		try{
+			if($comando != "delete")
+			{
+				$fechaNormalizada = $this->googleCalendarNormalizeDate($fechaHora);
+				if($fechaNormalizada == "")
+				throw new \Exception("FECHA DEL EVENTO NO VALIDA");
+
+				$fecha	= substr($fechaNormalizada,0,10);
+				$hora	= substr($fechaNormalizada,11,5);
+			}
+
+			$result = $this->core_web_google_calendar->execute($companyID,$comando,$eventID,$titulo,$descripcion,$fecha,$hora,"unico");
+		}
+		catch(\Throwable $ex){
+			$result = array("error" => true, "message" => $ex->getLine()." ".$ex->getMessage(), "eventID" => $eventID, "data" => null);
+		}
+
+		if($result["error"])
+		{
+			$errores[] = $comando.": ".$result["message"];
+			log_message('error', '[app_purchase_taller][GoogleCalendar] '.$comando.' evento "'.$eventID.'": '.$result["message"]);
+		}
+
+		return $result;
+	}
+
+	/**
+	 * Actualiza un evento existente; si no hay ID o la actualizacion falla, crea un evento nuevo.
+	 *
+	 * @param int    $companyID Identificador de la empresa.
+	 * @param string $eventID   ID actual del evento (vacio = no existe).
+	 * @param array  $texto     Resultado de googleCalendarBuildTexto.
+	 * @param string $fechaHora Fecha del evento.
+	 * @param array  $errores   Acumulador de mensajes de error (por referencia).
+	 * @return string ID vigente del evento (el nuevo si se creo; el original si todo fallo).
+	 */
+	private function googleCalendarUpsert($companyID,$eventID,$texto,$fechaHora,&$errores){
+		if($eventID != "")
+		{
+			$result = $this->googleCalendarSync($companyID,"update",$eventID,$texto,$fechaHora,$errores);
+			if(!$result["error"])
+			return $eventID;
+		}
+
+		$result = $this->googleCalendarSync($companyID,"add","",$texto,$fechaHora,$errores);
+		if(!$result["error"] && trim((string)$result["eventID"]) != "")
+		return $result["eventID"];
+
+		return $eventID;
+	}
+
+	/**
+	 * Guarda los IDs de los eventos de Google de una orden de taller (sin cambios de esquema).
+	 * Evento de la orden  -> tb_transaction_master.descriptionReference ('' = sin evento, nunca NULL).
+	 * Evento de la visita -> tb_transaction_master_info.receiptAmountBankReference (inserta la fila si no existe).
+	 *
+	 * @param int         $companyID           Identificador de la empresa.
+	 * @param int         $transactionID       Identificador de la transaccion.
+	 * @param int         $transactionMasterID Identificador de la orden.
+	 * @param string|null $eventIDOrden        ID del evento de la orden; null = no modificar.
+	 * @param string|null $eventIDVisita       ID del evento de la visita; null = no modificar.
+	 * @param array       $errores             Acumulador de mensajes de error (por referencia).
+	 * @return bool true si se guardo correctamente.
+	 */
+	private function googleCalendarSaveIDs($companyID,$transactionID,$transactionMasterID,$eventIDOrden,$eventIDVisita,&$errores){
+		try{
+			if(!is_null($eventIDOrden))
+			{
+				$objTMGoogle							= array();
+				$objTMGoogle["descriptionReference"]	= (string)$eventIDOrden;
+				$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMGoogle);
+			}
+
+			if(!is_null($eventIDVisita))
+			{
+				$objTMIGoogle								= array();
+				$objTMIGoogle["receiptAmountBankReference"]	= (string)$eventIDVisita;
+				$objTMIExiste								= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+				if($objTMIExiste)
+				{
+					$this->Transaction_Master_Info_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMIGoogle);
+				}
+				else
+				{
+					$objTMIGoogle["companyID"]				= $companyID;
+					$objTMIGoogle["transactionID"]			= $transactionID;
+					$objTMIGoogle["transactionMasterID"]	= $transactionMasterID;
+					$this->Transaction_Master_Info_Model->insert_app_posme($objTMIGoogle);
+				}
+			}
+
+			return true;
+		}
+		catch(\Throwable $ex){
+			$errores[] = "guardar ID: ".$ex->getMessage();
+			log_message('error', '[app_purchase_taller][GoogleCalendar] guardar IDs orden '.$transactionMasterID.': '.$ex->getLine().' '.$ex->getMessage());
+			return false;
+		}
 	}
 
 	function save($mode=""){

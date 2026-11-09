@@ -475,12 +475,25 @@ Ruta: Menú > ADM TALLER > TALLER. La lista se llama **LISTA DE TALLER**.
 4. En **Datos del registro** complete **Estado del equipo**, **Articulo**, **Desc. otros**, **Marca**, **Modelo**, **Serie** y **Accesorios**.
 5. En **Detalle** complete **Moneda**, **Problema**, **Nota**, **Contraseña**, **Solucion** y **Monto**.
 6. Opcional: en **Referencias** escriba la **Descripción**, elija la **Situación** y presione **Agregar**; en **Datos** indique **Fecha de siguiente orden** y **Activo Fijo**; en **Archivos** adjunte documentos.
-7. Presione **Guardar** (en el teléfono, en la barra inferior).
+7. Presione **Guardar**.
 Mensajes de validación: "Establecer Fecha al Documento", "Seleccionar cliente" y "Seleccionar tecnico". Según la configuración de su empresa pueden pedirse otros campos.
 Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Eliminar**, **Imprimir E.**, **Imprimir S.**, **Opciones** (**Imprimir Sticker** y **Crear orden**) y **Guardar**.
 Crear orden: indique antes **Fecha de siguiente orden**, abra **Opciones** > **Crear orden**, revise **Problema** y **Nota** y acepte. La nueva orden queda en esa fecha, con estado inicial y monto 0.
 Notas: al guardar se puede enviar un WhatsApp al cliente según el **Estado del equipo**; si no se envía, la orden igual se guarda y se avisa en pantalla.
+Ver también: Sincronizar las órdenes de taller con Google Calendar.
 <!-- REVISAR: el aviso de WhatsApp no enviado dice "Pedido" y un nombre tecnico -->
+
+## Sincronizar las órdenes de taller con Google Calendar (agenda de citas y visitas)
+Ruta: Menú > ADM TALLER > TALLER.
+Según la configuración de su empresa, posMe pasa las órdenes de taller a un calendario de Google Calendar. La activa y configura el equipo de soporte de posMe; si no está activa, no se toca ningún calendario.
+1. Al guardar una orden nueva se crea un evento en la **Fecha** y hora de la orden. Si indicó **Fecha de siguiente orden**, se crea otro evento para esa visita.
+2. Los eventos se titulan "Orden <número> - <cliente>" y "Visita: Orden <número> - <cliente>". La descripción lleva el cliente, el número de orden, el **Problema** y la **Nota**.
+3. Al editar y presionar **Guardar**: si cambia la **Fecha**, la **Fecha de siguiente orden**, el **Problema**, la **Nota** o el **Cliente**, los eventos se actualizan. Si agrega la fecha de siguiente orden se crea su evento; si la quita, se elimina. Si la orden no tenía evento (se creó antes de activar Google Calendar), se crea.
+4. Al eliminar la orden con **Eliminar**, se borran sus eventos del calendario.
+5. Con **Opciones** > **Crear orden** se borra el evento de visita de la orden original y se crea el evento de la orden nueva.
+Notas: cada evento dura 60 minutos, salvo que su empresa tenga configurada otra duración. Una hora 00:00 se agenda a esa hora, no como evento de todo el día. Si el estado de la orden solo permite cambiar el estado, el calendario no se actualiza.
+Si Google Calendar falla (credenciales o sin internet), la orden se guarda igual y aparece "Orden guardada; no se sincronizó con Google Calendar: ..." con el motivo. Avise al equipo de soporte de posMe.
+Ver también: Registrar una orden de taller, Ver el calendario de programación.
 
 ## Registrar un pedido
 Ruta: Menú > ADM TALLER > PEDIDOS. La lista se llama **LISTA DE PEDIDOS**.
@@ -1605,6 +1618,7 @@ Opción técnica para que el equipo de soporte de posMe aplique actualizaciones 
 ## Parámetros de la empresa
 Los parámetros controlan el comportamiento de posMe por empresa (por ejemplo, orden de aplicación de abonos, lista de precios por defecto, formato de impresión).
 Los parámetros contables se editan en CONTABILIDAD > PARAMETROS; el resto los configura el equipo de soporte de posMe.
+Google Calendar de las órdenes de taller: APP_GOOGLE_CLENDAR_ENABLE (true la activa), GOOGLE_CALENDAR_ID, GOOGLE_CALENDAR_SERVICE_EMAIL y GOOGLE_CALENDAR_PRIVATE_KEY; opcionales GOOGLE_CALENDAR_TIMEZONE (por defecto America/Managua) y GOOGLE_CALENDAR_DURATION_MINUTES (duración de cada evento, por defecto 60 minutos).
 Ver también: Configurar los parámetros contables.
 <!-- REVISAR: pantalla para que el cliente edite parametros generales -->
 
