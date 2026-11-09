@@ -15,6 +15,29 @@ Ruta: cualquier opción del menú.
 5. Los documentos (facturas, abonos, ajustes, entradas, salidas) tienen un campo **Estado**: mientras están en REGISTRADO se pueden modificar; al pasar a APLICADO afectan inventario, caja o saldos.
 Notas: en las pantallas con encabezado de acciones y tarjetas, en el teléfono el botón **Guardar** está en la barra inferior y los botones **Buscar** abren la búsqueda en una ventana dentro de la misma pantalla. **Limpiar** borra lo elegido.
 
+## Adjuntar, subir o ver archivos de un documento (botón Archivos)
+Ruta: dentro de un documento (factura, abono, caja, gasto, compra, cheque, activo fijo, comprobante, etc.) > **Archivos**.
+1. Abra el documento ya guardado y presione **Archivos** (en algunas pantallas es una pestaña u opción del menú de acciones).
+2. Se abre en una pestaña nueva la ventana **Documentos**. Cada documento tiene su propia carpeta: lo que suba queda solo en ese documento.
+3. Para subir archivos arrástrelos desde su computadora a la ventana o use el botón **Subir** de la barra. Los archivos grandes se suben por partes y se ve una barra de progreso.
+4. Para abrir un archivo haga doble clic sobre él: se abre en una pestaña nueva.
+5. Para verlo sin abrirlo selecciónelo y presione la barra espaciadora o el botón de **Vista rápida** (imágenes, PDF y texto).
+6. Para descargarlo selecciónelo y use **Descargar**.
+Botones de la barra: atrás y adelante, recargar, inicio y subir un nivel, nueva carpeta, subir, abrir, descargar, vista rápida, información, copiar, cortar y pegar, eliminar, duplicar, renombrar, redimensionar o rotar imagen, buscar, vista de lista o de iconos, ordenar, pantalla completa y ayuda. También puede hacer clic derecho sobre un archivo o en el espacio vacío para ver el menú con estas opciones.
+Notas: ya no aparece abajo un cuadro de subida aparte; todo se hace en la misma ventana.
+Ver también: Archivos permitidos y avisos en la ventana Documentos.
+
+## Archivos permitidos y avisos en la ventana Documentos
+Ruta: dentro de un documento > **Archivos** (ventana **Documentos**).
+Tipos de archivo permitidos: imágenes (jpg, png, gif, webp, bmp), PDF, txt, csv, xml, Word, Excel, PowerPoint, documentos OpenDocument y zip.
+Restricciones:
+- Cada archivo puede pesar como máximo 20 MB.
+- No se permiten archivos cuyo nombre empiece con punto ni archivos ejecutables o de script (php, exe, bat, html, svg, js y similares). Tampoco se puede renombrar un archivo para darle una de esas extensiones.
+- No están disponibles comprimir o descomprimir, editar el archivo en línea, crear un archivo vacío ni ocultar archivos.
+- El archivo plantilla_de_tasa_de_cambio.csv (de MONEDAS) es de solo lectura y no se puede borrar.
+Si aparece el aviso "Solicitud inválida, recargue", presione F5 para recargar la ventana **Documentos** y repita la acción.
+Ver también: Adjuntar, subir o ver archivos de un documento (botón Archivos).
+
 ## Facturar (crear una factura de venta)
 Ruta: Menú > FACTURACION > FACTURAR (o FACTURACION > NUEVA FACTURA).
 1. Entre a FACTURACION > FACTURAR y presione **Nuevo** (o use NUEVA FACTURA para ir directo).
@@ -1091,8 +1114,8 @@ Ruta: Menú > CONTABILIDAD > MONEDAS.
 2. En **Moneda** elija la **Moneda** que usará la empresa y escriba su **Símbolo** (por ejemplo C$ o $).
 3. Presione **Guardar**.
 Para cambiar el símbolo abra la moneda en la lista y presione **Guardar**; para quitarla presione **Eliminar**.
-Botones de la lista: **Herramienta** (abre la herramienta de tipo de cambio) y **Archivos** (subir el archivo de tasas de cambio).
-Ver también: Actualizar el tipo de cambio (herramienta de monedas).
+Botones de la lista: **Herramienta** (abre la herramienta de tipo de cambio) y **Archivos** (subir el archivo de tasas de cambio en la ventana **Documentos**).
+Ver también: Actualizar el tipo de cambio (herramienta de monedas); Adjuntar, subir o ver archivos de un documento (botón Archivos).
 
 ## Actualizar el tipo de cambio (herramienta de monedas)
 Ruta: Menú > CONTABILIDAD > MONEDAS > **Herramienta**.
