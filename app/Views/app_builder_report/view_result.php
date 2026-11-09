@@ -14,7 +14,7 @@
     <link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/bootstrap/bootstrap.css" rel="stylesheet" />
     <link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/theme-genyx/css/icons.css" rel="stylesheet" />
     <?php echo view('core_template/posme_v2_style'); ?>
-    <link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-report-builder.css?v=3" rel="stylesheet" />
+    <link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-report-builder.css?v=4" rel="stylesheet" />
     <style>
         body { background: #f4f5f7; margin: 0; }
     </style>

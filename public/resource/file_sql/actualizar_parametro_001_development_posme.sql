@@ -4,7 +4,12 @@
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/
-
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'false'
+WHERE p.name = 'GOOGLE_CALENDAR_ENABLE'
+    AND cp.companyID = 2;
+	
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = 'default81MM'

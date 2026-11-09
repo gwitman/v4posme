@@ -159,7 +159,11 @@
 .pv2.prb .prb-modal-body .form-control:focus { border-color: var(--pv2-accent); box-shadow: 0 0 0 3px var(--pv2-accent-bg); }
 .pv2.prb .prb-modal-body .prb-subtitulo { display: flex; align-items: center; gap: 8px; margin: 16px 0 10px; padding: 0; border-top: 0; color: var(--pv2-accent); text-transform: uppercase; letter-spacing: .04em; font-size: 12px; }
 .pv2.prb .prb-modal-body .prb-subtitulo:after { content: ""; flex: 1 1 auto; height: 1px; background: var(--pv2-border); }
-.pv2.prb .prb-modal-body .prb-check { transition: border-color .15s ease, background-color .15s ease; }
+/* Campos valor: grilla de columnas iguales, alineada en filas y columnas */
+.pv2.prb .prb-modal-body .prb-checks { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(180px, 100%), 1fr)); gap: 8px; align-items: stretch; }
+.pv2.prb .prb-modal-body .prb-check { width: 100%; min-width: 0; overflow-wrap: anywhere; justify-content: flex-start; text-align: left; transition: border-color .15s ease, background-color .15s ease; }
+.pv2.prb .prb-modal-body .prb-check input { flex: 0 0 auto; }
+.pv2.prb .prb-modal-body .prb-check:has(input:checked) { border-color: var(--pv2-accent); background: var(--pv2-accent-bg); color: var(--pv2-accent); }
 .pv2.prb .prb-modal-body .prb-check:hover { border-color: var(--pv2-accent); background: var(--pv2-accent-bg); }
 .pv2.prb .prb-modal-footer { background: #fff; border-top: 1px solid var(--pv2-border); padding: 12px 18px; }
 .pv2.prb .prb-modal-footer .btn { min-width: 120px; }
