@@ -1515,7 +1515,11 @@ class Transaction_Master_Model extends Model  {
 			IFNULL(fa.name,'') as activoNombre,
 			IFNULL(fa.marca,'') as activoMarca,
 			IFNULL(fa.modelNumber,'') as activoModelo,
-			IFNULL(fa.address, IFNULL(cus.address,'')) as activoDireccion,
+			IFNULL(TRIM(fa.address),'') as activoDireccion,
+			/*Direccion del cliente: address; si viene vacia, location (domicilio)*/
+			COALESCE(NULLIF(TRIM(cus.address),''), NULLIF(TRIM(cus.location),''), '') as clienteDireccion,
+			IFNULL(depFa.name, IFNULL(depCus.name,'')) as departamento,
+			IFNULL(munFa.name, IFNULL(munCus.name,'')) as municipio,
 			IFNULL(cus.customerNumber,'') as clienteCodigo,
 			IFNULL(CONCAT(nat.firstName,' ',IFNULL(nat.lastName,'')),'') as clienteNombre,
 			IFNULL(cus.phoneNumber,'') as clienteTelefono
@@ -1530,10 +1534,19 @@ class Transaction_Master_Model extends Model  {
 				nat.entityID = tm.entityID
 			left join tb_fixed_assent fa on
 				fa.fixedAssentID = tm.periodPay
+			/*Departamento y municipio: primero los del activo fijo (cityID = departamento, municipalityID = municipio), si no los del cliente*/
+			left join tb_catalog_item depFa on
+				depFa.catalogItemID = fa.cityID
+			left join tb_catalog_item munFa on
+				munFa.catalogItemID = fa.municipalityID
+			left join tb_catalog_item depCus on
+				depCus.catalogItemID = cus.stateID
+			left join tb_catalog_item munCus on
+				munCus.catalogItemID = cus.cityID
 		where
 			tm.isActive = 1 and
 			tm.companyID = $companyID and
-			tm.transactionID = 40 /*ORDEN DE TALLER*/ and 
+			tm.transactionID = 40 /*ORDEN DE TALLER*/ and
 			DATEDIFF(DATE(tm.transactionOn), CURDATE()) in (0,1,2,3,4,5)
 		order by
 			tm.transactionOn asc

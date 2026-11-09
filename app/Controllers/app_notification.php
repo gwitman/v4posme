@@ -3156,7 +3156,10 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Cliente</th>";
 				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Telefono</th>";
 				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Activo Fijo</th>";
-				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Direccion</th>";
+				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Departamento</th>";
+				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Municipio</th>";
+				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Direccion Activo</th>";
+				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Direccion Cliente</th>";
 				$mensaje .= "<th style='border:1px solid #ddd; padding:8px; text-align:left;'>Nota</th>";
 				$mensaje .= "</tr>";
 				$mensaje .= "</thead>";
@@ -3177,7 +3180,10 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars(trim($i->clienteCodigo . " " . $i->clienteNombre)) . "</td>";
 					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars($i->clienteTelefono) . "</td>";
 					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars($activoFijo) . "</td>";
+					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars($i->departamento) . "</td>";
+					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars($i->municipio) . "</td>";
 					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars($i->activoDireccion) . "</td>";
+					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars($i->clienteDireccion) . "</td>";
 					$mensaje .= "<td style='border:1px solid #ddd; padding:8px;'>" . htmlspecialchars($i->note ?? "") . "</td>";
 					$mensaje .= "</tr>";
 				}
