@@ -310,7 +310,7 @@ class core_web_view {
 		//Obtener la vista por defecto
 		$objCompanyDefaultDataView	= $Company_Default_Data_View_Model->get_rowBy_CCCT($user->companyID,$componentID,$callerID,$targetComponentID);
 		if(!$objCompanyDefaultDataView){
-			log_message('warning', '[getViewDefault] No se encontró vista por defecto para companyID: {companyID}, componentID: {componentID}, callerID: {callerID}, targetComponentID: {targetComponentID}', [
+			log_message('warning', '[getViewDefault] No se encontro vista por defecto para companyID: {companyID}, componentID: {componentID}, callerID: {callerID}, targetComponentID: {targetComponentID}', [
 				'companyID' => $user->companyID,
 				'componentID' => $componentID,
 				'callerID' => $callerID,
@@ -327,13 +327,13 @@ class core_web_view {
 		$companyDataView			= $Company_Data_View_Model->get_rowBy_companyIDDataViewIDAndFlavor($user->companyID,$objCompanyDefaultDataView->dataViewID,$callerID,$componentID, $targetComponentID );				
 		if(!$companyDataView)
 		{
-			log_message('info', '[getViewDefault] No se encontró vista por flavor, buscando vista general - dataViewID: {dataViewID}', [
+			log_message('info', '[getViewDefault] No se encontro vista por flavor, buscando vista general - dataViewID: {dataViewID}', [
 				'dataViewID' => $objCompanyDefaultDataView->dataViewID
 			]);
 			//Obtener la vista por company genral
 			$companyDataView			= $Company_Data_View_Model->get_rowBy_companyIDDataViewID($user->companyID,$objCompanyDefaultDataView->dataViewID,$callerID,$componentID);
 			if(!$companyDataView){
-				log_message('warning', '[getViewDefault] No se encontró vista general para companyID: {companyID}, dataViewID: {dataViewID}', [
+				log_message('warning', '[getViewDefault] No se encontro vista general para companyID: {companyID}, dataViewID: {dataViewID}', [
 					'companyID' => $user->companyID,
 					'dataViewID' => $objCompanyDefaultDataView->dataViewID
 				]);
