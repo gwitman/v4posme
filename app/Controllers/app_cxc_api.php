@@ -1305,8 +1305,15 @@ class app_cxc_api extends _BaseController {
 				log_message('error', '[EvolutionApi] DESCARTADO: JSON invalido o vacio');
 				return $this->response->setJSON(['success' => false, 'message' => 'JSON invalido'])->setStatusCode(200);
 			}
-			//No se imprime el base64 completo para no llenar el log con megas por cada archivo
-			log_message('error', '[EvolutionApi] INPUT RAW: ' . print_r($this->webhookPayloadForLog($input), true));
+			//Resumen del payload en una linea (no se imprime el array completo ni el base64)
+			$inputLog = (isset($input["body"]) && is_array($input["body"])) ? $input["body"] : $input;
+			log_message('error', '[EvolutionApi] Mensaje recibido: event=' . ($inputLog["event"] ?? 'null')
+				. ', instancia=' . ($inputLog["instance"] ?? 'null')
+				. ', tipo=' . ($inputLog["data"]["messageType"] ?? 'null')
+				. ', remoteJid=' . ($inputLog["data"]["key"]["remoteJid"] ?? 'null')
+				. ', id=' . ($inputLog["data"]["key"]["id"] ?? 'null')
+				. ', pushName=' . ($inputLog["data"]["pushName"] ?? '')
+				. ', fromMe=' . (!empty($inputLog["data"]["key"]["fromMe"]) ? 'SI' : 'NO'));
 
 			//Normalizar estructura: n8n envia el payload de Evolution dentro de "body"
 			//mientras que base64, webhookUrl, executionMode quedan en la raiz
@@ -1578,7 +1585,11 @@ class app_cxc_api extends _BaseController {
 				}
 			}
 
-			log_message('error', '[EvolutionApi] genericData mapeado: ' . print_r($this->webhookPayloadForLog($genericData), true));
+			log_message('error', '[EvolutionApi] Mensaje mapeado al formato generico: from=' . $from
+				. ', tipo=' . $type
+				. ', texto="' . (mb_strlen($body) > 80 ? mb_substr($body, 0, 80) . '...' : $body) . '"'
+				. ', conArchivo=' . (!empty($genericData["data"]["media"]) ? 'SI' : 'NO')
+				. ', citaMensaje=' . ($quotedBody != '' ? 'SI' : 'NO'));
 
 			//Llamar a la funcion generica
 			return $this->WebHookReceiptMessage_Whatsapp_Generic_posMe($genericData);
@@ -1787,7 +1798,6 @@ class app_cxc_api extends _BaseController {
 	public function WebHookReceiptMessage_Whatsapp_Generic_posMe($inputData)
 	{
 		log_message('error', '[Generic] ====== INICIO WebHookReceiptMessage_Whatsapp_Generic_posMe ======');
-		log_message('error', '[Generic] INPUT DATA: ' . print_r($this->webhookPayloadForLog($inputData), true));
 
 		// Extraer datos básicos
 		log_message("error","[Generic] >> Extrayendo datos del mensaje...");
@@ -1975,7 +1985,6 @@ class app_cxc_api extends _BaseController {
 			$data["customerMessageUrl"]		= $url;
 			$data["customerMessageFile"]	= $url;
 			log_message("error","[Generic]    URL publica: " . $url);
-			log_message("error","[Generic]    paquete procesado: ".print_r($data,true));
 		}
 		
 		//Procesar la referencia al mensaje 
@@ -2068,7 +2077,9 @@ class app_cxc_api extends _BaseController {
 		log_message('error', '[Generic] >> Obteniendo lista de agentes (getAllEmployer)...');
 		log_message('error', '[Generic]    params: companyID=' . $companyID . ', type=' . $dataSession["company"]->type . ', phone=' . $customerPhoneNumber . ', conversationIsNew=' . ($conversationIsNew ? 'SI' : 'NO'));
 		$objListEntityIDEmployer 					= $this->core_web_conversation->getAllEmployer($companyID,$dataSession["company"]->type,$customerPhoneNumber,$message,$conversationIsNew );
-		log_message('error', '[Generic]    getAllEmployer result: ' . print_r($objListEntityIDEmployer, true));
+		log_message('error', '[Generic]    Colaboradores a asignar: tipoAsignacion=' . ($objListEntityIDEmployer["typeAsigned"] ?? 'null')
+			. ', cantidad=' . count($objListEntityIDEmployer["employerList"] ?? [])
+			. ', entityIDs=[' . implode(', ', $objListEntityIDEmployer["employerList"] ?? []) . ']');
 		
 		log_message('error', '[Generic] >> Creando empleadores en conversación (createEmployerInConversation)...');
 		$this->core_web_conversation->createEmployerInConversation($dataSession,$objCustomerConversation[0]->conversationID,$objListEntityIDEmployer["employerList"],$conversationIsNew);
@@ -2094,10 +2105,11 @@ class app_cxc_api extends _BaseController {
 		//////////////////////////////////////////////
 		log_message('error', '[Generic] >> Evaluando notificación a agentes...');
 		$diferenceDate 							= helper_CompareDateTime($lastActivityOnOld,$lastActivityOnNew);
-		log_message("error","[Generic]    lastActivityOnOld: " . $lastActivityOnOld);
-		log_message("error","[Generic]    lastActivityOnNew: " . $lastActivityOnNew);
-		log_message("error","[Generic]    diferenceDate: " . print_r($diferenceDate, true));
-		log_message("error","[Generic]    companyType: " . $dataSession["company"]->type);
+		log_message("error","[Generic]    Ultima actividad anterior=" . $lastActivityOnOld
+			. ', actual=' . $lastActivityOnNew
+			. ', segundos transcurridos=' . ($diferenceDate["segundos"] ?? 'null')
+			. ', comparador=' . ($diferenceDate["comparador"] ?? 'null')
+			. ', tipoEmpresa=' . $dataSession["company"]->type);
 		
 		if( $dataSession["company"]->type == "luciaralstate" )
 		{
@@ -2110,8 +2122,8 @@ class app_cxc_api extends _BaseController {
 				((int)$diferenceDate["segundos"]) >=  10 &&  
 				$objCustomer[0]->allowWhatsappCollection == 0
 			)
-			{			
-				log_message("error","[Generic] >> Enviando notificación a colaboradores asignados (luciaralstate)...");
+			{
+				log_message("error","[Generic] *** DECISION NOTIFICACION COLABORADORES: SI SE ENVIARA (luciaralstate) - conversationID=" . $objCustomerConversation[0]->conversationID . ", cliente=" . $objCustomer[0]->firstName . " (entityID=" . $objCustomer[0]->entityID . ") ***");
 				$urlSend		= base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID;
 				$whatsappLink 	= urlencode($urlSend);
 				log_message('error', '[Generic]    urlSend: ' . $urlSend);
@@ -2128,11 +2140,19 @@ class app_cxc_api extends _BaseController {
 					$objCustomerConversation[0]->conversationID,
 					"📩 *Cliente:".$objCustomer[0]->firstName."* ('".$objCustomer[0]->entityID."') ha enviado un mensaje:\n💬 _\"".$messagePreview."\"_\n👉 Por favor, respóndelo en el siguiente enlace: 🌐 ".$short
 				);
-				log_message('error', '[Generic]    notificationEmployerInConversation ejecutado OK');
+				log_message('error', '[Generic]    notificationEmployerInConversation ejecutado (ver detalle de destinatarios en [notificationEmployerInConversation])');
 			}
 			else
 			{
-				log_message('error', '[Generic]    Condiciones NO cumplidas para notificar (luciaralstate)');
+				//Detallar exactamente que condicion impide la notificacion
+				$motivos = [];
+				if($diferenceDate["comparador"] != "-1")
+					$motivos[] = "la fecha de la ultima actividad no es anterior a la actual (comparador=" . $diferenceDate["comparador"] . ")";
+				if(((int)$diferenceDate["segundos"]) < 10)
+					$motivos[] = "no han pasado 10 segundos desde el ultimo mensaje (segundos=" . $diferenceDate["segundos"] . ")";
+				if($objCustomer[0]->allowWhatsappCollection != 0)
+					$motivos[] = "el numero del cliente esta bloqueado (allowWhatsappCollection=" . $objCustomer[0]->allowWhatsappCollection . ")";
+				log_message('error', '[Generic] *** DECISION NOTIFICACION COLABORADORES: NO SE ENVIARA (luciaralstate). Motivo: ' . implode('; ', $motivos) . ' ***');
 			}
 		}
 		else 
@@ -2141,8 +2161,8 @@ class app_cxc_api extends _BaseController {
 			log_message('error', '[Generic]    comparador=' . $diferenceDate["comparador"] . ', segundos=' . $diferenceDate["segundos"]);
 			//Han pasado almenos 10 segundos desde el utlimo mensaje
 			if($diferenceDate["comparador"] == "-1" && ((int)$diferenceDate["segundos"]) >=  10 )
-			{			
-				log_message("error","[Generic] >> Enviando notificación a colaboradores asignados...");
+			{
+				log_message("error","[Generic] *** DECISION NOTIFICACION COLABORADORES: SI SE ENVIARA - conversationID=" . $objCustomerConversation[0]->conversationID . ", cliente=" . $objCustomer[0]->firstName . " (entityID=" . $objCustomer[0]->entityID . ") ***");
 				$urlSend		= base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID;
 				log_message('error', '[Generic]    urlSend: ' . $urlSend);				
 				$short 			= $urlSend;
@@ -2156,11 +2176,17 @@ class app_cxc_api extends _BaseController {
 					$objCustomerConversation[0]->conversationID,
 					"📩 *Cliente:". $objCustomer[0]->firstName."* ('".$objCustomer[0]->entityID."') ha enviado un mensaje:\n💬 _\"".$messagePreview."\"_\n👉 Por favor, respóndelo en el siguiente enlace: 🌐 ".$short
 				);
-				log_message('error', '[Generic]    notificationEmployerInConversation ejecutado OK');
+				log_message('error', '[Generic]    notificationEmployerInConversation ejecutado (ver detalle de destinatarios en [notificationEmployerInConversation])');
 			}
 			else
 			{
-				log_message('error', '[Generic]    Condiciones NO cumplidas para notificar');
+				//Detallar exactamente que condicion impide la notificacion
+				$motivos = [];
+				if($diferenceDate["comparador"] != "-1")
+					$motivos[] = "la fecha de la ultima actividad no es anterior a la actual (comparador=" . $diferenceDate["comparador"] . ")";
+				if(((int)$diferenceDate["segundos"]) < 10)
+					$motivos[] = "no han pasado 10 segundos desde el ultimo mensaje (segundos=" . $diferenceDate["segundos"] . ")";
+				log_message('error', '[Generic] *** DECISION NOTIFICACION COLABORADORES: NO SE ENVIARA. Motivo: ' . implode('; ', $motivos) . ' ***');
 			}
 		}
 		
@@ -2173,7 +2199,7 @@ class app_cxc_api extends _BaseController {
 			'notificationID'	=> $notificationID
 		];	
 		log_message("error","[Generic] ====== FIN WebHookReceiptMessage_Whatsapp_Generic_posMe ======");
-		log_message("error","[Generic] RESULTADO: " . print_r($result,true));
+		log_message("error","[Generic] RESULTADO: entityID=" . $result["entityID"] . ", conversationID=" . $result["converationID"] . ", notificationID=" . $result["notificationID"]);
 		return $this->response->setJSON($result);
 	}
 }
