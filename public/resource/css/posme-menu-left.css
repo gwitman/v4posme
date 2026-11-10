@@ -76,10 +76,18 @@
 }
 
 /* ---------- Buscador ---------- */
+/* Sin float: si flota, el primer <li> (position relative) queda encima y tapa el input */
 #sidebar .pm-menu-search {
-    float   : left;
-    width   : 100%;
-    padding : 2px 10px 8px 10px;
+    float    : none;
+    clear    : both;
+    width    : 100%;
+    padding  : 2px 10px 8px 10px;
+    position : relative;
+    z-index  : 3;
+}
+
+#sidebar #mainnav {
+    clear : both;
 }
 
 #sidebar .pm-menu-search-box {
@@ -122,7 +130,7 @@
 
 #sidebar .pm-menu-empty {
     display    : none;
-    float      : left;
+    clear      : both;
     width      : 100%;
     padding    : 12px;
     color      : var(--pm-side-muted);
