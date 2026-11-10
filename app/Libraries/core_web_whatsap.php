@@ -2699,5 +2699,82 @@ class core_web_whatsap {
 		echo "</br>fin del proceso de envio</br>";
 		return $results;
 	}
+
+	/**
+	 * Descarga desde Evolution API el archivo (imagen, audio, video, documento) de un mensaje
+	 * recibido, ya desencriptado. Se usa cuando el webhook no trae el base64.
+	 * Endpoint: POST {url}/chat/getBase64FromMediaMessage/{instancia}
+	 * @param int $companyID ID de la empresa
+	 * @param string $messageId data.key.id del mensaje recibido
+	 * @param string $instanciaName Instancia que envio el webhook (vacio = parametro WHATSAP_URL_REQUEST_SESSION)
+	 * @return string base64 del archivo, o "" si no se pudo obtener
+	 */
+	function getMediaBase64ByEvolutionApi($companyID, $messageId, $instanciaName = "")
+	{
+		try
+		{
+			$Parameter_Model 			= new Parameter_Model();
+			$Company_Parameter_Model 	= new Company_Parameter_Model();
+
+			$objPWhatsapToken 			= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+			$objCP_WhatsapToken			= $objPWhatsapToken ? $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapToken->parameterID) : null;
+
+			$objPWhatsapUrl				= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+			$objCP_WhatsapUrl			= $objPWhatsapUrl ? $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrl->parameterID) : null;
+
+			if($instanciaName == "")
+			{
+				$objPWhatsappInstancia	= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
+				$objCP_Instancia		= $objPWhatsappInstancia ? $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsappInstancia->parameterID) : null;
+				$instanciaName			= $objCP_Instancia->value ?? "";
+			}
+
+			if(empty($objCP_WhatsapUrl->value) || empty($objCP_WhatsapToken->value) || $instanciaName == "" || $messageId == "")
+			{
+				log_message('error', '[getMediaBase64ByEvolutionApi] Faltan parametros (url, token, instancia o messageId)');
+				return "";
+			}
+
+			$url 		= rtrim($objCP_WhatsapUrl->value, '/') . '/chat/getBase64FromMediaMessage/' . rawurlencode($instanciaName);
+			$payload 	= [
+				'message' 		=> ['key' => ['id' => $messageId]],
+				'convertToMp4' 	=> false
+			];
+
+			$ch = curl_init($url);
+			curl_setopt_array($ch, [
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_POST           => true,
+				CURLOPT_HTTPHEADER     => [
+					'Content-Type: application/json',
+					'apikey: ' . $objCP_WhatsapToken->value
+				],
+				CURLOPT_POSTFIELDS     => json_encode($payload),
+				CURLOPT_TIMEOUT        => 30,
+				CURLOPT_SSL_VERIFYPEER => false,
+				CURLOPT_SSL_VERIFYHOST => false
+			]);
+			$response = curl_exec($ch);
+			$error    = curl_error($ch);
+			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			curl_close($ch);
+
+			if($error || $httpCode < 200 || $httpCode >= 300)
+			{
+				log_message('error', '[getMediaBase64ByEvolutionApi] HTTP: ' . $httpCode . ' | error: ' . $error . ' | response: ' . substr((string)$response, 0, 300));
+				return "";
+			}
+
+			$json = json_decode((string)$response, true);
+			$base64 = is_array($json) ? (string)($json["base64"] ?? "") : "";
+			log_message('error', '[getMediaBase64ByEvolutionApi] HTTP: ' . $httpCode . ' | base64 length: ' . strlen($base64));
+			return $base64;
+		}
+		catch(\Throwable $ex)
+		{
+			log_message('error', '[getMediaBase64ByEvolutionApi] ERROR: ' . $ex->getMessage());
+			return "";
+		}
+	}
 }
 ?>

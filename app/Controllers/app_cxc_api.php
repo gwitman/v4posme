@@ -1296,261 +1296,410 @@ class app_cxc_api extends _BaseController {
 	public function WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe()
 	{
 		log_message('error', '[EvolutionApi] ====== INICIO WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe ======');
-		$input	 	= $this->request->getJSON(true); // true = array
-		log_message('error', '[EvolutionApi] INPUT RAW: ' . print_r($input, true));
-
-		//Normalizar estructura: n8n envia el payload de Evolution dentro de "body"
-		//mientras que base64, webhookUrl, executionMode quedan en la raiz
-		$base64Root = $input["base64"] ?? '';
-		if(isset($input["body"]) && is_array($input["body"]) && isset($input["body"]["event"]))
+		$messageId = '';
+		try
 		{
-			$input = $input["body"];
-		}
-		//Preservar el base64 que venia en la raiz del payload de n8n
-		if(!empty($base64Root))
-		{
-			$input["base64"] = $base64Root;
-		}
-
-		//Solo se permiten mensajes tipo messages.upsert
-		if(($input["event"] ?? '') != "messages.upsert")
-		{
-			log_message('error', '[EvolutionApi] DESCARTADO: event=' . ($input["event"] ?? 'null') . ' (no es messages.upsert)');
-			return;
-		}
-
-		//No se permiten mensajes enviados por nosotros (fromMe)
-		if(!empty($input["data"]["key"]["fromMe"]))
-		{
-			log_message('error', '[EvolutionApi] DESCARTADO: fromMe=true');
-			return;
-		}
-
-		//Evitar duplicados: Evolution API reenvia el mismo messages.upsert varias veces
-		//(por cada cambio de status DELIVERY_ACK/READ/etc) SIEMPRE con el mismo data.key.id.
-		//Se procesa solo la primera vez que se ve un id y se descartan los reenvios usando
-		//un archivo de control con los ultimos ids procesados.
-		$messageId = (string)($input["data"]["key"]["id"] ?? '');
-		if($messageId !== '')
-		{
-			$dedupDir  = WRITEPATH . 'evolution_dedup';
-			$dedupFile = $dedupDir . '/processed_ids.json';
-			if(!is_dir($dedupDir))
+			$input	 	= $this->request->getJSON(true); // true = array
+			if(!is_array($input) || empty($input))
 			{
-				mkdir($dedupDir, 0777, true);
+				log_message('error', '[EvolutionApi] DESCARTADO: JSON invalido o vacio');
+				return $this->response->setJSON(['success' => false, 'message' => 'JSON invalido'])->setStatusCode(200);
+			}
+			//No se imprime el base64 completo para no llenar el log con megas por cada archivo
+			log_message('error', '[EvolutionApi] INPUT RAW: ' . print_r($this->webhookPayloadForLog($input), true));
+
+			//Normalizar estructura: n8n envia el payload de Evolution dentro de "body"
+			//mientras que base64, webhookUrl, executionMode quedan en la raiz
+			$base64Root = $input["base64"] ?? '';
+			if(isset($input["body"]) && is_array($input["body"]) && isset($input["body"]["event"]))
+			{
+				$input = $input["body"];
+			}
+			//Preservar el base64 que venia en la raiz del payload de n8n
+			if(!empty($base64Root))
+			{
+				$input["base64"] = $base64Root;
 			}
 
-			$processedIds = [];
-			if(file_exists($dedupFile))
+			//Evolution v2 envia "messages.upsert"; algunas configuraciones envian "MESSAGES_UPSERT"
+			$event = strtolower(str_replace('_', '.', (string)($input["event"] ?? '')));
+			if($event != "messages.upsert")
 			{
-				$decoded = json_decode((string)@file_get_contents($dedupFile), true);
-				if(is_array($decoded))
+				log_message('error', '[EvolutionApi] DESCARTADO: event=' . ($input["event"] ?? 'null') . ' (no es messages.upsert)');
+				return $this->response->setJSON(['success' => false, 'message' => 'Evento ignorado'])->setStatusCode(200);
+			}
+
+			//No se permiten mensajes enviados por nosotros (fromMe)
+			if(!empty($input["data"]["key"]["fromMe"]))
+			{
+				log_message('error', '[EvolutionApi] DESCARTADO: fromMe=true');
+				return $this->response->setJSON(['success' => false, 'message' => 'Mensaje propio ignorado'])->setStatusCode(200);
+			}
+
+			//Solo chats individuales: se descartan grupos, estados (status@broadcast) y canales
+			$remoteJid = (string)($input["data"]["key"]["remoteJid"] ?? '');
+			if(
+				$remoteJid == '' ||
+				str_contains($remoteJid, '@g.us') ||
+				str_contains($remoteJid, '@broadcast') ||
+				str_contains($remoteJid, '@newsletter')
+			)
+			{
+				log_message('error', '[EvolutionApi] DESCARTADO: remoteJid no es un chat individual -> ' . $remoteJid);
+				return $this->response->setJSON(['success' => false, 'message' => 'Chat no individual ignorado'])->setStatusCode(200);
+			}
+
+			//Validar parametro WHATSAPP_WEBHOOK_EVOLUTIONAPI (antes de registrar el id,
+			//para que un mensaje recibido con el parametro apagado no quede marcado)
+			$companyID   	= APP_COMPANY;
+			log_message('error', '[EvolutionApi] companyID: ' . $companyID);
+			$paramWebHook 	= $this->core_web_parameter->getParameter("WHATSAPP_WEBHOOK_EVOLUTIONAPI", $companyID);
+			if(!$paramWebHook || strtolower(trim((string)$paramWebHook->value)) != "true")
+			{
+				log_message('error', '[EvolutionApi] DESCARTADO: Parametro WHATSAPP_WEBHOOK_EVOLUTIONAPI no es true. value=' . ($paramWebHook->value ?? 'null'));
+				return $this->response->setJSON(['success' => false, 'message' => 'Webhook desactivado'])->setStatusCode(200);
+			}
+			log_message('error', '[EvolutionApi] Parametro WHATSAPP_WEBHOOK_EVOLUTIONAPI=true, continuando...');
+
+			//Evitar duplicados: Evolution API reenvia el mismo messages.upsert varias veces
+			//SIEMPRE con el mismo data.key.id. Se procesa solo la primera vez.
+			$messageId = (string)($input["data"]["key"]["id"] ?? '');
+			if($messageId !== '' && !$this->evolutionDedupRegister($messageId))
+			{
+				log_message('error', '[EvolutionApi] DESCARTADO: id=' . $messageId . ' ya procesado (reenvio/ack duplicado)');
+				return $this->response->setJSON(['success' => false, 'message' => 'Mensaje duplicado'])->setStatusCode(200);
+			}
+
+			//Telefono del cliente. Con el direccionamiento @lid de WhatsApp el remoteJid no es
+			//el telefono; el numero real viene en senderPn / remoteJidAlt.
+			$phoneJid = $remoteJid;
+			if(str_contains($remoteJid, '@lid'))
+			{
+				$phoneJid = (string)($input["data"]["key"]["senderPn"] ?? ($input["data"]["key"]["remoteJidAlt"] ?? ''));
+				if($phoneJid == '' || str_contains($phoneJid, '@lid'))
 				{
-					$processedIds = $decoded;
+					log_message('error', '[EvolutionApi] DESCARTADO: remoteJid @lid sin senderPn/remoteJidAlt -> ' . $remoteJid);
+					$this->evolutionDedupRemove($messageId);
+					return $this->response->setJSON(['success' => false, 'message' => 'Telefono no disponible (@lid)'])->setStatusCode(200);
+				}
+			}
+			//Se convierte "50588887777@s.whatsapp.net" al formato "50588887777@c.us" que entiende
+			//getNumberPhoneIsContact (deja solo digitos y quita el 505), igual que Wapi2/Ultramsg.
+			//Solo digitos: el valor termina en una consulta SQL y en una ruta de carpeta.
+			$phoneDigits = preg_replace('/\D/', '', explode('@', $phoneJid)[0]);
+			if($phoneDigits == '')
+			{
+				log_message('error', '[EvolutionApi] DESCARTADO: no se pudo obtener el telefono de ' . $phoneJid);
+				$this->evolutionDedupRemove($messageId);
+				return $this->response->setJSON(['success' => false, 'message' => 'Telefono invalido'])->setStatusCode(200);
+			}
+			$from = $phoneDigits . '@c.us';
+			log_message('error', '[EvolutionApi] remoteJid=' . $remoteJid . ' -> from=' . $from);
+
+			//Determinar tipo de mensaje y cuerpo segun la estructura real de Evolution API.
+			//$messageNode apunta al nodo del contenido (imageMessage, documentMessage, etc.)
+			//para leer luego caption, mimetype, fileName y contextInfo del lugar correcto.
+			$messageType 	= $input["data"]["messageType"] ?? 'conversation';
+			$message 		= $input["data"]["message"] ?? [];
+			$body 			= '';
+			$type 			= 'chat';
+			$messageNode 	= [];
+
+			if($messageType == "conversation")
+			{
+				$body = $message["conversation"] ?? '';
+			}
+			elseif($messageType == "extendedTextMessage")
+			{
+				$messageNode = $message["extendedTextMessage"] ?? [];
+				$body = $messageNode["text"] ?? '';
+			}
+			elseif($messageType == "buttonsResponseMessage")
+			{
+				$messageNode = $message["buttonsResponseMessage"] ?? [];
+				$body = $messageNode["selectedDisplayText"] ?? ($messageNode["selectedButtonId"] ?? '');
+			}
+			elseif($messageType == "listResponseMessage")
+			{
+				$messageNode = $message["listResponseMessage"] ?? [];
+				$body = $messageNode["title"] ?? ($messageNode["singleSelectReply"]["selectedRowId"] ?? '');
+			}
+			elseif($messageType == "templateButtonReplyMessage")
+			{
+				$messageNode = $message["templateButtonReplyMessage"] ?? [];
+				$body = $messageNode["selectedDisplayText"] ?? ($messageNode["selectedId"] ?? '');
+			}
+			elseif($messageType == "imageMessage")
+			{
+				$messageNode = $message["imageMessage"] ?? [];
+				$body = $messageNode["caption"] ?? '';
+				$type = 'image';
+			}
+			elseif($messageType == "videoMessage" || $messageType == "ptvMessage")
+			{
+				//ptvMessage = nota de video (video redondo)
+				$messageNode = $message[$messageType] ?? [];
+				$body = $messageNode["caption"] ?? '';
+				$type = 'video';
+			}
+			elseif($messageType == "documentMessage")
+			{
+				$messageNode = $message["documentMessage"] ?? [];
+				$body = $messageNode["caption"] ?? '';
+				$type = 'document';
+			}
+			elseif($messageType == "documentWithCaptionMessage")
+			{
+				//Documento enviado con texto: el documento real esta anidado
+				$messageNode = $message["documentWithCaptionMessage"]["message"]["documentMessage"] ?? [];
+				$body = $messageNode["caption"] ?? '';
+				$type = 'document';
+			}
+			elseif($messageType == "audioMessage")
+			{
+				//ptt=true es nota de voz; de cualquier forma se trata como audio
+				$messageNode = $message["audioMessage"] ?? [];
+				$type = 'ptt';
+			}
+			elseif($messageType == "stickerMessage")
+			{
+				$messageNode = $message["stickerMessage"] ?? [];
+				$type = 'image';
+			}
+			elseif($messageType == "locationMessage")
+			{
+				//Ubicacion: se registra como texto con el enlace de Google Maps
+				$messageNode = $message["locationMessage"] ?? [];
+				$lat  = $messageNode["degreesLatitude"] ?? '';
+				$lng  = $messageNode["degreesLongitude"] ?? '';
+				$body = trim('Ubicacion: ' . ($messageNode["name"] ?? '') . ' https://maps.google.com/?q=' . $lat . ',' . $lng);
+			}
+			else
+			{
+				//Tipo no soportado (reaction, protocolMessage, contact, etc.): descartar
+				log_message('error', '[EvolutionApi] DESCARTADO: messageType no soportado=' . $messageType);
+				return $this->response->setJSON(['success' => false, 'message' => 'Tipo de mensaje no soportado'])->setStatusCode(200);
+			}
+
+			//Mensaje citado (respuesta): el contextInfo esta en el nodo del contenido
+			//(extendedTextMessage, imageMessage, etc.), no solo en extendedTextMessage
+			$quoted 		= $messageNode["contextInfo"]["quotedMessage"] ?? [];
+			$quotedBody 	= $quoted["conversation"]
+							?? ($quoted["extendedTextMessage"]["text"]
+							?? ($quoted["imageMessage"]["caption"]
+							?? ($quoted["videoMessage"]["caption"]
+							?? ($quoted["documentMessage"]["fileName"] ?? ''))));
+
+			//Mapear datos de EvolutionApi al formato generico
+			$genericData 								 = [];
+			$genericData["event"]                        = "message";
+			$genericData["data"]["from"]                 = $from;
+			$genericData["data"]["body"]                 = $body;
+			$genericData["data"]["type"]                 = $type;
+			$genericData["data"]["contact"]["pushname"]  = $input["data"]["pushName"] ?? '';
+			$genericData["data"]["quotedMsg"]["body"]    = $quotedBody;
+
+			//Media
+			if($type == "image" || $type == "document" || $type == "ptt" || $type == "video")
+			{
+				//mimetype y filename se leen del nodo del contenido ($messageNode)
+				$mimetype = '';
+				$filename = '';
+				if($type == "image")
+				{
+					$mimetype = $messageNode["mimetype"] ?? ($messageType == "stickerMessage" ? 'image/webp' : 'image/jpeg');
+					$filename = 'image_' . uniqid() . '.jpg';
+				}
+				elseif($type == "video")
+				{
+					$mimetype = $messageNode["mimetype"] ?? 'video/mp4';
+					$filename = 'video_' . uniqid() . '.mp4';
+				}
+				elseif($type == "document")
+				{
+					$mimetype = $messageNode["mimetype"] ?? 'application/pdf';
+					$filename = $messageNode["fileName"] ?? ('document_' . uniqid() . '.pdf');
+				}
+				elseif($type == "ptt")
+				{
+					//Evolution suele enviar audio/ogg; codecs=opus para notas de voz
+					$mimetype = $messageNode["mimetype"] ?? 'audio/ogg';
+					$filename = 'audio_' . uniqid() . '.ogg';
+				}
+
+				//Evolution API entrega el base64 (con "Webhook Base64" activo) en distintas
+				//ubicaciones segun la version/instancia
+				$base64Media = $message["base64"]
+							?? ($input["data"]["base64"]
+							?? ($input["base64"]
+							?? ($messageNode["base64"] ?? '')));
+
+				//Sin base64: si Evolution tiene S3/MinIO entrega mediaUrl ya desencriptada.
+				//OJO: messageNode["url"] (mmg.whatsapp.net/...enc) esta CIFRADA, no se descarga.
+				if(empty($base64Media))
+				{
+					$mediaUrl = $message["mediaUrl"] ?? ($input["data"]["mediaUrl"] ?? ($messageNode["mediaUrl"] ?? ''));
+					if(!empty($mediaUrl))
+					{
+						$context 		= stream_context_create(['http' => ['timeout' => 20], 'ssl' => ['verify_peer' => false, 'verify_peer_name' => false]]);
+						$mediaContent 	= @file_get_contents($mediaUrl, false, $context);
+						if($mediaContent !== false && $mediaContent !== '')
+						{
+							$base64Media = base64_encode($mediaContent);
+							log_message('error', '[EvolutionApi] Media descargada desde mediaUrl: ' . $mediaUrl);
+						}
+						else
+						{
+							log_message('error', '[EvolutionApi] ERROR: No se pudo descargar media desde mediaUrl: ' . $mediaUrl);
+						}
+					}
+				}
+
+				//Ultimo recurso: pedir el archivo desencriptado a Evolution API
+				if(empty($base64Media) && $messageId !== '')
+				{
+					$base64Media = $this->core_web_whatsap->getMediaBase64ByEvolutionApi($companyID, $messageId, (string)($input["instance"] ?? ''));
+				}
+
+				if(!empty($base64Media))
+				{
+					//Solo mapear al formato generico; la funcion generica se encarga de
+					//decodificar, guardar el archivo y generar la URL publica
+					$genericData["data"]["media"] = [
+						"mimetype" => $mimetype,
+						"data"     => $base64Media,
+						"filename" => $filename
+					];
+					log_message('error', '[EvolutionApi] Media mapeada. mimetype=' . $mimetype . ', filename=' . $filename . ', base64 length=' . strlen($base64Media));
+				}
+				else
+				{
+					log_message('error', '[EvolutionApi] AVISO: No se pudo obtener la media tipo=' . $type . '. Se registra como texto.');
 				}
 			}
 
-			if(isset($processedIds[$messageId]))
-			{
-				log_message('error', '[EvolutionApi] DESCARTADO: id=' . $messageId . ' ya procesado (reenvio/ack duplicado)');
-				return;
-			}
+			log_message('error', '[EvolutionApi] genericData mapeado: ' . print_r($this->webhookPayloadForLog($genericData), true));
 
-			//Registrar el id como procesado y conservar solo los ultimos 500 para no crecer indefinidamente
+			//Llamar a la funcion generica
+			return $this->WebHookReceiptMessage_Whatsapp_Generic_posMe($genericData);
+		}
+		catch(\Throwable $ex)
+		{
+			//Liberar el id para que un reenvio de Evolution pueda reintentar el mensaje
+			$this->evolutionDedupRemove($messageId);
+			log_message('error', '[EvolutionApi] ERROR: linea ' . $ex->getLine() . ' ' . $ex->getMessage());
+			return $this->response->setJSON([
+				'success' => false,
+				'message' => $ex->getLine() . ' ' . $ex->getMessage()
+			])->setStatusCode(200);
+		}
+	}
+
+	/**
+	 * Registra el id de un mensaje de Evolution API como procesado (lectura y escritura
+	 * bajo el mismo bloqueo para que dos webhooks simultaneos no pasen ambos).
+	 * @param string $messageId data.key.id del mensaje
+	 * @return bool true si es la primera vez que se ve el id, false si es duplicado
+	 */
+	private function evolutionDedupRegister($messageId)
+	{
+		$dedupDir  = WRITEPATH . 'evolution_dedup';
+		$dedupFile = $dedupDir . '/processed_ids.json';
+		if(!is_dir($dedupDir))
+		{
+			@mkdir($dedupDir, 0777, true);
+		}
+
+		$handle = @fopen($dedupFile, 'c+');
+		if($handle === false)
+		{
+			//Si no se puede abrir el archivo de control se procesa el mensaje igual
+			log_message('error', '[EvolutionApi] AVISO: no se pudo abrir ' . $dedupFile);
+			return true;
+		}
+
+		$isNew = true;
+		flock($handle, LOCK_EX);
+		$decoded 		= json_decode((string)stream_get_contents($handle), true);
+		$processedIds 	= is_array($decoded) ? $decoded : [];
+
+		if(isset($processedIds[$messageId]))
+		{
+			$isNew = false;
+		}
+		else
+		{
+			//Conservar solo los ultimos 500 ids para no crecer indefinidamente
 			$processedIds[$messageId] = time();
 			if(count($processedIds) > 500)
 			{
 				asort($processedIds);
 				$processedIds = array_slice($processedIds, -500, null, true);
 			}
-			file_put_contents($dedupFile, json_encode($processedIds), LOCK_EX);
-			log_message('error', '[EvolutionApi] id=' . $messageId . ' registrado como procesado, continuando...');
+			ftruncate($handle, 0);
+			rewind($handle);
+			fwrite($handle, json_encode($processedIds));
+			fflush($handle);
 		}
+		flock($handle, LOCK_UN);
+		fclose($handle);
+		return $isNew;
+	}
 
-		//Autenticar sesion por defecto para obtener companyID		
-		$companyID   = APP_COMPANY;
-		log_message('error', '[EvolutionApi] companyID: ' . $companyID);
-
-		//Validar parametro WHATSAPP_WEBHOOK_EVOLUTIONAPI
-		$paramWebHook = $this->core_web_parameter->getParameter("WHATSAPP_WEBHOOK_EVOLUTIONAPI", $companyID);
-		if(!$paramWebHook || strtolower($paramWebHook->value) != "true")
+	/**
+	 * Quita un id del archivo de control de duplicados (cuando el mensaje fallo o se descarto
+	 * despues de registrarlo), para que un reenvio de Evolution lo vuelva a procesar.
+	 * @param string $messageId data.key.id del mensaje
+	 * @return void
+	 */
+	private function evolutionDedupRemove($messageId)
+	{
+		$dedupFile = WRITEPATH . 'evolution_dedup/processed_ids.json';
+		if($messageId === '' || !file_exists($dedupFile))
 		{
-			log_message('error', '[EvolutionApi] DESCARTADO: Parametro WHATSAPP_WEBHOOK_EVOLUTIONAPI no es true. value=' . ($paramWebHook->value ?? 'null'));
-			return;
-		}
-		log_message('error', '[EvolutionApi] Parametro WHATSAPP_WEBHOOK_EVOLUTIONAPI=true, continuando...');
-
-		//Extraer remoteJid y limpiar formato (quitar @s.whatsapp.net)
-		$remoteJid = $input["data"]["key"]["remoteJid"] ?? '';
-
-		//Determinar tipo de mensaje y cuerpo segun la estructura real de Evolution API.
-		//$messageNode apunta al nodo del contenido (imageMessage, documentMessage, etc.)
-		//para leer luego caption, mimetype, fileName y url del lugar correcto.
-		$messageType 	= $input["data"]["messageType"] ?? 'conversation';
-		$body 			= '';
-		$type 			= 'chat';
-		$messageNode 	= [];
-
-		if($messageType == "conversation")
-		{
-			$body = $input["data"]["message"]["conversation"] ?? '';
-			$type = 'chat';
-		}
-		elseif($messageType == "extendedTextMessage")
-		{
-			$body = $input["data"]["message"]["extendedTextMessage"]["text"] ?? '';
-			$type = 'chat';
-		}
-		elseif($messageType == "imageMessage")
-		{
-			$messageNode = $input["data"]["message"]["imageMessage"] ?? [];
-			$body = $messageNode["caption"] ?? '';
-			$type = 'image';
-		}
-		elseif($messageType == "videoMessage")
-		{
-			$messageNode = $input["data"]["message"]["videoMessage"] ?? [];
-			$body = $messageNode["caption"] ?? '';
-			$type = 'video';
-		}
-		elseif($messageType == "documentMessage")
-		{
-			$messageNode = $input["data"]["message"]["documentMessage"] ?? [];
-			$body = $messageNode["caption"] ?? '';
-			$type = 'document';
-		}
-		elseif($messageType == "documentWithCaptionMessage")
-		{
-			//Documento enviado con texto: el documento real esta anidado
-			$messageNode = $input["data"]["message"]["documentWithCaptionMessage"]["message"]["documentMessage"] ?? [];
-			$body = $messageNode["caption"] ?? '';
-			$type = 'document';
-		}
-		elseif($messageType == "audioMessage")
-		{
-			$messageNode = $input["data"]["message"]["audioMessage"] ?? [];
-			//ptt=true es nota de voz; de cualquier forma se trata como audio
-			$type = 'ptt';
-		}
-		elseif($messageType == "stickerMessage")
-		{
-			$messageNode = $input["data"]["message"]["stickerMessage"] ?? [];
-			$type = 'image';
-		}
-		else
-		{
-			//Tipo no soportado (reaction, location, contact, etc.): descartar
-			log_message('error', '[EvolutionApi] DESCARTADO: messageType no soportado=' . $messageType);
 			return;
 		}
 
-		//Mapear datos de EvolutionApi al formato generico
-		$genericData 								 = [];
-		$genericData["event"]                        = "message";
-		$genericData["data"]["from"]                 = $remoteJid;
-		$genericData["data"]["body"]                 = $body;
-		$genericData["data"]["type"]                 = $type;
-		$genericData["data"]["contact"]["pushname"]  = $input["data"]["pushName"] ?? '';
-		$genericData["data"]["quotedMsg"]["body"]    = $input["data"]["message"]["extendedTextMessage"]["contextInfo"]["quotedMessage"]["conversation"] ?? '';
-
-		//Media: si el mensaje tiene media, intentar obtenerla via base64 del campo base64 de Evolution
-		if($type == "image" || $type == "document" || $type == "ptt" || $type == "video")
+		$handle = @fopen($dedupFile, 'c+');
+		if($handle === false)
 		{
-			$mimetype 		= '';
-			$filename 		= '';
-			$base64Media 	= '';
-
-			//mimetype y filename se leen del nodo del contenido ($messageNode)
-			if($type == "image")
-			{
-				$mimetype = $messageNode["mimetype"] ?? 'image/jpeg';
-				$filename = 'image_' . uniqid() . '.jpg';
-			}
-			elseif($type == "video")
-			{
-				$mimetype = $messageNode["mimetype"] ?? 'video/mp4';
-				$filename = 'video_' . uniqid() . '.mp4';
-			}
-			elseif($type == "document")
-			{
-				$mimetype = $messageNode["mimetype"] ?? 'application/pdf';
-				$filename = $messageNode["fileName"] ?? ('document_' . uniqid() . '.pdf');
-			}
-			elseif($type == "ptt")
-			{
-				//Evolution suele enviar audio/ogg; codecs=opus para notas de voz
-				$mimetype = $messageNode["mimetype"] ?? 'audio/ogg';
-				$filename = 'audio_' . uniqid() . '.ogg';
-			}
-
-			//Evolution API entrega el base64 en distintas ubicaciones segun la version/instancia:
-			//1) data.message.base64 (hermano de imageMessage/documentMessage/etc)
-			//2) data.base64
-			//3) base64 en la raiz del payload (formato n8n)
-			//4) dentro del propio nodo del contenido ($messageNode["base64"])
-			//5) data.message[messageType].base64 (anidado dentro del tipo)
-			$mediaBase64 = $input["data"]["message"]["base64"] ?? '';
-
-			if(empty($mediaBase64))
-			{
-				$mediaBase64 = $input["data"]["base64"] ?? '';
-			}
-			if(empty($mediaBase64))
-			{
-				$mediaBase64 = $input["base64"] ?? '';
-			}
-			if(empty($mediaBase64))
-			{
-				$mediaBase64 = $messageNode["base64"] ?? '';
-			}
-			if(empty($mediaBase64))
-			{
-				$mediaBase64 = $input["data"]["message"][$messageType]["base64"] ?? '';
-			}
-
-			//Si aun no hay base64, intentar descargar desde la URL del nodo del contenido
-			$mediaUrl = $messageNode["url"] ?? ($messageNode["mediaUrl"] ?? '');
-
-			if(!empty($mediaBase64))
-			{
-				$base64Media = $mediaBase64;
-				log_message('error', '[EvolutionApi] Media obtenida desde base64, length=' . strlen($base64Media));
-			}
-			elseif(!empty($mediaUrl))
-			{
-				$mediaContent = @file_get_contents($mediaUrl);
-				if($mediaContent !== false)
-				{
-					$base64Media = base64_encode($mediaContent);
-					log_message('error', '[EvolutionApi] Media descargada desde URL: ' . $mediaUrl);
-				}
-				else
-				{
-					log_message('error', '[EvolutionApi] ERROR: No se pudo descargar media desde URL: ' . $mediaUrl);
-				}
-			}
-
-			if(!empty($base64Media))
-			{
-				//Solo mapear al formato generico; la funcion generica se encarga de
-				//decodificar, guardar el archivo y generar la URL publica
-				$genericData["data"]["media"] = [
-					"mimetype" => $mimetype,
-					"data"     => $base64Media,
-					"filename" => $filename
-				];
-				log_message('error', '[EvolutionApi] Media mapeada al formato generico. mimetype=' . $mimetype . ', filename=' . $filename . ', base64 length=' . strlen($base64Media));
-			}
-			else
-			{
-				log_message('error', '[EvolutionApi] AVISO: No se encontro base64 ni URL para media tipo=' . $type);
-			}
+			return;
 		}
+		flock($handle, LOCK_EX);
+		$decoded = json_decode((string)stream_get_contents($handle), true);
+		if(is_array($decoded) && isset($decoded[$messageId]))
+		{
+			unset($decoded[$messageId]);
+			ftruncate($handle, 0);
+			rewind($handle);
+			fwrite($handle, json_encode($decoded));
+			fflush($handle);
+		}
+		flock($handle, LOCK_UN);
+		fclose($handle);
+	}
 
-		log_message('error', '[EvolutionApi] genericData mapeado: ' . print_r($genericData, true));
-
-		//Llamar a la funcion generica
-		return $this->WebHookReceiptMessage_Whatsapp_Generic_posMe($genericData);
+	/**
+	 * Copia del payload para el log: recorta los textos largos (base64 de archivos)
+	 * para no escribir megas en el log por cada mensaje multimedia.
+	 * @param mixed $data payload del webhook
+	 * @return mixed payload con los textos de mas de 300 caracteres recortados
+	 */
+	private function webhookPayloadForLog($data)
+	{
+		if(is_array($data))
+		{
+			foreach($data as $key => $value)
+			{
+				$data[$key] = $this->webhookPayloadForLog($value);
+			}
+			return $data;
+		}
+		if(is_string($data) && strlen($data) > 300)
+		{
+			return substr($data, 0, 60) . '...[recortado, length=' . strlen($data) . ']';
+		}
+		return $data;
 	}
 
 	//https://posme.nl/v4posme/comercial_luciana/public/app_cxc_api/WebHookReceiptMessage_Whatsapp_Wapi2_posMe
@@ -1638,7 +1787,7 @@ class app_cxc_api extends _BaseController {
 	public function WebHookReceiptMessage_Whatsapp_Generic_posMe($inputData)
 	{
 		log_message('error', '[Generic] ====== INICIO WebHookReceiptMessage_Whatsapp_Generic_posMe ======');
-		log_message('error', '[Generic] INPUT DATA: ' . print_r($inputData, true));
+		log_message('error', '[Generic] INPUT DATA: ' . print_r($this->webhookPayloadForLog($inputData), true));
 
 		// Extraer datos básicos
 		log_message("error","[Generic] >> Extrayendo datos del mensaje...");
@@ -1736,6 +1885,18 @@ class app_cxc_api extends _BaseController {
 			}
 		}
 
+		//Si llego un mensaje multimedia sin el archivo (el proveedor no lo entrego),
+		//se registra como texto para no perder el mensaje del cliente
+		if(
+			in_array($data["customerMessageType"], ["image", "pdf", "audio", "video", "document"]) &&
+			empty($inputData['data']['media']['data'])
+		)
+		{
+			log_message('error', '[Generic] AVISO: mensaje tipo ' . $data["customerMessageType"] . ' sin media, se registra como texto');
+			$data["customerMessage"] 		= trim($data["customerMessage"] . " [Archivo " . $data["customerMessageType"] . " no disponible]");
+			$data["customerMessageType"] 	= "text";
+		}
+
 		//Guardar el recurso o imagen o video o pdf
 		if(
 			$data["customerMessageType"] == "image" || 
@@ -1747,15 +1908,34 @@ class app_cxc_api extends _BaseController {
 		{
 			log_message('error', '[Generic] >> Procesando recurso multimedia, tipo: ' . $data["customerMessageType"]);
 			//Guardar la imagen
-			$mediaTipe 	= $inputData['data']['media']['mimetype'];
-			$base64 	= $inputData['data']['media']['data'];
-			$filename 	= $inputData['data']['media']['filename'];
+			$mediaTipe 	= (string)($inputData['data']['media']['mimetype'] ?? '');
+			$base64 	= (string)($inputData['data']['media']['data'] ?? '');
+			$filename 	= (string)($inputData['data']['media']['filename'] ?? '');
 			log_message('error', '[Generic]    mediaMimetype: ' . $mediaTipe);
 			log_message('error', '[Generic]    mediaFilename: ' . $filename);
 			log_message('error', '[Generic]    base64 length: ' . strlen($base64));
-			
-			//generar nombre
-			$extension = explode('/', $mediaTipe)[1];
+
+			//generar nombre: primero la extension del nombre original; si no tiene, la del mimetype
+			//quitando parametros ("audio/ogg; codecs=opus" -> "ogg")
+			$extension = strtolower(preg_replace('/[^A-Za-z0-9]/', '', pathinfo($filename, PATHINFO_EXTENSION)));
+			if($extension == '' || strlen($extension) > 10)
+			{
+				$mimeBase 	= strtolower(trim(explode(';', $mediaTipe)[0]));
+				$mimeMap 	= [
+					'image/jpeg' 		=> 'jpg',
+					'audio/mpeg' 		=> 'mp3',
+					'audio/mp4' 		=> 'm4a',
+					'video/quicktime' 	=> 'mov',
+					'text/plain' 		=> 'txt',
+					'application/msword' 			=> 'doc',
+					'application/vnd.ms-excel' 		=> 'xls',
+					'application/vnd.openxmlformats-officedocument.wordprocessingml.document' 	=> 'docx',
+					'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' 		=> 'xlsx',
+					'application/vnd.openxmlformats-officedocument.presentationml.presentation' => 'pptx'
+				];
+				$extension 	= $mimeMap[$mimeBase] ?? preg_replace('/[^a-z0-9]/', '', explode('/', $mimeBase . '/')[1]);
+				$extension 	= ($extension == '' || strlen($extension) > 10) ? 'bin' : $extension;
+			}
 			$filename  = uniqid('file_') . '.' . $extension;
 			log_message('error', '[Generic]    filename generado: ' . $filename);
 
@@ -1775,7 +1955,8 @@ class app_cxc_api extends _BaseController {
 			log_message('error', '[Generic]    componentID: ' . $objComponentCustomerConversation->componentID);
 			
 			//Crear la Carpeta para almacenar los Archivos del Documento
-			$phoneCustomer = $data["customerPhoneNumber"];
+			//(el telefono viene del webhook: se limpia para que no pueda salir de la carpeta con "../")
+			$phoneCustomer = preg_replace('/[^A-Za-z0-9_\-]/', '', (string)$data["customerPhoneNumber"]);
 			$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_".$objComponentCustomerConversation->componentID."/component_item_".$phoneCustomer;
 			log_message('error', '[Generic]    documentoPath: ' . $documentoPath);
 			if (!file_exists($documentoPath))
@@ -1789,7 +1970,7 @@ class app_cxc_api extends _BaseController {
 			log_message('error', '[Generic]    Archivo guardado: ' . $documentoPath . '/' . $filename);
 			
 			//Obtener la url
-			$url 							= base_url()."/resource/file_company/company_2/component_".$objComponentCustomerConversation->componentID."/component_item_".$phoneCustomer."/".$filename;
+			$url 							= base_url()."/resource/file_company/company_".APP_COMPANY."/component_".$objComponentCustomerConversation->componentID."/component_item_".$phoneCustomer."/".$filename;
 			$data["customerMessage"]	 	= $inputData['data']['body'] ?? '';
 			$data["customerMessageUrl"]		= $url;
 			$data["customerMessageFile"]	= $url;
@@ -1851,6 +2032,8 @@ class app_cxc_api extends _BaseController {
 		log_message('error', '[Generic] >> Insertando notificación en conversación...');
 		$objTag		 								= $this->Tag_Model->get_rowByName("MENSAJE DE CONVERSACION");
 		log_message('error', '[Generic]    tagID: ' . ($objTag ? $objTag->tagID : 'NULL'));
+		if(!$objTag)
+		throw new \Exception("EL TAG 'MENSAJE DE CONVERSACION' NO EXISTE...");
 		$objNotification 							= array();		
 		$objNotification["errorID"] 				= 0;
 		$objNotification["from"] 					= $objCustomer[0]->firstName;
@@ -1932,7 +2115,9 @@ class app_cxc_api extends _BaseController {
 				$urlSend		= base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer[0]->entityID;
 				$whatsappLink 	= urlencode($urlSend);
 				log_message('error', '[Generic]    urlSend: ' . $urlSend);
-				$short 			= file_get_contents("https://is.gd/create.php?format=simple&url=$whatsappLink");
+				//Acortador con timeout: si is.gd no responde se usa la url completa
+				$short 			= @file_get_contents("https://is.gd/create.php?format=simple&url=$whatsappLink", false, stream_context_create(['http' => ['timeout' => 5]]));
+				$short 			= ($short === false || trim($short) == '') ? $urlSend : trim($short);
 				log_message('error', '[Generic]    shortUrl: ' . $short);
 			
 				$messagePreview = mb_strlen($message) > 80 ? mb_substr($message, 0, 80) . '...' : $message;

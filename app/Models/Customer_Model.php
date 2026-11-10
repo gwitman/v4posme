@@ -472,10 +472,13 @@ class Customer_Model extends Model  {
     }
 	function get_rowBy_PhoneNumberAnd_Email_phoneFixed($string){
 		$db 	= db_connect();
-		$builder	= $db->table("tb_item");    
+		$builder	= $db->table("tb_item");
+		//El telefono puede venir de un webhook externo: se escapa para el SQL y se duplica
+		//el "%" porque el texto se concatena dentro del formato de sprintf
+		$string = str_replace('%', '%%', $db->escapeString((string)$string));
 		$sql = "";
 		$sql = sprintf("
-			select 
+			select
 				c.entityID,
 				c.subCategoryID,
 				c.categoryID,
@@ -495,26 +498,28 @@ class Customer_Model extends Model  {
 				left join tb_entity_phone ep on 
 					ep.entityID = c.entityID 
 			where 
-				c.isActive = 1 and 
+				c.isActive = 1 and
 				(
-					fn_get_number_phone(2,c.phoneNumber) = fn_get_number_phone(2,'".$string."') 
-					
-				) or 
-				(
-					ee.entityID is not null and 
 					(
-						fn_get_number_phone(2,ee.email) = fn_get_number_phone(2,'".$string."')						
-					)
-					
-				) or 
-				(
-					ep.entityID is not null and 
+						fn_get_number_phone(2,c.phoneNumber) = fn_get_number_phone(2,'".$string."')
+
+					) or
 					(
-						fn_get_number_phone(2,ep.number) = fn_get_number_phone(2,'".$string."') 
+						ee.entityID is not null and
+						(
+							fn_get_number_phone(2,ee.email) = fn_get_number_phone(2,'".$string."')
+						)
+
+					) or
+					(
+						ep.entityID is not null and
+						(
+							fn_get_number_phone(2,ep.number) = fn_get_number_phone(2,'".$string."')
+						)
+
 					)
-					
 				)
-			order by 
+			order by
 				c.entityID asc   
 			limit 1 
 		");	
