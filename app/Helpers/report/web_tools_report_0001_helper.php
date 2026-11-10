@@ -5740,13 +5740,20 @@ function helper_reporteA4mmTransactionMasterTallerFrioTec(
 	$tallerAccesorios		= helper_RequestGetValueObjet($objData["objItemAccesorios"],"name","");
 	$tallerModelo			= helper_RequestGetValueObjet($objData["objTransactionMasterInfo"],"reference2","");
 	$tallerSerie			= helper_RequestGetValueObjet($objData["objTransactionMaster"],"reference4","");
-	$tallerTecnico			= helper_RequestGetValueObjet($objData["objEmployerNatural"],"firstName","");
+	//Nombre completo del tecnico (nombre y apellido)
+	$tallerTecnico			= trim(helper_RequestGetValueObjet($objData["objEmployerNatural"],"firstName","")." ".helper_RequestGetValueObjet($objData["objEmployerNatural"],"lastName",""));
 	$tallerFecha			= helper_RequestGetValueObjet($objData["objTransactionMaster"],"transactionOn","");
 	$tallerNumero			= helper_RequestGetValueObjet($objData["objTransactionMaster"],"transactionNumber","");
 	$tallerProblema			= helper_RequestGetValueObjet($objData["objTransactionMaster"],"reference2","");
 	$tallerNota				= helper_RequestGetValueObjet($objData["objTransactionMaster"],"reference1","");
 	$tallerSolucion			= helper_RequestGetValueObjet($objData["objTransactionMaster"],"reference3","");
 	$tallerEstadoEquipo		= isset($objData["objItemEstadoEquipo"]) ? helper_RequestGetValueObjet($objData["objItemEstadoEquipo"],"name","") : "";
+
+	//Si problema / nota estan vacios se deja un espacio en blanco para escribir a mano sobre la hoja
+	$styleProblema			= trim($tallerProblema) === "" ? "height:70px;" : "";
+	$styleNota				= trim($tallerNota)     === "" ? "height:70px;" : "";
+	$tallerProblema			= trim($tallerProblema) === "" ? "&nbsp;" : $tallerProblema;
+	$tallerNota				= trim($tallerNota)     === "" ? "&nbsp;" : $tallerNota;
 	$tallerVisitaTecnica	= helper_RequestGetValueObjet($objData["objTransactionMaster"],"nextVisit","");
 	$tallerVisitaTecnica	= ($tallerVisitaTecnica && strtotime($tallerVisitaTecnica)) ? date("Y-m-d h:i A", strtotime($tallerVisitaTecnica)) : $tallerVisitaTecnica;
 
@@ -5965,14 +5972,14 @@ function helper_reporteA4mmTransactionMasterTallerFrioTec(
             <td  style='text-align:center;vertical-align:top;font-weight: bold;' >Problema reportado</td>
           </tr>
 		  <tr>
-            <td  style='text-align:left;vertical-align:top;' >".$tallerProblema."</td>
+            <td  style='text-align:left;vertical-align:top;".$styleProblema."' >".$tallerProblema."</td>
           </tr>
-		  
+
 		  <tr>
             <td  style='text-align:center;vertical-align:top;font-weight: bold;' >Nota</td>
           </tr>
 		  <tr>
-            <td  style='text-align:left;vertical-align:top;' >".$tallerNota."</td>
+            <td  style='text-align:left;vertical-align:top;".$styleNota."' >".$tallerNota."</td>
           </tr>
          </table>";
 
@@ -6113,7 +6120,8 @@ function helper_reporteA4mmTransactionMasterTallerOutputFrioTec(
 	//Datos del taller
 	$tallerArticulo			= helper_RequestGetValueObjet($objData["objItemArticulo"],"name","");
 	$tallerAccesorios		= helper_RequestGetValueObjet($objData["objItemAccesorios"],"name","");
-	$tallerTecnico			= helper_RequestGetValueObjet($objData["objEmployerNatural"],"firstName","");
+	//Nombre completo del tecnico (nombre y apellido)
+	$tallerTecnico			= trim(helper_RequestGetValueObjet($objData["objEmployerNatural"],"firstName","")." ".helper_RequestGetValueObjet($objData["objEmployerNatural"],"lastName",""));
 	$tallerFecha			= helper_RequestGetValueObjet($objData["objTransactionMaster"],"transactionOn","");
 	$tallerNumero			= helper_RequestGetValueObjet($objData["objTransactionMaster"],"transactionNumber","");
 	$tallerProblema			= helper_RequestGetValueObjet($objData["objTransactionMaster"],"reference2","");
@@ -6121,6 +6129,14 @@ function helper_reporteA4mmTransactionMasterTallerOutputFrioTec(
 	$tallerSolucion			= helper_RequestGetValueObjet($objData["objTransactionMaster"],"reference3","");
 	$tallerEstadoEquipo		= isset($objData["objItemEstadoEquipo"]) ? helper_RequestGetValueObjet($objData["objItemEstadoEquipo"],"name","") : "";
 	$tallerVisitaTecnica	= helper_RequestGetValueObjet($objData["objTransactionMaster"],"nextVisit","");
+
+	//Si problema / nota / solucion estan vacios se deja un espacio en blanco para escribir a mano sobre la hoja
+	$styleProblema			= trim($tallerProblema) === "" ? "height:70px;" : "";
+	$styleNota				= trim($tallerNota)     === "" ? "height:70px;" : "";
+	$styleSolucion			= trim($tallerSolucion) === "" ? "height:70px;" : "";
+	$tallerProblema			= trim($tallerProblema) === "" ? "&nbsp;" : $tallerProblema;
+	$tallerNota				= trim($tallerNota)     === "" ? "&nbsp;" : $tallerNota;
+	$tallerSolucion			= trim($tallerSolucion) === "" ? "&nbsp;" : $tallerSolucion;
 
 	//Monto de la salida
 	$simbolMoneda			= isset($objCurrency->simbol) ? $objCurrency->simbol : "";
@@ -6334,19 +6350,19 @@ function helper_reporteA4mmTransactionMasterTallerOutputFrioTec(
             <td  style='text-align:center;vertical-align:top;font-weight: bold;' >Problema reportado</td>
           </tr>
 		  <tr>
-            <td  style='text-align:left;vertical-align:top;' >".$tallerProblema."</td>
+            <td  style='text-align:left;vertical-align:top;".$styleProblema."' >".$tallerProblema."</td>
           </tr>
 		  <tr>
             <td  style='text-align:center;vertical-align:top;font-weight: bold;' >Nota</td>
           </tr>
 		  <tr>
-            <td  style='text-align:left;vertical-align:top;' >".$tallerNota."</td>
+            <td  style='text-align:left;vertical-align:top;".$styleNota."' >".$tallerNota."</td>
           </tr>
 		  <tr>
             <td  style='text-align:center;vertical-align:top;font-weight: bold;' >Solución</td>
           </tr>
 		  <tr>
-            <td  style='text-align:left;vertical-align:top;' >".$tallerSolucion."</td>
+            <td  style='text-align:left;vertical-align:top;".$styleSolucion."' >".$tallerSolucion."</td>
           </tr>
          </table>";
 
