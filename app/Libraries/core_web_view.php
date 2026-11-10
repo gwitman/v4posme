@@ -397,11 +397,11 @@ class core_web_view {
 			//crear el encabezado
 			$table = $table."<thead>";
 			$table = $table."<tr>";
-			$summaryColumns	= explode(",",$data["view_config"]->summaryColumns);
-			$formatColumns	= explode(",",$data["view_config"]->formatColumns);
+			$summaryColumns	= explode(",",$data["view_config"]->summaryColumns ?? "");
+			$formatColumns	= explode(",",$data["view_config"]->formatColumns ?? "");
 			
-			$cabezera1	= explode(",",$data["view_config"]->nonVisibleColumns);
-			$cabezera2	= explode(",",$data["view_config"]->visibleColumns);
+			$cabezera1	= explode(",",$data["view_config"]->nonVisibleColumns ?? "");
+			$cabezera2	= explode(",",$data["view_config"]->visibleColumns ?? "");
 			$cabezera3	= array_merge($cabezera1 , $cabezera2);	
 			
 			
@@ -680,10 +680,10 @@ class core_web_view {
 
         // Crear el encabezado
         $table .= "<thead><tr>";
-        $summaryColumns = explode(",", $data["view_config"]->summaryColumns);
-        $formatColumns = explode(",", $data["view_config"]->formatColumns);
-        $cabezera1 = explode(",", $data["view_config"]->nonVisibleColumns);
-        $cabezera2 = explode(",", $data["view_config"]->visibleColumns);
+        $summaryColumns = explode(",", $data["view_config"]->summaryColumns ?? "");
+        $formatColumns = explode(",", $data["view_config"]->formatColumns ?? "");
+        $cabezera1 = explode(",", $data["view_config"]->nonVisibleColumns ?? "");
+        $cabezera2 = explode(",", $data["view_config"]->visibleColumns ?? "");
         $cabezera3 = array_merge($cabezera1, $cabezera2);
 
         foreach ($cabezera3 as $fieldDisplay) {
@@ -739,11 +739,11 @@ class core_web_view {
 			//crear el encabezado
 			$table = $table."<thead>";
 			$table = $table."<tr>";
-			$summaryColumns	= explode(",",$data["view_config"]->summaryColumns);
-			$formatColumns	= explode(",",$data["view_config"]->formatColumns);
+			$summaryColumns	= explode(",",$data["view_config"]->summaryColumns ?? "");
+			$formatColumns	= explode(",",$data["view_config"]->formatColumns ?? "");
 			
-			$cabezera1	= explode(",",$data["view_config"]->nonVisibleColumns);
-			$cabezera2	= explode(",",$data["view_config"]->visibleColumns);
+			$cabezera1	= explode(",",$data["view_config"]->nonVisibleColumns ?? "");
+			$cabezera2	= explode(",",$data["view_config"]->visibleColumns ?? "");
 			$cabezera3	= array_merge($cabezera1 , $cabezera2);	
 			
 			
@@ -925,8 +925,8 @@ class core_web_view {
 			//crear el encabezado
 			$table = $table."<thead>";
 			$table = $table."<tr>";
-			$cabezera1	= explode(",",$data["view_config"]->nonVisibleColumns);
-			$cabezera2	= explode(",",$data["view_config"]->visibleColumns);
+			$cabezera1	= explode(",",$data["view_config"]->nonVisibleColumns ?? "");
+			$cabezera2	= explode(",",$data["view_config"]->visibleColumns ?? "");
 			$cabezera3	= array_merge($cabezera1 , $cabezera2);				
 			
 			
@@ -1019,8 +1019,8 @@ class core_web_view {
 			//crear el encabezado
 			$table = $table."<thead>";
 			$table = $table."<tr>";
-			$cabezera1	= explode(",",$data["view_config"]->nonVisibleColumns);
-			$cabezera2	= explode(",",$data["view_config"]->visibleColumns);
+			$cabezera1	= explode(",",$data["view_config"]->nonVisibleColumns ?? "");
+			$cabezera2	= explode(",",$data["view_config"]->visibleColumns ?? "");
 			$cabezera3	= array_merge($cabezera1 , $cabezera2);				
 			
 			
@@ -1120,12 +1120,12 @@ class core_web_view {
 			//crear el encabezado
 			$table = $table."<thead>";
 			$table = $table."<tr>";
-			$summaryColumns			= explode(",",$data["view_config"]->summaryColumns);
-			$formatColumns			= explode(",",$data["view_config"]->formatColumns);
-			$formatColumnsHeader	= explode(",",$data["view_config"]->formatColumnsHeader);
+			$summaryColumns			= explode(",",$data["view_config"]->summaryColumns ?? "");
+			$formatColumns			= explode(",",$data["view_config"]->formatColumns ?? "");
+			$formatColumnsHeader	= explode(",",$data["view_config"]->formatColumnsHeader ?? "");
 			
-			$cabezera1	= explode(",",$data["view_config"]->nonVisibleColumns);
-			$cabezera2	= explode(",",$data["view_config"]->visibleColumns);
+			$cabezera1	= explode(",",$data["view_config"]->nonVisibleColumns ?? "");
+			$cabezera2	= explode(",",$data["view_config"]->visibleColumns ?? "");
 			$cabezera3	= array_merge($cabezera1 , $cabezera2);	
 			
 			
