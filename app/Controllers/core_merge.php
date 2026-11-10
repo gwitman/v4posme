@@ -1710,9 +1710,10 @@ class core_merge extends _BaseController {
 	protected function deploy_jsonError($ex)
 	{
 		return $this->response->setJSON(array(
-			'error'   => true,
-			'message' => $ex->getMessage(),
-			'csrf'    => csrf_hash()
+			'error'          => true,
+			'message'        => $ex->getMessage(),
+			'sessionExpired' => ($ex->getMessage() === USER_NOT_AUTENTICATED),
+			'csrf'           => csrf_hash()
 		));
 	}
 
@@ -1756,6 +1757,10 @@ class core_merge extends _BaseController {
 		}
 		catch(\Throwable $ex)
 		{
+			//Sesión expirada: ir directo al login
+			if($ex->getMessage() === USER_NOT_AUTENTICATED)
+			return redirect()->to(base_url("core_acount/login"));
+
 			return "<div style='font-family:sans-serif; padding:14px; margin:20px; background:#fdecec; color:#c62828; border-radius:8px;'>".htmlspecialchars($ex->getMessage())."</div>";
 		}
 	}

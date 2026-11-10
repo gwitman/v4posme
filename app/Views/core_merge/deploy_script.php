@@ -87,6 +87,11 @@
                         throw new Error(res.status === 403 ? 'Sesión o token vencido (HTTP 403). Recargue la página.' : 'Respuesta inválida del servidor (HTTP ' + res.status + ').');
                     }
                     if (json.csrf) { csrfHash = json.csrf; }
+                    // Sesión expirada: se envía directo a la pantalla de login
+                    if (json.sessionExpired === true) {
+                        window.location.href = BASE + '/core_acount/login';
+                        throw new Error('Su sesión ha expirado. Redirigiendo al login...');
+                    }
                     if (json.error === true) { throw new Error(json.message || 'Error desconocido'); }
                     return json.data || {};
                 });
