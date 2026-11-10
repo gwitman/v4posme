@@ -1,0 +1,514 @@
+/* ==========================================================================
+ * posme-menu-left.css
+ * Menú lateral moderno / responsive (core_masterpage/default_masterpage.php).
+ * Todo cuelga de #sidebar (#mainnav del tema Genyx); se carga al final del
+ * <head> para ganar a theme-genyx/css/app_css.php y css/genyx-app.css.
+ *
+ * Estructura (sin cambios de ids ni de clases que usa jquery.genyxAdmin.js):
+ *   aside#sidebar[.isCollapse|.hided]
+ *       .side-options > a#collapse-nav           botón colapsar (escritorio)
+ *       .sidebar-wrapper
+ *           .pm-menu-search                      buscador (lo inserta posme-menu-left.js)
+ *           nav#mainnav > ul.nav-list > li[.current|.hasSub] > a > span.icon + span.txt
+ *                                               > ul.sub > li > a ...
+ *   #pm-sidebar-backdrop                         fondo oscuro en tablet/teléfono (JS)
+ *
+ * Ancho escritorio: 213px (colapsado 39px), igual que el tema: el contenido no se mueve.
+ * Para revertir basta con quitar el <link> y el <script> del masterpage.
+ * ========================================================================== */
+
+:root {
+    --pm-side-bg-1       : #06263a;
+    --pm-side-bg-2       : #073a56;
+    --pm-side-bg-3       : #006E98;
+    --pm-side-text       : rgba(255, 255, 255, 0.80);
+    --pm-side-muted      : rgba(255, 255, 255, 0.45);
+    --pm-side-hover      : rgba(255, 255, 255, 0.09);
+    --pm-side-chip       : rgba(255, 255, 255, 0.10);
+    --pm-side-icon       : #7dd3fc;
+    --pm-side-accent-1   : #0099cc;
+    --pm-side-accent-2   : #14b8a6;
+    --pm-side-flyout     : #073a56;
+    --pm-side-radius     : 10px;
+}
+
+/* ---------- Fondo del menú (el tema lo pinta con #sidebar:after fijo) ----------
+ * El body tiene fondo blanco y tapaba el :after (z-index -1). Con position +
+ * z-index el #sidebar crea su propio contexto y el degradado queda visible
+ * detrás de los ítems. El degradado también va en #sidebar por si acaso. */
+#sidebar {
+    position   : relative;
+    z-index    : 2;
+    background : linear-gradient(180deg, var(--pm-side-bg-1) 0%, var(--pm-side-bg-2) 55%, var(--pm-side-bg-3) 140%);
+}
+
+#sidebar:after {
+    z-index      : -1;
+    background   : linear-gradient(180deg, var(--pm-side-bg-1) 0%, var(--pm-side-bg-2) 55%, var(--pm-side-bg-3) 140%);
+    border-right : 0;
+    box-shadow   : 3px 0 16px rgba(6, 38, 58, 0.25);
+}
+
+/* ---------- Botón colapsar ---------- */
+#sidebar .side-options {
+    background : transparent;
+}
+
+#sidebar .side-options ul,
+#sidebar .side-options ul li {
+    border : 0;
+}
+
+#sidebar .side-options ul li a {
+    color      : var(--pm-side-muted);
+    text-align : right;
+    padding    : 0 12px;
+    transition : color 0.2s ease;
+}
+
+#sidebar .side-options ul li a:hover {
+    color : #ffffff;
+}
+
+#sidebar.isCollapse .side-options ul li a {
+    text-align : center;
+    padding    : 0;
+}
+
+/* ---------- Buscador ---------- */
+#sidebar .pm-menu-search {
+    float   : left;
+    width   : 100%;
+    padding : 2px 10px 8px 10px;
+}
+
+#sidebar .pm-menu-search-box {
+    position : relative;
+}
+
+#sidebar .pm-menu-search-box i {
+    position       : absolute;
+    left           : 10px;
+    top            : 50%;
+    transform      : translateY(-50%);
+    color          : var(--pm-side-muted);
+    pointer-events : none;
+}
+
+#sidebar .pm-menu-search input {
+    width         : 100%;
+    height        : 32px;
+    margin        : 0;
+    padding       : 0 10px 0 30px;
+    border        : 1px solid rgba(255, 255, 255, 0.14);
+    border-radius : 16px;
+    background    : rgba(255, 255, 255, 0.08);
+    color         : #ffffff;
+    font-size     : 12px;
+    box-shadow    : none;
+    outline       : none;
+    transition    : all 0.2s ease;
+}
+
+#sidebar .pm-menu-search input::placeholder {
+    color : var(--pm-side-muted);
+}
+
+#sidebar .pm-menu-search input:focus {
+    background   : rgba(255, 255, 255, 0.14);
+    border-color : var(--pm-side-accent-2);
+    box-shadow   : 0 0 0 3px rgba(20, 184, 166, 0.25);
+}
+
+#sidebar .pm-menu-empty {
+    display    : none;
+    float      : left;
+    width      : 100%;
+    padding    : 12px;
+    color      : var(--pm-side-muted);
+    font-size  : 12px;
+    text-align : center;
+}
+
+#sidebar.isCollapse .pm-menu-search,
+#sidebar.isCollapse .pm-menu-empty {
+    display : none !important;
+}
+
+/* ---------- Ítems de primer nivel ---------- */
+#sidebar #mainnav .nav-list {
+    padding : 0 0 16px 0;
+}
+
+#sidebar #mainnav .nav-list > li {
+    margin        : 2px 8px;
+    border        : 0;
+    border-radius : var(--pm-side-radius);
+}
+
+#sidebar #mainnav .nav-list > li > a {
+    display       : flex;
+    align-items   : center;
+    min-height    : 40px;
+    padding       : 0 6px 0 0;
+    background    : transparent;
+    filter        : none;
+    border-radius : var(--pm-side-radius);
+    color         : var(--pm-side-text);
+    line-height   : 40px;
+    font-size     : 13px;
+    font-weight   : 500;
+    box-shadow    : none;
+    transition    : background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Icono dentro de una ficha redondeada */
+#sidebar #mainnav .nav-list > li > a .icon {
+    flex          : 0 0 auto;
+    display       : flex;
+    align-items   : center;
+    justify-content: center;
+    width         : 30px;
+    height        : 30px;
+    margin        : 5px 4px;
+    border        : 0;
+    border-radius : 8px;
+    background    : var(--pm-side-chip);
+    color         : var(--pm-side-icon);
+    transition    : background 0.2s ease, color 0.2s ease;
+}
+
+#sidebar #mainnav .nav-list > li > a .icon:before,
+#sidebar #mainnav .nav-list > li > a .icon:after {
+    display : none;
+}
+
+#sidebar #mainnav .nav-list > li > a .icon i {
+    color       : inherit;
+    line-height : 1;
+}
+
+#sidebar:not(.isCollapse) #mainnav .nav-list > li > a .txt {
+    flex          : 1 1 auto;
+    min-width     : 0;
+    padding-left  : 6px;
+    white-space   : nowrap;
+    overflow      : hidden;
+    text-overflow : ellipsis;
+}
+
+#sidebar #mainnav .nav-list li a .more {
+    margin    : 0 0 0 auto;
+    float     : none;
+    color     : var(--pm-side-muted);
+}
+
+#sidebar #mainnav .nav-list li a .more i {
+    color : inherit;
+}
+
+/* Hover */
+#sidebar #mainnav .nav-list > li:hover > a,
+#sidebar #mainnav .nav-list > li > a:hover,
+#sidebar #mainnav .nav-list > li > a:focus {
+    background : var(--pm-side-hover);
+    color      : #ffffff;
+}
+
+#sidebar:not(.isCollapse) #mainnav .nav-list > li > a:hover {
+    transform : translateX(2px);
+}
+
+#sidebar #mainnav .nav-list > li > a:hover .icon,
+#sidebar #mainnav .nav-list > li > a:hover .icon i {
+    background : rgba(20, 184, 166, 0.30);
+    color      : #ffffff;
+}
+
+#sidebar #mainnav .nav-list > li > a:hover .icon i {
+    background : transparent;
+}
+
+/* Submenú abierto */
+#sidebar #mainnav .nav-list > li > a.expand {
+    background : rgba(255, 255, 255, 0.12);
+    color      : #ffffff;
+    box-shadow : none;
+}
+
+#sidebar #mainnav .nav-list > li > a.expand .icon i {
+    color : #ffffff;
+}
+
+/* Página actual: píldora con degradado */
+#sidebar #mainnav .nav-list > li.current > a {
+    background : linear-gradient(90deg, var(--pm-side-accent-1), var(--pm-side-accent-2));
+    color      : #ffffff;
+    box-shadow : 0 6px 16px rgba(0, 153, 204, 0.35);
+}
+
+#sidebar #mainnav .nav-list > li.current > a .icon {
+    background : rgba(255, 255, 255, 0.22);
+}
+
+#sidebar #mainnav .nav-list > li.current > a .icon i {
+    color : #ffffff;
+}
+
+/* ---------- Submenús ---------- */
+#sidebar #mainnav .nav-list > li > .sub,
+#sidebar #mainnav .nav-list > li > .sub > li .sub,
+#sidebar #mainnav .nav-list ul.sub {
+    margin        : 3px 0 4px 0;
+    padding       : 4px 0;
+    border        : 0;
+    border-radius : var(--pm-side-radius);
+    background    : rgba(0, 0, 0, 0.20);
+    filter        : none;
+}
+
+#sidebar #mainnav .nav-list > li > .sub li,
+#sidebar #mainnav .nav-list > li > .sub li:hover,
+#sidebar #mainnav .nav-list > li.current > .sub li.current {
+    border     : 0;
+    background : none;
+}
+
+#sidebar #mainnav .nav-list ul.sub > li > a,
+#sidebar #mainnav .nav-list > li > .sub li a {
+    margin        : 1px 6px;
+    padding       : 0 8px 0 10px;
+    border        : 0;
+    border-radius : 8px;
+    background    : transparent;
+    color         : rgba(255, 255, 255, 0.72);
+    line-height   : 34px;
+    font-size     : 12.5px;
+    white-space   : nowrap;
+    overflow      : hidden;
+    text-overflow : ellipsis;
+    transition    : background 0.2s ease, color 0.2s ease;
+}
+
+#sidebar #mainnav .nav-list > li > .sub > li .sub > li > a {
+    padding-left : 22px;
+}
+
+#sidebar #mainnav .nav-list ul.sub > li > a .icon i,
+#sidebar #mainnav .nav-list > li > .sub li a .icon i {
+    color     : var(--pm-side-icon);
+    font-size : 14px;
+}
+
+#sidebar #mainnav .nav-list ul.sub > li > a:hover,
+#sidebar #mainnav .nav-list > li > .sub li a:hover {
+    background : var(--pm-side-hover);
+    color      : #ffffff;
+}
+
+#sidebar #mainnav .nav-list ul.sub > li > a:hover .icon i {
+    color : #ffffff;
+}
+
+#sidebar #mainnav .nav-list > li > .sub li.current > a,
+#sidebar #mainnav .nav-list > li.current > .sub li.current a {
+    background  : rgba(0, 153, 204, 0.40);
+    color       : #ffffff;
+    font-weight : 600;
+}
+
+#sidebar #mainnav .nav-list > li.current > .sub li.current a:after {
+    display : none;
+}
+
+/* ---------- Escritorio colapsado (solo iconos, 39px) ---------- */
+#sidebar.isCollapse #mainnav .nav-list > li {
+    width         : 39px;
+    height        : auto;
+    margin        : 2px 0;
+    border-radius : 0;
+}
+
+#sidebar.isCollapse #mainnav .nav-list > li > a {
+    width         : 39px;
+    padding       : 0;
+    border-radius : 8px;
+}
+
+#sidebar.isCollapse #mainnav .nav-list > li > a .icon {
+    margin : 5px 4px 5px 4px;
+}
+
+/* Etiqueta flotante al pasar el mouse */
+#sidebar.isCollapse #mainnav .nav-list > li > a .txt,
+#sidebar.isCollapse #mainnav .nav-list > li:hover > a .txt {
+    left          : 39px;
+    top           : 0;
+    height        : 40px;
+    line-height   : 40px;
+    padding       : 0 14px;
+    border        : 0;
+    border-radius : 0 var(--pm-side-radius) var(--pm-side-radius) 0;
+    background    : var(--pm-side-flyout);
+    color         : #ffffff;
+    box-shadow    : 6px 6px 18px rgba(0, 0, 0, 0.30);
+    white-space   : nowrap;
+}
+
+#sidebar.isCollapse #mainnav .nav-list > li > ul.sub,
+#sidebar.isCollapse #mainnav .nav-list > li > ul.sub li > ul.sub {
+    left          : 39px;
+    top           : 40px;
+    margin        : 0;
+    border        : 0;
+    border-radius : 0 0 var(--pm-side-radius) var(--pm-side-radius);
+    background    : var(--pm-side-flyout);
+    box-shadow    : 6px 6px 18px rgba(0, 0, 0, 0.30);
+}
+
+#sidebar.isCollapse #mainnav .nav-list > li > ul.sub li > ul.sub {
+    left : 175px;
+    top  : 0;
+}
+
+/* ---------- Tablet / teléfono (<= 1024px): menú deslizable sobre el contenido ---------- */
+@media (max-width: 1024px) {
+    #sidebar {
+        position   : fixed;
+        top        : 50px;
+        left       : 0;
+        bottom     : 0;
+        width      : 270px;
+        max-width  : 85vw;
+        margin-top : 0;
+        z-index    : 1035;
+        overflow-y : auto;
+        -webkit-overflow-scrolling: touch;
+        background : linear-gradient(180deg, var(--pm-side-bg-1) 0%, var(--pm-side-bg-2) 55%, var(--pm-side-bg-3) 140%);
+        border-radius: 0 16px 16px 0;
+        box-shadow : 8px 0 32px rgba(0, 0, 0, 0.40);
+        transition : margin-left 0.25s ease;
+    }
+
+    #sidebar:after {
+        display : none;
+    }
+
+    #sidebar.hided {
+        margin-left : -320px;
+        box-shadow  : none;
+    }
+
+    /* El botón colapsar no aplica en el menú deslizable */
+    #sidebar .side-options {
+        display : none;
+    }
+
+    #sidebar .pm-menu-search {
+        padding-top : 12px;
+    }
+
+    /* El tema oculta el contenido al abrir el menú; aquí el menú va encima */
+    #content.hidden {
+        display    : block !important;
+        visibility : visible !important;
+    }
+
+    /* Si quedó guardado el modo colapsado, en móvil se muestra completo */
+    #sidebar.isCollapse {
+        width : 270px;
+    }
+
+    #sidebar.isCollapse #mainnav .nav-list > li {
+        width  : auto;
+        margin : 2px 8px;
+    }
+
+    #sidebar.isCollapse #mainnav .nav-list > li > a {
+        width   : auto;
+        padding : 0 6px 0 0;
+    }
+
+    #sidebar.isCollapse #mainnav .nav-list > li > a .txt,
+    #sidebar.isCollapse #mainnav .nav-list > li:hover > a .txt {
+        display       : block;
+        position      : static;
+        flex          : 1 1 auto;
+        width         : auto;
+        height        : auto;
+        padding       : 0 0 0 6px;
+        background    : none;
+        box-shadow    : none;
+        border-radius : 0;
+        overflow      : hidden;
+        text-overflow : ellipsis;
+    }
+
+    #sidebar.isCollapse #mainnav .nav-list > li > ul.sub,
+    #sidebar.isCollapse #mainnav .nav-list > li > ul.sub li > ul.sub {
+        position   : static;
+        width      : auto;
+        background : rgba(0, 0, 0, 0.20);
+        box-shadow : none;
+    }
+
+    #sidebar.isCollapse #mainnav .nav-list li > ul.sub:not(.show) {
+        display : none !important;
+    }
+
+    #sidebar.isCollapse #mainnav .nav-list li > ul.sub.show {
+        display : block !important;
+    }
+
+    #sidebar.isCollapse #mainnav .nav-list > li a .more {
+        display : inline-block;
+    }
+
+    #sidebar.isCollapse .pm-menu-search {
+        display : block !important;
+    }
+
+    /* Ítems más altos para tocar con el dedo */
+    #sidebar #mainnav .nav-list > li > a {
+        min-height : 44px;
+    }
+
+    #sidebar #mainnav .nav-list ul.sub > li > a {
+        line-height : 40px;
+    }
+
+    /* Fondo oscuro detrás del menú abierto */
+    #pm-sidebar-backdrop {
+        position   : fixed;
+        top        : 50px;
+        left       : 0;
+        right      : 0;
+        bottom     : 0;
+        z-index    : 1030;
+        background : rgba(6, 38, 58, 0.45);
+        backdrop-filter: blur(2px);
+        -webkit-backdrop-filter: blur(2px);
+        opacity    : 0;
+        visibility : hidden;
+        transition : opacity 0.25s ease, visibility 0.25s ease;
+    }
+
+    #pm-sidebar-backdrop.pm-show {
+        opacity    : 1;
+        visibility : visible;
+    }
+}
+
+@media (min-width: 1025px) {
+    #pm-sidebar-backdrop {
+        display : none;
+    }
+}
+
+/* Respeta a quien pide menos animación */
+@media (prefers-reduced-motion: reduce) {
+    #sidebar,
+    #sidebar * {
+        transition : none !important;
+    }
+}
