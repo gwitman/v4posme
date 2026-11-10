@@ -183,9 +183,10 @@ class Company_Component_Relation_Model extends Model  {
 			r.componentItemIDSource = $conversationID and 
 			nat.isActive = 1 and 
 			emp.departamentID != 5091 /*GERENCIA*/
-		order by 
-			r.lastActivityOn desc 
-		limit $top 
+		order by
+			r.lastActivityOn desc,
+			r.companyComponentRelationID asc /*desempate: primero asignado*/
+		limit $top
 		");
 		
 		

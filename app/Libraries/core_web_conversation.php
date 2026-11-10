@@ -1011,24 +1011,13 @@ class core_web_conversation{
 					log_message("error","[notificationEmployerInConversation] Colaboradores asignados a la conversacion: ".count($objListEmployerConversation));
 					$this->logEmployerList("Asignado", $objListEmployerConversation);
 
-					//Obtener el tip 5 de las ultimos colaboradores
-					log_message("error","[notificationEmployerInConversation] Obtener Top 5 colaboradores asignados a la conversacion (excluye GERENCIA, ordenado por ultima actividad)");
-					$objListEmployerConversationTop5 = $Company_Component_Relation_Model->get_ConversationTopEmployerBy_ConversationID(5,$conversationID);
-					if(!$objListEmployerConversationTop5)
-					{
-						log_message("error","[notificationEmployerInConversation] *** NO SE ENVIARA: no hay colaboradores en el Top 5 (todos son de GERENCIA o inactivos) ***");
-						return;
-					}
-
-					log_message("error","[notificationEmployerInConversation] Top 5 colaboradores encontrados: ".count($objListEmployerConversationTop5));
-					$this->logEmployerList("Top5", $objListEmployerConversationTop5);
-
-					//Mandarle mensaje a la ultima persona que converso (solo el primero del Top 5)
-					if($objListEmployerConversationTop5)
+					//De los colaboradores asignados y vigentes, el ultimo que respondio
+					$objEmployerToNotify = $this->getEmployerToNotify($Company_Component_Relation_Model, $conversationID);
+					if($objEmployerToNotify)
 					{
 						$this->sendNotificationToEmployer(
 							$core_web_whatsap, $Entity_Phone_Model, $companyType, $companyID, $branchID,
-							$objListEmployerConversationTop5[0], $mensaje, "_SECUNDARY"
+							$objEmployerToNotify, $mensaje, "_SECUNDARY"
 						);
 					}
 				}
@@ -1049,24 +1038,13 @@ class core_web_conversation{
 					log_message("error","[notificationEmployerInConversation] Colaboradores asignados a la conversacion: ".count($objListEmployerConversation));
 					$this->logEmployerList("Asignado", $objListEmployerConversation);
 
-					//Obtener el tip 5 de las ultimos colaboradores
-					log_message("error","[notificationEmployerInConversation] Obtener Top 5 colaboradores asignados a la conversacion (excluye GERENCIA, ordenado por ultima actividad)");
-					$objListEmployerConversationTop5 = $Company_Component_Relation_Model->get_ConversationTopEmployerBy_ConversationID(5,$conversationID);
-					if(!$objListEmployerConversationTop5)
-					{
-						log_message("error","[notificationEmployerInConversation] *** NO SE ENVIARA: no hay colaboradores en el Top 5 (todos son de GERENCIA o inactivos) ***");
-						return;
-					}
-
-					log_message("error","[notificationEmployerInConversation] Top 5 colaboradores encontrados: ".count($objListEmployerConversationTop5));
-					$this->logEmployerList("Top5", $objListEmployerConversationTop5);
-
-					//Mandarle mensaje a la ultima persona que converso (solo el primero del Top 5)
-					if($objListEmployerConversationTop5)
+					//De los colaboradores asignados y vigentes, el ultimo que respondio
+					$objEmployerToNotify = $this->getEmployerToNotify($Company_Component_Relation_Model, $conversationID);
+					if($objEmployerToNotify)
 					{
 						$this->sendNotificationToEmployer(
 							$core_web_whatsap, $Entity_Phone_Model, $companyType, $companyID, $branchID,
-							$objListEmployerConversationTop5[0], $mensaje, ""
+							$objEmployerToNotify, $mensaje, ""
 						);
 					}
 				}
@@ -1086,6 +1064,57 @@ class core_web_conversation{
 			}
 
 		}
+
+	/**
+	 * Elige a que colaborador notificar: de los asignados a la conversacion que siguen vigentes
+	 * (relacion activa, no GERENCIA y con permiso "SE LE PERMITE ATENDER WHATSAPP" o rol admin,
+	 * el mismo criterio con que la pantalla de conversacion muestra a los asignados), el que
+	 * respondio de ultimo. Si ninguno ha respondido aun, se toma el primero asignado.
+	 * Un colaborador que ya no esta vigente nunca se notifica aunque haya sido el ultimo en responder.
+	 * @param object $Company_Component_Relation_Model Modelo de relaciones conversacion-colaborador
+	 * @param int    $conversationID
+	 * @return object|null Fila del colaborador (entityID, firstName, lastActivityOn) o null si no hay a quien enviar
+	 */
+	private function getEmployerToNotify($Company_Component_Relation_Model, $conversationID)
+	{
+		$Employee_Model = new Employee_Model();
+
+		//Ordenado por ultima actividad desc (los que nunca respondieron, NULL, quedan al final)
+		$objListCandidate = $Company_Component_Relation_Model->get_ConversationTopEmployerBy_ConversationID(100, $conversationID);
+		if(!$objListCandidate)
+		{
+			log_message("error","[notificationEmployerInConversation] *** NO SE ENVIARA: la conversacion no tiene colaboradores asignados fuera de GERENCIA ***");
+			return null;
+		}
+
+		$objListValid 	= [];
+		$discardedText 	= [];
+		foreach($objListCandidate as $row)
+		{
+			if($Employee_Model->get_validatePermissionBy_EmployerID_PuedeAtenderWhatsappInCRM($row->entityID))
+				$objListValid[] = $row;
+			else
+				$discardedText[] = $row->firstName . " (entityID=" . $row->entityID . ")";
+		}
+
+		if(count($discardedText) > 0)
+			log_message("error","[notificationEmployerInConversation] Descartados (asignados en BD pero sin permiso de atender WhatsApp o usuario inactivo, no se ven en pantalla): " . implode(", ", $discardedText));
+
+		if(count($objListValid) == 0)
+		{
+			log_message("error","[notificationEmployerInConversation] *** NO SE ENVIARA: ningun colaborador asignado esta vigente ***");
+			return null;
+		}
+
+		$validText = [];
+		foreach($objListValid as $row)
+			$validText[] = $row->firstName . " (entityID=" . $row->entityID . ", ultimaRespuesta=" . ($row->lastActivityOn ?: "nunca") . ")";
+		log_message("error","[notificationEmployerInConversation] Colaboradores vigentes ordenados por ultima respuesta: " . implode(", ", $validText));
+
+		$objSelected = $objListValid[0];
+		log_message("error","[notificationEmployerInConversation] Criterio: " . ($objSelected->lastActivityOn ? "ultimo colaborador vigente que respondio" : "ningun colaborador vigente ha respondido aun, se toma el primero asignado"));
+		return $objSelected;
+	}
 
 	/**
 	 * Escribe en el log cada colaborador de una lista (entityID, codigo y nombre).
