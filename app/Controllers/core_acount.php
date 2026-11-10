@@ -123,8 +123,13 @@ class core_acount extends _BaseController {
 		$data["parameterLabelSistem"]	= $parameterLabelSistem;
 		$data["boll_"]					= $boll_;
 		$data["objCompany"]				= $objCompany;
+
+		//Recordarme: solo el usuario viaja a la vista, la contraseña queda en la cookie cifrada
+		$objRemember					= $this->core_web_authentication->rememberLoginGet();
+		$data["rememberNickname"]		= $objRemember ? $objRemember["nickname"] : "";
+		$data["rememberActive"]			= $objRemember ? true : false;
 		return view('core_acount/login',$data);//--finview-r
-	}		
+	}
 	
 	function logout(){
 		try
@@ -219,9 +224,23 @@ class core_acount extends _BaseController {
 			$pagoCantidadDeMeses	= isset($_POST["txtNickname"]) ?  $_POST["txtPagarCantidadDe"] : 0;
 			$pagoCantidadDeMeses	= $pagoCantidadDeMeses != null  ?  $pagoCantidadDeMeses : 0;
 			$pagoCantidadDeMeses	= $pagoCantidadDeMeses != ""  ?  $pagoCantidadDeMeses : 0;
-			
-			$objUser	= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname,$password);			
+
+			//Recordarme: si el formulario usa la contraseña guardada, se toma de la cookie cifrada
+			if($this->request->getPost("txtRememberUse") == "1")
+			{
+				$objRemember = $this->core_web_authentication->rememberLoginGet();
+				if($objRemember && $objRemember["nickname"] == $nickname)
+				$password = $objRemember["password"];
+			}
+
+			$objUser	= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname,$password);
 			$data 		= $this->core_web_authentication->createLogin($objUser);
+
+			//Recordarme: guardar o borrar segun el checkbox
+			if($this->request->getPost("remember") != null)
+			$this->core_web_authentication->rememberLoginSave($nickname,$password);
+			else
+			$this->core_web_authentication->rememberLoginClear();
 			$dataSession		= $this->session->get();	
 			$dataSession		= $this->session->get(); 
 			
@@ -401,7 +420,17 @@ class core_acount extends _BaseController {
 			$data_login["parameterTipoPlan"]	= $parameterTipoPlan;
 			$data_login["parameterLabelSistem"]	= $parameterLabelSistem;
 			$data_login["objCompany"]			= $objCompany;
-			$data_login["boll_"]				= $boll_;			
+			$data_login["boll_"]				= $boll_;
+
+			//Recordarme: si fallo usando la contraseña guardada (p. ej. la cambiaron), se borra
+			$objRemember						= $this->core_web_authentication->rememberLoginGet();
+			if($objRemember && $this->request->getPost("txtRememberUse") == "1")
+			{
+				$this->core_web_authentication->rememberLoginClear();
+				$objRemember = null;
+			}
+			$data_login["rememberNickname"]		= $objRemember ? $objRemember["nickname"] : "";
+			$data_login["rememberActive"]		= $objRemember ? true : false;
 			return view('core_acount/login',$data_login);//--finview-r
 			
 		}
@@ -498,33 +527,57 @@ class core_acount extends _BaseController {
 		
 	}
 	
+	/**
+	 * Recuperar contraseña desde el modal del login: busca el usuario por correo
+	 * y le envía sus datos de acceso. Responde JSON {error, message}.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
 	function rememberpassword(){
-		
-		try{ 
-			if(!isset($_POST["txtEmail"]))
-			throw new \Exception(NOT_VALID_EMAIL);
-			
-			$email 						= $_POST["txtEmail"];
-			$objUser					=$this->core_web_authentication->get_UserBy_Email($email);
-			
-			
+
+		try{
+			$email = trim((string)$this->request->getPost("txtEmail"));
+			if($email == "" || !filter_var($email, FILTER_VALIDATE_EMAIL))
+			throw new \Exception("Escribe un correo válido, por ejemplo usuario@empresa.com");
+
+			try{
+				$objUser = $this->core_web_authentication->get_UserBy_Email($email);
+			}
+			catch(\Exception $ex){
+				if(strpos($ex->getMessage(),"EMAIL INCORRECTO") === 0)
+				throw new \Exception("No encontramos un usuario activo con ese correo.");
+				throw $ex;
+			}
+
+			$parameterLabelSistem 		= $this->core_web_parameter->getParameter("CORE_LABEL_SISTEMA_SUPLANTATION",APP_COMPANY);
+			$parameterLabelSistem 		= $parameterLabelSistem->value;
+
+			$dataEmail["nickname"]		= $objUser["user"]->nickname;
+			$dataEmail["password"]		= $objUser["user"]->password;
+			$dataEmail["email"]			= $objUser["user"]->email;
+			$dataEmail["companyName"]	= $objUser["company"]->name;
+			$dataEmail["labelSistema"]	= $parameterLabelSistem;
+			$dataEmail["urlLogin"]		= base_url();
+			$dataEmail["fecha"]			= \DateTime::createFromFormat("Y-m-d H:i:s",helper_getDateTime())->format("d/m/Y h:i A");
+
 			$this->email->setFrom(EMAIL_APP, HELLOW);
 			$this->email->setTo($objUser["user"]->email);
 			$this->email->setSubject(REMEMBER_PASSWORD);
-			$mensaje = /*--inicio view*/ view('core_template/email_remember_password',$objUser["user"]);//--finview
-			$this->email->setMessage($mensaje); 
-			//$this->email->send();
-			
-			//Notificar
-			$data_message["txtMessage"]	= MESSAGE_EMAL;
-			$data_login["message"]		= "";
-			$data_login["status"]		= "PASSWORD REENVIADA";
-			return view('core_acount/login',$data_login);//--finview-r
+			$mensaje = /*--inicio view*/ view('core_template/email_remember_password',$dataEmail);//--finview
+			$this->email->setMessage($mensaje);
+			if(!$this->email->send())
+			throw new \Exception("No se pudo enviar el correo. Intenta de nuevo en unos minutos.");
+
+			return $this->response->setJSON(array(
+				'error'   => false,
+				'message' => MESSAGE_EMAL
+			));//--finjson
 		}
 		catch(\Exception $e){
-			$data_message["txtMessage"]	= $e->getMessage();
-			$data_login["message"]		= $data_message["txtMessage"];
-			return view('core_acount/login',$data_login);//--finview-r
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $e->getMessage()
+			));//--finjson
 		}
 	}
 	

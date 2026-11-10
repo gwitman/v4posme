@@ -1537,17 +1537,18 @@ Lo que cada persona ve en el menú depende de los permisos de su rol.
 ## Iniciar sesión en posMe
 Ruta: pantalla de inicio de posMe.
 1. Escriba su **Usuario** y su **Contraseña**.
-2. Marque **Recordarme** si quiere que el navegador recuerde el usuario en ese equipo.
+2. Marque **Recordarme** si quiere que posMe guarde su usuario y su contraseña en ese equipo (se guardan cifrados durante 30 días).
 3. Presione **Ingresar**.
-Notas: si posMe pide **PERMISO DE LOCALIZACION REQUERIDO**, debe permitir la ubicación en el navegador para poder entrar. Si los datos son incorrectos se muestra un mensaje y no se ingresa. Si no tiene usuario, pídalo al administrador de su empresa.
+Notas: si posMe pide **Permiso de ubicación requerido**, debe permitir la ubicación en el navegador para poder entrar. Si los datos son incorrectos se muestra un mensaje y no se ingresa. Si no tiene usuario, pídalo al administrador de su empresa.
+Con **Recordarme** activo, la próxima vez el usuario aparece escrito y la contraseña figura como **Guardada**: solo presione **Ingresar**. La contraseña guardada no se puede ver con el ojo. Para usar otra contraseña, bórrela y escriba la nueva; para que posMe deje de recordarlo, desmarque **Recordarme** e ingrese. No use **Recordarme** en equipos compartidos.
+Para pagar la suscripción, active **Pagar suscripción**, elija la **Cantidad de meses** y presione **Pagar**.
 
 ## Olvidé mi contraseña (reenviar contraseña)
-Ruta: pantalla de inicio de posMe > **Reenviar Contraseña?**
-1. En la pantalla de inicio presione **Reenviar Contraseña?**.
-2. Escriba el correo registrado en su usuario y confirme.
-3. Revise su correo.
-Si no recibe el correo, pida al administrador de su empresa que le asigne una nueva contraseña en SEGURIDAD > USUARIOS.
-<!-- REVISAR: en core_acount::rememberpassword el envio del correo ($this->email->send()) esta comentado; hoy no se envia el correo aunque la pantalla diga PASSWORD REENVIADA -->
+Ruta: pantalla de inicio de posMe > **¿Olvidaste tu contraseña?**
+1. En la pantalla de inicio presione **¿Olvidaste tu contraseña?**.
+2. En la ventana **Recuperar contraseña** escriba el correo registrado en su usuario y presione **Enviar**.
+3. Cuando aparezca **Revisa tu correo**, abra el mensaje: trae su usuario, su contraseña y el botón **Iniciar sesión**.
+Si no llega en unos minutos, revise la carpeta de spam. Si el correo no está registrado, posMe lo indica. Si aun así no recibe el correo, pida al administrador de su empresa que le asigne una nueva contraseña en SEGURIDAD > USUARIOS.
 
 ## Cerrar sesión (salir, salgo de posMe)
 Ruta: Menú > SEGURIDAD > SALIR.

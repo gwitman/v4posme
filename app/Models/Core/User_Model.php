@@ -159,11 +159,11 @@ class User_Model extends Model  {
 		$sql = "";
 		$sql = sprintf("select companyID,branchID,userID,nickname,password,email,createdOn,createdBy,employeeID,useMobile,phone,lastPayment,comercio,foto,token_google_calendar,locationID");
 		$sql = $sql.sprintf(" from tb_user");
-		$sql = $sql.sprintf(" where email = '$email'");
-		$sql = $sql.sprintf(" and isActive= 1");		
-		
-		//Ejecutar Consulta
-		return $db->query($sql)->getRow();
+		$sql = $sql.sprintf(" where email = ?");
+		$sql = $sql.sprintf(" and isActive= 1");
+
+		//Ejecutar Consulta (parametro enlazado: el correo llega desde el login publico)
+		return $db->query($sql,array($email))->getRow();
 	}
 	function get_rowByPK($companyID,$branchID,$userID){
 		$db 	= db_connect();

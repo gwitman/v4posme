@@ -312,5 +312,86 @@ class core_web_authentication {
 	   return true;
    }
 
+   /**
+    * "Recordarme" del login: guarda usuario y contraseña en una cookie cifrada
+    * (AES-256-GCM, llave local en WRITEPATH/posme_login). La contraseña nunca
+    * llega al navegador en texto plano y la cookie no es legible desde JavaScript.
+    *
+    * @param string $nickname Usuario.
+    * @param string $password Contraseña.
+    * @return void
+    */
+   function rememberLoginSave($nickname, $password){
+		$payload	= json_encode(array("n" => (string)$nickname, "p" => (string)$password));
+		$value		= $this->rememberLoginCrypto()->encrypt($payload);
+		set_cookie(array(
+			"name"		=> self::REMEMBER_LOGIN_COOKIE,
+			"value"		=> $value,
+			"expire"	=> self::REMEMBER_LOGIN_SECONDS,
+			"path"		=> $this->rememberLoginPath(),
+			"secure"	=> \Config\Services::request()->isSecure(),
+			"httponly"	=> true,
+			"samesite"	=> "Lax"
+		));
+   }
+
+   /**
+    * Lee la cookie cifrada de "Recordarme".
+    *
+    * @return array|null array("nickname" => ..., "password" => ...) o null si no hay datos válidos.
+    */
+   function rememberLoginGet(){
+		$value = get_cookie(self::REMEMBER_LOGIN_COOKIE);
+		if($value === null || $value === "")
+		return null;
+
+		try{
+			$data = json_decode((string)$this->rememberLoginCrypto()->decrypt($value), true);
+		}
+		catch(\Exception $ex){
+			$data = null;
+		}
+
+		// Cookie dañada o cifrada con otra llave: se elimina
+		if(!is_array($data) || !isset($data["n"]) || !isset($data["p"]) || $data["n"] === ""){
+			$this->rememberLoginClear();
+			return null;
+		}
+
+		return array("nickname" => $data["n"], "password" => $data["p"]);
+   }
+
+   /**
+    * Elimina la cookie de "Recordarme".
+    *
+    * @return void
+    */
+   function rememberLoginClear(){
+		delete_cookie(self::REMEMBER_LOGIN_COOKIE, "", $this->rememberLoginPath());
+   }
+
+   /**
+    * Ruta de la cookie: la carpeta de la instalación, para que dos instalaciones
+    * en el mismo dominio no compartan la cookie.
+    *
+    * @return string
+    */
+   private function rememberLoginPath(){
+		$path = parse_url(base_url(), PHP_URL_PATH);
+		return rtrim((string)$path, "/")."/";
+   }
+
+   /**
+    * Cifrador de "Recordarme" (reutiliza el AES-256-GCM del despliegue con su propia llave).
+    *
+    * @return \App\Libraries\core_web_deploy\core_deploy_crypto
+    */
+   private function rememberLoginCrypto(){
+		return new \App\Libraries\core_web_deploy\core_deploy_crypto(WRITEPATH."posme_login/remember.key");
+   }
+
+   const REMEMBER_LOGIN_COOKIE  = "posme_remember";
+   const REMEMBER_LOGIN_SECONDS = 2592000; // 30 días
+
 }
 ?>
