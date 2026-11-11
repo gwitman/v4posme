@@ -49,12 +49,14 @@ class core_upgrade_rules
      */
     public static $MODES = [
         'local' => [
-            'syncApp.zip'    => ['target' => 'app/',        'root' => 'app',    'protected' => ['app/Config/Constants.php', 'app/Config/App.php']],
+            // En instalación local (PC) Constants.php y App.php SÍ se actualizan si vienen en el zip
+            'syncApp.zip'    => ['target' => 'app/',        'root' => 'app',    'protected' => []],
             'syncVendor.zip' => ['target' => 'vendor/',     'root' => 'vendor', 'protected' => []],
             'syncPublic.zip' => ['target' => 'public/',     'root' => 'public', 'protected' => ['public/resource/img/logos/', 'public/resource/file_company/', 'public/.htaccess', 'public/index.php']],
         ],
         'cloud' => [
             'syncVendor.zip' => ['target' => 'vendor/',     'root' => 'vendor', 'protected' => []],
+            // En la nube Constants.php y App.php son propios de cada instancia: nunca se sobrescriben
             'syncConfig.zip' => ['target' => 'app/Config/', 'root' => 'Config', 'protected' => ['app/Config/Constants.php', 'app/Config/App.php']],
         ],
     ];
@@ -65,8 +67,6 @@ class core_upgrade_rules
         'env',
         'writable/',
         'system/',
-        'app/Config/Constants.php',
-        'app/Config/App.php',
         'public/resource/img/logos/',
         'public/resource/file_company/',
         'public/.htaccess',

@@ -1911,11 +1911,11 @@ Ver también: Actualizar posMe desde el servidor central: preparar el servidor c
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta Tipo de instalación.
 posMe detecta solo el Modo ("Detectado automáticamente: Local" o "Nube"). Si no es correcto, cámbielo en la lista: se vuelve a consultar el servidor con el modo elegido.
-  * Local (equipo del cliente: app, vendor y public): syncApp.zip actualiza app/, syncVendor.zip actualiza vendor/ y syncPublic.zip actualiza public/ (sin tocar los logos ni los archivos de la compañía).
+  * Local (equipo del cliente: app, vendor y public): syncApp.zip actualiza app/ (incluidos app/Config/Constants.php y App.php si vienen en el zip), syncVendor.zip actualiza vendor/ y syncPublic.zip actualiza public/ (sin tocar los logos ni los archivos de la compañía).
   * Nube (hosting: vendor y app/Config): syncVendor.zip actualiza vendor/ y syncConfig.zip actualiza app/Config/ (sin tocar Constants.php ni App.php). En la nube, el código de app/ se sigue actualizando con el Despliegue remoto (core_merge/deploy).
 La tarjeta Componentes que se actualizan muestra cada paquete, su Destino y lo que Nunca se sobrescribe.
 Restricciones: si en el servidor falta cualquiera de los zip del modo elegido, aparece "No se puede continuar: falta ..." y no se puede iniciar.
-Notas: solo se actualizan los archivos que vienen dentro de cada zip; nada se elimina. Siempre se protegen: .env, writable/, system/, app/Config/Constants.php, app/Config/App.php, logos y archivos de la compañía, public/.htaccess y public/index.php. La estructura de la base de datos nunca elimina tablas ni columnas. Los datos de su empresa no cambian y los parámetros de la empresa conservan sus valores (solo se agregan los nuevos).
+Notas: solo se actualizan los archivos que vienen dentro de cada zip; nada se elimina. Siempre se protegen: .env, writable/, system/, logos y archivos de la compañía, public/.htaccess y public/index.php. En la nube también se conservan app/Config/Constants.php y App.php; en instalación local sí se actualizan. La estructura de la base de datos nunca elimina tablas ni columnas. Los datos de su empresa no cambian y los parámetros de la empresa conservan sus valores (solo se agregan los nuevos).
 
 140. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: INICIAR LA ACTUALIZACIÓN
 ----------------------------------------------------------------------

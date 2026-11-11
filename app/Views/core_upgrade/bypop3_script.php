@@ -395,7 +395,10 @@
             missing.forEach(function (z) {
                 html += alertHtml('bad', '<b>No se puede continuar: falta ' + esc(z) + ' en el servidor.</b>');
             });
-            html += '<p class="upg-hint">Además, siempre se protegen: .env, writable/, system/, app/Config/Constants.php, app/Config/App.php, logos y archivos de la compañía, public/.htaccess y public/index.php.</p>';
+            html += '<p class="upg-hint">Además, siempre se protegen: .env, writable/, system/, logos y archivos de la compañía, public/.htaccess y public/index.php.' +
+                (st.mode === 'local'
+                    ? ' En instalación local, app/Config/Constants.php y app/Config/App.php se actualizan si vienen en syncApp.zip.'
+                    : ' En la nube, app/Config/Constants.php y app/Config/App.php se conservan.') + '</p>';
             $('upgComponents').innerHTML = html;
         }
 
