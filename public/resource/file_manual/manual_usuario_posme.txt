@@ -1,6 +1,6 @@
 MANUAL DE USUARIO DE POSME
 ======================================================================
-Actualizado: 2026-11-09
+Actualizado: 2026-11-10
 
 INDICE
 ----------------------------------------------------------------------
@@ -140,19 +140,28 @@ INDICE
 134. Notificaciones y recordatorios (CONFIG. NOTI)
 135. Ver quién entró: sesiones y actividad de un usuario (LOG SESSION)
 136. Actualizar (uso de soporte)
-137. Despliegue remoto: qué es y quién puede usarlo (administración del sistema)
-138. Despliegue remoto: preparar la consola y el agente (primera vez)
-139. Despliegue remoto: elegir la compañía y configurar la conexión
-140. Despliegue remoto: subir y validar el paquete ZIP (actualizar archivos)
-141. Despliegue remoto: sincronizar la estructura de la base de datos
-142. Despliegue remoto: sincronizar los datos de configuración
-143. Despliegue remoto: ejecutar la sincronización, ver el avance y revertir
-144. Despliegue remoto: errores frecuentes
-145. Despliegue remoto: limpieza de servidor (liberar espacio e inodos)
-146. Despliegue remoto: editar la configuración (app/Config)
-147. Despliegue remoto: cargar los logos
-148. Parámetros de la empresa
-149. Soporte
+137. Actualizar posMe desde el servidor central: qué es y quién puede usarlo
+138. Actualizar posMe desde el servidor central: configurar la conexión
+139. Actualizar posMe desde el servidor central: modo Local o Nube (qué se actualiza)
+140. Actualizar posMe desde el servidor central: iniciar la actualización
+141. Actualizar posMe desde el servidor central: etapas, revisar cambios y cancelar
+142. Actualizar posMe desde el servidor central: modo mantenimiento
+143. Actualizar posMe desde el servidor central: revertir la actualización
+144. Actualizar posMe desde el servidor central: preparar el servidor central (administrador)
+145. Actualizar posMe desde el servidor central: advertencias
+146. Despliegue remoto: qué es y quién puede usarlo (administración del sistema)
+147. Despliegue remoto: preparar la consola y el agente (primera vez)
+148. Despliegue remoto: elegir la compañía y configurar la conexión
+149. Despliegue remoto: subir y validar el paquete ZIP (actualizar archivos)
+150. Despliegue remoto: sincronizar la estructura de la base de datos
+151. Despliegue remoto: sincronizar los datos de configuración
+152. Despliegue remoto: ejecutar la sincronización, ver el avance y revertir
+153. Despliegue remoto: errores frecuentes
+154. Despliegue remoto: limpieza de servidor (liberar espacio e inodos)
+155. Despliegue remoto: editar la configuración (app/Config)
+156. Despliegue remoto: cargar los logos
+157. Parámetros de la empresa
+158. Soporte
 
 1. CÓMO FUNCIONAN LAS PANTALLAS DE POSME (LISTAS Y REGISTROS)
 ----------------------------------------------------------------------
@@ -1877,8 +1886,118 @@ Ruta: Menú > SEGURIDAD > LOG SESSION.
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ACTUALIZAR.
 Opción técnica para que el equipo de soporte de posMe aplique actualizaciones al sistema. No la use salvo que soporte se lo indique.
+Ver también: Actualizar posMe desde el servidor central: qué es y quién puede usarlo.
 
-137. DESPLIEGUE REMOTO: QUÉ ES Y QUIÉN PUEDE USARLO (ADMINISTRACIÓN DEL SISTEMA)
+137. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: QUÉ ES Y QUIÉN PUEDE USARLO
+----------------------------------------------------------------------
+Ruta: Administración del sistema > Actualización desde el servidor posMe. No aparece en el menú: se abre escribiendo core_upgrade/byPop3 después de la dirección de posMe.
+La pantalla Actualización desde el servidor posMe trae la versión publicada en el servidor central de posMe y la aplica sobre esta instalación: archivos de la aplicación, estructura de la base de datos y datos de configuración. El origen por defecto es https://posme.net/v4posme/public/public y se muestra arriba, en Origen.
+Antes de cambiar nada se genera un respaldo completo de la base de datos y de los archivos que se reemplazan, para poder revertir si algo falla.
+La pantalla muestra, en orden: Objetivo, Versiones (versión local y la del servidor; botón Volver a consultar), Tipo de instalación, Componentes que se actualizan, Estructura de la base de datos, Datos de configuración, Pasos del proceso, Advertencias y Conexión con el servidor. A la derecha están Comprobaciones e Iniciar actualización.
+Restricciones: solo la pueden abrir usuarios con rol administrador. Solo se permite una actualización a la vez.
+Ver también: Actualizar posMe desde el servidor central: configurar la conexión; Actualizar posMe desde el servidor central: iniciar la actualización.
+
+138. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: CONFIGURAR LA CONEXIÓN
+----------------------------------------------------------------------
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta Conexión con el servidor.
+  1. En URL del servidor de origen escriba la dirección del servidor central (por defecto https://posme.net/v4posme/public/public). Debe empezar con https:// (o http:// solo si el servidor central lo permite).
+  2. En ID de instalación escriba el identificador de esta instalación.
+  3. En Clave escriba la clave de la instalación. El ID de instalación y la Clave los entrega el administrador del servidor central.
+  4. Presione Guardar conexión.
+Notas: la clave se guarda cifrada y solo se muestra enmascarada. Si deja la Clave vacía al guardar, se conserva la que ya estaba guardada. Si la URL o el ID faltan, la pantalla avisa: "Escriba la URL del servidor de origen." o "Escriba el ID de instalación.".
+Ver también: Actualizar posMe desde el servidor central: preparar el servidor central (administrador).
+
+139. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: MODO LOCAL O NUBE (QUÉ SE ACTUALIZA)
+----------------------------------------------------------------------
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta Tipo de instalación.
+posMe detecta solo el Modo ("Detectado automáticamente: Local" o "Nube"). Si no es correcto, cámbielo en la lista: se vuelve a consultar el servidor con el modo elegido.
+  * Local (equipo del cliente: app, vendor y public): syncApp.zip actualiza app/, syncVendor.zip actualiza vendor/ y syncPublic.zip actualiza public/ (sin tocar los logos ni los archivos de la compañía).
+  * Nube (hosting: vendor y app/Config): syncVendor.zip actualiza vendor/ y syncConfig.zip actualiza app/Config/ (sin tocar Constants.php ni App.php). En la nube, el código de app/ se sigue actualizando con el Despliegue remoto (core_merge/deploy).
+La tarjeta Componentes que se actualizan muestra cada paquete, su Destino y lo que Nunca se sobrescribe.
+Restricciones: si en el servidor falta cualquiera de los zip del modo elegido, aparece "No se puede continuar: falta ..." y no se puede iniciar.
+Notas: solo se actualizan los archivos que vienen dentro de cada zip; nada se elimina. Siempre se protegen: .env, writable/, system/, app/Config/Constants.php, app/Config/App.php, logos y archivos de la compañía, public/.htaccess y public/index.php. La estructura de la base de datos nunca elimina tablas ni columnas. Los datos de su empresa no cambian y los parámetros de la empresa conservan sus valores (solo se agregan los nuevos).
+
+140. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: INICIAR LA ACTUALIZACIÓN
+----------------------------------------------------------------------
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3).
+  1. Avise a los usuarios: mientras dure la actualización nadie podrá operar en posMe.
+  2. Revise Versiones, Componentes que se actualizan, Advertencias y Comprobaciones (permisos de escritura, espacio, PHP y base de datos). Si cambió algo, presione Volver a consultar.
+  3. Si la versión local ya es igual a la del servidor, aparece Forzar aunque esté al día: márquelo solo si quiere volver a aplicar la misma versión.
+  4. En Escriba ACTUALIZAR para confirmar escriba ACTUALIZAR en mayúsculas.
+  5. Presione Actualizar posMe. En la ventana Iniciar actualización revise el modo y las versiones y presione Iniciar.
+  6. Siga el avance en Avance general, Etapas y Bitácora. No cierre la pestaña ni apague el equipo.
+  7. Al terminar aparece "posMe se actualizó correctamente". Presione Recargar posMe.
+Restricciones: el botón Actualizar posMe queda desactivado mientras haya avisos en la lista bajo la confirmación (por ejemplo "No se puede continuar: revise los componentes y las comprobaciones.").
+Notas: con Copiar de la Bitácora puede copiar el registro para enviarlo a soporte.
+Ver también: Actualizar posMe desde el servidor central: etapas, revisar cambios y cancelar.
+
+141. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: ETAPAS, REVISAR CAMBIOS Y CANCELAR
+----------------------------------------------------------------------
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta Etapas.
+La actualización recorre 8 etapas, cada una con su estado y Ver detalle:
+  1. Validando conexión con el servidor: firma, versión publicada y paquetes.
+  2. Verificando instalación local: permisos, espacio en disco, PHP y base de datos.
+  3. Generando respaldo de base de datos: copia completa antes de cambiar nada.
+  4. Descargando archivos del servidor: por bloques, verificando su huella (SHA-256).
+  5. Comparando estructuras de base de datos: calcula qué cambia y se pausa en Revise los cambios antes de aplicarlos.
+  6. Aplicando modificaciones: estructura, datos de configuración y archivos, en ese orden.
+  7. Validando archivos y componentes: confirma que lo aplicado coincide con lo descargado.
+  8. Finalizando actualización: registra la nueva versión y desactiva el modo mantenimiento.
+En la pausa de la etapa 5 revise archivos, estructura y datos. Los cambios de estructura con riesgo de pérdida de datos quedan desmarcados; use Marcar todos o Solo sin riesgo, o Ver SQL para ver cada cambio. Luego:
+  * Continuar con la aplicación y en la ventana Aplicar los cambios presione Continuar.
+  * Cancelar sin aplicar y luego Cancelar actualización: no se aplica ningún cambio y se desactiva el modo mantenimiento.
+
+142. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: MODO MANTENIMIENTO
+----------------------------------------------------------------------
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3).
+Al iniciar la actualización se activa el modo mantenimiento. Mientras dura, los demás usuarios ven la página posMe en mantenimiento con el aviso "El sistema se está actualizando. Intente de nuevo en unos minutos." y no pueden operar (solo siguen disponibles el inicio y el cierre de sesión).
+El modo mantenimiento se libera solo:
+  * al terminar la actualización (correcta, con error o cancelada en la etapa 5), o
+  * a las 2 horas sin avance (cada etapa renueva ese plazo).
+Si al abrir la pantalla aparece "Ya hay un modo mantenimiento activo. Puede haber otra actualización en curso.", espere a que termine antes de iniciar otra.
+Notas: haga la actualización fuera del horario de trabajo.
+
+143. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: REVERTIR LA ACTUALIZACIÓN
+----------------------------------------------------------------------
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta Avance general.
+Si una etapa falla, aparece "Falló en la etapa N" y el botón Revertir.
+  1. Presione Revertir.
+  2. En la ventana Revertir la actualización se restauran los archivos y los datos de configuración que había antes de la actualización.
+  3. Marque Restaurar también la base de datos completa (borra lo registrado después del respaldo) solo si la estructura o los datos quedaron dañados. Si no lo marca, la base de datos se conserva.
+  4. Presione Revertir y espere el aviso "Se restauró la instalación anterior.".
+  5. Presione Recargar posMe.
+Notas: si la reversión falla aparece "No se pudo revertir" y puede intentarlo de nuevo. Si falló al iniciar (antes de cambiar nada), solo aparece Volver.
+
+144. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: PREPARAR EL SERVIDOR CENTRAL (ADMINISTRADOR)
+----------------------------------------------------------------------
+Solo para el administrador del servidor central de posMe (no para el cliente).
+  1. En el servidor central cree el archivo writable/posme_upgrade_server/server_config.php. Ejemplo con valores ficticios:
+    return [
+        'enabled'   => true,
+        'allowHttp' => false,
+        'phpMin'    => '7.4',
+        'clients'   => [
+            'cliente_ejemplo' => ['secret' => 'CLAVE-DE-64-CARACTERES-O-MAS', 'companyKey' => 'nombre_script_cliente', 'enabled' => true, 'label' => 'Cliente de ejemplo'],
+        ],
+    ];
+     * enabled: activa el servidor central. allowHttp: permitir http (solo pruebas).
+     * clients: una entrada por ID de instalación, con secret (la Clave, de al menos 64 caracteres), companyKey (nombre del script del cliente en public/resource/file_sql/clientes, sin .sql), enabled y label.
+  2. Suba a mano los paquetes a writable/posme_upgrade_server/packages/: syncApp.zip, syncVendor.zip, syncPublic.zip y syncConfig.zip.
+  3. Opcional: version.txt en esa carpeta, con la versión en la línea 1 y la fecha en la línea 2.
+  4. Entregue a cada cliente su ID de instalación y su Clave por un medio seguro.
+Restricciones: el servidor central solo acepta HTTPS (salvo allowHttp).
+
+145. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: ADVERTENCIAS
+----------------------------------------------------------------------
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3).
+  * Haga la actualización fuera del horario de trabajo y avise a los usuarios: el modo mantenimiento impide operar.
+  * Aunque la etapa 3 respalda la base de datos, tenga un respaldo propio reciente.
+  * En modo Nube, syncConfig.zip reemplaza los archivos de app/Config que traiga, incluidos Database.php y Filters.php. Revise su contenido antes de publicarlo.
+  * Los archivos obsoletos no se borran: solo se actualizan o crean los que vienen en los zip.
+  * Si aparece "Sesión o token vencido (HTTP 403). Recargue la página.", recargue la pantalla y vuelva a consultar.
+Ver también: Actualizar posMe desde el servidor central: revertir la actualización.
+
+146. DESPLIEGUE REMOTO: QUÉ ES Y QUIÉN PUEDE USARLO (ADMINISTRACIÓN DEL SISTEMA)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto. No aparece en el menú: se abre escribiendo core_merge/deploy después de la dirección de posMe.
 La pantalla Sincronización de instalación remota actualiza la instalación de posMe de un cliente (VPS u hosting compartido) desde la instalación local de posMe. Sincroniza tres partes que se eligen por separado:
@@ -1889,7 +2008,7 @@ La pantalla tiene tres pestañas: Sincronización (lo anterior), Limpieza de ser
 Restricciones: es una herramienta técnica solo para el administrador de posMe, no para el usuario del negocio. Requiere un usuario con rol administrador y que la instalación local tenga habilitada la consola (constante DEPLOY_CONSOLE_ENABLED de la configuración local). En las instalaciones de los clientes está apagada. Solo se permite un despliegue a la vez por compañía.
 Ver también: Despliegue remoto: preparar la consola y el agente (primera vez); Despliegue remoto: errores frecuentes; Despliegue remoto: editar la configuración (app/Config); Despliegue remoto: cargar los logos.
 
-138. DESPLIEGUE REMOTO: PREPARAR LA CONSOLA Y EL AGENTE (PRIMERA VEZ)
+147. DESPLIEGUE REMOTO: PREPARAR LA CONSOLA Y EL AGENTE (PRIMERA VEZ)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 Una sola vez en la instalación local:
@@ -1904,7 +2023,7 @@ Por cada cliente:
   6. Presione Probar conexiones para confirmar que el agente responde.
 Ver también: Despliegue remoto: elegir la compañía y configurar la conexión.
 
-139. DESPLIEGUE REMOTO: ELEGIR LA COMPAÑÍA Y CONFIGURAR LA CONEXIÓN
+148. DESPLIEGUE REMOTO: ELEGIR LA COMPAÑÍA Y CONFIGURAR LA CONEXIÓN
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. En Compañía a sincronizar elija la compañía. La lista sale de los scripts de public/resource/file_sql/clientes, uno por compañía (no aparecen 001_default ni los scripts -custom-php). La base de datos esperada se toma de la cabecera /*BD: ... */ del script.
@@ -1916,7 +2035,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   4. Presione Probar conexiones: muestra el agente, la base esperada contra la real, extensiones, permisos de escritura, espacio libre, despliegues en curso, FTP y MySQL directo.
 Notas: las contraseñas se guardan cifradas y nunca se vuelven a mostrar; déjelas vacías para conservar las guardadas. Si el servidor responde con una base de datos distinta a la esperada, el despliegue se bloquea.
 
-140. DESPLIEGUE REMOTO: SUBIR Y VALIDAR EL PAQUETE ZIP (ACTUALIZAR ARCHIVOS)
+149. DESPLIEGUE REMOTO: SUBIR Y VALIDAR EL PAQUETE ZIP (ACTUALIZAR ARCHIVOS)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. En Paquete de actualización (ZIP) elija el Archivo ZIP con la carpeta app/. La carpeta app/ puede venir dentro de una carpeta raíz.
@@ -1927,7 +2046,7 @@ Solo se actualizan app/Config/Routes.php y las carpetas app/Controllers, Models,
 Restricciones: si hay errores de sintaxis PHP no se puede desplegar. Los archivos con rutas peligrosas se rechazan.
 Notas: las tres opciones (archivos, estructura y datos) son casillas independientes; puede marcar solo las que necesite.
 
-141. DESPLIEGUE REMOTO: SINCRONIZAR LA ESTRUCTURA DE LA BASE DE DATOS
+150. DESPLIEGUE REMOTO: SINCRONIZAR LA ESTRUCTURA DE LA BASE DE DATOS
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. En Opciones de sincronización marque Sincronizar estructura de la base de datos.
@@ -1936,7 +2055,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 Notas: nunca elimina tablas ni columnas del destino; los objetos que solo existen en la instalación del cliente no se eliminan. Si la estructura remota ya coincide con la local, se indica que no hay cambios. Al ejecutar, los cambios se aplican en lotes y se detienen en el primer error.
 Ver también: Despliegue remoto: ejecutar la sincronización, ver el avance y revertir.
 
-142. DESPLIEGUE REMOTO: SINCRONIZAR LOS DATOS DE CONFIGURACIÓN
+151. DESPLIEGUE REMOTO: SINCRONIZAR LOS DATOS DE CONFIGURACIÓN
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. Marque Sincronizar datos de configuración.
@@ -1951,7 +2070,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 Orden: tablas, luego 001_default y luego el script de la compañía, todo en una transacción: si algo falla, se revierte todo.
 Advertencia: el modo Completa reemplaza tb_company_parameter; los ajustes del cliente que no estén en su script se pierden.
 
-143. DESPLIEGUE REMOTO: EJECUTAR LA SINCRONIZACIÓN, VER EL AVANCE Y REVERTIR
+152. DESPLIEGUE REMOTO: EJECUTAR LA SINCRONIZACIÓN, VER EL AVANCE Y REVERTIR
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. Revise el Resumen de operaciones: lista lo que se hará y lo que falta.
@@ -1968,7 +2087,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 Para deshacer: Revertir archivos o Revertir datos restauran el respaldo tomado en ese despliegue.
 Restricciones: solo un despliegue a la vez por compañía.
 
-144. DESPLIEGUE REMOTO: ERRORES FRECUENTES
+153. DESPLIEGUE REMOTO: ERRORES FRECUENTES
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   * Firma inválida o vencida: el secreto guardado en la consola no es el mismo del agente, o el reloj del equipo está desfasado más de 5 minutos. Genere e instale de nuevo el secreto, o corrija la hora del equipo.
@@ -1978,7 +2097,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   * Ya hay otro despliegue en curso: espere a que termine; el candado caduca solo a las 2 horas.
 Ver también: Despliegue remoto: preparar la consola y el agente (primera vez).
 
-145. DESPLIEGUE REMOTO: LIMPIEZA DE SERVIDOR (LIBERAR ESPACIO E INODOS)
+154. DESPLIEGUE REMOTO: LIMPIEZA DE SERVIDOR (LIBERAR ESPACIO E INODOS)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pestaña Limpieza de servidor (entre Sincronización y Configuración y logos).
   1. En Agente que hará la limpieza elija la Compañía con conexión guardada (con el agente instalado y actualizado). Su agente revisa la carpeta donde está instalado y limpia las instalaciones posMe vecinas del mismo hosting. Para otro hosting, elija una compañía de ese hosting.
@@ -1989,7 +2108,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pest
 Notas: nunca se borran el código, .env, app/Config, la base de datos, agent_config.php ni los index.html/.htaccess de protección. Reemplaza a la antigua URL core_merge/merge_of_posme_merge_to_posme_initialize/2, que sigue existiendo.
 Ver también: Despliegue remoto: errores frecuentes.
 
-146. DESPLIEGUE REMOTO: EDITAR LA CONFIGURACIÓN (APP/CONFIG)
+155. DESPLIEGUE REMOTO: EDITAR LA CONFIGURACIÓN (APP/CONFIG)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pestaña Configuración y logos.
   1. En Compañía con conexión guardada elija la compañía. Si no tiene conexión, configúrela en Sincronización.
@@ -2001,7 +2120,7 @@ Restricciones: si el archivo cambió en el servidor desde que lo abrió, se rech
 Notas: requiere agente 1.1.0 o superior; si es anterior aparece un aviso. Actualícelo en Sincronización con Instalar agente por SFTP/FTP marcando Subir también el código del agente (también sube el Routes.php local).
 Ver también: Despliegue remoto: cargar los logos.
 
-147. DESPLIEGUE REMOTO: CARGAR LOS LOGOS
+156. DESPLIEGUE REMOTO: CARGAR LOS LOGOS
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pestaña Configuración y logos > Logos de la compañía.
   1. Elija la compañía en Compañía con conexión guardada.
@@ -2012,13 +2131,13 @@ Restricciones: PNG o JPG de hasta 1 MB y hasta 4000 x 4000 px. Solo se envían l
 Notas: el sistema convierte cada imagen al formato del nombre (.png o .jpg; al pasar de PNG a JPG usa fondo blanco) y respalda el logo anterior. Avisa si el logo direct-ticket mide más de 576 px de ancho (impresora térmica) y si la ruta de archivos configurada en el servidor del cliente apunta a otra carpeta (los PDF no tomarían el logo). El logo nuevo puede tardar en verse por la caché del navegador.
 Ver también: Despliegue remoto: editar la configuración (app/Config).
 
-148. PARÁMETROS DE LA EMPRESA
+157. PARÁMETROS DE LA EMPRESA
 ----------------------------------------------------------------------
 Los parámetros controlan el comportamiento de posMe por empresa (por ejemplo, orden de aplicación de abonos, lista de precios por defecto, formato de impresión).
 Los parámetros contables se editan en CONTABILIDAD > PARAMETROS; el resto los configura el equipo de soporte de posMe.
 Google Calendar de las órdenes de taller: APP_GOOGLE_CLENDAR_ENABLE (true la activa), GOOGLE_CALENDAR_ID, GOOGLE_CALENDAR_SERVICE_EMAIL y GOOGLE_CALENDAR_PRIVATE_KEY; opcionales GOOGLE_CALENDAR_TIMEZONE (por defecto America/Managua) y GOOGLE_CALENDAR_DURATION_MINUTES (duración de cada evento, por defecto 60 minutos).
 Ver también: Configurar los parámetros contables.
 
-149. SOPORTE
+158. SOPORTE
 ----------------------------------------------------------------------
 Si no encuentra cómo hacer algo o hay un error en el sistema, contacte al equipo de soporte de posMe.

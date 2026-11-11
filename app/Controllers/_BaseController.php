@@ -45,6 +45,7 @@ use App\Libraries\core_web_ai;
 use App\Libraries\core_web_ai_tools;
 use App\Libraries\core_web_report_builder;
 use App\Libraries\core_web_deploy;
+use App\Libraries\core_web_upgrade;
 use App\Libraries\core_web_pagadito\core_web_pagadito;
 
 
@@ -291,6 +292,7 @@ abstract class _BaseController extends Controller
     protected $core_web_ai_tools;
     protected $core_web_report_builder;
     protected $core_web_deploy;
+    protected $core_web_upgrade;
     protected $core_web_pagadito;
 
 
@@ -443,6 +445,12 @@ abstract class _BaseController extends Controller
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
 
+        //posme:2026-11-10 Modo mantenimiento de la actualización (core_upgrade): 503 salvo core_upgrade, core_upgrade_server y core_acount
+        if (\App\Libraries\core_web_upgrade\core_upgrade_lock::blocks(static::class)) {
+            \App\Libraries\core_web_upgrade\core_upgrade_lock::maintenanceResponse($request, $response)->send();
+            exit;
+        }
+
         // Preload any models, libraries, etc, here.
         $this->session 	= Services::session();
         $this->cache = Services::cache();
@@ -481,6 +489,7 @@ abstract class _BaseController extends Controller
         $this->core_web_ai_tools = new core_web_ai_tools();
         $this->core_web_report_builder = new core_web_report_builder();
         $this->core_web_deploy = new core_web_deploy();
+        $this->core_web_upgrade = new core_web_upgrade();
         $this->core_web_pagadito = new core_web_pagadito();
 
         $this->financial_amort = new financial_amort();

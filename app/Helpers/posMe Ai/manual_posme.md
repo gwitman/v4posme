@@ -1667,6 +1667,108 @@ Ruta: Menú > SEGURIDAD > LOG SESSION.
 ## Actualizar (uso de soporte)
 Ruta: Menú > SEGURIDAD > ACTUALIZAR.
 Opción técnica para que el equipo de soporte de posMe aplique actualizaciones al sistema. No la use salvo que soporte se lo indique.
+Ver también: Actualizar posMe desde el servidor central: qué es y quién puede usarlo.
+
+## Actualizar posMe desde el servidor central: qué es y quién puede usarlo
+Ruta: Administración del sistema > Actualización desde el servidor posMe. No aparece en el menú: se abre escribiendo core_upgrade/byPop3 después de la dirección de posMe.
+<!-- REVISAR: confirmar si la opción del menú SEGURIDAD > ACTUALIZAR abre esta pantalla (no se encontró la entrada del menú en los scripts SQL) -->
+La pantalla **Actualización desde el servidor posMe** trae la versión publicada en el servidor central de posMe y la aplica sobre esta instalación: archivos de la aplicación, estructura de la base de datos y datos de configuración. El origen por defecto es https://posme.net/v4posme/public/public y se muestra arriba, en **Origen**.
+Antes de cambiar nada se genera un respaldo completo de la base de datos y de los archivos que se reemplazan, para poder **revertir** si algo falla.
+La pantalla muestra, en orden: **Objetivo**, **Versiones** (versión local y la del servidor; botón **Volver a consultar**), **Tipo de instalación**, **Componentes que se actualizan**, **Estructura de la base de datos**, **Datos de configuración**, **Pasos del proceso**, **Advertencias** y **Conexión con el servidor**. A la derecha están **Comprobaciones** e **Iniciar actualización**.
+Restricciones: solo la pueden abrir usuarios con rol administrador. Solo se permite una actualización a la vez.
+Ver también: Actualizar posMe desde el servidor central: configurar la conexión; Actualizar posMe desde el servidor central: iniciar la actualización.
+
+## Actualizar posMe desde el servidor central: configurar la conexión
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta **Conexión con el servidor**.
+1. En **URL del servidor de origen** escriba la dirección del servidor central (por defecto https://posme.net/v4posme/public/public). Debe empezar con https:// (o http:// solo si el servidor central lo permite).
+2. En **ID de instalación** escriba el identificador de esta instalación.
+3. En **Clave** escriba la clave de la instalación. El **ID de instalación** y la **Clave** los entrega el administrador del servidor central.
+4. Presione **Guardar conexión**.
+Notas: la clave se guarda cifrada y solo se muestra enmascarada. Si deja la **Clave** vacía al guardar, se conserva la que ya estaba guardada. Si la URL o el ID faltan, la pantalla avisa: "Escriba la URL del servidor de origen." o "Escriba el ID de instalación.".
+Ver también: Actualizar posMe desde el servidor central: preparar el servidor central (administrador).
+
+## Actualizar posMe desde el servidor central: modo Local o Nube (qué se actualiza)
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta **Tipo de instalación**.
+posMe detecta solo el **Modo** ("Detectado automáticamente: Local" o "Nube"). Si no es correcto, cámbielo en la lista: se vuelve a consultar el servidor con el modo elegido.
+- **Local (equipo del cliente: app, vendor y public)**: syncApp.zip actualiza app/, syncVendor.zip actualiza vendor/ y syncPublic.zip actualiza public/ (sin tocar los logos ni los archivos de la compañía).
+- **Nube (hosting: vendor y app/Config)**: syncVendor.zip actualiza vendor/ y syncConfig.zip actualiza app/Config/ (sin tocar Constants.php ni App.php). En la nube, el código de app/ se sigue actualizando con el Despliegue remoto (core_merge/deploy).
+La tarjeta **Componentes que se actualizan** muestra cada paquete, su **Destino** y lo que **Nunca se sobrescribe**.
+Restricciones: si en el servidor falta cualquiera de los zip del modo elegido, aparece "No se puede continuar: falta ..." y no se puede iniciar.
+Notas: solo se actualizan los archivos que vienen dentro de cada zip; nada se elimina. Siempre se protegen: .env, writable/, system/, app/Config/Constants.php, app/Config/App.php, logos y archivos de la compañía, public/.htaccess y public/index.php. La estructura de la base de datos nunca elimina tablas ni columnas. Los datos de su empresa no cambian y los parámetros de la empresa conservan sus valores (solo se agregan los nuevos).
+
+## Actualizar posMe desde el servidor central: iniciar la actualización
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3).
+1. Avise a los usuarios: mientras dure la actualización nadie podrá operar en posMe.
+2. Revise **Versiones**, **Componentes que se actualizan**, **Advertencias** y **Comprobaciones** (permisos de escritura, espacio, PHP y base de datos). Si cambió algo, presione **Volver a consultar**.
+3. Si la versión local ya es igual a la del servidor, aparece **Forzar aunque esté al día**: márquelo solo si quiere volver a aplicar la misma versión.
+4. En **Escriba ACTUALIZAR para confirmar** escriba ACTUALIZAR en mayúsculas.
+5. Presione **Actualizar posMe**. En la ventana **Iniciar actualización** revise el modo y las versiones y presione **Iniciar**.
+6. Siga el avance en **Avance general**, **Etapas** y **Bitácora**. No cierre la pestaña ni apague el equipo.
+7. Al terminar aparece "posMe se actualizó correctamente". Presione **Recargar posMe**.
+Restricciones: el botón **Actualizar posMe** queda desactivado mientras haya avisos en la lista bajo la confirmación (por ejemplo "No se puede continuar: revise los componentes y las comprobaciones.").
+Notas: con **Copiar** de la **Bitácora** puede copiar el registro para enviarlo a soporte.
+Ver también: Actualizar posMe desde el servidor central: etapas, revisar cambios y cancelar.
+
+## Actualizar posMe desde el servidor central: etapas, revisar cambios y cancelar
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta **Etapas**.
+La actualización recorre 8 etapas, cada una con su estado y **Ver detalle**:
+1. **Validando conexión con el servidor**: firma, versión publicada y paquetes.
+2. **Verificando instalación local**: permisos, espacio en disco, PHP y base de datos.
+3. **Generando respaldo de base de datos**: copia completa antes de cambiar nada.
+4. **Descargando archivos del servidor**: por bloques, verificando su huella (SHA-256).
+5. **Comparando estructuras de base de datos**: calcula qué cambia y se pausa en **Revise los cambios antes de aplicarlos**.
+6. **Aplicando modificaciones**: estructura, datos de configuración y archivos, en ese orden.
+7. **Validando archivos y componentes**: confirma que lo aplicado coincide con lo descargado.
+8. **Finalizando actualización**: registra la nueva versión y desactiva el modo mantenimiento.
+En la pausa de la etapa 5 revise archivos, estructura y datos. Los cambios de estructura con riesgo de pérdida de datos quedan desmarcados; use **Marcar todos** o **Solo sin riesgo**, o **Ver SQL** para ver cada cambio. Luego:
+- **Continuar con la aplicación** y en la ventana **Aplicar los cambios** presione **Continuar**.
+- **Cancelar sin aplicar** y luego **Cancelar actualización**: no se aplica ningún cambio y se desactiva el modo mantenimiento.
+
+## Actualizar posMe desde el servidor central: modo mantenimiento
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3).
+Al iniciar la actualización se activa el modo mantenimiento. Mientras dura, los demás usuarios ven la página **posMe en mantenimiento** con el aviso "El sistema se está actualizando. Intente de nuevo en unos minutos." y no pueden operar (solo siguen disponibles el inicio y el cierre de sesión).
+El modo mantenimiento se libera solo:
+- al terminar la actualización (correcta, con error o cancelada en la etapa 5), o
+- a las 2 horas sin avance (cada etapa renueva ese plazo).
+Si al abrir la pantalla aparece "Ya hay un modo mantenimiento activo. Puede haber otra actualización en curso.", espere a que termine antes de iniciar otra.
+Notas: haga la actualización fuera del horario de trabajo.
+
+## Actualizar posMe desde el servidor central: revertir la actualización
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta **Avance general**.
+Si una etapa falla, aparece "Falló en la etapa N" y el botón **Revertir**.
+1. Presione **Revertir**.
+2. En la ventana **Revertir la actualización** se restauran los archivos y los datos de configuración que había antes de la actualización.
+3. Marque **Restaurar también la base de datos completa (borra lo registrado después del respaldo)** solo si la estructura o los datos quedaron dañados. Si no lo marca, la base de datos se conserva.
+4. Presione **Revertir** y espere el aviso "Se restauró la instalación anterior.".
+5. Presione **Recargar posMe**.
+Notas: si la reversión falla aparece "No se pudo revertir" y puede intentarlo de nuevo. Si falló al iniciar (antes de cambiar nada), solo aparece **Volver**.
+
+## Actualizar posMe desde el servidor central: preparar el servidor central (administrador)
+Solo para el administrador del servidor central de posMe (no para el cliente).
+1. En el servidor central cree el archivo writable/posme_upgrade_server/server_config.php. Ejemplo con valores ficticios:
+    return [
+        'enabled'   => true,
+        'allowHttp' => false,
+        'phpMin'    => '7.4',
+        'clients'   => [
+            'cliente_ejemplo' => ['secret' => 'CLAVE-DE-64-CARACTERES-O-MAS', 'companyKey' => 'nombre_script_cliente', 'enabled' => true, 'label' => 'Cliente de ejemplo'],
+        ],
+    ];
+   - **enabled**: activa el servidor central. **allowHttp**: permitir http (solo pruebas).
+   - **clients**: una entrada por **ID de instalación**, con **secret** (la **Clave**, de al menos 64 caracteres), **companyKey** (nombre del script del cliente en public/resource/file_sql/clientes, sin .sql), **enabled** y **label**.
+2. Suba a mano los paquetes a writable/posme_upgrade_server/packages/: syncApp.zip, syncVendor.zip, syncPublic.zip y syncConfig.zip.
+3. Opcional: version.txt en esa carpeta, con la versión en la línea 1 y la fecha en la línea 2.
+4. Entregue a cada cliente su **ID de instalación** y su **Clave** por un medio seguro.
+Restricciones: el servidor central solo acepta HTTPS (salvo allowHttp).
+
+## Actualizar posMe desde el servidor central: advertencias
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3).
+- Haga la actualización fuera del horario de trabajo y avise a los usuarios: el modo mantenimiento impide operar.
+- Aunque la etapa 3 respalda la base de datos, tenga un respaldo propio reciente.
+- En modo Nube, syncConfig.zip reemplaza los archivos de app/Config que traiga, incluidos Database.php y Filters.php. Revise su contenido antes de publicarlo.
+- Los archivos obsoletos no se borran: solo se actualizan o crean los que vienen en los zip.
+- Si aparece "Sesión o token vencido (HTTP 403). Recargue la página.", recargue la pantalla y vuelva a consultar.
+Ver también: Actualizar posMe desde el servidor central: revertir la actualización.
 
 ## Despliegue remoto: qué es y quién puede usarlo (administración del sistema)
 Ruta: Administración del sistema > Despliegue remoto. No aparece en el menú: se abre escribiendo core_merge/deploy después de la dirección de posMe.
