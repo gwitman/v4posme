@@ -318,10 +318,15 @@ class core_acount extends _BaseController {
 			}
 			
 			$subject 	= "Inicio de session: ".$objCompany->name." ".$nickname;
-			$body  		= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview			
+			$body  		= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview
+
+			//Pantalla de inicio: la última visitada por el usuario o la del rol
+			$urlInicio	= $this->core_web_authentication->lastScreenGet($objUser["user"]);
+			$urlInicio	= $urlInicio ? $urlInicio : base_url()."/".$objUser["role"]->urlDefault."/index";
+
 			if($objCompany->type == "emanuel")
 			{
-				$this->response->redirect(base_url()."/".$objUser["role"]->urlDefault."/index");
+				$this->response->redirect($urlInicio);
 			}
 			else if($objCompany->type == "bivaly" && $nickname != "superadmin"  )
 			{
@@ -353,7 +358,7 @@ class core_acount extends _BaseController {
 				
 				$script = /*--inicio view*/ view('core_template/core_acount_script_autorizacion');//--finview	
 				$script = str_replace("[[URL_AUTORIZATION]]",base_url()."/core_acount/getReviewLoginSession/userName/".$nickname."/sessionID/".$objLogSessionModel["session_id"], $script);
-				$script = str_replace("[[URL_REDIRECT]]",base_url()."/".$objUser["role"]->urlDefault."/index", $script);
+				$script = str_replace("[[URL_REDIRECT]]",$urlInicio, $script);
 				$script = str_replace("[[NICKNAME]]",$nickname, $script);
 				
 				echo helper_notificationPage(
@@ -386,8 +391,8 @@ class core_acount extends _BaseController {
 				$objLogSessionModel["last_activity"] 	= \DateTime::createFromFormat("Y-m-d H:i:s",helper_getDateTime())->format("YmdHis");
 				$objLogSessionModel["user_data"] 		= $objUser["user"]->nickname." create session";
 				$objLogSessionModel["userID"]			= $dataSession["user"]->userID;				
-				$this->Log_Session_Model->insert($objLogSessionModel);	
-				$this->response->redirect(base_url()."/".$objUser["role"]->urlDefault."/index");
+				$this->Log_Session_Model->insert($objLogSessionModel);
+				$this->response->redirect($urlInicio);
 			}
 			
 		

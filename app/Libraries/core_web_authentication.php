@@ -371,6 +371,86 @@ class core_web_authentication {
    }
 
    /**
+    * Guarda en una cookie la última pantalla visitada por el usuario, para
+    * llevarlo a ella en el siguiente inicio de sesión (la sesión se destruye
+    * al cerrar sesión, por eso no se usa la sesión).
+    * Solo se guardan pantallas app_*: index, add y edit, peticiones GET de
+    * navegación (no AJAX).
+    *
+    * @param object $request Petición actual.
+    * @param string $controllerClass Clase del controlador (static::class).
+    * @return void
+    */
+   function lastScreenSave($request, $controllerClass){
+		$session	= \Config\Services::session();
+		$objUser	= $session->get("user");
+		if(!$objUser || strtolower($request->getMethod()) != "get" || $request->isAJAX())
+		return;
+
+		// Una petición de navegación pide HTML; descarta fetch/JSON e impresiones
+		$accept	= strtolower((string)$request->getHeaderLine("Accept"));
+		if(strpos($accept, "text/html") === false)
+		return;
+
+		$controller	= strtolower(str_replace("App\\Controllers\\", "", $controllerClass));
+		$method		= strtolower((string)\Config\Services::router()->methodName());
+		if(strpos($controller, "app_") !== 0 || !in_array($method, array("index", "add", "edit")))
+		return;
+
+		$segments	= $request->getUri()->getSegments();
+		$path		= implode("/", $segments);
+		if(!$this->lastScreenIsValidPath($path))
+		return;
+
+		set_cookie(array(
+			"name"		=> self::LAST_SCREEN_COOKIE,
+			"value"		=> json_encode(array("u" => (int)$objUser->userID, "c" => (int)$objUser->companyID, "p" => $path)),
+			"expire"	=> self::REMEMBER_LOGIN_SECONDS,
+			"path"		=> $this->rememberLoginPath(),
+			"secure"	=> $request->isSecure(),
+			"httponly"	=> true,
+			"samesite"	=> "Lax"
+		));
+   }
+
+   /**
+    * Devuelve la URL completa de la última pantalla del usuario, solo si la
+    * cookie pertenece al mismo usuario y compañía que acaba de iniciar sesión.
+    *
+    * @param object $objUser Usuario autenticado (userID, companyID).
+    * @return string|null URL absoluta o null si no hay pantalla válida.
+    */
+   function lastScreenGet($objUser){
+		$value = get_cookie(self::LAST_SCREEN_COOKIE);
+		if($value === null || $value === "" || !$objUser)
+		return null;
+
+		$data = json_decode((string)$value, true);
+		if(!is_array($data) || !isset($data["u"], $data["c"], $data["p"]))
+		return null;
+
+		if((int)$data["u"] != (int)$objUser->userID || (int)$data["c"] != (int)$objUser->companyID)
+		return null;
+
+		if(!$this->lastScreenIsValidPath($data["p"]))
+		return null;
+
+		return base_url()."/".$data["p"];
+   }
+
+   /**
+    * Valida que la ruta guardada sea una pantalla interna (evita redirecciones
+    * a otros sitios si la cookie se manipula).
+    *
+    * @param string $path Ruta relativa: controlador/metodo/segmentos.
+    * @return bool
+    */
+   private function lastScreenIsValidPath($path){
+		return is_string($path) && strlen($path) <= 500
+			&& preg_match('#^app_[a-z0-9_]+/(index|add|edit)(/[A-Za-z0-9_\-\.]+)*$#i', $path) === 1;
+   }
+
+   /**
     * Ruta de la cookie: la carpeta de la instalación, para que dos instalaciones
     * en el mismo dominio no compartan la cookie.
     *
@@ -392,6 +472,7 @@ class core_web_authentication {
 
    const REMEMBER_LOGIN_COOKIE  = "posme_remember";
    const REMEMBER_LOGIN_SECONDS = 2592000; // 30 días
+   const LAST_SCREEN_COOKIE     = "posme_last_screen";
 
 }
 ?>

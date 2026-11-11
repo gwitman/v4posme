@@ -639,6 +639,9 @@ abstract class _BaseController extends Controller
         $this->Reporting_Parameter_Model    = new Reporting_Parameter_Model();
         $this->Reporting_Result_Model       = new Reporting_Result_Model();
 
+        //Recordar la última pantalla visitada para volver a ella después del login
+        $this->core_web_authentication->lastScreenSave($this->request, static::class);
+
     }
 
     function posMeGetRutasOfController(){
