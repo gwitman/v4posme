@@ -828,26 +828,6 @@ class app_cxc_api extends _BaseController {
 		/////////////////////////////////////
 		if (!$isInternalMessage) 
 		{
-			//wg-if (!$file)
-			//wg-{
-			//wg-	$this->core_web_whatsap->sendMessageBy_VanageApiText_PosMe(
-			//wg-		$companyID, 
-			//wg-		$message, 
-			//wg-		clearNumero($objCustomer[0]->phoneNumber),
-			//wg-		'text',
-			//wg-		false 			
-			//wg-	);
-			//wg-}
-			//wg-else
-			//wg-{
-			//wg-	$this->core_web_whatsap->sendMessageBy_VanageApiImage_PosMe(
-			//wg-		$companyID, 
-			//wg-		$message, 
-			//wg-		clearNumero($objCustomer[0]->phoneNumber),
-			//wg-		'image',
-			//wg-		$urlPublic
-			//wg-	);
-			//wg-}
 			
 			
 			$result = null;
@@ -1185,12 +1165,6 @@ class app_cxc_api extends _BaseController {
 	}
 	public function WebHookReceiptMessage_Whatsapp_Wati()
 	{
-		
-	}
-	
-	public function WebHookReceiptMessage_Whatsapp_VonageApi_posMe()
-	{
-		
 		
 	}
 	
