@@ -379,10 +379,16 @@ class core_web_upgrade
         foreach (core_upgrade_rules::packages($mode) as $package) {
             $dirs[] = ROOTPATH . $package['target'];
         }
-        foreach ($dirs as $dir) {
+        foreach ($dirs as $index => $dir) {
             $ok = false;
             try {
-                core_deploy_files::ensureDir($dir);
+                // Solo la carpeta de trabajo (writable) se crea y se protege con .htaccess/index.html;
+                // en app/, vendor/ y public/ únicamente se prueba la escritura (no dejar archivos ahí)
+                if ($index === 0) {
+                    core_deploy_files::ensureDir($dir);
+                } elseif (!is_dir($dir)) {
+                    throw new \Exception('No existe la carpeta');
+                }
                 $probe = rtrim($dir, '/') . '/.posme_upgrade_probe';
                 $ok    = @file_put_contents($probe, 'x') !== false;
                 @unlink($probe);
