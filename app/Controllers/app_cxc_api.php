@@ -2112,7 +2112,8 @@ class app_cxc_api extends _BaseController {
 					$dataSession["user"]->branchID,
 					$dataSession["company"]->type,
 					$objCustomerConversation[0]->conversationID,
-					"📩 *Cliente:".$objCustomer[0]->firstName."* ('".$objCustomer[0]->entityID."') ha enviado un mensaje:\n💬 _\"".$messagePreview."\"_\n👉 Por favor, respóndelo en el siguiente enlace: 🌐 ".$short
+					"📩 *Cliente:".$objCustomer[0]->firstName."* ('".$objCustomer[0]->entityID."') ha enviado un mensaje:\n💬 _\"".$messagePreview."\"_\n👉 Por favor, respóndelo en el siguiente enlace: 🌐 ".$short,
+					$objCustomer[0]->entityID
 				);
 				log_message('error', '[Generic]    notificationEmployerInConversation ejecutado (ver detalle de destinatarios en [notificationEmployerInConversation])');
 			}
@@ -2148,7 +2149,8 @@ class app_cxc_api extends _BaseController {
 					$dataSession["user"]->branchID,
 					$dataSession["company"]->type,
 					$objCustomerConversation[0]->conversationID,
-					"📩 *Cliente:". $objCustomer[0]->firstName."* ('".$objCustomer[0]->entityID."') ha enviado un mensaje:\n💬 _\"".$messagePreview."\"_\n👉 Por favor, respóndelo en el siguiente enlace: 🌐 ".$short
+					"📩 *Cliente:". $objCustomer[0]->firstName."* ('".$objCustomer[0]->entityID."') ha enviado un mensaje:\n💬 _\"".$messagePreview."\"_\n👉 Por favor, respóndelo en el siguiente enlace: 🌐 ".$short,
+					$objCustomer[0]->entityID
 				);
 				log_message('error', '[Generic]    notificationEmployerInConversation ejecutado (ver detalle de destinatarios en [notificationEmployerInConversation])');
 			}

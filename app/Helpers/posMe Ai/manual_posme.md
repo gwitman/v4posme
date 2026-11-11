@@ -716,6 +716,22 @@ Notas:
 - Necesita permiso sobre esta opción del menú. Si ocurre un error, el mensaje aparece en la pestaña nueva.
 <!-- REVISAR: qué créditos incluye el archivo y cómo se entrega a SIN Riesgo -->
 
+## Ver a quién se notificó un mensaje de WhatsApp de un cliente (conversación con cliente)
+Ruta: en la lista de conversaciones (por ejemplo, la pestaña **LISTA DE CONVERSACIONES MIAS**), abra la conversación del cliente y vaya a la pestaña **Chat**.
+<!-- REVISAR: nombre exacto de la opción de menú de conversaciones (CRM / WhatsApp) y cómo se abre la conversación desde la lista -->
+Cuando un cliente escribe por WhatsApp, posMe avisa automáticamente al colaborador que atiende la conversación: el último colaborador vigente que respondió o, si nadie ha respondido, el primero asignado.
+Cada aviso queda registrado en el **Chat** como un mensaje de sistema con el texto "🔔 Se le ha notificado a: (nombre del colaborador) | Teléfono: (número)".
+Cómo reconocer cada mensaje en el **Chat**:
+- Cliente: azul claro, a la izquierda.
+- Colaborador: azul, a la derecha.
+- Mensaje interno: amarillo.
+- Sistema: gris, centrado, con borde punteado y la etiqueta **Sistema** (sin foto).
+Notas:
+- El mensaje de sistema no se envía al cliente por WhatsApp; es solo informativo.
+- Solo aparece si realmente se intentó enviar el aviso. Si no hay un colaborador vigente o este no tiene teléfono principal, no se registra.
+- Sirve para saber a quién y a qué teléfono se avisó de cada mensaje que entra.
+Ver también: Agregar teléfonos y correos de un colaborador.
+
 ## Registrar un gasto
 Ruta: Menú > CXP > GASTOS. La lista se llama **LISTA DE GASTOS**.
 1. Presione **Nuevo**. Se abre **Gasto:#**.

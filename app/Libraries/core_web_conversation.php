@@ -969,7 +969,18 @@ class core_web_conversation{
 	}
 
 
-	function notificationEmployerInConversation($companyID,$branchID,$companyType,$conversationID,$mensaje)
+	/**
+	 * Notifica por WhatsApp al colaborador que atiende la conversacion y, si se indica el cliente,
+	 * deja registrado en la conversacion un mensaje de sistema con el nombre y telefono notificado.
+	 * @param int    $companyID
+	 * @param int    $branchID
+	 * @param string $companyType      Tipo de empresa (define el proveedor de WhatsApp)
+	 * @param int    $conversationID
+	 * @param string $mensaje          Texto a enviar al colaborador
+	 * @param int    $entityIDCustomer entityID del cliente de la conversacion (0 = no registrar mensaje de sistema)
+	 * @return void
+	 */
+	function notificationEmployerInConversation($companyID,$branchID,$companyType,$conversationID,$mensaje,$entityIDCustomer = 0)
 		{
 
 			//Afiliar la conversacion a un agente	
@@ -1017,7 +1028,7 @@ class core_web_conversation{
 					{
 						$this->sendNotificationToEmployer(
 							$core_web_whatsap, $Entity_Phone_Model, $companyType, $companyID, $branchID,
-							$objEmployerToNotify, $mensaje, "_SECUNDARY"
+							$objEmployerToNotify, $mensaje, "_SECUNDARY", $entityIDCustomer
 						);
 					}
 				}
@@ -1044,7 +1055,7 @@ class core_web_conversation{
 					{
 						$this->sendNotificationToEmployer(
 							$core_web_whatsap, $Entity_Phone_Model, $companyType, $companyID, $branchID,
-							$objEmployerToNotify, $mensaje, ""
+							$objEmployerToNotify, $mensaje, "", $entityIDCustomer
 						);
 					}
 				}
@@ -1144,9 +1155,10 @@ class core_web_conversation{
 	 * @param object $employer           Fila del colaborador (entityID, firstName)
 	 * @param string $mensaje            Texto a enviar
 	 * @param string $instanciaName      Sufijo de instancia ("" o "_SECUNDARY")
+	 * @param int    $entityIDCustomer   entityID del cliente (0 = no registrar mensaje de sistema)
 	 * @return bool true si se llamo al envio, false si no tenia telefono
 	 */
-	private function sendNotificationToEmployer($core_web_whatsap, $Entity_Phone_Model, $companyType, $companyID, $branchID, $employer, $mensaje, $instanciaName)
+	private function sendNotificationToEmployer($core_web_whatsap, $Entity_Phone_Model, $companyType, $companyID, $branchID, $employer, $mensaje, $instanciaName, $entityIDCustomer = 0)
 	{
 		log_message("error","[notificationEmployerInConversation] Destinatario seleccionado (ultimo colaborador que atendio): ".$employer->firstName." | entityID=".$employer->entityID);
 
@@ -1181,7 +1193,67 @@ class core_web_conversation{
 		$resultText = is_scalar($resultSend) || $resultSend === null ? var_export($resultSend, true) : json_encode($resultSend, JSON_UNESCAPED_UNICODE);
 		$resultText = mb_strlen((string)$resultText) > 200 ? mb_substr($resultText, 0, 200) . '...' : $resultText;
 		log_message("error","[notificationEmployerInConversation] Respuesta del proveedor al enviar a ".$phoneFinal.": ".$resultText);
+
+		//Dejar constancia en la conversacion del cliente (mensaje de sistema)
+		if(((int)$entityIDCustomer) > 0)
+			$this->saveSystemMessageNotification($entityIDCustomer, $employer, $phoneOriginal);
+
 		return true;
+	}
+
+	/**
+	 * Registra en tb_notification un mensaje de sistema en la conversacion del cliente
+	 * indicando a que colaborador y a que telefono se le notifico. Se identifica en la
+	 * pantalla app_cxc_conversation por summary = 'mensaje sistema' y no se envia por WhatsApp.
+	 * Si falla solo se deja en el log: nunca debe interrumpir el webhook.
+	 * @param int    $entityIDCustomer entityID del cliente de la conversacion
+	 * @param object $employer         Fila del colaborador notificado (entityID, firstName)
+	 * @param string $phoneNumber      Telefono registrado del colaborador
+	 * @return int notificationID insertado o 0 si no se pudo registrar
+	 */
+	private function saveSystemMessageNotification($entityIDCustomer, $employer, $phoneNumber)
+	{
+		try
+		{
+			$Notification_Model 	= new Notification_Model();
+			$Tag_Model 				= new Tag_Model();
+			$objTag 				= $Tag_Model->get_rowByName("MENSAJE DE CONVERSACION");
+
+			$objNotification 							= array();
+			$objNotification["errorID"] 				= 0;
+			$objNotification["from"] 					= 'Sistema';
+			$objNotification["to"] 						= $employer->firstName;
+			$objNotification["subject"] 				= 'no use';
+			$objNotification["message"] 				= "🔔 Se le ha notificado a: ".$employer->firstName." | Teléfono: ".$phoneNumber;
+			$objNotification["summary"] 				= 'mensaje sistema';
+			$objNotification["title"] 					= 'text';
+			$objNotification["tagID"] 					= $objTag ? $objTag->tagID : 0;
+			$objNotification["createdOn"] 				= helper_getDateTime();
+			$objNotification["isActive"] 				= 1;
+			$objNotification["phoneFrom"] 				= '';
+			$objNotification["phoneTo"] 				= $phoneNumber;
+			$objNotification["programDate"] 			= helper_getDate();
+			$objNotification["programHour"] 			= '00:00';
+			$objNotification["sendOn"] 					= NULL;
+			$objNotification["sendEmailOn"] 			= NULL;
+			$objNotification["sendWhatsappOn"] 			= NULL;
+			$objNotification["addedCalendarGoogle"] 	= 0;
+			$objNotification["quantityOcupation"] 		= 0;
+			$objNotification["quantityDisponible"] 		= 0;
+			$objNotification["googleCalendarEventID"] 	= NULL;
+			$objNotification["isRead"] 					= 1;
+			$objNotification["entityIDSource"] 			= $entityIDCustomer;
+			$objNotification["entityIDTarget"] 			= $employer->entityID;
+			$notificationID 							= $Notification_Model->insert_app_posme($objNotification);
+
+			log_message("error","[notificationEmployerInConversation] Mensaje de sistema registrado en la conversacion: notificationID=".$notificationID." | cliente entityID=".$entityIDCustomer);
+			return $notificationID;
+		}
+		catch(\Exception $ex)
+		{
+			log_message("error","[notificationEmployerInConversation] No se pudo registrar el mensaje de sistema: ".$ex->getMessage()." (linea ".$ex->getLine().")");
+			return 0;
+		}
 	}
 
 

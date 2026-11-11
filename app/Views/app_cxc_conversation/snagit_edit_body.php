@@ -168,6 +168,17 @@ $messageWithAudioReference = '<div class="referencia">'
   border-left: 4px solid #fbc02d;
 }
 
+/* Mensaje de sistema (ej. notificacion enviada al colaborador): centrado y discreto */
+.message-system {
+  background: #eceff1;
+  color: #546e7a;
+  border: 1px dashed #b0bec5;
+  margin-left: auto;
+  margin-right: auto;
+  font-size: 0.85rem;
+  text-align: center;
+}
+
 /* Estilos para mensaje referenciado (citado) */
 .referencia {
   background: rgba(0, 0, 0, 0.08);
@@ -539,11 +550,16 @@ $messageWithAudioReference = '<div class="referencia">'
 							  class="timeline-item-message"
 							  :class="{
 								'message-internal': objNotification.summary === 'mensaje interno',
-								'message-from-employer': objNotification.summary !== 'mensaje interno' && objNotification.targetIDIsEmployeer > 0,
-								'message-from-customer': objNotification.summary !== 'mensaje interno' && objNotification.targetIDIsEmployeer == 0
+								'message-system': objNotification.summary === 'mensaje sistema',
+								'message-from-employer': objNotification.summary !== 'mensaje interno' && objNotification.summary !== 'mensaje sistema' && objNotification.targetIDIsEmployeer > 0,
+								'message-from-customer': objNotification.summary !== 'mensaje interno' && objNotification.summary !== 'mensaje sistema' && objNotification.targetIDIsEmployeer == 0
 							  }"
 						  >
-							  <div class="d-flex align-items-center gap-2 mb-1">
+							  <!-- Mensaje de sistema: sin avatar ni nombre, solo la etiqueta -->
+							  <div class="d-flex align-items-center gap-2 mb-1" v-if="objNotification.summary === 'mensaje sistema'">
+								<strong style="font-size: 0.8rem;"><i class="bx bx-cog"></i> Sistema</strong>
+							  </div>
+							  <div class="d-flex align-items-center gap-2 mb-1" v-else>
 								<div 
 								  class="avatar avatar-xs" 
 								  v-if="parametroNoDebeVerFoto === false"  
