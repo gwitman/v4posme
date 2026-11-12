@@ -4,147 +4,86 @@
 		<meta charset="utf-8">
 		<title><?php echo $objFirmaEncription; ?></title>
 		<meta name="viewport" 			content="width=device-width, initial-scale=1.0">
-		<meta name="application-name" 	content="dsemp" /> 
-		
-		<link rel="stylesheet" type="text/css" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/style_table_report_printer.css">
-		<link rel="stylesheet" type="text/css" href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/style_table_report_printer.css" media="print">
+		<meta name="application-name" 	content="dsemp" />
+		<?php
+		echo helper_reporteGeneralCreateStyle();
+		?>
 	</head>
-	<body style="background-image:url(<?php echo base_url(); ?>/resource/img/logos/<?php echo $objLogo->value;?>);background-size:80px 50px;"> 
-		<div class="data_grid_encabezado">
-			<table>
-				<thead>
-					<tr>
-						<th colspan="9">RECUPERACION</th>
-					</tr>
-					<tr>
-						<th colspan="9"><?php echo strtoupper($objCompany->name); ?></th>
-					</tr>
-					<tr>
-						<th colspan="9"><?php 
-							if($objDetail) { 
-								echo $objDetail[0]["FiltroCode"]."/".$objDetail[0]["FiltroName"]; 
-							} 
-							else  
-								echo "N/D" ;
-						?></th>
-					</tr>
-					
-					<tr>
-						<th colspan="9">
-							Monto Total: 
-							<?php 
-							if($objDetail) { 
-								echo array_sum(array_column($objDetail, 'Monto'));
-							} 
-							else  
-								echo 0.00 ;			
-							?>
-						</th>
-					</tr>
-					
-					
-				</thead>
-			</table>
-		</div>
+	<body style="font-family:monospace;font-size:smaller;margin:0px 0px 0px 0px">
+
+
+		<?php
+		//Columnas del reporte
+		$configColumn["0"]["Titulo"] 		= "#";
+		$configColumn["1"]["Titulo"] 		= "No";
+		$configColumn["2"]["Titulo"] 		= "Cliente";
+		$configColumn["3"]["Titulo"] 		= "Documento";
+		$configColumn["4"]["Titulo"] 		= "Fecha";
+		$configColumn["5"]["Titulo"] 		= "Cuota";
+		$configColumn["6"]["Titulo"] 		= "Moneda";
+		$configColumn["7"]["Titulo"] 		= "Gestor";
+		$configColumn["8"]["Titulo"] 		= "Comentario";
+
+		$configColumn["0"]["FiledSouce"] 	= "";
+		$configColumn["1"]["FiledSouce"] 	= "NoCliente";
+		$configColumn["2"]["FiledSouce"] 	= "Cliente";
+		$configColumn["3"]["FiledSouce"] 	= "Documento";
+		$configColumn["4"]["FiledSouce"] 	= "Fecha";
+		$configColumn["5"]["FiledSouce"] 	= "Monto";
+		$configColumn["6"]["FiledSouce"] 	= "Moneda";
+		$configColumn["7"]["FiledSouce"] 	= "Gestor";
+		$configColumn["8"]["FiledSouce"] 	= "";
+
+		$configColumn["0"]["Width"] 		= "40px";
+		$configColumn["1"]["Width"] 		= "100px";
+		$configColumn["2"]["Width"] 		= "300px";
+		$configColumn["3"]["Width"] 		= "120px";
+		$configColumn["4"]["Width"] 		= "100px";
+		$configColumn["5"]["Width"] 		= "120px";
+		$configColumn["6"]["Width"] 		= "80px";
+		$configColumn["7"]["Width"] 		= "200px";
+		$configColumn["8"]["Width"] 		= "250px";
+
+		$configColumn["0"]["AutoIncrement"]	= true;
+		$configColumn["4"]["Formato"] 		= "Date";
+		$configColumn["5"]["Formato"] 		= "Number";
+		$configColumn["5"]["Total"] 		= true;
+
+		$resultado = helper_reporteGeneralCreateTable($objDetail,$configColumn,'0px');
+
+		//Subtitulos: gestor filtrado, rango de fechas y monto total
+		$gestor 		= $objDetail ? $objDetail[0]["FiltroCode"]." / ".$objDetail[0]["FiltroName"] : "N/D";
+		$montoTotal 	= $objDetail ? array_sum(array_column($objDetail, 'Monto')) : 0;
+		$startOn 		= isset($startOn) ? $startOn : "";
+		$endOn 			= isset($endOn) ? $endOn : "";
+		$rangoFechas 	= ($startOn != "" || $endOn != "") ? 'DEL '.$startOn.' AL '.$endOn : "";
+		?>
+
+		<?php
+		echo helper_reporteGeneralCreateEncabezado(
+			'RECUPERACION',
+			$objCompany->name,
+			$resultado["columnas"],
+			'GESTOR: '.$gestor,
+			$rangoFechas,
+			'MONTO TOTAL: '.number_format((float)$montoTotal,2,'.',','),
+			$resultado["width"]
+		);
+		?>
+
+		<?php
+		echo $resultado["table"];
+		?>
+
 		<br/>
-		<div class="data_grid_body">
-			<table>
-				<thead>
-					<tr>
-						<th nowrap class="cell_left">#</th>
-						<th nowrap class="cell_left">No</th>
-						<th nowrap class="cell_left">Cliente</th>
-						<th nowrap class="cell_left">Documento</th>						
-						<th nowrap class="cell_left">Fecha</th>
-						<th nowrap class="cell_right">Cuota</th>
-						<th nowrap class="cell_right">Moneda</th>
-						<th nowrap class="cell_right">Gestor</th>
-						<th nowrap class="cell_right">Comentario</th>
-					</tr>
-				</thead>				
-				<tbody>
-					<?php
-					$count 			= 0;
-					$countCliente	= 1;
-					$cliente 		= "";
-					$style			= "";
-					$style2			= "";
-					$cliente2 		= "";
-					$clienteNuevo	= true;
-					if($objDetail)
-					foreach($objDetail as $i){
-						//Calcular Sebra
-						$count++;
-						if ($count % 2 == 0 )
-						$style = "background:#ddd";
-						else 
-						$style = "";
-						//Separar Cliente al Final 
-						if($i["NoCliente"] != $cliente && $cliente != "")
-							echo  "<tr style='border-bottom-color:BLUE;border-bottom-style:solid;border-bottom-width:1px;'><td colspan='9'>&nbsp;</td></tr>";						
-						$cliente = $i["NoCliente"]; 
-						/*Estilo de cuota*/
-						
-						//Repitar Cliente unicamente al Inicio
-						if( $cliente2 != "" && $cliente2 != $i["NoCliente"] ){
-								$clienteNuevo = true;
-								$countCliente++;
-						}
-					
-						//Grid
-						echo "<tr style='".$style."'>";					
-							echo "<td nowrap class='cell_left'>";
-								if($clienteNuevo) echo  $countCliente;
-							echo "</td>";
-							echo "<td nowrap class='cell_left'>";
-								if($clienteNuevo) echo ($i["NoCliente"]);
-							echo "</td>";
-							echo "<td nowrap class='cell_left'>";
-								if($clienteNuevo) echo ($i["Cliente"]);
-							echo "</td>";
-						
-							echo "<td nowrap class='cell_left'>";
-								echo ($i["Documento"]);
-							echo "</td>";
-							echo "<td nowrap class='cell_left' >";
-								echo "'".(date_format(date_create($i["Fecha"]),"Y-m-d"));
-							echo "</td>";
-							echo "<td nowrap class='cell_right'>";
-								echo ($i["Monto"]);
-							echo "</td>";
-							echo "<td nowrap class='cell_left'>";						
-								echo ($i["Moneda"]);
-							echo "</td>";
-							
-							echo "<td nowrap class='cell_left'>";
-								echo ($i["Gestor"]);
-							echo "</td>";
-							
-							echo "<td nowrap class='cell_left'>";
-								echo '*';
-							echo "</td>";
-						echo "</tr>";					
-						//Repitar Cliente unicamente al Inicio
-						if($clienteNuevo)
-						$clienteNuevo = false;
-						$cliente2 = $i["NoCliente"];
-						
-					}
-					?>
-				</tbody>
-			</table>
-		</div>
-		<br/>
-		<br/>
-		<br/>
-		<div class="data_grid_firm_system">
-			<table>
-				<tbody>
-					<tr>
-						<td colspan="9"><?php echo date("Y-m-d H:i:s");  ?> <?php echo $objFirmaEncription; ?></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-	</body>	
+		<?php
+		echo helper_reporteGeneralCreateFirma(
+			$objFirmaEncription,
+			$resultado["columnas"],
+			$resultado["width"]
+		);
+		?>
+
+
+	</body>
 </html>
