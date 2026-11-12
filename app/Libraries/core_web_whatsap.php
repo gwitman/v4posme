@@ -2039,7 +2039,7 @@ class core_web_whatsap {
 			return ['success' => false, 'error' => $error];
 		}
 
-		return json_decode($response, true);
+		return $this->evolutionRegisterSentResponse($response);
 	}
 
 	/**
@@ -2111,7 +2111,7 @@ class core_web_whatsap {
 			return ['success' => false, 'error' => $error];
 		}
 
-		return json_decode($response, true);
+		return $this->evolutionRegisterSentResponse($response);
 	}
 
 	/**
@@ -2185,7 +2185,7 @@ class core_web_whatsap {
 			return ['success' => false, 'error' => $error];
 		}
 
-		return json_decode($response, true);
+		return $this->evolutionRegisterSentResponse($response);
 	}
 
 	/**
@@ -2257,7 +2257,7 @@ class core_web_whatsap {
 			return ['success' => false, 'error' => $error];
 		}
 
-		return json_decode($response, true);
+		return $this->evolutionRegisterSentResponse($response);
 	}
 
 	/**
@@ -2326,7 +2326,90 @@ class core_web_whatsap {
 			return ['success' => false, 'error' => $error];
 		}
 
-		return json_decode($response, true);
+		return $this->evolutionRegisterSentResponse($response);
+	}
+
+	/**
+	 * Decodifica la respuesta de un envio por Evolution API y guarda su key.id como
+	 * "enviado por posMe". El webhook usa esta lista para no registrar dos veces en la
+	 * conversacion los mensajes fromMe que salieron desde posMe (solo se registran los
+	 * que el dueño del telefono envia directamente desde WhatsApp).
+	 * @param string $response Respuesta JSON cruda de Evolution API
+	 * @return mixed Respuesta decodificada (igual que json_decode)
+	 */
+	function evolutionRegisterSentResponse($response)
+	{
+		$decoded 	= json_decode((string)$response, true);
+		$messageId 	= is_array($decoded) ? (string)($decoded["key"]["id"] ?? '') : '';
+		if($messageId === '')
+		{
+			return $decoded;
+		}
+
+		try
+		{
+			$dir  = WRITEPATH . 'evolution_dedup';
+			$file = $dir . '/sent_ids.json';
+			if(!is_dir($dir))
+			{
+				@mkdir($dir, 0777, true);
+			}
+
+			$handle = @fopen($file, 'c+');
+			if($handle === false)
+			{
+				log_message('error', '[evolutionRegisterSentResponse] AVISO: no se pudo abrir ' . $file);
+				return $decoded;
+			}
+
+			flock($handle, LOCK_EX);
+			$ids 				= json_decode((string)stream_get_contents($handle), true);
+			$ids 				= is_array($ids) ? $ids : [];
+			$ids[$messageId] 	= time();
+			//Conservar solo los ultimos 1000 ids para no crecer indefinidamente
+			if(count($ids) > 1000)
+			{
+				asort($ids);
+				$ids = array_slice($ids, -1000, null, true);
+			}
+			ftruncate($handle, 0);
+			rewind($handle);
+			fwrite($handle, json_encode($ids));
+			fflush($handle);
+			flock($handle, LOCK_UN);
+			fclose($handle);
+		}
+		catch(\Throwable $ex)
+		{
+			log_message('error', '[evolutionRegisterSentResponse] No se pudo registrar el id ' . $messageId . ': ' . $ex->getMessage());
+		}
+		return $decoded;
+	}
+
+	/**
+	 * Indica si un mensaje fromMe de Evolution API fue enviado desde posMe (su id fue
+	 * guardado por evolutionRegisterSentResponse).
+	 * @param string $messageId data.key.id del mensaje
+	 * @return bool true si lo envio posMe, false si se envio desde el telefono
+	 */
+	function evolutionIsSentByPosMe($messageId)
+	{
+		$file = WRITEPATH . 'evolution_dedup/sent_ids.json';
+		if($messageId === '' || !file_exists($file))
+		{
+			return false;
+		}
+
+		$handle = @fopen($file, 'r');
+		if($handle === false)
+		{
+			return false;
+		}
+		flock($handle, LOCK_SH);
+		$ids = json_decode((string)stream_get_contents($handle), true);
+		flock($handle, LOCK_UN);
+		fclose($handle);
+		return is_array($ids) && isset($ids[$messageId]);
 	}
 	/**
 	 * Enviar mensajes de texto masivos por Evolution API
@@ -2449,7 +2532,7 @@ class core_web_whatsap {
 			echo "resultado de cada envio</br>";
 			$results[] = [
 				"status"   => $status,
-				"response" => json_decode($response, true)
+				"response" => $this->evolutionRegisterSentResponse($response)
 			];
 			curl_multi_remove_handle($multiHandle, $ch);
 			echo "</br></br>";

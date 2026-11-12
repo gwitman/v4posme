@@ -732,6 +732,19 @@ Notas:
 - Sirve para saber a quién y a qué teléfono se avisó de cada mensaje que entra.
 Ver también: Agregar teléfonos y correos de un colaborador.
 
+## Ver en la conversación los mensajes que envío por WhatsApp desde el celular de la empresa
+Ruta: abra la conversación del cliente y vaya a la pestaña **Chat**.
+Si su empresa usa WhatsApp con Evolution API (según la configuración de su empresa), los mensajes que se envían a un cliente directamente desde el celular de la empresa (en WhatsApp normal, no desde posMe) también quedan guardados en la conversación del cliente.
+- Se guardan textos, imágenes, stickers, audios y notas de voz, videos, PDF y otros documentos, y ubicaciones (como enlace de Google Maps). Si el mensaje responde a otro, se muestra la referencia al mensaje citado.
+- Aparecen como mensaje del colaborador (azul, a la derecha), ya marcados como leídos. Actualizan el último mensaje y la última actividad de la conversación, pero no suman mensajes sin leer.
+- No avisan a los colaboradores ni cambian la categoría del cliente.
+- Si el cliente no existía, se crea solo (con su número de teléfono como nombre) y se le abre una conversación con colaboradores asignados, igual que cuando el cliente escribe primero.
+- Los mensajes enviados desde posMe (pantalla de conversación, notificaciones, cobranza) no se repiten: el sistema los reconoce y no los guarda dos veces.
+- Si el archivo no se pudo descargar, el mensaje queda como texto con la nota "[Archivo ... no disponible]".
+Restricciones: no se guardan los mensajes enviados a su propio número, ni los de grupos, estados o canales.
+Notas: en Evolution API el webhook de la instancia debe tener activado el evento MESSAGES_UPSERT (lo configura soporte o el administrador).
+Ver también: Ver a quién se notificó un mensaje de WhatsApp de un cliente (conversación con cliente).
+
 ## Registrar un gasto
 Ruta: Menú > CXP > GASTOS. La lista se llama **LISTA DE GASTOS**.
 1. Presione **Nuevo**. Se abre **Gasto:#**.

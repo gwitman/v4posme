@@ -1310,12 +1310,10 @@ class app_cxc_api extends _BaseController {
 				return $this->response->setJSON(['success' => false, 'message' => 'Evento ignorado'])->setStatusCode(200);
 			}
 
-			//No se permiten mensajes enviados por nosotros (fromMe)
-			if(!empty($input["data"]["key"]["fromMe"]))
-			{
-				log_message('error', '[EvolutionApi] DESCARTADO: fromMe=true');
-				return $this->response->setJSON(['success' => false, 'message' => 'Mensaje propio ignorado'])->setStatusCode(200);
-			}
+			//fromMe=true: mensaje enviado desde el numero de la empresa. Si lo envio posMe ya
+			//esta en la conversacion y se descarta mas abajo; si el dueño lo escribio desde
+			//su telefono se registra en la conversacion como mensaje saliente.
+			$isFromMe = !empty($input["data"]["key"]["fromMe"]);
 
 			//Solo chats individuales: se descartan grupos, estados (status@broadcast) y canales
 			$remoteJid = (string)($input["data"]["key"]["remoteJid"] ?? '');
@@ -1342,9 +1340,32 @@ class app_cxc_api extends _BaseController {
 			}
 			log_message('error', '[EvolutionApi] Parametro WHATSAPP_WEBHOOK_EVOLUTIONAPI=true, continuando...');
 
+			$messageId = (string)($input["data"]["key"]["id"] ?? '');
+
+			//fromMe enviado por posMe (sendMessageByEvolutionApi*): ya fue guardado al enviarlo.
+			//El webhook puede llegar antes de que posMe guarde el id de la respuesta del envio,
+			//por eso se reintenta la verificacion durante unos segundos.
+			if($isFromMe)
+			{
+				$sentByPosMe = false;
+				for($intento = 0; $intento < 4 && !$sentByPosMe; $intento++)
+				{
+					if($intento > 0)
+					{
+						usleep(1000000);
+					}
+					$sentByPosMe = $this->core_web_whatsap->evolutionIsSentByPosMe($messageId);
+				}
+				if($messageId === '' || $sentByPosMe)
+				{
+					log_message('error', '[EvolutionApi] DESCARTADO: fromMe enviado por posMe (ya registrado), id=' . $messageId);
+					return $this->response->setJSON(['success' => false, 'message' => 'Mensaje enviado por posMe ignorado'])->setStatusCode(200);
+				}
+				log_message('error', '[EvolutionApi] fromMe enviado desde el telefono del dueño, se registrara en la conversacion. id=' . $messageId);
+			}
+
 			//Evitar duplicados: Evolution API reenvia el mismo messages.upsert varias veces
 			//SIEMPRE con el mismo data.key.id. Se procesa solo la primera vez.
-			$messageId = (string)($input["data"]["key"]["id"] ?? '');
 			if($messageId !== '' && !$this->evolutionDedupRegister($messageId))
 			{
 				log_message('error', '[EvolutionApi] DESCARTADO: id=' . $messageId . ' ya procesado (reenvio/ack duplicado)');
@@ -1356,7 +1377,10 @@ class app_cxc_api extends _BaseController {
 			$phoneJid = $remoteJid;
 			if(str_contains($remoteJid, '@lid'))
 			{
-				$phoneJid = (string)($input["data"]["key"]["senderPn"] ?? ($input["data"]["key"]["remoteJidAlt"] ?? ''));
+				//En un fromMe el telefono del cliente (destinatario) viene en remoteJidAlt
+				$phoneJid = $isFromMe
+					? (string)($input["data"]["key"]["remoteJidAlt"] ?? ($input["data"]["key"]["senderPn"] ?? ''))
+					: (string)($input["data"]["key"]["senderPn"] ?? ($input["data"]["key"]["remoteJidAlt"] ?? ''));
 				if($phoneJid == '' || str_contains($phoneJid, '@lid'))
 				{
 					log_message('error', '[EvolutionApi] DESCARTADO: remoteJid @lid sin senderPn/remoteJidAlt -> ' . $remoteJid);
@@ -1374,8 +1398,16 @@ class app_cxc_api extends _BaseController {
 				$this->evolutionDedupRemove($messageId);
 				return $this->response->setJSON(['success' => false, 'message' => 'Telefono invalido'])->setStatusCode(200);
 			}
+			//Telefono del dueño de la instancia (raiz "sender" del payload de Evolution)
+			$ownerDigits = preg_replace('/\D/', '', explode('@', (string)($input["sender"] ?? ''))[0]);
+			if($isFromMe && $ownerDigits != '' && $ownerDigits == $phoneDigits)
+			{
+				//Chat del dueño consigo mismo: no es una conversacion con un cliente
+				log_message('error', '[EvolutionApi] DESCARTADO: fromMe al propio numero del dueño -> ' . $phoneDigits);
+				return $this->response->setJSON(['success' => false, 'message' => 'Mensaje a si mismo ignorado'])->setStatusCode(200);
+			}
 			$from = $phoneDigits . '@c.us';
-			log_message('error', '[EvolutionApi] remoteJid=' . $remoteJid . ' -> from=' . $from);
+			log_message('error', '[EvolutionApi] remoteJid=' . $remoteJid . ' -> from=' . $from . ($isFromMe ? ' (cliente destino de un fromMe)' : ''));
 
 			//Determinar tipo de mensaje y cuerpo segun la estructura real de Evolution API.
 			//$messageNode apunta al nodo del contenido (imageMessage, documentMessage, etc.)
@@ -1477,8 +1509,12 @@ class app_cxc_api extends _BaseController {
 			$genericData["data"]["from"]                 = $from;
 			$genericData["data"]["body"]                 = $body;
 			$genericData["data"]["type"]                 = $type;
-			$genericData["data"]["contact"]["pushname"]  = $input["data"]["pushName"] ?? '';
+			//En un fromMe el pushName es el nombre del dueño, no del cliente
+			$genericData["data"]["contact"]["pushname"]  = $isFromMe ? '' : ($input["data"]["pushName"] ?? '');
 			$genericData["data"]["quotedMsg"]["body"]    = $quotedBody;
+			$genericData["data"]["fromMe"]               = $isFromMe;
+			$genericData["data"]["owner"]["name"]        = $isFromMe ? ($input["data"]["pushName"] ?? '') : '';
+			$genericData["data"]["owner"]["phone"]       = $ownerDigits;
 
 			//Media
 			if($type == "image" || $type == "document" || $type == "ptt" || $type == "video")
@@ -1821,9 +1857,14 @@ class app_cxc_api extends _BaseController {
 			log_message('error', '[Generic] Tipo mensaje convertido: ptt -> audio');
 		}
 
+		//fromMe: mensaje que el dueño envio desde su telefono al cliente (solo EvolutionApi)
+		$isFromMe 				= !empty($inputData["data"]["fromMe"]);
+		log_message('error', '[Generic]    fromMe (enviado desde el telefono del dueño): ' . ($isFromMe ? 'SI' : 'NO'));
+
 		//Buscar al cliente antes de guardar recursos multimedia
 		$customerPhoneNumber 	= $data["customerPhoneNumber"];
-		$customerFirstName		= "posMeConnect_".$data["customerFirstName"];
+		//En un fromMe no se conoce el nombre del cliente: se usa su telefono
+		$customerFirstName		= "posMeConnect_".($data["customerFirstName"] != "" ? $data["customerFirstName"] : $customerPhoneNumber);
 		
 		log_message('error', '[Generic] >> Autenticando sesión con usuario por defecto (pre-multimedia)...');
 		$dataSession 			= $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
@@ -2002,7 +2043,25 @@ class app_cxc_api extends _BaseController {
 		$objCustomerConversation				= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($objCustomer[0]->entityID);
 		log_message('error', '[Generic]    conversationIsNew=' . ($conversationIsNew ? 'SI' : 'NO') . ', conversationID=' . $objCustomerConversation[0]->conversationID);
 		log_message('error', '[Generic]    lastActivityOnOld=' . $lastActivityOnOld . ', lastActivityOnNew=' . $lastActivityOnNew);
-		
+
+		//Mensaje enviado por el dueño desde su telefono: se registra como saliente
+		//(lado del colaborador) y no se notifica a los agentes ni se recategoriza al cliente
+		if($isFromMe)
+		{
+			return $this->webHookSaveOwnerMessage_Whatsapp_posMe(
+				$dataSession,
+				$objCustomer[0],
+				$objCustomerConversation[0],
+				$conversationIsNew,
+				$message,
+				$messageUrl,
+				$messageFile,
+				$messageType,
+				(string)($inputData["data"]["owner"]["name"] ?? ''),
+				(string)($inputData["data"]["owner"]["phone"] ?? '')
+			);
+		}
+
 		$objConversation 						= array();
 		$objConversation["messgeConterNotRead"] = 1 ;
 		$objConversation["lastMessage"] 		= $message ;
@@ -2177,6 +2236,113 @@ class app_cxc_api extends _BaseController {
 		log_message("error","[Generic] ====== FIN WebHookReceiptMessage_Whatsapp_Generic_posMe ======");
 		log_message("error","[Generic] RESULTADO: entityID=" . $result["entityID"] . ", conversationID=" . $result["converationID"] . ", notificationID=" . $result["notificationID"]);
 		return $this->response->setJSON($result);
+	}
+
+	/**
+	 * Registra en la conversacion del cliente un mensaje que el dueño del telefono de la
+	 * empresa envio directamente desde WhatsApp (fromMe que no salio de posMe). Se guarda
+	 * como mensaje saliente (lado del colaborador), ya leido, sin notificar a los agentes.
+	 * @param array  $dataSession             Sesion del usuario por defecto del webhook
+	 * @param object $objCustomer             Cliente destinatario del mensaje
+	 * @param object $objCustomerConversation Conversacion activa del cliente
+	 * @param bool   $conversationIsNew       true si la conversacion se acaba de crear
+	 * @param string $message                 Texto del mensaje (o caption del archivo)
+	 * @param string $messageUrl              URL publica del archivo ("" si es texto)
+	 * @param string $messageFile             URL publica del archivo ("" si es texto)
+	 * @param string $messageType             text, image, video, audio, document
+	 * @param string $ownerName               pushName del dueño
+	 * @param string $ownerPhone              Telefono del dueño (solo digitos)
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	private function webHookSaveOwnerMessage_Whatsapp_posMe($dataSession, $objCustomer, $objCustomerConversation, $conversationIsNew, $message, $messageUrl, $messageFile, $messageType, $ownerName, $ownerPhone)
+	{
+		$conversationID = $objCustomerConversation->conversationID;
+		log_message('error', '[Generic] >> Registrando mensaje del dueño (fromMe) en conversationID=' . $conversationID);
+
+		//Conversacion nueva: se asignan colaboradores igual que con un mensaje entrante,
+		//para que la conversacion le aparezca a alguien en app_cxc_conversation
+		if($conversationIsNew)
+		{
+			$objListEntityIDEmployer = $this->core_web_conversation->getAllEmployer($dataSession["user"]->companyID, $dataSession["company"]->type, $objCustomer->phoneNumber, $message, $conversationIsNew);
+			$this->core_web_conversation->createEmployerInConversation($dataSession, $conversationID, $objListEntityIDEmployer["employerList"] ?? [], $conversationIsNew);
+			log_message('error', '[Generic]    Conversacion nueva, colaboradores asignados: [' . implode(', ', $objListEntityIDEmployer["employerList"] ?? []) . ']');
+		}
+
+		//Colaborador con el que se registra el mensaje (la pantalla pinta del lado del agente
+		//los mensajes cuyo entityIDTarget es un colaborador): el del usuario por defecto del
+		//webhook y, si no tiene, el primer colaborador asignado a la conversacion
+		$entityIDEmployer = (int)($dataSession["user"]->employeeID ?? 0);
+		if($entityIDEmployer > 0 && !$this->Employee_Model->get_rowByEntityID($dataSession["user"]->companyID, $entityIDEmployer))
+		{
+			$entityIDEmployer = 0;
+		}
+		if($entityIDEmployer == 0)
+		{
+			$objEmployerList  = $this->Company_Component_Relation_Model->get_ConversationEmployerBy_ConversationID($conversationID);
+			$entityIDEmployer = $objEmployerList ? (int)$objEmployerList[0]->entityID : 0;
+		}
+		if($entityIDEmployer == 0)
+		{
+			log_message('error', '[Generic]    AVISO: no hay colaborador para registrar el mensaje del dueño; se vera del lado del cliente');
+		}
+		log_message('error', '[Generic]    entityIDEmployer para el mensaje del dueño: ' . $entityIDEmployer);
+
+		//Actualizar la conversacion como mensaje enviado (no suma mensajes sin leer)
+		$objConversation 					= array();
+		$objConversation["lastMessage"] 	= $message;
+		$objConversation["lastActivityOn"] 	= helper_getDateTime();
+		$objConversation["messageSendOn"] 	= helper_getDateTime();
+		$this->Customer_Conversation_Model->update_app_posme($conversationID, $objConversation);
+
+		//Ultima interaccion del colaborador en la conversacion
+		if($entityIDEmployer > 0)
+		{
+			$objCCR 					= array();
+			$objCCR["lastActivityOn"] 	= helper_getDateTime();
+			$this->Company_Component_Relation_Model->update_app_posme_byConversationID_AndEntityIDEmployer($conversationID, $entityIDEmployer, $objCCR);
+		}
+
+		//Guardar el mensaje con el mismo formato que setConversationNotification_ByCustomer
+		$objTag = $this->Tag_Model->get_rowByName("MENSAJE DE CONVERSACION");
+		if(!$objTag)
+		throw new \Exception("EL TAG 'MENSAJE DE CONVERSACION' NO EXISTE...");
+
+		$objNotification 							= array();
+		$objNotification["errorID"] 				= 0;
+		$objNotification["from"] 					= ($ownerName != '' ? $ownerName : 'Propietario');
+		$objNotification["to"] 						= $objCustomer->firstName;
+		$objNotification["subject"] 				= ($messageUrl != '' ? $messageUrl : 'no use');
+		$objNotification["message"] 				= $message;
+		$objNotification["summary"] 				= ($messageFile != '' ? $messageFile : 'no use');
+		$objNotification["title"] 					= $messageType;
+		$objNotification["tagID"] 					= $objTag->tagID;
+		$objNotification["createdOn"] 				= helper_getDateTime();
+		$objNotification["isActive"] 				= 1;
+		$objNotification["phoneFrom"] 				= $ownerPhone;
+		$objNotification["phoneTo"] 				= $objCustomer->phoneNumber;
+		$objNotification["programDate"] 			= helper_getDate();
+		$objNotification["programHour"] 			= '00:00';
+		$objNotification["sendOn"] 					= NULL;
+		$objNotification["sendEmailOn"] 			= NULL;
+		$objNotification["sendWhatsappOn"] 			= NULL;
+		$objNotification["addedCalendarGoogle"] 	= 0;
+		$objNotification["quantityOcupation"] 		= 0;
+		$objNotification["quantityDisponible"] 		= 0;
+		$objNotification["googleCalendarEventID"] 	= NULL;
+		$objNotification["isRead"] 					= 1;
+		$objNotification["entityIDSource"] 			= $objCustomer->entityID;
+		$objNotification["entityIDTarget"] 			= $entityIDEmployer;
+		$notificationID 							= $this->Notification_Model->insert_app_posme($objNotification);
+
+		log_message("error","[Generic] ====== FIN WebHookReceiptMessage_Whatsapp_Generic_posMe (mensaje del dueño) ======");
+		log_message("error","[Generic] RESULTADO: entityID=" . $objCustomer->entityID . ", conversationID=" . $conversationID . ", notificationID=" . $notificationID);
+		return $this->response->setJSON([
+			'success' 			=> true,
+			'message'   		=> 'Mensaje del dueño registrado',
+			'entityID'			=> $objCustomer->entityID,
+			'converationID'		=> $conversationID,
+			'notificationID'	=> $notificationID
+		]);
 	}
 }
 ?>
