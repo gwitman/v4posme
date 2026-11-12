@@ -282,8 +282,9 @@ function helper_reporteGeneralCreateStyle(){
 				}
 			}
 
-			/* Telefono */
-			@media (max-width: 767px) {
+			/* Telefono (solo pantalla: si se aplicara al imprimir en vertical, las tablas
+			   quedarian como bloques con scroll y el navegador cortaria el reporte en la primera hoja) */
+			@media screen and (max-width: 767px) {
 				body {
 					padding: 8px;
 				}
@@ -328,9 +329,95 @@ function helper_reporteGeneralCreateStyle(){
 
 			/* Impresion */
 			@media print {
+				/* Conservar colores de encabezados, franjas y totales */
+				* {
+					-webkit-print-color-adjust: exact;
+					print-color-adjust: exact;
+				}
+				html,
 				body {
 					background: #FFFFFF !important;
 					padding: 0 !important;
+					margin: 0 !important;
+					display: block !important;
+					width: auto !important;
+					min-width: 0 !important;
+					font-size: 9pt;
+				}
+				/* Todas las tablas al ancho de la hoja, sin scroll y repartiendo el ancho
+				   segun el contenido (los anchos fijos en px cortaban columnas a la derecha) */
+				body > table,
+				table.pr-head,
+				table.pr-table,
+				table.pr-firma {
+					display: table !important;
+					width: 100% !important;
+					max-width: 100% !important;
+					overflow: visible !important;
+					table-layout: auto !important;
+				}
+				table.pr-table {
+					margin-bottom: 8px;
+					page-break-inside: auto;
+					break-inside: auto;
+				}
+				/* Celdas compactas que ajustan el texto en varias lineas en vez de recortarlo */
+				table.pr-table th,
+				table.pr-table td {
+					width: auto !important;
+					white-space: normal !important;
+					overflow: visible !important;
+					text-overflow: clip !important;
+					overflow-wrap: anywhere;
+					padding: 2px 5px !important;
+					font-size: 8pt !important;
+					line-height: 1.25;
+				}
+				/* Montos y totales siempre en una sola linea */
+				table.pr-table td.pr-num,
+				table.pr-table .pr-tfoot th {
+					white-space: nowrap !important;
+					overflow-wrap: normal;
+				}
+				table.pr-table tr.pr-thead-row th {
+					padding: 4px 5px !important;
+				}
+				table.pr-table tbody tr:hover td {
+					background: inherit;
+				}
+				table.pr-table tbody tr:nth-child(even) td {
+					background: #F8FAFC !important;
+				}
+				/* Los totales se imprimen una sola vez al final de la tabla, no en cada hoja */
+				table.pr-table tfoot {
+					display: table-row-group;
+				}
+				/* Encabezado mas compacto para dejar mas filas por hoja */
+				table.pr-head {
+					margin-bottom: 8px;
+					page-break-after: avoid;
+					break-after: avoid;
+				}
+				table.pr-head th.pr-title,
+				body > table:not(.pr-head):has(th[rowspan="5"] img) tr:first-child th:not([rowspan]) {
+					font-size: 15px !important;
+					line-height: 20px !important;
+				}
+				table.pr-head th.pr-title h2,
+				table.pr-head th.pr-company h2,
+				table.pr-head th.pr-sub h2 {
+					font-size: inherit;
+				}
+				table.pr-head th.pr-logo img,
+				body > table:not(.pr-head):has(th[rowspan="5"] img) th[rowspan="5"] img {
+					max-height: 50px;
+				}
+				table.pr-head th.pr-logo,
+				body > table:not(.pr-head):has(th[rowspan="5"] img) th[rowspan="5"] {
+					width: 120px !important;
+					min-width: 120px;
+					max-width: 120px;
+					padding: 6px 10px;
 				}
 				.pr-noexport,
 				.pr-toolbar {
@@ -357,7 +444,7 @@ function helper_reporteGeneralCreateStyle(){
 				}
 				@page {
 					size: landscape;
-					margin: 10mm;
+					margin: 8mm;
 				}
 			}
 

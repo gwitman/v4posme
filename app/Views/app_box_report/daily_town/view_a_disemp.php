@@ -1046,7 +1046,9 @@
 		
 		if($totalDolares > 0)
 		echo $rosTotales["table"];
-		
+
+		//Barra de acciones (Exportar a Excel / Imprimir); no se imprime ni se exporta
+		echo helper_reporteGeneralCreateAcciones();
 		?>
 		
 		
