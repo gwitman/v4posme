@@ -542,18 +542,6 @@
       },
       "Keys": [],
       "Fields": []
-    },	
-	{
-      "Source": {
-        "Name": "tb_ai_skill",
-        "ObjectType": "Table_MYSQL"
-      },
-      "Target": {
-        "Name": "tb_ai_skill",
-        "ObjectType": "Table_MYSQL"
-      },
-      "Keys": [],
-      "Fields": []
     }
   ]
 }

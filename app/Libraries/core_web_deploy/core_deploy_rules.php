@@ -163,6 +163,8 @@ class core_deploy_rules
         'tb_item', 'tb_item_warehouse', 'tb_user', 'tb_role', 'tb_user_permission', 'tb_journal_entry',
         'tb_journal_entry_detail', 'tb_entity', 'tb_naturales', 'tb_legal', 'tb_employee', 'tb_provider',
         'tb_deploy_target',
+        // Skills del agente de IA: cada instalación mantiene las suyas
+        'tb_ai_skill',
     ];
 
     /**

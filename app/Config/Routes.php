@@ -1917,16 +1917,8 @@ $routes->match(['get', 'post'], 'core_upgrade_server/config_data', 'core_upgrade
 $routes->match(['get', 'post'], 'core_upgrade_server/config_data/(:any)', 'core_upgrade_server::config_data');
 $routes->match(['get', 'post'], 'core_upgrade_server/client_script', 'core_upgrade_server::client_script');
 $routes->match(['get', 'post'], 'core_upgrade_server/client_script/(:any)', 'core_upgrade_server::client_script');
-$routes->match(['get', 'post'], 'core_merge/merge_of_posme_merge_to_posme_data_insert_and_update', 'core_merge::merge_of_posme_merge_to_posme_data_insert_and_update');
-$routes->match(['get', 'post'], 'core_merge/merge_of_posme_merge_to_posme_data_insert_and_update/(:any)', 'core_merge::merge_of_posme_merge_to_posme_data_insert_and_update');
-$routes->match(['get', 'post'], 'core_merge/merge_of_posme_merge_to_posme_data_delete', 'core_merge::merge_of_posme_merge_to_posme_data_delete');
-$routes->match(['get', 'post'], 'core_merge/merge_of_posme_merge_to_posme_data_delete/(:any)', 'core_merge::merge_of_posme_merge_to_posme_data_delete');
-$routes->match(['get', 'post'], 'core_merge/merge_of_posme_merge_to_poeme_data_onlyinsert', 'core_merge::merge_of_posme_merge_to_poeme_data_onlyinsert');
-$routes->match(['get', 'post'], 'core_merge/merge_of_posme_merge_to_poeme_data_onlyinsert/(:any)', 'core_merge::merge_of_posme_merge_to_poeme_data_onlyinsert');
 $routes->match(['get', 'post'], 'core_merge/merge_of_posme_to_posme_merge_data', 'core_merge::merge_of_posme_to_posme_merge_data');
 $routes->match(['get', 'post'], 'core_merge/merge_of_posme_to_posme_merge_data/(:any)', 'core_merge::merge_of_posme_to_posme_merge_data');
-$routes->match(['get', 'post'], 'core_merge/merge_of_posme_merge_to_posme_structure', 'core_merge::merge_of_posme_merge_to_posme_structure');
-$routes->match(['get', 'post'], 'core_merge/merge_of_posme_merge_to_posme_structure/(:any)', 'core_merge::merge_of_posme_merge_to_posme_structure');
 $routes->match(['get', 'post'], 'core_merge/merge_of_posme_merge_to_posme_initialize', 'core_merge::merge_of_posme_merge_to_posme_initialize');
 $routes->match(['get', 'post'], 'core_merge/merge_of_posme_merge_to_posme_initialize/(:any)', 'core_merge::merge_of_posme_merge_to_posme_initialize');
 $routes->match(['get', 'post'], 'core_merge/merge_of_posme_merge_to_posme_aplicar_parameter', 'core_merge::merge_of_posme_merge_to_posme_aplicar_parameter');
