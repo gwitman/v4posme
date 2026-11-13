@@ -2,6 +2,7 @@
 //posme:2026-11-10
 namespace App\Controllers;
 
+use App\Libraries\core_web_upgrade\core_upgrade_dbbackup;
 use App\Libraries\core_web_upgrade\core_upgrade_rules;
 
 /**
@@ -196,6 +197,204 @@ class core_upgrade extends _BaseController
                 'message' => 'La instalación no está disponible.',
                 'data'    => ['ok' => false],
             ]);
+        }
+    }
+
+    // ------------------------------------------------------------ respaldo de base de datos
+
+    /**
+     * Respaldos guardados, espacio libre y restauración pendiente.
+     *
+     * @return \CodeIgniter\HTTP\ResponseInterface
+     */
+    function upgrade_backup_list()
+    {
+        try {
+            $this->upgrade_guard();
+            return $this->upgrade_json(core_upgrade_dbbackup::listAll());
+        } catch (\Throwable $ex) {
+            return $this->upgrade_jsonError($ex);
+        }
+    }
+
+    /**
+     * Genera un respaldo manual por bloques (action = begin | step | verify).
+     *
+     * @return \CodeIgniter\HTTP\ResponseInterface
+     */
+    function upgrade_backup_create()
+    {
+        try {
+            $dataSession = $this->upgrade_guard();
+            @ignore_user_abort(true);
+            $action   = $this->upgrade_post('action');
+            $backupID = $this->upgrade_post('backupID');
+            $db       = db_connect();
+            if ($action === 'begin') {
+                return $this->upgrade_json(core_upgrade_dbbackup::createBegin($db, $dataSession["user"]->nickname, $this->upgrade_post('note')));
+            }
+            if ($action === 'step') {
+                return $this->upgrade_json(core_upgrade_dbbackup::createStep($db, $backupID, microtime(true) + core_upgrade_rules::STEP_BUDGET));
+            }
+            if ($action === 'verify') {
+                $result = core_upgrade_dbbackup::createVerify($db, $backupID);
+                if (!$result['ok']) {
+                    throw new \Exception('El respaldo no pasó la verificación: ' . $result['note']);
+                }
+                return $this->upgrade_json($result, 'Respaldo generado y verificado.');
+            }
+            throw new \Exception('Acción de respaldo inválida.');
+        } catch (\Throwable $ex) {
+            return $this->upgrade_jsonError($ex);
+        }
+    }
+
+    /**
+     * Elimina un respaldo manual o subido.
+     *
+     * @return \CodeIgniter\HTTP\ResponseInterface
+     */
+    function upgrade_backup_delete()
+    {
+        try {
+            $this->upgrade_guard();
+            core_upgrade_dbbackup::delete($this->upgrade_post('backupID'));
+            return $this->upgrade_json([], 'Respaldo eliminado.');
+        } catch (\Throwable $ex) {
+            return $this->upgrade_jsonError($ex);
+        }
+    }
+
+    /**
+     * Prepara la descarga: arma el .zip y devuelve una llave de un solo uso
+     * para upgrade_backup_file.
+     *
+     * @return \CodeIgniter\HTTP\ResponseInterface
+     */
+    function upgrade_backup_download()
+    {
+        try {
+            $this->upgrade_guard();
+            $zip = core_upgrade_dbbackup::zipFile($this->upgrade_post('origin'), $this->upgrade_post('backupID'));
+            $key = bin2hex(random_bytes(16));
+            \App\Libraries\core_web_deploy\core_deploy_files::writeJson(
+                core_upgrade_dbbackup::uploadsDir() . '/download_' . $key . '.json',
+                ['path' => $zip['path'], 'name' => $zip['name'], 'expires' => time() + 600]
+            );
+            return $this->upgrade_json(['key' => $key, 'name' => $zip['name'], 'bytes' => (int) filesize($zip['path'])]);
+        } catch (\Throwable $ex) {
+            return $this->upgrade_jsonError($ex);
+        }
+    }
+
+    /**
+     * Entrega el .zip preparado (GET con sesión de administrador y llave de un solo uso).
+     *
+     * @return mixed
+     */
+    function upgrade_backup_file()
+    {
+        try {
+            $this->upgrade_session();
+            session_write_close();
+            $key = (string) $this->request->getGet('k');
+            if (preg_match('/^[a-f0-9]{32}$/', $key) !== 1) {
+                throw new \Exception('Enlace de descarga inválido.');
+            }
+            $ticketFile = core_upgrade_dbbackup::uploadsDir() . '/download_' . $key . '.json';
+            $ticket     = \App\Libraries\core_web_deploy\core_deploy_files::readJson($ticketFile);
+            @unlink($ticketFile);
+            if (!$ticket || (int) $ticket['expires'] < time() || !is_file($ticket['path'])) {
+                throw new \Exception('El enlace de descarga venció; vuelva a pulsar Descargar.');
+            }
+            @set_time_limit(core_upgrade_rules::TIME_LIMIT);
+            while (ob_get_level() > 0) {
+                ob_end_clean();
+            }
+            header('Content-Type: application/zip');
+            header('Content-Disposition: attachment; filename="' . str_replace('"', '', $ticket['name']) . '"');
+            header('Content-Length: ' . filesize($ticket['path']));
+            header('Cache-Control: no-store');
+            header('X-Content-Type-Options: nosniff');
+            $handle = fopen($ticket['path'], 'rb');
+            while ($handle && !feof($handle)) {
+                echo fread($handle, 1048576);
+                flush();
+            }
+            if ($handle) {
+                fclose($handle);
+            }
+            @unlink($ticket['path']);
+            exit;
+        } catch (\Throwable $ex) {
+            if ($ex->getMessage() === USER_NOT_AUTENTICATED) {
+                return redirect()->to(base_url("core_acount/login"));
+            }
+            return "<div style='font-family:sans-serif; padding:14px; margin:20px; background:#fdecec; color:#c62828; border-radius:8px;'>" . htmlspecialchars($this->core_web_upgrade->mask($ex->getMessage())) . "</div>";
+        }
+    }
+
+    /**
+     * Subida de un respaldo .zip por bloques (action = begin | chunk | finish | cancel).
+     *
+     * @return \CodeIgniter\HTTP\ResponseInterface
+     */
+    function upgrade_backup_upload()
+    {
+        try {
+            $dataSession = $this->upgrade_guard();
+            $action      = $this->upgrade_post('action');
+            $uploadID    = $this->upgrade_post('uploadID');
+            if ($action === 'begin') {
+                return $this->upgrade_json(core_upgrade_dbbackup::uploadBegin($this->upgrade_post('size', '0')));
+            }
+            if ($action === 'chunk') {
+                $file = $this->request->getFile('chunk');
+                if (!$file || !$file->isValid()) {
+                    throw new \Exception('No llegó el bloque del archivo' . ($file ? ': ' . $file->getErrorString() : '.'));
+                }
+                return $this->upgrade_json(core_upgrade_dbbackup::uploadChunk($uploadID, $this->upgrade_post('offset', '0'), $file->getTempName()));
+            }
+            if ($action === 'finish') {
+                $data = core_upgrade_dbbackup::uploadFinish(db_connect(), $uploadID, $this->upgrade_post('size', '0'), $this->upgrade_post('fileName'), $dataSession["user"]->nickname);
+                return $this->upgrade_json($data, 'Respaldo subido y verificado.');
+            }
+            if ($action === 'cancel') {
+                core_upgrade_dbbackup::uploadCancel($uploadID);
+                return $this->upgrade_json([]);
+            }
+            throw new \Exception('Acción de subida inválida.');
+        } catch (\Throwable $ex) {
+            return $this->upgrade_jsonError($ex);
+        }
+    }
+
+    /**
+     * Restaura la BD desde un respaldo guardado (action = begin | step | cancel).
+     *
+     * @return \CodeIgniter\HTTP\ResponseInterface
+     */
+    function upgrade_backup_restore()
+    {
+        try {
+            $dataSession = $this->upgrade_guard();
+            @ignore_user_abort(true);
+            $action    = $this->upgrade_post('action');
+            $restoreID = $this->upgrade_post('restoreID');
+            if ($action === 'begin') {
+                $data = core_upgrade_dbbackup::restoreBegin($this->upgrade_post('origin'), $this->upgrade_post('backupID'), $this->upgrade_post('confirm'), $dataSession["user"]->nickname);
+                return $this->upgrade_json($data);
+            }
+            if ($action === 'step') {
+                return $this->upgrade_json(core_upgrade_dbbackup::restoreStep(db_connect(), $restoreID, microtime(true) + core_upgrade_rules::STEP_BUDGET));
+            }
+            if ($action === 'cancel') {
+                core_upgrade_dbbackup::restoreCancel($restoreID);
+                return $this->upgrade_json([], 'Restauración cancelada. Mantenimiento desactivado.');
+            }
+            throw new \Exception('Acción de restauración inválida.');
+        } catch (\Throwable $ex) {
+            return $this->upgrade_jsonError($ex);
         }
     }
 

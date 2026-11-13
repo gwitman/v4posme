@@ -29,6 +29,15 @@
         </div>
     </div>
 
+    <!-- pestañas -->
+    <div class="upg-tabs" role="tablist">
+        <button type="button" class="upg-tab is-active" role="tab" data-tab="update" id="upgTabBtnUpdate"><i class="icon16 i-download-2"></i> Actualización</button>
+        <button type="button" class="upg-tab" role="tab" data-tab="backup" id="upgTabBtnBackup"><i class="icon16 i-database"></i> Respaldo de base de datos</button>
+    </div>
+
+    <!-- ============================================================ pestaña: actualización -->
+    <div id="upgTabUpdate">
+
     <!-- ============================================================ fase A: explicación y confirmación -->
     <div id="upgPhaseA">
     <div class="row">
@@ -225,6 +234,87 @@
                     <div class="upg-btns">
                         <button type="button" class="btn btn-default upg-btn-main" id="upgBtnCopy"><i class="icon16 i-copy"></i> Copiar</button>
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    </div>
+    </div>
+
+    <!-- ============================================================ pestaña: respaldo de base de datos -->
+    <div id="upgTabBackup" style="display:none;">
+    <div class="row">
+        <div class="col-md-8 col-lg-8">
+
+            <!-- restauración pendiente (falló o se interrumpió) -->
+            <div class="abv2-card" id="bkpPendingCard" style="display:none;">
+                <p class="abv2-card-title"><i class="icon16 i-warning"></i> Restauración pendiente</p>
+                <div id="bkpPending"></div>
+                <div class="upg-btns">
+                    <button type="button" class="btn btn-primary upg-btn-main" id="bkpBtnResume"><i class="icon16 i-play-3"></i> Continuar restauración</button>
+                    <button type="button" class="btn btn-default upg-btn-main" id="bkpBtnAbort"><i class="icon16 i-remove"></i> Cancelar y salir de mantenimiento</button>
+                </div>
+            </div>
+
+            <!-- avance de la operación en curso -->
+            <div class="abv2-card" id="bkpProgressCard" style="display:none;">
+                <p class="abv2-card-title"><i class="icon16 i-loop-4"></i> <span id="bkpProgressTitle">Avance</span></p>
+                <div class="upg-progress" id="bkpProgress"><div id="bkpProgressBar"></div></div>
+                <p class="upg-progress-text" id="bkpProgressText">En espera.</p>
+                <div id="bkpResult"></div>
+            </div>
+
+            <!-- respaldos guardados -->
+            <div class="abv2-card">
+                <p class="abv2-card-title"><i class="icon16 i-database"></i> Respaldos guardados</p>
+                <p class="upg-text">Respaldos completos de la base de datos guardados en este servidor. Desde aquí puede <b>descargarlos</b>, <b>restaurar</b> la base de datos con uno de ellos o eliminarlos.</p>
+                <div id="bkpList"><p class="upg-hint">Consultando...</p></div>
+                <div class="upg-chips" id="bkpChips"></div>
+                <div class="upg-btns">
+                    <button type="button" class="btn btn-default upg-btn-main" id="bkpBtnRefresh"><i class="icon16 i-loop-4"></i> Actualizar lista</button>
+                </div>
+            </div>
+
+            <!-- bitácora -->
+            <div class="abv2-card">
+                <p class="abv2-card-title"><i class="icon16 i-file"></i> Bitácora</p>
+                <pre class="upg-log" id="bkpLog" style="height:160px;"></pre>
+            </div>
+        </div>
+
+        <div class="col-md-4 col-lg-4">
+            <div class="abv2-sticky">
+                <!-- generar -->
+                <div class="abv2-card">
+                    <p class="abv2-card-title"><i class="icon16 i-plus"></i> Generar respaldo</p>
+                    <p class="upg-text">Copia íntegra de la base de datos: estructura de tablas, datos, vistas, funciones, procedimientos y triggers.</p>
+                    <div class="form-group">
+                        <label class="abv2-label" for="bkpNote">Descripción (opcional)</label>
+                        <input type="text" class="form-control" id="bkpNote" maxlength="120" autocomplete="off" placeholder="Ej.: antes del cierre de mes">
+                    </div>
+                    <button type="button" class="btn btn-primary btn-block upg-btn-main" id="bkpBtnCreate"><i class="icon16 i-database"></i> Generar respaldo ahora</button>
+                    <p class="upg-hint">El sistema sigue disponible mientras se genera; para una copia exacta, evite registrar operaciones en ese momento.</p>
+                </div>
+
+                <!-- subir -->
+                <div class="abv2-card">
+                    <p class="abv2-card-title"><i class="icon16 i-upload"></i> Subir respaldo</p>
+                    <p class="upg-text">Suba un archivo <b>.zip</b> descargado desde esta pantalla (de esta u otra instalación). Queda guardado en la lista para restaurarlo.</p>
+                    <div class="form-group">
+                        <label class="abv2-label" for="bkpFile">Archivo .zip</label>
+                        <input type="file" class="form-control" id="bkpFile" accept=".zip,application/zip">
+                    </div>
+                    <div class="upg-progress" id="bkpUpProgress" style="display:none;"><div id="bkpUpProgressBar"></div></div>
+                    <p class="upg-hint" id="bkpUpText"></p>
+                    <button type="button" class="btn btn-default btn-block upg-btn-main" id="bkpBtnUpload"><i class="icon16 i-upload"></i> Subir respaldo</button>
+                </div>
+
+                <!-- advertencias -->
+                <div class="abv2-card">
+                    <p class="abv2-card-title"><i class="icon16 i-warning"></i> Antes de restaurar</p>
+                    <div class="upg-alert is-bad" style="margin-top:0;"><b>Restaurar reemplaza toda la base de datos</b> por el contenido del respaldo: se pierde todo lo registrado después de esa fecha.</div>
+                    <div class="upg-alert is-warn">Durante la restauración se activa el <b>modo mantenimiento</b>: nadie podrá operar en el sistema. No cierre esta pestaña.</div>
+                    <div class="upg-alert is-info">Recomendación: genere un respaldo de la base actual antes de restaurar otro.</div>
                 </div>
             </div>
         </div>

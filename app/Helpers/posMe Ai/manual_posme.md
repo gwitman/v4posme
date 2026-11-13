@@ -1759,8 +1759,9 @@ Ruta: Administración del sistema > Actualización desde el servidor posMe. No a
 La pantalla **Actualización desde el servidor posMe** trae la versión publicada en el servidor central de posMe y la aplica sobre esta instalación: archivos de la aplicación, estructura de la base de datos y datos de configuración. El origen por defecto es https://posme.net/v4posme/public/public y se muestra arriba, en **Origen**.
 Antes de cambiar nada se genera un respaldo completo de la base de datos y de los archivos que se reemplazan, para poder **revertir** si algo falla.
 La pantalla muestra, en orden: **Objetivo**, **Versiones** (versión local y la del servidor; botón **Volver a consultar**), **Tipo de instalación**, **Componentes que se actualizan**, **Estructura de la base de datos**, **Datos de configuración**, **Pasos del proceso**, **Advertencias** y **Conexión con el servidor**. A la derecha están **Comprobaciones** e **Iniciar actualización**.
+Arriba hay dos pestañas: **Actualización** (todo lo anterior) y **Respaldo de base de datos**.
 Restricciones: solo la pueden abrir usuarios con rol administrador. Solo se permite una actualización a la vez.
-Ver también: Actualizar posMe desde el servidor central: configurar la conexión; Actualizar posMe desde el servidor central: iniciar la actualización.
+Ver también: Actualizar posMe desde el servidor central: configurar la conexión; Actualizar posMe desde el servidor central: iniciar la actualización; Respaldo de base de datos: qué es y cómo abrirlo.
 
 ## Actualizar posMe desde el servidor central: configurar la conexión
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta **Conexión con el servidor**.
@@ -1853,6 +1854,72 @@ Ruta: Administración del sistema > Actualización desde el servidor posMe (core
 - Los archivos obsoletos no se borran: solo se actualizan o crean los que vienen en los zip.
 - Si aparece "Sesión o token vencido (HTTP 403). Recargue la página.", recargue la pantalla y vuelva a consultar.
 Ver también: Actualizar posMe desde el servidor central: revertir la actualización.
+
+## Respaldo de base de datos: qué es y cómo abrirlo
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña **Respaldo de base de datos**.
+1. Abra la pantalla escribiendo core_upgrade/byPop3 después de la dirección de posMe.
+2. Presione la pestaña **Respaldo de base de datos**. También puede abrirla directo agregando #respaldo al final de la dirección (core_upgrade/byPop3#respaldo).
+Desde esta pestaña puede generar una copia completa de la base de datos (sacar un backup), descargarla, subir una copia hecha en esta u otra instalación y restaurar (recuperar) la base de datos con una de ellas.
+La pestaña muestra: **Respaldos guardados**, **Bitácora** (registro de lo realizado), **Generar respaldo**, **Subir respaldo** y **Antes de restaurar**.
+Restricciones: solo usuarios con rol administrador. No se puede generar un respaldo ni restaurar mientras haya una actualización, un despliegue o una restauración en curso.
+Ver también: Respaldo de base de datos: generar un respaldo; Respaldo de base de datos: restaurar la base de datos.
+
+## Respaldo de base de datos: ver los respaldos guardados
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña **Respaldo de base de datos**, tarjeta **Respaldos guardados**.
+La tabla muestra cada respaldo con:
+- **Fecha**: debajo, la descripción, el nombre del archivo y el usuario que lo hizo.
+- **Origen**: **Manual** (generado en esta pestaña), **Subido** (archivo .zip subido) o **Actualización** (generado por la pestaña **Actualización** antes de actualizar; se conservan los dos últimos).
+- **Base de datos**, **Tablas**, **Filas** y **Tamaño**.
+- **Estado**: **Verificado**, **Sin verificar** o **Incompleto**.
+- Botones **Descargar**, **Restaurar** y **Eliminar** (el de eliminar solo en los de origen Manual o Subido).
+Debajo se muestra el espacio libre en disco. Presione **Actualizar lista** para volver a consultar.
+Para eliminar un respaldo presione **Eliminar** en su fila y confirme en la ventana **Eliminar respaldo**. Esta acción no se puede deshacer.
+Notas: si no hay ninguno aparece "Aún no hay respaldos guardados. Genere uno o suba un archivo .zip.".
+
+## Respaldo de base de datos: generar un respaldo
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña **Respaldo de base de datos**, tarjeta **Generar respaldo**.
+1. En **Descripción (opcional)** escriba una nota para reconocerlo, por ejemplo "antes del cierre de mes" (máximo 120 caracteres).
+2. Presione **Generar respaldo ahora**.
+3. Siga el avance en la barra (tablas, filas y MB copiados). No cierre la pestaña.
+4. Al terminar, el respaldo se verifica (huella SHA-256 y conteo de filas) y aparece en **Respaldos guardados** con origen **Manual**.
+Notas: es una copia íntegra de la base de datos: estructura de tablas, datos, vistas, funciones, procedimientos y triggers. Se guarda en el servidor, en la carpeta writable/posme_upgrade/db_backups. El sistema sigue disponible mientras se genera; para una copia exacta, evite registrar operaciones en ese momento.
+Ver también: Respaldo de base de datos: descargar un respaldo.
+
+## Respaldo de base de datos: descargar un respaldo
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña **Respaldo de base de datos**, tarjeta **Respaldos guardados**.
+1. Busque el respaldo en la lista.
+2. Presione **Descargar** en su fila.
+3. posMe arma un archivo .zip con el nombre posme_bd_<base>_<número> y lo descarga en su equipo.
+Notas: el botón **Descargar** solo aparece en los respaldos completos. Guarde el .zip en un lugar seguro (otro disco o la nube); con él puede restaurar en esta u otra instalación usando **Subir respaldo**.
+Ver también: Respaldo de base de datos: subir un respaldo.
+
+## Respaldo de base de datos: subir un respaldo
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña **Respaldo de base de datos**, tarjeta **Subir respaldo**.
+1. En **Archivo .zip** seleccione un .zip descargado desde esta pantalla (de esta u otra instalación de posMe).
+2. Presione **Subir respaldo**.
+3. Espere: el archivo se sube por bloques con barra de avance y luego se extrae y se verifica.
+4. Al terminar queda en **Respaldos guardados** con origen **Subido**, listo para restaurarlo.
+Restricciones: máximo 2 GB por archivo y se necesita espacio libre suficiente en el disco del servidor. Si el .zip no es un respaldo de posMe o está dañado, se rechaza.
+Ver también: Respaldo de base de datos: restaurar la base de datos.
+
+## Respaldo de base de datos: restaurar la base de datos
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña **Respaldo de base de datos**, tarjeta **Respaldos guardados**.
+1. Recomendado: antes de restaurar, genere un respaldo de la base actual con **Generar respaldo ahora**.
+2. Avise a los usuarios: durante la restauración nadie podrá operar.
+3. Presione **Restaurar** en la fila del respaldo (solo aparece en los respaldos completos y verificados).
+4. En la ventana **Restaurar base de datos** lea el aviso y escriba RESTAURAR en mayúsculas en **Escriba RESTAURAR para confirmar**.
+5. Presione **Restaurar**. Siga el avance y no cierre la pestaña.
+6. Al terminar aparece "Base de datos restaurada." Presione **Recargar posMe**.
+Advertencias (tarjeta **Antes de restaurar**): restaurar reemplaza toda la base de datos por el respaldo y se pierde todo lo registrado después de esa fecha. Mientras dura se activa el modo mantenimiento y nadie puede operar en el sistema.
+Notas: si no escribe RESTAURAR correctamente aparece "Confirmación incorrecta" y no se restaura nada.
+Ver también: Respaldo de base de datos: restauración pendiente (continuar o cancelar).
+
+## Respaldo de base de datos: restauración pendiente (continuar o cancelar)
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña **Respaldo de base de datos**, tarjeta **Restauración pendiente**.
+Si la restauración falla o se interrumpe (por ejemplo, se cerró la pestaña), aparece "La restauración no terminó." y la tarjeta **Restauración pendiente** con el último error. Elija:
+- **Continuar restauración**: retoma desde donde quedó. Al terminar se desactiva el modo mantenimiento.
+- **Cancelar y salir de mantenimiento**: detiene la restauración y libera el sistema. La base de datos puede quedar incompleta; en ese caso restaure de nuevo un respaldo completo.
+Notas: mientras la restauración esté pendiente el sistema sigue en modo mantenimiento. Si el error persiste, copie la **Bitácora** y envíela a soporte.
 
 ## Despliegue remoto: qué es y quién puede usarlo (administración del sistema)
 Ruta: Administración del sistema > Despliegue remoto. No aparece en el menú: se abre escribiendo core_merge/deploy después de la dirección de posMe.

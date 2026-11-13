@@ -1115,9 +1115,394 @@
             return '';
         });
 
+        // ---------------------------------------------------------- pestaña: respaldo de base de datos
+
+        var BKP_CONFIRM  = 'RESTAURAR';
+        var SOURCE_LABEL = { manual: 'Manual', upload: 'Subido', upgrade: 'Actualización' };
+        var PHASE_LABEL  = { schema: 'estructura de tablas', data: 'datos', routines: 'vistas, funciones, procedimientos y triggers', done: 'terminado' };
+
+        // Estado de la pestaña (en memoria)
+        var bk = {
+            busy   : false,   // operación en curso (bloquea botones y pestañas)
+            list   : [],      // respaldos guardados
+            restore: null,    // restauración pendiente
+            loaded : false
+        };
+
+        /** Agrega una línea a la bitácora de respaldos. */
+        function bkLog(message) {
+            var box  = $('bkpLog');
+            var time = new Date().toTimeString().substr(0, 8);
+            box.textContent += '[' + time + '] ' + message + '\n';
+            box.scrollTop = box.scrollHeight;
+        }
+
+        /** Cambia de pestaña (no se permite con un proceso en marcha). */
+        function showTab(name) {
+            if (st.running || bk.busy) {
+                dialog('Proceso en curso', '<p>Espere a que termine el proceso actual antes de cambiar de pestaña.</p>', 'Entendido', false);
+                return;
+            }
+            $('upgTabUpdate').style.display = name === 'backup' ? 'none' : '';
+            $('upgTabBackup').style.display = name === 'backup' ? '' : 'none';
+            qsa('.upg-tab').forEach(function (b) { b.classList.toggle('is-active', b.getAttribute('data-tab') === name); });
+            if (name === 'backup' && !bk.loaded) { loadBackups(); }
+        }
+        qsa('.upg-tab').forEach(function (b) {
+            b.addEventListener('click', function () { showTab(b.getAttribute('data-tab')); });
+        });
+
+        /** Bloquea o libera los controles de la pestaña mientras corre una operación. */
+        function bkSetBusy(on) {
+            bk.busy = on;
+            ['bkpBtnCreate', 'bkpBtnUpload', 'bkpBtnRefresh', 'bkpFile', 'bkpNote', 'bkpBtnResume', 'bkpBtnAbort'].forEach(function (id) { $(id).disabled = on; });
+            qsa('#bkpList [data-bk]').forEach(function (b) { b.disabled = on; });
+        }
+
+        /** Muestra la tarjeta de avance con un título. */
+        function bkProgressStart(title) {
+            $('bkpProgressCard').style.display = '';
+            $('bkpProgressTitle').textContent  = title;
+            $('bkpProgress').className         = 'upg-progress';
+            $('bkpProgressBar').style.width    = '0%';
+            $('bkpProgressText').textContent   = 'Iniciando...';
+            $('bkpResult').innerHTML           = '';
+        }
+
+        /** Actualiza la barra de avance (fraction de 0 a 1). */
+        function bkProgress(fraction, text) {
+            var pct = Math.max(0, Math.min(100, Math.round((fraction || 0) * 100)));
+            $('bkpProgressBar').style.width  = pct + '%';
+            $('bkpProgressText').textContent = pct + '% · ' + text;
+        }
+
+        /** Cierra la barra de avance con éxito o error. kind: ok | bad */
+        function bkProgressEnd(kind, text, html) {
+            $('bkpProgress').className       = 'upg-progress is-' + kind;
+            $('bkpProgressBar').style.width  = '100%';
+            $('bkpProgressText').textContent = text;
+            $('bkpResult').innerHTML         = html || '';
+        }
+
+        /** Consulta los respaldos guardados. Maneja error, sin datos y con datos. */
+        function loadBackups() {
+            $('bkpList').innerHTML = '<p class="upg-hint">Consultando...</p>';
+            return api('upgrade_backup_list', {}).then(function (d) {
+                bk.loaded = true;
+                renderBackups(d);
+            }).catch(function (e) {
+                $('bkpList').innerHTML = alertHtml('bad', esc(e.message));
+            });
+        }
+
+        /** Pinta la lista de respaldos, los indicadores y la restauración pendiente. */
+        function renderBackups(d) {
+            bk.list    = Array.isArray(d.backups) ? d.backups : [];
+            bk.restore = d.restore || null;
+
+            // Indicadores
+            var chips = ['<span class="upg-chip">Respaldos: <b>' + fmtInt(bk.list.length) + '</b></span>'];
+            if (d.freeBytes !== null && d.freeBytes !== undefined) {
+                chips.push('<span class="upg-chip">Espacio libre: <b>' + fmtMB(d.freeBytes) + '</b></span>');
+            }
+            if (d.busy) {
+                chips.push('<span class="upg-chip is-warn">Proceso en curso: <b>' + esc(d.busy) + '</b></span>');
+            }
+            $('bkpChips').innerHTML = chips.join('');
+
+            // Sin datos
+            if (!bk.list.length) {
+                $('bkpList').innerHTML = '<div class="abv2-empty"><i class="icon20 i-database"></i>Aún no hay respaldos guardados. Genere uno o suba un archivo .zip.</div>';
+            } else {
+                // Con datos
+                $('bkpList').innerHTML = '<div class="upg-scroll"><table class="upg-table is-stack"><thead><tr>' +
+                    '<th>Fecha</th><th>Origen</th><th>Base de datos</th><th class="upg-n">Tablas</th><th class="upg-n">Filas</th><th class="upg-n">Tamaño</th><th>Estado</th><th></th>' +
+                    '</tr></thead><tbody>' + bk.list.map(function (b, i) {
+                        var state = !b.complete ? '<span class="upg-badge is-risk">Incompleto</span>'
+                            : (b.verified ? '<span class="upg-badge is-new">Verificado</span>' : '<span class="upg-badge is-warn">Sin verificar</span>');
+                        var extra = [b.note, b.fileName, b.by ? 'por ' + b.by : ''].filter(function (x) { return !!x; }).join(' · ');
+                        var btns  = '';
+                        if (b.complete) {
+                            btns += '<button type="button" class="btn btn-default btn-sm" data-bk="download" data-i="' + i + '"><i class="icon16 i-download-2"></i> Descargar</button> ';
+                        }
+                        if (b.complete && b.verified) {
+                            btns += '<button type="button" class="btn btn-primary btn-sm" data-bk="restore" data-i="' + i + '"><i class="icon16 i-undo"></i> Restaurar</button> ';
+                        }
+                        if (b.origin === 'manual') {
+                            btns += '<button type="button" class="btn btn-default btn-sm abv2-btn-del" data-bk="delete" data-i="' + i + '" title="Eliminar"><i class="icon16 i-remove"></i></button>';
+                        }
+                        return '<tr>' +
+                            '<td data-label="Fecha"><b>' + esc(b.createdOn) + '</b>' + (extra ? '<span class="bkp-note">' + esc(extra) + '</span>' : '') + '</td>' +
+                            '<td data-label="Origen">' + esc(SOURCE_LABEL[b.source] || b.source) + '</td>' +
+                            '<td data-label="Base de datos">' + esc(b.dbName) + '</td>' +
+                            '<td data-label="Tablas" class="upg-n">' + fmtInt(b.tables) + '</td>' +
+                            '<td data-label="Filas" class="upg-n">' + fmtInt(b.rows) + '</td>' +
+                            '<td data-label="Tamaño" class="upg-n">' + fmtMB(b.bytes) + '</td>' +
+                            '<td data-label="Estado">' + state + '</td>' +
+                            '<td data-label="Acciones" class="bkp-actions">' + btns + '</td>' +
+                            '</tr>';
+                    }).join('') + '</tbody></table></div>' +
+                    '<p class="upg-hint">Los respaldos de origen <b>Actualización</b> los genera la pestaña anterior antes de actualizar; se conservan los dos últimos.</p>';
+            }
+
+            // Restauración pendiente (falló o se interrumpió)
+            if (bk.restore) {
+                $('bkpPendingCard').style.display = '';
+                $('bkpPending').innerHTML = alertHtml('bad',
+                    'La restauración del respaldo <b>' + esc(bk.restore.backupID) + '</b> iniciada el ' + esc(bk.restore.startedOn) +
+                    ' por ' + esc(bk.restore.by) + ' no terminó. El sistema sigue en <b>modo mantenimiento</b> y la base de datos puede estar incompleta.' +
+                    (bk.restore.lastError ? '<br>Último error: ' + esc(bk.restore.lastError) : '')) +
+                    '<p class="upg-hint">Continúe para terminarla (retoma donde quedó) o cancélela para salir del modo mantenimiento.</p>';
+            } else {
+                $('bkpPendingCard').style.display = 'none';
+            }
+            bkSetBusy(bk.busy);
+        }
+
+        $('bkpBtnRefresh').addEventListener('click', function () { loadBackups(); });
+
+        // Acciones de cada fila (descargar, restaurar, eliminar)
+        $('bkpList').addEventListener('click', function (ev) {
+            var button = ev.target.closest ? ev.target.closest('[data-bk]') : null;
+            if (!button || button.disabled || bk.busy) { return; }
+            var item = bk.list[Number(button.getAttribute('data-i'))];
+            if (!item) { return; }
+            var action = button.getAttribute('data-bk');
+            if (action === 'download') { downloadBackup(item, button); }
+            if (action === 'restore')  { askRestore(item); }
+            if (action === 'delete')   { deleteBackup(item); }
+        });
+
+        /** Genera un respaldo manual por bloques: begin → step... → verify. */
+        $('bkpBtnCreate').addEventListener('click', function () {
+            if (bk.busy) { return; }
+            var backupID = null;
+            var loops    = 0;
+            bkSetBusy(true);
+            bkProgressStart('Generando respaldo de la base de datos');
+            bkLog('Respaldo iniciado.');
+
+            function next() {
+                if (++loops > MAX_LOOPS) { throw new Error('Se superó el número máximo de bloques.'); }
+                return api('upgrade_backup_create', { action: 'step', backupID: backupID }).then(function (r) {
+                    bkProgress(r.unitsTotal ? r.unitsDone / r.unitsTotal : 0,
+                        'Tablas ' + fmtInt(r.tables) + ' de ' + fmtInt(r.tablesAll) + ' · ' + fmtInt(r.rows) + ' filas · ' + fmtMB(r.bytes));
+                    return r.done ? r : next();
+                });
+            }
+
+            api('upgrade_backup_create', { action: 'begin', note: $('bkpNote').value }).then(function (r) {
+                backupID = r.backupID;
+                bkLog('Respaldo ' + backupID + ': ' + fmtInt(r.tablesAll) + ' tablas por copiar.');
+                return next();
+            }).then(function (r) {
+                bkLog('Datos copiados: ' + fmtInt(r.rows) + ' filas. Verificando...');
+                $('bkpProgressText').textContent = 'Verificando el respaldo...';
+                return api('upgrade_backup_create', { action: 'verify', backupID: backupID });
+            }).then(function (v) {
+                bkLog('Respaldo verificado: ' + fmtInt(v.parts) + ' partes, ' + fmtInt(v.rows) + ' filas, ' + fmtMB(v.bytes) + '.');
+                bkProgressEnd('ok', 'Respaldo generado y verificado.',
+                    statsHtml([['Tablas', fmtInt(v.tables)], ['Filas', fmtInt(v.rows)], ['Tamaño', fmtMB(v.bytes)]]) +
+                    (v.note ? alertHtml('info', 'Nota: ' + esc(v.note)) : ''));
+                $('bkpNote').value = '';
+            }).catch(function (e) {
+                bkLog('ERROR: ' + e.message);
+                bkProgressEnd('bad', 'No se pudo generar el respaldo.', alertHtml('bad', esc(e.message)));
+            }).then(function () {
+                bkSetBusy(false);
+                loadBackups();
+            });
+        });
+
+        /** Prepara el .zip en el servidor y lo descarga con una llave de un solo uso. */
+        function downloadBackup(item, button) {
+            bkLog('Preparando la descarga de ' + item.backupID + '...');
+            busy(button, api('upgrade_backup_download', { origin: item.origin, backupID: item.backupID })).then(function (r) {
+                if (!r.key) { throw new Error('El servidor no devolvió el enlace de descarga.'); }
+                var link = document.createElement('a');
+                link.href     = BASE + '/core_upgrade/upgrade_backup_file?k=' + encodeURIComponent(r.key);
+                link.download = r.name || 'respaldo.zip';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                bkLog('Descarga iniciada: ' + r.name + ' (' + fmtMB(r.bytes) + ').');
+            }).catch(function (e) {
+                bkLog('ERROR al descargar: ' + e.message);
+                dialog('No se pudo descargar', alertHtml('bad', esc(e.message)), 'Cerrar', false);
+            });
+        }
+
+        /** Elimina un respaldo manual o subido tras confirmar. */
+        function deleteBackup(item) {
+            dialog('Eliminar respaldo', '<p>Se eliminará el respaldo del <b>' + esc(item.createdOn) + '</b> (' + esc(item.dbName) + '). Esta acción no se puede deshacer.</p>', 'Eliminar').then(function (ok) {
+                if (!ok) { return; }
+                bkSetBusy(true);
+                api('upgrade_backup_delete', { backupID: item.backupID }).then(function () {
+                    bkLog('Respaldo ' + item.backupID + ' eliminado.');
+                }).catch(function (e) {
+                    bkLog('ERROR al eliminar: ' + e.message);
+                    dialog('No se pudo eliminar', alertHtml('bad', esc(e.message)), 'Cerrar', false);
+                }).then(function () {
+                    bkSetBusy(false);
+                    loadBackups();
+                });
+            });
+        }
+
+        /** Pide la confirmación escrita y arranca la restauración. */
+        function askRestore(item) {
+            var html = alertHtml('bad', 'Se reemplazará <b>toda la base de datos actual</b> por el respaldo del <b>' + esc(item.createdOn) + '</b>' +
+                    ' (' + esc(item.dbName) + ', ' + fmtInt(item.tables) + ' tablas, ' + fmtInt(item.rows) + ' filas). Lo registrado después de esa fecha se perderá.') +
+                alertHtml('warn', 'Se activará el modo mantenimiento hasta que termine. No cierre esta pestaña.') +
+                '<div class="form-group" style="margin-top:12px;"><label class="abv2-label" for="bkpConfirm">Escriba ' + BKP_CONFIRM + ' para confirmar</label>' +
+                '<input type="text" class="form-control upg-confirm" id="bkpConfirm" autocomplete="off" autocapitalize="characters" autocorrect="off" spellcheck="false"></div>';
+            dialog('Restaurar base de datos', html, 'Restaurar').then(function (ok) {
+                if (!ok) { return; }
+                var confirmValue = ($('bkpConfirm') ? $('bkpConfirm').value : '').trim();
+                if (confirmValue !== BKP_CONFIRM) {
+                    dialog('Confirmación incorrecta', '<p>Debe escribir <b>' + BKP_CONFIRM + '</b> en mayúsculas. No se restauró nada.</p>', 'Cerrar', false);
+                    return;
+                }
+                bkSetBusy(true);
+                bkProgressStart('Restaurando base de datos');
+                bkLog('Restauración del respaldo ' + item.backupID + ' iniciada.');
+                api('upgrade_backup_restore', { action: 'begin', origin: item.origin, backupID: item.backupID, confirm: confirmValue }).then(function (r) {
+                    return runRestore(r.restoreID);
+                }, function (e) {
+                    bkLog('ERROR: ' + e.message);
+                    bkProgressEnd('bad', 'No se pudo iniciar la restauración.', alertHtml('bad', esc(e.message)));
+                    bkSetBusy(false);
+                    loadBackups();
+                });
+            });
+        }
+
+        /** Restaura por bloques hasta terminar (también retoma una restauración pendiente). */
+        function runRestore(restoreID) {
+            var loops = 0;
+            bkSetBusy(true);
+            $('bkpPendingCard').style.display = 'none';
+
+            function next() {
+                if (++loops > MAX_LOOPS) { throw new Error('Se superó el número máximo de bloques.'); }
+                return api('upgrade_backup_restore', { action: 'step', restoreID: restoreID }).then(function (r) {
+                    bkProgress(r.total ? r.restored / r.total : 0, 'Restaurando ' + (PHASE_LABEL[r.phase] || r.phase) + ' · ' + fmtInt(r.restored) + ' de ' + fmtInt(r.total) + ' partes');
+                    return r.done ? r : next();
+                });
+            }
+
+            return next().then(function (r) {
+                bkLog('Restauración completada (' + fmtInt(r.total) + ' partes). Mantenimiento desactivado.');
+                bkProgressEnd('ok', 'Base de datos restaurada.',
+                    alertHtml('ok', 'La base de datos se restauró correctamente y el modo mantenimiento se desactivó.') +
+                    '<div class="upg-btns"><button type="button" class="btn btn-primary upg-btn-main" id="bkpBtnReload"><i class="icon16 i-loop-4"></i> Recargar posMe</button></div>');
+                $('bkpBtnReload').addEventListener('click', function () { window.location.href = BASE + '/'; });
+            }).catch(function (e) {
+                bkLog('ERROR en la restauración: ' + e.message);
+                bkProgressEnd('bad', 'La restauración no terminó.', alertHtml('bad', esc(e.message) + '<br>Puede continuarla o cancelarla desde la tarjeta "Restauración pendiente".'));
+            }).then(function () {
+                bkSetBusy(false);
+                loadBackups();
+            });
+        }
+
+        $('bkpBtnResume').addEventListener('click', function () {
+            if (!bk.restore || bk.busy) { return; }
+            bkProgressStart('Restaurando base de datos');
+            bkLog('Continuando la restauración ' + bk.restore.restoreID + '...');
+            runRestore(bk.restore.restoreID);
+        });
+
+        $('bkpBtnAbort').addEventListener('click', function () {
+            if (!bk.restore || bk.busy) { return; }
+            var restoreID = bk.restore.restoreID;
+            dialog('Cancelar restauración', alertHtml('bad', 'La base de datos puede quedar <b>incompleta</b>. Úselo solo si va a restaurar otro respaldo o a revisar manualmente.'), 'Cancelar restauración', 'Volver').then(function (ok) {
+                if (!ok) { return; }
+                bkSetBusy(true);
+                api('upgrade_backup_restore', { action: 'cancel', restoreID: restoreID }).then(function () {
+                    bkLog('Restauración cancelada. Mantenimiento desactivado.');
+                }).catch(function (e) {
+                    bkLog('ERROR al cancelar: ' + e.message);
+                    dialog('No se pudo cancelar', alertHtml('bad', esc(e.message)), 'Cerrar', false);
+                }).then(function () {
+                    bkSetBusy(false);
+                    loadBackups();
+                });
+            });
+        });
+
+        /** Sube un respaldo .zip por bloques de 1 MB y lo registra en la lista. */
+        $('bkpBtnUpload').addEventListener('click', function () {
+            if (bk.busy) { return; }
+            var file = $('bkpFile').files && $('bkpFile').files[0];
+            if (!file) {
+                dialog('Subir respaldo', '<p>Seleccione primero el archivo <b>.zip</b> del respaldo.</p>', 'Cerrar', false);
+                return;
+            }
+            if (!/\.zip$/i.test(file.name)) {
+                dialog('Subir respaldo', '<p>El archivo debe ser un <b>.zip</b> descargado desde esta pantalla.</p>', 'Cerrar', false);
+                return;
+            }
+            var uploadID = null;
+            var offset   = 0;
+            var chunk    = 1048576;
+            var loops    = 0;
+            var bar      = $('bkpUpProgressBar');
+            bkSetBusy(true);
+            $('bkpUpProgress').style.display = '';
+            $('bkpUpProgress').className     = 'upg-progress';
+            bar.style.width = '0%';
+            $('bkpUpText').textContent = 'Preparando la subida...';
+            bkLog('Subiendo ' + file.name + ' (' + fmtMB(file.size) + ')...');
+
+            function next() {
+                if (offset >= file.size) { return Promise.resolve(); }
+                if (++loops > MAX_LOOPS) { throw new Error('Se superó el número máximo de bloques.'); }
+                var piece = file.slice(offset, Math.min(file.size, offset + chunk));
+                return api('upgrade_backup_upload', { action: 'chunk', uploadID: uploadID, offset: offset, chunk: piece }).then(function (r) {
+                    offset = Number(r.received || 0);
+                    bar.style.width = Math.round(offset / file.size * 100) + '%';
+                    $('bkpUpText').textContent = fmtMB(offset) + ' de ' + fmtMB(file.size);
+                    return next();
+                });
+            }
+
+            api('upgrade_backup_upload', { action: 'begin', size: file.size }).then(function (r) {
+                uploadID = r.uploadID;
+                chunk    = Number(r.chunk || chunk);
+                return next();
+            }).then(function () {
+                $('bkpUpText').textContent = 'Archivo recibido. Extrayendo y verificando...';
+                return api('upgrade_backup_upload', { action: 'finish', uploadID: uploadID, size: file.size, fileName: file.name });
+            }).then(function (b) {
+                $('bkpUpProgress').className = 'upg-progress is-ok';
+                $('bkpUpText').textContent   = 'Respaldo subido y verificado: ' + fmtInt(b.tables) + ' tablas, ' + fmtInt(b.rows) + ' filas.';
+                $('bkpFile').value = '';
+                bkLog('Respaldo subido y verificado (' + b.backupID + ').');
+            }).catch(function (e) {
+                $('bkpUpProgress').className = 'upg-progress is-bad';
+                $('bkpUpText').textContent   = 'Error: ' + e.message;
+                bkLog('ERROR al subir: ' + e.message);
+                if (uploadID) { api('upgrade_backup_upload', { action: 'cancel', uploadID: uploadID }).catch(function () { /* sin acción */ }); }
+            }).then(function () {
+                bkSetBusy(false);
+                loadBackups();
+            });
+        });
+
+        // Aviso al cerrar la pestaña con una operación de respaldo en marcha
+        window.addEventListener('beforeunload', function (ev) {
+            if (!bk.busy) { return; }
+            ev.preventDefault();
+            ev.returnValue = '';
+            return '';
+        });
+
         // ---------------------------------------------------------- carga inicial
 
         renderReady();
         readConfig().then(function () { runCheck(); });
+        // #respaldo en la URL abre directo la pestaña de respaldos
+        if (window.location.hash === '#respaldo') { showTab('backup'); }
     })();
 </script>

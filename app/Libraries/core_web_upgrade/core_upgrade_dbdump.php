@@ -30,13 +30,14 @@ class core_upgrade_dbdump
     /**
      * Carpeta de un respaldo (valida el identificador).
      *
-     * @param string $backupID Identificador.
+     * @param string      $backupID Identificador.
+     * @param string|null $baseDir  Carpeta contenedora (null = respaldos de la actualización).
      * @return string
      */
-    static function dir($backupID)
+    static function dir($backupID, $baseDir = null)
     {
         core_deploy_files::assertDeployID($backupID);
-        return self::backupsDir() . '/' . $backupID;
+        return ($baseDir === null ? self::backupsDir() : $baseDir) . '/' . $backupID;
     }
 
     /** Conexión mysqli inicializada. */
@@ -69,14 +70,18 @@ class core_upgrade_dbdump
      *
      * @param object $db       Conexión CI4.
      * @param string $backupID Identificador (mismo formato que deployID).
+     * @param string|null $baseDir Carpeta contenedora (null = respaldos de la actualización).
      * @return array Manifiesto.
      */
-    static function begin($db, $backupID)
+    static function begin($db, $backupID, $baseDir = null)
     {
-        $dir = self::dir($backupID);
+        $dir = self::dir($backupID, $baseDir);
         core_deploy_files::removeDir($dir);
         core_deploy_files::ensureDir($dir . '/data');
-        core_deploy_files::pruneDirs(self::backupsDir(), core_upgrade_rules::KEEP_BACKUPS - 1, $backupID);
+        // Solo se depuran los respaldos de la actualización (los manuales los borra el usuario)
+        if ($baseDir === null) {
+            core_deploy_files::pruneDirs(self::backupsDir(), core_upgrade_rules::KEEP_BACKUPS - 1, $backupID);
+        }
 
         $snapshot = core_deploy_schema::snapshot($db);
         if (count($snapshot['errors'])) {
@@ -140,11 +145,12 @@ class core_upgrade_dbdump
      * Manifiesto de un respaldo.
      *
      * @param string $backupID Identificador.
+     * @param string|null $baseDir Carpeta contenedora (null = respaldos de la actualización).
      * @return array
      */
-    static function manifest($backupID)
+    static function manifest($backupID, $baseDir = null)
     {
-        $manifest = core_deploy_files::readJson(self::dir($backupID) . '/manifest.json');
+        $manifest = core_deploy_files::readJson(self::dir($backupID, $baseDir) . '/manifest.json');
         if (!$manifest) {
             throw new \Exception('No existe el respaldo ' . $backupID . '.');
         }
@@ -157,12 +163,13 @@ class core_upgrade_dbdump
      * @param object $db       Conexión CI4.
      * @param string $backupID Identificador.
      * @param float  $deadline microtime(true) límite.
+     * @param string|null $baseDir Carpeta contenedora (null = respaldos de la actualización).
      * @return array Manifiesto actualizado (complete = true al terminar).
      */
-    static function step($db, $backupID, $deadline)
+    static function step($db, $backupID, $deadline, $baseDir = null)
     {
-        $dir      = self::dir($backupID);
-        $manifest = self::manifest($backupID);
+        $dir      = self::dir($backupID, $baseDir);
+        $manifest = self::manifest($backupID, $baseDir);
         $mysqli   = self::mysqli($db);
 
         while (!$manifest['complete'] && microtime(true) < $deadline) {
@@ -258,12 +265,13 @@ class core_upgrade_dbdump
      *
      * @param object $db       Conexión CI4 (para comparar con COUNT(*) actual).
      * @param string $backupID Identificador.
+     * @param string|null $baseDir Carpeta contenedora (null = respaldos de la actualización).
      * @return array ['parts','tables','rows','bytes','ok','note']
      */
-    static function verify($db, $backupID)
+    static function verify($db, $backupID, $baseDir = null)
     {
-        $dir      = self::dir($backupID);
-        $manifest = self::manifest($backupID);
+        $dir      = self::dir($backupID, $baseDir);
+        $manifest = self::manifest($backupID, $baseDir);
         if (empty($manifest['complete'])) {
             throw new \Exception('El respaldo no está completo.');
         }
@@ -352,12 +360,13 @@ class core_upgrade_dbdump
      * @param string $backupID Identificador.
      * @param bool   $restart  Reinicia la restauración desde el principio.
      * @param float  $deadline microtime(true) límite.
+     * @param string|null $baseDir Carpeta contenedora (null = respaldos de la actualización).
      * @return array ['done' => bool, 'restored' => int, 'total' => int, 'phase' => string]
      */
-    static function restoreStep($db, $backupID, $restart, $deadline)
+    static function restoreStep($db, $backupID, $restart, $deadline, $baseDir = null)
     {
-        $dir      = self::dir($backupID);
-        $manifest = self::manifest($backupID);
+        $dir      = self::dir($backupID, $baseDir);
+        $manifest = self::manifest($backupID, $baseDir);
         if (empty($manifest['complete'])) {
             throw new \Exception('El respaldo de BD no está completo; no se puede restaurar.');
         }

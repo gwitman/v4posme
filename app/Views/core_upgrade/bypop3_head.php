@@ -102,7 +102,19 @@
     .upg-dialog { background:#fff; border-radius:12px; max-width:560px; width:100%; padding:18px; max-height:90vh; overflow:auto; }
     .upg-dialog h4 { margin:0 0 10px; font-weight:700; }
     .upg-btn-main { min-height:44px; }
+    /* pestañas (Actualización | Respaldo de base de datos) */
+    .upg-tabs { display:flex; gap:6px; flex-wrap:wrap; border-bottom:1px solid var(--abv2-border); margin:0 0 14px; }
+    .upg-tab { border:1px solid transparent; border-bottom:0; background:transparent; color:var(--abv2-muted); font-weight:600; font-size:13px; padding:10px 14px; border-radius:8px 8px 0 0; min-height:44px; margin-bottom:-1px; cursor:pointer; }
+    .upg-tab:hover { color:var(--abv2-accent); }
+    .upg-tab.is-active { background:#fff; color:var(--abv2-accent); border-color:var(--abv2-border); }
+    .upg-tab:disabled { opacity:.5; cursor:not-allowed; }
+    .upg-table .bkp-actions { white-space:nowrap; text-align:right; }
+    .upg-table .bkp-actions .btn { min-height:36px; margin:2px 0; }
+    .upg-table .bkp-note { display:block; font-size:12px; color:var(--abv2-muted); }
     @media (max-width:767px) {
+        .upg-tab { flex:1 1 0; padding:10px 6px; }
+        .upg-table .bkp-actions { white-space:normal; flex-wrap:wrap; justify-content:flex-end; }
+        .upg-table .bkp-actions .btn { min-height:44px; }
         .upg-option input[type=checkbox], .upg-table input[type=checkbox] { width:24px; height:24px; }
         .upg-btns .btn { flex:1 1 100%; min-height:44px; }
         .upg-checks .upg-group { display:none; }
