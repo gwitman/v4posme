@@ -113,8 +113,14 @@ class core_upgrade extends _BaseController
     {
         try {
             $this->upgrade_guard();
-            $mode = $this->upgrade_post('mode');
-            $data = $this->core_web_upgrade->check((string) $this->request->getServer('HTTP_HOST'), $mode !== '' ? $mode : null);
+            $mode  = $this->upgrade_post('mode');
+            // Casillas de qué sincronizar (los scripts de parámetros se ejecutan siempre)
+            $parts = [
+                'syncFiles'  => $this->upgrade_post('syncFiles', '1'),
+                'syncSchema' => $this->upgrade_post('syncSchema', '1'),
+                'syncData'   => $this->upgrade_post('syncData', '1'),
+            ];
+            $data  = $this->core_web_upgrade->check((string) $this->request->getServer('HTTP_HOST'), $mode !== '' ? $mode : null, $parts);
             return $this->upgrade_json($data);
         } catch (\Throwable $ex) {
             return $this->upgrade_jsonError($ex);
@@ -137,6 +143,9 @@ class core_upgrade extends _BaseController
                 'ids'       => $this->upgrade_post('ids', '[]'),
                 'mode'      => $this->upgrade_post('mode'),
                 'force'     => $this->upgrade_post('force', '0'),
+                'syncFiles'  => $this->upgrade_post('syncFiles', '1'),
+                'syncSchema' => $this->upgrade_post('syncSchema', '1'),
+                'syncData'   => $this->upgrade_post('syncData', '1'),
                 'confirm'   => $this->upgrade_post('confirm'),
                 'status'    => $this->upgrade_post('status'),
                 'includeDb' => $this->upgrade_post('includeDb', '0'),
