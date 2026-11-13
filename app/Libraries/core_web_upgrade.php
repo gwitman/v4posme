@@ -532,6 +532,10 @@ class core_web_upgrade
         $syncZips = [];
         if ($parts['files']) {
             foreach ($remote['packages'] as $package) {
+                // Solo cuentan los paquetes marcados en la pantalla
+                if (!$this->zipSelected($parts, $package['name'])) {
+                    continue;
+                }
                 $required  += 4 * (int) $package['size'];
                 $syncZips[] = $package['name'];
             }
@@ -539,6 +543,9 @@ class core_web_upgrade
         $checks = array_merge($checks, $this->localChecks($mode, $required, $remote['reachable'] || !$parts['files'] ? $syncZips : null));
         if (!$parts['files'] && !$parts['schema'] && !$parts['data']) {
             $checks[] = $this->checkItem('Qué sincronizar', false, 'Marque al menos una parte: archivos, estructura o datos de configuración', 'local');
+        }
+        if ($parts['files'] && is_array($parts['zips']) && !count(array_intersect($parts['zips'], array_keys($packages)))) {
+            $checks[] = $this->checkItem('Paquetes de archivos', false, 'Marque al menos un paquete (sync*.zip) o desmarque "Archivos"', 'local');
         }
 
         $lock = core_upgrade_lock::current();
@@ -558,7 +565,7 @@ class core_web_upgrade
 
         $files = [];
         foreach ($packages as $zip => $package) {
-            $files[] = ['zip' => $zip, 'target' => $package['target'], 'protected' => $package['protected'], 'present' => !in_array($zip, $remote['missing'], true)];
+            $files[] = ['zip' => $zip, 'target' => $package['target'], 'protected' => $package['protected'], 'present' => !in_array($zip, $remote['missing'], true), 'selected' => $this->zipSelected($parts, $zip)];
         }
 
         return [
@@ -807,7 +814,11 @@ class core_web_upgrade
         if (!hash_equals(core_upgrade_rules::CONFIRM_WORD, $confirm)) {
             throw new \Exception('Escriba ' . core_upgrade_rules::CONFIRM_WORD . ' (en mayúsculas, sin espacios) para confirmar.');
         }
-        $mode = core_upgrade_rules::assertMode(isset($params['mode']) ? (string) $params['mode'] : '');
+        $mode  = core_upgrade_rules::assertMode(isset($params['mode']) ? (string) $params['mode'] : '');
+        $parts = $this->syncParts($params);
+        if ($parts['files'] && is_array($parts['zips']) && !count(array_intersect($parts['zips'], array_keys(core_upgrade_rules::packages($mode))))) {
+            throw new \Exception('Marque al menos un paquete de archivos (sync*.zip) o desmarque "Archivos".');
+        }
         // Valida configuración y rechazos (propio host, servidor habilitado) antes de bloquear
         $this->makeClient();
 
@@ -821,7 +832,7 @@ class core_web_upgrade
                 'mode'          => $mode,
                 'force'         => isset($params['force']) && in_array((string) $params['force'], ['1', 'true'], true),
                 // Partes a sincronizar (los scripts de parámetros y el respaldo se hacen siempre)
-                'parts'         => $this->syncParts($params),
+                'parts'         => $parts,
                 'by'            => (string) $userName,
                 'host'          => (string) $host,
                 'startedOn'     => helper_getDateTime(),
@@ -868,7 +879,30 @@ class core_web_upgrade
         $flag = function ($key) use ($params) {
             return !isset($params[$key]) || in_array((string) $params[$key], ['1', 'true'], true);
         };
-        return ['files' => $flag('syncFiles'), 'schema' => $flag('syncSchema'), 'data' => $flag('syncData')];
+        // Paquetes marcados dentro de "Archivos": JSON con nombres de zip; ausente = todos
+        $zips = null;
+        if (isset($params['syncZips']) && (string) $params['syncZips'] !== '') {
+            $list = json_decode((string) $params['syncZips'], true);
+            $zips = [];
+            foreach (is_array($list) ? $list : [] as $name) {
+                if (is_string($name) && preg_match('/^sync[A-Za-z]+\.zip$/', $name) === 1 && !in_array($name, $zips, true)) {
+                    $zips[] = $name;
+                }
+            }
+        }
+        return ['files' => $flag('syncFiles'), 'schema' => $flag('syncSchema'), 'data' => $flag('syncData'), 'zips' => $zips];
+    }
+
+    /**
+     * Indica si un zip está marcado para sincronizar (sin selección = todos).
+     *
+     * @param array  $parts Partes de la actualización.
+     * @param string $zip   Nombre del zip.
+     * @return bool
+     */
+    private function zipSelected(array $parts, $zip)
+    {
+        return !isset($parts['zips']) || !is_array($parts['zips']) || in_array($zip, $parts['zips'], true);
     }
 
     /**
@@ -880,10 +914,10 @@ class core_web_upgrade
     private function runParts(array $run)
     {
         if (isset($run['parts']) && is_array($run['parts'])) {
-            return $run['parts'] + ['files' => true, 'schema' => true, 'data' => true];
+            return $run['parts'] + ['files' => true, 'schema' => true, 'data' => true, 'zips' => null];
         }
         $filesOnly = !empty($run['filesOnly']);
-        return ['files' => true, 'schema' => !$filesOnly, 'data' => !$filesOnly];
+        return ['files' => true, 'schema' => !$filesOnly, 'data' => !$filesOnly, 'zips' => null];
     }
 
     /**
@@ -904,7 +938,8 @@ class core_web_upgrade
                 $off[] = $name;
             }
         }
-        return 'Sincroniza: ' . (count($on) ? implode(', ', $on) . ' + ' : '') . 'scripts de parámetros' . (count($off) ? ' · OMITE: ' . implode(', ', $off) : '');
+        $zips = !empty($parts['files']) && isset($parts['zips']) && is_array($parts['zips']) ? ' · paquetes marcados: ' . implode(', ', $parts['zips']) : '';
+        return 'Sincroniza: ' . (count($on) ? implode(', ', $on) . ' + ' : '') . 'scripts de parámetros' . (count($off) ? ' · OMITE: ' . implode(', ', $off) : '') . $zips;
     }
 
     /**
@@ -939,6 +974,21 @@ class core_web_upgrade
         if (!$parts['files']) {
             $remote['packages'] = [];
             $remote['missing']  = [];
+        }
+        // Los paquetes publicados pero no marcados no se descargan (la actualización queda parcial)
+        $omitted = [];
+        $keep    = [];
+        foreach ($remote['packages'] as $package) {
+            if ($this->zipSelected($parts, $package['name'])) {
+                $keep[] = $package;
+            } else {
+                $omitted[] = $package['name'];
+            }
+        }
+        $remote['packages'] = $keep;
+        $run['zipsOmitted'] = $omitted;
+        if (count($omitted)) {
+            $this->log($run['upgradeID'], 'No se sincroniza (paquete sin marcar): ' . implode(', ', $omitted) . '.');
         }
         $detail = ['remoteVersion' => $remote['version'], 'latencyMs' => $latency, 'packages' => $remote['packages'], 'missing' => $remote['missing'], 'parts' => $parts];
         // Un zip no publicado no se sincroniza (no es error)
@@ -1637,7 +1687,8 @@ class core_web_upgrade
                 'mode'        => $run['mode'],
                 'by'          => $run['by'],
                 // Actualización parcial (alguna casilla sin marcar): la siguiente no exige "Forzar"
-                'partial'     => in_array(false, $this->runParts($run), true),
+                // También es parcial si algún paquete publicado quedó sin marcar
+                'partial'     => in_array(false, $this->runParts($run), true) || !empty($run['zipsOmitted']),
                 'parts'       => $this->runParts($run),
             ]);
         }

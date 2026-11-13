@@ -158,6 +158,8 @@
                         <span><p class="upg-option-title">Archivos (sync*.zip)</p>
                         <p class="upg-option-desc">Descarga y reemplaza los archivos publicados en el servidor (los zip que no estén publicados no se sincronizan).</p></span>
                     </label>
+                    <!-- paquetes a sincronizar dentro de "Archivos" (se llena con la consulta) -->
+                    <div class="upg-zips" id="upgSyncZips"></div>
                     <label class="upg-option upg-part is-on" for="upgSyncSchema">
                         <input type="checkbox" id="upgSyncSchema" checked>
                         <span><p class="upg-option-title">Estructura de la base de datos</p>

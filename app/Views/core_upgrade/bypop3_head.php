@@ -42,6 +42,9 @@
     .upg-option input[type=checkbox] { width:20px; height:20px; margin:2px 0 0; flex:0 0 20px; }
     .upg-option-title { font-weight:700; font-size:14px; margin:0; }
     .upg-option-desc { font-size:12px; color:var(--abv2-muted); margin:2px 0 0; }
+    .upg-zips { margin:-4px 0 10px 30px; }
+    .upg-zips .upg-option { padding:6px 10px; margin-bottom:6px; }
+    .upg-zips .upg-option.is-disabled { opacity:.55; cursor:not-allowed; }
     .upg-option.is-danger .upg-option-title { color:#c0392b; }
     .upg-option.is-danger.is-on { border-color:#e74c3c; background:#fdecea; }
     .upg-confirm { font-size:16px !important; font-weight:700; letter-spacing:1px; }

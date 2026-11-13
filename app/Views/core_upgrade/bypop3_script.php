@@ -341,6 +341,11 @@
                 (local.dbName ? '<span class="upg-chip">Base de datos: <b>' + esc(local.dbName) + '</b></span>' : '') +
                 '</div>';
 
+            renderZipBoxes(d);
+            syncParts();
+            // Tras cambiar de modo la consulta trae todos los paquetes; si hay alguno desmarcado se reconsulta con la selección
+            var stale = ((d.components && d.components.files) || []).some(function (f) { return f.present && f.selected && zipSel[f.zip] === false; });
+            if (stale) { setTimeout(function () { runCheck(st.mode); }, 0); }
             renderComponents(d);
             renderData(d);
 
@@ -391,10 +396,11 @@
             }
             var rows = files.map(function (f) {
                 var isMissing = missing.indexOf(f.zip) >= 0;
+                var isOff     = !isMissing && f.selected === false;
                 var pkg       = packages[f.zip];
                 var prot      = f.protected && f.protected.length ? f.protected.map(esc).join('<br>') : '<span class="upg-hint">Lista general de protegidos</span>';
-                return '<tr class="' + (isMissing ? 'is-missing' : '') + '">' +
-                    '<td data-label="Paquete"><b>' + esc(f.zip) + '</b>' + (isMissing ? '<div>No se sincroniza (no está en el servidor)</div>' : (pkg ? '<div class="upg-hint">' + fmtMB(pkg.size) + (pkg.mtime ? ' · ' + esc(pkg.mtime) : '') + '</div>' : '')) + '</td>' +
+                return '<tr class="' + (isMissing || isOff ? 'is-missing' : '') + '">' +
+                    '<td data-label="Paquete"><b>' + esc(f.zip) + '</b>' + (isMissing ? '<div>No se sincroniza (no está en el servidor)</div>' : isOff ? '<div>No se sincroniza (paquete sin marcar)</div>' : (pkg ? '<div class="upg-hint">' + fmtMB(pkg.size) + (pkg.mtime ? ' · ' + esc(pkg.mtime) : '') + '</div>' : '')) + '</td>' +
                     '<td data-label="Destino">' + esc(f.target) + '</td>' +
                     '<td data-label="Nunca se sobrescribe">' + prot + '</td></tr>';
             }).join('');
@@ -434,6 +440,9 @@
         // Cambiar el modo vuelve a consultar con ese modo
         $('upgMode').addEventListener('change', function () {
             st.mode = this.value === 'cloud' ? 'cloud' : 'local';
+            // Otro modo tiene otros paquetes: la primera consulta los trae todos y luego se aplica la selección
+            zipNames = null;
+            $('upgSyncZips').innerHTML = '';
             runCheck(st.mode);
         });
         $('upgBtnCheck').addEventListener('click', function () { runCheck(st.mode); });
@@ -446,19 +455,64 @@
         var PART_BOX   = { files: 'upgSyncFiles', schema: 'upgSyncSchema', data: 'upgSyncData' };
         var PART_LABEL = { files: 'archivos', schema: 'estructura de la base de datos', data: 'datos de configuración' };
 
-        /** Lee las casillas de qué sincronizar. */
+        // Selección de paquetes dentro de "Archivos": nombre de zip => marcado (un zip nuevo entra marcado)
+        var zipSel   = {};
+        // Paquetes del modo actual según la última consulta (null = aún sin consultar)
+        var zipNames = null;
+
+        /** Lee las casillas de qué sincronizar (zips = paquetes marcados del modo actual). */
         function readParts() {
-            return { files: $('upgSyncFiles').checked, schema: $('upgSyncSchema').checked, data: $('upgSyncData').checked };
+            var p = { files: $('upgSyncFiles').checked, schema: $('upgSyncSchema').checked, data: $('upgSyncData').checked };
+            if (zipNames) {
+                p.zips = zipNames.filter(function (z) { return zipSel[z] !== false; });
+            }
+            return p;
         }
 
-        /** Parámetros POST de las casillas ('1'/'0'). */
+        /** Parámetros POST de las casillas ('1'/'0'); syncZips solo cuando ya se conocen los paquetes. */
         function partsParams(p) {
-            return { syncFiles: p.files ? '1' : '0', syncSchema: p.schema ? '1' : '0', syncData: p.data ? '1' : '0' };
+            var out = { syncFiles: p.files ? '1' : '0', syncSchema: p.schema ? '1' : '0', syncData: p.data ? '1' : '0' };
+            if (p.zips) { out.syncZips = JSON.stringify(p.zips); }
+            return out;
         }
+
+        /** Paquetes publicados pero sin marcar (para avisar que la actualización queda parcial). */
+        function zipsOff(p) {
+            if (!p.files || !p.zips || !st.check) { return []; }
+            var files = (st.check.components && st.check.components.files) || [];
+            return files.filter(function (f) { return f.present && p.zips.indexOf(f.zip) < 0; }).map(function (f) { return f.zip; });
+        }
+
+        /** Dibuja una casilla por paquete del modo bajo "Archivos"; los no publicados quedan deshabilitados. */
+        function renderZipBoxes(d) {
+            var files = (d.components && d.components.files) || [];
+            // Solo los publicados se pueden sincronizar
+            zipNames  = files.filter(function (f) { return f.present; }).map(function (f) { return f.zip; });
+            var on    = $('upgSyncFiles').checked;
+            $('upgSyncZips').innerHTML = files.map(function (f) {
+                var checked  = f.present && zipSel[f.zip] !== false;
+                var disabled = !f.present || !on;
+                return '<label class="upg-option' + (checked && on ? ' is-on' : '') + (disabled ? ' is-disabled' : '') + '">' +
+                    '<input type="checkbox" class="upg-zip-box" data-zip="' + esc(f.zip) + '" data-present="' + (f.present ? '1' : '0') + '"' + (checked ? ' checked' : '') + (disabled ? ' disabled' : '') + '>' +
+                    '<span><p class="upg-option-title">' + esc(f.zip) + '</p>' +
+                    '<p class="upg-option-desc">' + (f.present ? 'Actualiza ' + esc(f.target) : 'No está publicado en el servidor') + '</p></span></label>';
+            }).join('');
+        }
+
+        // Marcar/desmarcar un paquete vuelve a consultar (cambian espacio requerido y si se puede iniciar)
+        $('upgSyncZips').addEventListener('change', function (e) {
+            var box = e.target;
+            if (!box.classList || !box.classList.contains('upg-zip-box')) { return; }
+            zipSel[box.getAttribute('data-zip')] = box.checked;
+            box.parentNode.classList.toggle('is-on', box.checked);
+            syncParts();
+            runCheck(st.mode);
+        });
 
         /** Partes sin marcar, como texto. */
         function partsOff(p) {
-            return Object.keys(PART_LABEL).filter(function (k) { return !p[k]; }).map(function (k) { return PART_LABEL[k]; });
+            // Incluye los paquetes publicados que quedaron sin marcar dentro de "Archivos"
+            return Object.keys(PART_LABEL).filter(function (k) { return !p[k]; }).map(function (k) { return PART_LABEL[k]; }).concat(zipsOff(p));
         }
 
         /** Marca visual de las casillas y aviso de lo que se omite. */
@@ -467,9 +521,20 @@
             var off = partsOff(p);
             Object.keys(PART_BOX).forEach(function (k) { $(PART_BOX[k]).parentNode.classList.toggle('is-on', p[k]); });
             var note = $('upgPartsNote');
+            // Las casillas de paquetes solo se usan con "Archivos" marcado
+            Array.prototype.forEach.call(document.querySelectorAll('#upgSyncZips .upg-zip-box'), function (box) {
+                box.disabled = !p.files || box.getAttribute('data-present') !== '1';
+                box.parentNode.classList.toggle('is-disabled', box.disabled);
+                box.parentNode.classList.toggle('is-on', p.files && box.checked);
+            });
+            if (p.files && p.zips && !p.zips.length) {
+                note.style.display = '';
+                note.innerHTML = '<b>Marque al menos un paquete</b> (sync*.zip) o desmarque "Archivos".';
+                return;
+            }
             if (!off.length) { note.style.display = 'none'; note.innerHTML = ''; return; }
             note.style.display = '';
-            note.innerHTML = off.length === 3
+            note.innerHTML = !p.files && !p.schema && !p.data
                 ? '<b>Marque al menos una parte</b> para sincronizar.'
                 : '<b>Actualización parcial:</b> se omite ' + esc(off.join(', ')) + '. Los scripts de parámetros se ejecutan igual.';
         }
@@ -491,6 +556,7 @@
             else {
                 var p = readParts();
                 if (!p.files && !p.schema && !p.data) { issues.push('Marque al menos una parte para sincronizar.'); }
+                if (p.files && p.zips && !p.zips.length) { issues.push('Marque al menos un paquete de archivos o desmarque "Archivos".'); }
                 if (!d.canRun) { issues.push('No se puede continuar: revise los componentes y las comprobaciones.'); }
                 if (d.upToDate && !$('upgForce').checked) { issues.push('La instalación ya está al día. Marque "Forzar" para aplicarla de nuevo.'); }
             }

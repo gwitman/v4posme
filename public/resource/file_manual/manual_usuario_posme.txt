@@ -2037,14 +2037,15 @@ Ver también: Actualizar posMe desde el servidor central: elegir qué sincroniza
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta Iniciar actualización, bloque Qué sincronizar.
 3 casillas combinables, todas marcadas por defecto:
   * Archivos (sync*.zip): descarga y reemplaza los archivos publicados. Sin marcar no se descarga nada (etapa 4: "Omitida: archivos sin marcar").
+  Debajo aparece una casilla por paquete del modo (local: syncApp.zip, syncVendor.zip, syncPublic.zip; nube: syncVendor.zip, syncConfig.zip). Marque solo los que quiera actualizar: los 3, dos o uno. Un paquete no publicado en el servidor sale deshabilitado.
   * Estructura de la base de datos: tablas, campos, índices, vistas, procedimientos, funciones y triggers. Sin marcar no se compara ni aplica.
   * Datos de configuración: catálogos, menús, parámetros y tablas de configuración. Sin marcar no se sincronizan.
   1. Desmarque lo que no quiera actualizar. Cada cambio vuelve a consultar el servidor y recalcula las Comprobaciones.
   2. Si desmarcó algo aparece el aviso amarillo "Actualización parcial: se omite ...".
   3. Escriba ACTUALIZAR, presione Actualizar posMe e Iniciar. En la etapa 5 lo desmarcado dice "Omitida (casilla sin marcar)".
 Siempre se respalda completa la base de datos (etapa 3) y al final se ejecutan los scripts de parámetros (001_default.sql y el de su compañía), como indica el aviso azul Siempre al final. Por eso Revertir siempre ofrece restaurar la base de datos.
-Restricciones: marque al menos una casilla ("Marque al menos una parte para sincronizar.").
-Notas: un zip no publicado no es error: sale en gris "No se sincroniza (no está en el servidor)". Una actualización parcial queda registrada como parcial: la siguiente a la misma versión no pide Forzar aunque esté al día.
+Restricciones: marque al menos una casilla ("Marque al menos una parte para sincronizar."). Con Archivos marcado, marque al menos un paquete ("Marque al menos un paquete de archivos o desmarque Archivos").
+Notas: un zip no publicado no es error: sale en gris "No se sincroniza (no está en el servidor)". Un paquete publicado pero sin marcar sale en gris "No se sincroniza (paquete sin marcar)", se nombra en el aviso "Actualización parcial: se omite ..." y deja la actualización como parcial. Una actualización parcial queda registrada como parcial: la siguiente a la misma versión no pide Forzar aunque esté al día.
 Consejo: sin Estructura de la base de datos, si los scripts de parámetros usan campos o tablas nuevos pueden fallar y se revierten datos y scripts; repita con esa casilla marcada.
 
 147. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: ETAPAS, REVISAR CAMBIOS Y CANCELAR

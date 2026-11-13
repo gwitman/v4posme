@@ -119,6 +119,8 @@ class core_upgrade extends _BaseController
                 'syncFiles'  => $this->upgrade_post('syncFiles', '1'),
                 'syncSchema' => $this->upgrade_post('syncSchema', '1'),
                 'syncData'   => $this->upgrade_post('syncData', '1'),
+                // Paquetes marcados (JSON con nombres de zip; vacío = todos)
+                'syncZips'   => $this->upgrade_post('syncZips', ''),
             ];
             $data  = $this->core_web_upgrade->check((string) $this->request->getServer('HTTP_HOST'), $mode !== '' ? $mode : null, $parts);
             return $this->upgrade_json($data);
@@ -146,6 +148,7 @@ class core_upgrade extends _BaseController
                 'syncFiles'  => $this->upgrade_post('syncFiles', '1'),
                 'syncSchema' => $this->upgrade_post('syncSchema', '1'),
                 'syncData'   => $this->upgrade_post('syncData', '1'),
+                'syncZips'   => $this->upgrade_post('syncZips', ''),
                 'confirm'   => $this->upgrade_post('confirm'),
                 'status'    => $this->upgrade_post('status'),
                 'includeDb' => $this->upgrade_post('includeDb', '0'),
