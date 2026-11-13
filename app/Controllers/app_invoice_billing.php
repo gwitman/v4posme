@@ -4238,6 +4238,9 @@ class app_invoice_billing extends _BaseController {
 			$dataView["objListParameterJavaScript"]													= $this->core_web_parameter->getParameterAllToJavaScript($companyID);			
 			$dataView["urlPrinterDocument"]															= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_URL_PRINTER")->value;
 			$dataView["urlPrinterDocumentDirect"]													= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_URL")->value;
+			//Segunda opcion de impresion (boton Impresion 2 de la ventana de formatos): lectura segura
+			$objParameterUrlPrinterOpcion2															= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_URL_PRINTER_OPCION2");
+			$dataView["urlPrinterDocumentOpcion2"]													= $objParameterUrlPrinterOpcion2 ? $objParameterUrlPrinterOpcion2->value : "";
 			//QZ Tray: lectura segura (getParameterFiltered devuelve false si el parametro no existe para la empresa)
 			$objParameterInvoiceUserQsTray															= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"APP_INVOICE_USER_QSTRAY");
 			$objParameterInvoiceQsTrayPrinterName													= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"APP_INVOICE_QSTRAY_PRINTER_NAME");
@@ -16280,7 +16283,202 @@ class app_invoice_billing extends _BaseController {
 		    return $resultView;
 		}
 	}
-	
+
+	/**
+	 * Imprime la factura/proforma en hoja A4 vertical (PDF con dompdf) usando la plantilla
+	 * "templateInvoiceA4Opcion3" de tb_company_page_setting_large segun el tipo de empresa
+	 * (si la empresa no tiene plantilla se usa la de "demo").
+	 * Los precios por linea se muestran brutos (antes del descuento) para que
+	 * Sub Total - Descuento = Gran Total, ya que tb_transaction_master.amount es neto.
+	 * @return mixed PDF en el navegador, enlace de descarga o vista de error
+	 */
+	function viewRegisterFormatoPaginaNormalA4Opcion3DB(){
+		try{
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+
+			//PERMISO SOBRE LA FUNCION
+			if(APP_NEED_AUTHENTICATION == true){
+						$permited = false;
+						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+
+						if(!$permited)
+						throw new \Exception(NOT_ACCESS_CONTROL);
+
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+						if ($resultPermission 	== PERMISSION_NONE)
+						throw new \Exception(NOT_ALL_EDIT);
+			}
+
+			$transactionID				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri
+			$transactionMasterID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri
+			$companyID 					= $dataSession["user"]->companyID;
+
+			$objParameterLogo       	= $this->core_web_parameter->getParameter("CORE_COMPANY_LOGO",$companyID);
+			$objParameterTelefono		= $this->core_web_parameter->getParameter("CORE_PHONE",$companyID);
+			$objParameterRuc	    	= $this->core_web_parameter->getParameter("CORE_COMPANY_IDENTIFIER",$companyID);
+			$objParameterEmail			= $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL",$companyID);
+			$objCompany 				= $this->Company_Model->get_rowByPK($companyID);
+
+			//Get Documento
+			$datView["objTM"]	 					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMI"]						= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			$datView["objTMD"]						= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+			$datView["objTC"]						= $this->Transaction_Causal_Model->getByCompanyAndTransactionAndCausal($companyID,$transactionID,$datView["objTM"]->transactionCausalID);
+			$datView["objStage"]					= $this->core_web_workflow->getWorkflowStage("tb_transaction_master_billing","statusID",$datView["objTM"]->statusID,$companyID,$datView["objTM"]->branchID,APP_ROL_SUPERADMIN);
+			$datView["objWorkflowStage"]			= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly($datView["objTM"]->statusID);
+			$datView["objCustumer"]					= $this->Customer_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);
+			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
+			$datView["objCurrency"]					= $this->Currency_Model->get_rowByPK($datView["objTM"]->currencyID);
+			$datView["objUser"]						= $this->User_Model->get_rowByPK($companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
+			$datView["objUserNaturales"]			= $this->Natural_Model->get_rowByPK($datView["objUser"]->companyID,$datView["objUser"]->branchID,$datView["objUser"]->employeeID);
+
+			$htmlTemplateCompany					= getBahavioLargeDB($objCompany->type,"app_invoice_billing","templateInvoiceA4Opcion3","");
+			$htmlTemplateDemo 						= getBahavioLargeDB("demo","app_invoice_billing","templateInvoiceA4Opcion3","");
+			if($htmlTemplateCompany == "")
+				$htmlTemplateCompany = $htmlTemplateDemo;
+
+			if($htmlTemplateCompany == "")
+			throw new \Exception("NO EXISTE LA PLANTILLA 'templateInvoiceA4Opcion3' EN tb_company_page_setting_large");
+
+			//Datos generales
+			$createdOn 											= new \DateTime($datView["objTM"]->createdOn);
+			$createdOn->modify(APP_HOUR_DIFERENCE_PHP);
+			$amountDiscount										= $datView["objTM"]->discount;
+			$amountTotal										= $datView["objTM"]->amount;
+
+			$datViewArray										= array();
+			$datViewArray["title"] 								= "FACTURA";
+			$datViewArray["companyName"] 						= $objCompany->name;
+			$datViewArray["companyRuc"] 						= $objParameterRuc->value;
+			$datViewArray["address"]							= $objCompany->address;
+			$datViewArray["phoneNumber"]						= $objParameterTelefono->value;
+			$datViewArray["emalProperty"]						= $objParameterEmail->value;
+			$datViewArray["transactionNumber"] 					= $datView["objTM"]->transactionNumber;
+			$datViewArray["transactionOn"] 						= $createdOn->format('Y-m-d h:i A');
+			$datViewArray["transactionOnDate"] 					= $createdOn->format('d/m/Y');
+			$datViewArray["typeTransacton"]						= $datView["objWorkflowStage"][0]->aplicable == 1 ? "FACTURA" : "PROFORMA" ;
+			$datViewArray["typeTransactonTitle"]				= $datView["objWorkflowStage"][0]->aplicable == 1 ? "Factura" : "Proforma" ;
+			$datViewArray["transactionMasterReference3"] 		= $datView["objTM"]->reference3;
+			$datViewArray["userName"]							= $datView["objUser"]->nickname;
+			$datViewArray["userNaturalFullName"]				= $datView["objUserNaturales"] ? trim($datView["objUserNaturales"]->firstName." ".$datView["objUserNaturales"]->lastName) : "";
+			//Vendedor: la referencia 3 de la factura; si esta vacia, el usuario que la creo
+			$datViewArray["sellerName"]							= trim((string)$datView["objTM"]->reference3) != "" ? $datView["objTM"]->reference3 : $datViewArray["userNaturalFullName"];
+			$datViewArray["currencySimbol"]						= $datView["objCurrency"]->simbol;
+			$datViewArray["note"]								= $datView["objTM"]->note;
+			$datViewArray["numberPhoneInTransaction"]			= $datView["objTM"]->numberPhone;
+			$datViewArray["statusName"]							= $datView["objStage"][0]->display;
+			$datViewArray["causalName"]							= $datView["objTC"]->name;
+			$datViewArray["customerNumber"]						= $datView["objCustumer"]->customerNumber;
+			$datViewArray["customerName"]						= $datView["objTMI"]->referenceClientName == "" ?
+																		trim($datView["objNatural"]->firstName." ".$datView["objNatural"]->lastName) :
+																		$datView["objTMI"]->referenceClientName ;
+			$datViewArray["customerRuc"]						= $datView["objTMI"]->referenceClientIdentifier == "" ?
+																		$datView["objCustumer"]->identification :
+																		$datView["objTMI"]->referenceClientIdentifier ;
+			$datViewArray["customerPhoneNumber"]				= $datView["objTM"]->numberPhone != "" ? $datView["objTM"]->numberPhone : $datView["objCustumer"]->phoneNumber;
+			$datViewArray["customerAddress"]					= $datView["objCustumer"]->address;
+
+			//Totales: amount ya trae el descuento aplicado, el sub total se muestra antes del descuento
+			$datViewArray["amount_sub_total"]					= number_format($amountTotal + $amountDiscount,2);
+			$datViewArray["amount_iva"]							= number_format($datView["objTM"]->tax1,2);
+			$datViewArray["amount_discount"]					= number_format($amountDiscount,2);
+			$datViewArray["amount_total"]						= number_format($amountTotal,2);
+			$datViewArray["amount_total_description"]			= helper_GetLetras($amountTotal,$datViewArray["currencySimbol"],"CENTAVOS.");
+			$datViewArray["amount_receipt"]						= number_format($datView["objTMI"]->receiptAmount,2);
+			$datViewArray["amount_change"]						= number_format($datView["objTMI"]->changeAmount,2);
+
+			//Detalle: el descuento de la linea es total de la linea; precio bruto = precio + descuento / cantidad
+			$datViewArray["transactionMasterDetail"] 			= array();
+			foreach($datView["objTMD"] as $detail_)
+			{
+				$quantity		= (float)$detail_->quantity;
+				$lineDiscount	= (float)$detail_->discount;
+				$lineAmount		= (float)$detail_->amount + $lineDiscount;
+				$linePrice		= $quantity != 0 ? $lineAmount / $quantity : (float)$detail_->unitaryPrice;
+
+				$row = array(
+					"itemNumber"			=> $detail_->itemNumber,
+					"itemName"				=> $detail_->itemName. " ". strtolower($detail_->skuFormatoDescription),
+					"itemNameQuantity"		=> fmod(round($quantity,2),1) == 0 ? number_format($quantity,0) : number_format($quantity,2),
+					"itemNamePrice"			=> number_format($linePrice,2),
+					"itemNameAmount"		=> number_format($lineAmount,2)
+				);
+				array_push($datViewArray["transactionMasterDetail"],$row);
+			}
+
+			//Logo de la empresa (el mismo del ticket)
+			$datViewArray["imageBase64"]	= "";
+			$path    						= PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;
+			if (file_exists($path)) {
+				$type    						= pathinfo($path, PATHINFO_EXTENSION);
+				$datViewArray["imageBase64"]	= 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($path));
+			}
+
+			//Generar PDF
+			$parser 		= \Config\Services::parser();
+			$html 			= $parser->setData($datViewArray)->renderString($htmlTemplateCompany);
+			$this->dompdf->loadHTML($html);
+			$this->dompdf->setPaper('A4','portrait');
+			$this->dompdf->render();
+
+			$objParameterShowLinkDownload		= $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD",$companyID)->value;
+			$objParameterShowDownloadPreview	= $this->core_web_parameter->getParameter("CORE_SHOW_DOWNLOAD_PREVIEW",$companyID)->value;
+			$objParameterShowDownloadPreview	= $objParameterShowDownloadPreview == "true" ? true : false;
+
+			$fileNamePut 	= "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
+			$fileNamePdf 	= "FAC_".$datView["objTM"]->transactionNumber."_".str_replace(" ","_", $datView["objNatural"]->firstName).".pdf";
+			$patdir         = "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID;
+			$path        	= $patdir."/".$fileNamePut;
+
+			if (!file_exists($patdir))
+			{
+				mkdir($patdir, 0755,true);
+				chmod($patdir, 0755);
+			}
+
+			file_put_contents($path, $this->dompdf->output());
+			chmod($path, 0644);
+
+			if($objParameterShowLinkDownload == "true")
+			{
+				echo "<a
+					href='".base_url()."/resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".
+					$fileNamePut."'>download factura</a>
+				";
+			}
+			else{
+				//visualizar
+				$this->dompdf->stream($fileNamePdf, ['Attachment' => $objParameterShowDownloadPreview ]);
+				exit;
+			}
+		}
+		catch(\Exception $ex){
+		    if (empty($dataSession)) {
+				return redirect()->to(base_url("core_acount/login"));
+			}
+
+		    $data["session"]   = $dataSession;
+		    $data["exception"] = $ex;
+		    $data["urlLogin"]  = base_url();
+		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
+		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
+		    $resultView        = view("core_template/email_error_general",$data);
+
+		    $this->email->setFrom(EMAIL_APP);
+		    $this->email->setTo(EMAIL_APP_COPY);
+		    $this->email->setSubject("Error");
+		    $this->email->setMessage($resultView);
+
+		    $resultSend01 = $this->email->send();
+		    $resultSend02 = $this->email->printDebugger();
+
+		    return $resultView;
+		}
+	}
+
 	function viewRegisterFormatoPaginaNormalA4FunBlandonReciboOficialCaja()
 	{
 		try{ 

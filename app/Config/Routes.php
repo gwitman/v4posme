@@ -1433,6 +1433,8 @@ $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNo
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormalA4Opcion2DB/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaNormalA4Opcion2DB');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormalA4Opcion1DB', 'app_invoice_billing::viewRegisterFormatoPaginaNormalA4Opcion1DB');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormalA4Opcion1DB/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaNormalA4Opcion1DB');
+$routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormalA4Opcion3DB', 'app_invoice_billing::viewRegisterFormatoPaginaNormalA4Opcion3DB');
+$routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormalA4Opcion3DB/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaNormalA4Opcion3DB');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmCarlosLuis', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmCarlosLuis');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmCarlosLuis/(:any)', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmCarlosLuis');
 $routes->match(['get', 'post'], 'app_invoice_billing/viewRegisterFormatoPaginaNormal80mmOpcion1MiniFerreteriaShalom', 'app_invoice_billing::viewRegisterFormatoPaginaNormal80mmOpcion1MiniFerreteriaShalom');

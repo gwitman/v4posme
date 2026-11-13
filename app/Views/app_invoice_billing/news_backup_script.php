@@ -7,6 +7,7 @@
 	var varParameterINVOICE_BILLING_VALIDATE_EXONERATION 	= '<?php echo $objParameterINVOICE_BILLING_VALIDATE_EXONERATION; ?>';
 	var varParameterInvoiceValidateCostInPrice				= '<?php echo $objParameterINVOICE_BILLING_VALIDATE_COST_IN_PRICE; ?>';	
 	var varUrlPrinter										= '<?php echo $urlPrinterDocument; ?>';
+	var varUrlPrinterOpcion2								= '<?php echo $urlPrinterDocumentOpcion2; ?>';
 	var varParameterAmortizationDuranteFactura				= <?php echo $objParameterAmortizationDuranteFactura; ?>;
 	var varParameterInvoiceBillingPrinterCocinaUrl			= '<?php echo $objParameterINVOICE_URL_PRINTER_COCINA; ?>';
 	var varParameterInvoiceNewRowToAddItem					= '<?php echo $objParameterINVOICE_NEWROW_TO_ADDITEM; ?>';
@@ -983,14 +984,14 @@
 							},
 							items: [
 								{
-									text: 'Preview printer',
+									text: '<?php echo getBahavioSession($company->type, "app_invoice_billing", "labelBtnImpresion1", "Preview printer", $objListCompanyPageSetting); ?>',
 									id: 'btnImpresion1',
 									handler: fnBtnImpresion1
 								},
 								{
-									text: 'Impresión 2',
+									text: '<?php echo getBahavioSession($company->type, "app_invoice_billing", "labelBtnImpresion2", "Impresión 2", $objListCompanyPageSetting); ?>',
 									id: 'btnImpresion2',
-									hidden: true,
+									hidden: <?php echo getBahavioSession($company->type, "app_invoice_billing", "ocultarBtnImpresion2", "true", $objListCompanyPageSetting); ?>,
 									handler: fnBtnImpresion2
 								},
 								{
@@ -3844,8 +3845,18 @@
 			var segundo 				= String(ahora.getSeconds()).padStart(2, '0');
 			var fechaHora 				= `${año}${mes}${dia}${hora}${minuto}${segundo}`;	
 			var transactionMasterID		= miVentanaPrincipal_.down("#txtTransactionMasterID").getValue();
-			var url						= "<?php echo base_url(); ?>/"+varUrlPrinter+"/companyID/2/transactionID/19/transactionMasterID/"+transactionMasterID+"/"+fechaHora;
-			window.open(url, '_blank');
+
+			//Usa la URL del parametro INVOICE_URL_PRINTER_OPCION2 (ej. formato A4); si no existe usa la principal
+			var urlPrinterOpcion2		= varUrlPrinterOpcion2 != "" ? varUrlPrinterOpcion2 : varUrlPrinter;
+			if(transactionMasterID > 0 )
+			{
+				var url						= "<?php echo base_url(); ?>/"+urlPrinterOpcion2+"/companyID/2/transactionID/19/transactionMasterID/"+transactionMasterID+"/"+fechaHora;
+				window.open(url, '_blank');
+			}
+			else
+			{
+				Ext.Msg.alert('<span style="color:white;font-weight:bold;">Error</span>',"<span style='color:red;font-weight:bold;'>Debe cargar la factura primeramente.</span>" );
+			}
 		}
 		function fnBtnImpresion3()
 		{
