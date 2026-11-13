@@ -164,6 +164,27 @@ class core_web_conversation{
 		}
    }
 
+   /**
+    * Nombre con el que firma el agente de IA en WhatsApp: el del colaborador del parametro
+    * WHATSAPP_AI_AGENT_EMPLOYEE_ENTITYID (firstName, si esta vacio lastName); si no existe, "Asistente IA".
+    * @param int $companyID
+    * @return string
+    */
+   function getSignatureNameEmployerAI($companyID)
+   {
+		$entityID = $this->getEntityIDEmployerAI($companyID);
+		if($entityID <= 0)
+			return "Asistente IA";
+
+		$Natural_Model 	= new Natural_Model();
+		$objNatural 	= $Natural_Model->get_rowByEntityID($companyID,$entityID);
+		$nombre 		= $objNatural ? trim((string)$objNatural->firstName) : "";
+		if($nombre == "" && $objNatural)
+			$nombre 	= trim((string)$objNatural->lastName);
+
+		return $nombre != "" ? $nombre : "Asistente IA";
+   }
+
    function getAllEmployer_ByCompanyType(
 	$companyID,
 	$companyType,

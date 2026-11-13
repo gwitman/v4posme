@@ -24,6 +24,9 @@ class core_web_ai
     const TIMEOUT          = 60;
     const INTERNET_MINUTOS = 5;
 
+    /** Prefijo que el webhook pone en firstName a los numeros de WhatsApp nuevos (no registrados). */
+    const PREFIJO_CONTACTO_NUEVO = "posMeConnect_";
+
     /** Parametros de empresa con secretos (versiones anteriores; hoy estan en Constants.php): nunca se envian al navegador. */
     const PARAMETROS_SECRETOS = ["AI_API_KEY", "AI_READONLY_USERNAME", "AI_READONLY_PASSWORD"];
 
@@ -420,7 +423,7 @@ class core_web_ai
                 $toolsSkill = array_merge($toolsSkill, $lista);
             }
         }
-        $this->core_web_ai_tools->initExterno($companyID, (int) $objCustomer->entityID, (string) ($objCustomer->phoneNumber ?? ""), $aiData);
+        $this->core_web_ai_tools->initExterno($companyID, (int) $objCustomer->entityID, (string) ($objCustomer->phoneNumber ?? ""), $aiData, self::nombreContactoRegistrado($objCustomer));
         $tools = $this->core_web_ai_tools->getDefinicionHerramientasExterno(array_unique($toolsSkill), $aiStatus != "derivada");
         if (count($tools) > 0) {
             $tools[count($tools) - 1]["cache_control"] = ["type" => "ephemeral"];
@@ -566,6 +569,7 @@ class core_web_ai
             . "- Si te preguntan directamente si eres una persona o un bot, responde con naturalidad que eres un asistente automático del equipo y que un asesor puede atenderle si lo prefiere. Nunca afirmes ser humano.\n"
             . "- Nada de markdown, tablas, encabezados ni listas largas. Como mucho un emoji ocasional.\n"
             . "- Pide un dato a la vez y no repitas preguntas ya respondidas.\n"
+            . "- Si el contexto dice que el cliente está registrado, ya conoces su nombre: no se lo preguntes.\n"
             . "- Montos con separador de miles coma y dos decimales, indicando la moneda (C\$ córdobas, \$ dólares).\n\n"
             . "# Reglas\n"
             . "1. Identifica la intención del cliente entre los objetivos de abajo y pide solo los datos necesarios. Cada dato que te den guárdalo con registrar_dato indicando la intención.\n"
@@ -579,13 +583,23 @@ class core_web_ai
             . "# Objetivos\n"
             . ($objetivos !== "" ? $objetivos : "Atiende la consulta y deriva a un asesor si no puedes resolverla.\n");
 
-        $dias     = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
-        $diaTexto = $dias[(int) helper_getDateTime_Object()->format("w")];
-        $datos    = isset($aiData["datos"]) && is_array($aiData["datos"]) ? $aiData["datos"] : [];
+        $dias       = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
+        $diaTexto   = $dias[(int) helper_getDateTime_Object()->format("w")];
+        $datos      = isset($aiData["datos"]) && is_array($aiData["datos"]) ? $aiData["datos"] : [];
+        $registrado = self::nombreContactoRegistrado($objCustomer);
+
+        if ($registrado !== "") {
+            // Contacto registrado: su nombre ya se conoce y no se le pregunta
+            $lineaNombre = "- Cliente registrado en el sistema. Su nombre es: " . $registrado . ". Ya lo conoces: NUNCA le preguntes su nombre (aunque un objetivo pida 'nombre' o 'nombre_completo'); úsalo para dirigirte a él y regístralo con registrar_dato si el objetivo lo pide.\n";
+        } else {
+            // Numero nuevo: el nombre del perfil de WhatsApp puede no ser el real
+            $perfil      = trim(preg_replace('/^' . preg_quote(self::PREFIJO_CONTACTO_NUEVO, '/') . '/i', "", trim((string) ($objCustomer->firstName ?? ""))));
+            $lineaNombre = "- Número nuevo, no registrado en el sistema. Nombre de su perfil de WhatsApp: " . ($perfil !== "" ? $perfil : "desconocido") . " (puede no ser su nombre real). Si un objetivo pide su nombre, pregúntaselo.\n";
+        }
 
         $variable = "# Contexto actual\n"
             . "- Fecha y hora (America/Managua): " . $diaTexto . " " . helper_getDateTime() . "\n"
-            . "- Nombre en el contacto de WhatsApp: " . trim((string) ($objCustomer->firstName ?? "")) . " (puede no ser su nombre real)\n"
+            . $lineaNombre
             . "- Intención detectada: " . (trim((string) ($aiData["intent"] ?? "")) !== "" ? $aiData["intent"] : "aún ninguna") . "\n"
             . "- Datos ya registrados: " . (count($datos) > 0 ? json_encode($datos, JSON_UNESCAPED_UNICODE) : "ninguno") . "\n"
             . "- Identidad verificada para saldo: " . (!empty($aiData["verificado"]) ? "sí" : "no") . "\n";
@@ -597,6 +611,22 @@ class core_web_ai
             ["type" => "text", "text" => $fijo, "cache_control" => ["type" => "ephemeral"]],
             ["type" => "text", "text" => $variable],
         ];
+    }
+
+    /**
+     * Nombre del contacto si ya esta registrado en el sistema. El webhook crea los numeros nuevos
+     * con el prefijo "posMeConnect_" en firstName; al registrarlo, el usuario le pone su nombre real.
+     *
+     * @param object $objCustomer Cliente (firstName).
+     * @return string nombre del contacto registrado, o "" si es un numero nuevo
+     */
+    static function nombreContactoRegistrado($objCustomer)
+    {
+        $nombre = trim((string) ($objCustomer->firstName ?? ""));
+        if ($nombre === "" || stripos($nombre, self::PREFIJO_CONTACTO_NUEVO) === 0) {
+            return "";
+        }
+        return $nombre;
     }
 
     /**

@@ -94,6 +94,7 @@ class core_web_ai_tools
     private $modoExterno         = false;
     private $entityIDCustomer    = 0;
     private $telefonoExterno     = "";
+    private $nombreRegistrado    = "";
     private $aiData              = [];
     private $permitidasExternas  = [];
 
@@ -420,10 +421,12 @@ class core_web_ai_tools
      * @param int    $entityIDCustomer entityID del cliente de la conversacion.
      * @param string $telefono         Telefono de WhatsApp del cliente.
      * @param array  $aiData           Datos ya captados (tb_customer_conversation.aiData).
+     * @param string $nombreRegistrado Nombre del contacto si ya esta registrado en el sistema; "" si es un numero nuevo.
      * @return void
      */
-    function initExterno($companyID, $entityIDCustomer, $telefono, $aiData)
+    function initExterno($companyID, $entityIDCustomer, $telefono, $aiData, $nombreRegistrado = "")
     {
+        $this->nombreRegistrado = trim((string) $nombreRegistrado);
         $this->dataSession      = null;
         $this->companyID        = (int) $companyID;
         $this->userID           = 0;
@@ -467,20 +470,23 @@ class core_web_ai_tools
             ],
             "verificar_identidad" => [
                 "name"         => "verificar_identidad",
-                "description"  => "Verifica la identidad del cliente con su cedula (identificacion) o codigo de cliente Y su nombre completo exacto. Solo hay " . self::MAX_INTENTOS_IDENTIDAD . " intentos.",
+                "description"  => $this->nombreRegistrado !== ""
+                    ? "Verifica la identidad del cliente registrado con su cedula (identificacion) o codigo de cliente. Ya se conoce su nombre: no se lo pidas. Solo hay " . self::MAX_INTENTOS_IDENTIDAD . " intentos."
+                    : "Verifica la identidad del cliente con su cedula (identificacion) o codigo de cliente Y su nombre completo exacto. Solo hay " . self::MAX_INTENTOS_IDENTIDAD . " intentos.",
                 "input_schema" => [
                     "type"       => "object",
                     "properties" => [
                         "identificacion_o_codigo" => ["type" => "string", "description" => "Cedula o codigo de cliente que escribio el cliente"],
-                        "nombre_completo"         => ["type" => "string", "description" => "Nombre completo que escribio el cliente"],
+                        "nombre_completo"         => ["type" => "string", "description" => "Nombre completo que escribio el cliente" . ($this->nombreRegistrado !== "" ? " (opcional: el cliente ya esta registrado)" : "")],
                     ],
-                    "required"   => ["identificacion_o_codigo", "nombre_completo"],
+                    // Contacto registrado: basta la cedula/codigo, el nombre ya se conoce
+                    "required"   => $this->nombreRegistrado !== "" ? ["identificacion_o_codigo"] : ["identificacion_o_codigo", "nombre_completo"],
                 ],
             ],
             "buscar_en_manual" => [
                 "name"         => "buscar_en_manual",
-                "description"  => "Busca en el manual de uso de posMe como hacer algo en el sistema. Util para dudas simples de soporte.",
-                "input_schema" => ["type" => "object", "properties" => ["texto" => ["type" => "string"]], "required" => ["texto"]],
+                "description"  => "Busca en el manual de usuario de posMe. Usala cuando el cliente pregunte como se usa algo del sistema o tenga un error que pueda ser por desconocimiento (ej. no sabe anular, no encuentra un reporte, un mensaje de validacion). Explica los pasos con tus palabras, sin copiar el manual completo. Si no hay respuesta, no inventes.",
+                "input_schema" => ["type" => "object", "properties" => ["texto" => ["type" => "string", "description" => "Palabras clave de la duda o del error (ej. 'anular factura', 'abono credito', 'cierre de caja')"]], "required" => ["texto"]],
             ],
             "registrar_dato" => [
                 "name"         => "registrar_dato",
@@ -637,7 +643,9 @@ class core_web_ai_tools
         if ($clienteID <= 0) {
             return [
                 "requiere_verificacion" => true,
-                "instruccion"           => "Pide al cliente su numero de cedula o su codigo de cliente y su nombre completo; luego usa verificar_identidad.",
+                "instruccion"           => $this->nombreRegistrado !== ""
+                    ? "Pide al cliente solo su numero de cedula o su codigo de cliente (ya conoces su nombre, no se lo pidas); luego usa verificar_identidad."
+                    : "Pide al cliente su numero de cedula o su codigo de cliente y su nombre completo; luego usa verificar_identidad.",
             ];
         }
 
@@ -660,15 +668,16 @@ class core_web_ai_tools
             return ["verificado" => false, "instruccion" => "Ya no quedan intentos. Usa derivar_a_humano con motivo 'identidad no verificada'."];
         }
 
-        $documento = trim((string) ($input["identificacion_o_codigo"] ?? ""));
-        $nombre    = trim((string) ($input["nombre_completo"] ?? ""));
-        if ($documento === "" || $nombre === "") {
-            return ["verificado" => false, "instruccion" => "Faltan datos: pide cedula o codigo de cliente y nombre completo."];
+        $registrado = $this->nombreRegistrado !== "";
+        $documento  = trim((string) ($input["identificacion_o_codigo"] ?? ""));
+        $nombre     = trim((string) ($input["nombre_completo"] ?? ""));
+        if ($documento === "" || ($nombre === "" && !$registrado)) {
+            return ["verificado" => false, "instruccion" => $registrado ? "Falta la cedula o el codigo de cliente." : "Faltan datos: pide cedula o codigo de cliente y nombre completo."];
         }
 
         $db    = $this->getConexion();
         $filas = $this->consultar("
-            SELECT cliente_id, nombre
+            SELECT cliente_id, entidad_id, nombre
             FROM ai_v_clientes
             WHERE identificacion = " . $db->escape($documento) . "
                 OR codigo = " . $db->escape($documento) . "
@@ -676,7 +685,11 @@ class core_web_ai_tools
 
         $esperado = preg_replace('/\s+/', ' ', self::normalizar($nombre));
         foreach ($filas as $fila) {
-            if (preg_replace('/\s+/', ' ', self::normalizar(trim((string) $fila["nombre"]))) === $esperado) {
+            // Contacto registrado: basta que la cedula/codigo sea del mismo cliente que escribe (ya identificado por su telefono).
+            // Numero nuevo: la cedula/codigo y el nombre completo deben coincidir.
+            $esElMismo      = $registrado && (int) $fila["entidad_id"] == $this->entityIDCustomer;
+            $nombreCoincide = $nombre !== "" && preg_replace('/\s+/', ' ', self::normalizar(trim((string) $fila["nombre"]))) === $esperado;
+            if ($esElMismo || $nombreCoincide) {
                 $this->aiData["verificado"]        = (int) $fila["cliente_id"];
                 $this->aiData["intentosIdentidad"] = 0;
                 return ["verificado" => true, "instruccion" => "Identidad verificada. Ya puedes usar mi_saldo."];

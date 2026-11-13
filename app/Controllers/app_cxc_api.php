@@ -2684,7 +2684,9 @@ class app_cxc_api extends _BaseController {
 
 		if($respuesta != "")
 		{
-			$resultSend = $this->core_web_whatsap->sendMessageGeneric($companyType,$companyID,$respuesta,$phone,true,"");
+			//Firmado con el nombre del colaborador de la IA, igual que los mensajes de los asesores (se guarda sin firma)
+			$respuestaFirmada = $this->core_web_conversation->getMessageSignature($companyID,$companyType,$this->core_web_conversation->getSignatureNameEmployerAI($companyID),$respuesta);
+			$resultSend = $this->core_web_whatsap->sendMessageGeneric($companyType,$companyID,$respuestaFirmada,$phone,true,"");
 			if(is_array($resultSend) && isset($resultSend["success"]) && $resultSend["success"] === false)
 				log_message('error', '[AgenteIA] No se pudo enviar la respuesta: ' . (string)($resultSend["error"] ?? ''));
 			$this->core_web_conversation->insertAIMessage($companyID,$objCustomer,$respuesta,'mensaje ia');
