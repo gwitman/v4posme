@@ -1919,7 +1919,7 @@ Ruta: Administración del sistema > Actualización desde el servidor posMe (core
 Si la restauración falla o se interrumpe (por ejemplo, se cerró la pestaña), aparece "La restauración no terminó." y la tarjeta **Restauración pendiente** con el último error. Elija:
 - **Continuar restauración**: retoma desde donde quedó. Al terminar se desactiva el modo mantenimiento.
 - **Cancelar y salir de mantenimiento**: detiene la restauración y libera el sistema. La base de datos puede quedar incompleta; en ese caso restaure de nuevo un respaldo completo.
-Notas: mientras la restauración esté pendiente el sistema sigue en modo mantenimiento. Si el error persiste, copie la **Bitácora** y envíela a soporte.
+Notas: mientras la restauración esté pendiente el sistema sigue en modo mantenimiento. Si el error persiste, revise la **Bitácora** y comuníquese con soporte.
 
 ## Despliegue remoto: qué es y quién puede usarlo (administración del sistema)
 Ruta: Administración del sistema > Despliegue remoto. No aparece en el menú: se abre escribiendo core_merge/deploy después de la dirección de posMe.
