@@ -10,7 +10,14 @@
 		<?php 
 		echo helper_reporteGeneralCreateStyle();
 		?>
-		
+
+		<style>
+			/* Imprimir el reporte en orientación horizontal */
+			@page {
+				size: landscape;
+			}
+		</style>
+
 	</head>
 	<body style="font-family:monospace;font-size:smaller;margin:0px 0px 0px 0px"> 
 		
