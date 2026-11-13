@@ -45,7 +45,7 @@ WHERE p.name = 'WHATSAPP_AI_AGENT_STAGE_ATTENDED_ID'
 
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
-SET cp.value = '812'
+SET cp.value = '1522'
 WHERE p.name = 'WHATSAPP_AI_AGENT_EMPLOYEE_ENTITYID'
     AND cp.companyID = 2;
 	
