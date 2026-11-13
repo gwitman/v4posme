@@ -119,6 +119,11 @@ class core_web_conversation{
    public function __construct(){		
          
    }
+   /**
+    * Colaboradores a los que se asigna una conversacion segun la regla del tipo de empresa.
+    * Nunca incluye al colaborador "Asistente IA" (WHATSAPP_AI_AGENT_EMPLOYEE_ENTITYID).
+    * @return array ["employerList" => entityIDs, "typeAsigned" => texto]
+    */
    function getAllEmployer(
 	$companyID,
 	$companyType,
@@ -127,7 +132,47 @@ class core_web_conversation{
 	$conversationIsNew
    )
    {
-	   
+		$result 			= $this->getAllEmployer_ByCompanyType($companyID,$companyType,$phoneNumber,$message,$conversationIsNew);
+		$entityIDEmployerAI = $this->getEntityIDEmployerAI($companyID);
+		if($entityIDEmployerAI > 0 && !empty($result["employerList"]))
+		{
+			$result["employerList"] = array_values(array_filter($result["employerList"], function($entityID) use ($entityIDEmployerAI) {
+				return (int)$entityID != $entityIDEmployerAI;
+			}));
+			if(count($result["employerList"]) == 0)
+				$result["typeAsigned"] = "ninguna";
+		}
+		return $result;
+   }
+
+   /**
+    * entityID del colaborador "Asistente IA" (parametro WHATSAPP_AI_AGENT_EMPLOYEE_ENTITYID); 0 si no existe.
+    * @param int $companyID
+    * @return int
+    */
+   function getEntityIDEmployerAI($companyID)
+   {
+		try
+		{
+			$core_web_parameter = new core_web_parameter();
+			$objParameter 		= $core_web_parameter->getParameter("WHATSAPP_AI_AGENT_EMPLOYEE_ENTITYID",$companyID);
+			return $objParameter ? (int)$objParameter->value : 0;
+		}
+		catch(\Throwable $ex)
+		{
+			return 0;
+		}
+   }
+
+   function getAllEmployer_ByCompanyType(
+	$companyID,
+	$companyType,
+	$phoneNumber,
+	$message,
+	$conversationIsNew
+   )
+   {
+
 	   	$result 				= [];
 		$result["employerList"] = [];
 		$result["typeAsigned"] 	= "";		
@@ -1273,5 +1318,159 @@ class core_web_conversation{
 		
 		return $mensajeFinal;
 	}
+	
+	/**
+	 * Agente de IA de WhatsApp: pasa la conversacion a un humano.
+	 * Asigna colaboradores con la regla actual (getAllEmployer como conversacion nueva) o con el
+	 * colaborador fijo de la skill, deja una nota interna con el resumen y los datos captados,
+	 * marca aiStatus = derivada / aiHandoffOn y notifica al colaborador.
+	 * @param array  $dataSession     Sesion del usuario por defecto del webhook
+	 * @param object $objConversation Conversacion abierta
+	 * @param object $objCustomer     Cliente (entityID, firstName, phoneNumber)
+	 * @param array  $aiResult        motivo, resumen, intent, aiData (resultado de core_web_ai::askWhatsapp)
+	 * @param string $messageForRule  Texto del cliente para la regla de asignacion (palabras clave)
+	 * @return array entityIDs asignados
+	 */
+	function handoffToHuman($dataSession,$objConversation,$objCustomer,$aiResult,$messageForRule)
+	{
+		$companyID 			= (int)$dataSession["user"]->companyID;
+		$companyType 		= $dataSession["company"]->type;
+		$conversationID 	= (int)$objConversation->conversationID;
+		$intent 			= (string)($aiResult["intent"] ?? "");
+		$aiData 			= is_array($aiResult["aiData"] ?? null) ? $aiResult["aiData"] : [];
+		$motivo 			= (string)($aiResult["motivo"] ?? "");
+		$resumen 			= (string)($aiResult["resumen"] ?? "");
+		$employerList 		= [];
+		$typeAsigned 		= "ninguna";
+		
+		//1) Colaborador fijo de la skill o regla actual de asignacion
+		if($intent != "")
+		{
+			$Ai_Skill_Model = new \App\Models\Ai_Skill_Model();
+			$objSkill 		= $Ai_Skill_Model->get_rowByCode($companyID,$intent);
+			if($objSkill && (int)$objSkill->entityIDEmployerHandoff > 0)
+			{
+				$employerList 	= [(int)$objSkill->entityIDEmployerHandoff];
+				$typeAsigned 	= "onlyEmployer";
+			}
+		}
+		if(count($employerList) == 0)
+		{
+			$objListEntityIDEmployer 	= $this->getAllEmployer($companyID,$companyType,$objCustomer->phoneNumber,$messageForRule,true);
+			$employerList 				= $objListEntityIDEmployer["employerList"];
+			$typeAsigned 				= $objListEntityIDEmployer["typeAsigned"];
+		}
+		log_message("error","[handoffToHuman] conversationID=".$conversationID." intent=".$intent." motivo=".$motivo." colaboradores=[".implode(",",$employerList)."]");
+		$this->createEmployerInConversation($dataSession,$conversationID,$employerList,true);
+		$this->categorizeCustomer($dataSession,$companyType,$conversationID,$objCustomer->entityID,$messageForRule,$employerList,true,$typeAsigned);
+		
+		//2) Nota interna con el resumen para el asesor
+		$datos 		= isset($aiData["datos"]) && is_array($aiData["datos"]) ? $aiData["datos"] : [];
+		$nota 		= "🤖 Resumen de la IA";
+		$nota 		.= "\nIntención: ".($intent != "" ? $intent : "sin definir");
+		if($motivo != "")
+			$nota 	.= "\nMotivo: ".$motivo;
+		if($resumen != "")
+			$nota 	.= "\nResumen: ".$resumen;
+		foreach($datos as $campo => $valor)
+			$nota 	.= "\n- ".$campo.": ".$valor;
+		if(!empty($aiData["adjuntos"]) && is_array($aiData["adjuntos"]))
+			$nota 	.= "\nAdjuntos: ".implode(" ",$aiData["adjuntos"]);
+		$this->insertAIMessage($companyID,$objCustomer,$nota,'mensaje interno');
+		
+		//3) Estado de IA (motivo y resumen quedan en aiData para la tarjeta "Agente IA")
+		if($motivo != "")
+			$aiData["motivo"] 	= $motivo;
+		if($resumen != "")
+			$aiData["resumen"] 	= $resumen;
+		$Customer_Conversation_Model = new Customer_Conversation_Model();
+		$Customer_Conversation_Model->update_aiStatus($conversationID,"derivada",[
+			"aiIntent" 		=> $intent != "" ? $intent : NULL,
+			"aiData" 		=> json_encode($aiData,JSON_UNESCAPED_UNICODE),
+			"aiHandoffOn" 	=> helper_getDateTime()
+		]);
+		
+		//4) Notificar al colaborador asignado
+		$urlSend = base_url()."/app_cxc_conversation/edit/entityID/".$objCustomer->entityID;
+		$this->notificationEmployerInConversation(
+			$companyID,
+			$dataSession["user"]->branchID,
+			$companyType,
+			$conversationID,
+			"🤖 *La IA te pasó un caso*\n👤 Cliente: *".$objCustomer->firstName."* ('".$objCustomer->entityID."')\n📌 ".($intent != "" ? $intent : "consulta").($resumen != "" ? "\n📝 _".mb_substr($resumen,0,200)."_" : "")."\n👉 Atiéndelo aquí: 🌐 ".$urlSend,
+			$objCustomer->entityID
+		);
+		return $employerList;
+	}
+	
+	/**
+	 * Agente de IA de WhatsApp: la IA resolvio el caso. Pasa la conversacion a la etapa
+	 * WHATSAPP_AI_AGENT_STAGE_ATTENDED_ID (isInit = 0) para que el proximo mensaje abra una conversacion nueva.
+	 * @param int    $companyID
+	 * @param int    $conversationID
+	 * @param array  $aiData
+	 * @param string $intent
+	 * @return bool
+	 */
+	function markAttendedByAI($companyID,$conversationID,$aiData,$intent)
+	{
+		$core_web_parameter 			= new core_web_parameter();
+		$Customer_Conversation_Model 	= new Customer_Conversation_Model();
+		$stageID 						= (int)$core_web_parameter->getParameter("WHATSAPP_AI_AGENT_STAGE_ATTENDED_ID",$companyID)->value;
+		$data 							= [
+			"aiIntent" 				=> $intent != "" ? $intent : NULL,
+			"aiData" 				=> json_encode(is_array($aiData) ? $aiData : [],JSON_UNESCAPED_UNICODE),
+			"messgeConterNotRead" 	=> 0
+		];
+		if($stageID > 0)
+			$data["statusID"] 		= $stageID;
+		log_message("error","[markAttendedByAI] conversationID=".$conversationID." etapa=".$stageID);
+		return $Customer_Conversation_Model->update_aiStatus($conversationID,"atendida",$data);
+	}
+	
+	/**
+	 * Guarda en la conversacion un mensaje del agente de IA (lado del colaborador "Asistente IA").
+	 * @param int    $companyID
+	 * @param object $objCustomer Cliente (entityID, firstName, phoneNumber)
+	 * @param string $message     Texto
+	 * @param string $summary     'mensaje ia' (enviado al cliente) | 'mensaje interno' (nota para el asesor)
+	 * @return int notificationID
+	 */
+	function insertAIMessage($companyID,$objCustomer,$message,$summary)
+	{
+		$Tag_Model 			= new Tag_Model();
+		$Notification_Model = new Notification_Model();
+		$objTag 			= $Tag_Model->get_rowByName("MENSAJE DE CONVERSACION");
+		if(!$objTag)
+			throw new \Exception("EL TAG 'MENSAJE DE CONVERSACION' NO EXISTE...");
+		
+		$objNotification 							= array();
+		$objNotification["errorID"] 				= 0;
+		$objNotification["from"] 					= "Asistente IA";
+		$objNotification["to"] 						= $objCustomer->firstName;
+		$objNotification["subject"] 				= 'no use';
+		$objNotification["message"] 				= $message;
+		$objNotification["summary"] 				= $summary;
+		$objNotification["title"] 					= 'text';
+		$objNotification["tagID"] 					= $objTag->tagID;
+		$objNotification["createdOn"] 				= helper_getDateTime();
+		$objNotification["isActive"] 				= 1;
+		$objNotification["phoneFrom"] 				= '';
+		$objNotification["phoneTo"] 				= $objCustomer->phoneNumber;
+		$objNotification["programDate"] 			= helper_getDate();
+		$objNotification["programHour"] 			= '00:00';
+		$objNotification["sendOn"] 					= NULL;
+		$objNotification["sendEmailOn"] 			= NULL;
+		$objNotification["sendWhatsappOn"] 			= NULL;
+		$objNotification["addedCalendarGoogle"] 	= 0;
+		$objNotification["quantityOcupation"] 		= 0;
+		$objNotification["quantityDisponible"] 		= 0;
+		$objNotification["googleCalendarEventID"] 	= NULL;
+		$objNotification["isRead"] 					= 1;
+		$objNotification["entityIDSource"] 			= $objCustomer->entityID;
+		$objNotification["entityIDTarget"] 			= $this->getEntityIDEmployerAI($companyID);
+		return $Notification_Model->insert_app_posme($objNotification);
+	}
+
 }
 ?>

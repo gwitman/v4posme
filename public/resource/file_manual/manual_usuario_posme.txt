@@ -62,108 +62,111 @@ INDICE
 56. Ejecutar procesos de CxC: descargar el archivo de créditos para SIN Riesgo
 57. Ver a quién se notificó un mensaje de WhatsApp de un cliente (conversación con cliente)
 58. Ver en la conversación los mensajes que envío por WhatsApp desde el celular de la empresa
-59. Registrar un gasto
-60. Qué contiene el menú CXP
-61. Registrar una retención de proveedor
-62. Crear un proveedor
-63. Registrar una nota de débito de proveedor
-64. Registrar una nota de crédito de proveedor
-65. Qué contiene el menú CAJA
-66. Abrir caja
-67. Cerrar caja (cierre / arqueo)
-68. Ingresos y egresos de caja
-69. Crear o administrar cajas (ADM CAJA)
-70. Registrar una provisión de caja
-71. Registrar la asistencia de un cliente
-72. Qué contiene el menú BANCO
-73. Crear una cuenta bancaria
-74. Crear una chequera
-75. Emitir un cheque
-76. Notas de crédito y débito de banco
-77. Reportes de ventas
-78. Reportes de inventario
-79. Reportes de cuentas por cobrar y cobranza
-80. Ver estadísticas de inmuebles
-81. Ver estadísticas de clientes
-82. Ver el calendario de programación
-83. Programar una tarea o visita en el calendario
-84. Modificar, eliminar o imprimir un evento del calendario
-85. Qué contiene el menú CONTABILIDAD
-86. Configurar los niveles de cuenta
-87. Configurar la naturaleza de las cuentas
-88. Centros de costo
-89. Crear una cuenta contable
-90. Modificar o eliminar una cuenta contable
-91. Configurar monedas
-92. Actualizar el tipo de cambio (herramienta de monedas)
-93. Crear periodos y ciclos contables
-94. Abrir y cerrar periodos contables
-95. Registrar un comprobante contable
-96. Buscar, modificar, imprimir o eliminar un comprobante
-97. Contabilizar documentos
-98. Mayorizar y cerrar un ciclo contable
-99. Configurar los parámetros contables
-100. Indicadores contables
-101. Qué contiene el menú ACTIVOS FIJOS
-102. Crear un activo fijo
-103. Modificar o eliminar un activo fijo
-104. Registrar una entrada de activos
-105. Registrar una salida de activos
-106. Registrar la depreciación de activos
-107. Registrar la valoración de activos
-108. Trasladar piezas entre activos (traslado o transferencia de piezas)
-109. Qué contiene el menú PLANILLA
-110. Crear una planilla de pago
-111. Registrar adelantos a colaboradores
-112. Registrar la liquidación de un colaborador
-113. Registrar un permiso de un colaborador
-114. Qué contiene el menú de colaboradores (RRHH)
-115. Crear un colaborador
-116. Modificar o eliminar un colaborador
-117. Agregar teléfonos y correos de un colaborador
-118. Registrar la asistencia de un colaborador
-119. Ver la ubicación de los colaboradores en el mapa (GPS)
-120. Crear una tarea para un colaborador
-121. Modificar o eliminar una tarea
-122. Ver las tareas en el tablero Kanban
-123. Seguridad: qué contiene el menú SEGURIDAD
-124. Iniciar sesión en posMe
-125. Olvidé mi contraseña (reenviar contraseña)
-126. Cerrar sesión (salir, salgo de posMe)
-127. Cambiar mi contraseña o mi correo (editar perfil)
-128. Crear un usuario (creo un usuario nuevo)
-129. Modificar o eliminar un usuario
-130. Crear un rol
-131. Marcar un rol como administrador de compañía
-132. Permisos por pantalla de un rol (ver, crear, editar, eliminar)
-133. Autorizaciones de un rol
-134. Dar acceso al asistente Jordania (Asistente IA)
-135. Sucursales
-136. Notificaciones y recordatorios (CONFIG. NOTI)
-137. Ver quién entró: sesiones y actividad de un usuario (LOG SESSION)
-138. Actualizar (uso de soporte)
-139. Actualizar posMe desde el servidor central: qué es y quién puede usarlo
-140. Actualizar posMe desde el servidor central: configurar la conexión
-141. Actualizar posMe desde el servidor central: modo Local o Nube (qué se actualiza)
-142. Actualizar posMe desde el servidor central: iniciar la actualización
-143. Actualizar posMe desde el servidor central: etapas, revisar cambios y cancelar
-144. Actualizar posMe desde el servidor central: modo mantenimiento
-145. Actualizar posMe desde el servidor central: revertir la actualización
-146. Actualizar posMe desde el servidor central: preparar el servidor central (administrador)
-147. Actualizar posMe desde el servidor central: advertencias
-148. Despliegue remoto: qué es y quién puede usarlo (administración del sistema)
-149. Despliegue remoto: preparar la consola y el agente (primera vez)
-150. Despliegue remoto: elegir la compañía y configurar la conexión
-151. Despliegue remoto: subir y validar el paquete ZIP (actualizar archivos)
-152. Despliegue remoto: sincronizar la estructura de la base de datos
-153. Despliegue remoto: sincronizar los datos de configuración
-154. Despliegue remoto: ejecutar la sincronización, ver el avance y revertir
-155. Despliegue remoto: errores frecuentes
-156. Despliegue remoto: limpieza de servidor (liberar espacio e inodos)
-157. Despliegue remoto: editar la configuración (app/Config)
-158. Despliegue remoto: cargar los logos
-159. Parámetros de la empresa
-160. Soporte
+59. Agente de IA de WhatsApp: qué hace y cuándo pasa la conversación a una persona
+60. Ver qué hizo el agente de IA en una conversación (tarjeta Agente IA)
+61. Tomar una conversación de la IA o marcarla atendida por IA
+62. Registrar un gasto
+63. Qué contiene el menú CXP
+64. Registrar una retención de proveedor
+65. Crear un proveedor
+66. Registrar una nota de débito de proveedor
+67. Registrar una nota de crédito de proveedor
+68. Qué contiene el menú CAJA
+69. Abrir caja
+70. Cerrar caja (cierre / arqueo)
+71. Ingresos y egresos de caja
+72. Crear o administrar cajas (ADM CAJA)
+73. Registrar una provisión de caja
+74. Registrar la asistencia de un cliente
+75. Qué contiene el menú BANCO
+76. Crear una cuenta bancaria
+77. Crear una chequera
+78. Emitir un cheque
+79. Notas de crédito y débito de banco
+80. Reportes de ventas
+81. Reportes de inventario
+82. Reportes de cuentas por cobrar y cobranza
+83. Ver estadísticas de inmuebles
+84. Ver estadísticas de clientes
+85. Ver el calendario de programación
+86. Programar una tarea o visita en el calendario
+87. Modificar, eliminar o imprimir un evento del calendario
+88. Qué contiene el menú CONTABILIDAD
+89. Configurar los niveles de cuenta
+90. Configurar la naturaleza de las cuentas
+91. Centros de costo
+92. Crear una cuenta contable
+93. Modificar o eliminar una cuenta contable
+94. Configurar monedas
+95. Actualizar el tipo de cambio (herramienta de monedas)
+96. Crear periodos y ciclos contables
+97. Abrir y cerrar periodos contables
+98. Registrar un comprobante contable
+99. Buscar, modificar, imprimir o eliminar un comprobante
+100. Contabilizar documentos
+101. Mayorizar y cerrar un ciclo contable
+102. Configurar los parámetros contables
+103. Indicadores contables
+104. Qué contiene el menú ACTIVOS FIJOS
+105. Crear un activo fijo
+106. Modificar o eliminar un activo fijo
+107. Registrar una entrada de activos
+108. Registrar una salida de activos
+109. Registrar la depreciación de activos
+110. Registrar la valoración de activos
+111. Trasladar piezas entre activos (traslado o transferencia de piezas)
+112. Qué contiene el menú PLANILLA
+113. Crear una planilla de pago
+114. Registrar adelantos a colaboradores
+115. Registrar la liquidación de un colaborador
+116. Registrar un permiso de un colaborador
+117. Qué contiene el menú de colaboradores (RRHH)
+118. Crear un colaborador
+119. Modificar o eliminar un colaborador
+120. Agregar teléfonos y correos de un colaborador
+121. Registrar la asistencia de un colaborador
+122. Ver la ubicación de los colaboradores en el mapa (GPS)
+123. Crear una tarea para un colaborador
+124. Modificar o eliminar una tarea
+125. Ver las tareas en el tablero Kanban
+126. Seguridad: qué contiene el menú SEGURIDAD
+127. Iniciar sesión en posMe
+128. Olvidé mi contraseña (reenviar contraseña)
+129. Cerrar sesión (salir, salgo de posMe)
+130. Cambiar mi contraseña o mi correo (editar perfil)
+131. Crear un usuario (creo un usuario nuevo)
+132. Modificar o eliminar un usuario
+133. Crear un rol
+134. Marcar un rol como administrador de compañía
+135. Permisos por pantalla de un rol (ver, crear, editar, eliminar)
+136. Autorizaciones de un rol
+137. Dar acceso al asistente Jordania (Asistente IA)
+138. Sucursales
+139. Notificaciones y recordatorios (CONFIG. NOTI)
+140. Ver quién entró: sesiones y actividad de un usuario (LOG SESSION)
+141. Actualizar (uso de soporte)
+142. Actualizar posMe desde el servidor central: qué es y quién puede usarlo
+143. Actualizar posMe desde el servidor central: configurar la conexión
+144. Actualizar posMe desde el servidor central: modo Local o Nube (qué se actualiza)
+145. Actualizar posMe desde el servidor central: iniciar la actualización
+146. Actualizar posMe desde el servidor central: etapas, revisar cambios y cancelar
+147. Actualizar posMe desde el servidor central: modo mantenimiento
+148. Actualizar posMe desde el servidor central: revertir la actualización
+149. Actualizar posMe desde el servidor central: preparar el servidor central (administrador)
+150. Actualizar posMe desde el servidor central: advertencias
+151. Despliegue remoto: qué es y quién puede usarlo (administración del sistema)
+152. Despliegue remoto: preparar la consola y el agente (primera vez)
+153. Despliegue remoto: elegir la compañía y configurar la conexión
+154. Despliegue remoto: subir y validar el paquete ZIP (actualizar archivos)
+155. Despliegue remoto: sincronizar la estructura de la base de datos
+156. Despliegue remoto: sincronizar los datos de configuración
+157. Despliegue remoto: ejecutar la sincronización, ver el avance y revertir
+158. Despliegue remoto: errores frecuentes
+159. Despliegue remoto: limpieza de servidor (liberar espacio e inodos)
+160. Despliegue remoto: editar la configuración (app/Config)
+161. Despliegue remoto: cargar los logos
+162. Parámetros de la empresa
+163. Soporte
 
 1. CÓMO FUNCIONAN LAS PANTALLAS DE POSME (LISTAS Y REGISTROS)
 ----------------------------------------------------------------------
@@ -909,7 +912,9 @@ Cómo reconocer cada mensaje en el Chat:
   * Colaborador: azul, a la derecha.
   * Mensaje interno: amarillo.
   * Sistema: gris, centrado, con borde punteado y la etiqueta Sistema (sin foto).
+  * Agente de IA: morado, con el encabezado 🤖 IA (si su empresa usa el agente de IA de WhatsApp).
 Notas:
+  * Mientras el agente de IA atiende al cliente (estado IA atendiendo), la conversación no se asigna ni se avisa a los colaboradores.
   * El mensaje de sistema no se envía al cliente por WhatsApp; es solo informativo.
   * Solo aparece si realmente se intentó enviar el aviso. Si no hay un colaborador vigente o este no tiene teléfono principal, no se registra.
   * Sirve para saber a quién y a qué teléfono se avisó de cada mensaje que entra.
@@ -929,7 +934,61 @@ Restricciones: no se guardan los mensajes enviados a su propio número, ni los d
 Notas: en Evolution API el webhook de la instancia debe tener activado el evento MESSAGES_UPSERT (lo configura soporte o el administrador).
 Ver también: Ver a quién se notificó un mensaje de WhatsApp de un cliente (conversación con cliente).
 
-59. REGISTRAR UN GASTO
+59. AGENTE DE IA DE WHATSAPP: QUÉ HACE Y CUÁNDO PASA LA CONVERSACIÓN A UNA PERSONA
+----------------------------------------------------------------------
+Ruta: conversaciones con clientes por WhatsApp (Evolution API); se activa según la configuración de su empresa.
+Cuando está activo, una inteligencia artificial contesta al cliente por WhatsApp:
+  1. Entiende qué necesita el cliente (su intención).
+  2. Le pide, con tono natural, los datos que hacen falta.
+  3. Cuando los tiene, pasa (deriva) la conversación a una persona, asignada con la regla de siempre, y le avisa al cliente con un mensaje.
+Qué atiende depende del tipo de negocio. En posMe: consulta de saldo de cuentas por cobrar (solo a un cliente con identidad verificada), soporte técnico (pide datos y una captura de pantalla) y prospectos de venta (toma sus datos).
+Estados de la IA en una conversación:
+  * IA atendiendo: la IA contesta. Mientras tanto la conversación no se asigna ni se avisa a los colaboradores.
+  * IA derivó a un asesor: ya se pasó a una persona. Según la configuración de su empresa, la IA puede seguir contestando mientras ningún colaborador escriba.
+  * Atiende un asesor: un colaborador escribió o tomó la conversación; la IA deja de responder.
+  * Atendida por IA: la IA resolvió el caso.
+También se pasa a una persona si el cliente envía un segundo audio, si la IA falla o si la IA llega a su límite de respuestas. Los stickers sin texto no se contestan.
+Al cerrar la conversación o marcarla atendida por IA, la próxima conversación nueva del cliente la vuelve a atender la IA.
+Notas: si el cliente le pregunta directamente, la IA no afirma ser una persona.
+Ver también: Ver qué hizo el agente de IA en una conversación (tarjeta Agente IA); Tomar una conversación de la IA o marcarla atendida por IA.
+
+60. VER QUÉ HIZO EL AGENTE DE IA EN UNA CONVERSACIÓN (TARJETA AGENTE IA)
+----------------------------------------------------------------------
+Ruta: lista de conversaciones > abra la conversación del cliente > pestaña Chat.
+En la lista de conversaciones:
+  * Etiqueta morada 🤖 IA atendiendo: la IA está contestando al cliente.
+  * Etiqueta morada clara 🤖 IA derivó: la IA ya pasó la conversación a una persona.
+  * Al pasar el mouse sobre la etiqueta se ve la intención del cliente (por ejemplo, soporte o consulta de saldo).
+En el Chat, arriba de los mensajes, la tarjeta 🤖 Agente IA muestra:
+  * El estado: IA atendiendo, IA derivó a un asesor, Atiende un asesor o Atendida por IA.
+  * La intención del cliente y, si aplica, Identidad verificada.
+  * Resumen del caso y Motivo del traspaso (por qué se pasó a una persona).
+  * Los datos que la IA le pidió al cliente, uno por línea.
+  * Adjuntos: enlaces numerados (por ejemplo, la captura que envió el cliente); se abren en otra pestaña.
+Los mensajes que escribió la IA aparecen en el Chat en burbuja morada con el encabezado 🤖 IA.
+Notas: la tarjeta solo aparece en las conversaciones que atendió el agente de IA.
+Ver también: Tomar una conversación de la IA o marcarla atendida por IA; Agente de IA de WhatsApp: qué hace y cuándo pasa la conversación a una persona.
+
+61. TOMAR UNA CONVERSACIÓN DE LA IA O MARCARLA ATENDIDA POR IA
+----------------------------------------------------------------------
+Ruta: abra la conversación del cliente > pestaña Chat > tarjeta 🤖 Agente IA.
+Los botones solo aparecen si el estado es IA atendiendo o IA derivó a un asesor.
+Para atender usted al cliente:
+  1. Presione Tomar conversación.
+  2. En la ventana de confirmación ("La IA dejará de contestar en esta conversación y la atenderás tú.") presione Confirmar.
+  3. El estado cambia a Atiende un asesor y la IA ya no responde en esta conversación.
+Para cerrar un caso que la IA resolvió:
+  1. Presione Marcar atendida por IA.
+  2. En la ventana de confirmación presione Confirmar. La conversación se cierra como atendida por la IA.
+  3. El próximo mensaje del cliente abre una conversación nueva que atenderá la IA.
+Para no hacer nada, presione Cancelar en la ventana.
+Notas:
+  * Si usted escribe al cliente desde la conversación, la IA también deja de responder, aunque no haya presionado Tomar conversación.
+  * Si aparece un aviso de configuración al marcar atendida por IA, falta configurar la etapa de "atendida por IA" de su empresa; contacte a soporte.
+  * La opción Cerrar todas las conversaciones de la lista no las marca como atendidas por IA.
+Ver también: Ver qué hizo el agente de IA en una conversación (tarjeta Agente IA).
+
+62. REGISTRAR UN GASTO
 ----------------------------------------------------------------------
 Ruta: Menú > CXP > GASTOS. La lista se llama LISTA DE GASTOS.
   1. Presione Nuevo. Se abre Gasto:#.
@@ -945,7 +1004,7 @@ Al pasar Estado a APLICADO en la edición, si eligió Factura el Total se abona 
 Para modificarlo, use Editar. Arriba: Nuevo, Atras, Eliminar, Imprimir y Guardar; Archivos adjunta documentos. Un gasto aplicado con proveedor solo se elimina si es el último de ese proveedor: "SOLO PUEDE ELIMINAR EL ULTIMO GASTO DEL CLIENTE...".
 Ver también: Crear un proveedor.
 
-60. QUÉ CONTIENE EL MENÚ CXP
+63. QUÉ CONTIENE EL MENÚ CXP
 ----------------------------------------------------------------------
 Ruta: Menú > CXP (cuentas por pagar).
   * RETENCION: retenciones aplicadas a facturas de proveedores.
@@ -958,7 +1017,7 @@ Buscar en la lista: en RETENCION, NOTA D. DEBITO, NOTA D. CREDITO y GASTOS escri
 Notas: en el teléfono el botón Guardar está en la barra inferior y los botones Buscar abren la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol.
 Ver también: Registrar una retención de proveedor, Crear un proveedor, Registrar una nota de débito de proveedor, Registrar una nota de crédito de proveedor, Registrar un gasto.
 
-61. REGISTRAR UNA RETENCIÓN DE PROVEEDOR
+64. REGISTRAR UNA RETENCIÓN DE PROVEEDOR
 ----------------------------------------------------------------------
 Ruta: Menú > CXP > RETENCION. La lista se llama LISTA DE RETENCIONES DE PROVEEDORES.
   1. Presione Nuevo. Se abre Retencion:#.
@@ -971,7 +1030,7 @@ Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuev
 Notas: la retención no cambia el saldo del proveedor. Al crearla solo está disponible el estado inicial; los demás estados se eligen en la edición.
 Ver también: Qué contiene el menú CXP.
 
-62. CREAR UN PROVEEDOR
+65. CREAR UN PROVEEDOR
 ----------------------------------------------------------------------
 Ruta: Menú > CXP > PROVEEDORES. La lista se llama LISTA DE PROVEEDORES.
   1. Presione Nuevo.
@@ -984,7 +1043,7 @@ Si no agrega una línea de crédito, se crea una con los valores predeterminados
 Para modificarlo, selecciónelo en la lista y presione Editar. Arriba tiene Atras, Eliminar y Guardar. En CXC Lineas. aparece también Editar, y en Mas > Archivos puede adjuntar documentos. El proveedor predeterminado del sistema no se elimina: "No es posible eliminar el proveedor, edite el nombre".
 Ver también: Registrar un gasto.
 
-63. REGISTRAR UNA NOTA DE DÉBITO DE PROVEEDOR
+66. REGISTRAR UNA NOTA DE DÉBITO DE PROVEEDOR
 ----------------------------------------------------------------------
 Ruta: Menú > CXP > NOTA D. DEBITO. La lista se llama LISTA DE NOTAS DE DEBITO DE PROVEEDORES.
   1. Presione Nuevo. Se abre Nota de débito:#.
@@ -997,7 +1056,7 @@ Mensajes de validación: "Establecer Fecha al Documento", "El monto no puede ser
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuevo, Atras, Eliminar, Imprimir y Guardar. En Mas > Archivos puede adjuntar documentos.
 Ver también: Registrar una nota de crédito de proveedor, Crear un proveedor.
 
-64. REGISTRAR UNA NOTA DE CRÉDITO DE PROVEEDOR
+67. REGISTRAR UNA NOTA DE CRÉDITO DE PROVEEDOR
 ----------------------------------------------------------------------
 Ruta: Menú > CXP > NOTA D. CREDITO. La lista se llama LISTA DE NOTAS DE CREDITO DE PROVEEDORES.
   1. Presione Nuevo. Se abre Nota de crédito:#.
@@ -1010,7 +1069,7 @@ Mensajes de validación: "Establecer Fecha al Documento", "Debe ingresar un mont
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuevo, Atras, Eliminar, Imprimir y Guardar. En Mas > Archivos puede adjuntar documentos.
 Ver también: Registrar una nota de débito de proveedor, Crear un proveedor.
 
-65. QUÉ CONTIENE EL MENÚ CAJA
+68. QUÉ CONTIENE EL MENÚ CAJA
 ----------------------------------------------------------------------
 Ruta: Menú > CAJA.
 Entre otras, el menú CAJA tiene estas opciones:
@@ -1026,7 +1085,7 @@ Buscar en la lista:
 Notas: en el teléfono el botón Guardar está en la barra inferior. Lo que ve cada usuario depende de los permisos de su rol.
 Ver también: Abrir caja, Cerrar caja (cierre / arqueo), Ingresos y egresos de caja.
 
-66. ABRIR CAJA
+69. ABRIR CAJA
 ----------------------------------------------------------------------
 Ruta: Menú > CAJA > ABRIR. La lista se llama LISTA DE APERTURA A CAJA.
   1. Presione Nuevo. Se abre APERTURA:#.
@@ -1038,7 +1097,7 @@ Mensajes de validación: "Establecer Fecha al Documento" y "El monto no puede se
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuevo, Atras, Archivos, Imprimir, Eliminar y Guardar. Eliminar pide confirmar "Desea eliminar este Registro...".
 Ver también: Cerrar caja (cierre / arqueo).
 
-67. CERRAR CAJA (CIERRE / ARQUEO)
+70. CERRAR CAJA (CIERRE / ARQUEO)
 ----------------------------------------------------------------------
 Ruta: Menú > CAJA > CERRAR. La lista se llama LISTA DE CIERRE DE CAJA.
   1. Presione Nuevo. Se abre CIERRE:#.
@@ -1051,7 +1110,7 @@ Para modificarlo, selecciónelo en la lista y presione Editar. Arriba tiene Nuev
 Para revisar lo cobrado use CAJA > REPORTES (abonos, resumen de abonos, cierre de operaciones).
 Ver también: Abrir caja.
 
-68. INGRESOS Y EGRESOS DE CAJA
+71. INGRESOS Y EGRESOS DE CAJA
 ----------------------------------------------------------------------
 Ruta: Menú > CAJA > ING A CAJA o CAJA > EGS A CAJA. Las listas se llaman LISTA DE INGRESOS A CAJA y LISTA DE EGRESOS A CAJA.
   1. Presione Nuevo. Se abre INGRESO:# o EGRESO:#.
@@ -1064,7 +1123,7 @@ Ruta: Menú > CAJA > ING A CAJA o CAJA > EGS A CAJA. Las listas se llaman LISTA 
 Mensajes de validación: "Establecer Fecha al Documento" y "El monto no puede ser 0".
 Para modificarlo, selecciónelo en la lista y presione Editar. Arriba tiene Nuevo, Atras, Archivos, Imprimir, Eliminar y Guardar. Eliminar pide confirmar "Desea eliminar este Registro...".
 
-69. CREAR O ADMINISTRAR CAJAS (ADM CAJA)
+72. CREAR O ADMINISTRAR CAJAS (ADM CAJA)
 ----------------------------------------------------------------------
 Ruta: Menú > CAJA > ADM CAJA. La lista se llama LISTA DE CAJAS.
   1. Presione Nuevo. Se abre CAJA: #.
@@ -1074,7 +1133,7 @@ Mensajes de validación: "Nombre de la caja no puede estar vacío" y "Descripci�
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuevo, Atras, Eliminar y Guardar. Eliminar pide confirmar "Desea eliminar este Registro...".
 Para encontrar una caja escriba en Buscar caja…: la lista se filtra mientras escribe.
 
-70. REGISTRAR UNA PROVISIÓN DE CAJA
+73. REGISTRAR UNA PROVISIÓN DE CAJA
 ----------------------------------------------------------------------
 Ruta: Menú > CAJA > PROVISION. La lista se llama LISTA DE PROVISIONES.
   1. Presione Nuevo. Se abre PROVISION:#.
@@ -1090,7 +1149,7 @@ Mensajes de validación:
   * "El Documento no puede tener mas de un item" / "El Documento ya esta agregado".
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Atras, Archivos, Eliminar y Guardar. En la edición los campos se llaman Cliente Ref. e ID Cliente Ref., y además se muestra Cliente.
 
-71. REGISTRAR LA ASISTENCIA DE UN CLIENTE
+74. REGISTRAR LA ASISTENCIA DE UN CLIENTE
 ----------------------------------------------------------------------
 Ruta: Menú > CAJA > ASISTENCIA. La lista se llama LISTA DE ASISTENCIA.
   1. Presione Nuevo. Se abre ASISTENCIA:#.
@@ -1104,7 +1163,7 @@ Mensajes:
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuevo, Nuevo e Imprimir, Atras, el menú Imprimir (Imprimir preview e Imprimir direct), Eliminar y Guardar. En la edición no aparece Huella.
 Ver también: Registrar la asistencia de un colaborador.
 
-72. QUÉ CONTIENE EL MENÚ BANCO
+75. QUÉ CONTIENE EL MENÚ BANCO
 ----------------------------------------------------------------------
 Ruta: Menú > BANCO.
   * CUENT. BANK: cuentas bancarias.
@@ -1119,7 +1178,7 @@ Buscar en la lista:
 Notas: en el teléfono el botón Guardar está en la barra inferior y los botones Buscar abren la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol.
 Ver también: Crear una cuenta bancaria, Crear una chequera, Emitir un cheque, Notas de crédito y débito de banco.
 
-73. CREAR UNA CUENTA BANCARIA
+76. CREAR UNA CUENTA BANCARIA
 ----------------------------------------------------------------------
 Ruta: Menú > BANCO > CUENT. BANK. La lista se llama LISTA DE BANCOS.
   1. Presione Nuevo. Se abre Formulario de Datos.
@@ -1132,7 +1191,7 @@ Mensajes de validación: "El nombre es requerido", "La moneda es requerida" y "E
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Atras, Eliminar y Guardar. Eliminar pide confirmar "Desea eliminar este Registro...".
 Ver también: Crear una chequera.
 
-74. CREAR UNA CHEQUERA
+77. CREAR UNA CHEQUERA
 ----------------------------------------------------------------------
 Ruta: Menú > BANCO > CHEQUERA. La lista se llama LISTA DE CHEQUERAS.
   1. Presione Nuevo. Se abre CHEQUERA:#.
@@ -1146,7 +1205,7 @@ Mensajes de validación:
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuevo, Atras, Eliminar y Guardar. Eliminar pide confirmar "Desea eliminar este Registro...".
 Ver también: Emitir un cheque.
 
-75. EMITIR UN CHEQUE
+78. EMITIR UN CHEQUE
 ----------------------------------------------------------------------
 Ruta: Menú > BANCO > EMITIR CHEQUE. La lista se llama LISTA DE EMISION DE CHEQUE.
   1. Presione Nuevo. Se abre Emision De Cheque:#.
@@ -1162,7 +1221,7 @@ Mensajes de validación:
 Para modificarlo, selecciónelo en la lista y presione Editar. Arriba tiene Nuevo, Atras, Archivos, Imprimir, Eliminar y Guardar. Eliminar pide confirmar "Desea eliminar este Registro...".
 Ver también: Crear una chequera.
 
-76. NOTAS DE CRÉDITO Y DÉBITO DE BANCO
+79. NOTAS DE CRÉDITO Y DÉBITO DE BANCO
 ----------------------------------------------------------------------
 Ruta: Menú > BANCO > BANK NC o BANCO > BANK ND. Las listas se llaman LISTA DE NOTAS DE CREDITO DE BANCO y LISTA DE NOTAS DE DEBITO DE BANCO.
   1. Presione Nuevo. Se abre Nota de Credito:# o Nota de Debito:#.
@@ -1174,7 +1233,7 @@ Mensajes de validación: "Ingrese la Fecha", "El monto no puede ser 0" y "Selecc
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Nuevo, Atras, Archivos, Imprimir, Eliminar y Guardar. Eliminar pide confirmar "Desea eliminar este Registro...".
 Ver también: Crear una cuenta bancaria.
 
-77. REPORTES DE VENTAS
+80. REPORTES DE VENTAS
 ----------------------------------------------------------------------
 Ruta: Menú > VENTAS > REPORTES (también FACTURACION > REPORTES).
   1. Elija el reporte: detalle de ventas, resumen de ventas, ventas por cliente, utilidad, etc.
@@ -1183,19 +1242,19 @@ Ruta: Menú > VENTAS > REPORTES (también FACTURACION > REPORTES).
 También puede preguntarle a Jordania: "¿Cuánto vendí ayer?" o "¿Cuáles son los productos más vendidos este mes?".
 Ver también: Crear un reporte con el Constructor de Reportes (Builder Report).
 
-78. REPORTES DE INVENTARIO
+81. REPORTES DE INVENTARIO
 ----------------------------------------------------------------------
 Ruta: Menú > INVENTARIO > REPORTES.
 Lista de productos, existencias por bodega, kardex, compras, productos por transacción.
 Ver también: Crear un reporte con el Constructor de Reportes (Builder Report).
 
-79. REPORTES DE CUENTAS POR COBRAR Y COBRANZA
+82. REPORTES DE CUENTAS POR COBRAR Y COBRANZA
 ----------------------------------------------------------------------
 Ruta: Menú > CXC > REPORTES y COBRANZA > REPORTES.
 Cartera de clientes, documentos de crédito, pagos, estado de cuenta, clientes con mora.
 Ver también: Asignar clientes a un gestor de cobranza; Crear un reporte con el Constructor de Reportes (Builder Report).
 
-80. VER ESTADÍSTICAS DE INMUEBLES
+83. VER ESTADÍSTICAS DE INMUEBLES
 ----------------------------------------------------------------------
 Ruta: Menú > ESTADISTICA > INMUEBLE.
   1. Entre a ESTADISTICA > INMUEBLE. Se abre Estadísticas de inmuebles, un tablero de Google Data Studio con el comportamiento de las propiedades.
@@ -1204,7 +1263,7 @@ Ruta: Menú > ESTADISTICA > INMUEBLE.
 Notas: el tablero se carga desde internet; si no se muestra, revise su conexión o use Abrir en pestaña nueva.
 Ver también: Ver estadísticas de clientes.
 
-81. VER ESTADÍSTICAS DE CLIENTES
+84. VER ESTADÍSTICAS DE CLIENTES
 ----------------------------------------------------------------------
 Ruta: Menú > ESTADISTICA > CLIENTES.
 La pantalla Estadísticas de clientes muestra fuentes de contacto, intereses, agentes y cierres de clientes en un rango de fechas.
@@ -1219,7 +1278,7 @@ Mensajes al filtrar:
 Notas: para entrar a esta pantalla su rol necesita acceso a ESTADISTICA > INMUEBLE.
 Ver también: Ver estadísticas de inmuebles.
 
-82. VER EL CALENDARIO DE PROGRAMACIÓN
+85. VER EL CALENDARIO DE PROGRAMACIÓN
 ----------------------------------------------------------------------
 Ruta: Menú > CALENDARIO > PROGRAMACION.
 La pantalla Programación muestra en un calendario las tareas, visitas y citas programadas, y además eventos automáticos de documentos: facturas, órdenes de taller (fecha de siguiente visita) y abonos.
@@ -1231,7 +1290,7 @@ Eventos automáticos: al hacer clic en una factura, orden de taller o abono se a
 Notas: qué facturas aparecen (registradas o aplicadas, con o sin hora) depende de la configuración de su empresa.
 Ver también: Programar una tarea o visita en el calendario; Modificar, eliminar o imprimir un evento del calendario.
 
-83. PROGRAMAR UNA TAREA O VISITA EN EL CALENDARIO
+86. PROGRAMAR UNA TAREA O VISITA EN EL CALENDARIO
 ----------------------------------------------------------------------
 Ruta: Menú > CALENDARIO > PROGRAMACION.
 Sirve para agendar una tarea, visita, cita o recordatorio.
@@ -1247,7 +1306,7 @@ Mensajes de validación (debajo de cada campo):
   * "Debe seleccionar una etiqueta."
 Ver también: Modificar, eliminar o imprimir un evento del calendario, Crear una tarea para un colaborador.
 
-84. MODIFICAR, ELIMINAR O IMPRIMIR UN EVENTO DEL CALENDARIO
+87. MODIFICAR, ELIMINAR O IMPRIMIR UN EVENTO DEL CALENDARIO
 ----------------------------------------------------------------------
 Ruta: Menú > CALENDARIO > PROGRAMACION.
 Modificar una programación:
@@ -1263,7 +1322,7 @@ Imprimir:
 Notas: Eliminar e Imprimir solo aparecen al editar una programación existente. Si la programación ya no existe aparece "No se encontró la programación seleccionada".
 Ver también: Ver el calendario de programación.
 
-85. QUÉ CONTIENE EL MENÚ CONTABILIDAD
+88. QUÉ CONTIENE EL MENÚ CONTABILIDAD
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD.
 El menú CONTABILIDAD agrupa las opciones para llevar la contabilidad de la empresa:
@@ -1280,7 +1339,7 @@ El menú CONTABILIDAD agrupa las opciones para llevar la contabilidad de la empr
 Orden recomendado al empezar: niveles, naturaleza, centros de costo, monedas, cuentas, periodos y ciclos; después comprobantes y procesos.
 Notas: en el teléfono el botón Guardar está en la barra inferior de la pantalla. Lo que ve cada usuario depende de los permisos de su rol.
 
-86. CONFIGURAR LOS NIVELES DE CUENTA
+89. CONFIGURAR LOS NIVELES DE CUENTA
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > NIVEL DE CUENTA.
 El nivel define cómo se escriben los códigos de las cuentas (por ejemplo 1, 1-01, 1-01-001).
@@ -1295,7 +1354,7 @@ El nivel define cómo se escriben los códigos de las cuentas (por ejemplo 1, 1-
 Para modificarlo ábralo en la lista (Nivel de cuenta); para darlo de baja presione Eliminar.
 Ver también: Crear una cuenta contable.
 
-87. CONFIGURAR LA NATURALEZA DE LAS CUENTAS
+90. CONFIGURAR LA NATURALEZA DE LAS CUENTAS
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > NATURALEZA.
 La naturaleza indica si la cuenta aumenta con el débito (deudora, D: activos, costos, gastos) o con el crédito (acreedora, C: pasivos, capital, ingresos).
@@ -1304,7 +1363,7 @@ La naturaleza indica si la cuenta aumenta con el débito (deudora, D: activos, c
   3. Presione Guardar.
 Para modificarla ábrala en la lista (Naturaleza de cuenta); para darla de baja presione Eliminar.
 
-88. CENTROS DE COSTO
+91. CENTROS DE COSTO
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > CENTRO DE COSTO.
 Los centros de costo permiten separar los movimientos por área, sucursal o proyecto.
@@ -1314,7 +1373,7 @@ Los centros de costo permiten separar los movimientos por área, sucursal o proy
 Para modificarlo ábralo en la lista (Centro de costo); para darlo de baja presione Eliminar.
 El centro de costo se asigna a la cuenta (campo Centro de costo) y a cada línea del comprobante (columna CC).
 
-89. CREAR UNA CUENTA CONTABLE
+92. CREAR UNA CUENTA CONTABLE
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > CUENTAS.
   1. En CATALOGO DE CUENTAS presione Nuevo. Se abre Nueva cuenta contable.
@@ -1328,7 +1387,7 @@ Restricciones:
   * Es operativa debe coincidir con lo definido en el nivel; si no, "OPERATIVIDAD DE LA CUENTA NO ES VALIDA".
 Ver también: Configurar los niveles de cuenta.
 
-90. MODIFICAR O ELIMINAR UNA CUENTA CONTABLE
+93. MODIFICAR O ELIMINAR UNA CUENTA CONTABLE
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > CUENTAS.
   1. Busque la cuenta con Buscar cuenta… y ábrala. Se abre Cuenta contable.
@@ -1337,7 +1396,7 @@ Ruta: Menú > CONTABILIDAD > CUENTAS.
   4. Para darla de baja presione Eliminar y confirme.
 Restricciones: no se puede eliminar una cuenta que tiene subcuentas ("ELIMINAR PRIMERAMENTE LAS CUENTAS DE MAS BAJO NIVEL") ni una cuenta con saldo o movimientos. Si su permiso es Propios, solo puede eliminar las cuentas que usted creó.
 
-91. CONFIGURAR MONEDAS
+94. CONFIGURAR MONEDAS
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > MONEDAS.
   1. En MONEDAS presione Nuevo. Se abre Nueva moneda.
@@ -1347,7 +1406,7 @@ Para cambiar el símbolo abra la moneda en la lista y presione Guardar; para qui
 Botones de la lista: Herramienta (abre la herramienta de tipo de cambio) y Archivos (subir el archivo de tasas de cambio en la ventana Documentos).
 Ver también: Actualizar el tipo de cambio (herramienta de monedas); Adjuntar, subir o ver archivos de un documento (botón Archivos).
 
-92. ACTUALIZAR EL TIPO DE CAMBIO (HERRAMIENTA DE MONEDAS)
+95. ACTUALIZAR EL TIPO DE CAMBIO (HERRAMIENTA DE MONEDAS)
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > MONEDAS > Herramienta.
 Se abre Herramientas de monedas con tres tarjetas:
@@ -1357,7 +1416,7 @@ Se abre Herramientas de monedas con tres tarjetas:
 También puede descargar el tipo de cambio del BCN en CONTABILIDAD > PROCESOS, tarjeta Tipo de cambio: elija Periodo y Ciclo y presione Actualizar tipo de cambio (requiere internet y que el servicio esté configurado para su empresa).
 Notas: los comprobantes necesitan tipo de cambio en su fecha.
 
-93. CREAR PERIODOS Y CICLOS CONTABLES
+96. CREAR PERIODOS Y CICLOS CONTABLES
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > PERIODOS.
 Un periodo es normalmente un año contable y se divide en ciclos (normalmente meses).
@@ -1372,7 +1431,7 @@ Restricciones:
   * Cada ciclo debe tener estado, fecha inicial y fecha final, quedar dentro de las fechas del periodo y no solaparse con otro ciclo.
   * No se puede quitar un ciclo que tiene comprobantes o que está cerrado, ni eliminar un periodo que tiene comprobantes.
 
-94. ABRIR Y CERRAR PERIODOS CONTABLES
+97. ABRIR Y CERRAR PERIODOS CONTABLES
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > PERIODOS y CONTABILIDAD > PROCESOS.
   * Abrir un periodo: créelo en PERIODOS con sus ciclos en estado abierto (ver Crear periodos y ciclos contables).
@@ -1381,7 +1440,7 @@ Ruta: Menú > CONTABILIDAD > PERIODOS y CONTABILIDAD > PROCESOS.
   * Antes de cerrar el último ciclo del año cree el periodo siguiente, porque el cierre exige que exista el ciclo siguiente.
 Notas: con el ciclo cerrado no se pueden registrar ni anular documentos con fechas de ese ciclo.
 
-95. REGISTRAR UN COMPROBANTE CONTABLE
+98. REGISTRAR UN COMPROBANTE CONTABLE
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > COMPROBANTES.
   1. En LISTA DE COMPROBANTES presione Nuevo. Se abre Nuevo comprobante.
@@ -1394,7 +1453,7 @@ Usar una plantilla: presione Abrir plantilla y elija un comprobante modelo; posM
 Restricciones: el comprobante debe estar cuadrado; la fecha debe estar dentro de un ciclo contable abierto ("TODO COMPROBANTE DEBE DE PERTENECER A UN CICLO" o "EL CICLO ESTA CERRADO..."); y debe existir tipo de cambio para esa fecha ("NO EXISTE LA TASA DE CAMBIO PARA: ...").
 Ver también: Actualizar el tipo de cambio (herramienta de monedas).
 
-96. BUSCAR, MODIFICAR, IMPRIMIR O ELIMINAR UN COMPROBANTE
+99. BUSCAR, MODIFICAR, IMPRIMIR O ELIMINAR UN COMPROBANTE
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > COMPROBANTES.
   1. Escriba el número en Buscar por número de comprobante… y presione Enter o la lupa; también puede abrirlo desde la lista.
@@ -1405,7 +1464,7 @@ Ruta: Menú > CONTABILIDAD > COMPROBANTES.
   6. Para eliminarlo presione Eliminar y confirme.
 Restricciones: no se puede modificar ni eliminar un comprobante de un ciclo cerrado ("EL CICLO ESTA CERRADO, EL COMPROBANTE NO PUEDE SER EDITADO") ni pasarlo a un ciclo cerrado; el estado del comprobante debe permitir eliminarlo. Si el comprobante venía de un documento (factura, abono...), al eliminarlo el documento queda pendiente de contabilizar.
 
-97. CONTABILIZAR DOCUMENTOS
+100. CONTABILIZAR DOCUMENTOS
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > PROCESOS, tarjeta Contabilizar documentos.
 Genera los comprobantes contables de los documentos (facturas, abonos, compras, etc.) que aún no tienen comprobante.
@@ -1415,7 +1474,7 @@ Genera los comprobantes contables de los documentos (facturas, abonos, compras, 
 Notas: las cuentas que usa cada documento dependen de la configuración de su empresa.
 Otra tarjeta de PROCESOS, Notificaciones: elija la Notificación y presione Ejecutar para correr ese proceso de notificación, o Limpiar para borrar las notificaciones de esa etiqueta.
 
-98. MAYORIZAR Y CERRAR UN CICLO CONTABLE
+101. MAYORIZAR Y CERRAR UN CICLO CONTABLE
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > PROCESOS.
 Mayorizar:
@@ -1428,7 +1487,7 @@ Reglas del cierre: el ciclo anterior debe estar cerrado; debe existir el ciclo s
 Después del cierre no se pueden registrar, modificar ni eliminar comprobantes de ese ciclo, ni registrar o anular facturas y otros documentos con fecha de ese periodo cerrado.
 Notas: en Ciclo solo aparecen los ciclos abiertos; "Sin ciclos abiertos en este periodo" indica que todos sus ciclos ya están cerrados. Mayorice el ciclo antes de cerrarlo.
 
-99. CONFIGURAR LOS PARÁMETROS CONTABLES
+102. CONFIGURAR LOS PARÁMETROS CONTABLES
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > PARAMETROS.
 Se abre Parámetros contables con estas tarjetas:
@@ -1439,7 +1498,7 @@ Se abre Parámetros contables con estas tarjetas:
 Presione Guardar.
 Notas: el cierre de ciclo usa la cuenta de utilidades acumuladas. Cambie estos valores solo con su contador o con el soporte de posMe.
 
-100. INDICADORES CONTABLES
+103. INDICADORES CONTABLES
 ----------------------------------------------------------------------
 Ruta: Menú > CONTABILIDAD > INDICADORES.
 Los indicadores son valores financieros calculados que posMe muestra, por ejemplo, en la aplicación móvil.
@@ -1450,7 +1509,7 @@ Los indicadores son valores financieros calculados que posMe muestra, por ejempl
 Para modificarlo ábralo en la lista (Indicador #); para darlo de baja presione Eliminar.
 Notas: el Script es técnico; pídalo al equipo de soporte de posMe.
 
-101. QUÉ CONTIENE EL MENÚ ACTIVOS FIJOS
+104. QUÉ CONTIENE EL MENÚ ACTIVOS FIJOS
 ----------------------------------------------------------------------
 Ruta: Menú > ACTIVOS FIJOS.
   * ACTIVOS F.: catálogo de activos fijos.
@@ -1467,7 +1526,7 @@ Buscar en la lista:
 Notas: en el teléfono el botón Guardar está en la barra inferior y los botones Buscar abren la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol.
 Ver también: Crear un activo fijo.
 
-102. CREAR UN ACTIVO FIJO
+105. CREAR UN ACTIVO FIJO
 ----------------------------------------------------------------------
 Ruta: Menú > ACTIVOS FIJOS > ACTIVOS F. La lista se llama LISTA DE ACTIVOS FIJOS.
   1. Presione Nuevo. Se abre Activo Fijo.
@@ -1479,7 +1538,7 @@ Ruta: Menú > ACTIVOS FIJOS > ACTIVOS F. La lista se llama LISTA DE ACTIVOS FIJO
 Mensajes de validación: "Seleccionar la Categoria", "Seleccionar el Tipo" y "Escribir el Nombre".
 Ver también: Modificar o eliminar un activo fijo.
 
-103. MODIFICAR O ELIMINAR UN ACTIVO FIJO
+106. MODIFICAR O ELIMINAR UN ACTIVO FIJO
 ----------------------------------------------------------------------
 Ruta: Menú > ACTIVOS FIJOS > ACTIVOS F.
   1. En la lista escriba en Buscar en la lista… para filtrar, seleccione la fila y presione Editar.
@@ -1489,7 +1548,7 @@ Arriba tiene Atras, Archivos, Eliminar y Guardar. Eliminar pide confirmar "Desea
 En la edición aparece además la pestaña Expediente, con el historial de órdenes de taller del activo.
 Ver también: Crear un activo fijo.
 
-104. REGISTRAR UNA ENTRADA DE ACTIVOS
+107. REGISTRAR UNA ENTRADA DE ACTIVOS
 ----------------------------------------------------------------------
 Ruta: Menú > ACTIVOS FIJOS > ENT. ACTIVOS. La lista se llama LISTA DE ENTRADA DE ACTIVOS FIJOS.
   1. Presione Nuevo. Se abre Entrada de Activo Fijo.
@@ -1503,7 +1562,7 @@ Mensajes de validación:
   * "Seleccione Un Activo a Asignar" / "El Activo Fijo ya existe en el detalle".
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Atras, Nuevo, Archivos, Imprimir, Eliminar y Guardar.
 
-105. REGISTRAR UNA SALIDA DE ACTIVOS
+108. REGISTRAR UNA SALIDA DE ACTIVOS
 ----------------------------------------------------------------------
 Ruta: Menú > ACTIVOS FIJOS > SAL. ACTIVOS. La lista se llama LISTA DE SALIDAS DE ACTIVOS FIJOS.
   1. Presione Nuevo. Se abre Salida de Activo Fijo.
@@ -1517,7 +1576,7 @@ Mensajes de validación:
   * "Seleccione Un Activo a Retirar" / "El Activo Fijo ya existe en el detalle".
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Atras, Nuevo, Archivos, Imprimir, Eliminar y Guardar.
 
-106. REGISTRAR LA DEPRECIACIÓN DE ACTIVOS
+109. REGISTRAR LA DEPRECIACIÓN DE ACTIVOS
 ----------------------------------------------------------------------
 Ruta: Menú > ACTIVOS FIJOS > DEPRECIACION. La lista se llama LISTA DE DEPRECIACION DE ACTIVOS FIJOS.
   1. Presione Nuevo. Se abre Depreciación de Activo Fijo.
@@ -1533,7 +1592,7 @@ Mensajes de validación:
   * "El Activo Fijo ya existe en el detalle".
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Atras, Nuevo, Archivos, Imprimir, Eliminar y Guardar.
 
-107. REGISTRAR LA VALORACIÓN DE ACTIVOS
+110. REGISTRAR LA VALORACIÓN DE ACTIVOS
 ----------------------------------------------------------------------
 Ruta: Menú > ACTIVOS FIJOS > ACT VALORACION. La lista se llama LISTA DE VALORACION DE ACTIVOS FIJOS.
   1. Presione Nuevo. Se abre Valoración de Activo Fijo.
@@ -1547,7 +1606,7 @@ Mensajes de validación:
   * "El Ratio no puede ser cero o vacio" / "El Activo Fijo ya existe en el detalle".
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Atras, Nuevo, Archivos, Imprimir, Eliminar y Guardar.
 
-108. TRASLADAR PIEZAS ENTRE ACTIVOS (TRASLADO O TRANSFERENCIA DE PIEZAS)
+111. TRASLADAR PIEZAS ENTRE ACTIVOS (TRASLADO O TRANSFERENCIA DE PIEZAS)
 ----------------------------------------------------------------------
 Ruta: Menú > ACTIVOS FIJOS > TRA. PIEZA. La lista se llama LISTA DE TRANSFERENCIA DE PIEZAS.
   1. Presione Nuevo. Se abre Transferencia de Piezas.
@@ -1562,7 +1621,7 @@ Mensajes de validación:
   * "Seleccione al menos un Activo (Origen o Destino)".
 Para modificarla, selecciónela en la lista y presione Editar. Arriba tiene Atras, Nuevo, Eliminar y Guardar.
 
-109. QUÉ CONTIENE EL MENÚ PLANILLA
+112. QUÉ CONTIENE EL MENÚ PLANILLA
 ----------------------------------------------------------------------
 Ruta: Menú > PLANILLA.
   * P. PLANILLA: planillas de pago.
@@ -1577,7 +1636,7 @@ Al editar, las cuatro pantallas tienen arriba solo Atrás y Guardar.
 Notas: en el teléfono el botón Guardar está en la barra inferior y los botones Buscar abren la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol.
 Ver también: Crear una planilla de pago, Registrar adelantos a colaboradores, Registrar la liquidación de un colaborador, Registrar un permiso de un colaborador.
 
-110. CREAR UNA PLANILLA DE PAGO
+113. CREAR UNA PLANILLA DE PAGO
 ----------------------------------------------------------------------
 Ruta: Menú > PLANILLA > P. PLANILLA. La lista se llama LISTA DE PLANILLAS.
   1. Presione Nuevo. Se abre PLANILLA:#.
@@ -1593,7 +1652,7 @@ Mensajes de validación: "Ingrese el Nombre", "Agregue al menos un colaborador" 
 Para modificarla, selecciónela en la lista y presione Editar.
 Ver también: Registrar adelantos a colaboradores.
 
-111. REGISTRAR ADELANTOS A COLABORADORES
+114. REGISTRAR ADELANTOS A COLABORADORES
 ----------------------------------------------------------------------
 Ruta: Menú > PLANILLA > ADELANTOS. La lista se llama LISTA DE ADELANTOS.
   1. Presione Nuevo. Se abre ADELANTO:#.
@@ -1608,7 +1667,7 @@ Mensajes de validación: "Agregue al menos un colaborador", "Ingrese el monto de
 Para modificarlo, selecciónelo en la lista y presione Editar.
 Ver también: Crear una planilla de pago.
 
-112. REGISTRAR LA LIQUIDACIÓN DE UN COLABORADOR
+115. REGISTRAR LA LIQUIDACIÓN DE UN COLABORADOR
 ----------------------------------------------------------------------
 Ruta: Menú > PLANILLA > LIQUIDACION. La lista se llama LISTA DE LIQUIDACIÓN.
   1. Presione Nuevo. Se abre LIQUIDACIÓN:#.
@@ -1620,7 +1679,7 @@ Ruta: Menú > PLANILLA > LIQUIDACION. La lista se llama LISTA DE LIQUIDACIÓN.
 Mensajes de validación: "Seleccione el colaborador", y "El dato ... no es una entrada Válida" si un monto no es válido.
 Para modificarla, selecciónela en la lista y presione Editar.
 
-113. REGISTRAR UN PERMISO DE UN COLABORADOR
+116. REGISTRAR UN PERMISO DE UN COLABORADOR
 ----------------------------------------------------------------------
 Ruta: Menú > PLANILLA > PERMISO. La lista se llama LISTA DE PERMISOS.
   1. Presione Nuevo. Se abre PERMISO:#.
@@ -1634,7 +1693,7 @@ Mensajes de validación:
   * "La Fecha de Integración del Colaborador Está Mal Configurada".
 Para modificarlo, selecciónelo en la lista y presione Editar.
 
-114. QUÉ CONTIENE EL MENÚ DE COLABORADORES (RRHH)
+117. QUÉ CONTIENE EL MENÚ DE COLABORADORES (RRHH)
 ----------------------------------------------------------------------
 Ruta: Menú > COLABORADORES, ASIS. COL, GPS y TASK.
   * COLABORADORES: datos de cada colaborador.
@@ -1646,7 +1705,7 @@ Buscar en la lista: en ASIS. COL y TASK escriba en Buscar por número… y presi
 Notas: en el teléfono el botón Guardar está en la barra inferior y los botones Buscar abren la búsqueda en una ventana dentro de la misma pantalla. Lo que ve cada usuario depende de los permisos de su rol.
 Ver también: Crear un colaborador, Registrar la asistencia de un colaborador, Ver la ubicación de los colaboradores en el mapa (GPS), Crear una tarea para un colaborador.
 
-115. CREAR UN COLABORADOR
+118. CREAR UN COLABORADOR
 ----------------------------------------------------------------------
 Ruta: Menú > COLABORADORES. La lista se llama LISTA DE COLABORADORES; según la configuración de su empresa puede tener otro nombre.
   1. Presione Nuevo. Se abre CODIGO:#, con todos los datos en tarjetas en una sola pantalla.
@@ -1662,7 +1721,7 @@ Mensajes de validación:
   * "Escribir la Identificacion" / "Escribir el Nombre".
 Ver también: Agregar teléfonos y correos de un colaborador, Modificar o eliminar un colaborador.
 
-116. MODIFICAR O ELIMINAR UN COLABORADOR
+119. MODIFICAR O ELIMINAR UN COLABORADOR
 ----------------------------------------------------------------------
 Ruta: Menú > COLABORADORES.
   1. Seleccione el colaborador en la lista y presione Editar. Arriba tiene Atras, Eliminar y Guardar.
@@ -1672,7 +1731,7 @@ Eliminar: use Eliminar en la lista o al editar, y confirme "Desea eliminar este 
 Según la configuración de su empresa también aparece el botón Url Menu.
 Ver también: Crear un colaborador, Agregar teléfonos y correos de un colaborador.
 
-117. AGREGAR TELÉFONOS Y CORREOS DE UN COLABORADOR
+120. AGREGAR TELÉFONOS Y CORREOS DE UN COLABORADOR
 ----------------------------------------------------------------------
 Ruta: Menú > COLABORADORES > Nuevo o Editar.
 Agregar un teléfono:
@@ -1687,7 +1746,7 @@ Quitar: marque la casilla de la fila y presione Eliminar en esa misma tarjeta.
 Presione Guardar en la pantalla del colaborador para conservar los cambios.
 Restricciones: el teléfono y el correo no aceptan vacío. Si los deja en blanco aparece "Escriba el número de teléfono." o "Escriba el correo.".
 
-118. REGISTRAR LA ASISTENCIA DE UN COLABORADOR
+121. REGISTRAR LA ASISTENCIA DE UN COLABORADOR
 ----------------------------------------------------------------------
 Ruta: Menú > ASIS. COL. La lista se llama LISTA DE ASISTENCIA COLABORADOR.
   1. Presione Nuevo. Se abre ASISTENCIA:#.
@@ -1701,7 +1760,7 @@ Huella: en PC, al crear, se muestra el campo Huella; en el teléfono no aparece.
 Notas: esta pantalla no tiene Imprimir. Eliminar puede no estar permitido según el estado del registro.
 Ver también: Registrar la asistencia de un cliente.
 
-119. VER LA UBICACIÓN DE LOS COLABORADORES EN EL MAPA (GPS)
+122. VER LA UBICACIÓN DE LOS COLABORADORES EN EL MAPA (GPS)
 ----------------------------------------------------------------------
 Ruta: Menú > GPS. La pantalla se llama Google Maps.
   1. En la tarjeta Filtro de búsqueda elija la Compañia y el Colaborador, o déjelos en TODAS para ver todos. Al cambiar la compañía se actualiza la lista de colaboradores.
@@ -1713,7 +1772,7 @@ Mensajes:
   * "Completar los Parametros".
 Ver también: Qué contiene el menú de colaboradores (RRHH).
 
-120. CREAR UNA TAREA PARA UN COLABORADOR
+123. CREAR UNA TAREA PARA UN COLABORADOR
 ----------------------------------------------------------------------
 Ruta: Menú > TASK. La lista se llama LISTA DE TAREAS.
   1. Presione Nuevo. Se abre TAREA:#.
@@ -1730,7 +1789,7 @@ Mensajes de validación:
   * "Este campo no puede estar vacío": al presionar Agregar en Seguimiento sin descripción.
 Ver también: Modificar o eliminar una tarea, Ver las tareas en el tablero Kanban, Programar una tarea o visita en el calendario.
 
-121. MODIFICAR O ELIMINAR UNA TAREA
+124. MODIFICAR O ELIMINAR UNA TAREA
 ----------------------------------------------------------------------
 Ruta: Menú > TASK.
   1. Seleccione la tarea en la lista y presione Editar. Se abre en otra pestaña. Arriba tiene Nuevo, Atras, Eliminar y Guardar.
@@ -1741,7 +1800,7 @@ Archivos: en la tarjeta Archivos presione Abrir archivos. Esta tarjeta solo apar
 Eliminar: use Eliminar en la lista o al editar, y confirme "Desea eliminar este Registro...". Puede no estar permitido según el estado de la tarea.
 Ver también: Crear una tarea para un colaborador, Ver las tareas en el tablero Kanban.
 
-122. VER LAS TAREAS EN EL TABLERO KANBAN
+125. VER LAS TAREAS EN EL TABLERO KANBAN
 ----------------------------------------------------------------------
 Ruta: Menú > TASK > botón Kanban. Se abre Tablero Kanban, con una columna por responsable.
 Cada tarea muestra título, descripción, Prioridad, Entrega, Estado, Orden, el botón Editar y el número de documento. El número es solo una etiqueta, no un botón.
@@ -1758,7 +1817,7 @@ Otros botones:
 Mensajes: "No hay tareas pendientes.", "No hay tareas asignadas a ..." y "No se pudo guardar el orden."
 Ver también: Crear una tarea para un colaborador, Modificar o eliminar una tarea.
 
-123. SEGURIDAD: QUÉ CONTIENE EL MENÚ SEGURIDAD
+126. SEGURIDAD: QUÉ CONTIENE EL MENÚ SEGURIDAD
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD.
 El menú SEGURIDAD agrupa las opciones para controlar quién entra a posMe y qué puede hacer:
@@ -1772,7 +1831,7 @@ El menú SEGURIDAD agrupa las opciones para controlar quién entra a posMe y qu�
   * ACTUALIZAR: uso exclusivo del equipo de soporte de posMe.
 Lo que cada persona ve en el menú depende de los permisos de su rol.
 
-124. INICIAR SESIÓN EN POSME
+127. INICIAR SESIÓN EN POSME
 ----------------------------------------------------------------------
 Ruta: pantalla de inicio de posMe.
   1. Escriba su Usuario y su Contraseña.
@@ -1782,7 +1841,7 @@ Notas: si posMe pide Permiso de ubicación requerido, debe permitir la ubicació
 Con Recordarme activo, la próxima vez el usuario aparece escrito y la contraseña figura como Guardada: solo presione Ingresar. La contraseña guardada no se puede ver con el ojo. Para usar otra contraseña, bórrela y escriba la nueva; para que posMe deje de recordarlo, desmarque Recordarme e ingrese. No use Recordarme en equipos compartidos.
 Para pagar la suscripción, active Pagar suscripción, elija la Cantidad de meses y presione Pagar.
 
-125. OLVIDÉ MI CONTRASEÑA (REENVIAR CONTRASEÑA)
+128. OLVIDÉ MI CONTRASEÑA (REENVIAR CONTRASEÑA)
 ----------------------------------------------------------------------
 Ruta: pantalla de inicio de posMe > ¿Olvidaste tu contraseña?
   1. En la pantalla de inicio presione ¿Olvidaste tu contraseña?.
@@ -1790,14 +1849,14 @@ Ruta: pantalla de inicio de posMe > ¿Olvidaste tu contraseña?
   3. Cuando aparezca Revisa tu correo, abra el mensaje: trae su usuario, su contraseña y el botón Iniciar sesión.
 Si no llega en unos minutos, revise la carpeta de spam. Si el correo no está registrado, posMe lo indica. Si aun así no recibe el correo, pida al administrador de su empresa que le asigne una nueva contraseña en SEGURIDAD > USUARIOS.
 
-126. CERRAR SESIÓN (SALIR, SALGO DE POSME)
+129. CERRAR SESIÓN (SALIR, SALGO DE POSME)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > SALIR.
   1. Entre a SEGURIDAD > SALIR. posMe cierra la sesión y vuelve a la pantalla de inicio.
 Así es como se sale de posMe o se cambia de usuario.
 Cierre siempre la sesión al terminar, sobre todo en equipos compartidos.
 
-127. CAMBIAR MI CONTRASEÑA O MI CORREO (EDITAR PERFIL)
+130. CAMBIAR MI CONTRASEÑA O MI CORREO (EDITAR PERFIL)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > EDITAR PERFIL.
   1. Entre a SEGURIDAD > EDITAR PERFIL. Se abre Mi perfil con su Codigo y el Colaborador asociado.
@@ -1806,7 +1865,7 @@ Ruta: Menú > SEGURIDAD > EDITAR PERFIL.
   4. Cierre sesión y vuelva a entrar con la nueva contraseña.
 El botón Imprimir imprime los datos del perfil.
 
-128. CREAR UN USUARIO (CREO UN USUARIO NUEVO)
+131. CREAR UN USUARIO (CREO UN USUARIO NUEVO)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > USUARIOS.
   1. En la Lista de Usuarios presione Nuevo. Se abre Nuevo usuario.
@@ -1820,7 +1879,7 @@ Ruta: Menú > SEGURIDAD > USUARIOS.
   5. Presione Guardar.
 Notas: para quitar una bodega o caja, toque la fila para seleccionarla y presione Quitar seleccionada. El usuario solo ve el menú que permite su rol (ver Roles).
 
-129. MODIFICAR O ELIMINAR UN USUARIO
+132. MODIFICAR O ELIMINAR UN USUARIO
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > USUARIOS.
   1. Busque el usuario en la lista (campo Buscar usuario…) y ábralo.
@@ -1830,7 +1889,7 @@ Ruta: Menú > SEGURIDAD > USUARIOS.
 Para cambiar la contraseña de otro usuario escriba la nueva en Password y guarde.
 Restricciones: se requiere permiso de editar o eliminar en USUARIOS; si su permiso es Propios, solo puede modificar o eliminar los usuarios que usted creó.
 
-130. CREAR UN ROL
+133. CREAR UN ROL
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES.
 Un rol es un perfil de permisos (por ejemplo CAJERO, VENDEDOR, CONTADOR) que se asigna a los usuarios.
@@ -1844,7 +1903,7 @@ Un rol es un perfil de permisos (por ejemplo CAJERO, VENDEDOR, CONTADOR) que se 
 Para modificar un rol, ábralo en la lista, cambie lo necesario y presione Guardar. El Tipo de app se conserva tal como está guardado.
 Notas: los cambios en el menú se ven cuando el usuario vuelve a iniciar sesión.
 
-131. MARCAR UN ROL COMO ADMINISTRADOR DE COMPAÑÍA
+134. MARCAR UN ROL COMO ADMINISTRADOR DE COMPAÑÍA
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES > Nuevo o abrir el rol.
 El campo Administrador de compañía identifica a los roles que administran la empresa. posMe lo usa en otras funciones del sistema para reconocer a esos administradores; por ejemplo, solo ellos pueden compartir consultas del Constructor de Reportes Para todos los usuarios.
@@ -1855,7 +1914,7 @@ Restricciones: el campo solo lo ve y lo puede cambiar un usuario cuyo propio rol
 Notas: marcar un rol como administrador de compañía no le da acceso a pantallas; el acceso se sigue definiendo en Permisos por pantalla.
 Ver también: Crear un rol; Permisos por pantalla de un rol; Compartir una consulta de reporte con todos los usuarios.
 
-132. PERMISOS POR PANTALLA DE UN ROL (VER, CREAR, EDITAR, ELIMINAR)
+135. PERMISOS POR PANTALLA DE UN ROL (VER, CREAR, EDITAR, ELIMINAR)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
   1. En Permisos por pantalla active el interruptor de cada pantalla a la que el rol tendrá acceso. Use Buscar pantalla… para encontrarla y Solo con acceso para ver solo las que ya tienen acceso.
@@ -1868,7 +1927,7 @@ Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
   4. Presione Guardar y pida a los usuarios del rol cerrar sesión y volver a entrar.
 Notas: los niveles y el acceso se guardan exactamente como los eligió y se muestran igual al volver a abrir el rol, aunque tenga cientos de pantallas. Los permisos de pantallas que no aparecen en la lista (por ejemplo, módulos que su empresa no tiene) se conservan al guardar. Si el rol es administrador tiene acceso a todo y estos permisos no se aplican. Si edita su propio rol y le quita el acceso a ROLES, perderá acceso a esa pantalla.
 
-133. AUTORIZACIONES DE UN ROL
+136. AUTORIZACIONES DE UN ROL
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES > abrir el rol > Autorizaciones.
 Las autorizaciones son permisos especiales que no dependen de una pantalla (por ejemplo ADMINISTRADOR, CAJERO, CONTADOR, o autorizaciones de usuario interno o externo de taller). Según la configuración de la empresa, habilitan acciones como aprobar documentos o ver información restringida.
@@ -1876,7 +1935,7 @@ Las autorizaciones son permisos especiales que no dependen de una pantalla (por 
   2. Marque las que correspondan (Marcar todas / Ninguna para marcar o desmarcar todo).
   3. Presione Guardar.
 
-134. DAR ACCESO AL ASISTENTE JORDANIA (ASISTENTE IA)
+137. DAR ACCESO AL ASISTENTE JORDANIA (ASISTENTE IA)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
   1. En Permisos por pantalla busque Asistente IA y active el acceso.
@@ -1884,7 +1943,7 @@ Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
   3. Los usuarios del rol deben cerrar sesión y volver a entrar; verán el botón del asistente en la pantalla.
 Notas: además del permiso, la empresa debe tener habilitado el asistente (lo configura soporte de posMe).
 
-135. SUCURSALES
+138. SUCURSALES
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > SUCURSAL.
   1. Para crear una sucursal presione Nuevo. Se abre Nueva sucursal.
@@ -1893,7 +1952,7 @@ Ruta: Menú > SEGURIDAD > SUCURSAL.
 Para modificarla, ábrala en la lista, cambie los datos y presione Guardar; para darla de baja presione Eliminar.
 Después asigne la sucursal a los usuarios en SEGURIDAD > USUARIOS (campo Sucursal).
 
-136. NOTIFICACIONES Y RECORDATORIOS (CONFIG. NOTI)
+139. NOTIFICACIONES Y RECORDATORIOS (CONFIG. NOTI)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > CONFIG. NOTI.
 Permite configurar recordatorios periódicos que posMe muestra o envía a los usuarios.
@@ -1905,7 +1964,7 @@ Permite configurar recordatorios periódicos que posMe muestra o envía a los us
 Para que un usuario reciba la notificación, asígnela en SEGURIDAD > USUARIOS > pestaña Notificaciones.
 Ver también: Programar una tarea o visita en el calendario.
 
-137. VER QUIÉN ENTRÓ: SESIONES Y ACTIVIDAD DE UN USUARIO (LOG SESSION)
+140. VER QUIÉN ENTRÓ: SESIONES Y ACTIVIDAD DE UN USUARIO (LOG SESSION)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > LOG SESSION.
   1. En Usuario elija el usuario y presione Consultar.
@@ -1914,13 +1973,13 @@ Ruta: Menú > SEGURIDAD > LOG SESSION.
      * Últimas 5 Sesiones con IP, Plataforma (navegador/dispositivo), Último Movimiento y Detalle.
 Útil para revisar quién entró al sistema, desde dónde y cuánto trabajo ha registrado.
 
-138. ACTUALIZAR (USO DE SOPORTE)
+141. ACTUALIZAR (USO DE SOPORTE)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ACTUALIZAR.
 Opción técnica para que el equipo de soporte de posMe aplique actualizaciones al sistema. No la use salvo que soporte se lo indique.
 Ver también: Actualizar posMe desde el servidor central: qué es y quién puede usarlo.
 
-139. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: QUÉ ES Y QUIÉN PUEDE USARLO
+142. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: QUÉ ES Y QUIÉN PUEDE USARLO
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe. No aparece en el menú: se abre escribiendo core_upgrade/byPop3 después de la dirección de posMe.
 La pantalla Actualización desde el servidor posMe trae la versión publicada en el servidor central de posMe y la aplica sobre esta instalación: archivos de la aplicación, estructura de la base de datos y datos de configuración. El origen por defecto es https://posme.net/v4posme/public/public y se muestra arriba, en Origen.
@@ -1929,7 +1988,7 @@ La pantalla muestra, en orden: Objetivo, Versiones (versión local y la del serv
 Restricciones: solo la pueden abrir usuarios con rol administrador. Solo se permite una actualización a la vez.
 Ver también: Actualizar posMe desde el servidor central: configurar la conexión; Actualizar posMe desde el servidor central: iniciar la actualización.
 
-140. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: CONFIGURAR LA CONEXIÓN
+143. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: CONFIGURAR LA CONEXIÓN
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta Conexión con el servidor.
   1. En URL del servidor de origen escriba la dirección del servidor central (por defecto https://posme.net/v4posme/public/public). Debe empezar con https:// (o http:// solo si el servidor central lo permite).
@@ -1939,7 +1998,7 @@ Ruta: Administración del sistema > Actualización desde el servidor posMe (core
 Notas: la clave se guarda cifrada y solo se muestra enmascarada. Si deja la Clave vacía al guardar, se conserva la que ya estaba guardada. Si la URL o el ID faltan, la pantalla avisa: "Escriba la URL del servidor de origen." o "Escriba el ID de instalación.".
 Ver también: Actualizar posMe desde el servidor central: preparar el servidor central (administrador).
 
-141. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: MODO LOCAL O NUBE (QUÉ SE ACTUALIZA)
+144. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: MODO LOCAL O NUBE (QUÉ SE ACTUALIZA)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta Tipo de instalación.
 posMe detecta solo el Modo ("Detectado automáticamente: Local" o "Nube"). Si no es correcto, cámbielo en la lista: se vuelve a consultar el servidor con el modo elegido.
@@ -1949,7 +2008,7 @@ La tarjeta Componentes que se actualizan muestra cada paquete, su Destino y lo q
 Restricciones: si en el servidor falta cualquiera de los zip del modo elegido, aparece "No se puede continuar: falta ..." y no se puede iniciar.
 Notas: solo se actualizan los archivos que vienen dentro de cada zip; nada se elimina. Siempre se protegen: .env, writable/, system/, logos y archivos de la compañía, public/.htaccess y public/index.php. En la nube también se conservan app/Config/Constants.php y App.php; en instalación local sí se actualizan. La estructura de la base de datos nunca elimina tablas ni columnas. Los datos de su empresa no cambian y los parámetros de la empresa conservan sus valores (solo se agregan los nuevos).
 
-142. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: INICIAR LA ACTUALIZACIÓN
+145. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: INICIAR LA ACTUALIZACIÓN
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3).
   1. Avise a los usuarios: mientras dure la actualización nadie podrá operar en posMe.
@@ -1963,7 +2022,7 @@ Restricciones: el botón Actualizar posMe queda desactivado mientras haya avisos
 Notas: con Copiar de la Bitácora puede copiar el registro para enviarlo a soporte.
 Ver también: Actualizar posMe desde el servidor central: etapas, revisar cambios y cancelar.
 
-143. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: ETAPAS, REVISAR CAMBIOS Y CANCELAR
+146. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: ETAPAS, REVISAR CAMBIOS Y CANCELAR
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta Etapas.
 La actualización recorre 8 etapas, cada una con su estado y Ver detalle:
@@ -1979,7 +2038,7 @@ En la pausa de la etapa 5 revise archivos, estructura y datos. Los cambios de es
   * Continuar con la aplicación y en la ventana Aplicar los cambios presione Continuar.
   * Cancelar sin aplicar y luego Cancelar actualización: no se aplica ningún cambio y se desactiva el modo mantenimiento.
 
-144. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: MODO MANTENIMIENTO
+147. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: MODO MANTENIMIENTO
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3).
 Al iniciar la actualización se activa el modo mantenimiento. Mientras dura, los demás usuarios ven la página posMe en mantenimiento con el aviso "El sistema se está actualizando. Intente de nuevo en unos minutos." y no pueden operar (solo siguen disponibles el inicio y el cierre de sesión).
@@ -1989,7 +2048,7 @@ El modo mantenimiento se libera solo:
 Si al abrir la pantalla aparece "Ya hay un modo mantenimiento activo. Puede haber otra actualización en curso.", espere a que termine antes de iniciar otra.
 Notas: haga la actualización fuera del horario de trabajo.
 
-145. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: REVERTIR LA ACTUALIZACIÓN
+148. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: REVERTIR LA ACTUALIZACIÓN
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta Avance general.
 Si una etapa falla, aparece "Falló en la etapa N" y el botón Revertir.
@@ -2000,7 +2059,7 @@ Si una etapa falla, aparece "Falló en la etapa N" y el botón Revertir.
   5. Presione Recargar posMe.
 Notas: si la reversión falla aparece "No se pudo revertir" y puede intentarlo de nuevo. Si falló al iniciar (antes de cambiar nada), solo aparece Volver.
 
-146. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: PREPARAR EL SERVIDOR CENTRAL (ADMINISTRADOR)
+149. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: PREPARAR EL SERVIDOR CENTRAL (ADMINISTRADOR)
 ----------------------------------------------------------------------
 Solo para el administrador del servidor central de posMe (no para el cliente).
   1. En el servidor central cree el archivo writable/posme_upgrade_server/server_config.php. Ejemplo con valores ficticios:
@@ -2019,7 +2078,7 @@ Solo para el administrador del servidor central de posMe (no para el cliente).
   4. Entregue a cada cliente su ID de instalación y su Clave por un medio seguro.
 Restricciones: el servidor central solo acepta HTTPS (salvo allowHttp).
 
-147. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: ADVERTENCIAS
+150. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: ADVERTENCIAS
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3).
   * Haga la actualización fuera del horario de trabajo y avise a los usuarios: el modo mantenimiento impide operar.
@@ -2029,7 +2088,7 @@ Ruta: Administración del sistema > Actualización desde el servidor posMe (core
   * Si aparece "Sesión o token vencido (HTTP 403). Recargue la página.", recargue la pantalla y vuelva a consultar.
 Ver también: Actualizar posMe desde el servidor central: revertir la actualización.
 
-148. DESPLIEGUE REMOTO: QUÉ ES Y QUIÉN PUEDE USARLO (ADMINISTRACIÓN DEL SISTEMA)
+151. DESPLIEGUE REMOTO: QUÉ ES Y QUIÉN PUEDE USARLO (ADMINISTRACIÓN DEL SISTEMA)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto. No aparece en el menú: se abre escribiendo core_merge/deploy después de la dirección de posMe.
 La pantalla Sincronización de instalación remota actualiza la instalación de posMe de un cliente (VPS u hosting compartido) desde la instalación local de posMe. Sincroniza tres partes que se eligen por separado:
@@ -2040,7 +2099,7 @@ La pantalla tiene tres pestañas: Sincronización (lo anterior), Limpieza de ser
 Restricciones: es una herramienta técnica solo para el administrador de posMe, no para el usuario del negocio. Requiere un usuario con rol administrador y que la instalación local tenga habilitada la consola (constante DEPLOY_CONSOLE_ENABLED de la configuración local). En las instalaciones de los clientes está apagada. Solo se permite un despliegue a la vez por compañía.
 Ver también: Despliegue remoto: preparar la consola y el agente (primera vez); Despliegue remoto: errores frecuentes; Despliegue remoto: editar la configuración (app/Config); Despliegue remoto: cargar los logos.
 
-149. DESPLIEGUE REMOTO: PREPARAR LA CONSOLA Y EL AGENTE (PRIMERA VEZ)
+152. DESPLIEGUE REMOTO: PREPARAR LA CONSOLA Y EL AGENTE (PRIMERA VEZ)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 Una sola vez en la instalación local:
@@ -2055,7 +2114,7 @@ Por cada cliente:
   6. Presione Probar conexiones para confirmar que el agente responde.
 Ver también: Despliegue remoto: elegir la compañía y configurar la conexión.
 
-150. DESPLIEGUE REMOTO: ELEGIR LA COMPAÑÍA Y CONFIGURAR LA CONEXIÓN
+153. DESPLIEGUE REMOTO: ELEGIR LA COMPAÑÍA Y CONFIGURAR LA CONEXIÓN
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. En Compañía a sincronizar elija la compañía. La lista sale de los scripts de public/resource/file_sql/clientes, uno por compañía (no aparecen 001_default ni los scripts -custom-php). La base de datos esperada se toma de la cabecera /*BD: ... */ del script.
@@ -2067,7 +2126,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   4. Presione Probar conexiones: muestra el agente, la base esperada contra la real, extensiones, permisos de escritura, espacio libre, despliegues en curso, FTP y MySQL directo.
 Notas: las contraseñas se guardan cifradas y nunca se vuelven a mostrar; déjelas vacías para conservar las guardadas. Si el servidor responde con una base de datos distinta a la esperada, el despliegue se bloquea.
 
-151. DESPLIEGUE REMOTO: SUBIR Y VALIDAR EL PAQUETE ZIP (ACTUALIZAR ARCHIVOS)
+154. DESPLIEGUE REMOTO: SUBIR Y VALIDAR EL PAQUETE ZIP (ACTUALIZAR ARCHIVOS)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. En Paquete de actualización (ZIP) elija el Archivo ZIP con la carpeta app/. La carpeta app/ puede venir dentro de una carpeta raíz.
@@ -2078,7 +2137,7 @@ Solo se actualizan app/Config/Routes.php y las carpetas app/Controllers, Models,
 Restricciones: si hay errores de sintaxis PHP no se puede desplegar. Los archivos con rutas peligrosas se rechazan.
 Notas: las tres opciones (archivos, estructura y datos) son casillas independientes; puede marcar solo las que necesite.
 
-152. DESPLIEGUE REMOTO: SINCRONIZAR LA ESTRUCTURA DE LA BASE DE DATOS
+155. DESPLIEGUE REMOTO: SINCRONIZAR LA ESTRUCTURA DE LA BASE DE DATOS
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. En Opciones de sincronización marque Sincronizar estructura de la base de datos.
@@ -2087,7 +2146,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 Notas: nunca elimina tablas ni columnas del destino; los objetos que solo existen en la instalación del cliente no se eliminan. Si la estructura remota ya coincide con la local, se indica que no hay cambios. Al ejecutar, los cambios se aplican en lotes y se detienen en el primer error.
 Ver también: Despliegue remoto: ejecutar la sincronización, ver el avance y revertir.
 
-153. DESPLIEGUE REMOTO: SINCRONIZAR LOS DATOS DE CONFIGURACIÓN
+156. DESPLIEGUE REMOTO: SINCRONIZAR LOS DATOS DE CONFIGURACIÓN
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. Marque Sincronizar datos de configuración.
@@ -2102,7 +2161,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 Orden: tablas, luego 001_default y luego el script de la compañía, todo en una transacción: si algo falla, se revierte todo.
 Advertencia: el modo Completa reemplaza tb_company_parameter; los ajustes del cliente que no estén en su script se pierden.
 
-154. DESPLIEGUE REMOTO: EJECUTAR LA SINCRONIZACIÓN, VER EL AVANCE Y REVERTIR
+157. DESPLIEGUE REMOTO: EJECUTAR LA SINCRONIZACIÓN, VER EL AVANCE Y REVERTIR
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. Revise el Resumen de operaciones: lista lo que se hará y lo que falta.
@@ -2119,7 +2178,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 Para deshacer: Revertir archivos o Revertir datos restauran el respaldo tomado en ese despliegue.
 Restricciones: solo un despliegue a la vez por compañía.
 
-155. DESPLIEGUE REMOTO: ERRORES FRECUENTES
+158. DESPLIEGUE REMOTO: ERRORES FRECUENTES
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   * Firma inválida o vencida: el secreto guardado en la consola no es el mismo del agente, o el reloj del equipo está desfasado más de 5 minutos. Genere e instale de nuevo el secreto, o corrija la hora del equipo.
@@ -2129,7 +2188,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   * Ya hay otro despliegue en curso: espere a que termine; el candado caduca solo a las 2 horas.
 Ver también: Despliegue remoto: preparar la consola y el agente (primera vez).
 
-156. DESPLIEGUE REMOTO: LIMPIEZA DE SERVIDOR (LIBERAR ESPACIO E INODOS)
+159. DESPLIEGUE REMOTO: LIMPIEZA DE SERVIDOR (LIBERAR ESPACIO E INODOS)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pestaña Limpieza de servidor (entre Sincronización y Configuración y logos).
   1. En Agente que hará la limpieza elija la Compañía con conexión guardada (con el agente instalado y actualizado). Su agente revisa la carpeta donde está instalado y limpia las instalaciones posMe vecinas del mismo hosting. Para otro hosting, elija una compañía de ese hosting.
@@ -2140,7 +2199,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pest
 Notas: nunca se borran el código, .env, app/Config, la base de datos, agent_config.php ni los index.html/.htaccess de protección. Reemplaza a la antigua URL core_merge/merge_of_posme_merge_to_posme_initialize/2, que sigue existiendo.
 Ver también: Despliegue remoto: errores frecuentes.
 
-157. DESPLIEGUE REMOTO: EDITAR LA CONFIGURACIÓN (APP/CONFIG)
+160. DESPLIEGUE REMOTO: EDITAR LA CONFIGURACIÓN (APP/CONFIG)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pestaña Configuración y logos.
   1. En Compañía con conexión guardada elija la compañía. Si no tiene conexión, configúrela en Sincronización.
@@ -2152,7 +2211,7 @@ Restricciones: si el archivo cambió en el servidor desde que lo abrió, se rech
 Notas: requiere agente 1.1.0 o superior; si es anterior aparece un aviso. Actualícelo en Sincronización con Instalar agente por SFTP/FTP marcando Subir también el código del agente (también sube el Routes.php local).
 Ver también: Despliegue remoto: cargar los logos.
 
-158. DESPLIEGUE REMOTO: CARGAR LOS LOGOS
+161. DESPLIEGUE REMOTO: CARGAR LOS LOGOS
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pestaña Configuración y logos > Logos de la compañía.
   1. Elija la compañía en Compañía con conexión guardada.
@@ -2163,13 +2222,14 @@ Restricciones: PNG o JPG de hasta 1 MB y hasta 4000 x 4000 px. Solo se envían l
 Notas: el sistema convierte cada imagen al formato del nombre (.png o .jpg; al pasar de PNG a JPG usa fondo blanco) y respalda el logo anterior. Avisa si el logo direct-ticket mide más de 576 px de ancho (impresora térmica) y si la ruta de archivos configurada en el servidor del cliente apunta a otra carpeta (los PDF no tomarían el logo). El logo nuevo puede tardar en verse por la caché del navegador.
 Ver también: Despliegue remoto: editar la configuración (app/Config).
 
-159. PARÁMETROS DE LA EMPRESA
+162. PARÁMETROS DE LA EMPRESA
 ----------------------------------------------------------------------
 Los parámetros controlan el comportamiento de posMe por empresa (por ejemplo, orden de aplicación de abonos, lista de precios por defecto, formato de impresión).
 Los parámetros contables se editan en CONTABILIDAD > PARAMETROS; el resto los configura el equipo de soporte de posMe.
 Google Calendar de las órdenes de taller: APP_GOOGLE_CLENDAR_ENABLE (true la activa), GOOGLE_CALENDAR_ID, GOOGLE_CALENDAR_SERVICE_EMAIL y GOOGLE_CALENDAR_PRIVATE_KEY; opcionales GOOGLE_CALENDAR_TIMEZONE (por defecto America/Managua) y GOOGLE_CALENDAR_DURATION_MINUTES (duración de cada evento, por defecto 60 minutos).
+Agente de IA de WhatsApp: WHATSAPP_AI_AGENT_ENABLE (true lo activa); WHATSAPP_AI_AGENT_CONTINUE_AFTER_HANDOFF (true: la IA sigue contestando tras derivar mientras ningún colaborador escriba); WHATSAPP_AI_AGENT_HANDOFF_MESSAGE (mensaje al derivar; vacío, la IA redacta el suyo); WHATSAPP_AI_AGENT_STAGE_ATTENDED_ID (etapa "atendida por IA"); WHATSAPP_AI_AGENT_DEBOUNCE_SECONDS (segundos de espera antes de responder, por defecto 3); WHATSAPP_AI_AGENT_MAX_TURNS (máximo de respuestas de la IA antes de pasar a una persona, por defecto 15); WHATSAPP_AI_AGENT_HISTORY_MESSAGES (mensajes anteriores que lee la IA, por defecto 12); WHATSAPP_AI_AGENT_EMPLOYEE_ENTITYID (colaborador "Asistente IA", nunca recibe asignaciones). El texto y las intenciones del agente por tipo de negocio los configura soporte.
 Ver también: Configurar los parámetros contables.
 
-160. SOPORTE
+163. SOPORTE
 ----------------------------------------------------------------------
 Si no encuentra cómo hacer algo o hay un error en el sistema, contacte al equipo de soporte de posMe.

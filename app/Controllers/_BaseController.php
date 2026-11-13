@@ -159,6 +159,7 @@ use App\Models\Cash_Box_Session_Model;
 use App\Models\Cash_Box_Model;
 use App\Models\Log_Session_Model;
 use App\Models\Customer_Conversation_Model;
+use App\Models\Ai_Skill_Model;
 use App\Models\Ai_Chat_Model;
 use App\Models\Report_Builder_Model;
 use App\Models\Report_Builder_View_Model;
@@ -402,6 +403,7 @@ abstract class _BaseController extends Controller
     protected $Transaction_Causal_Model;
     protected $Public_Catalog_Model;
 	protected $Customer_Conversation_Model;
+	protected $Ai_Skill_Model;
 	protected $Ai_Chat_Model;
 	protected $Report_Builder_Model;
 	protected $Report_Builder_View_Model;
@@ -604,6 +606,7 @@ abstract class _BaseController extends Controller
         $this->Transaction_Causal_Model= new Transaction_Causal_Model();
         $this->Public_Catalog_Model = new Public_Catalog_Model();
 		$this->Customer_Conversation_Model = new Customer_Conversation_Model();
+		$this->Ai_Skill_Model = new Ai_Skill_Model();
 		$this->Ai_Chat_Model = new Ai_Chat_Model();
 		$this->Report_Builder_Model = new Report_Builder_Model();
 		$this->Report_Builder_View_Model = new Report_Builder_View_Model();

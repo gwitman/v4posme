@@ -421,6 +421,101 @@ class Notification_Model extends Model  {
 		return array_reverse($result);
    }
    
+   /**
+    * Ultimo mensaje recibido del cliente en la conversacion (entityIDSource = 0).
+    * Lo usa el agente de IA para la espera (debounce) y para detectar mensajes sin responder.
+    * @param int $entityIDCustomer entityID del cliente
+    * @param int $tagID            tag "MENSAJE DE CONVERSACION"
+    * @return object|null
+    */
+   function get_rowLastCustomerMessage($entityIDCustomer, $tagID)
+   {
+		$db 	= db_connect();
+		$sql 	= "";
+		$sql 	= $sql.sprintf("select ");
+		$sql 	= $sql.sprintf("	c.notificationID, ");
+		$sql 	= $sql.sprintf("	c.message, ");
+		$sql 	= $sql.sprintf("	c.title, ");
+		$sql 	= $sql.sprintf("	c.subject, ");
+		$sql 	= $sql.sprintf("	c.createdOn ");
+		$sql 	= $sql.sprintf("from ");
+		$sql 	= $sql.sprintf("	tb_notification c ");
+		$sql 	= $sql.sprintf("where ");
+		$sql 	= $sql.sprintf("	c.entityIDSource = 0 and ");
+		$sql 	= $sql.sprintf("	c.entityIDTarget = %d and ", $entityIDCustomer);
+		$sql 	= $sql.sprintf("	c.tagID = %d and ", $tagID);
+		$sql 	= $sql.sprintf("	c.isActive = 1 ");
+		$sql 	= $sql.sprintf("order by ");
+		$sql 	= $sql.sprintf("	c.notificationID desc ");
+		$sql 	= $sql.sprintf("limit 1");
+
+		$db->query("SET NAMES utf8mb4");
+		return $db->query($sql)->getRow();
+   }
+
+   /**
+    * Ultimo mensaje saliente (respuesta de IA, colaborador o sistema) hacia el cliente.
+    * @param int $entityIDCustomer entityID del cliente
+    * @param int $tagID            tag "MENSAJE DE CONVERSACION"
+    * @return object|null
+    */
+   function get_rowLastOutgoingMessage($entityIDCustomer, $tagID)
+   {
+		$db 	= db_connect();
+		$sql 	= "";
+		$sql 	= $sql.sprintf("select ");
+		$sql 	= $sql.sprintf("	c.notificationID, ");
+		$sql 	= $sql.sprintf("	c.summary, ");
+		$sql 	= $sql.sprintf("	c.createdOn ");
+		$sql 	= $sql.sprintf("from ");
+		$sql 	= $sql.sprintf("	tb_notification c ");
+		$sql 	= $sql.sprintf("where ");
+		$sql 	= $sql.sprintf("	c.entityIDSource = %d and ", $entityIDCustomer);
+		$sql 	= $sql.sprintf("	c.tagID = %d and ", $tagID);
+		$sql 	= $sql.sprintf("	c.isActive = 1 ");
+		$sql 	= $sql.sprintf("order by ");
+		$sql 	= $sql.sprintf("	c.notificationID desc ");
+		$sql 	= $sql.sprintf("limit 1");
+
+		return $db->query($sql)->getRow();
+   }
+
+   /**
+    * Historial reciente de la conversacion para el agente de IA, del mas antiguo al mas nuevo.
+    * Excluye las notas internas ('mensaje interno'), que el cliente nunca vio.
+    * @param int $entityIDCustomer entityID del cliente
+    * @param int $tagID            tag "MENSAJE DE CONVERSACION"
+    * @param int $limit            cantidad maxima de mensajes
+    * @return array
+    */
+   function get_rowHistoryForAI($entityIDCustomer, $tagID, $limit)
+   {
+		$db 	= db_connect();
+		$sql 	= "";
+		$sql 	= $sql.sprintf("select ");
+		$sql 	= $sql.sprintf("	c.notificationID, ");
+		$sql 	= $sql.sprintf("	c.message, ");
+		$sql 	= $sql.sprintf("	c.summary, ");
+		$sql 	= $sql.sprintf("	c.title, ");
+		$sql 	= $sql.sprintf("	c.subject, ");
+		$sql 	= $sql.sprintf("	c.entityIDSource, ");
+		$sql 	= $sql.sprintf("	c.entityIDTarget, ");
+		$sql 	= $sql.sprintf("	c.createdOn ");
+		$sql 	= $sql.sprintf("from ");
+		$sql 	= $sql.sprintf("	tb_notification c ");
+		$sql 	= $sql.sprintf("where ");
+		$sql 	= $sql.sprintf("	( c.entityIDSource = %d or c.entityIDTarget = %d ) and ", $entityIDCustomer, $entityIDCustomer);
+		$sql 	= $sql.sprintf("	c.tagID = %d and ", $tagID);
+		$sql 	= $sql.sprintf("	c.isActive = 1 and ");
+		$sql 	= $sql.sprintf("	ifnull(c.summary,'') <> 'mensaje interno' ");
+		$sql 	= $sql.sprintf("order by ");
+		$sql 	= $sql.sprintf("	c.notificationID desc ");
+		$sql 	= $sql.sprintf("limit %d", $limit);
+
+		$db->query("SET NAMES utf8mb4");
+		return array_reverse($db->query($sql)->getResult());
+   }
+
    function get_countByEntityIDCustomer($entityIDCustomer)
    {
 	    $db 	= db_connect();

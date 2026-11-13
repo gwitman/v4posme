@@ -235,14 +235,15 @@ class app_cxc_api extends _BaseController {
 		
 			
 			
-			$data	= $dataViewData["view_data"];			
+			$data	= $dataViewData["view_data"];
+			$data	= $this->addConversationAI_Status($data);
 			return $this->response->setJSON([
 				'success' => true,
 				'message' => 'entityID recibido',
 				'data'	  => $data
 			]);
-						
-			
+
+
 		}
 		catch(\Exception $ex){
 			return $this->response->setJSON([
@@ -254,6 +255,49 @@ class app_cxc_api extends _BaseController {
 				'data'    => []
 			]);
 		}
+	}
+
+	/**
+	 * Agrega aiStatus y aiIntent (agente de IA) a las filas de la bandeja, en una sola consulta.
+	 * @param array $rows filas de la vista (arreglos u objetos con entityID)
+	 * @return array filas con aiStatus / aiIntent (null si la conversacion no tiene IA)
+	 */
+	private function addConversationAI_Status($rows)
+	{
+		if(!is_array($rows) || count($rows) == 0)
+			return $rows;
+
+		$entityIDs = [];
+		foreach($rows as $row)
+		{
+			$entityID = is_array($row) ? ($row["entityID"] ?? 0) : ($row->entityID ?? 0);
+			if((int)$entityID > 0)
+				$entityIDs[] = (int)$entityID;
+		}
+		if(count($entityIDs) == 0)
+			return $rows;
+
+		$mapAI = [];
+		foreach($this->Customer_Conversation_Model->get_rowAIStatusByEntityIDs(array_values(array_unique($entityIDs))) as $objAI)
+			$mapAI[(int)$objAI->entityIDSource] = $objAI;
+
+		foreach($rows as $i => $row)
+		{
+			$entityID 	= (int)(is_array($row) ? ($row["entityID"] ?? 0) : ($row->entityID ?? 0));
+			$aiStatus 	= isset($mapAI[$entityID]) ? $mapAI[$entityID]->aiStatus : null;
+			$aiIntent 	= isset($mapAI[$entityID]) ? $mapAI[$entityID]->aiIntent : null;
+			if(is_array($row))
+			{
+				$rows[$i]["aiStatus"] = $aiStatus;
+				$rows[$i]["aiIntent"] = $aiIntent;
+			}
+			else
+			{
+				$rows[$i]->aiStatus = $aiStatus;
+				$rows[$i]->aiIntent = $aiIntent;
+			}
+		}
+		return $rows;
 	}
 	function getConversationConversation_Report()
 	{
@@ -493,15 +537,50 @@ class app_cxc_api extends _BaseController {
 			$objNotification["isRead"] = 1;
 			$this->Notification_Model->update_app_posme_notification_byCustomerID($entityID, $objNotification);
 		}
-		
+
+		//Estado del agente de IA de la conversacion abierta (tarjeta "Agente IA")
+		$conversationAI = null;
+		if ($page == 1) {
+			$conversationAI = $this->getConversationAI_Info($entityID);
+		}
+
 		return $this->response->setJSON([
-			'success' => true,
-			'message' => 'entityID recibido',
-			'data'	  => $objListNotification,
-			'total'	  => $totalMessages,
-			'page'	  => $page,
-			'limit'	  => $limit
+			'success' 			=> true,
+			'message' 			=> 'entityID recibido',
+			'data'	  			=> $objListNotification,
+			'total'	  			=> $totalMessages,
+			'page'	  			=> $page,
+			'limit'	  			=> $limit,
+			'conversationAI'	=> $conversationAI
 		]);
+	}
+
+	/**
+	 * Estado del agente de IA de la conversacion abierta de un cliente, para la pantalla.
+	 * @param int $entityID cliente
+	 * @return array|null null si la conversacion no tiene agente de IA (aiStatus NULL)
+	 */
+	private function getConversationAI_Info($entityID)
+	{
+		$objConversation = $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($entityID);
+		if (!$objConversation || $objConversation[0]->aiStatus === null || $objConversation[0]->aiStatus === '') {
+			return null;
+		}
+
+		$aiData = json_decode((string)$objConversation[0]->aiData, true);
+		$aiData = is_array($aiData) ? $aiData : [];
+		return [
+			'conversationID' 	=> (int)$objConversation[0]->conversationID,
+			'aiStatus' 			=> (string)$objConversation[0]->aiStatus,
+			'aiIntent' 			=> (string)$objConversation[0]->aiIntent,
+			'aiHandoffOn' 		=> $objConversation[0]->aiHandoffOn,
+			'datos' 			=> is_array($aiData['datos'] ?? null) ? $aiData['datos'] : [],
+			'adjuntos' 			=> is_array($aiData['adjuntos'] ?? null) ? $aiData['adjuntos'] : [],
+			'verificado' 		=> !empty($aiData['verificado']),
+			'motivo' 			=> (string)($aiData['motivo'] ?? ''),
+			'resumen' 			=> (string)($aiData['resumen'] ?? ''),
+			'turnos' 			=> (int)($aiData['turnos'] ?? 0)
+		];
 	}
 	function setConversationNotification_ByCustomer()
 	{	
@@ -675,9 +754,13 @@ class app_cxc_api extends _BaseController {
 		$objConversation["lastMessage"] 		= $message ;
 		$objConversation["lastActivityOn"] 		= helper_getDateTime() ;
 		$objConversation["messageSendOn"] 		= helper_getDateTime() ;
+		//Agente de IA: si un humano contesta al cliente (no nota interna), la IA deja de responder
+		$aiStatusActual 						= (string)($objCustomerConversation[0]->aiStatus ?? '');
+		if(!$isInternalMessage && ($aiStatusActual == "activa" || $aiStatusActual == "derivada"))
+		$objConversation["aiStatus"] 			= "humano";
 		$this->Customer_Conversation_Model->update_app_posme($objCustomerConversation[0]->conversationID,$objConversation);
-		
-		
+
+
 		//Actualizar la ultima interaccion del colaborador en la conversacion
 		log_message("error","setConversationNotification_ByCustomer >> actualiaz interaccion del colaborador");		
 		$objCCR 					= array();
@@ -1071,6 +1154,10 @@ class app_cxc_api extends _BaseController {
 			$objConversationNew 					= array();
 			$objConversationNew["statusID"] 		= $workflowStageID;
 			$objConversationNew["lastActivityOn"] 	= helper_getDateTime();
+			//Agente de IA: cerrar en la etapa "ATENDIDA POR IA" marca la conversacion como atendida
+			$aiStageAttendedID 						= (int)$this->aiAgentParameter("WHATSAPP_AI_AGENT_STAGE_ATTENDED_ID",$companyID,"0");
+			if($aiStageAttendedID > 0 && (int)$workflowStageID == $aiStageAttendedID)
+			$objConversationNew["aiStatus"] 		= "atendida";
 			$this->Customer_Conversation_Model->update_app_posme($objCustomerConversation[0]->conversationID,$objConversationNew);
 		}
 		
@@ -1132,18 +1219,29 @@ class app_cxc_api extends _BaseController {
 			
 			if($objListConversation)
 			{
-				
+				//La etapa "ATENDIDA POR IA" no se usa al cerrar todas
+				$aiStageAttendedID = (int)$this->aiAgentParameter("WHATSAPP_AI_AGENT_STAGE_ATTENDED_ID",$companyID,"0");
 				foreach($objListConversation as $conversation)
 				{
-					
-					$data 						 = array();
-					$data["statusID"] 			 = $this->core_web_workflow->getWorkflowStageByStageInit(
+					$objListStage 				 = $this->core_web_workflow->getWorkflowStageByStageInit(
 							"tb_customer_conversation","statusID",
 							$conversation->statusID,
 							$companyID,
 							$branchID,
 							$roleID
-					)[0]->workflowStageID;
+					);
+					$objStageClose 				 = $objListStage[0];
+					foreach($objListStage as $objStage)
+					{
+						if((int)$objStage->workflowStageID != $aiStageAttendedID)
+						{
+							$objStageClose = $objStage;
+							break;
+						}
+					}
+
+					$data 						 = array();
+					$data["statusID"] 			 = $objStageClose->workflowStageID;
 					$this->Customer_Conversation_Model->update_app_posme($conversation->conversationID,$data);
 				}
 			}
@@ -1154,6 +1252,76 @@ class app_cxc_api extends _BaseController {
 			'success' => true,
 			'message' => 'entityID recibido'
 		]);
+	}
+
+	/**
+	 * Cambia el estado del agente de IA de la conversacion abierta de un cliente.
+	 * JSON: entityID, accion = tomar (la atiende un humano, la IA deja de contestar)
+	 *                        | atendida (etapa "ATENDIDA POR IA"; el proximo mensaje abre conversacion nueva con IA)
+	 * @return \CodeIgniter\HTTP\ResponseInterface JSON success, message, conversationAI
+	 */
+	function setConversationAI_Status()
+	{
+		try
+		{
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+
+			//PERMISO: el de la pantalla de conversaciones
+			if(APP_NEED_AUTHENTICATION == true)
+			{
+				$permited = $this->core_web_permission->urlPermited("app_cxc_conversation","index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				if(!$permited)
+				throw new \Exception(NOT_ACCESS_CONTROL);
+			}
+
+			//PARAMETROS
+			$data 				= $this->request->getJSON(true);
+			$entityID 			= (int)($data['entityID'] ?? 0);
+			$accion 			= (string)($data['accion'] ?? '');
+			$companyID 			= (int)$dataSession["user"]->companyID;
+			if($entityID <= 0 || !in_array($accion,["tomar","atendida"]))
+			throw new \Exception("Datos incompletos: entityID y accion (tomar | atendida)");
+
+			$objConversation 	= $this->Customer_Conversation_Model->getByEntityIDCustomer_StatusNameRegister($entityID);
+			if(!$objConversation)
+			throw new \Exception("El cliente no tiene una conversación abierta");
+			$conversationID 	= (int)$objConversation[0]->conversationID;
+			$aiData 			= json_decode((string)$objConversation[0]->aiData,true);
+			$aiData 			= is_array($aiData) ? $aiData : [];
+
+			//LOGICA
+			if($accion == "tomar")
+			{
+				$this->Customer_Conversation_Model->update_aiStatus($conversationID,"humano");
+			}
+			else
+			{
+				$stageID = (int)$this->aiAgentParameter("WHATSAPP_AI_AGENT_STAGE_ATTENDED_ID",$companyID,"0");
+				if($stageID <= 0)
+				throw new \Exception("Configure el parámetro WHATSAPP_AI_AGENT_STAGE_ATTENDED_ID");
+				$this->core_web_conversation->markAttendedByAI($companyID,$conversationID,$aiData,(string)$objConversation[0]->aiIntent);
+			}
+			log_message("error","[setConversationAI_Status] conversationID=".$conversationID." accion=".$accion." userID=".$dataSession["user"]->userID);
+
+			//RESPUESTA
+			return $this->response->setJSON([
+				'success' 			=> true,
+				'error' 			=> false,
+				'message' 			=> SUCCESS,
+				'conversationAI' 	=> $this->getConversationAI_Info($entityID)
+			]);
+		}
+		catch(\Exception $ex)
+		{
+			return $this->response->setJSON([
+				'success' 	=> false,
+				'error' 	=> true,
+				'message' 	=> $ex->getLine()." ".$ex->getMessage()
+			]);
+		}
 	}
 	public function WebHookInsertAndUpdateElementLiveConnectWebHook()
 	{
@@ -1515,6 +1683,9 @@ class app_cxc_api extends _BaseController {
 			$genericData["data"]["fromMe"]               = $isFromMe;
 			$genericData["data"]["owner"]["name"]        = $isFromMe ? ($input["data"]["pushName"] ?? '') : '';
 			$genericData["data"]["owner"]["phone"]       = $ownerDigits;
+			//Proveedor (el agente de IA solo responde por EvolutionApi) y si es sticker (la IA lo ignora)
+			$genericData["data"]["provider"]             = "evolutionapi";
+			$genericData["data"]["isSticker"]            = ($messageType == "stickerMessage");
 
 			//Media
 			if($type == "image" || $type == "document" || $type == "ptt" || $type == "video")
@@ -2062,6 +2233,22 @@ class app_cxc_api extends _BaseController {
 			);
 		}
 
+		//////////////////////////////////////////////
+		//Agente de IA de WhatsApp (WHATSAPP_AI_AGENT_ENABLE)
+		//Solo Evolution API y solo mensajes del cliente. Las conversaciones que ya
+		//existian antes de habilitar el agente (aiStatus NULL) siguen el flujo humano.
+		//////////////////////////////////////////////
+		$aiEnabled 		= ($inputData["data"]["provider"] ?? '') == "evolutionapi" && $this->aiAgentIsEnabled($companyID);
+		$aiStatus 		= (string)($objCustomerConversation[0]->aiStatus ?? '');
+		if($aiEnabled && $conversationIsNew)
+		{
+			$this->Customer_Conversation_Model->update_aiStatus($objCustomerConversation[0]->conversationID,"activa");
+			$objCustomerConversation[0]->aiStatus 	= "activa";
+			$aiStatus 								= "activa";
+		}
+		$aiActive 		= $aiEnabled && $aiStatus == "activa";
+		log_message('error', '[Generic]    Agente IA: habilitado=' . ($aiEnabled ? 'SI' : 'NO') . ', aiStatus=' . ($aiStatus == '' ? 'NULL' : $aiStatus));
+
 		$objConversation 						= array();
 		$objConversation["messgeConterNotRead"] = 1 ;
 		$objConversation["lastMessage"] 		= $message ;
@@ -2103,6 +2290,31 @@ class app_cxc_api extends _BaseController {
 		$objNotification["entityIDTarget"] 			= $objCustomer[0]->entityID;
 		$notificationID 							= $this->Notification_Model->insert_app_posme($objNotification);
 		log_message('error', '[Generic]    Notificación insertada: notificationID=' . $notificationID);
+
+		//La IA atiende la conversacion: no se asigna ni se notifica a los agentes
+		//(eso lo hace handoffToHuman cuando la IA deriva)
+		if($aiActive)
+		{
+			log_message('error', '[Generic] >> Conversación atendida por el agente de IA, se omite la asignación a agentes');
+			return $this->webHookAIAgent_Whatsapp_posMe(
+				$dataSession,
+				$objCustomer[0],
+				$objCustomerConversation[0],
+				$objTag->tagID,
+				$notificationID,
+				$message,
+				$messageType,
+				$messageUrl,
+				!empty($inputData["data"]["isSticker"]),
+				[
+					'success' 			=> true,
+					'message'   		=> 'JSON valido',
+					'entityID'			=> $objCustomer[0]->entityID,
+					'converationID'		=> $objCustomerConversation[0]->conversationID,
+					'notificationID'	=> $notificationID
+				]
+			);
+		}
 
 		//////////////////////////////////////////////
 		//Obtener la lista de agentes a afiliar
@@ -2235,7 +2447,406 @@ class app_cxc_api extends _BaseController {
 		];	
 		log_message("error","[Generic] ====== FIN WebHookReceiptMessage_Whatsapp_Generic_posMe ======");
 		log_message("error","[Generic] RESULTADO: entityID=" . $result["entityID"] . ", conversationID=" . $result["converationID"] . ", notificationID=" . $result["notificationID"]);
+
+		//Conversacion derivada que ningun humano ha tomado: la IA puede seguir contestando
+		if(
+			$aiEnabled &&
+			$aiStatus == "derivada" &&
+			$this->aiAgentParameter("WHATSAPP_AI_AGENT_CONTINUE_AFTER_HANDOFF",$companyID,"true") == "true"
+		)
+		{
+			log_message('error', '[Generic] >> Conversación derivada sin tomar, la IA sigue contestando');
+			return $this->webHookAIAgent_Whatsapp_posMe(
+				$dataSession,
+				$objCustomer[0],
+				$objCustomerConversation[0],
+				$objTag->tagID,
+				$notificationID,
+				$message,
+				$messageType,
+				$messageUrl,
+				!empty($inputData["data"]["isSticker"]),
+				$result
+			);
+		}
 		return $this->response->setJSON($result);
+	}
+
+	/**
+	 * Indica si el agente de IA de WhatsApp esta habilitado para la empresa.
+	 * @param int $companyID empresa
+	 * @return bool
+	 */
+	private function aiAgentIsEnabled($companyID)
+	{
+		return $this->aiAgentParameter("WHATSAPP_AI_AGENT_ENABLE",$companyID,"false") == "true";
+	}
+
+	/**
+	 * Lee un parametro del agente de IA sin lanzar excepcion si no existe.
+	 * @param string $name      nombre del parametro
+	 * @param int    $companyID empresa
+	 * @param string $default   valor si el parametro no existe o esta vacio
+	 * @return string valor en minusculas y sin espacios a los lados
+	 */
+	private function aiAgentParameter($name,$companyID,$default)
+	{
+		try
+		{
+			$objParameter 	= $this->core_web_parameter->getParameter($name,$companyID);
+			$value 			= $objParameter ? trim((string)$objParameter->value) : "";
+			//Sin distinguir mayusculas ("TRUE" = "true"); el mensaje de traspaso conserva su texto
+			if($value !== "" && $name != "WHATSAPP_AI_AGENT_HANDOFF_MESSAGE")
+				$value 		= mb_strtolower($value, "UTF-8");
+			return $value === "" ? $default : $value;
+		}
+		catch(\Throwable $ex)
+		{
+			return $default;
+		}
+	}
+
+	/**
+	 * Agente de IA del webhook de WhatsApp (decision 9A).
+	 * Responde 200 de inmediato a Evolution y sigue trabajando en segundo plano:
+	 * espera DEBOUNCE segundos (si llego un mensaje mas nuevo termina, ese otro proceso
+	 * contestara), toma un candado por cliente, pregunta a la IA, envia la respuesta,
+	 * la guarda en la conversacion y ejecuta la accion (derivar a humano | atendida por IA).
+	 * @param array  $dataSession     sesion del usuario por defecto del webhook
+	 * @param object $objCustomer     cliente
+	 * @param object $objConversation conversacion abierta del cliente
+	 * @param int    $tagID           tag "MENSAJE DE CONVERSACION"
+	 * @param int    $notificationID  mensaje del cliente recien guardado
+	 * @param string $message         texto del mensaje
+	 * @param string $messageType     text | image | pdf | audio | video | document
+	 * @param string $messageUrl      url publica del archivo (multimedia)
+	 * @param bool   $isSticker       true si el mensaje es un sticker
+	 * @param array  $result          respuesta JSON para el proveedor
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	private function webHookAIAgent_Whatsapp_posMe($dataSession,$objCustomer,$objConversation,$tagID,$notificationID,$message,$messageType,$messageUrl,$isSticker,$result)
+	{
+		$companyID 		= (int)$dataSession["user"]->companyID;
+		$entityID 		= (int)$objCustomer->entityID;
+		$conversationID = (int)$objConversation->conversationID;
+		$textoLimpio 	= trim(html_entity_decode(strip_tags((string)$message),ENT_QUOTES,'UTF-8'));
+
+		//Sticker sin texto: se guarda pero no se contesta
+		if($isSticker && $textoLimpio == "")
+		{
+			log_message('error', '[AgenteIA] Sticker sin texto, no se contesta. conversationID=' . $conversationID);
+			return $this->response->setJSON($result);
+		}
+
+		//Adjuntos y audios se registran en aiData antes de esperar,
+		//para que no se pierdan si este proceso termina por el debounce
+		if(in_array($messageType,["image","pdf","document","audio","video"]))
+		{
+			$this->aiAgentRegisterMedia($conversationID,$messageType,$messageUrl);
+		}
+
+		//1) Responder 200 de inmediato y seguir en segundo plano
+		$this->aiAgentReleaseClient($result);
+
+		$lockName 	= "posme_ai_" . $companyID . "_" . $entityID;
+		$db 		= db_connect();
+		$tieneLock 	= false;
+		try
+		{
+			//2) Debounce: si el cliente sigue escribiendo, contesta el proceso del ultimo mensaje
+			$debounce 	= max(0,min(30,(int)$this->aiAgentParameter("WHATSAPP_AI_AGENT_DEBOUNCE_SECONDS",$companyID,"3")));
+			if($debounce > 0)
+				sleep($debounce);
+			$objLast 	= $this->Notification_Model->get_rowLastCustomerMessage($entityID,$tagID);
+			if($objLast && (int)$objLast->notificationID > (int)$notificationID)
+			{
+				log_message('error', '[AgenteIA] Llego un mensaje mas nuevo (' . $objLast->notificationID . '), este proceso termina');
+				return $this->response->setJSON($result);
+			}
+
+			//3) Candado por cliente: si otro proceso ya esta contestando, el revisara este mensaje
+			$rowLock 	= $db->query("SELECT GET_LOCK(" . $db->escape($lockName) . ",0) AS l")->getRow();
+			$tieneLock 	= $rowLock && (int)$rowLock->l == 1;
+			if(!$tieneLock)
+			{
+				log_message('error', '[AgenteIA] Otro proceso tiene el candado ' . $lockName . ', este proceso termina');
+				return $this->response->setJSON($result);
+			}
+
+			//4) Contestar; si mientras tanto llegaron mensajes sin responder, otra vuelta (maximo 2)
+			for($vuelta = 1; $vuelta <= 2; $vuelta++)
+			{
+				$objLast 		= $this->Notification_Model->get_rowLastCustomerMessage($entityID,$tagID);
+				$lastCustomerID = $objLast ? (int)$objLast->notificationID : 0;
+				$seguir 		= $this->aiAgentProcessTurn($dataSession,$objCustomer,$conversationID,$tagID);
+				if(!$seguir)
+					break;
+
+				$objLast 		= $this->Notification_Model->get_rowLastCustomerMessage($entityID,$tagID);
+				if(!$objLast || (int)$objLast->notificationID <= $lastCustomerID)
+					break;
+				log_message('error', '[AgenteIA] Hay mensajes sin responder, vuelta ' . ($vuelta + 1));
+			}
+		}
+		catch(\Throwable $ex)
+		{
+			log_message('error', '[AgenteIA] ERROR ' . $ex->getLine() . ' ' . $ex->getMessage());
+		}
+		finally
+		{
+			if($tieneLock)
+				$db->query("SELECT RELEASE_LOCK(" . $db->escape($lockName) . ")");
+		}
+
+		return $this->response->setJSON($result);
+	}
+
+	/**
+	 * Un turno del agente: pregunta a la IA, envia la respuesta y ejecuta la accion.
+	 * @param array  $dataSession    sesion del usuario por defecto del webhook
+	 * @param object $objCustomer    cliente
+	 * @param int    $conversationID conversacion
+	 * @param int    $tagID          tag "MENSAJE DE CONVERSACION"
+	 * @return bool true si la IA sigue a cargo de la conversacion (puede haber otra vuelta)
+	 */
+	private function aiAgentProcessTurn($dataSession,$objCustomer,$conversationID,$tagID)
+	{
+		$companyID 		= (int)$dataSession["user"]->companyID;
+		$companyType 	= $dataSession["company"]->type;
+		$phone 			= getNumberPhone(clearNumero($objCustomer->phoneNumber));
+
+		//Volver a leer la conversacion: un humano pudo tomarla mientras se esperaba
+		$objConversation = $this->aiAgentReadConversation($conversationID);
+		if(!$objConversation)
+			return false;
+		$aiStatus = (string)$objConversation->aiStatus;
+		if(!$this->aiAgentCanAnswer($companyID,$aiStatus))
+		{
+			log_message('error', '[AgenteIA] aiStatus=' . $aiStatus . ', la IA no contesta');
+			return false;
+		}
+
+		$aiDataActual 	= json_decode((string)$objConversation->aiData,true);
+		$aiDataActual 	= is_array($aiDataActual) ? $aiDataActual : [];
+
+		//Segundo audio/video: se pasa a un humano sin llamar a la IA
+		if($aiStatus == "activa" && (int)($aiDataActual["audios"] ?? 0) >= 2)
+		{
+			$aiResult = [
+				"ok" 		=> true,
+				"accion" 	=> "derivar",
+				"respuesta" => "",
+				"motivo" 	=> "el cliente envía audios o videos",
+				"resumen" 	=> "",
+				"intent" 	=> (string)$objConversation->aiIntent,
+				"aiData" 	=> $aiDataActual
+			];
+		}
+		else
+		{
+			$aiResult = $this->core_web_ai->askWhatsapp($companyID,$objCustomer,$objConversation,$tagID);
+		}
+
+		//Falla de la IA (decision 5): flujo humano normal, sin aviso al cliente
+		if(empty($aiResult["ok"]))
+		{
+			$this->aiAgentLogFailure($companyID,(string)($aiResult["error"] ?? ''));
+			if($aiStatus == "activa")
+			{
+				$aiResult["accion"] 	= "";
+				$aiResult["motivo"] 	= "la IA no pudo responder (" . (string)($aiResult["error"] ?? '') . ")";
+				$aiResult["aiData"] 	= $this->aiAgentMergeData($conversationID,$aiResult["aiData"] ?? $aiDataActual);
+				$this->core_web_conversation->handoffToHuman($dataSession,$objConversation,$objCustomer,$aiResult,(string)$objConversation->lastMessage);
+			}
+			return false;
+		}
+
+		$respuesta 	= trim((string)($aiResult["respuesta"] ?? ''));
+		$accion 	= (string)($aiResult["accion"] ?? '');
+		$aiData 	= $this->aiAgentMergeData($conversationID,$aiResult["aiData"] ?? $aiDataActual);
+		$aiResult["aiData"] = $aiData;
+
+		//Al derivar se envia el mensaje de traspaso del parametro (o el texto de la IA si esta vacio)
+		if($accion == "derivar")
+		{
+			$handoffMessage = $this->aiAgentParameter("WHATSAPP_AI_AGENT_HANDOFF_MESSAGE",$companyID,"");
+			if($handoffMessage != "")
+				$respuesta = $handoffMessage;
+		}
+
+		//Volver a leer aiStatus justo antes de enviar
+		$objConversation = $this->aiAgentReadConversation($conversationID);
+		if(!$objConversation || !$this->aiAgentCanAnswer($companyID,(string)$objConversation->aiStatus))
+		{
+			log_message('error', '[AgenteIA] La conversacion cambio de estado durante la consulta, se descarta la respuesta');
+			return false;
+		}
+
+		if($respuesta != "")
+		{
+			$resultSend = $this->core_web_whatsap->sendMessageGeneric($companyType,$companyID,$respuesta,$phone,true,"");
+			if(is_array($resultSend) && isset($resultSend["success"]) && $resultSend["success"] === false)
+				log_message('error', '[AgenteIA] No se pudo enviar la respuesta: ' . (string)($resultSend["error"] ?? ''));
+			$this->core_web_conversation->insertAIMessage($companyID,$objCustomer,$respuesta,'mensaje ia');
+
+			$objUpdate 							= array();
+			$objUpdate["lastMessage"] 			= $respuesta;
+			$objUpdate["lastActivityOn"] 		= helper_getDateTime();
+			$objUpdate["messageSendOn"] 		= helper_getDateTime();
+			$this->Customer_Conversation_Model->update_app_posme($conversationID,$objUpdate);
+		}
+
+		$intent = (string)($aiResult["intent"] ?? '');
+		if($accion == "derivar")
+		{
+			//Solo una conversacion activa se deriva; una ya derivada sigue esperando al humano
+			if((string)$objConversation->aiStatus == "activa")
+				$this->core_web_conversation->handoffToHuman($dataSession,$objConversation,$objCustomer,$aiResult,(string)$objConversation->lastMessage);
+			else
+				$this->Customer_Conversation_Model->update_aiStatus($conversationID,(string)$objConversation->aiStatus,["aiIntent" => ($intent != "" ? $intent : NULL),"aiData" => json_encode($aiData,JSON_UNESCAPED_UNICODE)]);
+			return false;
+		}
+		if($accion == "atendida")
+		{
+			$this->core_web_conversation->markAttendedByAI($companyID,$conversationID,$aiData,$intent);
+			return false;
+		}
+
+		$this->Customer_Conversation_Model->update_aiStatus($conversationID,(string)$objConversation->aiStatus,["aiIntent" => ($intent != "" ? $intent : NULL),"aiData" => json_encode($aiData,JSON_UNESCAPED_UNICODE)]);
+		return true;
+	}
+
+	/**
+	 * Indica si la IA puede contestar con el estado actual de la conversacion.
+	 * @param int    $companyID empresa
+	 * @param string $aiStatus  activa | derivada | humano | atendida | ''
+	 * @return bool
+	 */
+	private function aiAgentCanAnswer($companyID,$aiStatus)
+	{
+		if($aiStatus == "activa")
+			return true;
+		if($aiStatus == "derivada")
+			return $this->aiAgentParameter("WHATSAPP_AI_AGENT_CONTINUE_AFTER_HANDOFF",$companyID,"true") == "true";
+		return false;
+	}
+
+	/**
+	 * Lee la conversacion abierta por su ID (con los campos de IA).
+	 * @param int $conversationID conversacion
+	 * @return object|null
+	 */
+	private function aiAgentReadConversation($conversationID)
+	{
+		$rows = $this->Customer_Conversation_Model->getByConversationID((int)$conversationID);
+		return $rows ? $rows[0] : null;
+	}
+
+	/**
+	 * Une el aiData calculado por la IA con lo guardado en BD mientras se consultaba
+	 * (adjuntos y audios que registraron otros procesos del webhook).
+	 * @param int   $conversationID conversacion
+	 * @param array $aiData         aiData devuelto por la IA
+	 * @return array aiData final
+	 */
+	private function aiAgentMergeData($conversationID,$aiData)
+	{
+		$aiData 	= is_array($aiData) ? $aiData : [];
+		$objConv 	= $this->aiAgentReadConversation($conversationID);
+		$aiDataBD 	= $objConv ? json_decode((string)$objConv->aiData,true) : [];
+		$aiDataBD 	= is_array($aiDataBD) ? $aiDataBD : [];
+
+		$aiData["adjuntos"] = array_values(array_unique(array_merge(
+			is_array($aiData["adjuntos"] ?? null) ? $aiData["adjuntos"] : [],
+			is_array($aiDataBD["adjuntos"] ?? null) ? $aiDataBD["adjuntos"] : []
+		)));
+		$aiData["audios"] 	= max((int)($aiData["audios"] ?? 0),(int)($aiDataBD["audios"] ?? 0));
+		unset($aiData["accion"]);
+		return $aiData;
+	}
+
+	/**
+	 * Registra en aiData la url de una imagen/documento (adjuntos) o cuenta un audio/video.
+	 * @param int    $conversationID conversacion
+	 * @param string $messageType    tipo del mensaje
+	 * @param string $messageUrl     url publica del archivo
+	 * @return void
+	 */
+	private function aiAgentRegisterMedia($conversationID,$messageType,$messageUrl)
+	{
+		$objConv 	= $this->aiAgentReadConversation($conversationID);
+		if(!$objConv)
+			return;
+		$aiData 	= json_decode((string)$objConv->aiData,true);
+		$aiData 	= is_array($aiData) ? $aiData : [];
+
+		if(in_array($messageType,["audio","video"]))
+		{
+			$aiData["audios"] = (int)($aiData["audios"] ?? 0) + 1;
+		}
+		else if((string)$messageUrl != "")
+		{
+			$adjuntos 			= is_array($aiData["adjuntos"] ?? null) ? $aiData["adjuntos"] : [];
+			$adjuntos[] 		= (string)$messageUrl;
+			$aiData["adjuntos"] = array_values(array_unique($adjuntos));
+		}
+
+		$this->Customer_Conversation_Model->update_aiStatus($conversationID,(string)$objConv->aiStatus,["aiData" => json_encode($aiData,JSON_UNESCAPED_UNICODE)]);
+	}
+
+	/**
+	 * Envia la respuesta HTTP al proveedor y cierra la conexion, dejando que el
+	 * script siga trabajando (mod_php / php-fpm).
+	 * @param array $result respuesta JSON
+	 * @return void
+	 */
+	private function aiAgentReleaseClient($result)
+	{
+		ignore_user_abort(true);
+		@set_time_limit(120);
+		if(session_status() == PHP_SESSION_ACTIVE)
+			session_write_close();
+
+		$body = json_encode($result);
+		while(ob_get_level() > 0)
+			ob_end_clean();
+
+		if(!headers_sent())
+		{
+			http_response_code(200);
+			header("Content-Type: application/json; charset=UTF-8");
+			header("Content-Length: " . strlen($body));
+			header("Connection: close");
+		}
+		echo $body;
+		flush();
+		if(function_exists("fastcgi_finish_request"))
+			fastcgi_finish_request();
+
+		//Buffer nuevo para que CodeIgniter termine normal; lo que imprima ya no llega al proveedor
+		ob_start();
+	}
+
+	/**
+	 * Registra en el log una falla del agente de IA como maximo una vez por hora por empresa.
+	 * @param int    $companyID empresa
+	 * @param string $error     codigo o texto del error
+	 * @return void
+	 */
+	private function aiAgentLogFailure($companyID,$error)
+	{
+		$key = "posme_ai_fail_" . (int)$companyID;
+		try
+		{
+			$cache = \Config\Services::cache();
+			if($cache->get($key))
+				return;
+			$cache->save($key,1,3600);
+		}
+		catch(\Throwable $ex)
+		{
+		}
+		log_message('error', '[AgenteIA] La IA no pudo responder (companyID=' . $companyID . '): ' . $error . '. Se pasa la conversación a un humano.');
 	}
 
 	/**
@@ -2293,6 +2904,14 @@ class app_cxc_api extends _BaseController {
 		$objConversation["lastActivityOn"] 	= helper_getDateTime();
 		$objConversation["messageSendOn"] 	= helper_getDateTime();
 		$this->Customer_Conversation_Model->update_app_posme($conversationID, $objConversation);
+
+		//Agente de IA: el dueño contesto desde su telefono, la conversacion la toma un humano
+		$aiStatusOwner = (string)($objCustomerConversation->aiStatus ?? '');
+		if($aiStatusOwner == "activa" || $aiStatusOwner == "derivada")
+		{
+			$this->Customer_Conversation_Model->update_aiStatus($conversationID, "humano");
+			log_message('error', '[Generic]    Agente IA: aiStatus ' . $aiStatusOwner . ' -> humano (respondio el dueño)');
+		}
 
 		//Ultima interaccion del colaborador en la conversacion
 		if($entityIDEmployer > 0)

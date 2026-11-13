@@ -45,6 +45,8 @@ class Workflow_Stage_Relation_Model extends Model  {
 			ws.flavorID 		= $flavorID and
 			ws2.flavorID 		= $flavorID and
 			ws.workflowStageID 	= $sourceStageID
+		order by
+			wsr.workflowStageTargetID
 		";
 		
 		//Ejecutar Consulta

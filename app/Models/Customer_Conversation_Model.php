@@ -15,7 +15,7 @@ class Customer_Conversation_Model extends Model
 
     protected $returnType     = 'array';
     protected $useSoftDeletes = false;
-    protected $allowedFields  = ['conversationID','entityIDSource', 'entityIDTarget','componentIDSource','componentIDTarget','createdOn','statusID','messageCounter','messageReceiptOn','messageSendOn','messgeConterNotRead', 'reference1','reference2', 'reference3','lastActivityOn','lastMessage','isActive'];
+    protected $allowedFields  = ['conversationID','entityIDSource', 'entityIDTarget','componentIDSource','componentIDTarget','createdOn','statusID','messageCounter','messageReceiptOn','messageSendOn','messgeConterNotRead', 'reference1','reference2', 'reference3','lastActivityOn','lastMessage','isActive','aiStatus','aiIntent','aiData','aiHandoffOn'];
 
     // Dates
     protected $useTimestamps = false;
@@ -99,15 +99,19 @@ class Customer_Conversation_Model extends Model
 					c.reference3,
 					c.isActive,
 					c.lastActivityOn,
-					c.lastMessage 
-				FROM 
-					tb_customer_conversation c 
-					inner join tb_workflow_stage ws on 
-						ws.workflowStageID = c.statusID 
-				where 
-					c.entityIDSource = $entityIDCustomer and 
-					c.isActive = 1 and 
-					ws.isInit = 1 
+					c.lastMessage,
+					c.aiStatus,
+					c.aiIntent,
+					c.aiData,
+					c.aiHandoffOn
+				FROM
+					tb_customer_conversation c
+					inner join tb_workflow_stage ws on
+						ws.workflowStageID = c.statusID
+				where
+					c.entityIDSource = $entityIDCustomer and
+					c.isActive = 1 and
+					ws.isInit = 1
 				
 			";
 			
@@ -179,13 +183,17 @@ class Customer_Conversation_Model extends Model
 					c.reference3,
 					c.isActive,
 					c.lastActivityOn,
-					c.lastMessage 
-				FROM 
-					tb_customer_conversation c 
-					inner join tb_workflow_stage ws on 
-						ws.workflowStageID = c.statusID 
-				where 
-					c.conversationID = $conversationID and 
+					c.lastMessage,
+					c.aiStatus,
+					c.aiIntent,
+					c.aiData,
+					c.aiHandoffOn
+				FROM
+					tb_customer_conversation c
+					inner join tb_workflow_stage ws on
+						ws.workflowStageID = c.statusID
+				where
+					c.conversationID = $conversationID and
 					c.isActive = 1 
 				
 			";
@@ -428,5 +436,51 @@ class Customer_Conversation_Model extends Model
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
 	}
+	
+	/**
+	 * Estado del agente de IA de la conversacion abierta (etapa isInit = 1) de varios clientes, en una sola consulta.
+	 * Lo usa la bandeja de conversaciones para pintar el badge sin tocar la dataview.
+	 * @param array $entityIDs entityID de los clientes
+	 * @return array lista de objetos (entityIDSource, aiStatus, aiIntent)
+	 */
+	function get_rowAIStatusByEntityIDs($entityIDs)
+	{
+		$entityIDs = array_values(array_filter(array_map('intval', (array)$entityIDs)));
+		if(empty($entityIDs))
+			return array();
+		
+		$db 	= db_connect();
+		$sql 	= "";
+		$sql 	= $sql.sprintf("select ");
+		$sql 	= $sql.sprintf("	c.entityIDSource, ");
+		$sql 	= $sql.sprintf("	c.aiStatus, ");
+		$sql 	= $sql.sprintf("	c.aiIntent ");
+		$sql 	= $sql.sprintf("from ");
+		$sql 	= $sql.sprintf("	tb_customer_conversation c ");
+		$sql 	= $sql.sprintf("	inner join tb_workflow_stage ws on ");
+		$sql 	= $sql.sprintf("		ws.workflowStageID = c.statusID ");
+		$sql 	= $sql.sprintf("where ");
+		$sql 	= $sql.sprintf("	c.isActive = 1 and ");
+		$sql 	= $sql.sprintf("	ws.isInit = 1 and ");
+		$sql 	= $sql.sprintf("	c.aiStatus is not null and ");
+		$sql 	= $sql.sprintf("	c.entityIDSource in (%s) ", implode(",", $entityIDs));
+		
+		return $db->query($sql)->getResult();
+	}
+	
+	/**
+	 * Cambia el estado del agente de IA de una conversacion.
+	 * @param int    $conversationID conversacion
+	 * @param string $aiStatus       activa | derivada | humano | atendida
+	 * @param array  $extra          campos adicionales (aiIntent, aiData, aiHandoffOn)
+	 * @return bool
+	 */
+	function update_aiStatus($conversationID, $aiStatus, $extra = array())
+	{
+		$data 				= $extra;
+		$data["aiStatus"] 	= $aiStatus;
+		return $this->update_app_posme($conversationID, $data);
+	}
+
 }
 ?>

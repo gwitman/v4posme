@@ -82,6 +82,22 @@ class core_web_ai_tools
     private $Ai_Chat_Model;
 
     /**
+     * Herramientas que puede usar el agente de IA de WhatsApp (clientes externos).
+     * LISTA BLANCA: nunca se exponen consulta_sql, buscar_cliente, cuentas_por_cobrar ni ninguna otra.
+     */
+    const HERRAMIENTAS_EXTERNAS = ["mi_saldo", "verificar_identidad", "buscar_en_manual", "registrar_dato", "derivar_a_humano", "marcar_atendida_ia"];
+
+    /** Intentos fallidos de verificacion de identidad antes de pasar a un humano. */
+    const MAX_INTENTOS_IDENTIDAD = 2;
+
+    /** Contexto del agente externo (WhatsApp): cliente fijado por el servidor y datos captados. */
+    private $modoExterno         = false;
+    private $entityIDCustomer    = 0;
+    private $telefonoExterno     = "";
+    private $aiData              = [];
+    private $permitidasExternas  = [];
+
+    /**
      * Fija el contexto de la sesion. Debe llamarse antes de usar cualquier herramienta.
      *
      * @param array $dataSession Sesion del usuario logueado.
@@ -94,6 +110,7 @@ class core_web_ai_tools
         $this->userID        = (int) $dataSession["user"]->userID;
         $this->db            = null;
         $this->Ai_Chat_Model = new Ai_Chat_Model();
+        $this->modoExterno   = false;
     }
 
     /* =================================================================================
@@ -354,6 +371,10 @@ class core_web_ai_tools
     {
         $input = is_array($input) ? $input : [];
 
+        // El agente externo (WhatsApp) nunca usa las herramientas internas de Jordania
+        if ($this->modoExterno) {
+            return ["ok" => false, "contenido" => "Herramienta no disponible: " . $nombre];
+        }
         if (!isset(self::$HERRAMIENTAS[$nombre])) {
             return ["ok" => false, "contenido" => "Herramienta desconocida: " . $nombre];
         }
@@ -383,6 +404,342 @@ class core_web_ai_tools
         } catch (\Throwable $ex) {
             log_message("error", "core_web_ai_tools " . $nombre . ": " . $ex->getMessage());
             return ["ok" => false, "contenido" => "Error al ejecutar " . $nombre . ": " . self::mensajeErrorSeguro($ex->getMessage())];
+        }
+    }
+
+    /* =================================================================================
+       AGENTE EXTERNO (WhatsApp)
+       El interlocutor es un cliente, no un usuario de posMe: no hay sesion, el companyID
+       lo fija el webhook y el cliente lo fija el servidor (nunca lo elige Claude).
+    ================================================================================= */
+
+    /**
+     * Fija el contexto del agente de WhatsApp. Debe llamarse antes de usar las herramientas externas.
+     *
+     * @param int    $companyID        Empresa (APP_COMPANY del webhook).
+     * @param int    $entityIDCustomer entityID del cliente de la conversacion.
+     * @param string $telefono         Telefono de WhatsApp del cliente.
+     * @param array  $aiData           Datos ya captados (tb_customer_conversation.aiData).
+     * @return void
+     */
+    function initExterno($companyID, $entityIDCustomer, $telefono, $aiData)
+    {
+        $this->dataSession      = null;
+        $this->companyID        = (int) $companyID;
+        $this->userID           = 0;
+        $this->db               = null;
+        $this->Ai_Chat_Model    = new Ai_Chat_Model();
+        $this->modoExterno      = true;
+        $this->entityIDCustomer = (int) $entityIDCustomer;
+        $this->telefonoExterno  = (string) $telefono;
+        $this->aiData           = is_array($aiData) ? $aiData : [];
+        $this->permitidasExternas = [];
+    }
+
+    /**
+     * Datos captados y acciones pedidas por el agente (intent, datos, verificado, accion, motivo, resumen...).
+     *
+     * @return array
+     */
+    function getEstadoExterno()
+    {
+        return $this->aiData;
+    }
+
+    /**
+     * Definicion de las herramientas externas permitidas.
+     * Siempre: registrar_dato. Si $puedeCerrar: derivar_a_humano y marcar_atendida_ia.
+     * Ademas las que pidan las skills, siempre dentro de la lista blanca.
+     *
+     * @param array $toolsSkill  Nombres de herramientas que declaran las skills (tb_ai_skill.tools).
+     * @param bool  $puedeCerrar false cuando la conversacion ya fue derivada (la IA solo responde).
+     * @return array
+     */
+    function getDefinicionHerramientasExterno($toolsSkill, $puedeCerrar = true)
+    {
+        $intencion = ["type" => "string", "description" => "Codigo de la intencion/objetivo detectado (ej. saldo_cxc, soporte, prospecto)"];
+
+        $todas = [
+            "mi_saldo" => [
+                "name"         => "mi_saldo",
+                "description"  => "Saldo y cuotas pendientes del cliente que escribe. No recibe parametros: el cliente lo fija el sistema. Si responde requiere_verificacion, pide cedula o codigo de cliente y nombre completo y usa verificar_identidad.",
+                "input_schema" => ["type" => "object", "properties" => new \stdClass()],
+            ],
+            "verificar_identidad" => [
+                "name"         => "verificar_identidad",
+                "description"  => "Verifica la identidad del cliente con su cedula (identificacion) o codigo de cliente Y su nombre completo exacto. Solo hay " . self::MAX_INTENTOS_IDENTIDAD . " intentos.",
+                "input_schema" => [
+                    "type"       => "object",
+                    "properties" => [
+                        "identificacion_o_codigo" => ["type" => "string", "description" => "Cedula o codigo de cliente que escribio el cliente"],
+                        "nombre_completo"         => ["type" => "string", "description" => "Nombre completo que escribio el cliente"],
+                    ],
+                    "required"   => ["identificacion_o_codigo", "nombre_completo"],
+                ],
+            ],
+            "buscar_en_manual" => [
+                "name"         => "buscar_en_manual",
+                "description"  => "Busca en el manual de uso de posMe como hacer algo en el sistema. Util para dudas simples de soporte.",
+                "input_schema" => ["type" => "object", "properties" => ["texto" => ["type" => "string"]], "required" => ["texto"]],
+            ],
+            "registrar_dato" => [
+                "name"         => "registrar_dato",
+                "description"  => "Guarda un dato que dio el cliente (ej. nombre, empresa, problema, modulo, telefono, correo, interes). Usala cada vez que el cliente te de un dato requerido.",
+                "input_schema" => [
+                    "type"       => "object",
+                    "properties" => [
+                        "campo"     => ["type" => "string", "description" => "Nombre corto del dato en minusculas (ej. nombre, empresa, problema)"],
+                        "valor"     => ["type" => "string"],
+                        "intencion" => $intencion,
+                    ],
+                    "required"   => ["campo", "valor"],
+                ],
+            ],
+            "derivar_a_humano" => [
+                "name"         => "derivar_a_humano",
+                "description"  => "Pasa la conversacion a un asesor humano. Usala cuando ya tengas los datos requeridos de un objetivo que se deriva, cuando el cliente pida hablar con una persona, o cuando no puedas ayudar.",
+                "input_schema" => [
+                    "type"       => "object",
+                    "properties" => [
+                        "motivo"    => ["type" => "string", "description" => "Por que se deriva"],
+                        "resumen"   => ["type" => "string", "description" => "Resumen breve del caso para el asesor"],
+                        "intencion" => $intencion,
+                    ],
+                    "required"   => ["motivo", "resumen"],
+                ],
+            ],
+            "marcar_atendida_ia" => [
+                "name"         => "marcar_atendida_ia",
+                "description"  => "Marca la conversacion como resuelta por la IA. Usala solo cuando el objetivo se resolvio por completo (ej. ya le diste su saldo) y el cliente no necesita nada mas.",
+                "input_schema" => [
+                    "type"       => "object",
+                    "properties" => [
+                        "resumen"   => ["type" => "string", "description" => "Resumen breve de lo atendido"],
+                        "intencion" => $intencion,
+                    ],
+                    "required"   => ["resumen"],
+                ],
+            ],
+        ];
+
+        $nombres = ["registrar_dato"];
+        if ($puedeCerrar) {
+            $nombres[] = "derivar_a_humano";
+            $nombres[] = "marcar_atendida_ia";
+        }
+        foreach ((array) $toolsSkill as $nombre) {
+            $nombre = (string) $nombre;
+            // En una conversacion derivada las herramientas de cierre no se ofrecen aunque la skill las declare
+            if (!$puedeCerrar && in_array($nombre, ["derivar_a_humano", "marcar_atendida_ia"], true)) {
+                continue;
+            }
+            if (in_array($nombre, self::HERRAMIENTAS_EXTERNAS, true) && !in_array($nombre, $nombres, true)) {
+                $nombres[] = $nombre;
+            }
+        }
+        // verificar_identidad solo tiene sentido junto con mi_saldo
+        if (in_array("mi_saldo", $nombres, true) && !in_array("verificar_identidad", $nombres, true)) {
+            $nombres[] = "verificar_identidad";
+        }
+
+        $definicion = [];
+        foreach ($nombres as $nombre) {
+            $definicion[] = $todas[$nombre];
+        }
+        $this->permitidasExternas = $nombres;
+        return $definicion;
+    }
+
+    /**
+     * Ejecuta una herramienta externa pedida por Claude. Solo las de la lista blanca y las entregadas en la definicion.
+     *
+     * @param string $nombre Nombre de la herramienta.
+     * @param array  $input  Parametros enviados por Claude.
+     * @return array ['ok' => bool, 'contenido' => string]
+     */
+    function ejecutarExterno($nombre, $input)
+    {
+        $input = is_array($input) ? $input : [];
+        if (!$this->modoExterno
+            || !in_array($nombre, self::HERRAMIENTAS_EXTERNAS, true)
+            || !in_array($nombre, $this->permitidasExternas, true)) {
+            return ["ok" => false, "contenido" => "Herramienta no disponible: " . $nombre];
+        }
+
+        try {
+            switch ($nombre) {
+                case "mi_saldo":            $resultado = $this->miSaldo(); break;
+                case "verificar_identidad": $resultado = $this->verificarIdentidad($input); break;
+                case "buscar_en_manual":    $resultado = $this->buscarEnManual($input); break;
+                case "registrar_dato":      $resultado = $this->registrarDato($input); break;
+                case "derivar_a_humano":    $resultado = $this->marcarAccion("derivar", $input); break;
+                case "marcar_atendida_ia":  $resultado = $this->marcarAccion("atendida", $input); break;
+                default:                    $resultado = ["error" => "no implementada"];
+            }
+            return ["ok" => true, "contenido" => self::toJson($resultado)];
+        } catch (\Throwable $ex) {
+            log_message("error", "core_web_ai_tools externo " . $nombre . ": " . $ex->getMessage());
+            return ["ok" => false, "contenido" => "Error al ejecutar " . $nombre . ": " . self::mensajeErrorSeguro($ex->getMessage())];
+        }
+    }
+
+    /**
+     * Ultimos 8 digitos del telefono (Nicaragua); sirve para comparar con o sin codigo de pais.
+     *
+     * @param string $telefono
+     * @return string
+     */
+    static function digitosTelefono($telefono)
+    {
+        $digitos = preg_replace('/\D/', '', (string) $telefono);
+        return strlen($digitos) > 8 ? substr($digitos, -8) : $digitos;
+    }
+
+    /**
+     * Cliente fijado para consultar saldo: el ya verificado o, si solo un cliente tiene ese telefono, ese.
+     *
+     * @return int customerID (cliente_id de ai_v_clientes) o 0
+     */
+    private function clienteVerificado()
+    {
+        if (!empty($this->aiData["verificado"])) {
+            return (int) $this->aiData["verificado"];
+        }
+
+        $digitos = self::digitosTelefono($this->telefonoExterno);
+        if (strlen($digitos) < 7) {
+            return 0;
+        }
+
+        $db    = $this->getConexion();
+        $filas = $this->consultar("
+            SELECT cliente_id
+            FROM ai_v_clientes
+            WHERE REPLACE(REPLACE(REPLACE(REPLACE(IFNULL(telefono, ''), ' ', ''), '-', ''), '+', ''), '.', '') LIKE " . $db->escape("%" . $digitos) . "
+            LIMIT 2", "mi_saldo_telefono", ["telefono" => $digitos]);
+
+        // Regla: un solo cliente con ese telefono => se le da su saldo directo
+        if (count($filas) == 1) {
+            $this->aiData["verificado"] = (int) $filas[0]["cliente_id"];
+            return (int) $filas[0]["cliente_id"];
+        }
+        return 0;
+    }
+
+    /**
+     * Saldo del cliente que escribe. Nunca recibe un cliente: lo fija el servidor.
+     *
+     * @return array
+     */
+    private function miSaldo()
+    {
+        $clienteID = $this->clienteVerificado();
+        if ($clienteID <= 0) {
+            return [
+                "requiere_verificacion" => true,
+                "instruccion"           => "Pide al cliente su numero de cedula o su codigo de cliente y su nombre completo; luego usa verificar_identidad.",
+            ];
+        }
+
+        $estado = $this->estadoCuentaCliente(["cliente_id" => $clienteID]);
+        // Solo datos utiles para el cliente: sin identificadores internos
+        unset($estado["cliente"]["cliente_id"]);
+        return $estado;
+    }
+
+    /**
+     * Verifica cedula/codigo + nombre exacto. Al segundo fallo pide derivar a un humano.
+     *
+     * @param array $input identificacion_o_codigo, nombre_completo
+     * @return array
+     */
+    private function verificarIdentidad($input)
+    {
+        $intentos = (int) ($this->aiData["intentosIdentidad"] ?? 0);
+        if ($intentos >= self::MAX_INTENTOS_IDENTIDAD) {
+            return ["verificado" => false, "instruccion" => "Ya no quedan intentos. Usa derivar_a_humano con motivo 'identidad no verificada'."];
+        }
+
+        $documento = trim((string) ($input["identificacion_o_codigo"] ?? ""));
+        $nombre    = trim((string) ($input["nombre_completo"] ?? ""));
+        if ($documento === "" || $nombre === "") {
+            return ["verificado" => false, "instruccion" => "Faltan datos: pide cedula o codigo de cliente y nombre completo."];
+        }
+
+        $db    = $this->getConexion();
+        $filas = $this->consultar("
+            SELECT cliente_id, nombre
+            FROM ai_v_clientes
+            WHERE identificacion = " . $db->escape($documento) . "
+                OR codigo = " . $db->escape($documento) . "
+            LIMIT 5", "verificar_identidad", ["documento" => $documento]);
+
+        $esperado = preg_replace('/\s+/', ' ', self::normalizar($nombre));
+        foreach ($filas as $fila) {
+            if (preg_replace('/\s+/', ' ', self::normalizar(trim((string) $fila["nombre"]))) === $esperado) {
+                $this->aiData["verificado"]        = (int) $fila["cliente_id"];
+                $this->aiData["intentosIdentidad"] = 0;
+                return ["verificado" => true, "instruccion" => "Identidad verificada. Ya puedes usar mi_saldo."];
+            }
+        }
+
+        $intentos++;
+        $this->aiData["intentosIdentidad"] = $intentos;
+        if ($intentos >= self::MAX_INTENTOS_IDENTIDAD) {
+            return ["verificado" => false, "instruccion" => "No coincide y no quedan intentos. Usa derivar_a_humano con motivo 'identidad no verificada'. No des pistas de que dato fallo."];
+        }
+        return ["verificado" => false, "instruccion" => "No coincide. Pide amablemente que revise los datos (queda 1 intento). No des pistas de que dato fallo."];
+    }
+
+    /**
+     * Guarda un dato captado del cliente en aiData.datos.
+     *
+     * @param array $input campo, valor, intencion
+     * @return array
+     */
+    private function registrarDato($input)
+    {
+        // Se quitan tildes antes de normalizar para que "teléfono" y "telefono" sean la misma clave
+        $campo = strtr(mb_strtolower(trim((string) ($input["campo"] ?? "")), "UTF-8"), ["á" => "a", "é" => "e", "í" => "i", "ó" => "o", "ú" => "u", "ü" => "u", "ñ" => "n"]);
+        $campo = preg_replace('/[^a-z0-9_]/', '_', $campo);
+        $campo = substr(trim($campo, "_"), 0, 40);
+        $valor = mb_substr(trim((string) ($input["valor"] ?? "")), 0, 500);
+        if ($campo === "" || $valor === "") {
+            return ["error" => "campo y valor son obligatorios"];
+        }
+        $this->setIntencion($input);
+        $this->aiData["datos"]         = isset($this->aiData["datos"]) && is_array($this->aiData["datos"]) ? $this->aiData["datos"] : [];
+        $this->aiData["datos"][$campo] = $valor;
+        return ["guardado" => true, "datos" => $this->aiData["datos"]];
+    }
+
+    /**
+     * Registra la accion de cierre pedida por el agente (derivar | atendida). La aplica el webhook al terminar.
+     *
+     * @param string $accion derivar | atendida
+     * @param array  $input  motivo, resumen, intencion
+     * @return array
+     */
+    private function marcarAccion($accion, $input)
+    {
+        $this->setIntencion($input);
+        $this->aiData["accion"]  = $accion;
+        $this->aiData["motivo"]  = mb_substr(trim((string) ($input["motivo"] ?? "")), 0, 300);
+        $this->aiData["resumen"] = mb_substr(trim((string) ($input["resumen"] ?? "")), 0, 1000);
+        return [
+            "registrado"  => true,
+            "instruccion" => $accion == "derivar"
+                ? "Listo. No escribas nada mas; el sistema le avisa al cliente."
+                : "Listo. Despidete en una linea, sin preguntas.",
+        ];
+    }
+
+    /** Fija aiData.intent si viene una intencion valida (letras, numeros y guion bajo). */
+    private function setIntencion($input)
+    {
+        $intencion = strtolower(trim((string) ($input["intencion"] ?? "")));
+        if ($intencion !== "" && preg_match('/^[a-z0-9_]{2,40}$/', $intencion)) {
+            $this->aiData["intent"] = $intencion;
         }
     }
 

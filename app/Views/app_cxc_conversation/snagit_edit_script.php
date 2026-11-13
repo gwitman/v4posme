@@ -19,7 +19,12 @@ createApp({
 			parametroNoDebeVerFoto:			<?php echo $objParameterCONVERSATION_LIST_CONVERSATION_NOT_PHOTE; ?>,
 			parametroNoDebeEscucharSonido:	<?php echo $objParameterCONVERSATION_LIST_CONVERSATION_NOT_BELL; ?>,
 			unreadCount:				0,
-			
+
+			// Agente de IA de WhatsApp (tarjeta "Agente IA")
+			conversationAI:				null,
+			accionIA:					'',
+			procesandoIA:				false,
+
 			// Variables para paginación de mensajes
 			currentPage:				1,
 			messagesPerPage:			50,
@@ -141,7 +146,12 @@ createApp({
 				const json 			= await res.json();
 				this.mostrarWaite	= false;
 				this.loadingMore	= false;
-				
+
+				// Estado del agente de IA: solo viene en la primera página
+				if (!loadMore && json.success === true) {
+					this.conversationAI = json.conversationAI || null;
+				}
+
 				// 🔴 CASO 1: success 	= false
 				if (json.success === false) {
 					if (!loadMore) {
@@ -246,7 +256,63 @@ createApp({
 				chatContainer.scrollTop += scrollDiff;
 			});
 		},
-		openImageModal(imageUrl) 
+		fnTextoEstadoIA(aiStatus)
+		{
+			// Texto visible del estado del agente de IA
+			const textos = {
+				activa: 	'IA atendiendo',
+				derivada: 	'IA derivó a un asesor',
+				humano: 	'Atiende un asesor',
+				atendida: 	'Atendida por IA'
+			};
+			return textos[aiStatus] || aiStatus;
+		},
+		fnConfirmarAccionIA(accion)
+		{
+			// Abrir el modal de confirmación (nunca confirm() del navegador)
+			this.accionIA = accion;
+			bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarAccionIA')).show();
+		},
+		async fnEjecutarAccionIA()
+		{
+			// Tomar la conversación o marcarla atendida por IA
+			if (this.procesandoIA) return;
+			this.procesandoIA = true;
+			try {
+				const res = await fetch('<?php echo base_url(); ?>/app_cxc_api/setConversationAI_Status', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						entityID: 	this.entityID,
+						accion: 	this.accionIA
+					})
+				});
+				const json = await res.json();
+				bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarAccionIA')).hide();
+
+				// 🔴 CASO 1: error
+				if (json.error === true || json.success === false) {
+					this.mensaje = json.message || 'No se pudo cambiar el estado del agente de IA';
+					console.error(this.mensaje);
+					return;
+				}
+
+				// 🟡 CASO 2: sin datos (la conversación quedó cerrada o ya no tiene IA)
+				// 🟢 CASO 3: con datos
+				this.conversationAI = json.conversationAI || null;
+				await this.cargarListado(false, false);
+			}
+			catch (error) {
+				console.error(error);
+				this.mensaje = 'Error de conexión con el servidor';
+			}
+			finally {
+				this.procesandoIA = false;
+			}
+		},
+		openImageModal(imageUrl)
 		{
 		  debugger;
 		  this.modalImageSrc 	= imageUrl;

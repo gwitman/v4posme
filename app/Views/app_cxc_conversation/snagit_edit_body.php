@@ -168,6 +168,23 @@ $messageWithAudioReference = '<div class="referencia">'
   border-left: 4px solid #fbc02d;
 }
 
+/* Mensaje enviado por el agente de IA de WhatsApp */
+.message-ai {
+  background: #7c3aed;
+  color: white;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+/* Tarjeta del agente de IA */
+.ai-agent-card {
+  border-left: 4px solid #7c3aed;
+}
+.ai-agent-card .ai-dato {
+  font-size: 0.85rem;
+  word-break: break-word;
+}
+
 /* Mensaje de sistema (ej. notificacion enviada al colaborador): centrado y discreto */
 .message-system {
   background: #eceff1;
@@ -532,6 +549,47 @@ $messageWithAudioReference = '<div class="referencia">'
 		</ul>
 		<div class="tab-content">
 		  <div class="tab-pane fade show active" id="navs-justified-home" role="tabpanel">
+				<!-- Agente de IA de WhatsApp: estado, datos captados y acciones -->
+				<div class="card ai-agent-card mb-3" v-if="conversationAI">
+					<div class="card-body py-2">
+						<div class="d-flex flex-wrap justify-content-between align-items-center gap-2">
+							<div>
+								<strong>🤖 Agente IA</strong>
+								<span
+									class="badge ms-1"
+									:style="conversationAI.aiStatus === 'activa' ? 'background-color:#7c3aed;' : (conversationAI.aiStatus === 'derivada' ? 'background-color:#a78bfa;' : 'background-color:#8592a3;')"
+								>{{ fnTextoEstadoIA(conversationAI.aiStatus) }}</span>
+								<span class="badge bg-label-primary ms-1" v-if="conversationAI.aiIntent">{{ conversationAI.aiIntent }}</span>
+								<span class="badge bg-label-success ms-1" v-if="conversationAI.verificado">Identidad verificada</span>
+							</div>
+							<div class="d-flex flex-wrap gap-2" v-if="conversationAI.aiStatus === 'activa' || conversationAI.aiStatus === 'derivada'">
+								<button type="button" class="btn btn-sm btn-primary" :disabled="procesandoIA" @click="fnConfirmarAccionIA('tomar')">
+									<i class="bx bx-user-check"></i> Tomar conversación
+								</button>
+								<button type="button" class="btn btn-sm btn-outline-secondary" :disabled="procesandoIA" @click="fnConfirmarAccionIA('atendida')">
+									<i class="bx bx-check-double"></i> Marcar atendida por IA
+								</button>
+							</div>
+						</div>
+						<div class="mt-2" v-if="conversationAI.resumen || conversationAI.motivo || Object.keys(conversationAI.datos || {}).length > 0 || (conversationAI.adjuntos || []).length > 0">
+							<div class="ai-dato" v-if="conversationAI.resumen"><strong>Resumen:</strong> {{ conversationAI.resumen }}</div>
+							<div class="ai-dato" v-if="conversationAI.motivo"><strong>Motivo del traspaso:</strong> {{ conversationAI.motivo }}</div>
+							<div class="ai-dato" v-for="(valor, campo) in (conversationAI.datos || {})" :key="campo"><strong>{{ campo }}:</strong> {{ valor }}</div>
+							<div class="ai-dato" v-if="(conversationAI.adjuntos || []).length > 0">
+								<strong>Adjuntos:</strong>
+								<a
+									v-for="(url, idx) in conversationAI.adjuntos"
+									:key="url"
+									:href="url"
+									target="_blank"
+									rel="noopener"
+									class="badge bg-light text-primary ms-1"
+								><i class="bx bx-paperclip"></i> {{ idx + 1 }}</a>
+							</div>
+						</div>
+					</div>
+				</div>
+
 				<!-- Activity Timeline -->
 				<div class="card info-card">
 					<div class="card-body p-0">
@@ -551,13 +609,18 @@ $messageWithAudioReference = '<div class="referencia">'
 							  :class="{
 								'message-internal': objNotification.summary === 'mensaje interno',
 								'message-system': objNotification.summary === 'mensaje sistema',
-								'message-from-employer': objNotification.summary !== 'mensaje interno' && objNotification.summary !== 'mensaje sistema' && objNotification.targetIDIsEmployeer > 0,
-								'message-from-customer': objNotification.summary !== 'mensaje interno' && objNotification.summary !== 'mensaje sistema' && objNotification.targetIDIsEmployeer == 0
+								'message-ai': objNotification.summary === 'mensaje ia',
+								'message-from-employer': objNotification.summary !== 'mensaje interno' && objNotification.summary !== 'mensaje sistema' && objNotification.summary !== 'mensaje ia' && objNotification.targetIDIsEmployeer > 0,
+								'message-from-customer': objNotification.summary !== 'mensaje interno' && objNotification.summary !== 'mensaje sistema' && objNotification.summary !== 'mensaje ia' && objNotification.targetIDIsEmployeer == 0
 							  }"
 						  >
 							  <!-- Mensaje de sistema: sin avatar ni nombre, solo la etiqueta -->
 							  <div class="d-flex align-items-center gap-2 mb-1" v-if="objNotification.summary === 'mensaje sistema'">
 								<strong style="font-size: 0.8rem;"><i class="bx bx-cog"></i> Sistema</strong>
+							  </div>
+							  <!-- Mensaje del agente de IA -->
+							  <div class="d-flex align-items-center gap-2 mb-1" v-else-if="objNotification.summary === 'mensaje ia'">
+								<strong style="font-size: 0.85rem;">🤖 IA</strong>
 							  </div>
 							  <div class="d-flex align-items-center gap-2 mb-1" v-else>
 								<div 
@@ -1110,6 +1173,29 @@ $messageWithAudioReference = '<div class="referencia">'
 	</div>
 	
 		
+	<!-- Confirmacion de acciones del agente de IA -->
+	<div class="modal fade" id="modalConfirmarAccionIA" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <h5 class="modal-title">🤖 {{ accionIA === 'tomar' ? 'Tomar conversación' : 'Marcar atendida por IA' }}</h5>
+			  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+			</div>
+			<div class="modal-body">
+			  <p class="mb-0" v-if="accionIA === 'tomar'">La IA dejará de contestar en esta conversación y la atenderás tú.</p>
+			  <p class="mb-0" v-else>La conversación se cerrará como atendida por la IA. El próximo mensaje del cliente abrirá una conversación nueva que atenderá la IA.</p>
+			</div>
+			<div class="modal-footer">
+			  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+			  <button type="button" class="btn btn-primary" :disabled="procesandoIA" @click="fnEjecutarAccionIA">
+				<span v-if="procesandoIA" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+				Confirmar
+			  </button>
+			</div>
+		  </div>
+		</div>
+	</div>
+
 	<!-- Add New Credit Card Modal -->
 	<div class="modal fade" id="addNewCCModal" tabindex="-1" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered1 modal-simple modal-add-new-cc">

@@ -726,7 +726,9 @@ Cómo reconocer cada mensaje en el **Chat**:
 - Colaborador: azul, a la derecha.
 - Mensaje interno: amarillo.
 - Sistema: gris, centrado, con borde punteado y la etiqueta **Sistema** (sin foto).
+- Agente de IA: morado, con el encabezado **🤖 IA** (si su empresa usa el agente de IA de WhatsApp).
 Notas:
+- Mientras el agente de IA atiende al cliente (estado IA atendiendo), la conversación no se asigna ni se avisa a los colaboradores.
 - El mensaje de sistema no se envía al cliente por WhatsApp; es solo informativo.
 - Solo aparece si realmente se intentó enviar el aviso. Si no hay un colaborador vigente o este no tiene teléfono principal, no se registra.
 - Sirve para saber a quién y a qué teléfono se avisó de cada mensaje que entra.
@@ -744,6 +746,59 @@ Si su empresa usa WhatsApp con Evolution API (según la configuración de su emp
 Restricciones: no se guardan los mensajes enviados a su propio número, ni los de grupos, estados o canales.
 Notas: en Evolution API el webhook de la instancia debe tener activado el evento MESSAGES_UPSERT (lo configura soporte o el administrador).
 Ver también: Ver a quién se notificó un mensaje de WhatsApp de un cliente (conversación con cliente).
+
+## Agente de IA de WhatsApp: qué hace y cuándo pasa la conversación a una persona
+Ruta: conversaciones con clientes por WhatsApp (Evolution API); se activa según la configuración de su empresa.
+<!-- REVISAR: nombre exacto del menú de conversaciones -->
+Cuando está activo, una inteligencia artificial contesta al cliente por WhatsApp:
+1. Entiende qué necesita el cliente (su intención).
+2. Le pide, con tono natural, los datos que hacen falta.
+3. Cuando los tiene, pasa (deriva) la conversación a una persona, asignada con la regla de siempre, y le avisa al cliente con un mensaje.
+Qué atiende depende del tipo de negocio. En posMe: consulta de saldo de cuentas por cobrar (solo a un cliente con identidad verificada), soporte técnico (pide datos y una captura de pantalla) y prospectos de venta (toma sus datos).
+Estados de la IA en una conversación:
+- IA atendiendo: la IA contesta. Mientras tanto la conversación no se asigna ni se avisa a los colaboradores.
+- IA derivó a un asesor: ya se pasó a una persona. Según la configuración de su empresa, la IA puede seguir contestando mientras ningún colaborador escriba.
+- Atiende un asesor: un colaborador escribió o tomó la conversación; la IA deja de responder.
+- Atendida por IA: la IA resolvió el caso.
+También se pasa a una persona si el cliente envía un segundo audio, si la IA falla o si la IA llega a su límite de respuestas. Los stickers sin texto no se contestan.
+Al cerrar la conversación o marcarla atendida por IA, la próxima conversación nueva del cliente la vuelve a atender la IA.
+Notas: si el cliente le pregunta directamente, la IA no afirma ser una persona.
+Ver también: Ver qué hizo el agente de IA en una conversación (tarjeta Agente IA); Tomar una conversación de la IA o marcarla atendida por IA.
+
+## Ver qué hizo el agente de IA en una conversación (tarjeta Agente IA)
+Ruta: lista de conversaciones > abra la conversación del cliente > pestaña **Chat**.
+En la lista de conversaciones:
+- Etiqueta morada **🤖 IA atendiendo**: la IA está contestando al cliente.
+- Etiqueta morada clara **🤖 IA derivó**: la IA ya pasó la conversación a una persona.
+- Al pasar el mouse sobre la etiqueta se ve la intención del cliente (por ejemplo, soporte o consulta de saldo).
+En el **Chat**, arriba de los mensajes, la tarjeta **🤖 Agente IA** muestra:
+- El estado: IA atendiendo, IA derivó a un asesor, Atiende un asesor o Atendida por IA.
+- La intención del cliente y, si aplica, **Identidad verificada**.
+- **Resumen** del caso y **Motivo del traspaso** (por qué se pasó a una persona).
+- Los datos que la IA le pidió al cliente, uno por línea.
+- **Adjuntos**: enlaces numerados (por ejemplo, la captura que envió el cliente); se abren en otra pestaña.
+Los mensajes que escribió la IA aparecen en el **Chat** en burbuja morada con el encabezado **🤖 IA**.
+Notas: la tarjeta solo aparece en las conversaciones que atendió el agente de IA.
+Ver también: Tomar una conversación de la IA o marcarla atendida por IA; Agente de IA de WhatsApp: qué hace y cuándo pasa la conversación a una persona.
+
+## Tomar una conversación de la IA o marcarla atendida por IA
+Ruta: abra la conversación del cliente > pestaña **Chat** > tarjeta **🤖 Agente IA**.
+Los botones solo aparecen si el estado es IA atendiendo o IA derivó a un asesor.
+Para atender usted al cliente:
+1. Presione **Tomar conversación**.
+2. En la ventana de confirmación ("La IA dejará de contestar en esta conversación y la atenderás tú.") presione **Confirmar**.
+3. El estado cambia a Atiende un asesor y la IA ya no responde en esta conversación.
+Para cerrar un caso que la IA resolvió:
+1. Presione **Marcar atendida por IA**.
+2. En la ventana de confirmación presione **Confirmar**. La conversación se cierra como atendida por la IA.
+3. El próximo mensaje del cliente abre una conversación nueva que atenderá la IA.
+Para no hacer nada, presione **Cancelar** en la ventana.
+Notas:
+- Si usted escribe al cliente desde la conversación, la IA también deja de responder, aunque no haya presionado **Tomar conversación**.
+- Si aparece un aviso de configuración al marcar atendida por IA, falta configurar la etapa de "atendida por IA" de su empresa; contacte a soporte.
+- La opción **Cerrar todas las conversaciones** de la lista no las marca como atendidas por IA.
+<!-- REVISAR: si Tomar conversación asigna la conversación al usuario cuando estaba en estado IA atendiendo (hoy solo cambia el estado) -->
+Ver también: Ver qué hizo el agente de IA en una conversación (tarjeta Agente IA).
 
 ## Registrar un gasto
 Ruta: Menú > CXP > GASTOS. La lista se llama **LISTA DE GASTOS**.
@@ -1926,6 +1981,7 @@ Ver también: Despliegue remoto: editar la configuración (app/Config).
 Los parámetros controlan el comportamiento de posMe por empresa (por ejemplo, orden de aplicación de abonos, lista de precios por defecto, formato de impresión).
 Los parámetros contables se editan en CONTABILIDAD > PARAMETROS; el resto los configura el equipo de soporte de posMe.
 Google Calendar de las órdenes de taller: APP_GOOGLE_CLENDAR_ENABLE (true la activa), GOOGLE_CALENDAR_ID, GOOGLE_CALENDAR_SERVICE_EMAIL y GOOGLE_CALENDAR_PRIVATE_KEY; opcionales GOOGLE_CALENDAR_TIMEZONE (por defecto America/Managua) y GOOGLE_CALENDAR_DURATION_MINUTES (duración de cada evento, por defecto 60 minutos).
+Agente de IA de WhatsApp: WHATSAPP_AI_AGENT_ENABLE (true lo activa); WHATSAPP_AI_AGENT_CONTINUE_AFTER_HANDOFF (true: la IA sigue contestando tras derivar mientras ningún colaborador escriba); WHATSAPP_AI_AGENT_HANDOFF_MESSAGE (mensaje al derivar; vacío, la IA redacta el suyo); WHATSAPP_AI_AGENT_STAGE_ATTENDED_ID (etapa "atendida por IA"); WHATSAPP_AI_AGENT_DEBOUNCE_SECONDS (segundos de espera antes de responder, por defecto 3); WHATSAPP_AI_AGENT_MAX_TURNS (máximo de respuestas de la IA antes de pasar a una persona, por defecto 15); WHATSAPP_AI_AGENT_HISTORY_MESSAGES (mensajes anteriores que lee la IA, por defecto 12); WHATSAPP_AI_AGENT_EMPLOYEE_ENTITYID (colaborador "Asistente IA", nunca recibe asignaciones). El texto y las intenciones del agente por tipo de negocio los configura soporte.
 Ver también: Configurar los parámetros contables.
 <!-- REVISAR: pantalla para que el cliente edite parametros generales -->
 

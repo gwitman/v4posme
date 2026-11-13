@@ -235,6 +235,13 @@
 						}"
 						style="font-size: 0.65rem; font-weight: normal;"
 					>({{ objConversation.subCategoria }})</small>
+				  <small
+						v-if="objConversation.aiStatus === 'activa' || objConversation.aiStatus === 'derivada'"
+						class="badge ms-1"
+						:style="objConversation.aiStatus === 'activa' ? 'background-color:#7c3aed;' : 'background-color:#a78bfa;'"
+						style="font-size: 0.65rem; font-weight: normal;"
+						:title="objConversation.aiIntent ? 'Intención: ' + objConversation.aiIntent : ''"
+					>🤖 {{ objConversation.aiStatus === 'activa' ? 'IA atendiendo' : 'IA derivó' }}</small>
 				</div>
 			  </div>
 			</div>
