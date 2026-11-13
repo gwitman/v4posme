@@ -18,6 +18,10 @@ class core_upgrade_client
     private $installationID;
     private $secret;
     private $timeout;
+    private $curl;
+
+    /** Segundos para establecer la conexión (TCP + HTTPS); el servidor central puede tardar más de 20 s en la negociación. */
+    const CONNECT_TIMEOUT = 60;
 
     /**
      * @param string $baseUrl        URL base del servidor central.
@@ -48,6 +52,32 @@ class core_upgrade_client
         $this->timeout        = (int) $timeout;
     }
 
+    /** Cierra la conexión reutilizada al terminar la petición. */
+    function __destruct()
+    {
+        if ($this->curl) {
+            curl_close($this->curl);
+            $this->curl = null;
+        }
+    }
+
+    /**
+     * Manejador curl reutilizable: las llamadas de una misma petición (p. ej. los bloques
+     * de la descarga) comparten la conexión abierta y no repiten la negociación HTTPS.
+     *
+     * @return resource|\CurlHandle
+     */
+    private function handle()
+    {
+        if ($this->curl) {
+            // curl_reset limpia las opciones pero conserva la caché de conexiones
+            curl_reset($this->curl);
+        } else {
+            $this->curl = curl_init();
+        }
+        return $this->curl;
+    }
+
     /**
      * Ejecuta una acción del servidor central.
      *
@@ -70,13 +100,15 @@ class core_upgrade_client
         $signature = core_deploy_crypto::sign($this->secret, core_upgrade_auth::signedAction($this->installationID, $action), $timestamp, $nonce, $body);
         $headers   = [];
 
-        $curl = curl_init($this->baseUrl . '/core_upgrade_server/' . $action);
+        $curl = $this->handle();
         curl_setopt_array($curl, [
+            CURLOPT_URL            => $this->baseUrl . '/core_upgrade_server/' . $action,
             CURLOPT_POST           => true,
             CURLOPT_POSTFIELDS     => $body,
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_FOLLOWLOCATION => false,
-            CURLOPT_CONNECTTIMEOUT => 20,
+            CURLOPT_CONNECTTIMEOUT => self::CONNECT_TIMEOUT,
+            CURLOPT_TCP_KEEPALIVE  => 1,
             CURLOPT_TIMEOUT        => $this->timeout,
             CURLOPT_SSL_VERIFYPEER => true,
             CURLOPT_SSL_VERIFYHOST => 2,
@@ -101,7 +133,7 @@ class core_upgrade_client
         $errno    = curl_errno($curl);
         $error    = curl_error($curl);
         $status   = (int) curl_getinfo($curl, CURLINFO_HTTP_CODE);
-        curl_close($curl);
+        // La conexión queda abierta para la siguiente llamada; se cierra en __destruct
 
         if ($errno) {
             throw new \Exception('No se pudo contactar al servidor de actualizaciones: ' . $error);
