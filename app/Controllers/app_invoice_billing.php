@@ -16417,6 +16417,14 @@ class app_invoice_billing extends _BaseController {
 				$datViewArray["imageBase64"]	= 'data:image/' . $type . ';base64,' . base64_encode(file_get_contents($path));
 			}
 
+			//Imagen de marcas (una sola, ancho completo): img/logos/marcas_aires.jpg; si no existe queda en blanco (sin error)
+			$datViewArray["imageMarcasHtml"]	= "";
+			$path    							= PATH_FILE_OF_APP_ROOT.'/img/logos/marcas_aires.jpg';
+			if (file_exists($path)) {
+				$type    							= pathinfo($path, PATHINFO_EXTENSION);
+				$datViewArray["imageMarcasHtml"]	= "<img src='data:image/" . $type . ";base64," . base64_encode(file_get_contents($path)) . "' style='width:100%'>";
+			}
+
 			//Generar PDF
 			$parser 		= \Config\Services::parser();
 			$html 			= $parser->setData($datViewArray)->renderString($htmlTemplateCompany);
