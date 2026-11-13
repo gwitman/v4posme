@@ -1,6 +1,6 @@
 MANUAL DE USUARIO DE POSME
 ======================================================================
-Actualizado: 2026-11-12
+Actualizado: 2026-11-13
 
 INDICE
 ----------------------------------------------------------------------
@@ -154,19 +154,26 @@ INDICE
 148. Actualizar posMe desde el servidor central: revertir la actualización
 149. Actualizar posMe desde el servidor central: preparar el servidor central (administrador)
 150. Actualizar posMe desde el servidor central: advertencias
-151. Despliegue remoto: qué es y quién puede usarlo (administración del sistema)
-152. Despliegue remoto: preparar la consola y el agente (primera vez)
-153. Despliegue remoto: elegir la compañía y configurar la conexión
-154. Despliegue remoto: subir y validar el paquete ZIP (actualizar archivos)
-155. Despliegue remoto: sincronizar la estructura de la base de datos
-156. Despliegue remoto: sincronizar los datos de configuración
-157. Despliegue remoto: ejecutar la sincronización, ver el avance y revertir
-158. Despliegue remoto: errores frecuentes
-159. Despliegue remoto: limpieza de servidor (liberar espacio e inodos)
-160. Despliegue remoto: editar la configuración (app/Config)
-161. Despliegue remoto: cargar los logos
-162. Parámetros de la empresa
-163. Soporte
+151. Respaldo de base de datos: qué es y cómo abrirlo
+152. Respaldo de base de datos: ver los respaldos guardados
+153. Respaldo de base de datos: generar un respaldo
+154. Respaldo de base de datos: descargar un respaldo
+155. Respaldo de base de datos: subir un respaldo
+156. Respaldo de base de datos: restaurar la base de datos
+157. Respaldo de base de datos: restauración pendiente (continuar o cancelar)
+158. Despliegue remoto: qué es y quién puede usarlo (administración del sistema)
+159. Despliegue remoto: preparar la consola y el agente (primera vez)
+160. Despliegue remoto: elegir la compañía y configurar la conexión
+161. Despliegue remoto: subir y validar el paquete ZIP (actualizar archivos)
+162. Despliegue remoto: sincronizar la estructura de la base de datos
+163. Despliegue remoto: sincronizar los datos de configuración
+164. Despliegue remoto: ejecutar la sincronización, ver el avance y revertir
+165. Despliegue remoto: errores frecuentes
+166. Despliegue remoto: limpieza de servidor (liberar espacio e inodos)
+167. Despliegue remoto: editar la configuración (app/Config)
+168. Despliegue remoto: cargar los logos
+169. Parámetros de la empresa
+170. Soporte
 
 1. CÓMO FUNCIONAN LAS PANTALLAS DE POSME (LISTAS Y REGISTROS)
 ----------------------------------------------------------------------
@@ -1985,8 +1992,9 @@ Ruta: Administración del sistema > Actualización desde el servidor posMe. No a
 La pantalla Actualización desde el servidor posMe trae la versión publicada en el servidor central de posMe y la aplica sobre esta instalación: archivos de la aplicación, estructura de la base de datos y datos de configuración. El origen por defecto es https://posme.net/v4posme/public/public y se muestra arriba, en Origen.
 Antes de cambiar nada se genera un respaldo completo de la base de datos y de los archivos que se reemplazan, para poder revertir si algo falla.
 La pantalla muestra, en orden: Objetivo, Versiones (versión local y la del servidor; botón Volver a consultar), Tipo de instalación, Componentes que se actualizan, Estructura de la base de datos, Datos de configuración, Pasos del proceso, Advertencias y Conexión con el servidor. A la derecha están Comprobaciones e Iniciar actualización.
+Arriba hay dos pestañas: Actualización (todo lo anterior) y Respaldo de base de datos.
 Restricciones: solo la pueden abrir usuarios con rol administrador. Solo se permite una actualización a la vez.
-Ver también: Actualizar posMe desde el servidor central: configurar la conexión; Actualizar posMe desde el servidor central: iniciar la actualización.
+Ver también: Actualizar posMe desde el servidor central: configurar la conexión; Actualizar posMe desde el servidor central: iniciar la actualización; Respaldo de base de datos: qué es y cómo abrirlo.
 
 143. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: CONFIGURAR LA CONEXIÓN
 ----------------------------------------------------------------------
@@ -2088,7 +2096,80 @@ Ruta: Administración del sistema > Actualización desde el servidor posMe (core
   * Si aparece "Sesión o token vencido (HTTP 403). Recargue la página.", recargue la pantalla y vuelva a consultar.
 Ver también: Actualizar posMe desde el servidor central: revertir la actualización.
 
-151. DESPLIEGUE REMOTO: QUÉ ES Y QUIÉN PUEDE USARLO (ADMINISTRACIÓN DEL SISTEMA)
+151. RESPALDO DE BASE DE DATOS: QUÉ ES Y CÓMO ABRIRLO
+----------------------------------------------------------------------
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña Respaldo de base de datos.
+  1. Abra la pantalla escribiendo core_upgrade/byPop3 después de la dirección de posMe.
+  2. Presione la pestaña Respaldo de base de datos. También puede abrirla directo agregando #respaldo al final de la dirección (core_upgrade/byPop3#respaldo).
+Desde esta pestaña puede generar una copia completa de la base de datos (sacar un backup), descargarla, subir una copia hecha en esta u otra instalación y restaurar (recuperar) la base de datos con una de ellas.
+La pestaña muestra: Respaldos guardados, Bitácora (registro de lo realizado), Generar respaldo, Subir respaldo y Antes de restaurar.
+Restricciones: solo usuarios con rol administrador. No se puede generar un respaldo ni restaurar mientras haya una actualización, un despliegue o una restauración en curso.
+Ver también: Respaldo de base de datos: generar un respaldo; Respaldo de base de datos: restaurar la base de datos.
+
+152. RESPALDO DE BASE DE DATOS: VER LOS RESPALDOS GUARDADOS
+----------------------------------------------------------------------
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña Respaldo de base de datos, tarjeta Respaldos guardados.
+La tabla muestra cada respaldo con:
+  * Fecha: debajo, la descripción, el nombre del archivo y el usuario que lo hizo.
+  * Origen: Manual (generado en esta pestaña), Subido (archivo .zip subido) o Actualización (generado por la pestaña Actualización antes de actualizar; se conservan los dos últimos).
+  * Base de datos, Tablas, Filas y Tamaño.
+  * Estado: Verificado, Sin verificar o Incompleto.
+  * Botones Descargar, Restaurar y Eliminar (el de eliminar solo en los de origen Manual o Subido).
+Debajo se muestra el espacio libre en disco. Presione Actualizar lista para volver a consultar.
+Para eliminar un respaldo presione Eliminar en su fila y confirme en la ventana Eliminar respaldo. Esta acción no se puede deshacer.
+Notas: si no hay ninguno aparece "Aún no hay respaldos guardados. Genere uno o suba un archivo .zip.".
+
+153. RESPALDO DE BASE DE DATOS: GENERAR UN RESPALDO
+----------------------------------------------------------------------
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña Respaldo de base de datos, tarjeta Generar respaldo.
+  1. En Descripción (opcional) escriba una nota para reconocerlo, por ejemplo "antes del cierre de mes" (máximo 120 caracteres).
+  2. Presione Generar respaldo ahora.
+  3. Siga el avance en la barra (tablas, filas y MB copiados). No cierre la pestaña.
+  4. Al terminar, el respaldo se verifica (huella SHA-256 y conteo de filas) y aparece en Respaldos guardados con origen Manual.
+Notas: es una copia íntegra de la base de datos: estructura de tablas, datos, vistas, funciones, procedimientos y triggers. Se guarda en el servidor, en la carpeta writable/posme_upgrade/db_backups. El sistema sigue disponible mientras se genera; para una copia exacta, evite registrar operaciones en ese momento.
+Ver también: Respaldo de base de datos: descargar un respaldo.
+
+154. RESPALDO DE BASE DE DATOS: DESCARGAR UN RESPALDO
+----------------------------------------------------------------------
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña Respaldo de base de datos, tarjeta Respaldos guardados.
+  1. Busque el respaldo en la lista.
+  2. Presione Descargar en su fila.
+  3. posMe arma un archivo .zip con el nombre posme_bd_<base>_<número> y lo descarga en su equipo.
+Notas: el botón Descargar solo aparece en los respaldos completos. Guarde el .zip en un lugar seguro (otro disco o la nube); con él puede restaurar en esta u otra instalación usando Subir respaldo.
+Ver también: Respaldo de base de datos: subir un respaldo.
+
+155. RESPALDO DE BASE DE DATOS: SUBIR UN RESPALDO
+----------------------------------------------------------------------
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña Respaldo de base de datos, tarjeta Subir respaldo.
+  1. En Archivo .zip seleccione un .zip descargado desde esta pantalla (de esta u otra instalación de posMe).
+  2. Presione Subir respaldo.
+  3. Espere: el archivo se sube por bloques con barra de avance y luego se extrae y se verifica.
+  4. Al terminar queda en Respaldos guardados con origen Subido, listo para restaurarlo.
+Restricciones: máximo 2 GB por archivo y se necesita espacio libre suficiente en el disco del servidor. Si el .zip no es un respaldo de posMe o está dañado, se rechaza.
+Ver también: Respaldo de base de datos: restaurar la base de datos.
+
+156. RESPALDO DE BASE DE DATOS: RESTAURAR LA BASE DE DATOS
+----------------------------------------------------------------------
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña Respaldo de base de datos, tarjeta Respaldos guardados.
+  1. Recomendado: antes de restaurar, genere un respaldo de la base actual con Generar respaldo ahora.
+  2. Avise a los usuarios: durante la restauración nadie podrá operar.
+  3. Presione Restaurar en la fila del respaldo (solo aparece en los respaldos completos y verificados).
+  4. En la ventana Restaurar base de datos lea el aviso y escriba RESTAURAR en mayúsculas en Escriba RESTAURAR para confirmar.
+  5. Presione Restaurar. Siga el avance y no cierre la pestaña.
+  6. Al terminar aparece "Base de datos restaurada." Presione Recargar posMe.
+Advertencias (tarjeta Antes de restaurar): restaurar reemplaza toda la base de datos por el respaldo y se pierde todo lo registrado después de esa fecha. Mientras dura se activa el modo mantenimiento y nadie puede operar en el sistema.
+Notas: si no escribe RESTAURAR correctamente aparece "Confirmación incorrecta" y no se restaura nada.
+Ver también: Respaldo de base de datos: restauración pendiente (continuar o cancelar).
+
+157. RESPALDO DE BASE DE DATOS: RESTAURACIÓN PENDIENTE (CONTINUAR O CANCELAR)
+----------------------------------------------------------------------
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña Respaldo de base de datos, tarjeta Restauración pendiente.
+Si la restauración falla o se interrumpe (por ejemplo, se cerró la pestaña), aparece "La restauración no terminó." y la tarjeta Restauración pendiente con el último error. Elija:
+  * Continuar restauración: retoma desde donde quedó. Al terminar se desactiva el modo mantenimiento.
+  * Cancelar y salir de mantenimiento: detiene la restauración y libera el sistema. La base de datos puede quedar incompleta; en ese caso restaure de nuevo un respaldo completo.
+Notas: mientras la restauración esté pendiente el sistema sigue en modo mantenimiento. Si el error persiste, revise la Bitácora y comuníquese con soporte.
+
+158. DESPLIEGUE REMOTO: QUÉ ES Y QUIÉN PUEDE USARLO (ADMINISTRACIÓN DEL SISTEMA)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto. No aparece en el menú: se abre escribiendo core_merge/deploy después de la dirección de posMe.
 La pantalla Sincronización de instalación remota actualiza la instalación de posMe de un cliente (VPS u hosting compartido) desde la instalación local de posMe. Sincroniza tres partes que se eligen por separado:
@@ -2099,7 +2180,7 @@ La pantalla tiene tres pestañas: Sincronización (lo anterior), Limpieza de ser
 Restricciones: es una herramienta técnica solo para el administrador de posMe, no para el usuario del negocio. Requiere un usuario con rol administrador y que la instalación local tenga habilitada la consola (constante DEPLOY_CONSOLE_ENABLED de la configuración local). En las instalaciones de los clientes está apagada. Solo se permite un despliegue a la vez por compañía.
 Ver también: Despliegue remoto: preparar la consola y el agente (primera vez); Despliegue remoto: errores frecuentes; Despliegue remoto: editar la configuración (app/Config); Despliegue remoto: cargar los logos.
 
-152. DESPLIEGUE REMOTO: PREPARAR LA CONSOLA Y EL AGENTE (PRIMERA VEZ)
+159. DESPLIEGUE REMOTO: PREPARAR LA CONSOLA Y EL AGENTE (PRIMERA VEZ)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 Una sola vez en la instalación local:
@@ -2114,7 +2195,7 @@ Por cada cliente:
   6. Presione Probar conexiones para confirmar que el agente responde.
 Ver también: Despliegue remoto: elegir la compañía y configurar la conexión.
 
-153. DESPLIEGUE REMOTO: ELEGIR LA COMPAÑÍA Y CONFIGURAR LA CONEXIÓN
+160. DESPLIEGUE REMOTO: ELEGIR LA COMPAÑÍA Y CONFIGURAR LA CONEXIÓN
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. En Compañía a sincronizar elija la compañía. La lista sale de los scripts de public/resource/file_sql/clientes, uno por compañía (no aparecen 001_default ni los scripts -custom-php). La base de datos esperada se toma de la cabecera /*BD: ... */ del script.
@@ -2126,7 +2207,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   4. Presione Probar conexiones: muestra el agente, la base esperada contra la real, extensiones, permisos de escritura, espacio libre, despliegues en curso, FTP y MySQL directo.
 Notas: las contraseñas se guardan cifradas y nunca se vuelven a mostrar; déjelas vacías para conservar las guardadas. Si el servidor responde con una base de datos distinta a la esperada, el despliegue se bloquea.
 
-154. DESPLIEGUE REMOTO: SUBIR Y VALIDAR EL PAQUETE ZIP (ACTUALIZAR ARCHIVOS)
+161. DESPLIEGUE REMOTO: SUBIR Y VALIDAR EL PAQUETE ZIP (ACTUALIZAR ARCHIVOS)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. En Paquete de actualización (ZIP) elija el Archivo ZIP con la carpeta app/. La carpeta app/ puede venir dentro de una carpeta raíz.
@@ -2137,7 +2218,7 @@ Solo se actualizan app/Config/Routes.php y las carpetas app/Controllers, Models,
 Restricciones: si hay errores de sintaxis PHP no se puede desplegar. Los archivos con rutas peligrosas se rechazan.
 Notas: las tres opciones (archivos, estructura y datos) son casillas independientes; puede marcar solo las que necesite.
 
-155. DESPLIEGUE REMOTO: SINCRONIZAR LA ESTRUCTURA DE LA BASE DE DATOS
+162. DESPLIEGUE REMOTO: SINCRONIZAR LA ESTRUCTURA DE LA BASE DE DATOS
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. En Opciones de sincronización marque Sincronizar estructura de la base de datos.
@@ -2146,7 +2227,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 Notas: nunca elimina tablas ni columnas del destino; los objetos que solo existen en la instalación del cliente no se eliminan. Si la estructura remota ya coincide con la local, se indica que no hay cambios. Al ejecutar, los cambios se aplican en lotes y se detienen en el primer error.
 Ver también: Despliegue remoto: ejecutar la sincronización, ver el avance y revertir.
 
-156. DESPLIEGUE REMOTO: SINCRONIZAR LOS DATOS DE CONFIGURACIÓN
+163. DESPLIEGUE REMOTO: SINCRONIZAR LOS DATOS DE CONFIGURACIÓN
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. Marque Sincronizar datos de configuración.
@@ -2161,7 +2242,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 Orden: tablas, luego 001_default y luego el script de la compañía, todo en una transacción: si algo falla, se revierte todo.
 Advertencia: el modo Completa reemplaza tb_company_parameter; los ajustes del cliente que no estén en su script se pierden.
 
-157. DESPLIEGUE REMOTO: EJECUTAR LA SINCRONIZACIÓN, VER EL AVANCE Y REVERTIR
+164. DESPLIEGUE REMOTO: EJECUTAR LA SINCRONIZACIÓN, VER EL AVANCE Y REVERTIR
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. Revise el Resumen de operaciones: lista lo que se hará y lo que falta.
@@ -2178,7 +2259,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 Para deshacer: Revertir archivos o Revertir datos restauran el respaldo tomado en ese despliegue.
 Restricciones: solo un despliegue a la vez por compañía.
 
-158. DESPLIEGUE REMOTO: ERRORES FRECUENTES
+165. DESPLIEGUE REMOTO: ERRORES FRECUENTES
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   * Firma inválida o vencida: el secreto guardado en la consola no es el mismo del agente, o el reloj del equipo está desfasado más de 5 minutos. Genere e instale de nuevo el secreto, o corrija la hora del equipo.
@@ -2188,7 +2269,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   * Ya hay otro despliegue en curso: espere a que termine; el candado caduca solo a las 2 horas.
 Ver también: Despliegue remoto: preparar la consola y el agente (primera vez).
 
-159. DESPLIEGUE REMOTO: LIMPIEZA DE SERVIDOR (LIBERAR ESPACIO E INODOS)
+166. DESPLIEGUE REMOTO: LIMPIEZA DE SERVIDOR (LIBERAR ESPACIO E INODOS)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pestaña Limpieza de servidor (entre Sincronización y Configuración y logos).
   1. En Agente que hará la limpieza elija la Compañía con conexión guardada (con el agente instalado y actualizado). Su agente revisa la carpeta donde está instalado y limpia las instalaciones posMe vecinas del mismo hosting. Para otro hosting, elija una compañía de ese hosting.
@@ -2199,7 +2280,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pest
 Notas: nunca se borran el código, .env, app/Config, la base de datos, agent_config.php ni los index.html/.htaccess de protección. Reemplaza a la antigua URL core_merge/merge_of_posme_merge_to_posme_initialize/2, que sigue existiendo.
 Ver también: Despliegue remoto: errores frecuentes.
 
-160. DESPLIEGUE REMOTO: EDITAR LA CONFIGURACIÓN (APP/CONFIG)
+167. DESPLIEGUE REMOTO: EDITAR LA CONFIGURACIÓN (APP/CONFIG)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pestaña Configuración y logos.
   1. En Compañía con conexión guardada elija la compañía. Si no tiene conexión, configúrela en Sincronización.
@@ -2211,7 +2292,7 @@ Restricciones: si el archivo cambió en el servidor desde que lo abrió, se rech
 Notas: requiere agente 1.1.0 o superior; si es anterior aparece un aviso. Actualícelo en Sincronización con Instalar agente por SFTP/FTP marcando Subir también el código del agente (también sube el Routes.php local).
 Ver también: Despliegue remoto: cargar los logos.
 
-161. DESPLIEGUE REMOTO: CARGAR LOS LOGOS
+168. DESPLIEGUE REMOTO: CARGAR LOS LOGOS
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pestaña Configuración y logos > Logos de la compañía.
   1. Elija la compañía en Compañía con conexión guardada.
@@ -2222,7 +2303,7 @@ Restricciones: PNG o JPG de hasta 1 MB y hasta 4000 x 4000 px. Solo se envían l
 Notas: el sistema convierte cada imagen al formato del nombre (.png o .jpg; al pasar de PNG a JPG usa fondo blanco) y respalda el logo anterior. Avisa si el logo direct-ticket mide más de 576 px de ancho (impresora térmica) y si la ruta de archivos configurada en el servidor del cliente apunta a otra carpeta (los PDF no tomarían el logo). El logo nuevo puede tardar en verse por la caché del navegador.
 Ver también: Despliegue remoto: editar la configuración (app/Config).
 
-162. PARÁMETROS DE LA EMPRESA
+169. PARÁMETROS DE LA EMPRESA
 ----------------------------------------------------------------------
 Los parámetros controlan el comportamiento de posMe por empresa (por ejemplo, orden de aplicación de abonos, lista de precios por defecto, formato de impresión).
 Los parámetros contables se editan en CONTABILIDAD > PARAMETROS; el resto los configura el equipo de soporte de posMe.
@@ -2230,6 +2311,6 @@ Google Calendar de las órdenes de taller: APP_GOOGLE_CLENDAR_ENABLE (true la ac
 Agente de IA de WhatsApp: WHATSAPP_AI_AGENT_ENABLE (true lo activa); WHATSAPP_AI_AGENT_CONTINUE_AFTER_HANDOFF (true: la IA sigue contestando tras derivar mientras ningún colaborador escriba); WHATSAPP_AI_AGENT_HANDOFF_MESSAGE (mensaje al derivar; vacío, la IA redacta el suyo); WHATSAPP_AI_AGENT_STAGE_ATTENDED_ID (etapa "atendida por IA"); WHATSAPP_AI_AGENT_DEBOUNCE_SECONDS (segundos de espera antes de responder, por defecto 3); WHATSAPP_AI_AGENT_MAX_TURNS (máximo de respuestas de la IA antes de pasar a una persona, por defecto 15); WHATSAPP_AI_AGENT_HISTORY_MESSAGES (mensajes anteriores que lee la IA, por defecto 12); WHATSAPP_AI_AGENT_EMPLOYEE_ENTITYID (colaborador "Asistente IA", nunca recibe asignaciones). El texto y las intenciones del agente por tipo de negocio los configura soporte.
 Ver también: Configurar los parámetros contables.
 
-163. SOPORTE
+170. SOPORTE
 ----------------------------------------------------------------------
 Si no encuentra cómo hacer algo o hay un error en el sistema, contacte al equipo de soporte de posMe.
