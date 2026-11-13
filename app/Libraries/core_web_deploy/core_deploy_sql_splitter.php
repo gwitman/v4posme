@@ -21,6 +21,10 @@ class core_deploy_sql_splitter
     static function split($sql)
     {
         $sql        = str_replace(["\r\n", "\r"], "\n", (string) $sql);
+        // Quita la marca BOM de UTF-8 (editores de Windows): MariaDB la toma como texto y falla la primera sentencia
+        if (strncmp($sql, "\xEF\xBB\xBF", 3) === 0) {
+            $sql = substr($sql, 3);
+        }
         $length     = strlen($sql);
         $delimiter  = ';';
         $statements = [];

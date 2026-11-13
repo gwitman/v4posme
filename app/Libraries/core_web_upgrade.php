@@ -365,19 +365,23 @@ class core_web_upgrade
     /**
      * Comprobaciones de la instalación local.
      *
-     * @param string $mode     Modo.
-     * @param int    $required Bytes libres requeridos.
+     * @param string     $mode     Modo.
+     * @param int        $required Bytes libres requeridos.
+     * @param array|null $zips     Zip que se sincronizarán (null = todos los del modo).
      * @return array
      */
-    private function localChecks($mode, $required)
+    private function localChecks($mode, $required, $zips = null)
     {
         $checks = [];
         foreach (['zip', 'curl', 'openssl', 'mysqli', 'zlib'] as $extension) {
             $checks[] = $this->checkItem('Extensión PHP ' . $extension, extension_loaded($extension), extension_loaded($extension) ? '' : 'No está habilitada', 'local');
         }
         $dirs = [WRITEPATH . core_upgrade_rules::CLIENT_DIR . '/'];
-        foreach (core_upgrade_rules::packages($mode) as $package) {
-            $dirs[] = ROOTPATH . $package['target'];
+        foreach (core_upgrade_rules::packages($mode) as $zip => $package) {
+            // Solo se prueban las carpetas destino de los paquetes que sí se van a sincronizar
+            if ($zips === null || in_array($zip, $zips, true)) {
+                $dirs[] = ROOTPATH . $package['target'];
+            }
         }
         foreach ($dirs as $index => $dir) {
             $ok = false;
@@ -458,12 +462,14 @@ class core_web_upgrade
     /**
      * Consulta previa: versiones, componentes, comprobaciones y si se puede iniciar.
      *
-     * @param string      $host Host de la petición.
-     * @param string|null $mode Modo pedido por la pantalla (o null = detectado).
+     * @param string      $host   Host de la petición.
+     * @param string|null $mode   Modo pedido por la pantalla (o null = detectado).
+     * @param array       $params Casillas syncFiles, syncSchema y syncData ('1'/'0'; ausente = sí).
      * @return array
      */
-    function check($host, $mode = null)
+    function check($host, $mode = null, array $params = [])
     {
+        $parts    = $this->syncParts($params);
         $local    = $this->localInfo($host);
         $mode     = is_string($mode) && isset(core_upgrade_rules::$MODES[$mode]) ? $mode : $local['modeDetected'];
         $packages = core_upgrade_rules::packages($mode);
@@ -499,10 +505,17 @@ class core_web_upgrade
                 $checks[] = $this->checkItem('Servidor de actualizaciones disponible', true, 'Versión ' . ($info['version'] ?: 'sin versión') . ' · ' . $remote['latencyMs'] . ' ms', 'remote');
                 $checks[] = $this->checkItem('Protocolo compatible', $info['protocol'] === core_upgrade_rules::PROTOCOL, 'Servidor ' . $info['protocol'] . ', local ' . core_upgrade_rules::PROTOCOL, 'remote');
                 foreach (array_keys($packages) as $name) {
-                    $present  = isset($info['byName'][$name]);
-                    $size     = $present ? $info['byName'][$name]['size'] : 0;
-                    $okSize   = $present && $size > 0 && $size <= core_upgrade_rules::MAX_ZIP_BYTES;
-                    $checks[] = $this->checkItem('Paquete ' . $name . ' en el servidor', $okSize, $present ? round($size / 1048576, 2) . ' MB' . ($okSize ? '' : ' (tamaño no permitido)') : 'No está publicado', 'remote');
+                    $present = isset($info['byName'][$name]);
+                    if (!$present) {
+                        // Un sync*.zip que no está publicado no es error: esa parte simplemente no se sincroniza
+                        $item         = $this->checkItem('Paquete ' . $name . ' en el servidor', true, 'No está publicado: no se sincroniza', 'remote');
+                        $item['skip'] = true;
+                        $checks[]     = $item;
+                        continue;
+                    }
+                    $size     = $info['byName'][$name]['size'];
+                    $okSize   = $size > 0 && $size <= core_upgrade_rules::MAX_ZIP_BYTES;
+                    $checks[] = $this->checkItem('Paquete ' . $name . ' en el servidor', $okSize, round($size / 1048576, 2) . ' MB' . ($okSize ? '' : ' (tamaño no permitido)'), 'remote');
                 }
                 if ($info['phpMin'] !== '') {
                     $okPhp    = version_compare(PHP_VERSION, $info['phpMin'], '>=');
@@ -514,11 +527,19 @@ class core_web_upgrade
             }
         }
 
+        // El respaldo completo de la BD se hace siempre (los scripts de parámetros siempre se ejecutan)
         $required = $this->dbBytes();
-        foreach ($remote['packages'] as $package) {
-            $required += 4 * (int) $package['size'];
+        $syncZips = [];
+        if ($parts['files']) {
+            foreach ($remote['packages'] as $package) {
+                $required  += 4 * (int) $package['size'];
+                $syncZips[] = $package['name'];
+            }
         }
-        $checks = array_merge($checks, $this->localChecks($mode, $required));
+        $checks = array_merge($checks, $this->localChecks($mode, $required, $remote['reachable'] || !$parts['files'] ? $syncZips : null));
+        if (!$parts['files'] && !$parts['schema'] && !$parts['data']) {
+            $checks[] = $this->checkItem('Qué sincronizar', false, 'Marque al menos una parte: archivos, estructura o datos de configuración', 'local');
+        }
 
         $lock = core_upgrade_lock::current();
         if ($lock) {
@@ -530,23 +551,28 @@ class core_web_upgrade
         foreach ($checks as $item) {
             $allOk = $allOk && $item['ok'];
         }
-        $upToDate = $remote['reachable'] && $remote['version'] !== '' && $remote['version'] === $local['version'];
+        // Una versión registrada por una actualización parcial no cuenta como "al día"
+        $state    = $this->localState();
+        $partial  = !empty($state['partial']) || !empty($state['filesOnly']);
+        $upToDate = $remote['reachable'] && $remote['version'] !== '' && $remote['version'] === $local['version'] && !$partial;
 
         $files = [];
         foreach ($packages as $zip => $package) {
-            $files[] = ['zip' => $zip, 'target' => $package['target'], 'protected' => $package['protected']];
+            $files[] = ['zip' => $zip, 'target' => $package['target'], 'protected' => $package['protected'], 'present' => !in_array($zip, $remote['missing'], true)];
         }
 
         return [
             'local'       => $local,
             'remote'      => $remote,
             'mode'        => $mode,
+            'parts'       => $parts,
             'upToDate'    => $upToDate,
-            'components'  => ['files' => $files, 'schema' => true, 'data' => ['tables' => $tables]],
+            'components'  => ['files' => $files, 'schema' => $parts['schema'], 'data' => ['tables' => $parts['data'] ? $tables : []], 'scripts' => true],
             'checks'      => $checks,
             'warnings'    => $warnings,
             'maintenance' => ['active' => $maintenance['active'], 'since' => $maintenance['since'], 'by' => $maintenance['by']],
-            'canRun'      => $allOk && $remote['reachable'] && !count($remote['missing']) && !$maintenance['active'],
+            // Los zip faltantes no bloquean: esa parte simplemente no se sincroniza
+            'canRun'      => $allOk && $remote['reachable'] && !$maintenance['active'],
         ];
     }
 
@@ -794,6 +820,8 @@ class core_web_upgrade
                 'upgradeID'     => $upgradeID,
                 'mode'          => $mode,
                 'force'         => isset($params['force']) && in_array((string) $params['force'], ['1', 'true'], true),
+                // Partes a sincronizar (los scripts de parámetros y el respaldo se hacen siempre)
+                'parts'         => $this->syncParts($params),
                 'by'            => (string) $userName,
                 'host'          => (string) $host,
                 'startedOn'     => helper_getDateTime(),
@@ -806,15 +834,93 @@ class core_web_upgrade
             ];
             $this->saveRun($run);
             core_deploy_files::pruneDirs($this->runsDir(), core_upgrade_rules::KEEP_RUNS - 1, $upgradeID);
-            $this->log($upgradeID, 'Actualización ' . $upgradeID . ' iniciada por ' . $userName . ' en modo ' . $mode . ($run['force'] ? ' (forzada)' : '') . '.');
+            $this->log($upgradeID, 'Actualización ' . $upgradeID . ' iniciada por ' . $userName . ' en modo ' . $mode . ($run['force'] ? ' (forzada)' : '') . ' · ' . $this->partsText($run['parts']) . '.');
         } catch (\Throwable $ex) {
             core_upgrade_lock::maintenanceOff($upgradeID);
             core_upgrade_lock::release($upgradeID);
             throw $ex;
         }
-        $out              = $this->out('begin', true, 0, 1, ['upgradeID' => $upgradeID, 'mode' => $mode]);
+        $out              = $this->out('begin', true, 0, 1, ['upgradeID' => $upgradeID, 'mode' => $mode, 'parts' => $run['parts']]);
         $out['upgradeID'] = $upgradeID;
         return $out;
+    }
+
+    /**
+     * Zip que se sincronizan en la actualización: solo los publicados en el servidor, en el orden del modo.
+     *
+     * @param array $run Estado de la actualización.
+     * @return array Nombres de zip.
+     */
+    private function runZips(array $run)
+    {
+        return array_keys(isset($run['remote']['packages']) ? $run['remote']['packages'] : []);
+    }
+
+    /**
+     * Partes a sincronizar según las casillas de la pantalla (ausente = sí).
+     * Los scripts de parámetros (001_default.sql + script de la compañía) y el respaldo no son opcionales.
+     *
+     * @param array $params syncFiles, syncSchema y syncData ('1'/'0').
+     * @return array ['files' => bool, 'schema' => bool, 'data' => bool]
+     */
+    private function syncParts(array $params)
+    {
+        $flag = function ($key) use ($params) {
+            return !isset($params[$key]) || in_array((string) $params[$key], ['1', 'true'], true);
+        };
+        return ['files' => $flag('syncFiles'), 'schema' => $flag('syncSchema'), 'data' => $flag('syncData')];
+    }
+
+    /**
+     * Partes de una actualización (con valores por defecto para estados anteriores a las casillas).
+     *
+     * @param array $run Estado de la actualización.
+     * @return array
+     */
+    private function runParts(array $run)
+    {
+        if (isset($run['parts']) && is_array($run['parts'])) {
+            return $run['parts'] + ['files' => true, 'schema' => true, 'data' => true];
+        }
+        $filesOnly = !empty($run['filesOnly']);
+        return ['files' => true, 'schema' => !$filesOnly, 'data' => !$filesOnly];
+    }
+
+    /**
+     * Texto para la bitácora con lo que se sincroniza.
+     *
+     * @param array $parts Partes de la actualización.
+     * @return string
+     */
+    private function partsText(array $parts)
+    {
+        $names = ['files' => 'archivos', 'schema' => 'estructura', 'data' => 'datos de configuración'];
+        $on    = [];
+        $off   = [];
+        foreach ($names as $key => $name) {
+            if (!empty($parts[$key])) {
+                $on[] = $name;
+            } else {
+                $off[] = $name;
+            }
+        }
+        return 'Sincroniza: ' . (count($on) ? implode(', ', $on) . ' + ' : '') . 'scripts de parámetros' . (count($off) ? ' · OMITE: ' . implode(', ', $off) : '');
+    }
+
+    /**
+     * Rechaza una etapa cuando su parte no está marcada.
+     *
+     * @param array  $run   Estado de la actualización.
+     * @param string $part  files, schema o data.
+     * @param string $stage Nombre de la etapa para el mensaje.
+     * @return void
+     */
+    private function denyIfSkipped(array $run, $part, $stage)
+    {
+        $parts = $this->runParts($run);
+        if (empty($parts[$part])) {
+            throw new \Exception('La etapa ' . $stage . ' se omite: no se marcó para sincronizar.');
+        }
     }
 
     /** 1. Conexión: ping, manifiesto, paquetes del modo y plan de descarga. */
@@ -828,9 +934,16 @@ class core_web_upgrade
             throw new \Exception('El servidor usa otro protocolo de actualización (' . (isset($ping['protocol']) ? (int) $ping['protocol'] : 0) . ').');
         }
         $remote = $this->remoteFromManifest($client->call('manifest', ['mode' => $run['mode']]), $run['mode']);
-        $detail = ['remoteVersion' => $remote['version'], 'latencyMs' => $latency, 'packages' => $remote['packages'], 'missing' => $remote['missing']];
+        $parts  = $this->runParts($run);
+        // Sin la casilla de archivos no se descarga ningún zip
+        if (!$parts['files']) {
+            $remote['packages'] = [];
+            $remote['missing']  = [];
+        }
+        $detail = ['remoteVersion' => $remote['version'], 'latencyMs' => $latency, 'packages' => $remote['packages'], 'missing' => $remote['missing'], 'parts' => $parts];
+        // Un zip no publicado no se sincroniza (no es error)
         if (count($remote['missing'])) {
-            $this->fail('Falta ' . implode(', ', $remote['missing']) . ' en el servidor.', $detail);
+            $this->log($run['upgradeID'], 'No se sincroniza (no está en el servidor): ' . implode(', ', $remote['missing']) . '.');
         }
         foreach ($remote['packages'] as $package) {
             if ($package['size'] <= 0 || $package['size'] > core_upgrade_rules::MAX_ZIP_BYTES || preg_match('/^[a-f0-9]{64}$/', $package['sha256']) !== 1) {
@@ -841,7 +954,9 @@ class core_web_upgrade
             $this->fail('La versión ' . $remote['version'] . ' requiere PHP ' . $remote['phpMin'] . ' (local ' . PHP_VERSION . ').', $detail);
         }
         $local = $this->localState();
-        if (empty($run['force']) && $remote['version'] !== '' && isset($local['version']) && $remote['version'] === $local['version']) {
+        // Si la versión local se registró con una actualización parcial, se permite completarla sin forzar
+        $localPartial = !empty($local['partial']) || !empty($local['filesOnly']);
+        if (empty($run['force']) && !$localPartial && $remote['version'] !== '' && isset($local['version']) && $remote['version'] === $local['version']) {
             $this->fail('La instalación ya está en la versión ' . $remote['version'] . '. Marque "Forzar" para aplicarla de nuevo.', $detail);
         }
 
@@ -866,7 +981,7 @@ class core_web_upgrade
         foreach ($run['remote']['packages'] as $package) {
             $required += 4 * (int) $package['size'];
         }
-        $checks = $this->localChecks($run['mode'], $required);
+        $checks = $this->localChecks($run['mode'], $required, $this->runZips($run));
         $free   = @disk_free_space(WRITEPATH);
         $detail = ['checks' => $checks, 'diskFreeBytes' => $free === false ? 0 : (int) $free];
         $bad    = [];
@@ -1034,7 +1149,7 @@ class core_web_upgrade
         }
         $zips = [];
         $lint = [];
-        foreach (array_keys(core_upgrade_rules::packages($run['mode'])) as $zip) {
+        foreach ($this->runZips($run) as $zip) {
             $path = $this->runDir($run['upgradeID']) . '/packages/' . $zip;
             if (!is_file($path) || !hash_equals($run['remote']['packages'][$zip]['sha256'], hash_file('sha256', $path))) {
                 throw new \Exception('El paquete ' . $zip . ' no está descargado o cambió.');
@@ -1213,36 +1328,44 @@ class core_web_upgrade
 
         // Archivos
         $files = [];
-        foreach (array_keys(core_upgrade_rules::packages($run['mode'])) as $zip) {
+        foreach ($this->runZips($run) as $zip) {
             $extract     = $this->extractResult($run['upgradeID'], $zip);
             $compare     = core_upgrade_files::compare($extract['files']);
             $files[$zip] = ['update' => $compare['update'], 'create' => $compare['create'], 'unchanged' => $compare['unchanged'], 'protected' => $extract['protected']];
         }
 
-        // Estructura
-        $server = $client->call('schema_snapshot');
-        $local  = core_deploy_schema::snapshot($db);
-        if (count($local['errors'])) {
-            throw new \Exception('No se pudo leer toda la estructura local: ' . implode(' | ', array_slice($local['errors'], 0, 5)));
-        }
-        $plan = $this->schemaPlan($server, $local);
-        if (!empty($server['errors'])) {
-            $plan['notes'][] = 'El servidor no pudo leer parte de su estructura: ' . implode(' | ', array_slice((array) $server['errors'], 0, 5));
-        }
-        core_deploy_files::writeJson($dir . '/server_snapshot.json.gz', $server, true);
-        core_deploy_files::writeJson($dir . '/local_snapshot.json.gz', $local, true);
-        core_deploy_files::writeJson($dir . '/schema_plan.json.gz', $plan, true);
+        $parts = $this->runParts($run);
 
-        // Datos de configuración
-        $config = $client->call('config_data');
-        $data   = $this->dataPlan($db, $config);
-        core_deploy_files::writeJson($dir . '/config_data.json.gz', $config, true);
+        // Estructura (solo si se marcó)
+        $plan = ['hash' => '', 'steps' => [], 'extras' => [], 'summary' => [], 'notes' => []];
+        if ($parts['schema']) {
+            $server = $client->call('schema_snapshot');
+            $local  = core_deploy_schema::snapshot($db);
+            if (count($local['errors'])) {
+                throw new \Exception('No se pudo leer toda la estructura local: ' . implode(' | ', array_slice($local['errors'], 0, 5)));
+            }
+            $plan = $this->schemaPlan($server, $local);
+            if (!empty($server['errors'])) {
+                $plan['notes'][] = 'El servidor no pudo leer parte de su estructura: ' . implode(' | ', array_slice((array) $server['errors'], 0, 5));
+            }
+            core_deploy_files::writeJson($dir . '/server_snapshot.json.gz', $server, true);
+            core_deploy_files::writeJson($dir . '/local_snapshot.json.gz', $local, true);
+            core_deploy_files::writeJson($dir . '/schema_plan.json.gz', $plan, true);
+        }
 
-        // Scripts de parámetros (001_default.sql + el de la compañía registrada en el servidor)
+        // Datos de configuración (solo si se marcó)
+        $data = ['tables' => [], 'warnings' => []];
+        if ($parts['data']) {
+            $config = $client->call('config_data');
+            $data   = $this->dataPlan($db, $config);
+            core_deploy_files::writeJson($dir . '/config_data.json.gz', $config, true);
+        }
+
+        // Scripts de parámetros (001_default.sql + el de la compañía registrada en el servidor): SIEMPRE
         $scripts = $this->validateScripts($client->call('client_script'));
         core_deploy_files::writeJson($dir . '/scripts.json.gz', ['scripts' => $scripts], true);
 
-        $hash = hash('sha256', json_encode([$plan['hash'], $data['tables'], array_column($scripts, 'name')]));
+        $hash = hash('sha256', json_encode([$plan['hash'], $data['tables'], array_column($scripts, 'name'), $parts, array_keys($files)]));
         $run['compared']       = true;
         $run['schemaHash']     = $plan['hash'];
         $run['schemaVerified'] = false;
@@ -1257,12 +1380,17 @@ class core_web_upgrade
         foreach ($plan['notes'] as $note) {
             $this->log($run['upgradeID'], 'Nota: ' . $note);
         }
-        $this->log($run['upgradeID'], 'Plan: ' . count($plan['steps']) . ' cambios de estructura, ' . count($data['tables']) . ' tablas de datos, ' . count($scripts) . ' scripts.');
+        $this->log($run['upgradeID'], 'Plan: '
+            . ($parts['files'] ? count($files) . ' paquetes de archivos' : 'archivos omitidos') . ', '
+            . ($parts['schema'] ? count($plan['steps']) . ' cambios de estructura' : 'estructura omitida') . ', '
+            . ($parts['data'] ? count($data['tables']) . ' tablas de datos' : 'datos de configuración omitidos') . ', '
+            . count($scripts) . ' scripts.');
 
         return $this->out('compare', true, 0, 1, [
+            'parts'  => $parts,
             'files'  => $files,
-            'schema' => ['steps' => $plan['steps'], 'extras' => $plan['extras'], 'summary' => $plan['summary'], 'notes' => $plan['notes']],
-            'data'   => ['tables' => $data['tables'], 'scripts' => array_column($scripts, 'name')],
+            'schema' => ['steps' => $plan['steps'], 'extras' => $plan['extras'], 'summary' => $plan['summary'], 'notes' => $plan['notes'], 'skipped' => !$parts['schema']],
+            'data'   => ['tables' => $data['tables'], 'scripts' => array_column($scripts, 'name'), 'skipped' => !$parts['data']],
             'hash'   => $hash,
         ]);
     }
@@ -1284,6 +1412,7 @@ class core_web_upgrade
     private function stepApplySchema(array &$run, array $params)
     {
         $this->requireFlag($run, 'compared', 'Falta la comparación.');
+        $this->denyIfSkipped($run, 'schema', 'de estructura');
         $ids = json_decode(isset($params['ids']) ? (string) $params['ids'] : '[]', true);
         if (!is_array($ids)) {
             throw new \Exception('Lista de cambios de estructura inválida.');
@@ -1346,16 +1475,20 @@ class core_web_upgrade
     private function stepApplyData(array &$run)
     {
         $this->requireFlag($run, 'compared', 'Falta la comparación.');
+        $parts   = $this->runParts($run);
         $db      = db_connect();
-        $config  = $this->readRunJson($run['upgradeID'], 'config_data.json.gz');
         $scripts = $this->readRunJson($run['upgradeID'], 'scripts.json.gz');
         $scripts = isset($scripts['scripts']) && is_array($scripts['scripts']) ? $scripts['scripts'] : [];
 
-        // Se recalcula con la estructura ya aplicada (tablas y columnas nuevas)
-        $plan = $this->dataPlan($db, $config);
-        foreach ($plan['tables'] as $table => $info) {
-            if ($info['mode'] !== core_deploy_rules::MODE_SKIP && !isset($plan['changes'][$table])) {
-                $this->log($run['upgradeID'], 'Aviso: ' . $table . ' no existe localmente; se omite.');
+        // Sin la casilla de datos solo se ejecutan los scripts de parámetros (sin tablas de configuración)
+        $plan = ['tables' => [], 'changes' => []];
+        if ($parts['data']) {
+            // Se recalcula con la estructura ya aplicada (tablas y columnas nuevas)
+            $plan = $this->dataPlan($db, $this->readRunJson($run['upgradeID'], 'config_data.json.gz'));
+            foreach ($plan['tables'] as $table => $info) {
+                if ($info['mode'] !== core_deploy_rules::MODE_SKIP && !isset($plan['changes'][$table])) {
+                    $this->log($run['upgradeID'], 'Aviso: ' . $table . ' no existe localmente; se omite.');
+                }
             }
         }
         $backupRows        = core_deploy_data::backup($db, array_keys($plan['changes']), $this->runDir($run['upgradeID']) . '/backup_config_data.json.gz');
@@ -1369,7 +1502,10 @@ class core_web_upgrade
             $this->fail('datos revertidos (ROLLBACK): ' . $report['error'], $detail);
         }
         $run['dataApplied'] = true;
-        $this->log($run['upgradeID'], 'Datos de configuración aplicados en ' . count($report['tables']) . ' tablas y ' . count($report['scripts']) . ' scripts.');
+        $this->log($run['upgradeID'], $parts['data']
+            ? 'Datos de configuración aplicados en ' . count($report['tables']) . ' tablas y ' . count($report['scripts']) . ' scripts.'
+            : 'Solo scripts de parámetros: ' . count($report['scripts']) . ' scripts ejecutados (datos de configuración omitidos).');
+        $detail['skipped'] = !$parts['data'];
         return $this->out('apply_data', true, 0, 1, $detail);
     }
 
@@ -1391,11 +1527,11 @@ class core_web_upgrade
     /** 6. Archivos: un zip por petición (index = zip), health check y reversión del zip si falla. */
     private function stepApplyFiles(array &$run, $index)
     {
-        $this->requireFlag($run, 'dataApplied', 'Aplique primero los datos de configuración.');
-        $zips  = array_keys(core_upgrade_rules::packages($run['mode']));
+        $this->requireFlag($run, 'dataApplied', 'Aplique primero los datos de configuración y los scripts de parámetros.');
+        $zips  = $this->runZips($run);
         $total = count($zips);
         if ($index >= $total) {
-            return $this->out('apply_files', true, $total - 1, $total, ['zip' => '', 'updated' => 0, 'created' => 0, 'unchanged' => 0, 'errors' => [], 'health' => ['ok' => true, 'message' => '']]);
+            return $this->out('apply_files', true, max(0, $total - 1), $total,['zip' => '', 'updated' => 0, 'created' => 0, 'unchanged' => 0, 'errors' => [], 'health' => ['ok' => true, 'message' => '']]);
         }
         $this->preloadClasses();
         $zip     = $zips[$index];
@@ -1444,7 +1580,8 @@ class core_web_upgrade
     {
         $checked  = 0;
         $mismatch = [];
-        foreach (array_keys(core_upgrade_rules::packages($run['mode'])) as $zip) {
+        $parts    = $this->runParts($run);
+        foreach ($this->runZips($run) as $zip) {
             if (empty($run['filesApplied'][$zip])) {
                 throw new \Exception('El paquete ' . $zip . ' no se aplicó.');
             }
@@ -1452,21 +1589,30 @@ class core_web_upgrade
             $checked += $result['checked'];
             $mismatch = array_merge($mismatch, $result['mismatch']);
         }
-        $server  = $this->readRunJson($run['upgradeID'], 'server_snapshot.json.gz');
-        $pending = count($this->schemaPlan($server, core_deploy_schema::snapshot(db_connect()))['steps']);
+        // La estructura pendiente solo se revisa si se sincronizó
+        $pending = null;
+        if ($parts['schema']) {
+            $server  = $this->readRunJson($run['upgradeID'], 'server_snapshot.json.gz');
+            $pending = count($this->schemaPlan($server, core_deploy_schema::snapshot(db_connect()))['steps']);
+        }
         $detail  = [
-            'files'  => ['checked' => $checked, 'mismatch' => array_slice($mismatch, 0, 500)],
-            'schema' => ['pending' => $pending],
-            'data'   => ['ok' => !empty($run['dataApplied'])],
+            'parts'  => $parts,
+            'files'  => ['checked' => $checked, 'mismatch' => array_slice($mismatch, 0, 500), 'skipped' => !$parts['files']],
+            'schema' => ['pending' => $pending, 'skipped' => !$parts['schema']],
+            'data'   => ['ok' => !empty($run['dataApplied']), 'skipped' => !$parts['data']],
         ];
         if (count($mismatch)) {
             $this->fail(count($mismatch) . ' archivos no coinciden con lo descargado.', $detail);
         }
+        // Los scripts de parámetros se ejecutan siempre
         if (empty($run['dataApplied'])) {
-            $this->fail('Los datos de configuración no se aplicaron.', $detail);
+            $this->fail('Los datos de configuración / scripts de parámetros no se aplicaron.', $detail);
         }
         $run['verified'] = true;
-        $this->log($run['upgradeID'], 'Verificación: ' . $checked . ' archivos OK, ' . $pending . ' cambios de estructura pendientes.');
+        $this->log($run['upgradeID'], 'Verificación: '
+            . ($parts['files'] ? $checked . ' archivos OK' : 'archivos omitidos') . ', '
+            . ($parts['schema'] ? $pending . ' cambios de estructura pendientes' : 'estructura omitida') . ', '
+            . ($parts['data'] ? 'datos aplicados' : 'datos omitidos') . ', scripts ejecutados.');
         return $this->out('verify', true, 0, 1, $detail);
     }
 
@@ -1490,6 +1636,9 @@ class core_web_upgrade
                 'upgradeID'   => $upgradeID,
                 'mode'        => $run['mode'],
                 'by'          => $run['by'],
+                // Actualización parcial (alguna casilla sin marcar): la siguiente no exige "Forzar"
+                'partial'     => in_array(false, $this->runParts($run), true),
+                'parts'       => $this->runParts($run),
             ]);
         }
 

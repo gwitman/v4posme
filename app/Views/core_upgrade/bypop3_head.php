@@ -50,7 +50,8 @@
     .upg-table th { position:sticky; top:0; background:#fff; font-size:12px; font-weight:600; color:var(--abv2-muted); padding:7px 8px; border-bottom:1px solid var(--abv2-border); text-align:left; z-index:1; }
     .upg-table td { padding:7px 8px; border-bottom:1px solid var(--abv2-border); font-size:13px; vertical-align:top; word-break:break-word; }
     .upg-table td.upg-n, .upg-table th.upg-n { text-align:right; font-variant-numeric:tabular-nums; white-space:nowrap; }
-    .upg-table tr.is-missing td { background:var(--abv2-bad-bg); color:var(--abv2-bad); }
+    .upg-table tr.is-missing td { background:var(--abv2-soft); color:var(--abv2-muted); }
+    .upg-checks li.is-skip { color:var(--abv2-muted); }
     .upg-table input[type=checkbox] { width:20px; height:20px; margin:0; }
     .upg-badge { display:inline-block; font-size:11px; font-weight:700; border-radius:20px; padding:1px 8px; background:var(--abv2-soft); color:var(--abv2-muted); }
     .upg-badge.is-risk { background:var(--abv2-bad-bg); color:var(--abv2-bad); }

@@ -152,6 +152,24 @@
                 </div>
                 <div class="abv2-card">
                     <p class="abv2-card-title"><i class="icon16 i-play-3"></i> Iniciar actualización</p>
+                    <p class="abv2-label">Qué sincronizar</p>
+                    <label class="upg-option upg-part is-on" for="upgSyncFiles">
+                        <input type="checkbox" id="upgSyncFiles" checked>
+                        <span><p class="upg-option-title">Archivos (sync*.zip)</p>
+                        <p class="upg-option-desc">Descarga y reemplaza los archivos publicados en el servidor (los zip que no estén publicados no se sincronizan).</p></span>
+                    </label>
+                    <label class="upg-option upg-part is-on" for="upgSyncSchema">
+                        <input type="checkbox" id="upgSyncSchema" checked>
+                        <span><p class="upg-option-title">Estructura de la base de datos</p>
+                        <p class="upg-option-desc">Tablas, campos, índices, vistas, procedimientos, funciones y triggers.</p></span>
+                    </label>
+                    <label class="upg-option upg-part is-on" for="upgSyncData">
+                        <input type="checkbox" id="upgSyncData" checked>
+                        <span><p class="upg-option-title">Datos de configuración</p>
+                        <p class="upg-option-desc">Catálogos, menús, parámetros y demás tablas de configuración del servidor.</p></span>
+                    </label>
+                    <div class="upg-alert is-info"><b>Siempre al final:</b> scripts de parámetros (001_default.sql + script de la compañía). Antes se respalda completa la base de datos.</div>
+                    <div class="upg-alert is-warn" id="upgPartsNote" style="display:none;"></div>
                     <label class="upg-option" for="upgForce" id="upgForceBox" style="display:none;">
                         <input type="checkbox" id="upgForce">
                         <span><p class="upg-option-title">Forzar aunque esté al día</p>

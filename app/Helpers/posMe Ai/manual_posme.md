@@ -1761,7 +1761,7 @@ Antes de cambiar nada se genera un respaldo completo de la base de datos y de lo
 La pantalla muestra, en orden: **Objetivo**, **Versiones** (versión local y la del servidor; botón **Volver a consultar**), **Tipo de instalación**, **Componentes que se actualizan**, **Estructura de la base de datos**, **Datos de configuración**, **Pasos del proceso**, **Advertencias** y **Conexión con el servidor**. A la derecha están **Comprobaciones** e **Iniciar actualización**.
 Arriba hay dos pestañas: **Actualización** (todo lo anterior) y **Respaldo de base de datos**.
 Restricciones: solo la pueden abrir usuarios con rol administrador. Solo se permite una actualización a la vez.
-Ver también: Actualizar posMe desde el servidor central: configurar la conexión; Actualizar posMe desde el servidor central: iniciar la actualización; Respaldo de base de datos: qué es y cómo abrirlo.
+Ver también: Actualizar posMe desde el servidor central: configurar la conexión; Actualizar posMe desde el servidor central: iniciar la actualización; Actualizar posMe desde el servidor central: elegir qué sincronizar; Respaldo de base de datos: qué es y cómo abrirlo.
 
 ## Actualizar posMe desde el servidor central: configurar la conexión
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta **Conexión con el servidor**.
@@ -1778,21 +1778,36 @@ posMe detecta solo el **Modo** ("Detectado automáticamente: Local" o "Nube"). S
 - **Local (equipo del cliente: app, vendor y public)**: syncApp.zip actualiza app/ (incluidos app/Config/Constants.php y App.php si vienen en el zip), syncVendor.zip actualiza vendor/ y syncPublic.zip actualiza public/ (sin tocar los logos ni los archivos de la compañía).
 - **Nube (hosting: vendor y app/Config)**: syncVendor.zip actualiza vendor/ y syncConfig.zip actualiza app/Config/ (sin tocar Constants.php ni App.php). En la nube, el código de app/ se sigue actualizando con el Despliegue remoto (core_merge/deploy).
 La tarjeta **Componentes que se actualizan** muestra cada paquete, su **Destino** y lo que **Nunca se sobrescribe**.
-Restricciones: si en el servidor falta cualquiera de los zip del modo elegido, aparece "No se puede continuar: falta ..." y no se puede iniciar.
+Si en el servidor falta alguno de los zip del modo elegido, esa parte no se sincroniza y la actualización continúa: el paquete aparece en gris con "No se sincroniza (no está en el servidor)" y en **Comprobaciones** con un guion (–) y "No está publicado: no se sincroniza".
 Notas: solo se actualizan los archivos que vienen dentro de cada zip; nada se elimina. Siempre se protegen: .env, writable/, system/, logos y archivos de la compañía, public/.htaccess y public/index.php. En la nube también se conservan app/Config/Constants.php y App.php; en instalación local sí se actualizan. La estructura de la base de datos nunca elimina tablas ni columnas. Los datos de su empresa no cambian y los parámetros de la empresa conservan sus valores (solo se agregan los nuevos).
 
 ## Actualizar posMe desde el servidor central: iniciar la actualización
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3).
 1. Avise a los usuarios: mientras dure la actualización nadie podrá operar en posMe.
 2. Revise **Versiones**, **Componentes que se actualizan**, **Advertencias** y **Comprobaciones** (permisos de escritura, espacio, PHP y base de datos). Si cambió algo, presione **Volver a consultar**.
-3. Si la versión local ya es igual a la del servidor, aparece **Forzar aunque esté al día**: márquelo solo si quiere volver a aplicar la misma versión.
-4. En **Escriba ACTUALIZAR para confirmar** escriba ACTUALIZAR en mayúsculas.
-5. Presione **Actualizar posMe**. En la ventana **Iniciar actualización** revise el modo y las versiones y presione **Iniciar**.
-6. Siga el avance en **Avance general**, **Etapas** y **Bitácora**. No cierre la pestaña ni apague el equipo.
-7. Al terminar aparece "posMe se actualizó correctamente". Presione **Recargar posMe**.
+3. En **Qué sincronizar** deje marcado lo que quiere actualizar: **Archivos (sync*.zip)**, **Estructura de la base de datos** y **Datos de configuración** (vienen todas marcadas; al menos una). El respaldo y los scripts de parámetros se hacen siempre.
+4. Si la versión local ya es igual a la del servidor, aparece **Forzar aunque esté al día**: márquelo solo si quiere volver a aplicar la misma versión.
+5. En **Escriba ACTUALIZAR para confirmar** escriba ACTUALIZAR en mayúsculas.
+6. Presione **Actualizar posMe**. En la ventana **Iniciar actualización** revise el modo y las versiones y presione **Iniciar**.
+7. Siga el avance en **Avance general**, **Etapas** y **Bitácora**. No cierre la pestaña ni apague el equipo.
+8. Al terminar aparece "posMe se actualizó correctamente". Presione **Recargar posMe**.
 Restricciones: el botón **Actualizar posMe** queda desactivado mientras haya avisos en la lista bajo la confirmación (por ejemplo "No se puede continuar: revise los componentes y las comprobaciones.").
 Notas: con **Copiar** de la **Bitácora** puede copiar el registro para enviarlo a soporte.
-Ver también: Actualizar posMe desde el servidor central: etapas, revisar cambios y cancelar.
+Ver también: Actualizar posMe desde el servidor central: elegir qué sincronizar; Actualizar posMe desde el servidor central: etapas, revisar cambios y cancelar.
+
+## Actualizar posMe desde el servidor central: elegir qué sincronizar
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta **Iniciar actualización**, bloque **Qué sincronizar**.
+3 casillas combinables, todas marcadas por defecto:
+- **Archivos (sync*.zip)**: descarga y reemplaza los archivos publicados. Sin marcar no se descarga nada (etapa 4: "Omitida: archivos sin marcar").
+- **Estructura de la base de datos**: tablas, campos, índices, vistas, procedimientos, funciones y triggers. Sin marcar no se compara ni aplica.
+- **Datos de configuración**: catálogos, menús, parámetros y tablas de configuración. Sin marcar no se sincronizan.
+1. Desmarque lo que no quiera actualizar. Cada cambio vuelve a consultar el servidor y recalcula las **Comprobaciones**.
+2. Si desmarcó algo aparece el aviso amarillo "Actualización parcial: se omite ...".
+3. Escriba ACTUALIZAR, presione **Actualizar posMe** y **Iniciar**. En la etapa 5 lo desmarcado dice "Omitida (casilla sin marcar)".
+Siempre se respalda completa la base de datos (etapa 3) y al final se ejecutan los scripts de parámetros (001_default.sql y el de su compañía), como indica el aviso azul **Siempre al final**. Por eso **Revertir** siempre ofrece restaurar la base de datos.
+Restricciones: marque al menos una casilla ("Marque al menos una parte para sincronizar.").
+Notas: un zip no publicado no es error: sale en gris "No se sincroniza (no está en el servidor)". Una actualización parcial queda registrada como parcial: la siguiente a la misma versión no pide **Forzar aunque esté al día**.
+Consejo: sin **Estructura de la base de datos**, si los scripts de parámetros usan campos o tablas nuevos pueden fallar y se revierten datos y scripts; repita con esa casilla marcada.
 
 ## Actualizar posMe desde el servidor central: etapas, revisar cambios y cancelar
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta **Etapas**.
@@ -1808,6 +1823,8 @@ La actualización recorre 8 etapas, cada una con su estado y **Ver detalle**:
 En la pausa de la etapa 5 revise archivos, estructura y datos. Los cambios de estructura con riesgo de pérdida de datos quedan desmarcados; use **Marcar todos** o **Solo sin riesgo**, o **Ver SQL** para ver cada cambio. Luego:
 - **Continuar con la aplicación** y en la ventana **Aplicar los cambios** presione **Continuar**.
 - **Cancelar sin aplicar** y luego **Cancelar actualización**: no se aplica ningún cambio y se desactiva el modo mantenimiento.
+Notas: lo desmarcado en **Qué sincronizar** sale como omitido (etapa 4 o plan de la etapa 5). El respaldo (etapa 3) y los scripts de parámetros van siempre.
+Ver también: Actualizar posMe desde el servidor central: elegir qué sincronizar.
 
 ## Actualizar posMe desde el servidor central: modo mantenimiento
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3).
@@ -1826,7 +1843,7 @@ Si una etapa falla, aparece "Falló en la etapa N" y el botón **Revertir**.
 3. Marque **Restaurar también la base de datos completa (borra lo registrado después del respaldo)** solo si la estructura o los datos quedaron dañados. Si no lo marca, la base de datos se conserva.
 4. Presione **Revertir** y espere el aviso "Se restauró la instalación anterior.".
 5. Presione **Recargar posMe**.
-Notas: si la reversión falla aparece "No se pudo revertir" y puede intentarlo de nuevo. Si falló al iniciar (antes de cambiar nada), solo aparece **Volver**.
+Notas: si la reversión falla aparece "No se pudo revertir" y puede intentarlo de nuevo. Si falló al iniciar (antes de cambiar nada), solo aparece **Volver**. El respaldo completo de la base de datos se hace siempre, aun en una actualización parcial; por eso siempre aparece **Restaurar también la base de datos completa**.
 
 ## Actualizar posMe desde el servidor central: preparar el servidor central (administrador)
 Solo para el administrador del servidor central de posMe (no para el cliente).
@@ -1841,7 +1858,7 @@ Solo para el administrador del servidor central de posMe (no para el cliente).
     ];
    - **enabled**: activa el servidor central. **allowHttp**: permitir http (solo pruebas).
    - **clients**: una entrada por **ID de instalación**, con **secret** (la **Clave**, de al menos 64 caracteres), **companyKey** (nombre del script del cliente en public/resource/file_sql/clientes, sin .sql), **enabled** y **label**.
-2. Suba a mano los paquetes a writable/posme_upgrade_server/packages/: syncApp.zip, syncVendor.zip, syncPublic.zip y syncConfig.zip.
+2. Suba a mano a writable/posme_upgrade_server/packages/ solo los paquetes que quiera sincronizar: syncApp.zip, syncVendor.zip, syncPublic.zip y/o syncConfig.zip. Ninguno es obligatorio: el que falte simplemente no se sincroniza.
 3. Opcional: version.txt en esa carpeta, con la versión en la línea 1 y la fecha en la línea 2.
 4. Entregue a cada cliente su **ID de instalación** y su **Clave** por un medio seguro.
 Restricciones: el servidor central solo acepta HTTPS (salvo allowHttp).
@@ -1849,11 +1866,13 @@ Restricciones: el servidor central solo acepta HTTPS (salvo allowHttp).
 ## Actualizar posMe desde el servidor central: advertencias
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3).
 - Haga la actualización fuera del horario de trabajo y avise a los usuarios: el modo mantenimiento impide operar.
-- Aunque la etapa 3 respalda la base de datos, tenga un respaldo propio reciente.
+- Aunque la etapa 3 respalda siempre la base de datos (también en una actualización parcial), tenga un respaldo propio reciente.
+- Si desmarca **Estructura de la base de datos**, los scripts de parámetros pueden fallar si usan campos o tablas nuevos; en ese caso vuelva a ejecutar con esa casilla marcada.
+- Si falta en el servidor alguno de los zip, esa parte no se actualiza: confirme en **Componentes que se actualizan** qué se va a sincronizar.
 - En modo Nube, syncConfig.zip reemplaza los archivos de app/Config que traiga, incluidos Database.php y Filters.php. Revise su contenido antes de publicarlo.
 - Los archivos obsoletos no se borran: solo se actualizan o crean los que vienen en los zip.
 - Si aparece "Sesión o token vencido (HTTP 403). Recargue la página.", recargue la pantalla y vuelva a consultar.
-Ver también: Actualizar posMe desde el servidor central: revertir la actualización.
+Ver también: Actualizar posMe desde el servidor central: revertir la actualización; Actualizar posMe desde el servidor central: elegir qué sincronizar.
 
 ## Respaldo de base de datos: qué es y cómo abrirlo
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña **Respaldo de base de datos**.

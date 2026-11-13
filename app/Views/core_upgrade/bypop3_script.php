@@ -41,6 +41,7 @@
             config      : null,    // configuración (sin la clave)
             mode        : MODE_DETECTED === 'cloud' ? 'cloud' : 'local',
             checking    : false,
+            parts       : { files: true, schema: true, data: true },   // casillas fijadas al iniciar la ejecución
             upgradeID   : null,
             running     : false,   // proceso en marcha (activa beforeunload)
             stage       : 0,       // etapa en curso
@@ -291,7 +292,8 @@
             st.checking = true;
             renderReady();
             setChip('Consultando...', 'info');
-            var params = {};
+            // Las casillas de qué sincronizar cambian las comprobaciones (espacio para zip, al menos una parte)
+            var params = partsParams(readParts());
             if (mode) { params.mode = mode; }
             var button = $('upgBtnCheck');
             return busy(button, api('upgrade_check', params)).then(function (data) {
@@ -346,11 +348,16 @@
             var comp = d.components || {};
             $('upgSchemaInfo').innerHTML = comp.schema
                 ? '<div class="upg-chips"><span class="upg-chip is-ok">Incluida en esta actualización</span></div>'
-                : '<div class="upg-chips"><span class="upg-chip">No incluida en esta actualización</span></div>';
+                : '<div class="upg-chips"><span class="upg-chip">Omitida: casilla "Estructura de la base de datos" sin marcar</span></div>';
 
-            // Comprobaciones
+            // Comprobaciones (las omitidas, como un zip no publicado, en gris)
             var checks = d.checks || [];
             $('upgChecks').innerHTML = checks.length ? checks.map(function (c) {
+                if (c.skip) {
+                    return '<li class="is-skip"><span class="upg-ico">–</span>' +
+                        '<span>' + esc(c.label) + (c.detail ? '<span class="upg-check-detail">' + esc(c.detail) + '</span>' : '') + '</span>' +
+                        (c.group ? '<span class="upg-group">' + esc(c.group === 'local' ? 'local' : (c.group === 'remote' ? 'servidor' : c.group)) + '</span>' : '') + '</li>';
+                }
                 return '<li class="' + (c.ok ? 'is-ok' : 'is-bad') + '"><span class="upg-ico">' + (c.ok ? '✓' : '✕') + '</span>' +
                     '<span>' + esc(c.label) + (c.detail ? '<span class="upg-check-detail">' + esc(c.detail) + '</span>' : '') + '</span>' +
                     (c.group ? '<span class="upg-group">' + esc(c.group === 'local' ? 'local' : (c.group === 'remote' ? 'servidor' : c.group)) + '</span>' : '') + '</li>';
@@ -371,7 +378,7 @@
             renderReady();
         }
 
-        /** Tabla zip → destino → protegidos, con los zip faltantes en rojo. */
+        /** Tabla zip → destino → protegidos; los zip faltantes en gris (no se sincronizan). */
         function renderComponents(d) {
             var files    = (d.components && d.components.files) || [];
             var remote   = d.remote || {};
@@ -387,14 +394,18 @@
                 var pkg       = packages[f.zip];
                 var prot      = f.protected && f.protected.length ? f.protected.map(esc).join('<br>') : '<span class="upg-hint">Lista general de protegidos</span>';
                 return '<tr class="' + (isMissing ? 'is-missing' : '') + '">' +
-                    '<td data-label="Paquete"><b>' + esc(f.zip) + '</b>' + (isMissing ? '<div>No está en el servidor</div>' : (pkg ? '<div class="upg-hint">' + fmtMB(pkg.size) + (pkg.mtime ? ' · ' + esc(pkg.mtime) : '') + '</div>' : '')) + '</td>' +
+                    '<td data-label="Paquete"><b>' + esc(f.zip) + '</b>' + (isMissing ? '<div>No se sincroniza (no está en el servidor)</div>' : (pkg ? '<div class="upg-hint">' + fmtMB(pkg.size) + (pkg.mtime ? ' · ' + esc(pkg.mtime) : '') + '</div>' : '')) + '</td>' +
                     '<td data-label="Destino">' + esc(f.target) + '</td>' +
                     '<td data-label="Nunca se sobrescribe">' + prot + '</td></tr>';
             }).join('');
             var html = '<div class="upg-scroll" style="margin-top:10px;"><table class="upg-table is-stack"><thead><tr><th>Paquete</th><th>Destino</th><th>Nunca se sobrescribe</th></tr></thead><tbody>' + rows + '</tbody></table></div>';
-            missing.forEach(function (z) {
-                html += alertHtml('bad', '<b>No se puede continuar: falta ' + esc(z) + ' en el servidor.</b>');
-            });
+            // Un zip faltante no bloquea: solo se informa que esa parte no se sincroniza
+            if (missing.length) {
+                html += alertHtml('info', '<b>No se sincroniza:</b> ' + missing.map(esc).join(', ') + ' (no está publicado en el servidor). El resto continúa normalmente.');
+            }
+            if (d.parts && !d.parts.files) {
+                html += alertHtml('warn', '<b>Archivos omitidos:</b> la casilla "Archivos (sync*.zip)" está sin marcar; no se descarga ningún paquete.');
+            }
             html += '<p class="upg-hint">Además, siempre se protegen: .env, writable/, system/, logos y archivos de la compañía, public/.htaccess y public/index.php.' +
                 (st.mode === 'local'
                     ? ' En instalación local, app/Config/Constants.php y app/Config/App.php se actualizan si vienen en syncApp.zip.'
@@ -405,6 +416,10 @@
         /** Tablas de datos de configuración con su modo, dentro de un <details>. */
         function renderData(d) {
             var tables = (d.components && d.components.data && d.components.data.tables) || [];
+            if (d.parts && !d.parts.data) {
+                $('upgDataTables').innerHTML = alertHtml('warn', '<b>Datos de configuración omitidos</b> (casilla sin marcar). Los scripts de parámetros sí se ejecutan.');
+                return;
+            }
             if (!tables.length) {
                 $('upgDataTables').innerHTML = alertHtml('info', 'El servidor no indicó tablas de datos para sincronizar.');
                 return;
@@ -427,6 +442,44 @@
             $('upgForceBox').classList.toggle('is-on', $('upgForce').checked);
         }
         $('upgForce').addEventListener('change', function () { syncForce(); renderReady(); });
+
+        var PART_BOX   = { files: 'upgSyncFiles', schema: 'upgSyncSchema', data: 'upgSyncData' };
+        var PART_LABEL = { files: 'archivos', schema: 'estructura de la base de datos', data: 'datos de configuración' };
+
+        /** Lee las casillas de qué sincronizar. */
+        function readParts() {
+            return { files: $('upgSyncFiles').checked, schema: $('upgSyncSchema').checked, data: $('upgSyncData').checked };
+        }
+
+        /** Parámetros POST de las casillas ('1'/'0'). */
+        function partsParams(p) {
+            return { syncFiles: p.files ? '1' : '0', syncSchema: p.schema ? '1' : '0', syncData: p.data ? '1' : '0' };
+        }
+
+        /** Partes sin marcar, como texto. */
+        function partsOff(p) {
+            return Object.keys(PART_LABEL).filter(function (k) { return !p[k]; }).map(function (k) { return PART_LABEL[k]; });
+        }
+
+        /** Marca visual de las casillas y aviso de lo que se omite. */
+        function syncParts() {
+            var p   = readParts();
+            var off = partsOff(p);
+            Object.keys(PART_BOX).forEach(function (k) { $(PART_BOX[k]).parentNode.classList.toggle('is-on', p[k]); });
+            var note = $('upgPartsNote');
+            if (!off.length) { note.style.display = 'none'; note.innerHTML = ''; return; }
+            note.style.display = '';
+            note.innerHTML = off.length === 3
+                ? '<b>Marque al menos una parte</b> para sincronizar.'
+                : '<b>Actualización parcial:</b> se omite ' + esc(off.join(', ')) + '. Los scripts de parámetros se ejecutan igual.';
+        }
+        // Cambiar una casilla vuelve a consultar: cambian las comprobaciones y si se puede iniciar
+        Object.keys(PART_BOX).forEach(function (k) {
+            $(PART_BOX[k]).addEventListener('change', function () {
+                syncParts();
+                runCheck(st.mode);
+            });
+        });
         $('upgConfirm').addEventListener('input', renderReady);
 
         /** Evalúa qué falta para poder iniciar. La palabra debe ser exacta (sin recortar espacios). */
@@ -436,6 +489,8 @@
             if (st.checking) { issues.push('Espere: consultando el servidor.'); }
             else if (!d) { issues.push('No hay consulta válida del servidor. Pulse "Volver a consultar".'); }
             else {
+                var p = readParts();
+                if (!p.files && !p.schema && !p.data) { issues.push('Marque al menos una parte para sincronizar.'); }
                 if (!d.canRun) { issues.push('No se puede continuar: revise los componentes y las comprobaciones.'); }
                 if (d.upToDate && !$('upgForce').checked) { issues.push('La instalación ya está al día. Marque "Forzar" para aplicarla de nuevo.'); }
             }
@@ -505,6 +560,8 @@
         /** Un paso de upgrade_step; copia data.log a la bitácora. */
         function step(action, params) {
             var data = { upgradeID: st.upgradeID || '', action: action, mode: st.mode, force: $('upgForce').checked ? '1' : '0' };
+            var sp   = partsParams(st.parts);
+            Object.keys(sp).forEach(function (k) { data[k] = sp[k]; });
             Object.keys(params || {}).forEach(function (k) { data[k] = params[k]; });
             return api('upgrade_step', data).then(function (r) {
                 logServer(r.log);
@@ -564,12 +621,20 @@
         /** Pinta el plan: archivos por zip, estructura (riesgosos desmarcados), extras y datos por tabla. */
         function renderPlan(plan) {
             var html = '';
+            var parts = plan.parts || st.parts;
+            var off   = partsOff(parts);
+            // Aviso visible antes de confirmar: qué partes se omiten (los scripts siempre se ejecutan)
+            if (off.length) {
+                html += alertHtml('warn', '<b>Actualización parcial: se omite ' + esc(off.join(', ')) + '.</b> Los scripts de parámetros se ejecutan igual al final.');
+            }
 
             // Archivos por zip
             var files = plan.files || {};
             var zips  = Object.keys(files);
             html += '<p class="abv2-card-title" style="margin-top:4px;"><i class="icon16 i-archive"></i> Archivos</p>';
-            if (!zips.length) {
+            if (!parts.files) {
+                html += '<div class="upg-chips"><span class="upg-chip">Omitidos (casilla sin marcar)</span></div>';
+            } else if (!zips.length) {
                 html += alertHtml('info', 'Sin cambios de archivos.');
             } else {
                 html += '<div class="upg-scroll"><table class="upg-table is-stack"><thead><tr><th>Paquete</th><th class="upg-n">Actualizar</th><th class="upg-n">Crear</th><th class="upg-n">Sin cambios</th><th class="upg-n">Protegidos</th></tr></thead><tbody>' +
@@ -596,7 +661,9 @@
             if (groups.length) {
                 html += '<div class="upg-chips">' + groups.map(function (g) { return '<span class="upg-chip is-warn">' + esc(GROUP_LABEL[g] || g) + ': <b>' + fmtInt(summary[g]) + '</b></span>'; }).join('') + '</div>';
             }
-            if (!steps.length) {
+            if (!parts.schema) {
+                html += '<div class="upg-chips"><span class="upg-chip">Omitida (casilla sin marcar)</span></div>';
+            } else if (!steps.length) {
                 html += alertHtml('ok', 'La estructura local ya coincide con la del servidor. No hay cambios.');
             } else {
                 var risky = steps.filter(function (s) { return !!s.risk; }).length;
@@ -622,7 +689,9 @@
             var tables = data.tables || {};
             var names  = Object.keys(tables);
             html += '<p class="abv2-card-title" style="margin-top:14px;"><i class="icon16 i-cog"></i> Datos de configuración</p>';
-            if (!names.length) {
+            if (!parts.data) {
+                html += '<div class="upg-chips"><span class="upg-chip">Omitidos (casilla sin marcar)</span></div>';
+            } else if (!names.length) {
                 html += alertHtml('info', 'Sin cambios de datos.');
             } else {
                 var tot = { insert: 0, update: 0, del: 0 };
@@ -638,7 +707,11 @@
                             '<td class="upg-n" data-label="Eliminar">' + fmtInt(cnt(c['delete'])) + '</td></tr>';
                     }).join('') + '</tbody></table></div></details>';
             }
-            html += listDetails('Scripts de parámetros que se ejecutarán', data.scripts);
+            // Los scripts se ejecutan siempre, con o sin las demás partes
+            html += '<p class="abv2-card-title" style="margin-top:14px;"><i class="icon16 i-cog"></i> Scripts de parámetros (siempre)</p>';
+            html += (data.scripts && data.scripts.length)
+                ? listDetails('Scripts de parámetros que se ejecutarán', data.scripts)
+                : alertHtml('info', 'El servidor no envió scripts de parámetros.');
 
             $('upgPlan').innerHTML = html;
             bindPlan(plan);
@@ -671,9 +744,16 @@
                 $('upgBtnContinue').onclick = function () {
                     var ids   = selectedStepIDs();
                     var total = qsa('#upgPlan .upg-step-chk').length;
-                    dialog('Aplicar los cambios',
-                        '<p>Se aplicarán <b>' + fmtInt(ids.length) + '</b> de ' + fmtInt(total) + ' cambios de estructura, los datos de configuración y los archivos.</p>' +
-                        alertHtml('warn', 'A partir de aquí se modifica la instalación. Si algo falla podrá revertir con el respaldo de la etapa 3.'), 'Continuar').then(function (ok) {
+                    var what = [];
+                    if (st.parts.schema) { what.push('<b>' + fmtInt(ids.length) + '</b> de ' + fmtInt(total) + ' cambios de estructura'); }
+                    if (st.parts.data)   { what.push('los datos de configuración'); }
+                    what.push('los scripts de parámetros');
+                    if (st.parts.files)  { what.push('los archivos'); }
+                    var off  = partsOff(st.parts);
+                    var body = '<p>Se aplicarán ' + what.join(', ') + '.</p>' +
+                        (off.length ? '<p>Se omite: ' + esc(off.join(', ')) + '.</p>' : '') +
+                        alertHtml('warn', 'A partir de aquí se modifica la instalación. Si algo falla podrá revertir con el respaldo de la etapa 3.');
+                    dialog('Aplicar los cambios', body, 'Continuar').then(function (ok) {
                         if (!ok) { return; }
                         $('upgBtnContinue').onclick = null; $('upgBtnCancel').onclick = null;
                         $('upgPlanBtns').style.display = 'none';
@@ -713,6 +793,8 @@
             st.rolledBack = false;
             st.upgradeID  = null;
             st.stage      = 0;
+            // Se fija al iniciar: todas las etapas de esta ejecución usan el mismo valor
+            st.parts      = readParts();
             renderReady();
             $('upgPhaseA').style.display = 'none';
             $('upgPhaseB').style.display = '';
@@ -729,7 +811,10 @@
             var canceled = false;
             var schemaIds = [];
 
-            log('Usuario: ' + (USER_NAME || '-') + ' · modo ' + MODE_LABEL[st.mode] + (($('upgForce').checked) ? ' · forzado' : ''));
+            log('Usuario: ' + (USER_NAME || '-') + ' · modo ' + MODE_LABEL[st.mode] + (($('upgForce').checked) ? ' · forzado' : '') + (partsOff(st.parts).length ? ' · PARCIAL, se omite: ' + partsOff(st.parts).join(', ') : ' · completa'));
+            if (partsOff(st.parts).length) {
+                $('upgResult').innerHTML = alertHtml('warn', '<b>Actualización parcial:</b> se omite ' + esc(partsOff(st.parts).join(', ')) + '. El respaldo y los scripts de parámetros se ejecutan igual.');
+            }
 
             var chain = Promise.resolve()
                 // 0. Inicio: valida la confirmación, toma el candado y activa el mantenimiento
@@ -750,9 +835,11 @@
                 .then(function (r) {
                     var x = r.detail || {};
                     var missing = x.missing || [];
-                    stageDetail(1, statsHtml([['Versión del servidor', esc(x.remoteVersion || '-')], ['Latencia', fmtInt(x.latencyMs) + ' ms'], ['Paquetes', fmtInt(cnt(x.packages))], ['Faltantes', fmtInt(missing.length)]]));
-                    if (missing.length) { throw new Error('falta ' + missing.join(', ') + ' en el servidor'); }
-                    stage(1, 'ok', 'Versión ' + (x.remoteVersion || '-') + ' · ' + fmtInt(x.latencyMs) + ' ms');
+                    stageDetail(1, statsHtml([['Versión del servidor', esc(x.remoteVersion || '-')], ['Latencia', fmtInt(x.latencyMs) + ' ms'], ['Paquetes', fmtInt(cnt(x.packages))], ['No se sincronizan', fmtInt(missing.length)]]) +
+                        (missing.length ? '<p class="upg-hint">No están en el servidor (no se sincronizan): ' + missing.map(esc).join(', ') + '</p>' : ''));
+                    // Un zip faltante no es error: esa parte simplemente no se sincroniza
+                    if (missing.length) { log('No se sincroniza (no está en el servidor): ' + missing.join(', ')); }
+                    stage(1, 'ok', 'Versión ' + (x.remoteVersion || '-') + ' · ' + fmtInt(x.latencyMs) + ' ms' + (missing.length ? ' · ' + fmtInt(missing.length) + ' paquete(s) no se sincronizan' : ''));
                     progress(1, r, 1);
                 })
                 // 2. Instalación local
@@ -771,7 +858,7 @@
                     stage(2, 'ok', fmtInt(okN) + ' de ' + fmtInt(checks.length) + ' comprobaciones · ' + fmtMB(x.diskFreeBytes) + ' libres');
                     progress(2, r, 1);
                 })
-                // 3. Respaldo por bloques + verificación
+                // 3. Respaldo por bloques + verificación (siempre: los scripts de parámetros modifican la BD)
                 .then(function () {
                     stage(3, 'run'); progress(3, null, 0);
                     log('Respaldando la base de datos');
@@ -795,7 +882,7 @@
                 // 4. Descarga por bloques (índice global) + extracción
                 .then(function () {
                     stage(4, 'run'); progress(4, null, 0);
-                    log('Descargando paquetes del servidor');
+                    log(st.parts.files ? 'Descargando paquetes del servidor' : 'Archivos omitidos: no se descarga ningún paquete');
                     return loop('download', {}, function (r, index) {
                         var x = r.detail || {};
                         var f = frac(r, index);
@@ -829,7 +916,7 @@
                     // Un archivo PHP con error de sintaxis dejaría el sistema caído: no se continúa
                     if (lint) { throw new Error(fmtInt(lint) + ' archivos PHP con errores de sintaxis en los paquetes descargados'); }
                     stageMini(4, 100);
-                    stage(4, 'ok', fmtInt(zips.length) + ' paquetes · ' + fmtInt(files) + ' archivos verificados');
+                    stage(4, 'ok', st.parts.files ? fmtInt(zips.length) + ' paquetes · ' + fmtInt(files) + ' archivos verificados' : 'Omitida: archivos sin marcar');
                     progress(4, r, 1);
                 })
                 // 5. Comparación y pausa para revisar el plan
@@ -841,7 +928,12 @@
                     st.plan = r.detail || {};
                     renderPlan(st.plan);
                     var steps = (st.plan.schema && st.plan.schema.steps) || [];
-                    stageDetail(5, statsHtml([['Paquetes', fmtInt(Object.keys(st.plan.files || {}).length)], ['Cambios de estructura', fmtInt(steps.length)], ['Tablas de datos', fmtInt(Object.keys((st.plan.data && st.plan.data.tables) || {}).length)]]));
+                    stageDetail(5, statsHtml([
+                        ['Paquetes', st.parts.files ? fmtInt(Object.keys(st.plan.files || {}).length) : 'Omitidos'],
+                        ['Cambios de estructura', st.parts.schema ? fmtInt(steps.length) : 'Omitida'],
+                        ['Tablas de datos', st.parts.data ? fmtInt(Object.keys((st.plan.data && st.plan.data.tables) || {}).length) : 'Omitidos'],
+                        ['Scripts', fmtInt(cnt(st.plan.data && st.plan.data.scripts))]
+                    ]));
                     stage(5, 'wait', 'Revise el plan y pulse "Continuar con la aplicación".');
                     progress(5, r, 1);
                     setChip('Esperando confirmación', '');
@@ -857,9 +949,9 @@
                         return;
                     }
                     schemaIds = ids;
-                    stage(5, 'ok', fmtInt(ids.length) + ' cambios de estructura seleccionados');
+                    stage(5, 'ok', st.parts.schema ? fmtInt(ids.length) + ' cambios de estructura seleccionados' : 'Estructura omitida');
                     setChip('En ejecución', 'info');
-                    log('Usuario confirmó: ' + fmtInt(ids.length) + ' cambios de estructura.');
+                    log('Usuario confirmó' + (st.parts.schema ? ': ' + fmtInt(ids.length) + ' cambios de estructura.' : ' (estructura omitida).'));
                     return applyAll(schemaIds).then(verifyAndFinish);
                 })
                 .then(function () {
@@ -895,7 +987,13 @@
             var doneIds = 0;
 
             function renderDetail() {
-                var html = statsHtml([['Estructura', fmtInt(detail.schema) + ' de ' + fmtInt(ids.length)], ['Datos', detail.data ? (detail.data.ok === false ? 'con error' : 'aplicados') : 'pendiente'], ['Paquetes', fmtInt(detail.files.length)]]);
+                var dataText = detail.data ? (detail.data.ok === false ? 'con error' : 'aplicados') : 'pendiente';
+                var html = statsHtml([
+                    ['Estructura', st.parts.schema ? fmtInt(detail.schema) + ' de ' + fmtInt(ids.length) : 'Omitida'],
+                    ['Datos', st.parts.data ? dataText : 'Omitidos'],
+                    ['Scripts', detail.data ? (detail.data.ok === false ? 'con error' : fmtInt(cnt(detail.data.scripts)) + ' ejecutados') : 'pendiente'],
+                    ['Paquetes', st.parts.files ? fmtInt(detail.files.length) : 'Omitidos']
+                ]);
                 if (detail.files.length) {
                     html += '<div class="upg-scroll" style="margin-top:8px;"><table class="upg-table is-stack"><thead><tr><th>Paquete</th><th class="upg-n">Actualizados</th><th class="upg-n">Creados</th><th class="upg-n">Sin cambios</th><th class="upg-n">Errores</th></tr></thead><tbody>' +
                         detail.files.map(function (x) {
@@ -928,14 +1026,15 @@
 
             return Promise.resolve()
                 .then(function () {
+                    if (!st.parts.schema) { log('Estructura omitida (casilla sin marcar).'); stageMini(6, 40); return; }
                     if (!ids.length) { log('Sin cambios de estructura seleccionados.'); stageMini(6, 40); return; }
                     log('Aplicando ' + fmtInt(ids.length) + ' cambios de estructura');
                     return nextBatch();
                 })
-                // 6b. Datos de configuración (una transacción)
+                // 6b. Datos de configuración + scripts de parámetros (una transacción); los scripts van siempre
                 .then(function () {
-                    stage(6, 'run', 'Datos de configuración (transacción)');
-                    log('Aplicando datos de configuración y scripts');
+                    stage(6, 'run', st.parts.data ? 'Datos de configuración y scripts (transacción)' : 'Scripts de parámetros (transacción)');
+                    log(st.parts.data ? 'Aplicando datos de configuración y scripts' : 'Ejecutando scripts de parámetros (datos de configuración omitidos)');
                     return step('apply_data');
                 })
                 .then(function (r) {
@@ -948,6 +1047,7 @@
                 })
                 // 6c. Archivos por zip (index = zip)
                 .then(function () {
+                    if (!st.parts.files) { log('Archivos omitidos (casilla sin marcar).'); return null; }
                     log('Actualizando archivos');
                     return loop('apply_files', {}, function (r, index) {
                         var x = r.detail || {};
@@ -967,7 +1067,12 @@
                     stageMini(6, 100);
                     var upd = 0, cre = 0;
                     detail.files.forEach(function (x) { upd += cnt(x.updated); cre += cnt(x.created); });
-                    stage(6, 'ok', fmtInt(detail.schema) + ' cambios de estructura · datos aplicados · ' + fmtInt(upd + cre) + ' archivos cambiados');
+                    stage(6, 'ok', [
+                        st.parts.schema ? fmtInt(detail.schema) + ' cambios de estructura' : 'estructura omitida',
+                        st.parts.data ? 'datos aplicados' : 'datos omitidos',
+                        'scripts ejecutados',
+                        st.parts.files ? fmtInt(upd + cre) + ' archivos cambiados' : 'archivos omitidos'
+                    ].join(' · '));
                     progress(6, null, 1);
                 });
         }
@@ -983,13 +1088,16 @@
                     var v        = r.detail || {};
                     var mismatch = cnt(v.files && v.files.mismatch);
                     var pending  = cnt(v.schema && v.schema.pending);
-                    stageDetail(7, statsHtml([['Archivos revisados', fmtInt(v.files ? cnt(v.files.checked) : 0)], ['Distintos', fmtInt(mismatch)], ['Estructura pendiente', fmtInt(pending)], ['Datos', v.data && v.data.ok === false ? 'con diferencias' : 'OK']]) +
+                    var vp       = v.parts || st.parts;
+                    stageDetail(7, statsHtml([['Archivos revisados', vp.files ? fmtInt(v.files ? cnt(v.files.checked) : 0) : 'Omitidos'], ['Distintos', fmtInt(mismatch)], ['Estructura pendiente', vp.schema ? fmtInt(pending) : 'Omitida'], ['Datos', vp.data ? (v.data && v.data.ok === false ? 'con diferencias' : 'OK') : 'Omitidos (scripts OK)']]) +
                         (Array.isArray(v.files && v.files.mismatch) ? listDetails('Archivos distintos', v.files.mismatch) : ''));
                     if (mismatch) { throw new Error(fmtInt(mismatch) + ' archivos no coinciden con lo descargado'); }
                     if (v.data && v.data.ok === false) { throw new Error('los datos de configuración no coinciden'); }
                     // La estructura pendiente es esperable si se dejaron cambios con riesgo sin marcar
                     if (pending) { log('Aviso: ' + fmtInt(pending) + ' diferencias de estructura quedaron pendientes (cambios no seleccionados).'); }
-                    stage(7, 'ok', 'Archivos OK' + (pending ? ' · ' + fmtInt(pending) + ' cambios de estructura no aplicados' : ' · estructura OK'));
+                    stage(7, 'ok', (vp.files ? 'Archivos OK' : 'Archivos omitidos') +
+                        (vp.schema ? (pending ? ' · ' + fmtInt(pending) + ' cambios de estructura no aplicados' : ' · estructura OK') : ' · estructura omitida') +
+                        ' · scripts OK');
                     progress(7, r, 1);
                 })
                 .then(function () {
@@ -1045,11 +1153,12 @@
         $('upgBtnRollback').addEventListener('click', function () {
             var button = this;
             if (!st.upgradeID || st.running) { return; }
-            dialog('Revertir la actualización',
-                alertHtml('warn', 'Se restaurarán los archivos y los datos de configuración que había antes de la actualización ' + esc(st.upgradeID) + '.') +
-                '<label class="upg-option is-danger" for="upgIncludeDb" style="margin-top:10px;"><input type="checkbox" id="upgIncludeDb">' +
-                '<span><p class="upg-option-title">Restaurar también la base de datos completa (borra lo registrado después del respaldo)</p>' +
-                '<p class="upg-option-desc">Úselo solo si la estructura o los datos quedaron dañados.</p></span></label>', 'Revertir').then(function (ok) {
+            // El respaldo completo de la BD existe siempre (etapa 3), aun en actualizaciones parciales
+            var body = alertHtml('warn', 'Se restaurarán los archivos y los datos de configuración que había antes de la actualización ' + esc(st.upgradeID) + '.') +
+                  '<label class="upg-option is-danger" for="upgIncludeDb" style="margin-top:10px;"><input type="checkbox" id="upgIncludeDb">' +
+                  '<span><p class="upg-option-title">Restaurar también la base de datos completa (borra lo registrado después del respaldo)</p>' +
+                  '<p class="upg-option-desc">Úselo solo si la estructura o los datos quedaron dañados.</p></span></label>';
+            dialog('Revertir la actualización', body, 'Revertir').then(function (ok) {
                 if (!ok) { return; }
                 var includeDb = $('upgIncludeDb') && $('upgIncludeDb').checked ? '1' : '0';
                 runRollback(button, includeDb);
@@ -1501,6 +1610,7 @@
         // ---------------------------------------------------------- carga inicial
 
         renderReady();
+        syncParts();   // el navegador puede recordar las casillas al recargar
         readConfig().then(function () { runCheck(); });
         // #respaldo en la URL abre directo la pestaña de respaldos
         if (window.location.hash === '#respaldo') { showTab('backup'); }
