@@ -6,6 +6,62 @@
 /******************************************************************/
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'Listo 👍 ya le paso tu caso a un asesor, en breve te escribe.'
+WHERE p.name = 'WHATSAPP_AI_AGENT_HANDOFF_MESSAGE'
+    AND cp.companyID = 2;
+	
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'true'
+WHERE p.name = 'WHATSAPP_AI_AGENT_CONTINUE_AFTER_HANDOFF'
+    AND cp.companyID = 2;
+	
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '3'
+WHERE p.name = 'WHATSAPP_AI_AGENT_DEBOUNCE_SECONDS'
+    AND cp.companyID = 2;
+	
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '15'
+WHERE p.name = 'WHATSAPP_AI_AGENT_MAX_TURNS'
+    AND cp.companyID = 2;
+	
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '12'
+WHERE p.name = 'WHATSAPP_AI_AGENT_HISTORY_MESSAGES'
+    AND cp.companyID = 2;
+	
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '278'
+WHERE p.name = 'WHATSAPP_AI_AGENT_STAGE_ATTENDED_ID'
+    AND cp.companyID = 2;
+	
+
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '812'
+WHERE p.name = 'WHATSAPP_AI_AGENT_EMPLOYEE_ENTITYID'
+    AND cp.companyID = 2;
+	
+
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'false'
+WHERE p.name = 'WHATSAPP_AI_AGENT_ENABLE'
+    AND cp.companyID = 2;	
+	
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = 'false'
 WHERE p.name = 'GOOGLE_CALENDAR_ENABLE'
     AND cp.companyID = 2;

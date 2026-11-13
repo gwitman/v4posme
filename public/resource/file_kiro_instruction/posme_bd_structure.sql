@@ -269,6 +269,28 @@ CREATE TABLE tb_ai_mensaje (
 ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4;
 
 -- ----------------------------
+-- Table structure for tb_ai_skill
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_ai_skill`;
+CREATE TABLE tb_ai_skill (
+    skillID                 INT NOT NULL AUTO_INCREMENT,
+    companyID               INT NOT NULL,
+    code                    VARCHAR(30) NOT NULL COMMENT 'general | saldo_cxc | soporte | prospecto | ...',
+    name                    VARCHAR(100) NOT NULL COMMENT 'nombre visible de la intencion',
+    description             VARCHAR(1000) NULL COMMENT 'cuando aplica la skill (la IA la usa para detectar la intencion)',
+    prompt                  MEDIUMTEXT NULL COMMENT 'instrucciones de la skill; en code general: prompt base de la empresa',
+    requiredFields          TEXT NULL COMMENT 'JSON: datos que la IA debe pedir al cliente',
+    tools                   TEXT NULL COMMENT 'JSON: herramientas permitidas (mi_saldo, verificar_identidad, buscar_en_manual)',
+    onComplete              VARCHAR(20) NOT NULL DEFAULT 'derivar' COMMENT 'derivar = pasa a humano | atendida = la IA cierra el caso',
+    entityIDEmployerHandoff INT NOT NULL DEFAULT 0 COMMENT '0 = regla actual de asignacion; otro = colaborador fijo',
+    orderNo                 INT NOT NULL DEFAULT 0,
+    isActive                TINYINT(1) NOT NULL DEFAULT 1,
+    PRIMARY KEY (skillID),
+    UNIQUE KEY UK_AI_SKILL_001 (companyID, code),
+    KEY IDX_AI_SKILL_001 (companyID, isActive, orderNo)
+) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_general_ci;
+
+-- ----------------------------
 -- Table structure for tb_ai_uso
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_ai_uso`;
@@ -787,7 +809,7 @@ CREATE TABLE `tb_company_parameter`  (
   `companyID` int NOT NULL DEFAULT 0,
   `display` varchar(250) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '0',
   `description` varchar(250) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '0',
-  `value` varchar(1000) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '0',
+  `value` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0',
   `customValue` varchar(300) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '0',
   `companyParameterID` int NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`companyParameterID`) USING BTREE,
@@ -1156,7 +1178,12 @@ CREATE TABLE `tb_customer_conversation`  (
   `lastActivityOn` datetime NULL DEFAULT NULL,
   `lastMessage` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `isActive` smallint NULL DEFAULT NULL,
-  PRIMARY KEY (`conversationID`) USING BTREE
+  `aiStatus` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `aiIntent` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
+  `aiData` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL,
+  `aiHandoffOn` datetime NULL DEFAULT NULL,
+  PRIMARY KEY (`conversationID`) USING BTREE,
+  INDEX `IDX_CUSTOMER_CONVERSATION_001`(`entityIDSource` ASC, `isActive` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 19 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
