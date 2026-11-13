@@ -84,6 +84,10 @@ class core_upgrade_server extends _BaseController
             $status = 500;
             $body   = json_encode(['error' => true, 'message' => 'No se pudo codificar la respuesta: ' . json_last_error_msg()]);
         }
+        // Descarta salida suelta (espacios tras "?>" en otros archivos): CI la antepone al cuerpo y rompe la firma
+        if (ob_get_level() > 0) {
+            @ob_clean();
+        }
         $timestamp = (string) time();
         $signature = core_upgrade_auth::signResponse($this->client['secret'], $this->client['installationID'], $action, $timestamp, $this->client['nonce'], $body);
         return $this->response

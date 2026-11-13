@@ -106,7 +106,9 @@ class core_upgrade_client
         if ($errno) {
             throw new \Exception('No se pudo contactar al servidor de actualizaciones: ' . $error);
         }
-        $response = (string) $response;
+        // json_encode nunca produce espacios al inicio o al final: se quitan los que agregue
+        // salida suelta del servidor (líneas en blanco tras "?>") para no invalidar la firma
+        $response = trim((string) $response);
         $json     = json_decode($response, true);
         if (!is_array($json)) {
             throw new \Exception('El servidor de actualizaciones respondió algo inválido (HTTP ' . $status . ').');

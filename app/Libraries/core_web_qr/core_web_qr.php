@@ -12,4 +12,3 @@ class core_web_qr
 
 
 ?>
-

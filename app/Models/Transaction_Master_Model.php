@@ -1754,5 +1754,3 @@ class Transaction_Master_Model extends Model  {
 }
 
 ?>
-
-

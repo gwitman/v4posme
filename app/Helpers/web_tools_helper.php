@@ -2379,5 +2379,3 @@ function helper_getHtmlAiChatWidget()
 
 
 ?>
-
-
