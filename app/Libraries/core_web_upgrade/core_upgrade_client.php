@@ -107,7 +107,7 @@ class core_upgrade_client
             throw new \Exception('No se pudo contactar al servidor de actualizaciones: ' . $error);
         }
         // json_encode nunca produce espacios al inicio o al final: se quitan los que agregue
-        // salida suelta del servidor (líneas en blanco tras "?>") para no invalidar la firma
+        // salida suelta del servidor (líneas en blanco tras el cierre PHP) para no invalidar la firma
         $response = trim((string) $response);
         $json     = json_decode($response, true);
         if (!is_array($json)) {
