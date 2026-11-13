@@ -190,10 +190,12 @@ class app_cxp_provider extends _BaseController {
 					$objProviderCreditLine["typeAmortization"]		= $arrayListTypeAmortization[$key];
 					$objProviderCreditLine["dayExcluded"]			= $arrayListDayExcluded[$key];					
 					$limitCreditLine 								= $limitCreditLine + $objProviderCreditLine["limitCredit"];
-					$this->Customer_Credit_Line_Model->insert_app_posme($objProviderCreditLine);
-					
+
+					//Si el balance es mayor que el limite igual el balance al limite
 					if($objProviderCreditLine["balance"] > $objProviderCreditLine["limitCredit"])
-					throw new \Exception("BALANCE NO PUEDE SER MAYOR QUE EL LIMITE EN LA LINEA");
+					$objProviderCreditLine["balance"] = $objProviderCreditLine["limitCredit"];
+
+					$this->Customer_Credit_Line_Model->insert_app_posme($objProviderCreditLine);
 				}
 				else{					
 					$objProviderCreditLine 							= $this->Customer_Credit_Line_Model->get_rowByPK($providerCreditLineID);

@@ -334,7 +334,7 @@ Ruta: Menú > CXC > CLIENTES. La lista se llama LISTA DE CLIENTES. Según la con
   7. Presione Guardar (en el teléfono, en la barra inferior).
 Mensajes: "Escribir la Identificacion", "Escribir el sexo", "Escribir Primer Nombre", "Escribir Segundo Nombre", "Escribir Nombre Legal", "Escribir Nombre Comercial", "La linea ya esta configurada" y, según la configuración, "Error identificacion del cliente ya existe.".
 Notas: Limite de Credito y Balance traen un valor inicial alto: revíselos. Si no agrega líneas, se asigna una predeterminada con límite 300,000.00.
-Para modificarlo, selecciónelo y presione Editar. Si el balance supera el límite aparece "BALANCE NO PUEDE SER MAYOR QUE EL LIMITE EN LA LINEA".
+Para modificarlo, selecciónelo y presione Editar. Si el balance de una línea supera su límite, al guardar el sistema ajusta automáticamente el balance al valor del límite.
 Ver también: Crear una línea de crédito.
 
 16. CREAR UN PRODUCTO

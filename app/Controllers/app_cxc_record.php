@@ -647,10 +647,12 @@ class app_cxc_record extends _BaseController {
 					$limitCreditLine 								= $limitCreditLine + $objCustomerCreditLine["limitCredit"];
 					$exchangeRate 									= $this->core_web_currency->getRatio($companyID,$dateOn,1,$objCurrencyDolares->currencyID,$objCustomerCreditLine["currencyID"]);
 					$exchangeRateAmount								= $objCustomerCreditLine["limitCredit"];
-					$this->Customer_Credit_Line_Model->insert_app_posme($objCustomerCreditLine);
-					
+
+					//Si el balance es mayor que el limite igual el balance al limite
 					if($objCustomerCreditLine["balance"] > $objCustomerCreditLine["limitCredit"])
-					throw new \Exception("BALANCE NO PUEDE SER MAYOR QUE EL LIMITE EN LA LINEA");
+					$objCustomerCreditLine["balance"] = $objCustomerCreditLine["limitCredit"];
+
+					$this->Customer_Credit_Line_Model->insert_app_posme($objCustomerCreditLine);
 				}
 				else{					
 					$objCustomerCreditLine 							= $this->Customer_Credit_Line_Model->get_rowByPK($customerCreditLineID);

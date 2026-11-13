@@ -641,10 +641,12 @@ class app_cxc_customer extends _BaseController {
 					$limitCreditLine 								= $limitCreditLine + $objCustomerCreditLine["limitCredit"];
 					$exchangeRate 									= $this->core_web_currency->getRatio($companyID,$dateOn,1,$objCustomerCreditLine["currencyID"],$objCurrencyDolares->currencyID,);
 					$exchangeRateAmount								= $objCustomerCreditLine["limitCredit"];
-					$this->Customer_Credit_Line_Model->insert_app_posme($objCustomerCreditLine);
-					
+
+					//Si el balance es mayor que el limite igual el balance al limite
 					if($objCustomerCreditLine["balance"] > $objCustomerCreditLine["limitCredit"])
-					throw new \Exception("BALANCE NO PUEDE SER MAYOR QUE EL LIMITE EN LA LINEA");
+					$objCustomerCreditLine["balance"] = $objCustomerCreditLine["limitCredit"];
+
+					$this->Customer_Credit_Line_Model->insert_app_posme($objCustomerCreditLine);
 				}
 				else{					
 					$objCustomerCreditLine 							= $this->Customer_Credit_Line_Model->get_rowByPK($customerCreditLineID);
@@ -663,8 +665,9 @@ class app_cxc_customer extends _BaseController {
 					$exchangeRate 										= $this->core_web_currency->getRatio($companyID,$dateOn,1,$objCustomerCreditLine->currencyID,$objCurrencyDolares->currencyID);					
 					$exchangeRateAmount									= $objCustomerCreditLineNew["limitCredit"];
 					
+					//Si el balance es mayor que el limite igual el balance al limite
 					if($objCustomerCreditLineNew["balance"] > $objCustomerCreditLineNew["limitCredit"])
-					throw new \Exception("BALANCE NO PUEDE SER MAYOR QUE EL LIMITE EN LA LINEA");
+					$objCustomerCreditLineNew["balance"] = $objCustomerCreditLineNew["limitCredit"];
 
 					//actualizar
 					$this->Customer_Credit_Line_Model->update_app_posme($customerCreditLineID,$objCustomerCreditLineNew);
