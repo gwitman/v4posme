@@ -3,7 +3,13 @@
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
-/******************************************************************/	
+/******************************************************************/
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '{"control_zone_facturacion":{"visible":true,"required":false,"value_default":"","label":"Zona"},"control_mesa_facturacion":{"visible":true,"required":false,"value_default":"","label":"Mesa"},"control_tipo_documento_facturacion":{"visible":true,"required":true,"value_default":"Contado","label":"Tipo de documento"},"control_moneda_facturacion":{"visible":true,"required":true,"value_default":"1","label":"Moneda"},"control_telefono_facturacion":{"visible":true,"required":false,"value_default":"","label":"Teléfono"},"control_cedula_facturacion":{"visible":true,"required":false,"value_default":"","label":"Cédula"},"control_cliente_referencia_facturacion":{"visible":true,"required":false,"value_default":"","label":"Cliente"},"label_type_document_in_register":{"visible":true,"required":false,"value_default":"","label":"PROFORMA"},"label_type_document_in_aplied":{"visible":true,"required":false,"value_default":"","label":"FACTURA"}}'
+WHERE p.name = 'APP_MOBILE_SETTING'
+    AND cp.companyID = 2;
+	
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = 'Tipo de venta'
