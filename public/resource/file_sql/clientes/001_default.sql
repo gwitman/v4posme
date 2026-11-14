@@ -6,6 +6,13 @@
 /******************************************************************/
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'false'
+WHERE p.name = 'INVOICE_MOBILE_SHOW_LOAD_ORDER'
+    AND cp.companyID = 2;
+	
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = 'Listo 👍 ya le paso tu caso a un asesor, en breve te escribe.'
 WHERE p.name = 'WHATSAPP_AI_AGENT_HANDOFF_MESSAGE'
     AND cp.companyID = 2;

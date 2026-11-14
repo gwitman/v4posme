@@ -679,7 +679,32 @@ class app_mobile_api extends _BaseController
 			$ListCatalogItem  = $this->Catalog_Item_Model->get_rowByFlavorID($flavorID);
 			log_message("error","[GET_DATA_DOWNLOAD] Catalogos obtenidos -> total: ".count($ListCatalogItem));
 
-            
+			//Obtener catalogo de zonas (txtZoneID de la factura web), mismo origen que app_invoice_billing::add
+			//Si no esta configurado no se interrumpe la descarga: el movil usara INVOICE_BILLING_ZONEID_DEFAULT
+			$objListZone = array();
+			try
+			{
+				$objListZoneCatalog = $this->core_web_catalog->getCatalogAllItem("tb_transaction_master_info_billing","zoneID",$companyID);
+				if($objListZoneCatalog)
+				{
+					foreach($objListZoneCatalog as $objZone)
+					{
+						$objListZone[] = array(
+							"catalogItemID"	=> $objZone->catalogItemID,
+							"name"			=> $objZone->name,
+							"display"		=> $objZone->display,
+							"sequence"		=> isset($objZone->sequence) ? $objZone->sequence : 0
+						);
+					}
+				}
+			}
+			catch(\Exception $exZone)
+			{
+				log_message("error","[GET_DATA_DOWNLOAD] Catalogo de zonas no disponible -> ".$exZone->getMessage());
+			}
+			log_message("error","[GET_DATA_DOWNLOAD] Zonas obtenidas -> total: ".count($objListZone));
+
+
 			if($objCompany->type == "tu_futuro")
 			{
 				//Obtener documentos pendientes	no importa la asignacion
@@ -755,7 +780,8 @@ class app_mobile_api extends _BaseController
                 'ListDocumentCreditAmortization' => $objListAmortization,
 				'ListServerTransactionMaster' => $objListServerTransactionMaster ,
 				'ListTransactionMasterRegister' => $objListTransactionMasterRegister,
-				'ListIndicator' => $objListIndicator
+				'ListIndicator' => $objListIndicator,
+				'ListZone' => $objListZone
             ));//--finjson
 
         } catch (\Exception $ex) {
@@ -770,7 +796,44 @@ class app_mobile_api extends _BaseController
         }
 
     }
-	
+
+	/**
+	 * Cargar solicitud desde el movil (equivalente a app_invoice_billing::loadOrder de la web).
+	 * Autentica con txtNickname/txtPassword y busca la orden por txtOrderNumber
+	 * reutilizando app_invoice_billing::getOrderDataByNumber. No modifica la orden.
+	 */
+	function getDataLoadOrder()
+	{
+		try
+		{
+			$nickname 		= /*inicio get post*/ $this->request->getPostGet("txtNickname");
+			$password 		= /*inicio get post*/ $this->request->getPostGet("txtPassword");
+			$orderNumber 	= /*inicio get post*/ $this->request->getPostGet("txtOrderNumber");
+			$objUser 		= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname, $password);
+			$companyID 		= $objUser["user"]->companyID;
+			log_message("error","[GET_DATA_LOAD_ORDER] companyID: ".$companyID." | orderNumber: ".$orderNumber);
+
+			$billingController 	= new app_invoice_billing();
+			$billingController->initController($this->request, $this->response, $this->logger);
+			$data 				= $billingController->getOrderDataByNumber($companyID,$orderNumber);
+
+			return $this->response->setJSON(array(
+				'error' 	=> false,
+				'message' 	=> SUCCESS,
+				'data' 		=> $data
+			));//--finjson
+		}
+		catch (\Exception $ex)
+		{
+			log_message("error","[GET_DATA_LOAD_ORDER] ERROR -> Linea: ".$ex->getLine()." | Mensaje: ".$ex->getMessage());
+			return $this->response->setJSON(array(
+				'error' 	=> true,
+				'message' 	=> $ex->getMessage(),
+				'data' 		=> array()
+			));//--finjson
+		}
+	}
+
 	function getUserByCompany()
 	{
 		try{ 

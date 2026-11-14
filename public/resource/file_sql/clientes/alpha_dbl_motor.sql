@@ -4,7 +4,11 @@
 /******************************************************************/
 /*****Personalizar pantalla**********/
 /******************************************************************/	
-
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'true'
+WHERE p.name = 'INVOICE_MOBILE_SHOW_LOAD_ORDER'
+    AND cp.companyID = 2;
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "true" 

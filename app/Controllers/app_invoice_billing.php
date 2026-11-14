@@ -2821,9 +2821,11 @@ class app_invoice_billing extends _BaseController {
 			$objTM["reference1"] 					= $providerDefault->entityID;
 			$objTM["descriptionReference"] 			= "reference1:entityID del proveedor de credito para las facturas al credito,reference4: customerCreditLineID linea de credito del cliente";
 			$objTM["reference2"] 					= $transactionMaster->Plazo; 
-			$objTM["reference3"] 					= $this->User_Model->get_UserByUserIDAndCompanyID($companyID, $dataSession["user"]->userID)->firstName;
+			//Referencia (txtReference3 de la web): si el movil la envia se usa; si no (version anterior o vacia) se conserva el nombre del vendedor
+			$mobileReferenceInvoice					= (isset($transactionMaster->ReferenceInvoice) && trim($transactionMaster->ReferenceInvoice) !== "") ? trim($transactionMaster->ReferenceInvoice) : "";
+			$objTM["reference3"] 					= $mobileReferenceInvoice !== "" ? $mobileReferenceInvoice : $this->User_Model->get_UserByUserIDAndCompanyID($companyID, $dataSession["user"]->userID)->firstName;
 			$objTM["reference4"] 					= is_null($transactionMaster->CustomerCreditLineId) ? "0" : $transactionMaster->CustomerCreditLineId;
-			$objTM["statusID"] 						= $transactionMaster->StatusID; 
+			$objTM["statusID"] 						= $transactionMaster->StatusID;
 			$objTM["amount"] 						= 0;
 			$objTM["isApplied"] 					= 0;
 			$objTM["journalEntryID"] 				= 0;
@@ -2837,7 +2839,8 @@ class app_invoice_billing extends _BaseController {
 			$objTM["discount"]						= 0;
 			$objTM["periodPay"]						= $transactionMaster->PeriodPay;
 			$objTM["nextVisit"]						= $transactionMaster->NextVisit;
-			$objTM["numberPhone"]					= "";
+			//Telefono (txtNumberPhone de la web): opcional, vacio si el movil no lo envia
+			$objTM["numberPhone"]					= isset($transactionMaster->NumberPhone) ? trim($transactionMaster->NumberPhone) : "";
 			$objTM["entityIDSecondary"]				= $employee->entityID;
 			$objTM["dayExcluded"]					= $objParameterCXC_DAY_EXCLUDED_IN_CREDIT;
 			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);	
@@ -2865,11 +2868,13 @@ class app_invoice_billing extends _BaseController {
 			$objTMInfo["companyID"]					= $companyID;
 			$objTMInfo["transactionID"]				= $transactionID;
 			$objTMInfo["transactionMasterID"]		= $transactionMasterID;
-			$objTMInfo["zoneID"]					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_ZONEID_DEFAULT")->value; //INVOICE_BILLING_ZONEID_DEFAULT
+			//Zona (txtZoneID de la web): si el movil envia una zona valida (>0) se usa; si no, el parametro INVOICE_BILLING_ZONEID_DEFAULT
+			$objTMInfo["zoneID"]					= (isset($transactionMaster->ZoneID) && intval($transactionMaster->ZoneID) > 0) ? intval($transactionMaster->ZoneID) : $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_ZONEID_DEFAULT")->value; //INVOICE_BILLING_ZONEID_DEFAULT
 			$objTMInfo["mesaID"]					= $transactionMaster->MesaID;
 			$objTMInfo["routeID"]					= 0;
 			$objTMInfo["referenceClientName"]		= $transactionMaster->ReferenceClientName;
-			$objTMInfo["referenceClientIdentifier"]	= $customer->identification;
+			//Cedula (txtReferenceClientIdentifier de la web): si el movil la envia se usa; si no, la identificacion del cliente
+			$objTMInfo["referenceClientIdentifier"]	= (isset($transactionMaster->ReferenceClientIdentifier) && trim($transactionMaster->ReferenceClientIdentifier) !== "") ? trim($transactionMaster->ReferenceClientIdentifier) : $customer->identification;
 			$amountDolares							= 0;
 			$amountCordobas							= 0;
 			if($transactionMaster->CurrencyId==$objCurrencyCordoba->currencyID)
@@ -17693,55 +17698,14 @@ class app_invoice_billing extends _BaseController {
 
 			//Numero de la orden/solicitud
 			$orderNumber		= /*inicio get post*/ $this->request->getPost("orderNumber");
-			if(!$orderNumber || trim($orderNumber) === "")
-				throw new \Exception("Debe indicar el numero de la orden");
 
-			//Buscar la orden por su numero de transaccion
-			$objOrder			= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,trim($orderNumber));
-			if(!$objOrder)
-				throw new \Exception("No se encontro la orden: ".$orderNumber);
-
-			//Obtener el detalle (items) de la orden
-			$objOrderDetail		= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$objOrder->transactionID,$objOrder->transactionMasterID);
-
-			//Armar la lista de items (itemID + cantidad + precio)
-			$items				= array();
-			if($objOrderDetail)
-			{
-				foreach($objOrderDetail as $detail)
-				{
-					$items[] = array(
-						"itemID"	=> $detail->componentItemID,
-						"quantity"	=> $detail->quantity,
-						"price"		=> $detail->unitaryPrice
-					);
-				}
-			}
-
-			//Obtener los datos del cliente de la orden
-			$objCustomer		= $this->Customer_Model->get_rowByEntity($companyID,$objOrder->entityID);
-
-			$referenceClientName		= "";
-			$referenceClientIdentifier	= "";
-			$numberPhone				= "";
-			if($objCustomer)
-			{
-				$referenceClientName		= trim($objCustomer->firstName." ".$objCustomer->lastName);
-				$referenceClientIdentifier	= $objCustomer->identification;
-				$numberPhone				= $objCustomer->phoneNumber;
-			}
+			//La busqueda y armado de datos es compartida con app_mobile_api::getDataLoadOrder
+			$data				= $this->getOrderDataByNumber($companyID,$orderNumber);
 
 			return $this->response->setJSON(array(
 				"error"		=> false,
 				"message"	=> SUCCESS,
-				"data"		=> array(
-					"orderNumber"					=> $objOrder->transactionNumber,
-					"transactionMasterID"			=> $objOrder->transactionMasterID,
-					"referenceClientName"			=> $referenceClientName,
-					"referenceClientIdentifier"		=> $referenceClientIdentifier,
-					"numberPhone"					=> $numberPhone,
-					"items"							=> $items
-				)
+				"data"		=> $data
 			));
 		}
 		catch(\Exception $ex)
@@ -17752,6 +17716,61 @@ class app_invoice_billing extends _BaseController {
 				"data"		=> array()
 			));
 		}
+	}
+
+	/**
+	 * Logica compartida para buscar una orden/solicitud por su numero y armar
+	 * sus datos (cliente referente, cedula, telefono e items).
+	 * La usan loadOrder (web, con sesion) y app_mobile_api::getDataLoadOrder (movil).
+	 * No modifica la orden. Lanza excepcion si el numero viene vacio o no existe.
+	 */
+	function getOrderDataByNumber($companyID,$orderNumber){
+		if(!$orderNumber || trim($orderNumber) === "")
+			throw new \Exception("Debe indicar el numero de la orden");
+
+		//Buscar la orden por su numero de transaccion
+		$objOrder			= $this->Transaction_Master_Model->get_rowByTransactionNumber($companyID,trim($orderNumber));
+		if(!$objOrder)
+			throw new \Exception("No se encontro la orden: ".$orderNumber);
+
+		//Obtener el detalle (items) de la orden
+		$objOrderDetail		= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$objOrder->transactionID,$objOrder->transactionMasterID);
+
+		//Armar la lista de items (itemID + cantidad + precio)
+		$items				= array();
+		if($objOrderDetail)
+		{
+			foreach($objOrderDetail as $detail)
+			{
+				$items[] = array(
+					"itemID"	=> $detail->componentItemID,
+					"quantity"	=> $detail->quantity,
+					"price"		=> $detail->unitaryPrice
+				);
+			}
+		}
+
+		//Obtener los datos del cliente de la orden
+		$objCustomer		= $this->Customer_Model->get_rowByEntity($companyID,$objOrder->entityID);
+
+		$referenceClientName		= "";
+		$referenceClientIdentifier	= "";
+		$numberPhone				= "";
+		if($objCustomer)
+		{
+			$referenceClientName		= trim($objCustomer->firstName." ".$objCustomer->lastName);
+			$referenceClientIdentifier	= $objCustomer->identification;
+			$numberPhone				= $objCustomer->phoneNumber;
+		}
+
+		return array(
+			"orderNumber"					=> $objOrder->transactionNumber,
+			"transactionMasterID"			=> $objOrder->transactionMasterID,
+			"referenceClientName"			=> $referenceClientName,
+			"referenceClientIdentifier"		=> $referenceClientIdentifier,
+			"numberPhone"					=> $numberPhone,
+			"items"							=> $items
+		);
 	}
 
 	/**
