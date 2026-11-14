@@ -93,7 +93,7 @@ class Menu_Element_Model extends Model  {
 							and x.isActive = 1
 							and cco.companyID = %d
 						order by
-							x.typeApp asc, x.orden asc, x.menuElementID asc
+							typeApp asc, x.orden asc, x.menuElementID asc
 						",$companyID,$companyID);
 
 		//Ejecutar Consulta

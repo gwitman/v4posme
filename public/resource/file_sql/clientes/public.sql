@@ -1,17 +1,19 @@
 /*BD: 					dbno63gzawe8bk:public	*/
 /*SERVDIOR:  			siteground*/
-
+/*SERVIDOR				posme.net*/
 
 /*BD:					dblzc4rboyxgxb:public*/
 /*SERVIDOR 2:	  		siteground #2  posme.nl*/
 /*USUARIO BD:			u6gfygnx5ziwu*/
 /*USUARIO BD PASSWORD:	c&6f#&@21lmi*/
+/*SERVIDOR				posme.nl*/
 
 
 /*BD:					qvtrmznkplxajs:public*/
 /*SERVIDOR 3:	  		hostinger vps */
 /*USUARIO BD:			vhrkztnqplwajs*/
 /*USUARIO BD PASSWORD:	K7@mR3#xT9qL2!pZ*/
+/*SERVIDOR				alphadblmotor.tech*/
 
 
 /******************************************************************/
