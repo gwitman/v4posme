@@ -112,6 +112,7 @@ class Menu_Element_Model extends Model  {
 					me.address,
 					me.icon,
 					me.typeMenuElementID,
+					me.orden,
 					up.selected,
 					up.inserted,
 					up.deleted,
