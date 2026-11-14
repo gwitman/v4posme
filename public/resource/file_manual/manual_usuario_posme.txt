@@ -2284,7 +2284,9 @@ Restricciones: solo un despliegue a la vez por compañía.
 166. DESPLIEGUE REMOTO: ERRORES FRECUENTES
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
-  * Firma inválida o vencida: el secreto guardado en la consola no es el mismo del agente, o el reloj del equipo está desfasado más de 5 minutos. Genere e instale de nuevo el secreto, o corrija la hora del equipo.
+  * Firma inválida: el secreto del agente no coincide: el secreto guardado en la consola no es el mismo del agente (por ejemplo, se generó uno nuevo y no se reinstaló). Genere el secreto e instale de nuevo el agente con Instalar agente por SFTP/FTP, o copie al servidor el agent_config.php que se muestra al generarlo.
+  * Firma vencida: la hora del servidor remoto difiere N segundos: el reloj del servidor del cliente o el de la consola está desfasado más de 5 minutos. Corrija la hora del equipo que esté mal.
+  * Firma inválida o vencida (agentes de versiones anteriores): cualquiera de los dos casos de arriba. Actualice el agente para ver la causa exacta.
   * El agente solo acepta HTTPS: la URL de la instalación remota debe empezar con https://.
   * Agente no habilitado: falta el archivo writable/posme_agent/agent_config.php en el servidor del cliente. Instálelo con Instalar agente por SFTP/FTP o créelo a mano.
   * La base remota no coincide: el servidor respondió con una base de datos distinta a la de la cabecera /*BD: ... */ del script de la compañía. Revise la compañía elegida; el despliegue queda bloqueado.

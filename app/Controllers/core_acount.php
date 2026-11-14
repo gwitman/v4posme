@@ -69,17 +69,6 @@ class core_acount extends _BaseController {
 								" Parametro Email: ".$parameterCORE_PROPIETARY_EMAIL."</br>".
 								" Parametro Propietario: ".$parameterCORE_PROPIETARY_NAME."</br>";
 				
-						$subject 	= "Inicio de session: ".$objCompany->name." ".$nickname;
-						$body  		= /*--inicio view*/ view('core_template/email_notificacion',$params_);
-						
-				
-						$this->email->setFrom(EMAIL_APP);
-						$this->email->setTo(EMAIL_APP_COPY);
-						$this->email->setSubject($subject);			
-						$this->email->setMessage($body); 
-						
-						//$resultSend01 = $this->email->send();
-						//$resultSend02 = $this->email->printDebugger();
 						$this->response->redirect($dataSession["lastUrl"]);
 					}
 				}
@@ -317,9 +306,6 @@ class core_acount extends _BaseController {
 				
 			}
 			
-			$subject 	= "Inicio de session: ".$objCompany->name." ".$nickname;
-			$body  		= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview
-
 			//Pantalla de inicio: la última visitada por el usuario o la del rol
 			$urlInicio	= $this->core_web_authentication->lastScreenGet($objUser["user"]);
 			$urlInicio	= $urlInicio ? $urlInicio : base_url()."/".$objUser["role"]->urlDefault."/index";
@@ -340,11 +326,11 @@ class core_acount extends _BaseController {
 				$body  		= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview			
 				$this->email->setFrom(EMAIL_APP);
 				$this->email->setTo( $dataSession['user']->email );
-				$this->email->setSubject($subject);			
-				$this->email->setMessage($body); 
-				
-				//$resultSend01 = $this->email->send();
-				//$resultSend02 = $this->email->printDebugger();		
+				$this->email->setSubject($subject);
+				$this->email->setMessage($body);
+
+				//Bivaly: se envía el enlace de autorización (verificación) al correo del usuario
+				$resultSend01 = $this->email->send();
 
 				//Guardar Log		
 				$this->Log_Session_Model->delete_app_posme("userID",$dataSession["user"]->userID);					
@@ -372,17 +358,8 @@ class core_acount extends _BaseController {
 				
 				return;
 			}
-			else 
+			else
 			{
-				$this->email->setFrom(EMAIL_APP);
-				$this->email->setTo(EMAIL_APP_COPY);
-				$this->email->setSubject($subject);			
-				$this->email->setMessage($body); 
-				
-				//$resultSend01 = $this->email->send();
-				//$resultSend02 = $this->email->printDebugger();
-				
-				
 				//Guardar Log		
 				$this->Log_Session_Model->delete_app_posme("userID",$dataSession["user"]->userID);					
 				$objLogSessionModel["session_id"] 		= $dataSession["sessionID"];
@@ -484,18 +461,6 @@ class core_acount extends _BaseController {
 			$params_["parameterBalance"]						= $parameterBalance;
 			$params_["parameterCantidadDeTransacciones"]		= $parameterCantidadTransacciones;
 			$params_["mensaje"]									= "Su balance de uso es:".$parameterBalance.", Cantidad de Transacciones:".$parameterCantidadTransacciones;
-			
-			
-			$subject 	= "Inicio de session: ".$objCompany->name." ".$nickname;
-			$body  		= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview			
-			
-			$this->email->setFrom(EMAIL_APP);
-			$this->email->setTo(EMAIL_APP_COPY);
-			$this->email->setSubject($subject);			
-			$this->email->setMessage($body); 
-			
-			//$resultSend01 = $this->email->send();
-			//$resultSend02 = $this->email->printDebugger();
 			
 			
 			//Guardar Log			

@@ -93,6 +93,10 @@ class core_deploy_agent extends _BaseController
             }
 
             $configFile = $this->agentDir . '/agent_config.php';
+            // Con opcache sin revalidación se seguiría leyendo el secreto anterior tras reinstalar el agente por FTP
+            if (is_file($configFile) && function_exists('opcache_invalidate')) {
+                @opcache_invalidate($configFile, true);
+            }
             $config     = is_file($configFile) ? include $configFile : null;
             if (!is_array($config) || empty($config['enabled']) || !isset($config['secret']) || strlen($config['secret']) < 64) {
                 return $this->deny(404, 'Agente no habilitado.');
@@ -114,11 +118,19 @@ class core_deploy_agent extends _BaseController
             $nonce     = (string) $this->request->getHeaderLine('X-Posme-Nonce');
             $signature = (string) $this->request->getHeaderLine('X-Posme-Signature');
 
-            if (!ctype_digit($timestamp) || abs(time() - (int) $timestamp) > core_deploy_rules::SIGNATURE_WINDOW
-                || preg_match('/^[a-f0-9]{32}$/', $nonce) !== 1
-                || !core_deploy_crypto::verify($config['secret'], $action, $timestamp, $nonce, $body, $signature)) {
+            // Se distingue la causa del rechazo (sin revelar el secreto) para poder corregirla desde la consola
+            if (!ctype_digit($timestamp) || preg_match('/^[a-f0-9]{32}$/', $nonce) !== 1) {
                 $this->registerFailure();
-                return $this->deny(401, 'Firma inválida o vencida.');
+                return $this->deny(401, 'Firma inválida: la petición no trae las cabeceras de firma completas.');
+            }
+            $clockDiff = time() - (int) $timestamp;
+            if (abs($clockDiff) > core_deploy_rules::SIGNATURE_WINDOW) {
+                $this->registerFailure();
+                return $this->deny(401, 'Firma vencida: la hora del servidor remoto difiere ' . $clockDiff . ' segundos de la consola (máximo ' . core_deploy_rules::SIGNATURE_WINDOW . '). Corrija la hora de uno de los dos equipos.');
+            }
+            if (!core_deploy_crypto::verify($config['secret'], $action, $timestamp, $nonce, $body, $signature)) {
+                $this->registerFailure();
+                return $this->deny(401, 'Firma inválida: el secreto del agente no coincide con el guardado en la consola. Genere el secreto e instale de nuevo el agente (o copie el agent_config.php mostrado al servidor).');
             }
             if (!$this->useNonce($nonce)) {
                 $this->registerFailure();
