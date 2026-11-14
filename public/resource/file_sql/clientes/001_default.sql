@@ -6,6 +6,19 @@
 /******************************************************************/
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'Zona'
+WHERE p.name = 'APP_MOBILE_LABEL_ZONE_INVOICE'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'Comentario'
+WHERE p.name = 'APP_MOBILE_LABEL_COMMENT_INVOICE'
+    AND cp.companyID = 2;
+	
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = 'false'
 WHERE p.name = 'INVOICE_MOBILE_SHOW_LOAD_ORDER'
     AND cp.companyID = 2;
