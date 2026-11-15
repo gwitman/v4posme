@@ -459,7 +459,9 @@ createApp({
 			
 			// Determinar qué archivo enviar (audio grabado, imagen pegada o archivo seleccionado)
 			const fileToSend = this.txtTab1AudioBlob || this.txtTab1PastedImage || this.txtTab1File;
-			
+
+			// Si el servidor falla o no responde JSON, json queda undefined y se muestra el error
+			try {
 			if (fileToSend) {
 				const formData = new FormData();
 				
@@ -493,30 +495,36 @@ createApp({
 				});
 				json = await res.json();
 			}
-			
-			
+			} catch (e) {
+				console.error(e);
+				json = undefined;
+			}
+
+
 			// Mostrar errores
 			if (json == undefined) {
 				this.clearTab1Message();
-				this.message = "Error al procesar información";
+				this.message = "No se pudo enviar el mensaje";
 				this.mostrarAlerta = true;
 				this.error = true;
 				this.guardando = false;
 				return;
 			}
-			
-			if (json.success == false) {
+
+			// Cualquier respuesta que no sea success = true se considera error
+			if (json.success !== true) {
 				this.clearTab1Message();
-				this.message = json.message;
+				this.message = json.message || "No se pudo enviar el mensaje";
 				this.mostrarAlerta = true;
 				this.error = true;
 				this.guardando = false;
 				return;
 			}
-			
-			// Redirigir
-			if (this.entityID != Number(json.entityID)) {
+
+			// Redirigir solo si el servidor devolvió un entityID válido
+			if (Number(json.entityID) > 0 && this.entityID != Number(json.entityID)) {
 				window.location.href = '<?php echo base_url().'/app_cxc_conversation/edit/entityID/'; ?>' + json.entityID;
+				return;
 			}
 			
 			// Notificar
@@ -658,8 +666,10 @@ createApp({
 		  
 			this.guardando 	= true;		
 			var json		= true;
-			//Enviar imagen en un mensaje aparte			
-			if (this.imageFile) 
+			// Si el servidor falla o no responde JSON, json queda undefined y se muestra el error
+			try {
+			//Enviar imagen en un mensaje aparte
+			if (this.imageFile)
 			{				
 				const formData = new FormData();
 				formData.append('image', this.imageFile);	
@@ -687,15 +697,19 @@ createApp({
 							txtTab3IsInternalMessage:	this.txtTab3IsInternalMessage ? '1' : '0'
 						})
 				});		
-				json 			= await res.json();		
+				json 			= await res.json();
 			}
-			
+			} catch (e) {
+				console.error(e);
+				json = undefined;
+			}
+
 			//Mostrar errores
 			if(json == undefined)
 			{
 				this.txtTab3CustomerMessage = '';
 				this.imageFile 				= false;
-				this.message 				= "Error al procesar informacion";
+				this.message 				= "No se pudo enviar el mensaje";
 				this.mostrarAlerta 			= true;
 				this.error 					= true;
 				this.guardando 				= false;
@@ -706,12 +720,12 @@ createApp({
 			
 			
 			
-			//Mostrar errores
-			if(json.success == false)
+			//Mostrar errores: cualquier respuesta que no sea success = true se considera error
+			if(json.success !== true)
 			{
 				this.txtTab3CustomerMessage = '';
 				this.imageFile 				= false;
-				this.message 				= json.message;
+				this.message 				= json.message || "No se pudo enviar el mensaje";
 				this.mostrarAlerta 			= true;
 				this.error 					= true;
 				this.guardando 				= false;
@@ -720,10 +734,11 @@ createApp({
 				return;
 			}
 			
-			//Redirijir
-			if(this.entityID != Number(json.entityID))
+			//Redirijir solo si el servidor devolvió un entityID válido
+			if(Number(json.entityID) > 0 && this.entityID != Number(json.entityID))
 			{
 				window.location.href = '<?php echo base_url().'/app_cxc_conversation/edit/entityID/'; ?>'+json.entityID;
+				return;
 			}
 			
 			//Notificar 

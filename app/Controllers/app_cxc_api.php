@@ -582,9 +582,36 @@ class app_cxc_api extends _BaseController {
 			'turnos' 			=> (int)($aiData['turnos'] ?? 0)
 		];
 	}
+	/**
+	 * Envía un mensaje (texto o archivo) al cliente de la conversación.
+	 * Envuelve el proceso para que cualquier excepción regrese un JSON con
+	 * success = false y el mensaje, en lugar de la respuesta genérica de error.
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
 	function setConversationNotification_ByCustomer()
-	{	
-		
+	{
+		try
+		{
+			return $this->setConversationNotification_ByCustomer_Process();
+		}
+		catch(\Throwable $ex)
+		{
+			log_message("error","setConversationNotification_ByCustomer >> ".$ex->getLine()." ".$ex->getMessage());
+			return $this->response->setJSON([
+				'success' 	=> false,
+				'message' 	=> 'No se pudo enviar el mensaje: '.$ex->getMessage(),
+				'data' 		=> []
+			]);
+		}
+	}
+
+	/**
+	 * Proceso de envío del mensaje al cliente (ver setConversationNotification_ByCustomer).
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	private function setConversationNotification_ByCustomer_Process()
+	{
+
 		// Obtener JSON enviado por fetch
 		log_message("error","setConversationNotification_ByCustomer");
 		$file 		= $this->request->getFile('image');
@@ -983,12 +1010,12 @@ class app_cxc_api extends _BaseController {
 			]);
 		}
 		
-		// Si no es mensaje interno, validar resultado del envÃ­o de WhatsApp		
-		if($result["status"] == "error") 
+		// Si no es mensaje interno, validar resultado del envÃ­o de WhatsApp
+		if(!is_array($result) || ($result["status"] ?? "") == "error")
 		{
 			return $this->response->setJSON([
 				'success' 	=> false,
-				'message' 	=> $result["message"],
+				'message' 	=> (is_array($result) && !empty($result["message"])) ? $result["message"] : 'No se pudo enviar el mensaje',
 				'entityID' 	=> $entityID
 			]);
 		}
