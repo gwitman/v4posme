@@ -2972,7 +2972,7 @@ class core_web_whatsap {
 			{
 				$msg = 'Faltan parametros (WHATSAP_META_TOKEN, WHATSAP_META_PHONE_NUMBER_ID o telefono destino)';
 				log_message('error', '[' . $logTag . '] ' . $msg);
-				return ['success' => false, 'status' => 'error', 'error' => $msg];
+				return ['success' => false, 'status' => 'error', 'message' => $msg, 'error' => $msg];
 			}
 
 			$url 		= 'https://graph.facebook.com/' . rawurlencode($version) . '/' . rawurlencode($phoneNumberId) . '/messages';
@@ -3007,7 +3007,7 @@ class core_web_whatsap {
 
 			if($error)
 			{
-				return ['success' => false, 'status' => 'error', 'error' => $error];
+				return ['success' => false, 'status' => 'error', 'message' => $error, 'error' => $error];
 			}
 
 			$decoded = json_decode((string)$response, true);
@@ -3018,16 +3018,19 @@ class core_web_whatsap {
 				$msg = (string)($decoded["error"]["message"] ?? ('HTTP ' . $httpCode));
 				$cod = (string)($decoded["error"]["code"] ?? '');
 				log_message('error', '[' . $logTag . '] Meta rechazo el envio a ' . $phoneDigits . ' | code: ' . $cod . ' | ' . $msg);
-				return ['success' => false, 'status' => 'error', 'error' => trim($cod . ' ' . $msg), 'response' => $decoded];
+				return ['success' => false, 'status' => 'error', 'message' => 'WhatsApp (Meta): ' . trim($cod . ' ' . $msg), 'error' => trim($cod . ' ' . $msg), 'response' => $decoded];
 			}
 
+			//Los controladores leen "status" y "message" del resultado
 			$decoded["success"] = true;
+			$decoded["status"]  = "success";
+			$decoded["message"] = "Mensaje enviado por Meta Cloud API";
 			return $decoded;
 		}
 		catch(\Throwable $ex)
 		{
 			log_message('error', '[' . $logTag . '] ERROR: ' . $ex->getMessage());
-			return ['success' => false, 'status' => 'error', 'error' => $ex->getMessage()];
+			return ['success' => false, 'status' => 'error', 'message' => $ex->getMessage(), 'error' => $ex->getMessage()];
 		}
 	}
 
