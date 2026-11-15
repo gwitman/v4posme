@@ -196,15 +196,18 @@ class core_web_whatsap {
 
    function sendMessageGeneric( $typeCompany,$companyID, $message, $phoneDestino,$esperarRespuesta,$instanciaName)
    {
-	   //Interruptor por empresa: enviar por la API oficial de Meta (Evolution queda intacto)
-	   if($this->isSendByMetaCloud($companyID))
-	   {
-		   return $this->sendMessageByMetaCloudText( $companyID, $message, $phoneDestino);
-	   }
 
 	   if($typeCompany == "posme")
 	   {
-		   return $this->sendMessageByEvolutionApiText( $companyID, $message, $phoneDestino, $instanciaName);
+		   //Interruptor por empresa: enviar por la API oficial de Meta (Evolution queda intacto)
+		   if($this->isSendByMetaCloud($companyID) && $instanciaName != "EvolutionApi" )
+		   {
+				return $this->sendMessageByMetaCloudText( $companyID, $message, $phoneDestino);
+		   }
+		   else if($instanciaName == "EvolutionApi")
+		   {
+				return $this->sendMessageByEvolutionApiText( $companyID, $message, $phoneDestino, $instanciaName);
+		   }
 	   }
 	   else if ($typeCompany == "gymJalapa")
 	   {   
@@ -224,7 +227,15 @@ class core_web_whatsap {
 	   }
 	   else
 	   {
-		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino,$esperarRespuesta,$instanciaName);
+		   //Interruptor por empresa: enviar por la API oficial de Meta (Evolution queda intacto)
+		   if($this->isSendByMetaCloud($companyID))
+		   {
+			   return $this->sendMessageByMetaCloudText( $companyID, $message, $phoneDestino);
+		   }
+		   else
+		   {
+			   return $this->sendMessageByEvolutionApiText( $companyID, $message, $phoneDestino, $instanciaName);
+		   }
 	   }
    }
    function sendMessageTypeImagGeneric( $typeCompany,$companyID, $urlImagen,$message, $phoneDestino,$esperarRespuesta,$instanciaName )

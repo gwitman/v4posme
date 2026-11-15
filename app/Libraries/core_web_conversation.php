@@ -1116,12 +1116,13 @@ class core_web_conversation{
 					$this->logEmployerList("Asignado", $objListEmployerConversation);
 
 					//De los colaboradores asignados y vigentes, el ultimo que respondio
-					$objEmployerToNotify = $this->getEmployerToNotify($Company_Component_Relation_Model, $conversationID);
+					$instanciaName 			= "EvolutionApi";
+					$objEmployerToNotify 	= $this->getEmployerToNotify($Company_Component_Relation_Model, $conversationID);
 					if($objEmployerToNotify)
 					{
 						$this->sendNotificationToEmployer(
 							$core_web_whatsap, $Entity_Phone_Model, $companyType, $companyID, $branchID,
-							$objEmployerToNotify, $mensaje, "", $entityIDCustomer
+							$objEmployerToNotify, $mensaje, $instanciaName, $entityIDCustomer
 						);
 					}
 				}
