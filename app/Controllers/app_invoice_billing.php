@@ -16385,6 +16385,29 @@ class app_invoice_billing extends _BaseController {
 																		$datView["objTMI"]->referenceClientIdentifier ;
 			$datViewArray["customerPhoneNumber"]				= $datView["objTM"]->numberPhone != "" ? $datView["objTM"]->numberPhone : $datView["objCustumer"]->phoneNumber;
 			$datViewArray["customerAddress"]					= $datView["objCustumer"]->address;
+			//Numero de factura solo con los digitos (FAC00002278 => 00002278)
+			$datViewArray["transactionNumberOnly"]				= preg_replace('/\D/','',(string)$datView["objTM"]->transactionNumber);
+
+			//Direccion completa del cliente: departamento, ciudad, domicilio (se omiten los vacios)
+			$objCustomerState									= $datView["objCustumer"]->stateID ? $this->Catalog_Item_Model->get_rowByCatalogItemID($datView["objCustumer"]->stateID) : null;
+			$objCustomerCity									= $datView["objCustumer"]->cityID ? $this->Catalog_Item_Model->get_rowByCatalogItemID($datView["objCustumer"]->cityID) : null;
+			$customerAddressParts								= array(
+																	$objCustomerState ? trim((string)$objCustomerState->name) : "",
+																	$objCustomerCity ? trim((string)$objCustomerCity->name) : "",
+																	trim((string)$datView["objCustumer"]->address)
+																);
+			$datViewArray["customerAddressFull"]				= implode(", ",array_filter($customerAddressParts,function($v){ return $v != ""; }));
+
+			//Telefono del vendedor (colaborador de la factura: entityIDSecondary); primero el principal
+			$datViewArray["sellerPhoneNumber"]					= "";
+			$objSellerPhones									= $datView["objTM"]->entityIDSecondary ? $this->Entity_Phone_Model->get_rowByEntity($companyID,$datView["objCustumer"]->branchID,$datView["objTM"]->entityIDSecondary) : array();
+			foreach($objSellerPhones as $sellerPhone_)
+			{
+				if($datViewArray["sellerPhoneNumber"] == "" || $sellerPhone_->isPrimary == 1)
+					$datViewArray["sellerPhoneNumber"] = $sellerPhone_->number;
+				if($sellerPhone_->isPrimary == 1)
+					break;
+			}
 
 			//Totales: amount ya trae el descuento aplicado, el sub total se muestra antes del descuento
 			$datViewArray["amount_sub_total"]					= number_format($amountTotal + $amountDiscount,2);
@@ -16407,6 +16430,7 @@ class app_invoice_billing extends _BaseController {
 				$row = array(
 					"itemNumber"			=> $detail_->itemNumber,
 					"itemName"				=> $detail_->itemName. " ". strtolower($detail_->skuFormatoDescription),
+					"itemNameOnly"			=> $detail_->itemName,
 					"itemNameQuantity"		=> fmod(round($quantity,2),1) == 0 ? number_format($quantity,0) : number_format($quantity,2),
 					"itemNamePrice"			=> number_format($linePrice,2),
 					"itemNameAmount"		=> number_format($lineAmount,2)
