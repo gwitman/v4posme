@@ -9,7 +9,7 @@ WHERE p.name = 'WHATSAPP_SEND_METACLOUD'
 
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
-SET cp.value = 'TU_TOKEN_PERMANENTE'
+SET cp.value = 'EAAQNUF8rW6EBSZCTmUtiJyeGZAwRHiD8LxtG1bYoxM5wT36ZC448XCoKUzt5LSqJGV9du0teCyXTNXHL33Y3856aAPNcb2ogETrZCS6qqBmW0V24ZCytoUNs8eZBMxzLE0lA8OkGDaVHZBvB1GsJqrEiu0DeYrAM2AWTUCzUygHPh6PpkDQ5bee81XGRwkJ8gZDZD'
 WHERE p.name = 'WHATSAP_META_TOKEN'
     AND cp.companyID = 2;
 	
