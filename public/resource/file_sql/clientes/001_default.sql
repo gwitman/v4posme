@@ -6,6 +6,12 @@
 /******************************************************************/
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'false'
+WHERE p.name = 'WHATSAPP_SEND_METACLOUD'
+    AND cp.companyID = 2;
+
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = 'TU_TOKEN_PERMANENTE'
 WHERE p.name = 'WHATSAP_META_TOKEN'
     AND cp.companyID = 2;
