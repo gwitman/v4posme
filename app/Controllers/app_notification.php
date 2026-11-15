@@ -2541,6 +2541,7 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 	 * Ej: app_notification/sendWhatsappDiarioMasiveMetaTemplateCobranzaNjGym/templateName/mi_plantilla/languageCode/es
 	 * @return \CodeIgniter\HTTP\Response JSON con el resultado por cliente
 	 */
+	//http://localhost/posmev4/app_notification/sendWhatsappDiarioMasiveMetaTemplateCobranzaNjGym/templateName/recordatorio_pago_njgym/languageCode/es
 	function sendWhatsappDiarioMasiveMetaTemplateCobranzaNjGym()
 	{
 		$logTag 		= '[sendWhatsappDiarioMasiveMetaTemplateCobranzaNjGym]';
