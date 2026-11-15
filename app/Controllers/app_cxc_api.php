@@ -1336,455 +1336,519 @@ class app_cxc_api extends _BaseController {
 		
 	}
 	
-	public function WebHookReceiptMessage_Whatsapp_AppzApiIo_posMe()
-	{	
-	}
-
-	public function WebHookReceiptMessage_Whatsapp_Ultramsg_posMe()
-	{	
-		// JSON crudo (string completo)
-		$host 		= $this->request->getServer('HTTP_HOST');		
-		log_message('error', '[Ultramsg] ====== INICIO WebHookReceiptMessage_Whatsapp_Ultramsg_posMe ======');	
-		$input	 	= $this->request->getJSON(true); // true = array		
-		log_message("error","[Ultramsg] INPUT RAW: " . print_r($input,true));
-
-		//Solo se permiten mensajes recibidos
-		if(($input["event_type"] ?? '') != "message_received")
-		{
-			log_message('error', '[Ultramsg] DESCARTADO: event_type=' . ($input["event_type"] ?? 'null') . ' (no es message_received)');
-			return;
-		}
-
-		//Autenticar sesion por defecto para obtener companyID
-		$dataSession = $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
-		$companyID   = $dataSession["user"]->companyID;
-		log_message('error', '[Ultramsg] companyID: ' . $companyID);
-
-		//Validar parametro WebHookWapi2
-		$paramWebHookWapi2 = $this->core_web_parameter->getParameter("WHATSAPP_WEBHOOK_ULTRAMSG", $companyID);
-		if(!$paramWebHookWapi2 || strtolower($paramWebHookWapi2->value) != "true")
-		{
-			log_message('error', '[Ultramsg] DESCARTADO: Parametro WebHookWapi2 no es true. value=' . ($paramWebHookWapi2->value ?? 'null'));
-			return;
-		}
-		log_message('error', '[Ultramsg] Parametro WebHookWapi2=true, continuando...');
-
-		//Mapear datos de Ultramsg al formato generico
-		$genericData = [];
-		$genericData["event"]                        = "message";
-		$genericData["data"]["from"]                 = $input["data"]["from"] ?? '';
-		$genericData["data"]["body"]                 = $input["data"]["body"] ?? '';
-		$genericData["data"]["type"]                 = $input["data"]["type"] ?? 'chat';
-		$genericData["data"]["contact"]["pushname"]  = $input["data"]["pushname"] ?? '';
-		$genericData["data"]["quotedMsg"]["body"]    = '';
-
-		//Tipo de mensaje segun Ultramsg
-		$type = $genericData["data"]["type"];
-		if($type == "document" || $type == "image" || $type == "ptt" || $type == "audio")
-		{
-			//Ultramsg envia media como URL, hay que descargar y convertir a base64
-			$mediaUrl = $input["data"]["media"] ?? '';
-			log_message('error', '[Ultramsg] Media URL: ' . $mediaUrl);
-
-			if($mediaUrl != '')
-			{
-				$mediaContent = @file_get_contents($mediaUrl);
-				if($mediaContent !== false)
-				{
-					$base64Media = base64_encode($mediaContent);
-
-					//Determinar mimetype y filename
-					$mimetype = 'application/octet-stream';
-					$filename = $input["data"]["filename"] ?? '';
-					if($type == "image")
-					{
-						$mimetype = 'image/jpeg';
-						$filename = $filename ?: 'image_' . uniqid() . '.jpg';
-					}
-					elseif($type == "document")
-					{
-						$mimetype = 'application/pdf';
-						$filename = $filename ?: ($input["data"]["body"] ?? 'document_' . uniqid() . '.pdf');
-					}
-					elseif($type == "ptt" || $type == "audio")
-					{
-						$mimetype = 'audio/ogg';
-						$filename = $filename ?: 'audio_' . uniqid() . '.ogg';
-					}
-
-					$genericData["data"]["media"] = [
-						"mimetype" => $mimetype,
-						"data"     => $base64Media,
-						"filename" => $filename
-					];
-					log_message('error', '[Ultramsg] Media descargada y convertida a base64, mimetype=' . $mimetype . ', filename=' . $filename);
-				}
-				else
-				{
-					log_message('error', '[Ultramsg] ERROR: No se pudo descargar media desde URL: ' . $mediaUrl);
-				}
-			}
-		}
-
-		log_message('error', '[Ultramsg] genericData mapeado: ' . print_r($genericData, true));
-
-		//Llamar a la funcion generica
-		return $this->WebHookReceiptMessage_Whatsapp_Generic_posMe($genericData);
-	}
-
-	//https://posme.nl/v4posme/comercial_luciana/public/app_cxc_api/WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe
-	//https://alphadblmotor.tech/v4posme/alpha_dbl_motor/public/app_cxc_api/WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe
-	//https://posme.net/v4posme/posme/public/app_cxc_api/WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe
-	public function WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe()
+	/**
+	 * Webhook de la API oficial de WhatsApp (Meta Cloud API). Reemplaza al webhook de
+	 * Evolution para RECIBIR; el envio sigue siempre por Evolution API.
+	 * GET : verificacion de Meta. Si hub_verify_token coincide con el parametro
+	 *       WHATSAP_META_VERIFY_TOKEN se devuelve hub_challenge en texto plano; si no, 403.
+	 *       PHP convierte "hub.mode" en "hub_mode" dentro de $_GET.
+	 * POST: valida la firma X-Hub-Signature-256 (WHATSAP_META_APP_SECRET), responde 200 a
+	 *       Meta de inmediato y procesa cada mensaje con la funcion generica:
+	 *       - field=messages           : mensaje del cliente.
+	 *       - field=smb_message_echoes : mensaje que salio del numero (coexistencia). Si lo
+	 *                                    envio posMe (por Evolution) se descarta porque ya
+	 *                                    esta registrado; si lo escribio el dueño desde el
+	 *                                    celular se registra como mensaje del dueño.
+	 *       - statuses                 : se ignoran.
+	 *       Solo procesa si WHATSAPP_WEBHOOK_METACLOUD = true.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	//https://posme.net/v4posme/posme/public/app_cxc_api/WebHookReceiptMessage_Whatsapp_MetaCloud_posMe
+	public function WebHookReceiptMessage_Whatsapp_MetaCloud_posMe()
 	{
-		log_message('error', '[EvolutionApi] ====== INICIO WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe ======');
-		$messageId = '';
 		try
 		{
-			$input	 	= $this->request->getJSON(true); // true = array
-			if(!is_array($input) || empty($input))
-			{
-				log_message('error', '[EvolutionApi] DESCARTADO: JSON invalido o vacio');
-				return $this->response->setJSON(['success' => false, 'message' => 'JSON invalido'])->setStatusCode(200);
-			}
-			//Resumen del payload en una linea (no se imprime el array completo ni el base64)
-			$inputLog = (isset($input["body"]) && is_array($input["body"])) ? $input["body"] : $input;
-			log_message('error', '[EvolutionApi] Mensaje recibido: event=' . ($inputLog["event"] ?? 'null')
-				. ', instancia=' . ($inputLog["instance"] ?? 'null')
-				. ', tipo=' . ($inputLog["data"]["messageType"] ?? 'null')
-				. ', remoteJid=' . ($inputLog["data"]["key"]["remoteJid"] ?? 'null')
-				. ', id=' . ($inputLog["data"]["key"]["id"] ?? 'null')
-				. ', pushName=' . ($inputLog["data"]["pushName"] ?? '')
-				. ', fromMe=' . (!empty($inputLog["data"]["key"]["fromMe"]) ? 'SI' : 'NO'));
+			$companyID 	= APP_COMPANY;
+			$method 	= strtolower($this->request->getMethod());
 
-			//Normalizar estructura: n8n envia el payload de Evolution dentro de "body"
-			//mientras que base64, webhookUrl, executionMode quedan en la raiz
-			$base64Root = $input["base64"] ?? '';
-			if(isset($input["body"]) && is_array($input["body"]) && isset($input["body"]["event"]))
+			if($method == "get")
 			{
-				$input = $input["body"];
-			}
-			//Preservar el base64 que venia en la raiz del payload de n8n
-			if(!empty($base64Root))
-			{
-				$input["base64"] = $base64Root;
+				$hubMode 		= (string)$this->request->getGet("hub_mode");
+				$hubToken 		= (string)$this->request->getGet("hub_verify_token");
+				$hubChallenge 	= (string)$this->request->getGet("hub_challenge");
+
+				$verifyToken 	= $this->metaCloudParameter($companyID, "WHATSAP_META_VERIFY_TOKEN");
+
+				if($hubMode == "subscribe" && $verifyToken != "" && hash_equals($verifyToken, $hubToken))
+				{
+					log_message('error', '[MetaCloud] Verificacion de webhook correcta');
+					return $this->response->setStatusCode(200)->setContentType('text/plain')->setBody($hubChallenge);
+				}
+
+				log_message('error', '[MetaCloud] Verificacion de webhook RECHAZADA: mode=' . $hubMode . ', parametro configurado=' . ($verifyToken != "" ? 'SI' : 'NO'));
+				return $this->response->setStatusCode(403)->setContentType('text/plain')->setBody('Forbidden');
 			}
 
-			//Evolution v2 envia "messages.upsert"; algunas configuraciones envian "MESSAGES_UPSERT"
-			$event = strtolower(str_replace('_', '.', (string)($input["event"] ?? '')));
-			if($event != "messages.upsert")
+			//POST: la firma se calcula sobre el cuerpo crudo, antes de decodificar el JSON
+			$rawBody 		= (string)$this->request->getBody();
+
+			//Interruptor: mientras este apagado no se procesa nada (Meta igual recibe 200)
+			$webhookEnabled = strtolower($this->metaCloudParameter($companyID, "WHATSAPP_WEBHOOK_METACLOUD"));
+			if($webhookEnabled != "true")
 			{
-				log_message('error', '[EvolutionApi] DESCARTADO: event=' . ($input["event"] ?? 'null') . ' (no es messages.upsert)');
+				log_message('error', '[MetaCloud] DESCARTADO: parametro WHATSAPP_WEBHOOK_METACLOUD no es true');
+				return $this->response->setJSON(['success' => false, 'message' => 'Webhook desactivado'])->setStatusCode(200);
+			}
+
+			//Firma obligatoria: sin App Secret configurado se rechaza todo
+			$appSecret 		= $this->metaCloudParameter($companyID, "WHATSAP_META_APP_SECRET");
+			$signature 		= (string)$this->request->getHeaderLine("X-Hub-Signature-256");
+			if(!$this->metaCloudValidSignature($rawBody, $signature, $appSecret))
+			{
+				log_message('error', '[MetaCloud] RECHAZADO: firma X-Hub-Signature-256 invalida o App Secret no configurado (secret configurado=' . ($appSecret != "" ? 'SI' : 'NO') . ', cabecera=' . ($signature != "" ? 'SI' : 'NO') . ')');
+				return $this->response->setStatusCode(403)->setContentType('text/plain')->setBody('Forbidden');
+			}
+
+			$input 			= json_decode($rawBody, true);
+			if(!is_array($input) || ($input["object"] ?? '') != "whatsapp_business_account")
+			{
+				log_message('error', '[MetaCloud] DESCARTADO: JSON invalido u object distinto de whatsapp_business_account');
 				return $this->response->setJSON(['success' => false, 'message' => 'Evento ignorado'])->setStatusCode(200);
 			}
 
-			//fromMe=true: mensaje enviado desde el numero de la empresa. Si lo envio posMe ya
-			//esta en la conversacion y se descarta mas abajo; si el dueño lo escribio desde
-			//su telefono se registra en la conversacion como mensaje saliente.
-			$isFromMe = !empty($input["data"]["key"]["fromMe"]);
-
-			//Solo chats individuales: se descartan grupos, estados (status@broadcast) y canales
-			$remoteJid = (string)($input["data"]["key"]["remoteJid"] ?? '');
-			if(
-				$remoteJid == '' ||
-				str_contains($remoteJid, '@g.us') ||
-				str_contains($remoteJid, '@broadcast') ||
-				str_contains($remoteJid, '@newsletter')
-			)
+			//Juntar los mensajes de todas las entry/changes (Meta puede agrupar varios)
+			$phoneNumberIdCfg 	= $this->metaCloudParameter($companyID, "WHATSAP_META_PHONE_NUMBER_ID");
+			$items 				= [];
+			$countStatuses 		= 0;
+			foreach(($input["entry"] ?? []) as $entry)
 			{
-				log_message('error', '[EvolutionApi] DESCARTADO: remoteJid no es un chat individual -> ' . $remoteJid);
-				return $this->response->setJSON(['success' => false, 'message' => 'Chat no individual ignorado'])->setStatusCode(200);
-			}
-
-			//Validar parametro WHATSAPP_WEBHOOK_EVOLUTIONAPI (antes de registrar el id,
-			//para que un mensaje recibido con el parametro apagado no quede marcado)
-			$companyID   	= APP_COMPANY;
-			log_message('error', '[EvolutionApi] companyID: ' . $companyID);
-			$paramWebHook 	= $this->core_web_parameter->getParameter("WHATSAPP_WEBHOOK_EVOLUTIONAPI", $companyID);
-			if(!$paramWebHook || strtolower(trim((string)$paramWebHook->value)) != "true")
-			{
-				log_message('error', '[EvolutionApi] DESCARTADO: Parametro WHATSAPP_WEBHOOK_EVOLUTIONAPI no es true. value=' . ($paramWebHook->value ?? 'null'));
-				return $this->response->setJSON(['success' => false, 'message' => 'Webhook desactivado'])->setStatusCode(200);
-			}
-			log_message('error', '[EvolutionApi] Parametro WHATSAPP_WEBHOOK_EVOLUTIONAPI=true, continuando...');
-
-			$messageId = (string)($input["data"]["key"]["id"] ?? '');
-
-			//fromMe enviado por posMe (sendMessageByEvolutionApi*): ya fue guardado al enviarlo.
-			//El webhook puede llegar antes de que posMe guarde el id de la respuesta del envio,
-			//por eso se reintenta la verificacion durante unos segundos.
-			if($isFromMe)
-			{
-				$sentByPosMe = false;
-				for($intento = 0; $intento < 4 && !$sentByPosMe; $intento++)
+				foreach(($entry["changes"] ?? []) as $change)
 				{
-					if($intento > 0)
+					$field 		= (string)($change["field"] ?? '');
+					$value 		= is_array($change["value"] ?? null) ? $change["value"] : [];
+					$metadata 	= $value["metadata"] ?? [];
+
+					//Una misma app de Meta puede atender varios numeros: solo el de esta instalacion
+					$phoneNumberId = (string)($metadata["phone_number_id"] ?? '');
+					if($phoneNumberIdCfg != "" && $phoneNumberId != $phoneNumberIdCfg)
 					{
-						usleep(1000000);
+						log_message('error', '[MetaCloud] DESCARTADO: phone_number_id=' . $phoneNumberId . ' no corresponde a esta instalacion');
+						continue;
 					}
-					$sentByPosMe = $this->core_web_whatsap->evolutionIsSentByPosMe($messageId);
-				}
-				if($messageId === '' || $sentByPosMe)
-				{
-					log_message('error', '[EvolutionApi] DESCARTADO: fromMe enviado por posMe (ya registrado), id=' . $messageId);
-					return $this->response->setJSON(['success' => false, 'message' => 'Mensaje enviado por posMe ignorado'])->setStatusCode(200);
-				}
-				log_message('error', '[EvolutionApi] fromMe enviado desde el telefono del dueño, se registrara en la conversacion. id=' . $messageId);
-			}
 
-			//Evitar duplicados: Evolution API reenvia el mismo messages.upsert varias veces
-			//SIEMPRE con el mismo data.key.id. Se procesa solo la primera vez.
-			if($messageId !== '' && !$this->evolutionDedupRegister($messageId))
-			{
-				log_message('error', '[EvolutionApi] DESCARTADO: id=' . $messageId . ' ya procesado (reenvio/ack duplicado)');
-				return $this->response->setJSON(['success' => false, 'message' => 'Mensaje duplicado'])->setStatusCode(200);
-			}
-
-			//Telefono del cliente. Con el direccionamiento @lid de WhatsApp el remoteJid no es
-			//el telefono; el numero real viene en senderPn / remoteJidAlt.
-			$phoneJid = $remoteJid;
-			if(str_contains($remoteJid, '@lid'))
-			{
-				//En un fromMe el telefono del cliente (destinatario) viene en remoteJidAlt
-				$phoneJid = $isFromMe
-					? (string)($input["data"]["key"]["remoteJidAlt"] ?? ($input["data"]["key"]["senderPn"] ?? ''))
-					: (string)($input["data"]["key"]["senderPn"] ?? ($input["data"]["key"]["remoteJidAlt"] ?? ''));
-				if($phoneJid == '' || str_contains($phoneJid, '@lid'))
-				{
-					log_message('error', '[EvolutionApi] DESCARTADO: remoteJid @lid sin senderPn/remoteJidAlt -> ' . $remoteJid);
-					$this->evolutionDedupRemove($messageId);
-					return $this->response->setJSON(['success' => false, 'message' => 'Telefono no disponible (@lid)'])->setStatusCode(200);
-				}
-			}
-			//Se convierte "50588887777@s.whatsapp.net" al formato "50588887777@c.us" que entiende
-			//getNumberPhoneIsContact (deja solo digitos y quita el 505), igual que Wapi2/Ultramsg.
-			//Solo digitos: el valor termina en una consulta SQL y en una ruta de carpeta.
-			$phoneDigits = preg_replace('/\D/', '', explode('@', $phoneJid)[0]);
-			if($phoneDigits == '')
-			{
-				log_message('error', '[EvolutionApi] DESCARTADO: no se pudo obtener el telefono de ' . $phoneJid);
-				$this->evolutionDedupRemove($messageId);
-				return $this->response->setJSON(['success' => false, 'message' => 'Telefono invalido'])->setStatusCode(200);
-			}
-			//Telefono del dueño de la instancia (raiz "sender" del payload de Evolution)
-			$ownerDigits = preg_replace('/\D/', '', explode('@', (string)($input["sender"] ?? ''))[0]);
-			if($isFromMe && $ownerDigits != '' && $ownerDigits == $phoneDigits)
-			{
-				//Chat del dueño consigo mismo: no es una conversacion con un cliente
-				log_message('error', '[EvolutionApi] DESCARTADO: fromMe al propio numero del dueño -> ' . $phoneDigits);
-				return $this->response->setJSON(['success' => false, 'message' => 'Mensaje a si mismo ignorado'])->setStatusCode(200);
-			}
-			$from = $phoneDigits . '@c.us';
-			log_message('error', '[EvolutionApi] remoteJid=' . $remoteJid . ' -> from=' . $from . ($isFromMe ? ' (cliente destino de un fromMe)' : ''));
-
-			//Determinar tipo de mensaje y cuerpo segun la estructura real de Evolution API.
-			//$messageNode apunta al nodo del contenido (imageMessage, documentMessage, etc.)
-			//para leer luego caption, mimetype, fileName y contextInfo del lugar correcto.
-			$messageType 	= $input["data"]["messageType"] ?? 'conversation';
-			$message 		= $input["data"]["message"] ?? [];
-			$body 			= '';
-			$type 			= 'chat';
-			$messageNode 	= [];
-
-			if($messageType == "conversation")
-			{
-				$body = $message["conversation"] ?? '';
-			}
-			elseif($messageType == "extendedTextMessage")
-			{
-				$messageNode = $message["extendedTextMessage"] ?? [];
-				$body = $messageNode["text"] ?? '';
-			}
-			elseif($messageType == "buttonsResponseMessage")
-			{
-				$messageNode = $message["buttonsResponseMessage"] ?? [];
-				$body = $messageNode["selectedDisplayText"] ?? ($messageNode["selectedButtonId"] ?? '');
-			}
-			elseif($messageType == "listResponseMessage")
-			{
-				$messageNode = $message["listResponseMessage"] ?? [];
-				$body = $messageNode["title"] ?? ($messageNode["singleSelectReply"]["selectedRowId"] ?? '');
-			}
-			elseif($messageType == "templateButtonReplyMessage")
-			{
-				$messageNode = $message["templateButtonReplyMessage"] ?? [];
-				$body = $messageNode["selectedDisplayText"] ?? ($messageNode["selectedId"] ?? '');
-			}
-			elseif($messageType == "imageMessage")
-			{
-				$messageNode = $message["imageMessage"] ?? [];
-				$body = $messageNode["caption"] ?? '';
-				$type = 'image';
-			}
-			elseif($messageType == "videoMessage" || $messageType == "ptvMessage")
-			{
-				//ptvMessage = nota de video (video redondo)
-				$messageNode = $message[$messageType] ?? [];
-				$body = $messageNode["caption"] ?? '';
-				$type = 'video';
-			}
-			elseif($messageType == "documentMessage")
-			{
-				$messageNode = $message["documentMessage"] ?? [];
-				$body = $messageNode["caption"] ?? '';
-				$type = 'document';
-			}
-			elseif($messageType == "documentWithCaptionMessage")
-			{
-				//Documento enviado con texto: el documento real esta anidado
-				$messageNode = $message["documentWithCaptionMessage"]["message"]["documentMessage"] ?? [];
-				$body = $messageNode["caption"] ?? '';
-				$type = 'document';
-			}
-			elseif($messageType == "audioMessage")
-			{
-				//ptt=true es nota de voz; de cualquier forma se trata como audio
-				$messageNode = $message["audioMessage"] ?? [];
-				$type = 'ptt';
-			}
-			elseif($messageType == "stickerMessage")
-			{
-				$messageNode = $message["stickerMessage"] ?? [];
-				$type = 'image';
-			}
-			elseif($messageType == "locationMessage")
-			{
-				//Ubicacion: se registra como texto con el enlace de Google Maps
-				$messageNode = $message["locationMessage"] ?? [];
-				$lat  = $messageNode["degreesLatitude"] ?? '';
-				$lng  = $messageNode["degreesLongitude"] ?? '';
-				$body = trim('Ubicacion: ' . ($messageNode["name"] ?? '') . ' https://maps.google.com/?q=' . $lat . ',' . $lng);
-			}
-			else
-			{
-				//Tipo no soportado (reaction, protocolMessage, contact, etc.): descartar
-				log_message('error', '[EvolutionApi] DESCARTADO: messageType no soportado=' . $messageType);
-				return $this->response->setJSON(['success' => false, 'message' => 'Tipo de mensaje no soportado'])->setStatusCode(200);
-			}
-
-			//Mensaje citado (respuesta): el contextInfo esta en el nodo del contenido
-			//(extendedTextMessage, imageMessage, etc.), no solo en extendedTextMessage
-			$quoted 		= $messageNode["contextInfo"]["quotedMessage"] ?? [];
-			$quotedBody 	= $quoted["conversation"]
-							?? ($quoted["extendedTextMessage"]["text"]
-							?? ($quoted["imageMessage"]["caption"]
-							?? ($quoted["videoMessage"]["caption"]
-							?? ($quoted["documentMessage"]["fileName"] ?? ''))));
-
-			//Mapear datos de EvolutionApi al formato generico
-			$genericData 								 = [];
-			$genericData["event"]                        = "message";
-			$genericData["data"]["from"]                 = $from;
-			$genericData["data"]["body"]                 = $body;
-			$genericData["data"]["type"]                 = $type;
-			//En un fromMe el pushName es el nombre del dueño, no del cliente
-			$genericData["data"]["contact"]["pushname"]  = $isFromMe ? '' : ($input["data"]["pushName"] ?? '');
-			$genericData["data"]["quotedMsg"]["body"]    = $quotedBody;
-			$genericData["data"]["fromMe"]               = $isFromMe;
-			$genericData["data"]["owner"]["name"]        = $isFromMe ? ($input["data"]["pushName"] ?? '') : '';
-			$genericData["data"]["owner"]["phone"]       = $ownerDigits;
-			//Proveedor (el agente de IA solo responde por EvolutionApi) y si es sticker (la IA lo ignora)
-			$genericData["data"]["provider"]             = "evolutionapi";
-			$genericData["data"]["isSticker"]            = ($messageType == "stickerMessage");
-
-			//Media
-			if($type == "image" || $type == "document" || $type == "ptt" || $type == "video")
-			{
-				//mimetype y filename se leen del nodo del contenido ($messageNode)
-				$mimetype = '';
-				$filename = '';
-				if($type == "image")
-				{
-					$mimetype = $messageNode["mimetype"] ?? ($messageType == "stickerMessage" ? 'image/webp' : 'image/jpeg');
-					$filename = 'image_' . uniqid() . '.jpg';
-				}
-				elseif($type == "video")
-				{
-					$mimetype = $messageNode["mimetype"] ?? 'video/mp4';
-					$filename = 'video_' . uniqid() . '.mp4';
-				}
-				elseif($type == "document")
-				{
-					$mimetype = $messageNode["mimetype"] ?? 'application/pdf';
-					$filename = $messageNode["fileName"] ?? ('document_' . uniqid() . '.pdf');
-				}
-				elseif($type == "ptt")
-				{
-					//Evolution suele enviar audio/ogg; codecs=opus para notas de voz
-					$mimetype = $messageNode["mimetype"] ?? 'audio/ogg';
-					$filename = 'audio_' . uniqid() . '.ogg';
-				}
-
-				//Evolution API entrega el base64 (con "Webhook Base64" activo) en distintas
-				//ubicaciones segun la version/instancia
-				$base64Media = $message["base64"]
-							?? ($input["data"]["base64"]
-							?? ($input["base64"]
-							?? ($messageNode["base64"] ?? '')));
-
-				//Sin base64: si Evolution tiene S3/MinIO entrega mediaUrl ya desencriptada.
-				//OJO: messageNode["url"] (mmg.whatsapp.net/...enc) esta CIFRADA, no se descarga.
-				if(empty($base64Media))
-				{
-					$mediaUrl = $message["mediaUrl"] ?? ($input["data"]["mediaUrl"] ?? ($messageNode["mediaUrl"] ?? ''));
-					if(!empty($mediaUrl))
+					$countStatuses += count($value["statuses"] ?? []);
+					if($field == "messages")
 					{
-						$context 		= stream_context_create(['http' => ['timeout' => 20], 'ssl' => ['verify_peer' => false, 'verify_peer_name' => false]]);
-						$mediaContent 	= @file_get_contents($mediaUrl, false, $context);
-						if($mediaContent !== false && $mediaContent !== '')
+						foreach(($value["messages"] ?? []) as $msg)
 						{
-							$base64Media = base64_encode($mediaContent);
-							log_message('error', '[EvolutionApi] Media descargada desde mediaUrl: ' . $mediaUrl);
+							$items[] = ["isEcho" => false, "msg" => $msg, "contacts" => ($value["contacts"] ?? []), "metadata" => $metadata];
 						}
-						else
+					}
+					elseif($field == "smb_message_echoes")
+					{
+						foreach(($value["message_echoes"] ?? []) as $msg)
 						{
-							log_message('error', '[EvolutionApi] ERROR: No se pudo descargar media desde mediaUrl: ' . $mediaUrl);
+							$items[] = ["isEcho" => true, "msg" => $msg, "contacts" => [], "metadata" => $metadata];
 						}
 					}
 				}
-
-				//Ultimo recurso: pedir el archivo desencriptado a Evolution API
-				if(empty($base64Media) && $messageId !== '')
-				{
-					$base64Media = $this->core_web_whatsap->getMediaBase64ByEvolutionApi($companyID, $messageId, (string)($input["instance"] ?? ''));
-				}
-
-				if(!empty($base64Media))
-				{
-					//Solo mapear al formato generico; la funcion generica se encarga de
-					//decodificar, guardar el archivo y generar la URL publica
-					$genericData["data"]["media"] = [
-						"mimetype" => $mimetype,
-						"data"     => $base64Media,
-						"filename" => $filename
-					];
-					log_message('error', '[EvolutionApi] Media mapeada. mimetype=' . $mimetype . ', filename=' . $filename . ', base64 length=' . strlen($base64Media));
-				}
-				else
-				{
-					log_message('error', '[EvolutionApi] AVISO: No se pudo obtener la media tipo=' . $type . '. Se registra como texto.');
-				}
 			}
 
-			log_message('error', '[EvolutionApi] Mensaje mapeado al formato generico: from=' . $from
-				. ', tipo=' . $type
-				. ', texto="' . (mb_strlen($body) > 80 ? mb_substr($body, 0, 80) . '...' : $body) . '"'
-				. ', conArchivo=' . (!empty($genericData["data"]["media"]) ? 'SI' : 'NO')
-				. ', citaMensaje=' . ($quotedBody != '' ? 'SI' : 'NO'));
+			log_message('error', '[MetaCloud] POST recibido: mensajes=' . count($items) . ', statuses=' . $countStatuses);
 
-			//Llamar a la funcion generica
-			return $this->WebHookReceiptMessage_Whatsapp_Generic_posMe($genericData);
+			//Evitar duplicados: Meta reintenta el mismo evento con el mismo wamid
+			$itemsNew = [];
+			foreach($items as $item)
+			{
+				$wamid = (string)($item["msg"]["id"] ?? '');
+				if($wamid !== '' && !$this->evolutionDedupRegister($wamid))
+				{
+					log_message('error', '[MetaCloud] DESCARTADO: wamid=' . $wamid . ' ya procesado (reintento de Meta)');
+					continue;
+				}
+				$itemsNew[] = $item;
+			}
+			if(empty($itemsNew))
+			{
+				return $this->response->setJSON(['success' => true])->setStatusCode(200);
+			}
+
+			//Responder 200 a Meta antes de procesar (descarga de archivos, IA, eco con espera)
+			$this->aiAgentReleaseClient(['success' => true]);
+
+			foreach($itemsNew as $item)
+			{
+				$wamid = (string)($item["msg"]["id"] ?? '');
+				try
+				{
+					$this->metaCloudProcessItem($companyID, $item);
+				}
+				catch(\Throwable $ex)
+				{
+					log_message('error', '[MetaCloud] ERROR procesando wamid=' . $wamid . ': ' . $ex->getLine() . ' ' . $ex->getMessage());
+					$this->evolutionDedupRemove($wamid);
+				}
+			}
+			return $this->response->setJSON(['success' => true])->setStatusCode(200);
 		}
 		catch(\Throwable $ex)
 		{
-			//Liberar el id para que un reenvio de Evolution pueda reintentar el mensaje
-			$this->evolutionDedupRemove($messageId);
-			log_message('error', '[EvolutionApi] ERROR: linea ' . $ex->getLine() . ' ' . $ex->getMessage());
-			return $this->response->setJSON([
-				'success' => false,
-				'message' => $ex->getLine() . ' ' . $ex->getMessage()
-			])->setStatusCode(200);
+			log_message('error', '[MetaCloud] ERROR: ' . $ex->getLine() . ' ' . $ex->getMessage());
+			return $this->response->setJSON(['success' => false])->setStatusCode(200);
 		}
+	}
+
+	/**
+	 * Lee un parametro de la empresa sin lanzar excepcion si no existe.
+	 * @param int    $companyID empresa
+	 * @param string $name      nombre del parametro
+	 * @return string valor sin espacios, o "" si no existe
+	 */
+	private function metaCloudParameter($companyID, $name)
+	{
+		try
+		{
+			$objParameter = $this->core_web_parameter->getParameter($name, $companyID);
+			return $objParameter ? trim((string)$objParameter->value) : "";
+		}
+		catch(\Throwable $ex)
+		{
+			log_message('error', '[MetaCloud] AVISO: parametro ' . $name . ' no configurado');
+			return "";
+		}
+	}
+
+	/**
+	 * Valida la cabecera X-Hub-Signature-256 de Meta: "sha256=" + HMAC-SHA256 del cuerpo
+	 * crudo con el App Secret de la app.
+	 * @param string $rawBody   cuerpo crudo de la peticion
+	 * @param string $signature valor de la cabecera X-Hub-Signature-256
+	 * @param string $appSecret App Secret (WHATSAP_META_APP_SECRET)
+	 * @return bool true si la firma es valida; false si falta el secret, la cabecera o no coincide
+	 */
+	private function metaCloudValidSignature($rawBody, $signature, $appSecret)
+	{
+		if($appSecret === "" || stripos($signature, "sha256=") !== 0)
+		{
+			return false;
+		}
+		$expected = hash_hmac("sha256", (string)$rawBody, $appSecret);
+		return hash_equals($expected, strtolower(substr($signature, 7)));
+	}
+
+	/**
+	 * Procesa un mensaje de Meta: descarta los ecos enviados por posMe, convierte el resto
+	 * al formato generico y lo registra con WebHookReceiptMessage_Whatsapp_Generic_posMe.
+	 * @param int   $companyID empresa
+	 * @param array $item      ["isEcho", "msg", "contacts", "metadata"]
+	 * @return void
+	 */
+	private function metaCloudProcessItem($companyID, $item)
+	{
+		$isEcho 		= !empty($item["isEcho"]);
+		$msg 			= $item["msg"];
+		$wamid 			= (string)($msg["id"] ?? '');
+		$msgType 		= (string)($msg["type"] ?? '');
+
+		//En un mensaje del cliente "from" es el cliente; en un eco "from" es el numero de la
+		//empresa y "to" el cliente
+		$ownerDigits 	= preg_replace('/\D/', '', (string)($item["metadata"]["display_phone_number"] ?? ''));
+		if($isEcho)
+		{
+			$fromDigits 	= preg_replace('/\D/', '', (string)($msg["from"] ?? ''));
+			$ownerDigits 	= $fromDigits != '' ? $fromDigits : $ownerDigits;
+			$clientDigits 	= preg_replace('/\D/', '', (string)($msg["to"] ?? ''));
+		}
+		else
+		{
+			$clientDigits 	= preg_replace('/\D/', '', (string)($msg["from"] ?? ''));
+		}
+
+		//Solo chats individuales (igual que Evolution descartaba grupos)
+		if(isset($msg["group_id"]))
+		{
+			log_message('error', '[MetaCloud] DESCARTADO: mensaje de grupo, wamid=' . $wamid);
+			return;
+		}
+		if($clientDigits == '')
+		{
+			log_message('error', '[MetaCloud] DESCARTADO: wamid=' . $wamid . ' sin telefono del cliente');
+			return;
+		}
+
+		//Guardar el texto del mensaje (tambien de los enviados por posMe) para mostrarlo
+		//cuando el cliente lo cite: Meta solo envia el id del mensaje citado
+		$this->metaCloudQuotedCacheSave($wamid, (string)($msg["text"]["body"] ?? ($msg[$msgType]["caption"] ?? ($msg["document"]["filename"] ?? ''))));
+		if($isEcho && $clientDigits == $ownerDigits)
+		{
+			log_message('error', '[MetaCloud] DESCARTADO: eco al propio numero de la empresa, wamid=' . $wamid);
+			return;
+		}
+
+		//Eco de un mensaje que posMe envio por Evolution: ya esta en la conversacion
+		if($isEcho)
+		{
+			$echoText = (string)($msg["text"]["body"] ?? ($msg[$msgType]["caption"] ?? ''));
+			if($this->metaCloudIsSentByPosMe($wamid, $clientDigits, $msgType, $echoText))
+			{
+				return;
+			}
+			log_message('error', '[MetaCloud] Eco escrito desde el celular del dueño, se registrara. wamid=' . $wamid);
+		}
+
+		$genericData = $this->metaCloudMapMessage($companyID, $msg, $item["contacts"] ?? [], $isEcho, $clientDigits, $ownerDigits);
+		if($genericData === null)
+		{
+			log_message('error', '[MetaCloud] DESCARTADO: tipo no soportado=' . $msgType . ', wamid=' . $wamid);
+			return;
+		}
+
+		log_message('error', '[MetaCloud] Mensaje mapeado: wamid=' . $wamid
+			. ', from=' . $genericData["data"]["from"]
+			. ', tipo=' . $genericData["data"]["type"]
+			. ', eco=' . ($isEcho ? 'SI' : 'NO')
+			. ', conArchivo=' . (!empty($genericData["data"]["media"]) ? 'SI' : 'NO'));
+
+		$this->WebHookReceiptMessage_Whatsapp_Generic_posMe($genericData);
+	}
+
+	/**
+	 * Indica si un eco de Meta (smb_message_echoes) corresponde a un mensaje que posMe envio
+	 * por Evolution API. Primero busca el id original dentro del wamid (el wamid es base64 y
+	 * suele contener el key.id del mensaje, ej. 3EB0...) en la lista de enviados por posMe;
+	 * si no aparece, busca la huella del envio (telefono + tipo + texto). Se reintenta unos
+	 * segundos porque el eco puede llegar antes de que posMe guarde la respuesta del envio.
+	 * @param string $wamid        id del mensaje en Meta
+	 * @param string $clientDigits telefono del cliente (destinatario)
+	 * @param string $msgType      tipo de Meta (text, image, document, audio, video, sticker)
+	 * @param string $text         texto o caption del mensaje
+	 * @return bool true si lo envio posMe (se debe descartar)
+	 */
+	private function metaCloudIsSentByPosMe($wamid, $clientDigits, $msgType, $text)
+	{
+		//Candidatos a id original: secuencias alfanumericas largas dentro del wamid decodificado
+		$candidates = [];
+		$encoded 	= preg_replace('/^wamid\./', '', $wamid);
+		$decoded 	= base64_decode(strtr($encoded, '-_', '+/'), false);
+		if($decoded !== false && preg_match_all('/[A-Za-z0-9]{12,}/', $decoded, $matches))
+		{
+			foreach($matches[0] as $candidate)
+			{
+				if($candidate !== $clientDigits)
+				{
+					$candidates[] = $candidate;
+				}
+			}
+		}
+
+		for($intento = 0; $intento < 4; $intento++)
+		{
+			if($intento > 0)
+			{
+				usleep(1000000);
+			}
+			foreach($candidates as $candidate)
+			{
+				if($this->core_web_whatsap->evolutionIsSentByPosMe($candidate))
+				{
+					//Consumir tambien la huella para que no descarte un mensaje igual del dueño
+					$this->core_web_whatsap->evolutionConsumeSentFingerprint($clientDigits, $msgType, $text);
+					log_message('error', '[MetaCloud] DESCARTADO: eco enviado por posMe (coincide id ' . $candidate . '), wamid=' . $wamid);
+					return true;
+				}
+			}
+			if($this->core_web_whatsap->evolutionConsumeSentFingerprint($clientDigits, $msgType, $text))
+			{
+				log_message('error', '[MetaCloud] DESCARTADO: eco enviado por posMe (coincide huella), wamid=' . $wamid . ', idsDelWamid=' . implode(',', $candidates));
+				return true;
+			}
+		}
+		log_message('error', '[MetaCloud] Eco sin coincidencia con envios de posMe: wamid=' . $wamid . ', idsDelWamid=' . implode(',', $candidates));
+		return false;
+	}
+
+	/**
+	 * Guarda el texto de un mensaje por su wamid (ultimos 1000) en
+	 * WRITEPATH/evolution_dedup/meta_quoted.json, para resolver las citas de Meta.
+	 * @param string $wamid id del mensaje en Meta
+	 * @param string $text  texto, caption o nombre del documento
+	 * @return void
+	 */
+	private function metaCloudQuotedCacheSave($wamid, $text)
+	{
+		$text = trim((string)$text);
+		if($wamid === '' || $text === '')
+		{
+			return;
+		}
+		try
+		{
+			$dir = WRITEPATH . 'evolution_dedup';
+			if(!is_dir($dir))
+			{
+				@mkdir($dir, 0777, true);
+			}
+			$handle = @fopen($dir . '/meta_quoted.json', 'c+');
+			if($handle === false)
+			{
+				return;
+			}
+			flock($handle, LOCK_EX);
+			$items 			= json_decode((string)stream_get_contents($handle), true);
+			$items 			= is_array($items) ? $items : [];
+			$items[$wamid] 	= mb_substr($text, 0, 500);
+			if(count($items) > 1000)
+			{
+				$items = array_slice($items, -1000, null, true);
+			}
+			ftruncate($handle, 0);
+			rewind($handle);
+			fwrite($handle, json_encode($items));
+			fflush($handle);
+			flock($handle, LOCK_UN);
+			fclose($handle);
+		}
+		catch(\Throwable $ex)
+		{
+			log_message('error', '[MetaCloud] AVISO: no se pudo guardar el texto para citas: ' . $ex->getMessage());
+		}
+	}
+
+	/**
+	 * Devuelve el texto de un mensaje citado guardado por metaCloudQuotedCacheSave.
+	 * @param string $wamid id del mensaje citado (context.id)
+	 * @return string texto, o "" si no se conoce
+	 */
+	private function metaCloudQuotedCacheGet($wamid)
+	{
+		$file = WRITEPATH . 'evolution_dedup/meta_quoted.json';
+		if($wamid === '' || !file_exists($file))
+		{
+			return '';
+		}
+		$handle = @fopen($file, 'r');
+		if($handle === false)
+		{
+			return '';
+		}
+		flock($handle, LOCK_SH);
+		$items = json_decode((string)stream_get_contents($handle), true);
+		flock($handle, LOCK_UN);
+		fclose($handle);
+		return is_array($items) ? (string)($items[$wamid] ?? '') : '';
+	}
+
+	/**
+	 * Convierte un mensaje de Meta Cloud API (mensaje del cliente o eco) al formato generico
+	 * de WebHookReceiptMessage_Whatsapp_Generic_posMe, igual que lo hace el webhook de
+	 * Evolution. Los archivos se descargan de Meta con getMediaBase64ByMetaCloud.
+	 * @param int    $companyID    empresa
+	 * @param array  $msg          mensaje de Meta (messages[] o message_echoes[])
+	 * @param array  $contacts     value.contacts[] (nombre del cliente)
+	 * @param bool   $isEcho       true si salio del numero de la empresa
+	 * @param string $clientDigits telefono del cliente
+	 * @param string $ownerDigits  telefono de la empresa
+	 * @return array|null datos genericos, o null si el tipo no se soporta (reaction, etc.)
+	 */
+	private function metaCloudMapMessage($companyID, $msg, $contacts, $isEcho, $clientDigits, $ownerDigits)
+	{
+		$msgType 	= (string)($msg["type"] ?? '');
+		$body 		= '';
+		$type 		= 'chat';
+		$mediaNode 	= null;
+		$filename 	= '';
+
+		if($msgType == "text")
+		{
+			$body = (string)($msg["text"]["body"] ?? '');
+		}
+		elseif($msgType == "button")
+		{
+			$body = (string)($msg["button"]["text"] ?? ($msg["button"]["payload"] ?? ''));
+		}
+		elseif($msgType == "interactive")
+		{
+			$body = (string)($msg["interactive"]["button_reply"]["title"] ?? ($msg["interactive"]["list_reply"]["title"] ?? ''));
+		}
+		elseif($msgType == "image" || $msgType == "sticker")
+		{
+			$mediaNode 	= $msg[$msgType] ?? [];
+			$body 		= (string)($mediaNode["caption"] ?? '');
+			$type 		= 'image';
+		}
+		elseif($msgType == "video")
+		{
+			$mediaNode 	= $msg["video"] ?? [];
+			$body 		= (string)($mediaNode["caption"] ?? '');
+			$type 		= 'video';
+		}
+		elseif($msgType == "audio")
+		{
+			//Notas de voz y audios: igual que Evolution se tratan como "ptt" (la generica lo pasa a audio)
+			$mediaNode 	= $msg["audio"] ?? [];
+			$type 		= 'ptt';
+		}
+		elseif($msgType == "document")
+		{
+			$mediaNode 	= $msg["document"] ?? [];
+			$body 		= (string)($mediaNode["caption"] ?? '');
+			$type 		= 'document';
+			$filename 	= (string)($mediaNode["filename"] ?? '');
+		}
+		elseif($msgType == "location")
+		{
+			$location 	= $msg["location"] ?? [];
+			$body 		= trim('Ubicacion: ' . ($location["name"] ?? '') . ' ' . ($location["address"] ?? '')) . ' https://maps.google.com/?q=' . ($location["latitude"] ?? '') . ',' . ($location["longitude"] ?? '');
+		}
+		else
+		{
+			//reaction, unsupported, contacts, system, order...: se descartan como en Evolution
+			return null;
+		}
+
+		//Nombre del cliente: contacts[] del mismo wa_id (en un eco no se conoce)
+		$pushname = '';
+		if(!$isEcho)
+		{
+			foreach($contacts as $contact)
+			{
+				if(preg_replace('/\D/', '', (string)($contact["wa_id"] ?? '')) == $clientDigits)
+				{
+					$pushname = (string)($contact["profile"]["name"] ?? '');
+					break;
+				}
+			}
+			if($pushname == '' && isset($contacts[0]["profile"]["name"]))
+			{
+				$pushname = (string)$contacts[0]["profile"]["name"];
+			}
+		}
+
+		$genericData 								= [];
+		$genericData["event"]                       = "message";
+		$genericData["data"]["from"]                = $clientDigits . '@c.us';
+		$genericData["data"]["body"]                = $body;
+		$genericData["data"]["type"]                = $type;
+		$genericData["data"]["contact"]["pushname"] = $pushname;
+		//Meta solo envia el id del mensaje citado: el texto se busca en la cache local
+		$genericData["data"]["quotedMsg"]["body"]   = $this->metaCloudQuotedCacheGet((string)($msg["context"]["id"] ?? ''));
+		$genericData["data"]["fromMe"]              = $isEcho;
+		$genericData["data"]["owner"]["name"]       = '';
+		$genericData["data"]["owner"]["phone"]      = $isEcho ? $ownerDigits : '';
+		$genericData["data"]["provider"]            = "metacloud";
+		$genericData["data"]["isSticker"]           = ($msgType == "sticker");
+
+		//Archivo: se descarga de Meta por su id. Si el nombre no trae extension la generica
+		//la toma del mimetype (image/png -> png, audio/ogg; codecs=opus -> ogg)
+		$mediaId = (string)($mediaNode["id"] ?? '');
+		if($mediaNode !== null && $mediaId !== '')
+		{
+			$media = $this->core_web_whatsap->getMediaBase64ByMetaCloud($companyID, $mediaId);
+			if(!empty($media["base64"]))
+			{
+				$genericData["data"]["media"] = [
+					"mimetype" => (string)($mediaNode["mime_type"] ?? $media["mimetype"]),
+					"data"     => $media["base64"],
+					"filename" => $filename
+				];
+			}
+			else
+			{
+				log_message('error', '[MetaCloud] AVISO: no se pudo descargar el archivo media_id=' . $mediaId . ', tipo=' . $msgType . '. Se registra como texto.');
+			}
+		}
+		return $genericData;
 	}
 
 	/**
@@ -1870,98 +1934,6 @@ class app_cxc_api extends _BaseController {
 		flock($handle, LOCK_UN);
 		fclose($handle);
 	}
-
-	/**
-	 * Copia del payload para el log: recorta los textos largos (base64 de archivos)
-	 * para no escribir megas en el log por cada mensaje multimedia.
-	 * @param mixed $data payload del webhook
-	 * @return mixed payload con los textos de mas de 300 caracteres recortados
-	 */
-	private function webhookPayloadForLog($data)
-	{
-		if(is_array($data))
-		{
-			foreach($data as $key => $value)
-			{
-				$data[$key] = $this->webhookPayloadForLog($value);
-			}
-			return $data;
-		}
-		if(is_string($data) && strlen($data) > 300)
-		{
-			return substr($data, 0, 60) . '...[recortado, length=' . strlen($data) . ']';
-		}
-		return $data;
-	}
-
-	//https://posme.nl/v4posme/comercial_luciana/public/app_cxc_api/WebHookReceiptMessage_Whatsapp_Wapi2_posMe
-	//example: webhook wapi2
-	public function WebHookReceiptMessage_Whatsapp_Wapi2_posMe()
-	{
-		// JSON crudo (string completo)
-		log_message('error', '[Wapi2] ====== INICIO WebHookReceiptMessage_Whatsapp_Wapi2_posMe ======');	
-		$input	 	= $this->request->getJSON(true); // true = array
-		log_message('error', '[Wapi2] INPUT RAW: ' . print_r($input, true));
-		
-		//Solo se permiten mensajes recibidos
-		if($input["event"] != "message")
-		{
-			log_message('error', '[Wapi2] DESCARTADO: event=' . ($input["event"] ?? 'null') . ' (no es message)');
-			return;
-		}
-		
-		//No se permite mensaje de broadcast
-		if(str_contains($input["data"]["from"], 'broadcast'))
-		{
-			log_message('error', '[Wapi2] DESCARTADO: from contiene broadcast -> ' . $input["data"]["from"]);
-			return;
-		}
-		
-		//No se permite mensaje de template
-		if($input["data"]["type"] == "notification_template")
-		{
-			log_message('error', '[Wapi2] DESCARTADO: type=notification_template');
-			return;
-		}
-		
-		//No se permiten mensaje de cifrado de extremo a extremo
-		if( $input["data"]["type"] == "e2e_notification" )
-		{
-			log_message('error', '[Wapi2] DESCARTADO: type=e2e_notification');
-			return;
-		}
-		
-		log_message('error', '[Wapi2] Evento aceptado: event=' . $input["event"] . ', type=' . ($input["data"]["type"] ?? 'null') . ', from=' . ($input["data"]["from"] ?? 'null'));
-		
-		if (!$input) {
-			$result = [
-				'success' => false,
-				'message' => 'JSON inválido input'
-			];
-			log_message("error","[Wapi2] ERROR: input vacío o nulo");
-			log_message("error",print_r($result,true));
-			return $this->response->setJSON($result)->setStatusCode(200);
-		}
-
-		//Autenticar sesion por defecto para obtener companyID
-		$dataSession = $this->core_web_authentication->get_UserBy_PasswordAndNickname(APP_USERDEFAULT_VALUE, APP_PASSWORDEFAULT_VALUE);
-		$companyID   = $dataSession["user"]->companyID;
-		log_message('error', '[Wapi2] companyID: ' . $companyID);
-
-		//Validar parametro WebHookWapi2
-		$paramWebHookWapi2 = $this->core_web_parameter->getParameter("WHATSAPP_WEBHOOK_WAPI2", $companyID);
-		if(!$paramWebHookWapi2 || strtolower($paramWebHookWapi2->value) != "true")
-		{
-			log_message('error', '[Wapi2] DESCARTADO: Parametro WebHookWapi2 no es true. value=' . ($paramWebHookWapi2->value ?? 'null'));
-			return;
-		}
-		log_message('error', '[Wapi2] Parametro WebHookWapi2=true, continuando...');
-
-		//El input ya viene en formato generico compatible, pasar directamente
-		log_message('error', '[Wapi2] >> Llamando a WebHookReceiptMessage_Whatsapp_Generic_posMe con input directo');
-		return $this->WebHookReceiptMessage_Whatsapp_Generic_posMe($input);
-	}
-
 
 	/**
 	 * Funcion generica para procesar mensajes de WhatsApp
@@ -2235,10 +2207,11 @@ class app_cxc_api extends _BaseController {
 
 		//////////////////////////////////////////////
 		//Agente de IA de WhatsApp (WHATSAPP_AI_AGENT_ENABLE)
-		//Solo Evolution API y solo mensajes del cliente. Las conversaciones que ya
+		//Solo Evolution API o Meta Cloud y solo mensajes del cliente. Las conversaciones que ya
 		//existian antes de habilitar el agente (aiStatus NULL) siguen el flujo humano.
 		//////////////////////////////////////////////
-		$aiEnabled 		= ($inputData["data"]["provider"] ?? '') == "evolutionapi" && $this->aiAgentIsEnabled($companyID);
+		//metacloud: se recibe por Meta pero la IA responde igual por Evolution API
+		$aiEnabled 		= in_array(($inputData["data"]["provider"] ?? ''), ["evolutionapi", "metacloud"]) && $this->aiAgentIsEnabled($companyID);
 		$aiStatus 		= (string)($objCustomerConversation[0]->aiStatus ?? '');
 		if($aiEnabled && $conversationIsNew)
 		{

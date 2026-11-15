@@ -6,6 +6,44 @@
 /******************************************************************/
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'TU_TOKEN_PERMANENTE'
+WHERE p.name = 'WHATSAP_META_TOKEN'
+    AND cp.companyID = 2;
+	
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '391880534006691'
+WHERE p.name = 'WHATSAP_META_PHONE_NUMBER_ID'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'TU_APP_SECRET'
+WHERE p.name = 'WHATSAP_META_APP_SECRET'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'v27.0'
+WHERE p.name = 'WHATSAP_META_API_VERSION'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'false'
+WHERE p.name = 'WHATSAPP_WEBHOOK_METACLOUD'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'v4posme2024'
+WHERE p.name = 'WHATSAP_META_VERIFY_TOKEN'
+    AND cp.companyID = 2;
+	
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = '{"control_zone_facturacion":{"visible":true,"required":false,"value_default":"","label":"Zona"},"control_mesa_facturacion":{"visible":true,"required":false,"value_default":"","label":"Mesa"},"control_tipo_documento_facturacion":{"visible":true,"required":true,"value_default":"Contado","label":"Tipo de documento"},"control_moneda_facturacion":{"visible":true,"required":true,"value_default":"1","label":"Moneda"},"control_telefono_facturacion":{"visible":true,"required":false,"value_default":"","label":"Teléfono"},"control_cedula_facturacion":{"visible":true,"required":false,"value_default":"","label":"Cédula"},"control_cliente_referencia_facturacion":{"visible":true,"required":false,"value_default":"","label":"Cliente"},"label_type_document_in_register":{"visible":true,"required":false,"value_default":"","label":"PROFORMA"},"label_type_document_in_aplied":{"visible":true,"required":false,"value_default":"","label":"FACTURA"}}'
 WHERE p.name = 'APP_MOBILE_SETTING'
     AND cp.companyID = 2;

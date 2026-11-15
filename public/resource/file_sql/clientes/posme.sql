@@ -3,6 +3,45 @@
 
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'TU_TOKEN_PERMANENTE'
+WHERE p.name = 'WHATSAP_META_TOKEN'
+    AND cp.companyID = 2;
+	
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '391880534006691'
+WHERE p.name = 'WHATSAP_META_PHONE_NUMBER_ID'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'TU_APP_SECRET'
+WHERE p.name = 'WHATSAP_META_APP_SECRET'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'v27.0'
+WHERE p.name = 'WHATSAP_META_API_VERSION'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'false'
+WHERE p.name = 'WHATSAPP_WEBHOOK_METACLOUD'
+    AND cp.companyID = 2;
+	
+	
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'v4posme2024'
+WHERE p.name = 'WHATSAP_META_VERIFY_TOKEN'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = 'Listo 👍 ya le paso tu caso a un asesor, en breve te escribe.'
 WHERE p.name = 'WHATSAPP_AI_AGENT_HANDOFF_MESSAGE'
     AND cp.companyID = 2;

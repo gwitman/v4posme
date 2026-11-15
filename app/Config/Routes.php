@@ -747,16 +747,8 @@ $routes->match(['get', 'post'], 'app_cxc_api/setConversationConversation_Tools',
 $routes->match(['get', 'post'], 'app_cxc_api/setConversationAI_Status', 'app_cxc_api::setConversationAI_Status');
 $routes->match(['get', 'post'], 'app_cxc_api/setConversationAI_Status/(:any)', 'app_cxc_api::setConversationAI_Status');
 $routes->match(['get', 'post'], 'app_cxc_api/getConversationCustomer_ByCustomer', 'app_cxc_api::getConversationCustomer_ByCustomer');
-$routes->match(['get', 'post'], 'app_cxc_api/WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe', 'app_cxc_api::WebHookReceiptMessage_Whatsapp_EvolutionApi_posMe');
-$routes->match(['get', 'post'], 'app_cxc_api/WebHookReceiptMessage_Whatsapp_Ultramsg_posMe', 'app_cxc_api::WebHookReceiptMessage_Whatsapp_Ultramsg_posMe');
-$routes->match(['get', 'post'], 'app_cxc_api/WebHookReceiptMessage_Whatsapp_Wapi2_posMe', 'app_cxc_api::WebHookReceiptMessage_Whatsapp_Wapi2_posMe');
-$routes->match(['get', 'post'], 'app_cxc_api/WebHookReceiptMessage_Whatsapp_AppzApiIo_posMe', 'app_cxc_api::WebHookReceiptMessage_Whatsapp_AppzApiIo_posMe');
-
-//$routes->match(['get', 'post'], 'app_cxc_api/WebHookReceiptMessage_Whatsapp_AppzApiIo_posMe/(:any)', 'app_cxc_api::WebHookReceiptMessage_Whatsapp_AppzApiIo_posMe');
-$routes->post(
-	'instancia/(:segment)/receive',  // URL que Z-API llamará
-    'app_cxc_api::WebHookReceiptMessage_Whatsapp_AppzApiIo_posMe/$1'  // Controller y método
-);
+$routes->match(['get', 'post'], 'app_cxc_api/WebHookReceiptMessage_Whatsapp_MetaCloud_posMe', 'app_cxc_api::WebHookReceiptMessage_Whatsapp_MetaCloud_posMe');
+$routes->match(['get', 'post'], 'app_cxc_api/WebHookReceiptMessage_Whatsapp_MetaCloud_posMe/(:any)', 'app_cxc_api::WebHookReceiptMessage_Whatsapp_MetaCloud_posMe');
 
 
 $routes->match(['get', 'post'], 'app_cxc_process/uploadDataSinRiesgo', 'app_cxc_process::uploadDataSinRiesgo');

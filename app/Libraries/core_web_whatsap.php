@@ -2343,6 +2343,8 @@ class core_web_whatsap {
 		$messageId 	= is_array($decoded) ? (string)($decoded["key"]["id"] ?? '') : '';
 		if($messageId === '')
 		{
+			//Sin id igual se guarda la huella para reconocer el eco en el webhook de Meta
+			$this->evolutionRegisterSentFingerprint($decoded);
 			return $decoded;
 		}
 
@@ -2383,7 +2385,177 @@ class core_web_whatsap {
 		{
 			log_message('error', '[evolutionRegisterSentResponse] No se pudo registrar el id ' . $messageId . ': ' . $ex->getMessage());
 		}
+
+		//Huella del envio para el webhook de Meta Cloud (respaldo si el wamid no trae el id)
+		$this->evolutionRegisterSentFingerprint($decoded);
 		return $decoded;
+	}
+
+	/**
+	 * Clave de huella de un mensaje: telefono + tipo + md5 del texto normalizado.
+	 * La usan el envio por Evolution (al guardar) y el webhook de Meta (al buscar el eco).
+	 * @param string $phoneDigits telefono del cliente, solo digitos
+	 * @param string $kind        text, image, document, audio, video o sticker
+	 * @param string $text        texto o caption del mensaje
+	 * @return string clave
+	 */
+	function whatsappSentFingerprintKey($phoneDigits, $kind, $text)
+	{
+		$normalized = mb_strtolower(trim(preg_replace('/\s+/u', ' ', (string)$text)));
+		return preg_replace('/\D/', '', (string)$phoneDigits) . '|' . (string)$kind . '|' . md5($normalized);
+	}
+
+	/**
+	 * Guarda la huella de un mensaje enviado por Evolution API (sent_fingerprints.json),
+	 * a partir de la respuesta del envio: key.remoteJid y el contenido de "message".
+	 * @param array|null $decoded respuesta decodificada de Evolution API
+	 * @return void
+	 */
+	function evolutionRegisterSentFingerprint($decoded)
+	{
+		if(!is_array($decoded))
+		{
+			return;
+		}
+		$phoneDigits = preg_replace('/\D/', '', explode('@', (string)($decoded["key"]["remoteJidAlt"] ?? ($decoded["key"]["remoteJid"] ?? '')))[0]);
+		$message 	 = is_array($decoded["message"] ?? null) ? $decoded["message"] : [];
+		if($phoneDigits == '' || empty($message))
+		{
+			return;
+		}
+
+		//Tipo y texto con los mismos nombres que usa Meta en los ecos
+		$kind = '';
+		$text = '';
+		if(isset($message["conversation"]) || isset($message["extendedTextMessage"]))
+		{
+			$kind = 'text';
+			$text = $message["conversation"] ?? ($message["extendedTextMessage"]["text"] ?? '');
+		}
+		elseif(isset($message["imageMessage"]))
+		{
+			$kind = 'image';
+			$text = $message["imageMessage"]["caption"] ?? '';
+		}
+		elseif(isset($message["videoMessage"]))
+		{
+			$kind = 'video';
+			$text = $message["videoMessage"]["caption"] ?? '';
+		}
+		elseif(isset($message["audioMessage"]))
+		{
+			$kind = 'audio';
+		}
+		elseif(isset($message["documentMessage"]) || isset($message["documentWithCaptionMessage"]))
+		{
+			$kind = 'document';
+			$text = $message["documentMessage"]["caption"] ?? ($message["documentWithCaptionMessage"]["message"]["documentMessage"]["caption"] ?? '');
+		}
+		elseif(isset($message["stickerMessage"]))
+		{
+			$kind = 'sticker';
+		}
+		if($kind == '')
+		{
+			return;
+		}
+
+		try
+		{
+			$dir  = WRITEPATH . 'evolution_dedup';
+			$file = $dir . '/sent_fingerprints.json';
+			if(!is_dir($dir))
+			{
+				@mkdir($dir, 0777, true);
+			}
+			$handle = @fopen($file, 'c+');
+			if($handle === false)
+			{
+				return;
+			}
+			flock($handle, LOCK_EX);
+			$items 			= json_decode((string)stream_get_contents($handle), true);
+			$items 			= is_array($items) ? $items : [];
+			$key 			= $this->whatsappSentFingerprintKey($phoneDigits, $kind, (string)$text);
+			//Lista de horas por clave: el mismo texto puede enviarse varias veces al mismo cliente
+			$items[$key][] 	= time();
+			//Quitar huellas de mas de 10 minutos
+			$limit = time() - 600;
+			foreach($items as $k => $times)
+			{
+				$items[$k] = array_values(array_filter((array)$times, function($t) use ($limit) { return $t >= $limit; }));
+				if(empty($items[$k]))
+				{
+					unset($items[$k]);
+				}
+			}
+			ftruncate($handle, 0);
+			rewind($handle);
+			fwrite($handle, json_encode($items));
+			fflush($handle);
+			flock($handle, LOCK_UN);
+			fclose($handle);
+		}
+		catch(\Throwable $ex)
+		{
+			log_message('error', '[evolutionRegisterSentFingerprint] No se pudo registrar la huella: ' . $ex->getMessage());
+		}
+	}
+
+	/**
+	 * Busca y consume la huella de un mensaje enviado por posMe en los ultimos 2 minutos.
+	 * Se consume para que un mensaje identico que el dueño escriba despues sí se registre.
+	 * @param string $phoneDigits telefono del cliente
+	 * @param string $kind        tipo de Meta (text, image, document, audio, video, sticker)
+	 * @param string $text        texto o caption
+	 * @return bool true si existia la huella (mensaje enviado por posMe)
+	 */
+	function evolutionConsumeSentFingerprint($phoneDigits, $kind, $text)
+	{
+		$file = WRITEPATH . 'evolution_dedup/sent_fingerprints.json';
+		if(!file_exists($file))
+		{
+			return false;
+		}
+		$handle = @fopen($file, 'c+');
+		if($handle === false)
+		{
+			return false;
+		}
+		$found 	= false;
+		flock($handle, LOCK_EX);
+		$items 	= json_decode((string)stream_get_contents($handle), true);
+		$items 	= is_array($items) ? $items : [];
+		$key 	= $this->whatsappSentFingerprintKey($phoneDigits, $kind, $text);
+		$limit 	= time() - 120;
+		if(!empty($items[$key]))
+		{
+			$times = array_values((array)$items[$key]);
+			foreach($times as $index => $t)
+			{
+				if($t >= $limit)
+				{
+					unset($times[$index]);
+					$found = true;
+					break;
+				}
+			}
+			if($found)
+			{
+				$items[$key] = array_values($times);
+				if(empty($items[$key]))
+				{
+					unset($items[$key]);
+				}
+				ftruncate($handle, 0);
+				rewind($handle);
+				fwrite($handle, json_encode($items));
+				fflush($handle);
+			}
+		}
+		flock($handle, LOCK_UN);
+		fclose($handle);
+		return $found;
 	}
 
 	/**
@@ -2620,6 +2792,95 @@ class core_web_whatsap {
 		{
 			log_message('error', '[getMediaBase64ByEvolutionApi] ERROR: ' . $ex->getMessage());
 			return "";
+		}
+	}
+
+	/**
+	 * Descarga de Meta Cloud API el archivo (imagen, audio, video, documento, sticker) de un
+	 * mensaje recibido por el webhook. Son dos llamadas con el token Bearer:
+	 * 1) GET https://graph.facebook.com/{version}/{mediaId} -> url, mime_type, file_size
+	 * 2) GET {url} -> contenido binario
+	 * Parametros: WHATSAP_META_TOKEN y WHATSAP_META_API_VERSION (por defecto v27.0).
+	 * @param int    $companyID ID de la empresa
+	 * @param string $mediaId   id del archivo en el mensaje de Meta
+	 * @return array ["base64" => string, "mimetype" => string]; base64 vacio si no se pudo
+	 */
+	function getMediaBase64ByMetaCloud($companyID, $mediaId)
+	{
+		$result 	= ["base64" => "", "mimetype" => ""];
+		$maxBytes 	= 20 * 1024 * 1024;
+		try
+		{
+			$Parameter_Model 			= new Parameter_Model();
+			$Company_Parameter_Model 	= new Company_Parameter_Model();
+
+			$objPToken 		= $Parameter_Model->get_rowByName("WHATSAP_META_TOKEN");
+			$objCPToken 	= $objPToken ? $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPToken->parameterID) : null;
+			$objPVersion 	= $Parameter_Model->get_rowByName("WHATSAP_META_API_VERSION");
+			$objCPVersion 	= $objPVersion ? $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPVersion->parameterID) : null;
+
+			$token 			= trim((string)($objCPToken->value ?? ""));
+			$version 		= trim((string)($objCPVersion->value ?? ""));
+			$version 		= $version != "" ? $version : "v27.0";
+			if($token == "" || $mediaId == "")
+			{
+				log_message('error', '[getMediaBase64ByMetaCloud] Faltan parametros (WHATSAP_META_TOKEN o mediaId)');
+				return $result;
+			}
+
+			//1) Obtener la url temporal del archivo
+			$ch = curl_init('https://graph.facebook.com/' . rawurlencode($version) . '/' . rawurlencode($mediaId));
+			curl_setopt_array($ch, [
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_HTTPHEADER     => ['Authorization: Bearer ' . $token],
+				CURLOPT_TIMEOUT        => 30
+			]);
+			$response = curl_exec($ch);
+			$error    = curl_error($ch);
+			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			curl_close($ch);
+
+			$json = json_decode((string)$response, true);
+			if($error || $httpCode < 200 || $httpCode >= 300 || empty($json["url"]))
+			{
+				log_message('error', '[getMediaBase64ByMetaCloud] Paso 1 HTTP: ' . $httpCode . ' | error: ' . $error . ' | response: ' . substr((string)$response, 0, 300));
+				return $result;
+			}
+			if((int)($json["file_size"] ?? 0) > $maxBytes)
+			{
+				log_message('error', '[getMediaBase64ByMetaCloud] Archivo mayor a 20 MB, no se descarga. file_size=' . $json["file_size"]);
+				return $result;
+			}
+			$result["mimetype"] = (string)($json["mime_type"] ?? "");
+
+			//2) Descargar el archivo (la url de Meta tambien exige el token)
+			$ch = curl_init((string)$json["url"]);
+			curl_setopt_array($ch, [
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_FOLLOWLOCATION => true,
+				CURLOPT_HTTPHEADER     => ['Authorization: Bearer ' . $token],
+				CURLOPT_TIMEOUT        => 30,
+				CURLOPT_MAXFILESIZE    => $maxBytes
+			]);
+			$content  = curl_exec($ch);
+			$error    = curl_error($ch);
+			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			curl_close($ch);
+
+			if($error || $httpCode < 200 || $httpCode >= 300 || $content === false || $content === "" || strlen($content) > $maxBytes)
+			{
+				log_message('error', '[getMediaBase64ByMetaCloud] Paso 2 HTTP: ' . $httpCode . ' | error: ' . $error . ' | bytes: ' . strlen((string)$content));
+				return $result;
+			}
+
+			$result["base64"] = base64_encode($content);
+			log_message('error', '[getMediaBase64ByMetaCloud] Archivo descargado. mimetype=' . $result["mimetype"] . ', bytes=' . strlen($content));
+			return $result;
+		}
+		catch(\Throwable $ex)
+		{
+			log_message('error', '[getMediaBase64ByMetaCloud] ERROR: ' . $ex->getMessage());
+			return $result;
 		}
 	}
 }
