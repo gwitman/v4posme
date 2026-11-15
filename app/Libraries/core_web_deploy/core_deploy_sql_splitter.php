@@ -177,4 +177,28 @@ class core_deploy_sql_splitter
     {
         return in_array(self::type($sql), ['CREATE', 'ALTER', 'DROP', 'TRUNCATE', 'RENAME', 'GRANT', 'REVOKE', 'LOCK', 'UNLOCK'], true);
     }
+
+    /**
+     * Indica si la sentencia es un CREATE PROCEDURE/FUNCTION/TRIGGER/EVENT con BEGIN
+     * que no termina en END: señal de que el script no usó DELIMITER y el ';' interno
+     * partió la rutina en pedazos.
+     *
+     * @param string $sql Sentencia (ya separada).
+     * @return bool
+     */
+    static function hasUnclosedBlock($sql)
+    {
+        // Sin literales para que un 'BEGIN' o 'END' dentro de comillas no cuente
+        $plain = preg_replace(["/'(?:[^'\\\\]|\\\\.|'')*'/s", '/"(?:[^"\\\\]|\\\\.|"")*"/s', '/`(?:[^`]|``)*`/s'], ["''", '""', '``'], (string) $sql);
+        $head  = '/^\s*CREATE\s+(?:OR\s+REPLACE\s+)?(?:DEFINER\s*=\s*\S+\s+)?(?:AGGREGATE\s+)?(PROCEDURE|FUNCTION|TRIGGER|EVENT)\b/i';
+        if (preg_match($head, $plain) !== 1 || preg_match('/\bBEGIN\b/i', $plain) !== 1) {
+            return false;
+        }
+        // Termina en END (con etiqueta opcional), pero no en END IF/LOOP/WHILE/REPEAT/CASE
+        if (preg_match('/\bEND(?:\s+([A-Za-z_][A-Za-z0-9_$]*|``))?\s*;?\s*$/i', $plain, $match) === 1) {
+            $label = isset($match[1]) ? strtoupper($match[1]) : '';
+            return in_array($label, ['IF', 'LOOP', 'WHILE', 'REPEAT', 'CASE'], true);
+        }
+        return true;
+    }
 }

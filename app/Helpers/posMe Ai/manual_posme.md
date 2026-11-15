@@ -1806,9 +1806,31 @@ Ruta: Administración del sistema > Actualización desde el servidor posMe (core
 2. Si desmarcó algo aparece el aviso amarillo "Actualización parcial: se omite ...".
 3. Escriba ACTUALIZAR, presione **Actualizar posMe** y **Iniciar**. En la etapa 5 lo desmarcado dice "Omitida (casilla sin marcar)".
 Siempre se respalda completa la base de datos (etapa 3) y al final se ejecutan los scripts de parámetros (001_default.sql y el de su compañía), como indica el aviso azul **Siempre al final**. Por eso **Revertir** siempre ofrece restaurar la base de datos.
-Restricciones: marque al menos una casilla ("Marque al menos una parte para sincronizar."). Con **Archivos** marcado, marque al menos un paquete ("Marque al menos un paquete de archivos o desmarque Archivos").
+Restricciones: marque al menos una de las 3 casillas ("Marque al menos una parte para sincronizar."); la del script previo no cuenta. Con **Archivos** marcado, marque al menos un paquete ("Marque al menos un paquete de archivos o desmarque Archivos").
 Notas: un zip no publicado no es error: sale en gris "No se sincroniza (no está en el servidor)". Un paquete publicado pero sin marcar sale en gris "No se sincroniza (paquete sin marcar)", se nombra en el aviso "Actualización parcial: se omite ..." y deja la actualización como parcial. Una actualización parcial queda registrada como parcial: la siguiente a la misma versión no pide **Forzar aunque esté al día**.
-Consejo: sin **Estructura de la base de datos**, si los scripts de parámetros usan campos o tablas nuevos pueden fallar y se revierten datos y scripts; repita con esa casilla marcada.
+Ver también: Actualizar posMe desde el servidor central: ejecutar el script previo 002_pre_deployment.sql.
+
+## Actualizar posMe desde el servidor central: ejecutar el script previo 002_pre_deployment.sql
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), bloque **Qué sincronizar**, casilla **Ejecutar 002_pre_deployment.sql**.
+Ejecuta en su base de datos un script preparado en el servidor central antes de comparar y sincronizar.
+1. Marque **Ejecutar 002_pre_deployment.sql** (viene desmarcada). Si está disponible, dice "Publicado en el servidor (tamaño)...".
+2. Deje marcada al menos una de las otras partes (archivos, estructura o datos): el script previo no cuenta como parte.
+3. Escriba ACTUALIZAR y presione **Actualizar posMe**. La ventana **Iniciar actualización** avisa que el script se ejecuta después del respaldo y antes de que pueda revisar el plan de cambios.
+4. Presione **Iniciar**. El script corre en la etapa 5: después del respaldo completo (etapa 3) y de la descarga (etapa 4), antes de la comparación y de sincronizar estructura, datos y archivos.
+Qué ejecuta: todas sus sentencias, una por una y sin transacción: INSERT, UPDATE, DELETE, SELECT, cambios de estructura (agregar campos, quitar índices, cambiar el motor de una tabla) y crear, modificar o eliminar triggers, procedimientos y funciones.
+Restricciones: la casilla sale deshabilitada con "No está publicado en el servidor" o "El servidor no informa (versión anterior)". Las rutinas y triggers deben escribirse entre DELIMITER $$ ... $$ y DELIMITER ; al final; si no, se rechaza el script antes de ejecutar nada y se indica la línea ("Línea N: use DELIMITER $$ para rutinas y triggers").
+Notas: el script siempre lo envía el servidor central (su carpeta public/resource/file_sql/clientes); no se usa la copia de su equipo.
+Ver también: Actualizar posMe desde el servidor central: resultado y errores del script previo 002_pre_deployment.sql.
+
+## Actualizar posMe desde el servidor central: resultado y errores del script previo 002_pre_deployment.sql
+Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta **Script previo 002_pre_deployment.sql** (aparece en la etapa 5, antes de **Revise los cambios antes de aplicarlos**).
+1. Revise el resumen: **Estado**, **Sentencias**, **Ejecutadas**, **Con resultado**, **Filas afectadas** y **Tiempo**.
+2. Abra cada sentencia para ver su tipo, el SQL y las filas afectadas o el error.
+3. Los SELECT muestran una tabla con los nombres de los campos y las filas; los valores vacíos salen como NULL en cursiva. Se muestran hasta 200 filas por resultado; si hay más aparece "Se muestran las primeras N de M filas.".
+4. Cada sentencia queda también en la **Bitácora** (OK o ERROR, número y línea).
+Si una sentencia falla: se detiene ahí ("Falló la sentencia #N."), lo ejecutado antes ya quedó aplicado, la etapa 5 queda en error y aparece **Revertir**. Lo que hizo el script solo se deshace marcando **Restaurar también la base de datos completa** al revertir; la pantalla lo recuerda.
+Si cancela en el plan con **Cancelar sin aplicar**, lo aplicado por el script tampoco se deshace: restaure la base de datos completa desde la pestaña "Respaldo de base de datos".
+Notas: si el servidor no tiene el archivo ("El servidor no tiene publicado el script previo: se continúa sin ejecutarlo.") o es de una versión anterior, la actualización continúa sin él. Un archivo vacío da 0 sentencias y la actualización continúa.
 
 ## Actualizar posMe desde el servidor central: etapas, revisar cambios y cancelar
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta **Etapas**.
@@ -1817,7 +1839,7 @@ La actualización recorre 8 etapas, cada una con su estado y **Ver detalle**:
 2. **Verificando instalación local**: permisos, espacio en disco, PHP y base de datos.
 3. **Generando respaldo de base de datos**: copia completa antes de cambiar nada.
 4. **Descargando archivos del servidor**: por bloques, verificando su huella (SHA-256).
-5. **Comparando estructuras de base de datos**: calcula qué cambia y se pausa en **Revise los cambios antes de aplicarlos**.
+5. **Comparando estructuras de base de datos**: si marcó **Ejecutar 002_pre_deployment.sql**, primero ejecuta ese script; luego calcula qué cambia y se pausa en **Revise los cambios antes de aplicarlos**.
 6. **Aplicando modificaciones**: estructura, datos de configuración y archivos, en ese orden.
 7. **Validando archivos y componentes**: confirma que lo aplicado coincide con lo descargado.
 8. **Finalizando actualización**: registra la nueva versión y desactiva el modo mantenimiento.
@@ -1844,7 +1866,7 @@ Si una etapa falla, aparece "Falló en la etapa N" y el botón **Revertir**.
 3. Marque **Restaurar también la base de datos completa (borra lo registrado después del respaldo)** solo si la estructura o los datos quedaron dañados. Si no lo marca, la base de datos se conserva.
 4. Presione **Revertir** y espere el aviso "Se restauró la instalación anterior.".
 5. Presione **Recargar posMe**.
-Notas: si la reversión falla aparece "No se pudo revertir" y puede intentarlo de nuevo. Si falló al iniciar (antes de cambiar nada), solo aparece **Volver**. El respaldo completo de la base de datos se hace siempre, aun en una actualización parcial; por eso siempre aparece **Restaurar también la base de datos completa**.
+Notas: si la reversión falla aparece "No se pudo revertir" y puede intentarlo de nuevo. Si falló al iniciar (antes de cambiar nada), solo aparece **Volver**. El respaldo completo de la base de datos se hace siempre, aun en una actualización parcial; por eso siempre aparece **Restaurar también la base de datos completa**. Si se ejecutó 002_pre_deployment.sql, sus cambios solo se deshacen marcando esa casilla; la pantalla lo recuerda.
 
 ## Actualizar posMe desde el servidor central: preparar el servidor central (administrador)
 Solo para el administrador del servidor central de posMe (no para el cliente).
@@ -1869,6 +1891,7 @@ Ruta: Administración del sistema > Actualización desde el servidor posMe (core
 - Haga la actualización fuera del horario de trabajo y avise a los usuarios: el modo mantenimiento impide operar.
 - Aunque la etapa 3 respalda siempre la base de datos (también en una actualización parcial), tenga un respaldo propio reciente.
 - Si desmarca **Estructura de la base de datos**, los scripts de parámetros pueden fallar si usan campos o tablas nuevos; en ese caso vuelva a ejecutar con esa casilla marcada.
+- **Ejecutar 002_pre_deployment.sql** corre antes de que pueda revisar el plan y sin transacción: lo que aplique solo se deshace restaurando la base de datos completa.
 - Si falta en el servidor alguno de los zip, esa parte no se actualiza: confirme en **Componentes que se actualizan** qué se va a sincronizar.
 - En modo Nube, syncConfig.zip reemplaza los archivos de app/Config que traiga, incluidos Database.php y Filters.php. Revise su contenido antes de publicarlo.
 - Los archivos obsoletos no se borran: solo se actualizan o crean los que vienen en los zip.
@@ -1967,7 +1990,7 @@ Ver también: Despliegue remoto: elegir la compañía y configurar la conexión.
 
 ## Despliegue remoto: elegir la compañía y configurar la conexión
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
-1. En **Compañía a sincronizar** elija la compañía. La lista sale de los scripts de public/resource/file_sql/clientes, uno por compañía (no aparecen 001_default ni los scripts -custom-php). La base de datos esperada se toma de la cabecera /*BD: ... */ del script.
+1. En **Compañía a sincronizar** elija la compañía. La lista sale de los scripts de public/resource/file_sql/clientes, uno por compañía (no aparecen 001_default, 002_pre_deployment ni los scripts -custom-php). La base de datos esperada se toma de la cabecera /*BD: ... */ del script.
 2. En **Conexión remota** complete las pestañas:
    - **Agente**: **URL de la instalación remota** (la misma con la que se abre posMe en el navegador; debe usar HTTPS) y el secreto del agente.
    - **SFTP / FTP**: **Protocolo** (**SFTP (recomendado)**, **FTPS (FTP con TLS)**, **FTP sin cifrado** o **No usar**), **Servidor**, **Puerto**, **Usuario**, **Contraseña**, **Directorio raíz remoto** y **Directorio de la aplicación**.

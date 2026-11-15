@@ -65,7 +65,8 @@ class core_web_deploy
 
     /**
      * Lista las compañías disponibles (un .sql por compañía).
-     * Excluye 001_default.sql y los *-custom-php.sql (notas, no SQL).
+     * Excluye 001_default.sql, 002_pre_deployment.sql (script previo de la actualización)
+     * y los *-custom-php.sql (notas, no SQL).
      *
      * @return array Lista de ['key', 'file', 'dbName', 'label', 'server', 'valid']
      */
@@ -74,7 +75,7 @@ class core_web_deploy
         $companies = [];
         foreach (glob($this->clientDir() . '*.sql') ?: [] as $file) {
             $name = basename($file);
-            if ($name === core_deploy_rules::SQL_DEFAULT_FILE || substr($name, -15) === '-custom-php.sql') {
+            if ($name === core_deploy_rules::SQL_DEFAULT_FILE || $name === core_deploy_rules::SQL_PRE_FILE || substr($name, -15) === '-custom-php.sql') {
                 continue;
             }
             $handle = fopen($file, 'rb');

@@ -82,7 +82,9 @@ class core_upgrade_client
      * Ejecuta una acción del servidor central.
      *
      * @param string $action  ping | manifest | package_chunk | schema_snapshot | config_data | client_script
-     * @param array  $payload Datos.
+     * @param array  $payload Datos (viajan como JSON en el cuerpo firmado; el servidor los recibe en
+     *                        $client['payload']). Ej.: manifest ['mode'], package_chunk ['name','index'],
+     *                        client_script ['pre' => true] para recibir también 002_pre_deployment.sql.
      * @return array 'data' de la respuesta verificada.
      */
     function call($action, array $payload = [])

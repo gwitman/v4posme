@@ -41,7 +41,8 @@
             config      : null,    // configuración (sin la clave)
             mode        : MODE_DETECTED === 'cloud' ? 'cloud' : 'local',
             checking    : false,
-            parts       : { files: true, schema: true, data: true },   // casillas fijadas al iniciar la ejecución
+            parts       : { files: true, schema: true, data: true, pre: false },   // casillas fijadas al iniciar la ejecución (pre = 002_pre_deployment.sql, desmarcado)
+            pre         : { detail: null, results: {}, logged: {}, failedIndex: null },   // resultados acumulados de apply_pre (por index)
             upgradeID   : null,
             running     : false,   // proceso en marcha (activa beforeunload)
             stage       : 0,       // etapa en curso
@@ -67,6 +68,14 @@
         /** Megabytes con dos decimales (1,000.00 MB). */
         function fmtMB(bytes) {
             return (Number(bytes || 0) / 1048576).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' MB';
+        }
+
+        /** Tamaño legible: bytes, KB o MB (1,000.00 KB). */
+        function fmtSize(bytes) {
+            var b = Number(bytes || 0);
+            if (b < 1024) { return fmtInt(b) + ' bytes'; }
+            if (b < 1048576) { return (b / 1024).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' KB'; }
+            return fmtMB(b);
         }
 
         /** Cantidad de un campo que puede venir como número, arreglo u objeto. */
@@ -143,6 +152,7 @@
                         err.stage  = json.data && json.data.stage !== undefined ? Number(json.data.stage) : null;
                         err.action = json.data && json.data.action ? json.data.action : '';
                         err.log    = json.data && json.data.log ? json.data.log : null;
+                        err.data   = json.data || null;   // apply_pre envía aquí detail y failedIndex
                         throw err;
                     }
                     return json.data || {};
@@ -342,6 +352,7 @@
                 '</div>';
 
             renderZipBoxes(d);
+            renderPreBox(d);
             syncParts();
             // Tras cambiar de modo la consulta trae todos los paquetes; si hay alguno desmarcado se reconsulta con la selección
             var stale = ((d.components && d.components.files) || []).some(function (f) { return f.present && f.selected && zipSel[f.zip] === false; });
@@ -463,6 +474,8 @@
         /** Lee las casillas de qué sincronizar (zips = paquetes marcados del modo actual). */
         function readParts() {
             var p = { files: $('upgSyncFiles').checked, schema: $('upgSyncSchema').checked, data: $('upgSyncData').checked };
+            // El script previo solo cuenta si la casilla está habilitada (publicado en el servidor) y marcada
+            p.pre = $('upgSyncPre').checked && !$('upgSyncPre').disabled;
             if (zipNames) {
                 p.zips = zipNames.filter(function (z) { return zipSel[z] !== false; });
             }
@@ -471,10 +484,42 @@
 
         /** Parámetros POST de las casillas ('1'/'0'); syncZips solo cuando ya se conocen los paquetes. */
         function partsParams(p) {
-            var out = { syncFiles: p.files ? '1' : '0', syncSchema: p.schema ? '1' : '0', syncData: p.data ? '1' : '0' };
+            var out = { syncFiles: p.files ? '1' : '0', syncSchema: p.schema ? '1' : '0', syncData: p.data ? '1' : '0', syncPre: p.pre ? '1' : '0' };
             if (p.zips) { out.syncZips = JSON.stringify(p.zips); }
             return out;
         }
+
+        /**
+         * Casilla del script previo según data.pre de upgrade_check:
+         * present true = habilitada (con tamaño), false = no publicado, null/ausente = servidor de versión anterior.
+         */
+        function renderPreBox(d) {
+            var pre     = d.pre || null;
+            var present = pre && pre.present !== undefined ? pre.present : null;
+            var box     = $('upgSyncPre');
+            var desc    = $('upgSyncPreDesc');
+            if (present === true) {
+                box.disabled = false;
+                desc.textContent = 'Publicado en el servidor (' + fmtSize(pre.bytes) + '). Se ejecuta después del respaldo y antes de comparar; sus cambios solo se revierten restaurando la base de datos completa.';
+            } else {
+                box.checked  = false;
+                box.disabled = true;
+                desc.textContent = present === false ? 'No está publicado en el servidor' : 'El servidor no informa (versión anterior)';
+            }
+            syncPreBox();
+        }
+
+        /** Marca visual de la casilla del script previo. */
+        function syncPreBox() {
+            var box = $('upgSyncPre');
+            $('upgSyncPreBox').classList.toggle('is-on', box.checked && !box.disabled);
+            $('upgSyncPreBox').classList.toggle('is-disabled', box.disabled);
+        }
+        // Marcar el script previo vuelve a consultar (el servidor recibe syncPre en las comprobaciones)
+        $('upgSyncPre').addEventListener('change', function () {
+            syncPreBox();
+            runCheck(st.mode);
+        });
 
         /** Paquetes publicados pero sin marcar (para avisar que la actualización queda parcial). */
         function zipsOff(p) {
@@ -684,6 +729,169 @@
                 items.slice(0, 500).map(function (i) { return '<tr><td>' + esc(itemText(i)) + '</td></tr>'; }).join('') + '</tbody></table></div></details>';
         }
 
+        // ---------------------------------------------------------- fase B: script previo 002_pre_deployment.sql
+
+        var PRE_STATUS = { skipped: 'Omitido', missing: 'No publicado en el servidor', unsupported: 'No soportado por el servidor', running: 'En ejecución', done: 'Completado', error: 'Con error' };
+
+        /** Resultados acumulados ordenados por index. */
+        function preList() {
+            var res = st.pre.results;
+            return Object.keys(res).map(function (k) { return res[k]; }).sort(function (a, b) { return Number(a.index) - Number(b.index); });
+        }
+
+        /** Sentencias del 002 que cambiaron la BD (todo lo ejecutado sin error que no sea SELECT). */
+        function preChanged() {
+            return preList().filter(function (x) { return x.ok && x.type !== 'SELECT'; }).length;
+        }
+
+        /** Escribe en la bitácora una sentencia (solo la primera vez o si cambió su resultado al retomar). */
+        function logPreResult(x) {
+            var key = String(x.index);
+            var ok  = !!x.ok;
+            if (st.pre.logged[key] === ok) { return; }
+            st.pre.logged[key] = ok;
+            log((ok ? 'OK    ' : 'ERROR ') + '002 #' + fmtInt(Number(x.index) + 1) + (x.line ? ' (línea ' + fmtInt(x.line) + ')' : '') + ' ' + (x.type || '') + ' · ' + fmtInt(x.ms) + ' ms' +
+                (ok ? (x.affectedRows !== null && x.affectedRows !== undefined ? ' · ' + fmtInt(x.affectedRows) + ' filas afectadas' : '') : ': ' + (x.error || 'error')));
+        }
+
+        /** Acumula el detail de apply_pre: los index repetidos se sobrescriben. */
+        function preMerge(detail) {
+            if (!detail) { return; }
+            st.pre.detail = detail;
+            (detail.results || []).forEach(function (x) {
+                if (x === null || x === undefined || x.index === undefined) { return; }
+                st.pre.results[String(x.index)] = x;
+                logPreResult(x);
+            });
+        }
+
+        /** Valor de una celda: NULL en cursiva y el valor completo en el title. */
+        function preCell(v) {
+            if (v === null || v === undefined) { return '<td><i class="upg-null">NULL</i></td>'; }
+            var text = typeof v === 'object' ? JSON.stringify(v) : String(v);
+            return '<td title="' + esc(text) + '">' + esc(text) + '</td>';
+        }
+
+        /** Tabla dinámica de un resultSet (columnas y filas en el orden de columns). */
+        function preResultSet(rs, i, many) {
+            var cols = rs.columns || [];
+            var rows = rs.rows || [];
+            var html = many ? '<p class="upg-result-title">Resultado ' + fmtInt(i + 1) + '</p>' : '';
+            if (!cols.length) { return html + '<p class="upg-hint">La sentencia no devolvió columnas.</p>'; }
+            html += '<div class="upg-result-scroll"><table class="upg-result-table"><thead><tr>' +
+                cols.map(function (c) { return '<th title="' + esc(c) + '">' + esc(c) + '</th>'; }).join('') + '</tr></thead><tbody>' +
+                (rows.length ? rows.map(function (row) {
+                    return '<tr>' + cols.map(function (c, ci) { return preCell(Array.isArray(row) ? row[ci] : (row ? row[c] : null)); }).join('') + '</tr>';
+                }).join('') : '<tr><td colspan="' + cols.length + '" class="upg-hint">Sin filas.</td></tr>') +
+                '</tbody></table></div>';
+            if (rs.truncated) {
+                html += '<p class="upg-hint">Se muestran las primeras ' + fmtInt(rows.length) + (rs.rowCount !== null && rs.rowCount !== undefined ? ' de ' + fmtInt(rs.rowCount) : '') + ' filas.</p>';
+            } else if (rows.length) {
+                html += '<p class="upg-hint">' + fmtInt(rows.length) + ' fila(s).</p>';
+            }
+            return html;
+        }
+
+        /** Pinta la tarjeta #upgPreCard: resumen, avisos y un bloque por sentencia. */
+        function renderPreCard() {
+            var d    = st.pre.detail || {};
+            var list = preList();
+            var withRs   = list.filter(function (x) { return (x.resultSets || []).length > 0; });
+            var affected = 0, msSum = 0;
+            list.forEach(function (x) { affected += Number(x.affectedRows || 0); msSum += Number(x.ms || 0); });
+            var status = d.status || 'running';
+            var html = '<div class="upg-chips"><span class="upg-chip' + (status === 'done' ? ' is-ok' : (status === 'error' ? ' is-bad' : (status === 'missing' || status === 'unsupported' ? ' is-warn' : ''))) + '">Estado: <b>' + esc(PRE_STATUS[status] || status) + '</b></span>' +
+                (d.name ? '<span class="upg-chip">Archivo: <b>' + esc(d.name) + '</b></span>' : '') + '</div>';
+            if (status === 'missing' || status === 'unsupported') {
+                html += alertHtml('info', status === 'missing' ? 'El servidor no tiene publicado el script previo: se continúa sin ejecutarlo.' : 'El servidor no soporta el script previo: se continúa sin ejecutarlo.');
+            }
+            html += statsHtml([
+                ['Sentencias', fmtInt(d.total)],
+                ['Ejecutadas', fmtInt(d.executed)],
+                ['Con resultado', fmtInt(withRs.length)],
+                ['Filas afectadas', fmtInt(affected)],
+                ['Tiempo', fmtInt(d.ms !== undefined && d.ms !== null ? d.ms : msSum) + ' ms']
+            ]);
+            html += (d.warnings || []).map(function (w) { return alertHtml('warn', esc(w)); }).join('');
+            if (status === 'error') {
+                html += alertHtml('bad', '<b>Falló la sentencia' + (st.pre.failedIndex !== null ? ' #' + fmtInt(st.pre.failedIndex + 1) : '') + '.</b> Lo ejecutado antes de ella ya quedó aplicado en la base de datos; solo se deshace restaurando la base de datos completa.');
+            }
+            // Abiertas: las de error y, si son pocas (≤5), las que devolvieron resultado
+            var openRs = withRs.length <= 5;
+            html += list.map(function (x) {
+                var rs   = x.resultSets || [];
+                var open = !x.ok || (openRs && rs.length > 0);
+                return '<details class="upg-pre-item' + (x.ok ? '' : ' is-bad') + '"' + (open ? ' open' : '') + '><summary>' +
+                    '<b>#' + fmtInt(Number(x.index) + 1) + '</b>' + (x.line ? ' · línea ' + fmtInt(x.line) : '') +
+                    ' <span class="upg-badge">' + esc(x.type || 'OTRO') + '</span>' +
+                    ' <span class="upg-badge ' + (x.ok ? 'is-new' : 'is-risk') + '">' + (x.ok ? 'OK' : 'Error') + '</span>' +
+                    ' <span class="upg-hint" style="display:inline;">' + fmtInt(x.ms) + ' ms' +
+                    (x.affectedRows !== null && x.affectedRows !== undefined ? ' · ' + fmtInt(x.affectedRows) + ' filas afectadas' : '') +
+                    (rs.length ? ' · ' + fmtInt(rs.length) + ' resultado(s)' : '') + '</span>' +
+                    '</summary><div class="upg-pre-body">' +
+                    '<div class="upg-sql">' + esc(x.sql || '') + '</div>' +
+                    (x.ok ? '' : alertHtml('bad', esc(x.error || 'Error sin detalle'))) +
+                    (x.insertId !== null && x.insertId !== undefined && Number(x.insertId) ? '<p class="upg-hint">Último id insertado: ' + esc(x.insertId) + '</p>' : '') +
+                    rs.map(function (r, i) { return preResultSet(r, i, rs.length > 1); }).join('') +
+                    '</div></details>';
+            }).join('');
+            if (!list.length && status !== 'missing' && status !== 'unsupported') {
+                html += '<p class="upg-hint">' + (status === 'running' ? 'Ejecutando...' : 'Sin sentencias ejecutadas.') + '</p>';
+            }
+            $('upgPre').innerHTML = html;
+        }
+
+        /**
+         * Ejecuta apply_pre por bloques: envía index = r.index hasta done.
+         * Si falla, pinta lo ejecutado hasta la sentencia fallida (data.detail) y relanza el error (etapa 5).
+         */
+        function runPre() {
+            var index = 0, loops = 0, stalled = 0;
+            $('upgPreCard').style.display = '';
+            renderPreCard();
+            function next() {
+                if (++loops > MAX_LOOPS) { return Promise.reject(new Error('Demasiados bloques en el script previo; se detuvo por seguridad.')); }
+                return step('apply_pre', { index: index }).then(function (r) {
+                    var x = r.detail || {};
+                    preMerge(x);
+                    renderPreCard();
+                    // No publicado o no soportado: aviso y se sigue con la comparación
+                    if (x.status === 'missing' || x.status === 'unsupported') {
+                        log('Aviso: script previo ' + (PRE_STATUS[x.status] || x.status).toLowerCase() + '; se continúa sin ejecutarlo.');
+                        (x.warnings || []).forEach(function (w) { log('Aviso: ' + w); });
+                        return r;
+                    }
+                    var total = Number(x.total || 0);
+                    var f     = total ? Math.min(1, Number(x.executed || 0) / total) : (r.done ? 1 : 0);
+                    stage(5, 'run', 'Script previo: ' + fmtInt(x.executed) + ' de ' + fmtInt(total) + ' sentencias');
+                    progress(5, r, f * 0.5);
+                    if (r.done) {
+                        (x.warnings || []).forEach(function (w) { log('Aviso: ' + w); });
+                        log('Script previo terminado: ' + fmtInt(x.executed) + ' de ' + fmtInt(total) + ' sentencias.');
+                        return r;
+                    }
+                    var ni = r.index !== undefined && r.index !== null ? Number(r.index) : index + 1;
+                    // Seguridad: si el servidor no avanza varias veces seguidas se detiene
+                    stalled = ni === index ? stalled + 1 : 0;
+                    if (stalled >= 3) { throw new Error('El script previo no avanza (índice ' + ni + '); se detuvo por seguridad.'); }
+                    index = ni;
+                    return next();
+                }, function (e) {
+                    var dd = e && e.data ? e.data : null;
+                    if (dd && dd.detail) { preMerge(dd.detail); }
+                    // El backend envía failedIndex dentro de detail (errorData); se acepta también en data
+                    var fi = dd ? (dd.detail && dd.detail.failedIndex !== undefined ? dd.detail.failedIndex : dd.failedIndex) : null;
+                    st.pre.failedIndex = fi !== undefined && fi !== null ? Number(fi) : null;
+                    if (!st.pre.detail) { st.pre.detail = {}; }
+                    st.pre.detail.status = 'error';
+                    renderPreCard();
+                    if (e && (e.stage === null || e.stage === undefined)) { e.stage = 5; }
+                    throw e;
+                });
+            }
+            return next();
+        }
+
         /** Pinta el plan: archivos por zip, estructura (riesgosos desmarcados), extras y datos por tabla. */
         function renderPlan(plan) {
             var html = '';
@@ -694,10 +902,26 @@
                 html += alertHtml('warn', '<b>Actualización parcial: se omite ' + esc(off.join(', ')) + '.</b> Los scripts de parámetros se ejecutan igual al final.');
             }
 
+            // Script previo (ya ejecutado antes de comparar)
+            var pre = plan.pre || {};
+            html += '<p class="abv2-card-title" style="margin-top:4px;"><i class="icon16 i-file"></i> Script previo 002_pre_deployment.sql</p>';
+            if (!st.parts.pre) {
+                html += '<div class="upg-chips"><span class="upg-chip">Omitido (casilla sin marcar)</span></div>';
+            } else {
+                html += '<div class="upg-chips"><span class="upg-chip' + (pre.status === 'done' ? ' is-ok' : (pre.status === 'error' ? ' is-bad' : '')) + '">Estado: <b>' + esc(PRE_STATUS[pre.status] || pre.status || '-') + '</b></span>' +
+                    '<span class="upg-chip">Sentencias: <b>' + fmtInt(pre.total) + '</b></span>' +
+                    '<span class="upg-chip">Ejecutadas: <b>' + fmtInt(pre.executed) + '</b></span></div>';
+                if (pre.status === 'missing' || pre.status === 'unsupported') {
+                    html += alertHtml('info', 'No se ejecutó: ' + esc((PRE_STATUS[pre.status] || pre.status).toLowerCase()) + '.');
+                } else if (preChanged()) {
+                    html += alertHtml('info', 'Sus cambios ya están aplicados en la base de datos (ver la tarjeta "Script previo"). Solo se deshacen restaurando la base de datos completa.');
+                }
+            }
+
             // Archivos por zip
             var files = plan.files || {};
             var zips  = Object.keys(files);
-            html += '<p class="abv2-card-title" style="margin-top:4px;"><i class="icon16 i-archive"></i> Archivos</p>';
+            html += '<p class="abv2-card-title" style="margin-top:14px;"><i class="icon16 i-archive"></i> Archivos</p>';
             if (!parts.files) {
                 html += '<div class="upg-chips"><span class="upg-chip">Omitidos (casilla sin marcar)</span></div>';
             } else if (!zips.length) {
@@ -828,7 +1052,9 @@
                     });
                 };
                 $('upgBtnCancel').onclick = function () {
-                    dialog('Cancelar la actualización', '<p>No se aplicará ningún cambio. Se desactivará el modo mantenimiento.</p>', 'Cancelar actualización', 'Seguir revisando').then(function (ok) {
+                    // Si el 002 ya cambió la BD, cancelar no lo deshace
+                    var preNote = preChanged() ? alertHtml('warn', 'El script previo 002_pre_deployment.sql <b>ya aplicó ' + fmtInt(preChanged()) + ' sentencia(s)</b>: cancelar no las deshace. Para deshacerlas restaure la base de datos completa desde la pestaña "Respaldo de base de datos".') : '';
+                    dialog('Cancelar la actualización', '<p>No se aplicará ningún otro cambio. Se desactivará el modo mantenimiento.</p>' + preNote, 'Cancelar actualización', 'Seguir revisando').then(function (ok) {
                         if (!ok) { return; }
                         $('upgBtnContinue').onclick = null; $('upgBtnCancel').onclick = null;
                         $('upgPlanBtns').style.display = 'none';
@@ -846,7 +1072,8 @@
             var d = st.check;
             dialog('Iniciar actualización',
                 '<p>Se actualizará esta instalación (<b>' + esc(MODE_LABEL[st.mode]) + '</b>) de la versión <b>' + esc(d.local.version || '-') + '</b> a la <b>' + esc(d.remote.version || '-') + '</b>.</p>' +
-                alertHtml('bad', 'Se activará el <b>modo mantenimiento</b>: nadie podrá operar en el sistema hasta que termine. No cierre esta pestaña.'), 'Iniciar').then(function (ok) {
+                (readParts().pre ? alertHtml('warn', '<b>002_pre_deployment.sql</b> se ejecuta después del respaldo y <b>antes de que pueda revisar el plan</b> de cambios. Lo que aplique solo se revierte restaurando la base de datos completa.') : '') +
+                alertHtml('bad','Se activará el <b>modo mantenimiento</b>: nadie podrá operar en el sistema hasta que termine. No cierre esta pestaña.'), 'Iniciar').then(function (ok) {
                 if (!ok) { return; }
                 runUpgrade($('upgConfirm').value);
             });
@@ -867,6 +1094,10 @@
             $('upgLog').textContent = '';
             $('upgResult').innerHTML = '';
             $('upgPlanCard').style.display = 'none';
+            // Resultados del script previo de una ejecución anterior
+            st.pre = { detail: null, results: {}, logged: {}, failedIndex: null };
+            $('upgPreCard').style.display = 'none';
+            $('upgPre').innerHTML = '';
             ['upgBtnRollback', 'upgBtnBack', 'upgBtnReload'].forEach(function (id) { $(id).style.display = 'none'; });
             for (var n = 1; n <= 8; n++) { stage(n, '', ''); stageDetail(n, ''); stageMini(n, 0); }
             progressEnd('', 'Iniciando...');
@@ -985,16 +1216,26 @@
                     stage(4, 'ok', st.parts.files ? fmtInt(zips.length) + ' paquetes · ' + fmtInt(files) + ' archivos verificados' : 'Omitida: archivos sin marcar');
                     progress(4, r, 1);
                 })
-                // 5. Comparación y pausa para revisar el plan
+                // 5a. Script previo 002_pre_deployment.sql: va ANTES de compare (si corre después, la huella de estructura no coincide)
                 .then(function () {
-                    stage(5, 'run'); progress(5, null, 0);
+                    stage(5, 'run', ''); progress(5, null, 0);
+                    if (!st.parts.pre) { log('Script previo omitido (casilla sin marcar).'); return; }
+                    stage(5, 'run', 'Script previo 002_pre_deployment.sql');
+                    log('Ejecutando script previo 002_pre_deployment.sql');
+                    return runPre();
+                })
+                // 5b. Comparación y pausa para revisar el plan
+                .then(function () {
+                    stage(5, 'run', 'Comparando archivos, estructura y datos'); progress(5, null, st.parts.pre ? 0.5 : 0);
                     return step('compare');
                 })
                 .then(function (r) {
                     st.plan = r.detail || {};
                     renderPlan(st.plan);
                     var steps = (st.plan.schema && st.plan.schema.steps) || [];
+                    var preD = st.plan.pre || st.pre.detail || {};
                     stageDetail(5, statsHtml([
+                        ['Script previo', st.parts.pre ? (preD.status === 'missing' || preD.status === 'unsupported' ? esc(PRE_STATUS[preD.status]) : fmtInt(preD.executed) + ' de ' + fmtInt(preD.total)) : 'Omitido'],
                         ['Paquetes', st.parts.files ? fmtInt(Object.keys(st.plan.files || {}).length) : 'Omitidos'],
                         ['Cambios de estructura', st.parts.schema ? fmtInt(steps.length) : 'Omitida'],
                         ['Tablas de datos', st.parts.data ? fmtInt(Object.keys((st.plan.data && st.plan.data.tables) || {}).length) : 'Omitidos'],
@@ -1027,7 +1268,8 @@
                         st.running = false;
                         progressEnd('', 'Actualización cancelada. No se aplicó ningún cambio.');
                         setChip('Cancelado', '');
-                        $('upgResult').innerHTML = alertHtml('info', 'Se canceló antes de aplicar cambios. El modo mantenimiento se desactivó.');
+                        $('upgResult').innerHTML = alertHtml('info', 'Se canceló antes de aplicar cambios. El modo mantenimiento se desactivó.') +
+                            (preChanged() ? alertHtml('warn', 'El script previo 002_pre_deployment.sql ya había aplicado ' + fmtInt(preChanged()) + ' sentencia(s). Para deshacerlas restaure la base de datos completa desde la pestaña "Respaldo de base de datos".') : '');
                         $('upgBtnReload').style.display = '';
                     });
                 })
@@ -1205,7 +1447,9 @@
                 return;
             }
             $('upgResult').innerHTML = alertHtml('bad', '<b>Falló en la etapa ' + n + ' – ' + esc(STAGE_TITLE[n] || '') + ':</b> ' + esc(message) +
-                '<br>Puede revertir los cambios con el respaldo tomado antes de aplicarlos.');
+                '<br>Puede revertir los cambios con el respaldo tomado antes de aplicarlos.') +
+                // El 002 escribe directo en la BD: solo se deshace restaurando la base de datos completa
+                (preChanged() ? alertHtml('warn', 'El script previo 002_pre_deployment.sql aplicó ' + fmtInt(preChanged()) + ' sentencia(s) en la base de datos. Al revertir marque <b>"Restaurar también la base de datos completa"</b> para deshacerlas.') : '');
             $('upgBtnRollback').style.display = '';
             $('upgBtnReload').style.display   = '';
             // Se libera el candado y el mantenimiento sin bloquear la pantalla
@@ -1223,7 +1467,8 @@
             var body = alertHtml('warn', 'Se restaurarán los archivos y los datos de configuración que había antes de la actualización ' + esc(st.upgradeID) + '.') +
                   '<label class="upg-option is-danger" for="upgIncludeDb" style="margin-top:10px;"><input type="checkbox" id="upgIncludeDb">' +
                   '<span><p class="upg-option-title">Restaurar también la base de datos completa (borra lo registrado después del respaldo)</p>' +
-                  '<p class="upg-option-desc">Úselo solo si la estructura o los datos quedaron dañados.</p></span></label>';
+                  '<p class="upg-option-desc">Úselo solo si la estructura o los datos quedaron dañados.</p></span></label>' +
+                  (preChanged() ? alertHtml('warn', 'El script previo 002_pre_deployment.sql aplicó ' + fmtInt(preChanged()) + ' sentencia(s): solo se deshacen marcando <b>"Restaurar también la base de datos completa"</b>.') : '');
             dialog('Revertir la actualización', body, 'Revertir').then(function (ok) {
                 if (!ok) { return; }
                 var includeDb = $('upgIncludeDb') && $('upgIncludeDb').checked ? '1' : '0';
@@ -1244,8 +1489,15 @@
             $('upgProgress').className = 'upg-progress';
             log('Revirtiendo' + (includeDb === '1' ? ' (incluye base de datos completa)' : ''));
             var PHASE = { files: 'archivos', config_data: 'datos de configuración', db: 'base de datos' };
+            // El servidor puede avisar que el 002 aplicó cambios que esta reversión (sin BD) no deshace
+            var preWarned = false;
+            var RE_PRE    = /002_pre|pre_deployment|script previo/i;
             loop('rollback', { includeDb: includeDb }, function (r, index) {
                 var x = r.detail || {};
+                (x.warnings || r.warnings || []).forEach(function (w) {
+                    log('Aviso: ' + w);
+                    if (RE_PRE.test(String(w))) { preWarned = true; }
+                });
                 progress(9, r, frac(r, index));
                 $('upgProgressText').textContent = 'Reversión · ' + (PHASE[x.phase] || x.phase || '') + ' · ' + fmtInt(cnt(x.restored)) + ' restaurados';
                 log('Reversión ' + (PHASE[x.phase] || x.phase || '') + ': ' + fmtInt(cnt(x.restored)) + ' restaurados');
@@ -1254,7 +1506,8 @@
                 st.rolledBack = true;
                 progressEnd('ok', 'Reversión completada.');
                 setChip('Revertido', '');
-                $('upgResult').innerHTML = alertHtml('ok', 'Se restauró la instalación anterior. Pulse "Recargar posMe".');
+                $('upgResult').innerHTML = alertHtml('ok', 'Se restauró la instalación anterior. Pulse "Recargar posMe".') +
+                    (includeDb !== '1' && (preWarned || preChanged()) ? alertHtml('warn', 'El script previo 002_pre_deployment.sql aplicó cambios en la base de datos que esta reversión no deshace. Restaure la base de datos completa desde la pestaña "Respaldo de base de datos".') : '');
                 $('upgBtnRollback').style.display = 'none';
                 $('upgBtnReload').style.display   = '';
             }).catch(function (e) {
@@ -1263,7 +1516,8 @@
                 log('ERROR al revertir: ' + e.message);
                 progressEnd('bad', 'La reversión falló.');
                 setChip('Reversión con errores', 'bad');
-                $('upgResult').innerHTML = alertHtml('bad', '<b>No se pudo revertir:</b> ' + esc(e.message) + '<br>Puede intentarlo de nuevo.');
+                $('upgResult').innerHTML = alertHtml('bad', '<b>No se pudo revertir:</b> ' + esc(e.message) + '<br>Puede intentarlo de nuevo.') +
+                    (includeDb !== '1' && (RE_PRE.test(e.message || '') || preChanged()) ? alertHtml('warn', 'El script previo 002_pre_deployment.sql aplicó cambios: vuelva a pulsar "Revertir" y marque <b>"Restaurar también la base de datos completa"</b>.') : '');
                 $('upgBtnReload').style.display = '';
             });
         }

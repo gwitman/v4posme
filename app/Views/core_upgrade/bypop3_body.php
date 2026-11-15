@@ -5,7 +5,7 @@
         2 => array('Verificando instalación local', 'Permisos de escritura, espacio en disco, PHP y base de datos de este equipo.', false),
         3 => array('Generando respaldo de base de datos', 'Copia completa de la base de datos antes de cambiar nada.', true),
         4 => array('Descargando archivos del servidor', 'Los paquetes se descargan por bloques y se verifica su huella (SHA-256).', true),
-        5 => array('Comparando estructuras de base de datos', 'Se calcula qué cambia en archivos, estructura y datos. Aquí se pausa para que revise.', false),
+        5 => array('Comparando estructuras de base de datos', 'Script previo 002_pre_deployment.sql (si está marcado) y comparación: se calcula qué cambia en archivos, estructura y datos. Aquí se pausa para que revise.', false),
         6 => array('Aplicando modificaciones', 'Estructura, datos de configuración y archivos, en ese orden.', true),
         7 => array('Validando archivos y componentes', 'Se confirma que lo aplicado coincide con lo descargado.', false),
         8 => array('Finalizando actualización', 'Se registra la nueva versión y se desactiva el modo mantenimiento.', false),
@@ -170,7 +170,13 @@
                         <span><p class="upg-option-title">Datos de configuración</p>
                         <p class="upg-option-desc">Catálogos, menús, parámetros y demás tablas de configuración del servidor.</p></span>
                     </label>
-                    <div class="upg-alert is-info"><b>Siempre al final:</b> scripts de parámetros (001_default.sql + script de la compañía). Antes se respalda completa la base de datos.</div>
+                    <!-- script previo: desmarcado por defecto; se habilita según la consulta (data.pre) -->
+                    <label class="upg-option upg-part is-disabled" for="upgSyncPre" id="upgSyncPreBox">
+                        <input type="checkbox" id="upgSyncPre" disabled>
+                        <span><p class="upg-option-title">Ejecutar 002_pre_deployment.sql</p>
+                        <p class="upg-option-desc" id="upgSyncPreDesc">Consultando...</p></span>
+                    </label>
+                    <div class="upg-alert is-info"><b>Antes de comparar y sincronizar:</b> 002_pre_deployment.sql si está marcado (después del respaldo completo). <b>Siempre al final:</b> scripts de parámetros (001_default.sql + script de la compañía). Antes se respalda completa la base de datos.</div>
                     <div class="upg-alert is-warn" id="upgPartsNote" style="display:none;"></div>
                     <label class="upg-option" for="upgForce" id="upgForceBox" style="display:none;">
                         <input type="checkbox" id="upgForce">
@@ -205,6 +211,12 @@
                     <button type="button" class="btn btn-default upg-btn-main" id="upgBtnBack" style="display:none;"><i class="icon16 i-arrow-left-2"></i> Volver</button>
                     <button type="button" class="btn btn-primary upg-btn-main" id="upgBtnReload" style="display:none;"><i class="icon16 i-loop-4"></i> Recargar posMe</button>
                 </div>
+            </div>
+
+            <!-- resultados del script previo 002_pre_deployment.sql (etapa 5, antes del plan) -->
+            <div class="abv2-card" id="upgPreCard" style="display:none;">
+                <p class="abv2-card-title"><span class="upg-step-num">5</span> Script previo 002_pre_deployment.sql</p>
+                <div id="upgPre"></div>
             </div>
 
             <!-- plan de la etapa 5 (pausa) -->

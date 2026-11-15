@@ -44,6 +44,8 @@ class core_web_upgrade
         'backup_verify' => 3,
         'download'      => 4,
         'extract'       => 4,
+        // Script previo 002_pre_deployment.sql: la pantalla lo llama tras extract y antes de compare
+        'apply_pre'     => 5,
         'compare'       => 5,
         'apply_schema'  => 6,
         'apply_data'    => 6,
@@ -62,6 +64,11 @@ class core_web_upgrade
         'tb_company_parameter' => core_deploy_rules::MODE_INSERT,
         'tb_counter'           => core_deploy_rules::MODE_INSERT,
     ];
+
+    /** Filas máximas que se muestran por result set del script previo. */
+    const PRE_MAX_ROWS         = 200;
+    /** Tope total de filas guardadas del script previo (aprox. 5 MB en JSON). */
+    const PRE_MAX_RESULT_BYTES = 5242880;
 
     private $stepLog   = [];
     private $secrets   = [];
@@ -464,7 +471,7 @@ class core_web_upgrade
      *
      * @param string      $host   Host de la petición.
      * @param string|null $mode   Modo pedido por la pantalla (o null = detectado).
-     * @param array       $params Casillas syncFiles, syncSchema y syncData ('1'/'0'; ausente = sí).
+     * @param array       $params Casillas syncFiles, syncSchema y syncData ('1'/'0'; ausente = sí) y syncPre (ausente = no).
      * @return array
      */
     function check($host, $mode = null, array $params = [])
@@ -477,6 +484,8 @@ class core_web_upgrade
         $warnings = [];
         $tables   = [];
         $remote   = ['reachable' => false, 'version' => '', 'publishedOn' => '', 'phpMin' => '', 'packages' => [], 'missing' => array_keys($packages)];
+        // Script previo publicado en el servidor (present null = el servidor no lo informa)
+        $pre      = ['present' => null, 'bytes' => 0, 'sha256' => ''];
 
         $config = $this->configRead();
         $checks[] = $this->checkItem('Conexión con el servidor configurada', $config['configured'], $config['configured'] ? $config['sourceUrl'] : 'Falta URL, ID de instalación o clave', 'remote');
@@ -520,6 +529,25 @@ class core_web_upgrade
                 if ($info['phpMin'] !== '') {
                     $okPhp    = version_compare(PHP_VERSION, $info['phpMin'], '>=');
                     $checks[] = $this->checkItem('Versión de PHP', $okPhp, 'Local ' . PHP_VERSION . ', mínimo ' . $info['phpMin'], 'local');
+                }
+                $preInfo = isset($manifest['preScript']) && is_array($manifest['preScript']) ? $manifest['preScript'] : null;
+                if ($preInfo !== null) {
+                    $pre = [
+                        'present' => !empty($preInfo['present']),
+                        'bytes'   => isset($preInfo['bytes']) ? (int) $preInfo['bytes'] : 0,
+                        'sha256'  => isset($preInfo['sha256']) && preg_match('/^[a-f0-9]{64}$/i', (string) $preInfo['sha256']) === 1 ? strtolower((string) $preInfo['sha256']) : '',
+                    ];
+                }
+                if ($parts['pre']) {
+                    // Sin el script previo publicado (o con un servidor anterior) solo se avisa: no bloquea
+                    $label = 'Script previo ' . core_deploy_rules::SQL_PRE_FILE . ' en el servidor';
+                    if ($pre['present'] === true) {
+                        $checks[] = $this->checkItem($label, true, round($pre['bytes'] / 1024, 1) . ' KB · se ejecuta antes de comparar, fuera de transacción', 'remote');
+                    } else {
+                        $item         = $this->checkItem($label, true, $pre['present'] === false ? 'No está publicado: no se ejecuta' : 'El servidor no lo informa (versión anterior): no se ejecuta', 'remote');
+                        $item['skip'] = true;
+                        $checks[]     = $item;
+                    }
                 }
             } catch (\Throwable $ex) {
                 $warnings[] = $this->mask($ex->getMessage());
@@ -573,6 +601,7 @@ class core_web_upgrade
             'remote'      => $remote,
             'mode'        => $mode,
             'parts'       => $parts,
+            'pre'         => $pre,
             'upToDate'    => $upToDate,
             'components'  => ['files' => $files, 'schema' => $parts['schema'], 'data' => ['tables' => $parts['data'] ? $tables : []], 'scripts' => true],
             'checks'      => $checks,
@@ -737,7 +766,7 @@ class core_web_upgrade
     /**
      * Ejecuta una acción de upgrade_step.
      *
-     * @param array  $params   upgradeID, action, index, ids, mode, force, confirm, status, includeDb.
+     * @param array  $params   upgradeID, action, index, ids, mode, force, sync*, confirm, status, includeDb.
      * @param string $userName Usuario de la sesión.
      * @param string $host     Host de la petición.
      * @return array {stage, action, done, index, total, progress, detail, log}
@@ -785,6 +814,7 @@ class core_web_upgrade
                 case 'backup_verify': $result = $this->stepBackupVerify($run); break;
                 case 'download':      $result = $this->stepDownload($run, $index, $deadline); break;
                 case 'extract':       $result = $this->stepExtract($run); break;
+                case 'apply_pre':     $result = $this->stepApplyPre($run, $deadline); break;
                 case 'compare':       $result = $this->stepCompare($run); break;
                 case 'apply_schema':  $result = $this->stepApplySchema($run, $params); break;
                 case 'apply_data':    $result = $this->stepApplyData($run); break;
@@ -871,8 +901,8 @@ class core_web_upgrade
      * Partes a sincronizar según las casillas de la pantalla (ausente = sí).
      * Los scripts de parámetros (001_default.sql + script de la compañía) y el respaldo no son opcionales.
      *
-     * @param array $params syncFiles, syncSchema y syncData ('1'/'0').
-     * @return array ['files' => bool, 'schema' => bool, 'data' => bool]
+     * @param array $params syncFiles, syncSchema, syncData y syncPre ('1'/'0').
+     * @return array ['files' => bool, 'schema' => bool, 'data' => bool, 'zips' => array|null, 'pre' => bool]
      */
     private function syncParts(array $params)
     {
@@ -890,7 +920,9 @@ class core_web_upgrade
                 }
             }
         }
-        return ['files' => $flag('syncFiles'), 'schema' => $flag('syncSchema'), 'data' => $flag('syncData'), 'zips' => $zips];
+        // Script previo 002_pre_deployment.sql: a diferencia de las demás casillas, ausente = no
+        $pre = isset($params['syncPre']) && in_array((string) $params['syncPre'], ['1', 'true'], true);
+        return ['files' => $flag('syncFiles'), 'schema' => $flag('syncSchema'), 'data' => $flag('syncData'), 'zips' => $zips, 'pre' => $pre];
     }
 
     /**
@@ -914,10 +946,10 @@ class core_web_upgrade
     private function runParts(array $run)
     {
         if (isset($run['parts']) && is_array($run['parts'])) {
-            return $run['parts'] + ['files' => true, 'schema' => true, 'data' => true, 'zips' => null];
+            return $run['parts'] + ['files' => true, 'schema' => true, 'data' => true, 'zips' => null, 'pre' => false];
         }
         $filesOnly = !empty($run['filesOnly']);
-        return ['files' => true, 'schema' => !$filesOnly, 'data' => !$filesOnly, 'zips' => null];
+        return ['files' => true, 'schema' => !$filesOnly, 'data' => !$filesOnly, 'zips' => null, 'pre' => false];
     }
 
     /**
@@ -928,7 +960,7 @@ class core_web_upgrade
      */
     private function partsText(array $parts)
     {
-        $names = ['files' => 'archivos', 'schema' => 'estructura', 'data' => 'datos de configuración'];
+        $names = ['files' => 'archivos', 'schema' => 'estructura', 'data' => 'datos de configuración', 'pre' => 'script previo ' . core_deploy_rules::SQL_PRE_FILE];
         $on    = [];
         $off   = [];
         foreach ($names as $key => $name) {
@@ -1227,6 +1259,346 @@ class core_web_upgrade
     }
 
     /**
+     * Estado inicial del script previo dentro de la corrida.
+     *
+     * @param string $status skipped | missing | unsupported | running | done | error.
+     * @return array
+     */
+    private function preState($status)
+    {
+        return [
+            'status'      => $status,
+            'name'        => core_deploy_rules::SQL_PRE_FILE,
+            'sha256'      => '',
+            'total'       => 0,
+            'executed'    => 0,
+            'next'        => 0,
+            'ms'          => 0,
+            'warnings'    => [],
+            'resultBytes' => 0,
+        ];
+    }
+
+    /**
+     * Detalle del script previo con el formato que espera la pantalla.
+     *
+     * @param array $pre     Estado del script previo.
+     * @param array $results Resultados por sentencia.
+     * @return array {status, name, total, executed, ms, warnings, results}
+     */
+    private function preDetail(array $pre, array $results)
+    {
+        return [
+            'status'   => (string) $pre['status'],
+            'name'     => core_deploy_rules::SQL_PRE_FILE,
+            'total'    => (int) $pre['total'],
+            'executed' => (int) $pre['executed'],
+            'ms'       => (int) $pre['ms'],
+            'warnings' => array_values(isset($pre['warnings']) && is_array($pre['warnings']) ? $pre['warnings'] : []),
+            'results'  => array_values($results),
+        ];
+    }
+
+    /**
+     * Texto seguro para JSON: UTF-8 válido y recortado a $max caracteres (con '…').
+     *
+     * @param string $text Texto.
+     * @param int    $max  Caracteres máximos.
+     * @return string
+     */
+    private function preText($text, $max)
+    {
+        $text = (string) $text;
+        if (function_exists('mb_check_encoding')) {
+            if (!mb_check_encoding($text, 'UTF-8')) {
+                $text = mb_convert_encoding($text, 'UTF-8', 'UTF-8');
+            }
+            return mb_strlen($text, 'UTF-8') > $max ? mb_substr($text, 0, $max, 'UTF-8') . '…' : $text;
+        }
+        if (preg_match('//u', $text) !== 1) {
+            $text = (string) @iconv('UTF-8', 'UTF-8//IGNORE', $text);
+        }
+        return strlen($text) > $max ? substr($text, 0, $max) . '…' : $text;
+    }
+
+    /**
+     * Tipo de sentencia para la pantalla.
+     *
+     * @param string $sql Sentencia.
+     * @return string SELECT | INSERT | UPDATE | DELETE | DDL | CALL | SET | OTRO
+     */
+    private function preType($sql)
+    {
+        $type = core_deploy_sql_splitter::type($sql);
+        if ($type === 'SELECT' || $type === 'WITH') {
+            return 'SELECT';
+        }
+        if ($type === 'INSERT' || $type === 'REPLACE') {
+            return 'INSERT';
+        }
+        if (in_array($type, ['UPDATE', 'DELETE', 'CALL', 'SET'], true)) {
+            return $type;
+        }
+        return core_deploy_sql_splitter::isDdl($sql) ? 'DDL' : 'OTRO';
+    }
+
+    /**
+     * Resultados guardados del script previo, indexados por posición de la sentencia.
+     *
+     * @param string $dir Carpeta de la corrida.
+     * @return array [index => resultado]
+     */
+    private function preLoadResults($dir)
+    {
+        $saved   = core_deploy_files::readJson($dir . '/pre_results.json.gz');
+        $results = [];
+        foreach (is_array($saved) && isset($saved['results']) && is_array($saved['results']) ? $saved['results'] : [] as $item) {
+            if (is_array($item) && isset($item['index'])) {
+                $results[(int) $item['index']] = $item;
+            }
+        }
+        ksort($results);
+        return $results;
+    }
+
+    /** Guarda los resultados del script previo (pre_results.json.gz). */
+    private function preSaveResults($dir, array $results)
+    {
+        ksort($results);
+        core_deploy_files::writeJson($dir . '/pre_results.json.gz', ['results' => array_values($results)], true);
+    }
+
+    /**
+     * Sentencias del script previo guardado en la corrida (verifica el sha256).
+     *
+     * @param string $dir Carpeta de la corrida.
+     * @param array  $pre Estado del script previo.
+     * @return array Lista de ['sql','line'].
+     */
+    private function preStatements($dir, array $pre)
+    {
+        $script = core_deploy_files::readJson($dir . '/pre_script.json.gz');
+        if (!is_array($script) || !isset($script['sqlBase64'])) {
+            throw new \Exception('Falta el archivo de trabajo pre_script.json.gz; inicie de nuevo.');
+        }
+        $sql = base64_decode((string) $script['sqlBase64'], true);
+        if ($sql === false || !hash_equals((string) $pre['sha256'], hash('sha256', $sql))) {
+            throw new \Exception('El script previo guardado está dañado; inicie de nuevo.');
+        }
+        $statements = core_deploy_sql_splitter::split($sql);
+        if (count($statements) !== (int) $pre['total']) {
+            throw new \Exception('El script previo guardado no coincide con el estado de la actualización; inicie de nuevo.');
+        }
+        return $statements;
+    }
+
+    /**
+     * Aplica el tope total de filas guardadas: si se supera, el result set queda sin filas.
+     *
+     * @param array $sets Result sets de una sentencia.
+     * @param array $pre  Estado del script previo (por referencia: acumula bytes y avisos).
+     * @return array
+     */
+    private function preCapResultSets(array $sets, array &$pre)
+    {
+        foreach ($sets as $k => $set) {
+            $sets[$k]['columns'] = array_map(function ($name) {
+                return $this->preText($name, 200);
+            }, isset($set['columns']) ? $set['columns'] : []);
+            $bytes = strlen((string) json_encode($set['rows'], JSON_UNESCAPED_UNICODE | JSON_PARTIAL_OUTPUT_ON_ERROR));
+            if ((int) $pre['resultBytes'] + $bytes > self::PRE_MAX_RESULT_BYTES) {
+                $sets[$k]['rows']      = [];
+                $sets[$k]['truncated'] = true;
+                if (empty($pre['rowsCapped'])) {
+                    $pre['rowsCapped']  = true;
+                    $pre['warnings'][]  = 'Se alcanzó el tope de ' . round(self::PRE_MAX_RESULT_BYTES / 1048576) . ' MB de filas: las siguientes consultas se ejecutan pero no muestran filas.';
+                }
+                continue;
+            }
+            $pre['resultBytes'] = (int) $pre['resultBytes'] + $bytes;
+        }
+        return $sets;
+    }
+
+    /**
+     * 4b. Script previo 002_pre_deployment.sql (opcional, casilla syncPre).
+     *
+     * Se ejecuta sentencia por sentencia, fuera de transacción y por bloques de STEP_BUDGET.
+     * Se detiene en el primer error; el reintento retoma en la sentencia fallida. Cada bloque
+     * es otra conexión, por eso se reaplican los SET/USE anteriores antes de continuar.
+     *
+     * @param array $run      Estado de la actualización (por referencia).
+     * @param float $deadline Límite de tiempo del bloque (microtime).
+     * @return array Respuesta de out('apply_pre', ...); index = siguiente sentencia por ejecutar.
+     */
+    private function stepApplyPre(array &$run, $deadline)
+    {
+        $this->requireFlag($run, 'extracted', 'Los paquetes no están extraídos.');
+        $parts = $this->runParts($run);
+        $dir   = $this->runDir($run['upgradeID']);
+        $file  = core_deploy_rules::SQL_PRE_FILE;
+
+        if (empty($parts['pre'])) {
+            $run['pre'] = $this->preState('skipped');
+            return $this->out('apply_pre', true, 0, 0, $this->preDetail($run['pre'], []));
+        }
+
+        $pre = isset($run['pre']) && is_array($run['pre']) ? $run['pre'] : null;
+
+        // Ya resuelto (retomar la pantalla): se devuelven todos los resultados guardados
+        if ($pre !== null && in_array($pre['status'], ['done', 'missing', 'unsupported', 'skipped'], true)) {
+            return $this->out('apply_pre', true, (int) $pre['executed'], (int) $pre['total'], $this->preDetail($pre, $this->preLoadResults($dir)));
+        }
+
+        if ($pre === null || !in_array($pre['status'], ['running', 'error'], true)) {
+            // Primera llamada: se pide el script al servidor
+            $response = $this->makeClient()->call('client_script', ['pre' => true]);
+            if (empty($response['preSupported']) || empty($response['preScript']) || !is_array($response['preScript'])) {
+                $pre               = $this->preState(empty($response['preSupported']) ? 'unsupported' : 'missing');
+                $pre['warnings'][] = empty($response['preSupported'])
+                    ? 'El servidor no soporta el script previo (versión anterior); no se ejecuta ' . $file . '.'
+                    : 'No existe ' . $file . ' en el servidor; no se ejecuta.';
+                $run['pre'] = $pre;
+                $this->preSaveResults($dir, []);
+                $this->log($run['upgradeID'], 'Aviso: ' . $pre['warnings'][0]);
+                return $this->out('apply_pre', true, 0, 0, $this->preDetail($pre, []));
+            }
+            $script = $response['preScript'];
+            if (!isset($script['name'], $script['sql']) || (string) $script['name'] !== $file || !is_string($script['sql'])) {
+                throw new \Exception('El servidor envió un script previo inválido.');
+            }
+            $sql = $script['sql'];
+            $sha = hash('sha256', $sql);
+            if (isset($script['sha256']) && !hash_equals(strtolower((string) $script['sha256']), $sha)) {
+                throw new \Exception('El script previo recibido no coincide con el hash enviado por el servidor.');
+            }
+            $statements = core_deploy_sql_splitter::split($sql);
+
+            // Rutinas y triggers sin DELIMITER: el ';' interno los partió; se rechaza antes de ejecutar nada
+            foreach ($statements as $i => $statement) {
+                if (core_deploy_sql_splitter::hasUnclosedBlock($statement['sql'])) {
+                    $message              = 'Línea ' . $statement['line'] . ': use DELIMITER $$ para rutinas y triggers';
+                    $state                = $this->preState('error');
+                    $state['total']       = count($statements);
+                    $detail               = $this->preDetail($state, [[
+                        'index'        => $i,
+                        'line'         => (int) $statement['line'],
+                        'type'         => $this->preType($statement['sql']),
+                        'sql'          => $this->preText($statement['sql'], 2000),
+                        'ok'           => false,
+                        'error'        => $message,
+                        'ms'           => 0,
+                        'affectedRows' => null,
+                        'insertId'     => null,
+                        'resultSets'   => [],
+                    ]]);
+                    $detail['failedIndex'] = $i;
+                    $this->fail($file . ': ' . $message . '. No se ejecutó ninguna sentencia.', $detail);
+                }
+            }
+
+            core_deploy_files::writeJson($dir . '/pre_script.json.gz', ['name' => $file, 'sha256' => $sha, 'total' => count($statements), 'sqlBase64' => base64_encode($sql)], true);
+            $this->preSaveResults($dir, []);
+            $pre           = $this->preState('running');
+            $pre['sha256'] = $sha;
+            $pre['total']  = count($statements);
+            $run['pre']    = $pre;
+            $this->saveRun($run);
+            $this->log($run['upgradeID'], $file . ': ' . count($statements) . ' sentencias por ejecutar (fuera de transacción).');
+
+            if (!count($statements)) {
+                $pre['status'] = 'done';
+                $run['pre']    = $pre;
+                $this->log($run['upgradeID'], $file . ': sin sentencias; nada que ejecutar.');
+                return $this->out('apply_pre', true, 0, 0, $this->preDetail($pre, []));
+            }
+        } else {
+            $statements = $this->preStatements($dir, $pre);
+        }
+
+        $db   = db_connect();
+        $next = (int) $pre['next'];
+
+        // Cada bloque es otra conexión: se reaplican las variables de sesión y el USE anteriores
+        $replay = [];
+        for ($i = 0; $i < $next; $i++) {
+            $type = core_deploy_sql_splitter::type($statements[$i]['sql']);
+            if ($type === 'SET' || $type === 'USE') {
+                $replay[] = ['id' => $i, 'sql' => $statements[$i]['sql']];
+            }
+        }
+        if (count($replay)) {
+            $result = core_deploy_schema::run($db, $replay);
+            if (!$result['ok']) {
+                $last = end($result['results']);
+                throw new \Exception('No se pudo reaplicar la sentencia ' . ((int) $last['id'] + 1) . ' de ' . $file . ' al reanudar: ' . $this->preText($last['error'], 500));
+            }
+            $this->log($run['upgradeID'], $file . ': reaplicadas ' . count($replay) . ' sentencias SET/USE anteriores.');
+        }
+
+        $all     = $this->preLoadResults($dir);
+        $results = [];
+        while ($next < (int) $pre['total']) {
+            if (count($results) && microtime(true) >= $deadline) {
+                break;
+            }
+            $statement = $statements[$next];
+            $type      = core_deploy_sql_splitter::type($statement['sql']);
+            // En hosting compartido el DEFINER falla: se quita de los CREATE
+            $sql       = $type === 'CREATE' ? core_deploy_schema::stripDefiner($statement['sql']) : $statement['sql'];
+            $exec      = core_deploy_schema::run($db, [['id' => $next, 'sql' => $sql]], self::PRE_MAX_ROWS);
+            $item      = $exec['results'][0];
+            $result    = [
+                'index'        => $next,
+                'line'         => (int) $statement['line'],
+                'type'         => $this->preType($statement['sql']),
+                'sql'          => $this->preText($statement['sql'], 2000),
+                'ok'           => (bool) $item['ok'],
+                'error'        => $item['ok'] ? '' : $this->preText($this->mask((string) $item['error']), 2000),
+                'ms'           => (int) $item['ms'],
+                'affectedRows' => $item['affectedRows'],
+                'insertId'     => $item['insertId'],
+                'resultSets'   => $this->preCapResultSets($item['resultSets'], $pre),
+            ];
+            $results[]    = $result;
+            $all[$next]   = $result;
+            $pre['ms']    = (int) $pre['ms'] + (int) $item['ms'];
+
+            if (!$item['ok']) {
+                // Se detiene aquí; el reintento retoma en esta misma sentencia (next no avanza)
+                $pre['status']      = 'error';
+                $pre['failedIndex'] = $next;
+                $run['pre']         = $pre;
+                $this->preSaveResults($dir, $all);
+                $detail                = $this->preDetail($pre, $results);
+                $detail['failedIndex'] = $next;
+                $this->fail($file . ' se detuvo en la sentencia ' . ($next + 1) . ' de ' . $pre['total'] . ' (línea ' . $statement['line'] . '): ' . $result['error'], $detail);
+            }
+
+            $next++;
+            $pre['next']     = $next;
+            $pre['executed'] = $next;
+            $pre['status']   = 'running';
+            unset($pre['failedIndex']);
+            $run['pre'] = $pre;
+            // Se guarda por sentencia para no repetir lo ya ejecutado si la petición se corta
+            $this->saveRun($run);
+            $this->log($run['upgradeID'], 'OK ' . $file . ' #' . $next . ' (línea ' . $statement['line'] . ') ' . $result['type'] . ' ' . $result['ms'] . ' ms'
+                . ($result['affectedRows'] !== null ? ' · ' . $result['affectedRows'] . ' filas afectadas' : '')
+                . (count($result['resultSets']) ? ' · ' . count($result['resultSets']) . ' resultados' : ''));
+        }
+
+        $done = $next >= (int) $pre['total'];
+        if ($done) {
+            $pre['status'] = 'done';
+            $this->log($run['upgradeID'], $file . ' terminado: ' . $pre['total'] . ' sentencias en ' . $pre['ms'] . ' ms.');
+        }
+        $run['pre'] = $pre;
+        $this->preSaveResults($dir, $all);
+        return $this->out('apply_pre', $done, $next, (int) $pre['total'], $this->preDetail($pre, $results));
+    }
+
+    /**
      * Ajusta un snapshot del servidor para MariaDB (collation 0900 e índices invisibles).
      *
      * @param array $snapshot Snapshot del servidor.
@@ -1386,6 +1758,18 @@ class core_web_upgrade
 
         $parts = $this->runParts($run);
 
+        // Script previo: si se marcó, debe haber terminado (o haberse omitido) antes de comparar
+        $pre = isset($run['pre']) && is_array($run['pre']) ? $run['pre'] : ['status' => 'skipped', 'total' => 0, 'executed' => 0, 'sha256' => ''];
+        if ($parts['pre'] && !in_array((string) $pre['status'], ['done', 'missing', 'unsupported', 'skipped'], true)) {
+            throw new \Exception('Ejecute primero el script previo ' . core_deploy_rules::SQL_PRE_FILE . ' (estado: ' . (isset($run['pre']['status']) ? $run['pre']['status'] : 'sin ejecutar') . ').');
+        }
+        $preSummary = [
+            'status'   => $parts['pre'] ? (string) $pre['status'] : 'skipped',
+            'name'     => core_deploy_rules::SQL_PRE_FILE,
+            'total'    => (int) $pre['total'],
+            'executed' => (int) $pre['executed'],
+        ];
+
         // Estructura (solo si se marcó)
         $plan = ['hash' => '', 'steps' => [], 'extras' => [], 'summary' => [], 'notes' => []];
         if ($parts['schema']) {
@@ -1415,7 +1799,7 @@ class core_web_upgrade
         $scripts = $this->validateScripts($client->call('client_script'));
         core_deploy_files::writeJson($dir . '/scripts.json.gz', ['scripts' => $scripts], true);
 
-        $hash = hash('sha256', json_encode([$plan['hash'], $data['tables'], array_column($scripts, 'name'), $parts, array_keys($files)]));
+        $hash = hash('sha256', json_encode([$plan['hash'], $data['tables'], array_column($scripts, 'name'), $parts, array_keys($files), isset($pre['sha256']) ? (string) $pre['sha256'] : '']));
         $run['compared']       = true;
         $run['schemaHash']     = $plan['hash'];
         $run['schemaVerified'] = false;
@@ -1441,6 +1825,7 @@ class core_web_upgrade
             'files'  => $files,
             'schema' => ['steps' => $plan['steps'], 'extras' => $plan['extras'], 'summary' => $plan['summary'], 'notes' => $plan['notes'], 'skipped' => !$parts['schema']],
             'data'   => ['tables' => $data['tables'], 'scripts' => array_column($scripts, 'name'), 'skipped' => !$parts['data']],
+            'pre'    => $preSummary,
             'hash'   => $hash,
         ]);
     }
@@ -1688,7 +2073,8 @@ class core_web_upgrade
                 'by'          => $run['by'],
                 // Actualización parcial (alguna casilla sin marcar): la siguiente no exige "Forzar"
                 // También es parcial si algún paquete publicado quedó sin marcar
-                'partial'     => in_array(false, $this->runParts($run), true) || !empty($run['zipsOmitted']),
+                // El script previo (opcional, ausente = no) no vuelve parcial la actualización; zips es lista o null
+                'partial'     => in_array(false, array_diff_key($this->runParts($run), ['pre' => true, 'zips' => true]), true) || !empty($run['zipsOmitted']),
                 'parts'       => $this->runParts($run),
             ]);
         }
@@ -1736,6 +2122,11 @@ class core_web_upgrade
             $run['rollback'] = ['phase' => 'files', 'zips' => array_reverse($zips), 'zipIndex' => 0, 'includeDb' => $includeDb, 'unitsDone' => 0, 'dbStarted' => false, 'dbTotal' => 0, 'dbDone' => 0, 'startedOn' => helper_getDateTime()];
             $run['status']   = 'rolling_back';
             $this->log($upgradeID, 'Reversión iniciada' . ($includeDb ? ' (incluye la base de datos completa)' : '') . '.');
+            // El script previo corre fuera de transacción: solo la restauración completa de la BD lo deshace
+            $preExecuted = isset($run['pre']['executed']) ? (int) $run['pre']['executed'] : 0;
+            if (!$includeDb && $preExecuted > 0) {
+                $this->log($upgradeID, 'Aviso: ' . core_deploy_rules::SQL_PRE_FILE . ' ejecutó ' . $preExecuted . ' sentencias fuera de transacción; sus cambios NO se revierten sin incluir la base de datos completa.');
+            }
         } else {
             core_upgrade_lock::refresh($upgradeID);
             core_upgrade_lock::maintenanceRefresh($upgradeID);

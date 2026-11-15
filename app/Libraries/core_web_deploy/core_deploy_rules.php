@@ -52,6 +52,8 @@ class core_deploy_rules
     // Scripts de parámetros
     const SQL_CLIENT_DIR     = 'resource/file_sql/clientes/';
     const SQL_DEFAULT_FILE   = '001_default.sql';
+    // Script previo de la actualización (core_upgrade/byPop3): se ejecuta antes de comparar, fuera de transacción
+    const SQL_PRE_FILE       = '002_pre_deployment.sql';
 
     // Configuración y logos de cada compañía (pestaña "Configuración y logos")
     const CONFIG_DIR            = 'app/Config/';

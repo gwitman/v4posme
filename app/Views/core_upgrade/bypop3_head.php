@@ -115,7 +115,23 @@
     .upg-table .bkp-actions { white-space:nowrap; text-align:right; }
     .upg-table .bkp-actions .btn { min-height:36px; margin:2px 0; }
     .upg-table .bkp-note { display:block; font-size:12px; color:var(--abv2-muted); }
+    /* script previo 002_pre_deployment.sql: casilla y tarjeta de resultados */
+    #upgSyncPreBox.is-disabled { opacity:.55; cursor:not-allowed; }
+    .upg-pre-item { border:1px solid var(--abv2-border); border-radius:8px; margin-top:8px; min-width:0; }
+    .upg-pre-item.is-bad { border-color:var(--abv2-bad); }
+    .upg-pre-item > summary { min-height:44px; padding:12px 10px; cursor:pointer; font-size:13px; word-break:break-word; }
+    .upg-pre-item > summary .upg-badge { margin-left:4px; }
+    .upg-pre-body { padding:0 10px 10px; min-width:0; }
+    .upg-pre-body .upg-sql { display:block; max-height:160px; }
+    .upg-result-title { font-size:12px; font-weight:700; margin:8px 0 0; }
+    .upg-result-scroll { max-height:320px; max-width:100%; overflow:auto; border:1px solid var(--abv2-border); border-radius:8px; margin-top:6px; -webkit-overflow-scrolling:touch; }
+    .upg-result-table { border-collapse:collapse; min-width:100%; }
+    .upg-result-table th, .upg-result-table td { padding:5px 8px; font-size:12px; border-bottom:1px solid var(--abv2-border); white-space:nowrap; max-width:280px; overflow:hidden; text-overflow:ellipsis; text-align:left; vertical-align:top; }
+    .upg-result-table th { position:sticky; top:0; background:#fff; font-weight:600; color:var(--abv2-muted); z-index:1; }
+    .upg-null { color:var(--abv2-muted); font-style:italic; }
     @media (max-width:767px) {
+        .upg-result-scroll { max-height:260px; }
+        .upg-result-table th, .upg-result-table td { max-width:200px; }
         .upg-tab { flex:1 1 0; padding:10px 6px; }
         .upg-table .bkp-actions { white-space:normal; flex-wrap:wrap; justify-content:flex-end; }
         .upg-table .bkp-actions .btn { min-height:44px; }

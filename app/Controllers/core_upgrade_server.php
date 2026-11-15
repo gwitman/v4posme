@@ -37,7 +37,7 @@ class core_upgrade_server extends _BaseController
     function schema_snapshot() { return $this->handle('schema_snapshot'); }
     /** Filas de las tablas de configuración (perfiles Navicat). */
     function config_data()     { return $this->handle('config_data'); }
-    /** Scripts de parámetros: 001_default.sql + el de la compañía registrada. */
+    /** Scripts de parámetros: 001_default.sql + el de la compañía registrada (+ 002_pre_deployment.sql si se pide). */
     function client_script()   { return $this->handle('client_script'); }
 
     /**
@@ -181,6 +181,15 @@ class core_upgrade_server extends _BaseController
             $tables[] = ['table' => $table, 'mode' => $mode];
         }
 
+        // Script previo 002_pre_deployment.sql publicado en file_sql/clientes del servidor
+        $preScript = ['present' => false, 'bytes' => 0, 'sha256' => ''];
+        try {
+            $preSql    = $this->core_web_deploy->readScript(core_deploy_rules::SQL_PRE_FILE);
+            $preScript = ['present' => true, 'bytes' => strlen($preSql), 'sha256' => hash('sha256', $preSql)];
+        } catch (\Throwable $ex) {
+            // No publicado: el cliente lo informa como aviso
+        }
+
         return [
             'protocol'    => core_upgrade_rules::PROTOCOL,
             'version'     => $version,
@@ -188,6 +197,7 @@ class core_upgrade_server extends _BaseController
             'phpMin'      => isset($config['phpMin']) ? (string) $config['phpMin'] : '7.4',
             'packages'    => $packages,
             'tables'      => $tables,
+            'preScript'   => $preScript,
         ];
     }
 
@@ -289,7 +299,13 @@ class core_upgrade_server extends _BaseController
         return ['tables' => $tables, 'companyIDs' => $companyIDs];
     }
 
-    /** Scripts de parámetros de la instalación (el companyKey sale del registro, nunca de la petición). */
+    /**
+     * Scripts de parámetros de la instalación (el companyKey sale del registro, nunca de la petición).
+     * Con payload['pre'] también devuelve el script previo 002_pre_deployment.sql (fuera de scripts[]).
+     *
+     * @param array $payload ['pre' => bool] opcional.
+     * @return array ['scripts','warnings'] + ['preSupported','preScript' => ['name','sql','sha256']|null]
+     */
     private function action_client_script(array $payload)
     {
         $scripts  = [];
@@ -304,6 +320,10 @@ class core_upgrade_server extends _BaseController
             if (preg_match('/^[A-Za-z0-9_\-\.]{1,100}$/', $key) !== 1 || strpos($key, '..') !== false) {
                 throw new \Exception('El companyKey registrado para la instalación es inválido.');
             }
+            // El script previo nunca puede hacer de script de la compañía
+            if ($key . '.sql' === core_deploy_rules::SQL_PRE_FILE) {
+                throw new \Exception('El companyKey registrado para la instalación no puede ser ' . core_deploy_rules::SQL_PRE_FILE . '.');
+            }
             $file = $key . '.sql';
             if ($file !== core_deploy_rules::SQL_DEFAULT_FILE) {
                 try {
@@ -315,6 +335,17 @@ class core_upgrade_server extends _BaseController
         } else {
             $warnings[] = 'La instalación no tiene companyKey registrado; solo se envía ' . core_deploy_rules::SQL_DEFAULT_FILE . '.';
         }
-        return ['scripts' => $scripts, 'warnings' => $warnings];
+        $result = ['scripts' => $scripts, 'warnings' => $warnings];
+        if (!empty($payload['pre'])) {
+            $result['preSupported'] = true;
+            $result['preScript']    = null;
+            try {
+                $preSql              = $this->core_web_deploy->readScript(core_deploy_rules::SQL_PRE_FILE);
+                $result['preScript'] = ['name' => core_deploy_rules::SQL_PRE_FILE, 'sql' => $preSql, 'sha256' => hash('sha256', $preSql)];
+            } catch (\Throwable $ex) {
+                $result['warnings'][] = 'No existe ' . core_deploy_rules::SQL_PRE_FILE . ' en el servidor.';
+            }
+        }
+        return $result;
     }
 }

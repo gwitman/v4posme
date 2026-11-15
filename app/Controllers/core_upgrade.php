@@ -119,6 +119,8 @@ class core_upgrade extends _BaseController
                 'syncFiles'  => $this->upgrade_post('syncFiles', '1'),
                 'syncSchema' => $this->upgrade_post('syncSchema', '1'),
                 'syncData'   => $this->upgrade_post('syncData', '1'),
+                // Script previo 002_pre_deployment.sql (ausente = no se ejecuta)
+                'syncPre'    => $this->upgrade_post('syncPre', '0'),
                 // Paquetes marcados (JSON con nombres de zip; vacío = todos)
                 'syncZips'   => $this->upgrade_post('syncZips', ''),
             ];
@@ -148,6 +150,7 @@ class core_upgrade extends _BaseController
                 'syncFiles'  => $this->upgrade_post('syncFiles', '1'),
                 'syncSchema' => $this->upgrade_post('syncSchema', '1'),
                 'syncData'   => $this->upgrade_post('syncData', '1'),
+                'syncPre'    => $this->upgrade_post('syncPre', '0'),
                 'syncZips'   => $this->upgrade_post('syncZips', ''),
                 'confirm'   => $this->upgrade_post('confirm'),
                 'status'    => $this->upgrade_post('status'),

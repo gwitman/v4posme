@@ -520,11 +520,16 @@ class core_deploy_schema
     /**
      * Ejecuta una lista de sentencias en orden y se detiene en el primer error.
      *
-     * @param object $db         Conexión CI4.
-     * @param array  $statements Lista de ['id' => ..., 'sql' => ...].
-     * @return array ['ok' => bool, 'results' => [...]]
+     * Siempre vacía los result sets adicionales (CALL a procedimientos con SELECT) para
+     * que la conexión no quede en "Commands out of sync".
+     *
+     * @param object $db          Conexión CI4.
+     * @param array  $statements  Lista de ['id' => ..., 'sql' => ...].
+     * @param int    $captureRows Filas máximas a capturar por result set (0 = no captura; compatible hacia atrás).
+     * @return array ['ok' => bool, 'results' => [...]] Con $captureRows > 0 cada resultado agrega
+     *               'affectedRows', 'insertId' y 'resultSets' => [['columns','rows','rowCount','truncated']].
      */
-    static function run($db, array $statements)
+    static function run($db, array $statements, $captureRows = 0)
     {
         // CodeIgniter conecta de forma diferida: si aún no hubo consultas, connID es false
         if (!($db->connID instanceof \mysqli)) {
@@ -534,35 +539,150 @@ class core_deploy_schema
         if (!($mysqli instanceof \mysqli)) {
             throw new \Exception('No se pudo abrir la conexión MySQL para aplicar la estructura.');
         }
-        $results = [];
+        $captureRows = max(0, (int) $captureRows);
+        $results     = [];
         foreach ($statements as $item) {
-            $start = microtime(true);
-            $error = null;
-            $rows  = 0;
+            $start        = microtime(true);
+            $error        = null;
+            $rows         = 0;
+            $affectedRows = null;
+            $insertId     = null;
+            $resultSets   = [];
             try {
                 $ok = $mysqli->query($item['sql']);
                 if ($ok === false) {
                     $error = $mysqli->errno . ' ' . $mysqli->error;
                 } else {
-                    $rows = (int) $mysqli->affected_rows;
+                    $rows         = (int) $mysqli->affected_rows;
+                    $affectedRows = $ok instanceof \mysqli_result ? null : $rows;
+                    $insertId     = (int) $mysqli->insert_id > 0 ? (int) $mysqli->insert_id : null;
                     if ($ok instanceof \mysqli_result) {
+                        if ($captureRows > 0) {
+                            $resultSets[] = self::captureResult($ok, $captureRows);
+                        }
                         $ok->free();
                     }
                 }
             } catch (\Throwable $ex) {
                 $error = $ex->getMessage();
             }
-            $results[] = [
+            // Result sets adicionales (CALL): se capturan si se pide y siempre se liberan
+            $extraError = self::drainResults($mysqli, $captureRows, $resultSets);
+            if ($error === null && $extraError !== null) {
+                $error = $extraError;
+            }
+            $result = [
                 'id'    => isset($item['id']) ? $item['id'] : null,
                 'ok'    => $error === null,
                 'error' => $error,
                 'rows'  => $rows,
                 'ms'    => (int) round((microtime(true) - $start) * 1000),
             ];
+            if ($captureRows > 0) {
+                $result['affectedRows'] = $error === null ? $affectedRows : null;
+                $result['insertId']     = $error === null ? $insertId : null;
+                $result['resultSets']   = $resultSets;
+            }
+            $results[] = $result;
             if ($error !== null) {
                 return ['ok' => false, 'results' => $results];
             }
         }
         return ['ok' => true, 'results' => $results];
+    }
+
+    /**
+     * Vacía los result sets pendientes de la conexión (more_results/next_result).
+     *
+     * @param \mysqli $mysqli      Conexión nativa.
+     * @param int     $captureRows Filas máximas a capturar (0 = solo liberar).
+     * @param array   $resultSets  Result sets capturados (por referencia).
+     * @return string|null Error de un result set adicional o null.
+     */
+    private static function drainResults($mysqli, $captureRows, array &$resultSets)
+    {
+        $error = null;
+        $guard = 0;
+        try {
+            while ($mysqli->more_results() && $guard++ < 1000) {
+                if (!$mysqli->next_result()) {
+                    if ($mysqli->errno) {
+                        $error = $mysqli->errno . ' ' . $mysqli->error;
+                    }
+                    break;
+                }
+                $extra = $mysqli->store_result();
+                if ($extra instanceof \mysqli_result) {
+                    if ($captureRows > 0) {
+                        $resultSets[] = self::captureResult($extra, $captureRows);
+                    }
+                    $extra->free();
+                }
+            }
+        } catch (\Throwable $ex) {
+            $error = $ex->getMessage();
+        }
+        return $error;
+    }
+
+    /**
+     * Copia un result set a arreglos: columnas y hasta $max filas (celdas recortadas).
+     *
+     * @param \mysqli_result $res Result set (modo store).
+     * @param int            $max Filas máximas.
+     * @return array ['columns' => [string], 'rows' => [[...]], 'rowCount' => int|null, 'truncated' => bool]
+     */
+    private static function captureResult($res, $max)
+    {
+        $columns = [];
+        $binary  = [];
+        $blobs   = [MYSQLI_TYPE_TINY_BLOB, MYSQLI_TYPE_MEDIUM_BLOB, MYSQLI_TYPE_LONG_BLOB, MYSQLI_TYPE_BLOB, MYSQLI_TYPE_STRING, MYSQLI_TYPE_VAR_STRING, MYSQLI_TYPE_GEOMETRY];
+        foreach ($res->fetch_fields() ?: [] as $i => $field) {
+            $columns[] = (string) $field->name;
+            // charsetnr 63 = binary: BLOB, BINARY y VARBINARY (los numéricos también son 63, por eso se mira el tipo)
+            $binary[$i] = (int) $field->charsetnr === 63 && in_array((int) $field->type, $blobs, true);
+        }
+        $rowCount = is_numeric($res->num_rows) ? (int) $res->num_rows : null;
+        $rows     = [];
+        while (count($rows) < $max && ($row = $res->fetch_row()) !== null && $row !== false) {
+            foreach ($row as $i => $value) {
+                if ($value === null) {
+                    continue;
+                }
+                $value = (string) $value;
+                if (!empty($binary[$i]) || !self::isUtf8($value)) {
+                    $row[$i] = '[binario ' . strlen($value) . ' bytes]';
+                } elseif (self::textLength($value) > 1000) {
+                    $row[$i] = self::textCut($value, 1000) . '…';
+                } else {
+                    $row[$i] = $value;
+                }
+            }
+            $rows[] = $row;
+        }
+        return [
+            'columns'   => $columns,
+            'rows'      => $rows,
+            'rowCount'  => $rowCount,
+            'truncated' => $rowCount !== null ? $rowCount > count($rows) : count($rows) >= $max,
+        ];
+    }
+
+    /** Indica si el texto es UTF-8 válido. */
+    private static function isUtf8($text)
+    {
+        return function_exists('mb_check_encoding') ? mb_check_encoding($text, 'UTF-8') : preg_match('//u', $text) === 1;
+    }
+
+    /** Longitud en caracteres (UTF-8). */
+    private static function textLength($text)
+    {
+        return function_exists('mb_strlen') ? mb_strlen($text, 'UTF-8') : strlen($text);
+    }
+
+    /** Primeros $length caracteres (UTF-8). */
+    private static function textCut($text, $length)
+    {
+        return function_exists('mb_substr') ? mb_substr($text, 0, $length, 'UTF-8') : substr($text, 0, $length);
     }
 }
