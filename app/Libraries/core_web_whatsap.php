@@ -196,6 +196,12 @@ class core_web_whatsap {
 
    function sendMessageGeneric( $typeCompany,$companyID, $message, $phoneDestino,$esperarRespuesta,$instanciaName)
    {
+	   //Interruptor por empresa: enviar por la API oficial de Meta (Evolution queda intacto)
+	   if($this->isSendByMetaCloud($companyID))
+	   {
+		   return $this->sendMessageByMetaCloudText( $companyID, $message, $phoneDestino);
+	   }
+
 	   if($typeCompany == "posme")
 	   {
 		   return $this->sendMessageByEvolutionApiText( $companyID, $message, $phoneDestino, $instanciaName);
@@ -223,6 +229,11 @@ class core_web_whatsap {
    }
    function sendMessageTypeImagGeneric( $typeCompany,$companyID, $urlImagen,$message, $phoneDestino,$esperarRespuesta,$instanciaName )
    {
+	   if($this->isSendByMetaCloud($companyID))
+	   {
+		   return $this->sendMessageByMetaCloudImage( $companyID, $urlImagen, $message, $phoneDestino);
+	   }
+
 	   if($typeCompany == "")
 	   {
 		   $i = "not implementd";
@@ -251,7 +262,11 @@ class core_web_whatsap {
    }
    function sendMessageTypePdfGeneric( $typeCompany,$companyID, $urlPdf,$fileName,$message, $phoneDestino,$esperarRespuesta ,$instanciaName)
    {
-	   
+	   if($this->isSendByMetaCloud($companyID))
+	   {
+		   return $this->sendMessageByMetaCloudPdf( $companyID, $urlPdf, $fileName, $message, $phoneDestino);
+	   }
+
 	   if($typeCompany == "posme")
 	   {
 		  return $this->sendMessageByEvolutionApiPdf( $companyID, $urlPdf, $fileName, $message, $phoneDestino, $instanciaName);
@@ -271,6 +286,11 @@ class core_web_whatsap {
    }
    function sendMessageTypeVideoAudioGeneric( $typeCompany,$companyID, $urlPdf,$fileName,$message, $phoneDestino,$esperarRespuesta ,$instanciaName)
    {
+	   if($this->isSendByMetaCloud($companyID))
+	   {
+		   return $this->sendMessageByMetaCloudAudio( $companyID, $urlPdf, $phoneDestino);
+	   }
+
 	   if($typeCompany == "posme")
 	   {
 		   return $this->sendMessageByEvolutionApiAudio( $companyID, $urlPdf, $phoneDestino, $instanciaName);
@@ -2882,6 +2902,197 @@ class core_web_whatsap {
 			log_message('error', '[getMediaBase64ByMetaCloud] ERROR: ' . $ex->getMessage());
 			return $result;
 		}
+	}
+
+	/**
+	 * Indica si la empresa envia sus mensajes de WhatsApp por la API oficial de Meta
+	 * (Cloud API) en lugar de Evolution API. Parametro WHATSAPP_SEND_METACLOUD = true.
+	 * Si el parametro no existe o no es true, se sigue enviando como antes.
+	 * @param int $companyID ID de la empresa
+	 * @return bool
+	 */
+	function isSendByMetaCloud($companyID)
+	{
+		try
+		{
+			$Parameter_Model 			= new Parameter_Model();
+			$Company_Parameter_Model 	= new Company_Parameter_Model();
+
+			$objP 	= $Parameter_Model->get_rowByName("WHATSAPP_SEND_METACLOUD");
+			$objCP 	= $objP ? $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objP->parameterID) : null;
+			$value 	= strtolower(trim((string)($objCP->value ?? "")));
+			return $value === "true";
+		}
+		catch(\Throwable $ex)
+		{
+			log_message('error', '[isSendByMetaCloud] ERROR: ' . $ex->getMessage());
+			return false;
+		}
+	}
+
+	/**
+	 * Envia un mensaje por Meta Cloud API: POST https://graph.facebook.com/{version}/{phoneNumberId}/messages
+	 * Parametros: WHATSAP_META_TOKEN, WHATSAP_META_PHONE_NUMBER_ID, WHATSAP_META_API_VERSION (por defecto v27.0).
+	 * Si el telefono destino viene vacio se usa WHATSAP_CURRENT_PROPIETARY_COMMERSE (igual que Evolution).
+	 * Nota: fuera de la ventana de 24 h desde el ultimo mensaje del cliente, Meta solo acepta plantillas.
+	 * @param int    $companyID    ID de la empresa
+	 * @param string $phoneDestino Telefono destino
+	 * @param string $type         text, image, document o audio
+	 * @param array  $content      Objeto del tipo (ej. ["body" => "..."] o ["link" => "...", "caption" => "..."])
+	 * @param string $logTag       Nombre para el log
+	 * @return array Respuesta de Meta decodificada + success; en error: success=false, status=error, error
+	 */
+	function sendMessageByMetaCloudRequest($companyID, $phoneDestino, $type, $content, $logTag)
+	{
+		try
+		{
+			$Parameter_Model 			= new Parameter_Model();
+			$Company_Parameter_Model 	= new Company_Parameter_Model();
+
+			$objPToken 			= $Parameter_Model->get_rowByName("WHATSAP_META_TOKEN");
+			$objCPToken 		= $objPToken ? $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPToken->parameterID) : null;
+			$objPPhoneId 		= $Parameter_Model->get_rowByName("WHATSAP_META_PHONE_NUMBER_ID");
+			$objCPPhoneId 		= $objPPhoneId ? $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPPhoneId->parameterID) : null;
+			$objPVersion 		= $Parameter_Model->get_rowByName("WHATSAP_META_API_VERSION");
+			$objCPVersion 		= $objPVersion ? $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPVersion->parameterID) : null;
+			$objPPropertyNumber = $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
+			$objCPPropertyNumber= $objPPropertyNumber ? $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPPropertyNumber->parameterID) : null;
+
+			$token 			= trim((string)($objCPToken->value ?? ""));
+			$phoneNumberId 	= trim((string)($objCPPhoneId->value ?? ""));
+			$version 		= trim((string)($objCPVersion->value ?? ""));
+			$version 		= $version != "" ? $version : "v27.0";
+
+			//Meta exige solo digitos con codigo de pais, sin + ni espacios
+			$phoneDestino 	= trim((string)$phoneDestino);
+			$phoneDestino 	= $phoneDestino != "" ? $phoneDestino : (string)($objCPPropertyNumber->value ?? "");
+			$phoneDigits 	= preg_replace('/\D/', '', $phoneDestino);
+
+			if($token == "" || $phoneNumberId == "" || $phoneDigits == "")
+			{
+				$msg = 'Faltan parametros (WHATSAP_META_TOKEN, WHATSAP_META_PHONE_NUMBER_ID o telefono destino)';
+				log_message('error', '[' . $logTag . '] ' . $msg);
+				return ['success' => false, 'status' => 'error', 'error' => $msg];
+			}
+
+			$url 		= 'https://graph.facebook.com/' . rawurlencode($version) . '/' . rawurlencode($phoneNumberId) . '/messages';
+			$payload 	= [
+				'messaging_product' => 'whatsapp',
+				'recipient_type'    => 'individual',
+				'to'                => $phoneDigits,
+				'type'              => $type,
+				$type               => $content
+			];
+
+			log_message('info', '[' . $logTag . '] URL: ' . $url . ' | phone: ' . $phoneDigits . ' | type: ' . $type);
+
+			$ch = curl_init($url);
+			curl_setopt_array($ch, [
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_POST           => true,
+				CURLOPT_HTTPHEADER     => [
+					'Content-Type: application/json',
+					'Authorization: Bearer ' . $token
+				],
+				CURLOPT_POSTFIELDS     => json_encode($payload),
+				CURLOPT_TIMEOUT        => 30
+			]);
+
+			$response = curl_exec($ch);
+			$error    = curl_error($ch);
+			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			curl_close($ch);
+
+			log_message('info', '[' . $logTag . '] HTTP: ' . $httpCode . ' | response: ' . substr((string)$response, 0, 500));
+
+			if($error)
+			{
+				return ['success' => false, 'status' => 'error', 'error' => $error];
+			}
+
+			$decoded = json_decode((string)$response, true);
+			$decoded = is_array($decoded) ? $decoded : [];
+			if($httpCode < 200 || $httpCode >= 300 || isset($decoded["error"]))
+			{
+				//Ej. 131047: fuera de la ventana de 24 h, Meta exige plantilla
+				$msg = (string)($decoded["error"]["message"] ?? ('HTTP ' . $httpCode));
+				$cod = (string)($decoded["error"]["code"] ?? '');
+				log_message('error', '[' . $logTag . '] Meta rechazo el envio a ' . $phoneDigits . ' | code: ' . $cod . ' | ' . $msg);
+				return ['success' => false, 'status' => 'error', 'error' => trim($cod . ' ' . $msg), 'response' => $decoded];
+			}
+
+			$decoded["success"] = true;
+			return $decoded;
+		}
+		catch(\Throwable $ex)
+		{
+			log_message('error', '[' . $logTag . '] ERROR: ' . $ex->getMessage());
+			return ['success' => false, 'status' => 'error', 'error' => $ex->getMessage()];
+		}
+	}
+
+	/**
+	 * Enviar mensaje de texto por Meta Cloud API
+	 * @param int    $companyID    ID de la empresa
+	 * @param string $message      Texto del mensaje
+	 * @param string $phoneDestino Telefono destino
+	 * @return array Respuesta (ver sendMessageByMetaCloudRequest)
+	 */
+	function sendMessageByMetaCloudText($companyID, $message, $phoneDestino)
+	{
+		return $this->sendMessageByMetaCloudRequest($companyID, $phoneDestino, 'text', [
+			'preview_url' => false,
+			'body'        => (string)$message
+		], 'sendMessageByMetaCloudText');
+	}
+
+	/**
+	 * Enviar imagen por Meta Cloud API (la url debe ser publica)
+	 * @param int    $companyID    ID de la empresa
+	 * @param string $urlImagen    URL publica de la imagen
+	 * @param string $message      Caption
+	 * @param string $phoneDestino Telefono destino
+	 * @return array Respuesta (ver sendMessageByMetaCloudRequest)
+	 */
+	function sendMessageByMetaCloudImage($companyID, $urlImagen, $message, $phoneDestino)
+	{
+		$content = ['link' => (string)$urlImagen];
+		if(trim((string)$message) != "")
+			$content['caption'] = (string)$message;
+		return $this->sendMessageByMetaCloudRequest($companyID, $phoneDestino, 'image', $content, 'sendMessageByMetaCloudImage');
+	}
+
+	/**
+	 * Enviar PDF/documento por Meta Cloud API (la url debe ser publica)
+	 * @param int    $companyID    ID de la empresa
+	 * @param string $urlPdf       URL publica del documento
+	 * @param string $fileName     Nombre con el que lo ve el cliente
+	 * @param string $message      Caption
+	 * @param string $phoneDestino Telefono destino
+	 * @return array Respuesta (ver sendMessageByMetaCloudRequest)
+	 */
+	function sendMessageByMetaCloudPdf($companyID, $urlPdf, $fileName, $message, $phoneDestino)
+	{
+		$content = ['link' => (string)$urlPdf];
+		if(trim((string)$fileName) != "")
+			$content['filename'] = (string)$fileName;
+		if(trim((string)$message) != "")
+			$content['caption'] = (string)$message;
+		return $this->sendMessageByMetaCloudRequest($companyID, $phoneDestino, 'document', $content, 'sendMessageByMetaCloudPdf');
+	}
+
+	/**
+	 * Enviar audio por Meta Cloud API (la url debe ser publica; Meta acepta ogg/opus, mp3, aac, amr, m4a)
+	 * @param int    $companyID    ID de la empresa
+	 * @param string $urlAudio     URL publica del audio
+	 * @param string $phoneDestino Telefono destino
+	 * @return array Respuesta (ver sendMessageByMetaCloudRequest)
+	 */
+	function sendMessageByMetaCloudAudio($companyID, $urlAudio, $phoneDestino)
+	{
+		return $this->sendMessageByMetaCloudRequest($companyID, $phoneDestino, 'audio', [
+			'link' => (string)$urlAudio
+		], 'sendMessageByMetaCloudAudio');
 	}
 }
 ?>
