@@ -2527,10 +2527,106 @@ $rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu p
 			'totalMensajes'	=> count($chatSend),
 			'data'			=> $chatSend
 		));
-		
-		
+
+
 	}
-	
+
+	/**
+	 * Copia de sendWhatsappDiarioMasiveWapi2CobranzaNjGym que SI envia el recordatorio,
+	 * usando una plantilla aprobada de WhatsApp por Meta Cloud API (sirve fuera de la ventana de 24 h).
+	 * Segmentos opcionales de la URL:
+	 *  - templateName : nombre de la plantilla en Meta (por defecto recordatorio_pago_njgym)
+	 *  - languageCode : idioma de la plantilla (por defecto es)
+	 * Variables que se envian al cuerpo de la plantilla: {{1}} = nombre del cliente, {{2}} = codigo de cliente.
+	 * Ej: app_notification/sendWhatsappDiarioMasiveMetaTemplateCobranzaNjGym/templateName/mi_plantilla/languageCode/es
+	 * @return \CodeIgniter\HTTP\Response JSON con el resultado por cliente
+	 */
+	function sendWhatsappDiarioMasiveMetaTemplateCobranzaNjGym()
+	{
+		$logTag 		= '[sendWhatsappDiarioMasiveMetaTemplateCobranzaNjGym]';
+		log_message('info', $logTag . ' Inicio - companyID: ' . APP_COMPANY);
+
+		$templateName	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "templateName"); //--finuri
+		$languageCode	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "languageCode"); //--finuri
+		$templateName	= trim((string)$templateName) != "" ? trim((string)$templateName) : "recordatorio_pago_njgym";
+		$languageCode	= trim((string)$languageCode) != "" ? trim((string)$languageCode) : "es";
+
+		log_message('info', $logTag . ' Plantilla: ' . $templateName . ' | Idioma: ' . $languageCode);
+
+		//Recorrer todos los cobros,
+		$objListCollections = $this->Customer_Credit_Document_Model->get_rowByCobroPorGymJalapa(APP_COMPANY);
+		if(!$objListCollections || count($objListCollections) <= 0)
+		{
+			log_message('info', $logTag . ' No se encontraron cobros pendientes');
+			return $this->response->setJSON(array(
+				'error'			=> false,
+				'message'		=> 'No se encontraron cobros pendientes',
+				'totalCobros'	=> 0,
+				'totalEnviados'	=> 0,
+				'totalErrores'	=> 0,
+				'data'			=> []
+			));
+		}
+
+		log_message('info', $logTag . ' Total cobros encontrados: ' . count($objListCollections));
+
+		$resultado		= [];
+		$totalEnviados	= 0;
+		$totalErrores	= 0;
+		foreach($objListCollections as $item)
+		{
+			$phoneNumber	= getNumberPhone(clearNumero($item->phoneNumber));
+			log_message('info', $logTag . ' Procesando cliente: ' . $item->firstName . ' | Phone: ' . $phoneNumber);
+
+			$rowx 					= array();
+			$rowx["firstName"] 		= $item->firstName;
+			$rowx["customerNumber"] = $item->customerNumber;
+			$rowx["phoneNumber"] 	= $phoneNumber;
+
+			//Sin telefono no se envia: la libreria usaria el numero del comercio como destino
+			if(trim((string)$phoneNumber) == "")
+			{
+				$rowx["enviado"]	= false;
+				$rowx["mensaje"]	= "Cliente sin numero de telefono";
+				$resultado[]		= $rowx;
+				$totalErrores++;
+				continue;
+			}
+
+			//{{1}} = nombre, {{2}} = codigo de cliente (mismo orden que la plantilla)
+			$bodyParams		= [
+				$item->firstName,
+				$item->customerNumber
+			];
+			$response		= $this->core_web_whatsap->sendMessageByMetaCloudTemplate(APP_COMPANY, $templateName, $languageCode, $bodyParams, $phoneNumber);
+			$enviado		= !empty($response["success"]);
+
+			$rowx["enviado"]	= $enviado;
+			$rowx["mensaje"]	= (string)($response["message"] ?? "");
+			$rowx["wamid"]		= (string)($response["messages"][0]["id"] ?? "");
+			$resultado[]		= $rowx;
+
+			if($enviado)
+				$totalEnviados++;
+			else
+				$totalErrores++;
+
+			//Pausa corta entre envios para no saturar la API de Meta
+			usleep(300000);
+		}
+
+		log_message('info', $logTag . ' Fin del proceso | Enviados: ' . $totalEnviados . ' | Errores: ' . $totalErrores);
+
+		return $this->response->setJSON(array(
+			'error'			=> false,
+			'message'		=> SUCCESS,
+			'totalCobros'	=> count($objListCollections),
+			'totalEnviados'	=> $totalEnviados,
+			'totalErrores'	=> $totalErrores,
+			'data'			=> $resultado
+		));
+	}
+
 	function sendWhatsappDiarioMasivePosMeConnect()
 	{
 		//Obtener la lista de recordatorios

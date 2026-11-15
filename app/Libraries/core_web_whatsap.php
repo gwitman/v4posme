@@ -3097,5 +3097,67 @@ class core_web_whatsap {
 			'link' => (string)$urlAudio
 		], 'sendMessageByMetaCloudAudio');
 	}
+
+	/**
+	 * Enviar mensaje usando una plantilla aprobada de WhatsApp por Meta Cloud API.
+	 * Las plantillas son la unica forma de escribir a un cliente fuera de la ventana de 24 h.
+	 * No depende de WHATSAPP_SEND_METACLOUD: siempre envia por Meta (Evolution no maneja plantillas).
+	 * Variables del cuerpo:
+	 *  - Arreglo indexado ["Juan","C-001"]           -> {{1}}, {{2}} (plantilla con variables numericas)
+	 *  - Arreglo asociativo ["nombre" => "Juan", ...] -> {{nombre}}   (plantilla con variables con nombre)
+	 * @param int    $companyID    ID de la empresa
+	 * @param string $templateName Nombre exacto de la plantilla en Meta (ej. recordatorio_pago)
+	 * @param string $languageCode Idioma con el que se aprobo la plantilla (ej. es, es_MX, en_US)
+	 * @param array  $bodyParams   Valores de las variables del cuerpo, en orden o por nombre
+	 * @param string $phoneDestino Telefono destino con codigo de pais
+	 * @return array Respuesta (ver sendMessageByMetaCloudRequest)
+	 */
+	function sendMessageByMetaCloudTemplate($companyID, $templateName, $languageCode, $bodyParams, $phoneDestino)
+	{
+		$templateName 	= trim((string)$templateName);
+		$languageCode 	= trim((string)$languageCode);
+		$languageCode 	= $languageCode != "" ? $languageCode : "es";
+		$bodyParams 	= is_array($bodyParams) ? $bodyParams : [];
+
+		if($templateName == "")
+		{
+			$msg = 'Falta el nombre de la plantilla de WhatsApp';
+			log_message('error', '[sendMessageByMetaCloudTemplate] ' . $msg);
+			return ['success' => false, 'status' => 'error', 'message' => $msg, 'error' => $msg];
+		}
+
+		$content = [
+			'name'     => $templateName,
+			'language' => ['code' => $languageCode]
+		];
+
+		if(count($bodyParams) > 0)
+		{
+			//Si las llaves no son 0..n-1 la plantilla usa variables con nombre ({{nombre}})
+			$esConNombre 	= array_keys($bodyParams) !== range(0, count($bodyParams) - 1);
+			$parameters 	= [];
+			foreach($bodyParams as $key => $value)
+			{
+				//Meta rechaza variables vacias, saltos de linea, tabs o mas de 4 espacios seguidos
+				$texto = preg_replace('/[\r\n\t]+/', ' ', (string)$value);
+				$texto = preg_replace('/ {4,}/', '   ', $texto);
+				$texto = trim($texto) != "" ? trim($texto) : "-";
+
+				$param = ['type' => 'text', 'text' => $texto];
+				if($esConNombre)
+					$param['parameter_name'] = (string)$key;
+				$parameters[] = $param;
+			}
+
+			$content['components'] = [
+				[
+					'type'       => 'body',
+					'parameters' => $parameters
+				]
+			];
+		}
+
+		return $this->sendMessageByMetaCloudRequest($companyID, $phoneDestino, 'template', $content, 'sendMessageByMetaCloudTemplate');
+	}
 }
 ?>
