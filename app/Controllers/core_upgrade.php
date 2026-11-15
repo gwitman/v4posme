@@ -13,7 +13,7 @@ use App\Libraries\core_web_upgrade\core_upgrade_rules;
  * la estructura de la BD y los datos de configuración, y los aplica por etapas con
  * respaldo completo y reversión. La orquestación vive en core_web_upgrade.
  *
- * Seguridad: sesión de administrador (role->isAdmin = 1), solo POST en los
+ * Seguridad: sesión de administrador (role->isAdmin = 1 o role->isAdminCompany = 1), solo POST en los
  * endpoints JSON y token propio en el encabezado X-Posme-Upgrade-Token
  * (comparado con hash_equals). upgrade_health no exige sesión: lo usa el
  * health check interno después de copiar archivos.
@@ -426,7 +426,11 @@ class core_upgrade extends _BaseController
             throw new \Exception(USER_NOT_AUTENTICATED);
         }
         $dataSession = $this->session->get();
-        if (!isset($dataSession["role"]) || (int) $dataSession["role"]->isAdmin !== 1) {
+        // Solo roles administradores del sistema (isAdmin) o de la compañía (isAdminCompany)
+        $role           = isset($dataSession["role"]) ? $dataSession["role"] : null;
+        $isAdmin        = $role !== null && isset($role->isAdmin) && (int) $role->isAdmin === 1;
+        $isAdminCompany = $role !== null && isset($role->isAdminCompany) && (int) $role->isAdminCompany === 1;
+        if (!$isAdmin && !$isAdminCompany) {
             throw new \Exception(NOT_ACCESS_CONTROL);
         }
         return $dataSession;
