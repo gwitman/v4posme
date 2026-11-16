@@ -2523,7 +2523,7 @@ Le recordamos que tiene un saldo pendiente:
 		//Los mensajes no se envian aqui: se suben a RabbitMQ y los envia procesarColaWhatsappMasivo (cron cada minuto)
 		try
 		{
-			$queueName		= $this->core_web_rabbitmq->getQueueWhatsapp(APP_COMPANY);
+			$queueName		= $this->core_web_rabbitmq->getQueueWhatsapp(APP_COMPANY);			
 			$totalEncolados	= $this->core_web_rabbitmq->publishBatch(APP_COMPANY, $queueName, $chatSend);
 		}
 		catch(\Throwable $ex)
@@ -2567,6 +2567,7 @@ Le recordamos que tiene un saldo pendiente:
 	 * @return \CodeIgniter\HTTP\Response JSON con el resumen del consumo
 	 */
 	//http://localhost/posmev4/app_notification/procesarColaWhatsappMasivo
+	//https://posme.net/v4posme/posme/public/app_notification/procesarColaWhatsappMasivo/maxMensajes/1/maxSegundos/5/pausa/1/
 	function procesarColaWhatsappMasivo()
 	{
 		$logTag 		= '[procesarColaWhatsappMasivo]';
