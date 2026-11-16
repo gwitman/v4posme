@@ -542,6 +542,18 @@
       },
       "Keys": [],
       "Fields": []
+    },
+	{
+      "Source": {
+        "Name": "tb_advertising_variable",
+        "ObjectType": "Table_MYSQL"
+      },
+      "Target": {
+        "Name": "tb_advertising_variable",
+        "ObjectType": "Table_MYSQL"
+      },
+      "Keys": [],
+      "Fields": []
     }
   ]
 }

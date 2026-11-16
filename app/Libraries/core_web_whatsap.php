@@ -3121,10 +3121,12 @@ class core_web_whatsap {
 	 * @param string $languageCode Idioma con el que se aprobo la plantilla (ej. es, es_MX, en_US)
 	 * @param array  $bodyParams   Valores de las variables del cuerpo, en orden o por nombre
 	 * @param string $phoneDestino Telefono destino con codigo de pais
+	 * @param string $headerImageUrl (Opcional) URL publica de la imagen del encabezado si la plantilla tiene header IMAGE
 	 * @return array Respuesta (ver sendMessageByMetaCloudRequest)
 	 */
-	function sendMessageByMetaCloudTemplate($companyID, $templateName, $languageCode, $bodyParams, $phoneDestino)
+	function sendMessageByMetaCloudTemplate($companyID, $templateName, $languageCode, $bodyParams, $phoneDestino, $headerImageUrl = "")
 	{
+		$headerImageUrl = trim((string)$headerImageUrl);
 		$templateName 	= trim((string)$templateName);
 		$languageCode 	= trim((string)$languageCode);
 		$languageCode 	= $languageCode != "" ? $languageCode : "es";
@@ -3141,6 +3143,18 @@ class core_web_whatsap {
 			'name'     => $templateName,
 			'language' => ['code' => $languageCode]
 		];
+		$components = [];
+
+		//Plantilla con encabezado de imagen: Meta exige el link en cada envio
+		if($headerImageUrl != "")
+		{
+			$components[] = [
+				'type'       => 'header',
+				'parameters' => [
+					['type' => 'image', 'image' => ['link' => $headerImageUrl]]
+				]
+			];
+		}
 
 		if(count($bodyParams) > 0)
 		{
@@ -3160,15 +3174,138 @@ class core_web_whatsap {
 				$parameters[] = $param;
 			}
 
-			$content['components'] = [
-				[
-					'type'       => 'body',
-					'parameters' => $parameters
-				]
+			$components[] = [
+				'type'       => 'body',
+				'parameters' => $parameters
 			];
 		}
 
+		if(count($components) > 0)
+			$content['components'] = $components;
+
 		return $this->sendMessageByMetaCloudRequest($companyID, $phoneDestino, 'template', $content, 'sendMessageByMetaCloudTemplate');
+	}
+
+	/**
+	 * Lista las plantillas APROBADAS de la cuenta de WhatsApp Business (WABA) en Meta.
+	 * GET https://graph.facebook.com/{version}/{wabaId}/message_templates?status=APPROVED&limit=200 (sigue la paginacion).
+	 * Parametros: WHATSAP_META_TOKEN, WHATSAP_META_WABA_ID, WHATSAP_META_API_VERSION (por defecto v27.0).
+	 * @param int $companyID ID de la empresa
+	 * @return array ['success'=>bool,'message'=>string,'templates'=>[{name,language,category,body,headerType,variableType,variables}]]
+	 */
+	function getMetaCloudTemplates($companyID)
+	{
+		$result = ['success' => false, 'message' => '', 'templates' => []];
+		try
+		{
+			$Parameter_Model 			= new Parameter_Model();
+			$Company_Parameter_Model 	= new Company_Parameter_Model();
+
+			$objPToken 		= $Parameter_Model->get_rowByName("WHATSAP_META_TOKEN");
+			$objCPToken 	= $objPToken ? $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPToken->parameterID) : null;
+			$objPWaba 		= $Parameter_Model->get_rowByName("WHATSAP_META_WABA_ID");
+			$objCPWaba 		= $objPWaba ? $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWaba->parameterID) : null;
+			$objPVersion 	= $Parameter_Model->get_rowByName("WHATSAP_META_API_VERSION");
+			$objCPVersion 	= $objPVersion ? $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPVersion->parameterID) : null;
+
+			$token 			= trim((string)($objCPToken->value ?? ""));
+			$wabaId 		= trim((string)($objCPWaba->value ?? ""));
+			$version 		= trim((string)($objCPVersion->value ?? ""));
+			$version 		= $version != "" ? $version : "v27.0";
+
+			if($token == "" || $wabaId == "")
+			{
+				$result['message'] = 'Faltan parametros (WHATSAP_META_TOKEN o WHATSAP_META_WABA_ID)';
+				log_message('error', '[getMetaCloudTemplates] ' . $result['message']);
+				return $result;
+			}
+
+			$url 		= 'https://graph.facebook.com/' . rawurlencode($version) . '/' . rawurlencode($wabaId) . '/message_templates?status=APPROVED&limit=200';
+			$templates 	= [];
+			$maxPages 	= 20;
+			while($url != "" && $maxPages-- > 0)
+			{
+				$ch = curl_init($url);
+				curl_setopt_array($ch, [
+					CURLOPT_RETURNTRANSFER => true,
+					CURLOPT_HTTPHEADER     => ['Authorization: Bearer ' . $token],
+					CURLOPT_TIMEOUT        => 30
+				]);
+				$response = curl_exec($ch);
+				$error    = curl_error($ch);
+				$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+				curl_close($ch);
+
+				$json = json_decode((string)$response, true);
+				$json = is_array($json) ? $json : [];
+				if($error || $httpCode < 200 || $httpCode >= 300 || isset($json["error"]))
+				{
+					$msg = $error != "" ? $error : (string)($json["error"]["message"] ?? ('HTTP ' . $httpCode));
+					$result['message'] = 'WhatsApp (Meta): ' . $msg;
+					log_message('error', '[getMetaCloudTemplates] HTTP: ' . $httpCode . ' | ' . $msg);
+					return $result;
+				}
+
+				foreach(($json["data"] ?? []) as $tpl)
+				{
+					$body 		= "";
+					$headerType = "";
+					foreach(($tpl["components"] ?? []) as $comp)
+					{
+						$type = strtoupper((string)($comp["type"] ?? ""));
+						if($type == "BODY")
+							$body = (string)($comp["text"] ?? "");
+						else if($type == "HEADER")
+							$headerType = strtoupper((string)($comp["format"] ?? ""));
+					}
+
+					//Variables del cuerpo: {{1}} (posicional) o {{nombre}} (con nombre)
+					$variables = [];
+					preg_match_all('/\{\{\s*([A-Za-z0-9_]+)\s*\}\}/', $body, $matches);
+					foreach($matches[1] as $var)
+					{
+						if(!in_array($var, $variables, true))
+							$variables[] = $var;
+					}
+					$variableType = strtolower((string)($tpl["parameter_format"] ?? ""));
+					if($variableType != "named" && $variableType != "positional")
+					{
+						$variableType = "positional";
+						foreach($variables as $var)
+						{
+							if(!ctype_digit($var))
+							{
+								$variableType = "named";
+								break;
+							}
+						}
+					}
+
+					$templates[] = [
+						'name'         => (string)($tpl["name"] ?? ""),
+						'language'     => (string)($tpl["language"] ?? ""),
+						'category'     => (string)($tpl["category"] ?? ""),
+						'body'         => $body,
+						'headerType'   => in_array($headerType, ['IMAGE','TEXT','VIDEO','DOCUMENT'], true) ? $headerType : "",
+						'variableType' => $variableType,
+						'variables'    => $variables
+					];
+				}
+
+				$url = (string)($json["paging"]["next"] ?? "");
+			}
+
+			$result['success'] 		= true;
+			$result['message'] 		= 'Plantillas obtenidas: ' . count($templates);
+			$result['templates'] 	= $templates;
+			return $result;
+		}
+		catch(\Throwable $ex)
+		{
+			log_message('error', '[getMetaCloudTemplates] ERROR: ' . $ex->getMessage());
+			$result['message'] = $ex->getMessage();
+			return $result;
+		}
 	}
 }
 ?>

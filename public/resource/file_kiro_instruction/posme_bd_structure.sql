@@ -217,6 +217,26 @@ CREATE TABLE `tb_accounting_period`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 33 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
+-- Table structure for tb_advertising_variable (campañas WhatsApp, app_cxc_advertising)
+-- ----------------------------
+DROP TABLE IF EXISTS `tb_advertising_variable`;
+CREATE TABLE `tb_advertising_variable`  (
+  `advertisingVariableID` int NOT NULL AUTO_INCREMENT,
+  `companyID` int NOT NULL DEFAULT 0,
+  `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT 'Nombre de la variable, se usa como {{name}}',
+  `label` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT 'Etiqueta visible',
+  `viewName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'vw_cxc_advertising_customer' COMMENT 'Vista de origen',
+  `fieldName` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT 'Columna de la vista',
+  `keyField` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'entityID' COMMENT 'Columna de la vista que enlaza con entityID del cliente',
+  `dataType` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'text' COMMENT 'text | money | date',
+  `sequence` int NOT NULL DEFAULT 0,
+  `createdOn` datetime NULL DEFAULT NULL,
+  `isActive` tinyint NOT NULL DEFAULT 1,
+  PRIMARY KEY (`advertisingVariableID`) USING BTREE,
+  INDEX `IDX_ADVERTISING_VARIABLE_001`(`companyID` ASC, `isActive` ASC, `sequence` ASC) USING BTREE
+) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
+
+-- ----------------------------
 -- Table structure for tb_ai_auditoria_sql
 -- ----------------------------
 DROP TABLE IF EXISTS `tb_ai_auditoria_sql`;
@@ -4244,6 +4264,116 @@ WHERE tm.companyID = (SELECT ai_company())
 -- ----------------------------
 DROP VIEW IF EXISTS `vw_contabilidad_comprobantes`;
 CREATE ALGORITHM = UNDEFINED SQL SECURITY DEFINER VIEW `vw_contabilidad_comprobantes` AS select `je`.`journalNumber` AS `CodigoComprobante`,`je`.`journalDate` AS `FechaComprobante`,`je`.`tb_exchange_rate` AS `TipoCambioComprobante`,`ws`.`name` AS `EstadoComprobante`,`je`.`debit` AS `DebitoComprobante`,`je`.`credit` AS `CrditoComprobante`,`ci`.`name` AS `TipoComprobante`,`cur`.`simbol` AS `MonedaComprobante`,`cc`.`description` AS `CentroCostoCuenta`,concat('\'',`a`.`accountNumber`) AS `CodigoCuenta`,`a`.`name` AS `NombreCuenta`,`jed`.`debit` AS `DebitoCuenta`,`jed`.`credit` AS `CreditoCuenta`,`act`.`name` AS `TipoCuenta`,`je`.`entryName` AS `BeneficiarioComprobante`,`je`.`note` AS `NotaComprobante` from (((((((`tb_journal_entry` `je` join `tb_journal_entry_detail` `jed` on(`je`.`journalEntryID` = `jed`.`journalEntryID`)) join `tb_account` `a` on(`a`.`accountID` = `jed`.`accountID`)) join `tb_account_type` `act` on(`act`.`accountTypeID` = `a`.`accountTypeID`)) join `tb_center_cost` `cc` on(`cc`.`classID` = `a`.`classID`)) join `tb_workflow_stage` `ws` on(`je`.`statusID` = `ws`.`workflowStageID`)) join `tb_catalog_item` `ci` on(`ci`.`catalogItemID` = `je`.`journalTypeID`)) join `tb_currency` `cur` on(`cur`.`currencyID` = `je`.`currencyID`)) where `je`.`isActive` = 1 and `jed`.`isActive` = 1 order by `je`.`journalDate` desc,`je`.`createdOn` desc ;
+
+-- ----------------------------
+-- View structure for vw_cxc_advertising_customer (campañas WhatsApp, app_cxc_advertising)
+-- Montos de cuotas pendientes de créditos vigentes (vinculable = 1) en la moneda
+-- del crédito vigente con mayor saldo. montoPagar = mora + cuota próxima.
+-- ----------------------------
+DROP VIEW IF EXISTS `vw_cxc_advertising_customer`;
+CREATE OR REPLACE VIEW vw_cxc_advertising_customer AS
+SELECT
+    c.companyID                                                               AS companyID,
+    c.branchID                                                                AS branchID,
+    c.entityID                                                                AS entityID,
+    c.customerNumber                                                          AS customerNumber,
+    IFNULL(
+        NULLIF(TRIM(CONCAT(IFNULL(n.firstName, ''), ' ', IFNULL(n.lastName, ''))), ''),
+        IFNULL(l.comercialName, '')
+    )                                                                         AS nombre,
+    IFNULL(c.address, '')                                                     AS direccion,
+    IFNULL(
+        NULLIF(TRIM(c.phoneNumber), ''),
+        IFNULL((
+            SELECT
+                TRIM(ep.number)
+            FROM tb_entity_phone ep
+            WHERE ep.entityID = c.entityID
+                AND TRIM(IFNULL(ep.number, '')) <> ''
+            ORDER BY
+                ep.isPrimary DESC,
+                ep.entityPhoneID ASC
+            LIMIT 1
+        ), '')
+    )                                                                         AS telefono,
+    IFNULL(c.categoryID, 0)                                                   AS categoryID,
+    IFNULL(cat.name, '')                                                      AS categoria,
+    IFNULL(c.allowWhatsappPromotions + 0, 0)                                  AS allowWhatsappPromotions,
+    ROUND(IFNULL(cr.saldo, 0), 2)                                             AS saldo,
+    ROUND(IFNULL(cr.mora, 0), 2)                                              AS mora,
+    IFNULL(cr.diasMora, 0)                                                    AS diasMora,
+    cr.fechaPago                                                              AS fechaPago,
+    ROUND(IFNULL(cr.mora, 0) + IFNULL(cr.cuotaProxima, 0), 2)                 AS montoPagar,
+    IFNULL(cur.simbol, '')                                                    AS moneda
+FROM tb_customer c
+    LEFT JOIN tb_naturales n ON
+        n.entityID = c.entityID
+        AND n.companyID = c.companyID
+    LEFT JOIN tb_legal l ON
+        l.entityID = c.entityID
+        AND l.companyID = c.companyID
+    LEFT JOIN tb_catalog_item cat ON
+        cat.catalogItemID = c.categoryID
+    LEFT JOIN (
+        SELECT
+            d.companyID                                                       AS companyID,
+            d.entityID                                                        AS entityID,
+            d.currencyID                                                      AS currencyID,
+            SUM(a.remaining)                                                  AS saldo,
+            SUM(IF(a.dateApply < CURDATE(), a.remaining, 0))                  AS mora,
+            MAX(IF(a.dateApply < CURDATE(), DATEDIFF(CURDATE(), a.dateApply), 0)) AS diasMora,
+            IFNULL(
+                MIN(IF(a.dateApply >= CURDATE(), a.dateApply, NULL)),
+                MIN(a.dateApply)
+            )                                                                 AS fechaPago,
+            CAST(
+                IFNULL(
+                    SUBSTRING_INDEX(
+                        GROUP_CONCAT(
+                            IF(a.dateApply >= CURDATE(), a.remaining, NULL)
+                            ORDER BY a.dateApply ASC, a.sequence ASC
+                            SEPARATOR '|'
+                        ),
+                        '|',
+                        1
+                    ),
+                    '0'
+                ) AS DECIMAL(19, 9)
+            )                                                                 AS cuotaProxima
+        FROM tb_customer_credit_amoritization a
+            INNER JOIN tb_customer_credit_document d ON
+                d.customerCreditDocumentID = a.customerCreditDocumentID
+            INNER JOIN tb_workflow_stage wsd ON
+                wsd.workflowStageID = d.statusID
+        WHERE d.isActive = 1
+            AND a.isActive = 1
+            AND a.remaining > 0
+            AND wsd.vinculable = 1
+        GROUP BY
+            d.companyID,
+            d.entityID,
+            d.currencyID
+    ) cr ON
+        cr.companyID = c.companyID
+        AND cr.entityID = c.entityID
+        AND cr.currencyID = (
+            SELECT
+                d2.currencyID
+            FROM tb_customer_credit_document d2
+                INNER JOIN tb_workflow_stage ws2 ON
+                    ws2.workflowStageID = d2.statusID
+            WHERE d2.companyID = c.companyID
+                AND d2.entityID = c.entityID
+                AND d2.isActive = 1
+                AND ws2.vinculable = 1
+            ORDER BY
+                d2.balance DESC,
+                d2.customerCreditDocumentID DESC
+            LIMIT 1
+        )
+    LEFT JOIN tb_currency cur ON
+        cur.currencyID = cr.currencyID
+WHERE c.isActive = 1;
 
 -- ----------------------------
 -- View structure for vw_cxc_customer_list_real_estate

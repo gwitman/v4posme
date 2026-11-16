@@ -633,9 +633,10 @@ Ruta: Menú > CXC. Aquí se administran los clientes y sus créditos.
 - **CLIENTES**: catálogo de clientes.
 - **PROCESOS**: pantalla **Procesos CxC**. En **Subir carga SIN Riesgo**, **Aceptar** ejecuta la carga en una pestaña nueva.
 - **REPORTES**: reportes de cuentas por cobrar.
+- **CAMPAÑAS WHATSAPP**: enviar promociones o recordatorios de cobro por WhatsApp a muchos clientes.
 Lo que ve cada usuario depende de los permisos de su rol.
 Notas: en el teléfono el botón **Guardar** está en la barra inferior, y los botones **Buscar** y **Agregar** de los formularios abren una ventana dentro de la misma pantalla. Los montos se muestran con formato 1,500.25.
-Ver también: Crear un cliente; Crear una línea de crédito; Consultar o ajustar documentos de crédito de un cliente; Consultar el buró de crédito de un cliente.
+Ver también: Crear un cliente; Crear una línea de crédito; Consultar o ajustar documentos de crédito de un cliente; Consultar el buró de crédito de un cliente; Campañas de WhatsApp: enviar promociones o recordatorios de cobro masivos a clientes.
 <!-- REVISAR: en DOCUMENTOS, CLIENTES y LINEA D. CREDITO la caja de busqueda de la lista no tiene accion programada; no se documenta como funcional -->
 
 ## Consultar o ajustar documentos de crédito de un cliente
@@ -715,6 +716,89 @@ Notas:
 - El separador de columnas del archivo depende de la configuración de su empresa.
 - Necesita permiso sobre esta opción del menú. Si ocurre un error, el mensaje aparece en la pestaña nueva.
 <!-- REVISAR: qué créditos incluye el archivo y cómo se entrega a SIN Riesgo -->
+
+## Campañas de WhatsApp: enviar promociones o recordatorios de cobro masivos a clientes
+Ruta: Menú > CXC > CAMPAÑAS WHATSAPP. La pantalla se llama **Campañas WhatsApp** ("Envíe promociones y recordatorios de cobro a sus clientes").
+La campaña se arma en 4 pasos. Avance con **Siguiente** y regrese con **Anterior**; también puede tocar el paso en la barra superior. A la derecha (o abajo en el teléfono) la **Vista previa** muestra cómo recibirá el cliente el mensaje, y arriba se ve el **Costo estimado** en USD.
+1. **Mensaje** (Texto e imagen): título, imagen y texto con variables.
+2. **Destinatarios** (Excel y clientes): archivo Excel y/o clientes registrados.
+3. **Proveedor** (Envío y costo): Evolution API o Meta Cloud API.
+4. **Resumen** (Revisar y enviar): cantidades, depurados, costo y botón **Enviar campaña**.
+Si falta algo, al presionar **Siguiente** aparece la lista de lo que debe corregir.
+Restricciones:
+- Solo puede enviar si su empresa tiene las campañas habilitadas. Si no, aparece "Las campañas están deshabilitadas para esta empresa..." y puede preparar y revisar la campaña, pero el envío queda bloqueado.
+- Máximo de mensajes por campaña: 1,000 o lo que indique la configuración de su empresa.
+Notas: los mensajes no salen todos de inmediato: quedan en una cola y se envían de forma gradual (unos 15 por minuto).
+Ver también: Campañas de WhatsApp: escribir el mensaje (paso 1); Campañas de WhatsApp: elegir los destinatarios (paso 2); Campañas de WhatsApp: elegir el proveedor y ver el costo (paso 3); Campañas de WhatsApp: enviar con plantilla de Meta; Campañas de WhatsApp: revisar el resumen y enviar (paso 4).
+
+## Campañas de WhatsApp: escribir el mensaje (paso 1)
+Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > paso **Mensaje**.
+1. **Título (aparece en negrita al inicio)**: opcional, hasta 150 caracteres.
+2. **Imagen (opcional)**: presione **Subir imagen** (PNG, JPG o WEBP, máximo 5 MB). Puede cambiarla con **Cambiar imagen** o quitarla con **Quitar**.
+3. **Texto del mensaje**: use la barra para **Negrita**, **Cursiva**, **Tachado** y **Emojis**, o escriba *negrita*, _cursiva_ y ~tachado~.
+4. Toque una variable para insertarla donde está el cursor:
+   - **Variables del cliente**: {{nombre}}, {{direccion}}, {{saldo}}, {{montoPagar}}, {{fechaPago}} y {{mora}}. Los montos salen con el símbolo de la moneda del crédito y las fechas como día/mes/año.
+   - **Columnas del Excel**: cada columna extra del archivo del paso 2 (por ejemplo, una columna ciudad se usa como {{ciudad}}) también es una variable.
+Mensaje de validación: "Escriba el texto del mensaje, un título o suba una imagen."
+Notas:
+- Una variable sin valor para un cliente queda vacía en su mensaje.
+- Con Meta Cloud API el título y el texto libre no se usan (se envía la plantilla); la imagen sí, si la plantilla tiene encabezado de imagen.
+- Nuevas variables del cliente (otro dato de una vista del sistema) las agrega soporte en la configuración de variables de campañas.
+Ver también: Campañas de WhatsApp: enviar con plantilla de Meta.
+
+## Campañas de WhatsApp: elegir los destinatarios (paso 2)
+Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > paso **Destinatarios**. Active uno o los dos orígenes.
+Desde archivo Excel:
+1. Presione **Descargar plantilla** para obtener un modelo con las columnas telefono, mensaje, imagen y nombre.
+2. Columnas: **telefono** (obligatoria); **mensaje** (opcional: si la llena, esa fila usa su propio texto en lugar del general); **imagen** (opcional: enlace https a una imagen para esa fila); cualquier otra columna se puede usar como variable.
+3. Presione **Seleccione un archivo .xlsx, .xls o .csv**. Se muestran el nombre, la cantidad de filas y **Primeras filas del archivo**. Use **Cambiar archivo** o **Quitar**.
+Clientes registrados:
+1. Active **Clientes registrados**. Solo entran clientes con teléfono y con la casilla **Permite WhatsApp Publicidad** marcada en su ficha (CXC > CLIENTES, pestaña **Informacion**; márquela solo si el cliente aceptó promociones).
+2. Filtros opcionales: **Solo con saldo pendiente**, **Solo con mora** y **Categoría** (**Todas las categorías** por defecto).
+Mensajes: "Elija al menos un origen de destinatarios: Excel o clientes registrados." y "Cargue el archivo Excel o desactive esa opción."
+Notas:
+- Si un teléfono viene en el Excel y también es de un cliente, se usa la fila del Excel.
+- El archivo acepta hasta 1.5 veces el máximo de mensajes (1,500 si el máximo es 1,000). Si trae más, solo se toman las primeras filas y se avisa: divida el archivo.
+- Los números de 8 dígitos se completan con 505 al inicio. Un teléfono válido queda con 11 a 15 dígitos.
+Ver también: Crear un cliente.
+
+## Campañas de WhatsApp: elegir el proveedor y ver el costo (paso 3)
+Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > paso **Proveedor**. Elija una tarjeta:
+- **Evolution API**: "Mensaje libre con texto, imagen y variables desde su número conectado." Costo fijo por campaña: 10 USD (hasta el máximo de mensajes).
+- **Meta Cloud API**: "API oficial; requiere una plantilla aprobada por Meta." Costo por mensaje: 0.023 USD por cada mensaje válido.
+1. Toque la tarjeta del proveedor. El costo se recalcula en vivo.
+2. Si eligió Meta Cloud API, configure la tarjeta **Plantilla** (es obligatoria).
+3. Presione **Siguiente** para ir al resumen.
+Notas:
+- "El costo es estimado; el monto final se confirma en el resumen."
+- Los montos de costo dependen de la configuración de su empresa.
+- Con Meta Cloud API el editor libre del paso 1 queda deshabilitado.
+Ver también: Campañas de WhatsApp: enviar con plantilla de Meta.
+
+## Campañas de WhatsApp: enviar con plantilla de Meta
+Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > paso **Proveedor** > **Meta Cloud API** > tarjeta **Plantilla**.
+Meta solo permite enviar campañas con plantillas aprobadas (el cliente no le escribió en las últimas 24 horas).
+1. Elija **Aprobadas** y presione **Cargar plantillas** (luego **Recargar**). Elija la **Plantilla aprobada**.
+2. O elija **Escribir manual** y complete **Nombre de la plantilla**, **Idioma** (ej. es), **Encabezado** (**Sin encabezado de imagen** o **Imagen**), **Tipo de variables** (**Numeradas (1, 2, 3...)** o **Con nombre**) y **Cantidad de variables** o **Nombres de variables (separados por coma)**.
+3. En **Valores de las variables**, para cada variable elija el **Origen**: **Variable del cliente**, **Columna del Excel** o **Texto fijo**, y su **Valor**.
+4. Si la plantilla tiene encabezado de imagen, suba la imagen en el paso 1 o agregue la columna imagen al Excel.
+Mensajes: "Seleccione o escriba la plantilla de Meta.", "Indique el idioma de la plantilla.", "Asigne un valor a la variable ..." y "La plantilla requiere una imagen de encabezado."
+Notas:
+- Si aparece "No está configurado WHATSAP_META_WABA_ID...", no se pueden consultar las plantillas: escríbala manualmente o pida a soporte que configure la cuenta de Meta.
+- Una variable sin valor para un cliente se envía como "-".
+- Las plantillas se crean y aprueban en la cuenta de Meta de su empresa, no en posMe.
+
+## Campañas de WhatsApp: revisar el resumen y enviar (paso 4)
+Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > paso **Resumen**.
+1. El sistema calcula la campaña ("Calculando destinatarios y mensajes..."). Si falla, presione **Reintentar**.
+2. Revise **Mensajes a enviar**, **Depurados**, **Excel / Clientes** y **Costo USD**, la **Muestra de mensajes** y el tiempo aproximado.
+3. En **Registros depurados** vea **Teléfono**, **Nombre**, **Origen** y **Motivo** (Teléfono vacío, Teléfono inválido, Duplicado o Excede el máximo). Use **Filtrar por motivo** y **Anterior** / **Siguiente** (se muestran hasta 1,000).
+4. Si cambió algo, presione **Actualizar resumen**.
+5. Presione **Enviar campaña** (en el teléfono, **Enviar**) y confirme en **Confirmar envío**.
+6. Aparece "Campaña enviada a la cola" con los mensajes encolados. **Nueva campaña** empieza otra.
+Restricciones: el envío se bloquea si las campañas están deshabilitadas, si no hay mensajes válidos o si "La campaña supera el máximo de ... mensajes": reduzca destinatarios con filtros o el archivo (no se recorta sola).
+Notas: los mensajes se envían en segundo plano de forma gradual; si nunca salen, avise a soporte (el proceso de envío programado debe estar activo).
+<!-- REVISAR: nombre y frecuencia de la tarea programada que procesa la cola (procesarColaWhatsappMasivo) en cada servidor -->
 
 ## Ver a quién se notificó un mensaje de WhatsApp de un cliente (conversación con cliente)
 Ruta: en la lista de conversaciones (por ejemplo, la pestaña **LISTA DE CONVERSACIONES MIAS**), abra la conversación del cliente y vaya a la pestaña **Chat**.
@@ -1804,7 +1888,7 @@ Ruta: Administración del sistema > Actualización desde el servidor posMe (core
 - **Datos de configuración**: catálogos, menús, parámetros y tablas de configuración. Sin marcar no se sincronizan.
 1. Desmarque lo que no quiera actualizar. Cada cambio vuelve a consultar el servidor y recalcula las **Comprobaciones**.
 2. Si desmarcó algo aparece el aviso amarillo "Actualización parcial: se omite ...".
-3. Escriba ACTUALIZAR, presione **Actualizar posMe** y **Iniciar**. En la etapa 5 lo desmarcado dice "Omitida (casilla sin marcar)".
+3. Escriba ACTUALIZAR, presione **Actualizar posMe** e **Iniciar**. En la etapa 5 lo desmarcado dice "Omitida (casilla sin marcar)".
 Siempre se respalda completa la base de datos (etapa 3) y al final se ejecutan los scripts de parámetros (001_default.sql y el de su compañía), como indica el aviso azul **Siempre al final**. Por eso **Revertir** siempre ofrece restaurar la base de datos.
 Restricciones: marque al menos una de las 3 casillas ("Marque al menos una parte para sincronizar."); la del script previo no cuenta. Con **Archivos** marcado, marque al menos un paquete ("Marque al menos un paquete de archivos o desmarque Archivos").
 Notas: un zip no publicado no es error: sale en gris "No se sincroniza (no está en el servidor)". Un paquete publicado pero sin marcar sale en gris "No se sincroniza (paquete sin marcar)", se nombra en el aviso "Actualización parcial: se omite ..." y deja la actualización como parcial. Una actualización parcial queda registrada como parcial: la siguiente a la misma versión no pide **Forzar aunque esté al día**.
@@ -2094,8 +2178,18 @@ Los parámetros controlan el comportamiento de posMe por empresa (por ejemplo, o
 Los parámetros contables se editan en CONTABILIDAD > PARAMETROS; el resto los configura el equipo de soporte de posMe.
 Google Calendar de las órdenes de taller: APP_GOOGLE_CLENDAR_ENABLE (true la activa), GOOGLE_CALENDAR_ID, GOOGLE_CALENDAR_SERVICE_EMAIL y GOOGLE_CALENDAR_PRIVATE_KEY; opcionales GOOGLE_CALENDAR_TIMEZONE (por defecto America/Managua) y GOOGLE_CALENDAR_DURATION_MINUTES (duración de cada evento, por defecto 60 minutos).
 Agente de IA de WhatsApp: WHATSAPP_AI_AGENT_ENABLE (true lo activa); WHATSAPP_AI_AGENT_CONTINUE_AFTER_HANDOFF (true: la IA sigue contestando tras derivar mientras ningún colaborador escriba); WHATSAPP_AI_AGENT_HANDOFF_MESSAGE (mensaje al derivar; vacío, la IA redacta el suyo); WHATSAPP_AI_AGENT_STAGE_ATTENDED_ID (etapa "atendida por IA"); WHATSAPP_AI_AGENT_DEBOUNCE_SECONDS (segundos de espera antes de responder, por defecto 3); WHATSAPP_AI_AGENT_MAX_TURNS (máximo de respuestas de la IA antes de pasar a una persona, por defecto 15); WHATSAPP_AI_AGENT_HISTORY_MESSAGES (mensajes anteriores que lee la IA, por defecto 12); WHATSAPP_AI_AGENT_EMPLOYEE_ENTITYID (colaborador "Asistente IA", nunca recibe asignaciones). El texto y las intenciones del agente por tipo de negocio los configura soporte.
-Ver también: Configurar los parámetros contables.
+Ver también: Configurar los parámetros contables; Parámetros de la empresa: Campañas de WhatsApp.
 <!-- REVISAR: pantalla para que el cliente edite parametros generales -->
+
+## Parámetros de la empresa: Campañas de WhatsApp
+Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla CXC > CAMPAÑAS WHATSAPP.
+- CXC_ADVERTISING_ENABLED: true permite enviar campañas; cualquier otro valor solo deja preparar y revisar (vista previa).
+- CXC_ADVERTISING_MAX_MESSAGE: máximo de mensajes por campaña (por defecto 1000). El archivo Excel acepta hasta 1.5 veces este valor.
+- CXC_ADVERTISING_COST_META_MESSAGE: costo estimado en USD por mensaje con Meta Cloud API (por defecto 0.023).
+- CXC_ADVERTISING_COST_EVOLUTION_FIXED: costo estimado en USD fijo por campaña con Evolution API (por defecto 10).
+- WHATSAP_META_WABA_ID: identificador de la cuenta de WhatsApp Business en Meta; sin él no se pueden cargar las plantillas aprobadas (se escriben a mano).
+Variables del mensaje: {{nombre}}, {{direccion}}, {{saldo}}, {{montoPagar}}, {{fechaPago}} y {{mora}} vienen configuradas. Para agregar otra, soporte registra una nueva variable de campaña (tabla tb_advertising_variable) indicando la vista y el campo del sistema de donde sale el dato; aparece sola en **Variables del cliente**.
+Ver también: Campañas de WhatsApp: enviar promociones o recordatorios de cobro masivos a clientes.
 
 ## Soporte
 Si no encuentra cómo hacer algo o hay un error en el sistema, contacte al equipo de soporte de posMe. <!-- REVISAR: telefono / correo de soporte -->
