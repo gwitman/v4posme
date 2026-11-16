@@ -864,21 +864,20 @@ class Customer_Credit_Document_Model extends Model  {
 							cca.statusID in (78 /*registrado*/) and 
 							ccd.statusID in (77 /*registrado*/ ) and 
 							cca.isActive = 1 and 
-							ccd.isActive = 1  and 
-							/*
-							validar si se debe enviar o no los mensajes
-							si el dia del mes esta entre 1 - 31 
-							y el dia de la semana no es sabado ni domingo
-							y el dia del mes es modulo 2 es decir cada dos dias
-							enviar el mensaje 
-							*/
+							ccd.isActive = 1 and
+							
+							#validar si se debe enviar o no los mensajes
+							#si el dia del mes esta entre 1 - 31 
+							#y el dia de la semana no es sabado ni domingo
+							#y el dia del mes es modulo 2 es decir cada dos dias
+							#enviar el mensaje
+							
 							(
 								DAY(DATE_SUB(NOW(), INTERVAL 6 HOUR)) BETWEEN 1 AND 31
-								AND WEEKDAY(DATE_SUB(NOW(), INTERVAL 6 HOUR)) BETWEEN 0 AND 4  -- 0=Lunes, 4=Viernes
-								/*
-								AND DAY(DATE_SUB(NOW(), INTERVAL 6 HOUR)) % 2 = 0
-								*/ 
+								AND WEEKDAY(DATE_SUB(NOW(), INTERVAL 6 HOUR)) BETWEEN 0 AND 4  -- 0=Lunes, 4=Viernes								
+								#AND DAY(DATE_SUB(NOW(), INTERVAL 6 HOUR)) % 2 = 0
 							)
+							
 							
 				) res 
 			group by 
@@ -891,7 +890,8 @@ class Customer_Credit_Document_Model extends Model  {
 			HAVING 
 				fechaPrometidaPago IS NULL OR fechaPrometidaPago <= CURDATE()
 			ORDER BY 
-				res.firstName; 
+				res.firstName;
+			
 		";
 		
 		

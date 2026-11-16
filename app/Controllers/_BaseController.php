@@ -41,6 +41,7 @@ use App\Libraries\core_web_transaction_master_detail;
 use App\Libraries\core_web_view;
 use App\Libraries\core_web_workflow;
 use App\Libraries\core_web_whatsap;
+use App\Libraries\core_web_rabbitmq;
 use App\Libraries\core_web_ai;
 use App\Libraries\core_web_ai_tools;
 use App\Libraries\core_web_report_builder;
@@ -289,6 +290,7 @@ abstract class _BaseController extends Controller
     protected $core_web_view;
     protected $core_web_workflow;
     protected $core_web_whatsap;
+    protected $core_web_rabbitmq;
     protected $core_web_ai;
     protected $core_web_ai_tools;
     protected $core_web_report_builder;
@@ -487,6 +489,7 @@ abstract class _BaseController extends Controller
         $this->core_web_view= new core_web_view();
         $this->core_web_workflow = new core_web_workflow();
         $this->core_web_whatsap = new core_web_whatsap();
+        $this->core_web_rabbitmq = new core_web_rabbitmq();
         $this->core_web_ai = new core_web_ai();
         $this->core_web_ai_tools = new core_web_ai_tools();
         $this->core_web_report_builder = new core_web_report_builder();

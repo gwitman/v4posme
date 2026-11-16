@@ -6,6 +6,19 @@
 /******************************************************************/
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'whatsapp_masivo_njgym'
+WHERE p.name = 'RABBITMQ_QUEUE_WHATSAPP'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '__RABBITMQ_URL__'
+WHERE p.name = 'RABBITMQ_URL'
+    AND cp.companyID = 2;
+	
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = 'false'
 WHERE p.name = 'WHATSAPP_SEND_METACLOUD'
     AND cp.companyID = 2;

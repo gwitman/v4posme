@@ -2478,57 +2478,163 @@ Le recordamos que tiene un saldo pendiente:
 		log_message('info', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] Total cobros encontrados: ' . count($objListCollections));
 		
 		$chatSend			= [];
-		$pathRemember		= "";
+		$pathRemember		= "";		
+		$counter			= 0;
 		foreach($objListCollections as $item)
 		{
+			$counter++;
+			if($counter > 2)
+				continue;
 			log_message('info', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] Procesando cliente: ' . $item->firstName . ' | Phone: ' . $item->phoneNumber . ' | Monto: ' . $item->total . ' ' . $item->simbol);
 			
-$rowx 					= array();
-$rowx["firstName"] 		= $item->firstName;
-$rowx["phoneNumber"] 	= getNumberPhone(clearNumero($item->phoneNumber));
+			$rowx 					= array();
+			$rowx["firstName"] 		= $item->firstName;
+			$rowx["phoneNumber"] 	= "84766457";//getNumberPhone(clearNumero($item->phoneNumber));
 
+			//Cliente sin telefono valido (vacio, "nd", etc.): no se encola
+			if(!ctype_digit((string)$rowx["phoneNumber"]) || strlen($rowx["phoneNumber"]) < 8)
+			{
+				log_message('info', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] Omitido sin telefono valido: ' . $item->firstName);
+				continue;
+			}
 
-$rowx["mensaje"] 		= "📌/*Mensaje automático de recordatorio de pago*/
-(Este mensaje ha sido generado automáticamente por un bot)
-
-👋Un gusto saludarle /*".$item->firstName."*/,
-Le recordamos que tiene su membresia pendiente de pago:
-
-🆔/*Codigo de Cliente:*/ ".$item->customerNumber."
-💰/*Monto:*/ *".number_format(round($item->total,2),2,'.',',')."* *".$item->simbol."* 
-📝/*Concepto:*/ NJ GYM.
-
-⚠️Por favor, le solicitamos realizar el pago a la brevedad para mantener su servicio al día.
-🙏Muchas gracias por su atención.
-/*Equipo de NJ GYM*/
-";
-
-
-
-$rowx["mensaje"] 		= "📌Hola /*".$item->firstName."*/ Gym te recuerda que tu pago expira mañana, No te pierdás ni un día de entrenamiento y renová tu acceso!
-
-🆔/*Codigo de Cliente:*/ ".$item->customerNumber."
-📝/*Concepto:*/ NJ GYM.
-
-⚠️/*NO RESPONDAS ESTE MENSAJE*/
-";
+			//Cada elemento es una linea del mensaje; "" deja una linea en blanco.
+			//En WhatsApp *texto* se muestra en negrita.
+			$lineas = [
+				"📌 Hola *" . $item->firstName . "*",
+				"",
+				"NJ GYM te recuerda que tu pago expira mañana.",
+				"¡No te pierdás ni un día de entrenamiento y renová tu acceso! 💪",
+				"",
+				"🆔 *Código de cliente:* " . $item->customerNumber,
+				"📝 *Concepto:* Membresía NJ GYM",
+				"",
+				"⚠️ *No respondas este mensaje*"
+			];
+			$rowx["mensaje"] 		= implode("\n", $lineas);
 
 			$rowx["urlImage"] 		= "";
+			$rowx["origen"] 		= "sendWhatsappDiarioMasiveWapi2CobranzaNjGym";
 			$chatSend[]				= $rowx;
 		}
-		
+
 		log_message('info', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] Total mensajes a enviar: ' . count($chatSend));
-		log_message('info', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] Fin del proceso');
-		
+
+		//Los mensajes no se envian aqui: se suben a RabbitMQ y los envia procesarColaWhatsappMasivo (cron cada minuto)
+		try
+		{
+			$queueName		= $this->core_web_rabbitmq->getQueueWhatsapp(APP_COMPANY);
+			$totalEncolados	= $this->core_web_rabbitmq->publishBatch(APP_COMPANY, $queueName, $chatSend);
+		}
+		catch(\Throwable $ex)
+		{
+			log_message('error', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] Error encolando en RabbitMQ: ' . $ex->getMessage());
+			return $this->response->setJSON(array(
+				'error'			=> true,
+				'message'		=> 'Error encolando en RabbitMQ: ' . $ex->getMessage(),
+				'totalCobros'	=> count($objListCollections),
+				'totalMensajes'	=> count($chatSend),
+				'totalEncolados'=> 0,
+				'data'			=> $chatSend
+			));
+		}
+
+		log_message('info', '[sendWhatsappDiarioMasiveWapi2CobranzaNjGym] Fin del proceso | Cola: ' . $queueName . ' | Encolados: ' . $totalEncolados);
+
 		return $this->response->setJSON(array(
 			'error'			=> false,
 			'message'		=> SUCCESS,
 			'totalCobros'	=> count($objListCollections),
 			'totalMensajes'	=> count($chatSend),
+			'totalEncolados'=> $totalEncolados,
+			'cola'			=> $queueName,
 			'data'			=> $chatSend
 		));
 
 
+	}
+
+	/**
+	 * Consumidor de la cola de WhatsApp masivo en RabbitMQ (parametro RABBITMQ_QUEUE_WHATSAPP).
+	 * Pensado para un cron cada minuto: procesa un lote acotado y termina antes del siguiente disparo.
+	 * Cada mensaje trae phoneNumber, mensaje y urlImage (opcional); se envia con el proveedor
+	 * configurado para la empresa (sendMessageGeneric segun tb_company.type).
+	 * Segmentos opcionales de la URL:
+	 *  - maxMensajes : mensajes por ejecucion (por defecto 15)
+	 *  - maxSegundos : duracion maxima de la ejecucion (por defecto 50)
+	 *  - pausa       : segundos entre envios para evitar bloqueos de WhatsApp (por defecto 3)
+	 * Ej: app_notification/procesarColaWhatsappMasivo/maxMensajes/15/maxSegundos/50/pausa/3
+	 * @return \CodeIgniter\HTTP\Response JSON con el resumen del consumo
+	 */
+	//http://localhost/posmev4/app_notification/procesarColaWhatsappMasivo
+	function procesarColaWhatsappMasivo()
+	{
+		$logTag 		= '[procesarColaWhatsappMasivo]';
+		try
+		{
+			$maxMensajes	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "maxMensajes"); //--finuri
+			$maxSegundos	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "maxSegundos"); //--finuri
+			$pausa			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "pausa"); //--finuri
+			$maxMensajes	= intval($maxMensajes) > 0 ? intval($maxMensajes) : 15;
+			$maxSegundos	= intval($maxSegundos) > 0 ? intval($maxSegundos) : 50;
+			$pausa			= is_numeric($pausa) && intval($pausa) >= 0 ? intval($pausa) : 3;
+
+			//El cron no debe cortarse a mitad de un envio por max_execution_time
+			set_time_limit($maxSegundos + 60);
+
+			$objCompany		= $this->Company_Model->get_rowByPK(APP_COMPANY);
+			$queueName		= $this->core_web_rabbitmq->getQueueWhatsapp(APP_COMPANY);
+			$whatsap		= $this->core_web_whatsap;
+
+			log_message('info', $logTag . ' Inicio - companyID: ' . APP_COMPANY . ' | cola: ' . $queueName);
+
+			$resumen		= $this->core_web_rabbitmq->consume(
+				APP_COMPANY,
+				$queueName,
+				function($payload) use ($whatsap, $objCompany, $logTag)
+				{
+					$phoneNumber	= trim((string)($payload["phoneNumber"] ?? ""));
+					$mensaje		= (string)($payload["mensaje"] ?? "");
+					$urlImage		= trim((string)($payload["urlImage"] ?? ""));
+
+					//Telefono invalido (vacio, "nd", etc.) o sin texto: no se reintenta, va a la cola de error.
+					//Sin telefono la libreria de WhatsApp enviaria al numero del comercio.
+					if(!ctype_digit($phoneNumber) || strlen($phoneNumber) < 8 || trim($mensaje) == "")
+					{
+						log_message('info', $logTag . ' Descartado - telefono: ' . $phoneNumber);
+						return \App\Libraries\core_web_rabbitmq::RESULT_DESCARTAR;
+					}
+
+					if($urlImage != "")
+						$response = $whatsap->sendMessageTypeImagGeneric($objCompany->type, APP_COMPANY, $urlImage, $mensaje, $phoneNumber, true, "");
+					else
+						$response = $whatsap->sendMessageGeneric($objCompany->type, APP_COMPANY, $mensaje, $phoneNumber, true, "");
+
+					//Meta devuelve success; Evolution devuelve key.id cuando acepta el mensaje
+					$enviado = is_array($response) && ( !empty($response["success"]) || !empty($response["key"]["id"]) );
+					log_message('info', $logTag . ' Telefono: ' . $phoneNumber . ' | enviado: ' . ($enviado ? 'SI' : 'NO'));
+					return $enviado;
+				},
+				$maxMensajes,
+				$maxSegundos,
+				$pausa
+			);
+
+			return $this->response->setJSON(array(
+				'error'			=> false,
+				'message'		=> SUCCESS,
+				'cola'			=> $queueName,
+				'resumen'		=> $resumen
+			));
+		}
+		catch(\Throwable $ex)
+		{
+			log_message('error', $logTag . ' ' . $ex->getLine() . ' ' . $ex->getMessage());
+			return $this->response->setJSON(array(
+				'error'			=> true,
+				'message'		=> $ex->getLine() . ' ' . $ex->getMessage()
+			));
+		}
 	}
 
 	/**

@@ -1,5 +1,19 @@
 /*BD:	dbs3obkhhc1pgu:posme*/
 /*servidor:	siteground*/
+
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'whatsapp_masivo_njgym'
+WHERE p.name = 'RABBITMQ_QUEUE_WHATSAPP'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'amqps://znxnucuc:eku9YZMKmaMEOKqqs8lRF82NdtsDFv-m@fuji.lmq.cloudamqp.com/znxnucuc'
+WHERE p.name = 'RABBITMQ_URL'
+    AND cp.companyID = 2;
+	
+	
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = 'true'
