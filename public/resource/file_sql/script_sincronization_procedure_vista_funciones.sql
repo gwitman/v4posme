@@ -33677,6 +33677,115 @@ WHERE tm.companyID = (SELECT ai_company())
     AND tm.transactionID IN (29, 30)
     AND tm.isActive = 1;
 
+-- ----------------------------
+-- View structure for vw_cxc_advertising_customer (campañas WhatsApp, app_cxc_advertising)
+-- Montos de cuotas pendientes de créditos vigentes (vinculable = 1) en la moneda
+-- del crédito vigente con mayor saldo. montoPagar = mora + cuota próxima.
+-- ----------------------------
+CREATE OR REPLACE VIEW vw_cxc_advertising_customer AS
+SELECT
+    c.companyID                                                               AS companyID,
+    c.branchID                                                                AS branchID,
+    c.entityID                                                                AS entityID,
+    c.customerNumber                                                          AS customerNumber,
+    IFNULL(
+        NULLIF(TRIM(CONCAT(IFNULL(n.firstName, ''), ' ', IFNULL(n.lastName, ''))), ''),
+        IFNULL(l.comercialName, '')
+    )                                                                         AS nombre,
+    IFNULL(c.address, '')                                                     AS direccion,
+    IFNULL(
+        NULLIF(TRIM(c.phoneNumber), ''),
+        IFNULL((
+            SELECT
+                TRIM(ep.number)
+            FROM tb_entity_phone ep
+            WHERE ep.entityID = c.entityID
+                AND TRIM(IFNULL(ep.number, '')) <> ''
+            ORDER BY
+                ep.isPrimary DESC,
+                ep.entityPhoneID ASC
+            LIMIT 1
+        ), '')
+    )                                                                         AS telefono,
+    IFNULL(c.categoryID, 0)                                                   AS categoryID,
+    IFNULL(cat.name, '')                                                      AS categoria,
+    IFNULL(c.allowWhatsappPromotions + 0, 0)                                  AS allowWhatsappPromotions,
+    ROUND(IFNULL(cr.saldo, 0), 2)                                             AS saldo,
+    ROUND(IFNULL(cr.mora, 0), 2)                                              AS mora,
+    IFNULL(cr.diasMora, 0)                                                    AS diasMora,
+    cr.fechaPago                                                              AS fechaPago,
+    ROUND(IFNULL(cr.mora, 0) + IFNULL(cr.cuotaProxima, 0), 2)                 AS montoPagar,
+    IFNULL(cur.simbol, '')                                                    AS moneda
+FROM tb_customer c
+    LEFT JOIN tb_naturales n ON
+        n.entityID = c.entityID
+        AND n.companyID = c.companyID
+    LEFT JOIN tb_legal l ON
+        l.entityID = c.entityID
+        AND l.companyID = c.companyID
+    LEFT JOIN tb_catalog_item cat ON
+        cat.catalogItemID = c.categoryID
+    LEFT JOIN (
+        SELECT
+            d.companyID                                                       AS companyID,
+            d.entityID                                                        AS entityID,
+            d.currencyID                                                      AS currencyID,
+            SUM(a.remaining)                                                  AS saldo,
+            SUM(IF(a.dateApply < CURDATE(), a.remaining, 0))                  AS mora,
+            MAX(IF(a.dateApply < CURDATE(), DATEDIFF(CURDATE(), a.dateApply), 0)) AS diasMora,
+            IFNULL(
+                MIN(IF(a.dateApply >= CURDATE(), a.dateApply, NULL)),
+                MIN(a.dateApply)
+            )                                                                 AS fechaPago,
+            CAST(
+                IFNULL(
+                    SUBSTRING_INDEX(
+                        GROUP_CONCAT(
+                            IF(a.dateApply >= CURDATE(), a.remaining, NULL)
+                            ORDER BY a.dateApply ASC, a.sequence ASC
+                            SEPARATOR '|'
+                        ),
+                        '|',
+                        1
+                    ),
+                    '0'
+                ) AS DECIMAL(19, 9)
+            )                                                                 AS cuotaProxima
+        FROM tb_customer_credit_amoritization a
+            INNER JOIN tb_customer_credit_document d ON
+                d.customerCreditDocumentID = a.customerCreditDocumentID
+            INNER JOIN tb_workflow_stage wsd ON
+                wsd.workflowStageID = d.statusID
+        WHERE d.isActive = 1
+            AND a.isActive = 1
+            AND a.remaining > 0
+            AND wsd.vinculable = 1
+        GROUP BY
+            d.companyID,
+            d.entityID,
+            d.currencyID
+    ) cr ON
+        cr.companyID = c.companyID
+        AND cr.entityID = c.entityID
+        AND cr.currencyID = (
+            SELECT
+                d2.currencyID
+            FROM tb_customer_credit_document d2
+                INNER JOIN tb_workflow_stage ws2 ON
+                    ws2.workflowStageID = d2.statusID
+            WHERE d2.companyID = c.companyID
+                AND d2.entityID = c.entityID
+                AND d2.isActive = 1
+                AND ws2.vinculable = 1
+            ORDER BY
+                d2.balance DESC,
+                d2.customerCreditDocumentID DESC
+            LIMIT 1
+        )
+    LEFT JOIN tb_currency cur ON
+        cur.currencyID = cr.currencyID
+WHERE c.isActive = 1;
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

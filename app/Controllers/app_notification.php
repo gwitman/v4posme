@@ -2557,8 +2557,12 @@ Le recordamos que tiene un saldo pendiente:
 	/**
 	 * Consumidor de la cola de WhatsApp masivo en RabbitMQ (parametro RABBITMQ_QUEUE_WHATSAPP).
 	 * Pensado para un cron cada minuto: procesa un lote acotado y termina antes del siguiente disparo.
-	 * Cada mensaje trae phoneNumber, mensaje y urlImage (opcional); se envia con el proveedor
-	 * configurado para la empresa (sendMessageGeneric segun tb_company.type).
+	 * Cada mensaje trae phoneNumber, mensaje y urlImage (opcional). El campo provider decide el envio:
+	 *  - ""        : proveedor configurado para la empresa (sendMessageGeneric segun tb_company.type)
+	 *  - "meta"    : con templateName usa la plantilla (languageCode, bodyParams, headerImage);
+	 *                sin templateName envia imagen o texto libre por Meta Cloud API
+	 *  - "evolution": imagen o texto por Evolution API (instancia EvolutionApi)
+	 * Los mensajes con provider los encola app_cxc_advertising::send.
 	 * Segmentos opcionales de la URL:
 	 *  - maxMensajes : mensajes por ejecucion (por defecto 15)
 	 *  - maxSegundos : duracion maxima de la ejecucion (por defecto 50)
@@ -2597,16 +2601,39 @@ Le recordamos que tiene un saldo pendiente:
 					$phoneNumber	= trim((string)($payload["phoneNumber"] ?? ""));
 					$mensaje		= (string)($payload["mensaje"] ?? "");
 					$urlImage		= trim((string)($payload["urlImage"] ?? ""));
+					$provider		= strtolower(trim((string)($payload["provider"] ?? "")));
+					$templateName	= trim((string)($payload["templateName"] ?? ""));
+					$esPlantilla	= $provider == "meta" && $templateName != "";
 
 					//Telefono invalido (vacio, "nd", etc.) o sin texto: no se reintenta, va a la cola de error.
 					//Sin telefono la libreria de WhatsApp enviaria al numero del comercio.
-					if(!ctype_digit($phoneNumber) || strlen($phoneNumber) < 8 || trim($mensaje) == "")
+					//La plantilla de Meta no exige mensaje (el texto lo arma Meta con bodyParams).
+					if(!ctype_digit($phoneNumber) || strlen($phoneNumber) < 8 || (!$esPlantilla && trim($mensaje) == "" && ($provider == "" || $urlImage == "")))
 					{
 						log_message('info', $logTag . ' Descartado - telefono: ' . $phoneNumber);
 						return \App\Libraries\core_web_rabbitmq::RESULT_DESCARTAR;
 					}
 
-					if($urlImage != "")
+					if($esPlantilla)
+					{
+						$bodyParams	= is_array($payload["bodyParams"] ?? null) ? $payload["bodyParams"] : [];
+						$response 	= $whatsap->sendMessageByMetaCloudTemplate(APP_COMPANY, $templateName, (string)($payload["languageCode"] ?? ""), $bodyParams, $phoneNumber, trim((string)($payload["headerImage"] ?? "")));
+					}
+					else if($provider == "meta")
+					{
+						if($urlImage != "")
+							$response = $whatsap->sendMessageByMetaCloudImage(APP_COMPANY, $urlImage, $mensaje, $phoneNumber);
+						else
+							$response = $whatsap->sendMessageByMetaCloudText(APP_COMPANY, $mensaje, $phoneNumber);
+					}
+					else if($provider == "evolution")
+					{
+						if($urlImage != "")
+							$response = $whatsap->sendMessageByEvolutionApiImage(APP_COMPANY, $urlImage, $mensaje, $phoneNumber, "EvolutionApi");
+						else
+							$response = $whatsap->sendMessageByEvolutionApiText(APP_COMPANY, $mensaje, $phoneNumber, "EvolutionApi");
+					}
+					else if($urlImage != "")
 						$response = $whatsap->sendMessageTypeImagGeneric($objCompany->type, APP_COMPANY, $urlImage, $mensaje, $phoneNumber, true, "");
 					else
 						$response = $whatsap->sendMessageGeneric($objCompany->type, APP_COMPANY, $mensaje, $phoneNumber, true, "");
