@@ -44,11 +44,45 @@ Ruta: Menú > FACTURACION > FACTURAR (o FACTURACION > NUEVA FACTURA).
 2. Seleccione el cliente (o deje el cliente de contado / predeterminado).
 3. Elija el tipo de pago: CONTADO o CREDITO. Si es a crédito, complete la pestaña **Info de Credito.** (plazo, frecuencia de pago, interés).
 4. Agregue los productos con **AGREGAR PRO** (o escaneando el código de barras) e indique cantidad y precio.
-5. Para quitar un producto use **ELIMINAR PRO**.
-6. Presione **PROCESAR PAGO**, registre lo recibido (efectivo, tarjeta, transferencia, córdobas o dólares) y aplique la factura.
-7. Use **IMPRIMIR** para imprimir el ticket o factura.
+5. Según la configuración de su empresa, puede aplicar un descuento por producto o un descuento global (ver Aplicar un descuento en una factura).
+6. Para quitar un producto use **ELIMINAR PRO**.
+7. Presione **PROCESAR PAGO**, registre lo recibido (efectivo, tarjeta, transferencia, córdobas o dólares) y aplique la factura.
+8. Use **IMPRIMIR** para imprimir el ticket o factura.
 Notas: algunas cajas exigen tener la caja abierta (**ABRIR CAJA**) antes de facturar. <!-- REVISAR: confirmar el orden exacto de PROCESAR PAGO / aplicar segun la configuracion -->
-Ver también: Imprimir una factura (Preview, A4 o directo a la impresora).
+Ver también: Imprimir una factura (Preview, A4 o directo a la impresora); Aplicar un descuento en una factura (por producto o global).
+
+## Aplicar un descuento en una factura (por producto o global)
+Ruta: Menú > FACTURACION > FACTURAR (nueva factura o edición de una factura).
+Solo está disponible si su empresa tiene activo el descuento por producto en factura (según la configuración de su empresa); si no, la pantalla funciona como siempre.
+1. Descuento por producto: toque el botón de información del producto en el detalle de la factura. En la ventana **Información del producto**, sección **Descuento del producto**, escriba **Descuento %** o **Descuento monto** (el otro se calcula solo y se muestra el sub total con descuento) y presione **Aceptar**.
+2. Si después cambia la cantidad o el precio del producto, se conserva el porcentaje y se recalcula el monto del descuento.
+3. Descuento global: en el resumen de la factura escriba **% DESC** (porcentaje) o **DESC** (monto). Se calcula sobre el SUB TOTAL sin IVA y se reparte entre todos los productos.
+4. Al aplicar el primer descuento de la factura se pide la clave de autorización (ver Autorizar un descuento en una factura con clave).
+5. Continúe la factura y guárdela de la forma normal.
+Restricciones:
+- El descuento de un producto no puede ser mayor que precio × cantidad de esa línea ni mayor a 100%.
+- En una misma factura se usa uno u otro: si algún producto tiene descuento, **% DESC** y **DESC** del resumen quedan bloqueados; si hay descuento global, los descuentos por producto quedan bloqueados. Al volver el descuento a 0 se desbloquean.
+Notas: el detalle de la factura ya no muestra columnas de descuento; el descuento de cada producto se ve y se cambia en la ventana **Información del producto**, donde también se elige el precio, el vendedor, la serie y la referencia. Si la sección está bloqueada, un aviso indica el motivo (hay descuento global o no tiene permiso para modificar el detalle).
+Ver también: Autorizar un descuento en una factura con clave; Cómo se calcula el IVA y el total de una factura con descuento.
+
+## Autorizar un descuento en una factura con clave
+Ruta: Menú > FACTURACION > FACTURAR.
+1. Al aplicar el primer descuento de la factura (por producto o global) aparece la ventana **Autorizar descuento**.
+2. Escriba la clave de autorización y presione **Aceptar**. La clave se pide una sola vez por factura.
+3. Si presiona **Cancelar**, el descuento que escribió se revierte.
+4. Si intenta guardar la factura con un descuento que no fue autorizado, aparece la ventana **Autorizar descuento**; después de autorizar, presione de nuevo el botón para guardar.
+Notas: al abrir una factura que ya tenía descuento y guardarla sin cambiar el descuento no se pide la clave. Si su empresa no tiene configurada una clave, no se pide. La clave la define el administrador o el equipo de soporte de posMe.
+Ver también: Aplicar un descuento en una factura (por producto o global); Parámetros de la empresa: Descuento en factura.
+
+## Cómo se calcula el IVA y el total de una factura con descuento
+Ruta: Menú > FACTURACION > FACTURAR (resumen de la factura).
+- SUB TOTAL: suma de los productos sin descuento.
+- DESC: suma de todos los descuentos de la factura.
+- IVA: se calcula sobre el precio ya con descuento, como indica la Ley de Concertación Tributaria (se recomienda confirmarlo con su contador).
+- Cargo por servicio (**% SERV**): se calcula sobre el precio sin descuento.
+- TOTAL = SUB TOTAL − DESC + IVA + servicio.
+Ticket de 80 mm: en el formato de ticket con descuento (según la configuración de su empresa) se imprime "Desc: C$ x.xx" debajo de cada producto con descuento y, al final, SUB-TOTAL, DESC (solo si la factura tiene descuento), IVA y TOTAL ya con el descuento.
+Ver también: Aplicar un descuento en una factura (por producto o global).
 
 ## Imprimir una factura (Preview, A4 o directo a la impresora)
 Ruta: Menú > FACTURACION > FACTURAR (nueva factura o edición de una factura).
@@ -2178,7 +2212,7 @@ Los parámetros controlan el comportamiento de posMe por empresa (por ejemplo, o
 Los parámetros contables se editan en CONTABILIDAD > PARAMETROS; el resto los configura el equipo de soporte de posMe.
 Google Calendar de las órdenes de taller: APP_GOOGLE_CLENDAR_ENABLE (true la activa), GOOGLE_CALENDAR_ID, GOOGLE_CALENDAR_SERVICE_EMAIL y GOOGLE_CALENDAR_PRIVATE_KEY; opcionales GOOGLE_CALENDAR_TIMEZONE (por defecto America/Managua) y GOOGLE_CALENDAR_DURATION_MINUTES (duración de cada evento, por defecto 60 minutos).
 Agente de IA de WhatsApp: WHATSAPP_AI_AGENT_ENABLE (true lo activa); WHATSAPP_AI_AGENT_CONTINUE_AFTER_HANDOFF (true: la IA sigue contestando tras derivar mientras ningún colaborador escriba); WHATSAPP_AI_AGENT_HANDOFF_MESSAGE (mensaje al derivar; vacío, la IA redacta el suyo); WHATSAPP_AI_AGENT_STAGE_ATTENDED_ID (etapa "atendida por IA"); WHATSAPP_AI_AGENT_DEBOUNCE_SECONDS (segundos de espera antes de responder, por defecto 3); WHATSAPP_AI_AGENT_MAX_TURNS (máximo de respuestas de la IA antes de pasar a una persona, por defecto 15); WHATSAPP_AI_AGENT_HISTORY_MESSAGES (mensajes anteriores que lee la IA, por defecto 12); WHATSAPP_AI_AGENT_EMPLOYEE_ENTITYID (colaborador "Asistente IA", nunca recibe asignaciones). El texto y las intenciones del agente por tipo de negocio los configura soporte.
-Ver también: Configurar los parámetros contables; Parámetros de la empresa: Campañas de WhatsApp.
+Ver también: Configurar los parámetros contables; Parámetros de la empresa: Campañas de WhatsApp; Parámetros de la empresa: Descuento en factura.
 <!-- REVISAR: pantalla para que el cliente edite parametros generales -->
 
 ## Parámetros de la empresa: Campañas de WhatsApp
@@ -2190,6 +2224,12 @@ Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla CXC > CAM
 - WHATSAP_META_WABA_ID: identificador de la cuenta de WhatsApp Business en Meta; sin él no se pueden cargar las plantillas aprobadas (se escriben a mano).
 Variables del mensaje: {{nombre}}, {{direccion}}, {{saldo}}, {{montoPagar}}, {{fechaPago}} y {{mora}} vienen configuradas. Para agregar otra, soporte registra una nueva variable de campaña (tabla tb_advertising_variable) indicando la vista y el campo del sistema de donde sale el dato; aparece sola en **Variables del cliente**.
 Ver también: Campañas de WhatsApp: enviar promociones o recordatorios de cobro masivos a clientes.
+
+## Parámetros de la empresa: Descuento en factura
+Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla FACTURACION > FACTURAR.
+- INVOICE_BILLING_DISCOUNT_BY_ITEM ("DESCUENTO POR PRODUCTO EN FACTURA"): true activa la sección **Descuento del producto** en la ventana Información del producto, el descuento global en el resumen y el cálculo del IVA sobre el precio con descuento; false (o sin configurar) deja la pantalla como siempre.
+- INVOICE_BILLING_DISCOUNT_PASSWORD ("CLAVE AUTORIZACION DE DESCUENTO EN FACTURA"): clave que se pide en la ventana **Autorizar descuento**. Si está vacío, no se pide clave.
+Ver también: Aplicar un descuento en una factura (por producto o global); Autorizar un descuento en una factura con clave.
 
 ## Soporte
 Si no encuentra cómo hacer algo o hay un error en el sistema, contacte al equipo de soporte de posMe. <!-- REVISAR: telefono / correo de soporte -->

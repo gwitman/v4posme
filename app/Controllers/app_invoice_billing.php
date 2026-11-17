@@ -316,6 +316,9 @@ class app_invoice_billing extends _BaseController {
             $dataView["objParameterINVOICE_BILLING_VALIDATE_EXONERATION"]							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_VALIDATE_EXONERATION")->value;
             $dataView["objParameterINVOICE_SHOW_FIELD_PESO"]										= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_SHOW_FIELD_PESO")->value;
             $dataView["objParameterINVOICE_BILLING_VALIDATE_COST_IN_PRICE"]							= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_VALIDATE_COST_IN_PRICE")->value;
+            //Descuento por linea / global: lectura segura (la clave INVOICE_BILLING_DISCOUNT_PASSWORD nunca se envia a la vista)
+            $objParameterINVOICE_BILLING_DISCOUNT_BY_ITEM											= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_DISCOUNT_BY_ITEM");
+            $dataView["objParameterINVOICE_BILLING_DISCOUNT_BY_ITEM"]								= $objParameterINVOICE_BILLING_DISCOUNT_BY_ITEM ? $objParameterINVOICE_BILLING_DISCOUNT_BY_ITEM->value : "false";
 
             if(!$dataView["objCustomerDefault"])
                 throw new \Exception("NO EXISTE EL CLIENTE POR DEFECTO");
@@ -447,6 +450,9 @@ class app_invoice_billing extends _BaseController {
                 foreach($dataView['objTransactionMasterDetail'] as $key => $value) {
                     $dataView['objTransactionMasterDetail'][$key]->itemName = htmlentities($value->itemName,ENT_QUOTES);
                     $dataView['objTransactionMasterDetailCredit'] = $this->Transaction_Master_Detail_Credit_Model->get_rowByPK($value->transactionMasterDetailID);
+                    //Descuento por linea guardado: tmd.tax4 (monto) y tmd.reference4 (porcentaje)
+                    $dataView['objTransactionMasterDetail'][$key]->discountLineAmount     = isset($value->tax4) ? $value->tax4 : 0;
+                    $dataView['objTransactionMasterDetail'][$key]->discountLinePercentage = isset($value->reference4) ? $value->reference4 : "";
                 }
             }
 
@@ -1002,10 +1008,12 @@ class app_invoice_billing extends _BaseController {
 					$objTMDNew["tax3"]						= $objTMD->tax3;
 					$objTMDNew["amount"] 					= $objTMD->amount;
 					$objTMDNew["discount"]					= $objTMD->discount;
+					$objTMDNew["tax4"]						= $objTMD->tax4;			//descuento propio de la linea
 					$objTMDNew["promotionID"] 				= $objTMD->promotionID;
 					$objTMDNew["reference1"]				= $objTMD->reference1;
 					$objTMDNew["reference2"]				= $objTMD->reference2;
 					$objTMDNew["reference3"]				= $objTMD->reference3;
+					$objTMDNew["reference4"]				= $objTMD->reference4;		//porcentaje de descuento de la linea
 					$objTMDNew["itemNameLog"] 				= $objTMD->itemNameLog;
 					$objTMDNew["itemNameDescriptionLog"] 	= $objTMD->itemNameDescriptionLog;
 					$objTMDNew["catalogStatusID"]			= $objTMD->catalogStatusID;
@@ -1081,6 +1089,115 @@ class app_invoice_billing extends _BaseController {
 		}	
 	}
 	
+	/**
+	 * Valida la clave de autorizacion del descuento (parametro INVOICE_BILLING_DISCOUNT_PASSWORD).
+	 * Recibe POST password. Si el parametro esta vacio responde ok. Nunca devuelve la clave.
+	 * @return ResponseInterface JSON {error, message}
+	 */
+	function validateDiscountAuthorization(){
+		try{
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+
+			//PERMISO SOBRE LA FUNCTION
+			if(APP_NEED_AUTHENTICATION == true){
+				$permited = false;
+				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+
+				if(!$permited)
+				throw new \Exception(NOT_ACCESS_CONTROL);
+			}
+
+			$objParameterClave	= $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"INVOICE_BILLING_DISCOUNT_PASSWORD");
+			$claveParametro		= $objParameterClave ? $objParameterClave->value : "";
+			$claveIngresada		= /*inicio get post*/ $this->request->getPost("password");
+
+			if(!$this->core_web_invoice_discount->verificarClave($claveParametro,$claveIngresada))
+			{
+				return $this->response->setJSON(array(
+					'error'   => true,
+					'message' => "Clave incorrecta"
+				));
+			}
+
+			return $this->response->setJSON(array(
+				'error'   => false,
+				'message' => ""
+			));
+		}
+		catch(\Exception $ex){
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));
+		}
+	}
+
+	/**
+	 * Calcula el descuento por linea / global con core_web_invoice_discount.
+	 * Retorna null si INVOICE_BILLING_DISCOUNT_BY_ITEM no es "true" o la pantalla no envia txtDiscountMode (logica legada).
+	 * @param array  $dataSession        Sesion del usuario
+	 * @param int    $componentItemID    Componente tb_item
+	 * @param array  $arrayListItemID    Productos (txtItemID)
+	 * @param array  $arrayListQuantity  Cantidades
+	 * @param array  $arrayListPrice     Precios
+	 * @param array  $arrayListDiscount  Descuento por linea (txtDiscountByItem)
+	 * @param array  $arrayListPct       Porcentaje por linea (txtDiscountPercentageByItem)
+	 * @param string $exoneracion        "0" = factura no exonerada
+	 * @return array|null Resultado de calcularDetalle (lineas por la misma llave del POST y totales)
+	 */
+	private function invoiceDiscountCalcular($dataSession,$componentItemID,$arrayListItemID,$arrayListQuantity,$arrayListPrice,$arrayListDiscount,$arrayListPct,$exoneracion){
+
+		$objParameterDiscountByItem	= $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"INVOICE_BILLING_DISCOUNT_BY_ITEM");
+		$parameterDiscountByItem	= $objParameterDiscountByItem ? $objParameterDiscountByItem->value : "false";
+		$modo						= /*inicio get post*/ $this->request->getPost("txtDiscountMode");
+
+		if($parameterDiscountByItem != "true" || is_null($modo) || $modo === "")
+		return null;
+
+		$companyID					= $dataSession["user"]->companyID;
+		$lineas						= array();
+
+		if(!empty($arrayListItemID))
+		foreach($arrayListItemID as $key => $itemID)
+		{
+			$objConceptIva			= $this->Company_Component_Concept_Model->get_rowByPK($companyID,$componentItemID,$itemID,"IVA");
+			$objConceptServices		= $this->Company_Component_Concept_Model->get_rowByPK($companyID,$componentItemID,$itemID,"TAX_SERVICES");
+			$ivaPct					= ($objConceptIva != null ? $objConceptIva->valueOut : 0 );
+			$taxServicesPct			= ($objConceptServices != null ? $objConceptServices->valueOut : 0 );
+
+			$lineas[$key]			= array(
+				"quantity"			=> helper_StringToNumber($arrayListQuantity[$key]),
+				"price"				=> $arrayListPrice[$key],
+				"ivaPct"			=> $exoneracion == "0" ? $ivaPct : 0,
+				"taxServicesPct"	=> $exoneracion == "0" ? $taxServicesPct : 0,
+				"discountLine"		=> (!empty($arrayListDiscount) && isset($arrayListDiscount[$key])) ? $arrayListDiscount[$key] : 0,
+				"discountPct"		=> (!empty($arrayListPct) && isset($arrayListPct[$key])) ? $arrayListPct[$key] : ""
+			);
+		}
+
+		//En modo global el monto (txtDescuento) es la autoridad; en modo linea txtDescuento es informativo
+		$montoGlobal				= $modo == "global" ? (float)helper_StringToNumber($this->request->getPost("txtDescuento")) : 0;
+		$pctGlobal					= $modo == "line" ? (float)helper_StringToNumber($this->request->getPost("txtPorcentajeDescuento")) : 0;
+
+		return $this->core_web_invoice_discount->calcularDetalle($lineas,$modo,$montoGlobal,$pctGlobal);
+	}
+
+	/**
+	 * Exige la clave de autorizacion del descuento (POST txtDiscountAuthorization) si el descuento es mayor que cero
+	 * y el parametro INVOICE_BILLING_DISCOUNT_PASSWORD no esta vacio. Lanza \Exception si no es valida.
+	 * @param array $dataSession    Sesion del usuario
+	 * @param float $descuentoTotal Descuento total recalculado
+	 * @return bool
+	 */
+	private function invoiceDiscountValidarClave($dataSession,$descuentoTotal){
+		$objParameterClave	= $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"INVOICE_BILLING_DISCOUNT_PASSWORD");
+		$claveParametro		= $objParameterClave ? $objParameterClave->value : "";
+		return $this->core_web_invoice_discount->validarClave((float)$descuentoTotal,$claveParametro,$this->request->getPost("txtDiscountAuthorization"));
+	}
+
 	function updateElement($dataSession){
 		try{
 			//PERMISO SOBRE LA FUNCTION
@@ -1301,6 +1418,7 @@ class app_invoice_billing extends _BaseController {
 				$arrayListInfoSerie 			            = array();
                 $arrayListInfoReferencia 			        = array();
 				$arrayListDiscount		 			        = array();
+				$arrayListDiscountPct		 			    = array();
                 $arrayListInfoPrecio1				        = array();
                 $arrayListInfoPrecio2				        = array();
                 $arrayListInfoPrecio3				        = array();
@@ -1372,11 +1490,12 @@ class app_invoice_billing extends _BaseController {
 				$arrayListSkuDescription					= /*inicio get post*/ $this->request->getPost("txtSku");  //tb_catalog_item.name
 				$arrayListSkuRatio							= /*inicio get post*/ $this->request->getPost("txtRatioSku"); //tb_catalog_item.ratio
 			
-				$arrayListDiscount							= /*inicio get post*/ $this->request->getPost("txtDiscountByItem");				
-				$arrayListCommisionBank						= /*inicio get post*/ $this->request->getPost("txtCommisionByBankByItem");		
+				$arrayListDiscount							= /*inicio get post*/ $this->request->getPost("txtDiscountByItem");
+				$arrayListDiscountPct						= /*inicio get post*/ $this->request->getPost("txtDiscountPercentageByItem");
+				$arrayListCommisionBank						= /*inicio get post*/ $this->request->getPost("txtCommisionByBankByItem");
 				$arrayListSkuQuantity						= /*inicio get post*/ $this->request->getPost("skuQuantityBySku");
 				$arrayListSkuFormatoDescription				= /*inicio get post*/ $this->request->getPost("skuFormatoDescription");
-                $arrayListInfoSales				            = /*inicio get post*/ $this->request->getPost("txtInfoVendedor");
+                $arrayListInfoSales			            = /*inicio get post*/ $this->request->getPost("txtInfoVendedor");
                 $arrayListInfoSerie				            = /*inicio get post*/ $this->request->getPost("txtInfoSerie");
                 $arrayListInfoReferencia				    = /*inicio get post*/ $this->request->getPost("txtInfoReferencia");
                 $arrayListInfoPrecio1				        = /*inicio get post*/ $this->request->getPost("txtItemPrecio1");
@@ -1396,14 +1515,49 @@ class app_invoice_billing extends _BaseController {
 			
 			$objParameterAmortizationDuranteFactura	= $this->core_web_parameter->getParameter("INVOICE_PARAMTER_AMORITZATION_DURAN_INVOICE",$companyID);
 			$objParameterAmortizationDuranteFactura = $objParameterAmortizationDuranteFactura->value;
-			
-							
-			
-			
+
+			//Descuento por linea / global (parametro INVOICE_BILLING_DISCOUNT_BY_ITEM): primera pasada, calcular y validar todo
+			$objDiscountCalc								= null;
+			try
+			{
+				$objDiscountCalc							= $this->invoiceDiscountCalcular($dataSession,$objComponentItem->componentID,$arrayListItemID,$arrayListQuantity,$arrayListPrice,$arrayListDiscount,$arrayListDiscountPct,$objTMReferenceNew["reference2"]);
+				if($objDiscountCalc != null && $objDiscountCalc["totales"]["discount"] > 0)
+				{
+					//Solo se exige la clave si el descuento cambio respecto a lo guardado
+					$descuentoCambio						= false;
+					$descuentoCambio						= $descuentoCambio || $this->core_web_invoice_discount->descuentoCambio((float)$objTM->discount,(float)$objDiscountCalc["totales"]["discount"]);
+					$descuentoCambio						= $descuentoCambio || $this->core_web_invoice_discount->descuentoCambio((float)$objTM->tax4,(float)$objDiscountCalc["totales"]["pctGlobal"]);
+
+					$objTMDListOld							= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+					$listDiscountLineOld					= array();
+					if($objTMDListOld)
+					foreach($objTMDListOld as $objTMDLineOld)
+					{
+						$listDiscountLineOld[$objTMDLineOld->transactionMasterDetailID] = (float)$objTMDLineOld->tax4;
+					}
+
+					foreach($objDiscountCalc["lineas"] as $keyDiscount => $lineDiscount)
+					{
+						$detailIDDiscount					= $listTransactionDetalID[$keyDiscount];
+						$discountLineOld					= isset($listDiscountLineOld[$detailIDDiscount]) ? $listDiscountLineOld[$detailIDDiscount] : 0;
+						$descuentoCambio					= $descuentoCambio || $this->core_web_invoice_discount->descuentoCambio($discountLineOld,(float)$lineDiscount["discountLine"]);
+					}
+
+					if($descuentoCambio)
+					$this->invoiceDiscountValidarClave($dataSession,$objDiscountCalc["totales"]["discount"]);
+				}
+			}
+			catch(\Exception $exDiscount)
+			{
+				$db->transRollback();
+				throw $exDiscount;
+			}
+
+
 			$amountTotal 									= 0;
 			$tax1Total 										= 0;
 			$tax2Total										= 0;
-			$subAmountTotal									= 0;			
+			$subAmountTotal									= 0;
 			$this->Transaction_Master_Detail_Model->deleteWhereIDNotIn($companyID,$transactionID,$transactionMasterID,$listTransactionDetalID);
 			$this->Transaction_Master_Detail_Credit_Model->deleteWhereIDNotIn($transactionMasterID,$listTransactionDetalID);
 			
@@ -1446,6 +1600,16 @@ class app_invoice_billing extends _BaseController {
 					$unitaryAmount 							= $price * (1 + $ivaPercentage);					
 					$tax1 									= $price * $ivaPercentage;
 					$tax2									= $price * $taxServicesPorcentage;
+
+					//Descuento por linea / global: segunda pasada con los valores calculados (IVA sobre el neto)
+					if($objDiscountCalc != null)
+					{
+						$discount							= $objDiscountCalc["lineas"][$key]["discount"];
+						$tax1								= $objDiscountCalc["lineas"][$key]["tax1Unit"];
+						$tax2								= $objDiscountCalc["lineas"][$key]["tax2Unit"];
+						$unitaryAmount						= $objDiscountCalc["lineas"][$key]["unitaryAmount"];
+					}
+
 					$transactionMasterDetailID				= $listTransactionDetalID[$key];
 					$comisionPorcentage						= 0;
 					$comisionPorcentage						= $this->core_web_transaction_master_detail->getPorcentageComision($companyID,$listPriceID,$itemID,$price);															  
@@ -1561,7 +1725,12 @@ class app_invoice_billing extends _BaseController {
 						$objTMD["skuFormatoDescription"] 		= $skuFormatoDescription;
 						$objTMD["amountCommision"] 				= $this->core_web_transaction_master_detail->getAmountCommision($companyID,$listPriceID,$itemID,$unitaryCost,$price,$quantity,$comisionPorcentage,$skuRatio);
 						$objTMD["typePriceID"]					= $typePriceID;
-						
+						if($objDiscountCalc != null)
+						{
+							$objTMD["tax4"]						= $objDiscountCalc["lineas"][$key]["discountLine"];		//descuento propio de la linea
+							$objTMD["reference4"]				= $objDiscountCalc["lineas"][$key]["discountPct"];		//porcentaje de la linea
+						}
+
 						$tax1Total								= $tax1Total + ($tax1 * $quantity);
 						$tax2Total								= $tax2Total + ($tax2 * $quantity);
 						$subAmountTotal							= $subAmountTotal + ($quantity * $price);
@@ -1641,7 +1810,12 @@ class app_invoice_billing extends _BaseController {
 						$objTMDNew["skuFormatoDescription"] 	= $skuFormatoDescription;						
 						$objTMDNew["amountCommision"] 			= $this->core_web_transaction_master_detail->getAmountCommision($companyID,$listPriceID,$itemID,$unitaryCost,$price,$quantity,$comisionPorcentage,$skuRatio );
 						$objTMDNew["typePriceID"]				= $typePriceID;
-						
+						if($objDiscountCalc != null)
+						{
+							$objTMDNew["tax4"]					= $objDiscountCalc["lineas"][$key]["discountLine"];		//descuento propio de la linea
+							$objTMDNew["reference4"]			= $objDiscountCalc["lineas"][$key]["discountPct"];		//porcentaje de la linea
+						}
+
 						$tax1Total								= $tax1Total + ($tax1 * $quantity);
 						$tax2Total								= $tax2Total + ($tax2 * $quantity);
 						$subAmountTotal							= $subAmountTotal + ($quantity * $price);
@@ -1708,6 +1882,13 @@ class app_invoice_billing extends _BaseController {
 				}
 			}			
 			
+			//Descuento por linea / global: el maestro guarda el descuento recalculado (tax4 = % global, 0 en modo linea)
+			if($objDiscountCalc != null)
+			{
+				$varDescuento			= $objDiscountCalc["totales"]["discount"];
+				$varPorcentajeDescuento	= $objDiscountCalc["totales"]["pctGlobal"];
+			}
+
 			//Actualizar Transaccion
             $objTMNew["subAmount"]  = $subAmountTotal;
             $objTMNew["tax1"] 		= $tax1Total;
@@ -1875,8 +2056,9 @@ class app_invoice_billing extends _BaseController {
 					$plazoAmortizacion 									= $objCustomerCreditDocument["term"];
 					if($objParameterAmortizationDuranteFactura == "true" &&  $objTMNew["currencyID"] == 1 /*cordoba*/)
 					{
-						
-						$amountTotal 										= $amountTotalBackupTm;
+
+						//Monto financiado = total de la factura menos el descuento del maestro
+						$amountTotal 										= $amountTotalBackupTm - (float)helper_StringToNumber($varDescuento);
 						$plazoAmortizacion 									= $objTMNew["reference2"];
 						$objCustomerCreditDocument["term"] 					= (int)ceil((float)helper_StringToNumber($objTMNew["reference2"]));
 						$objCustomerCreditDocument["termDecimal"] 			= (float)helper_StringToNumber($objTMNew["reference2"]);
@@ -1897,7 +2079,8 @@ class app_invoice_billing extends _BaseController {
 					
 					if($objParameterAmortizationDuranteFactura == "true" &&  $objTMNew["currencyID"] == 2 /*dolares*/)
 					{
-						$amountTotal 										= $amountTotalBackupTm;
+						//Monto financiado = total de la factura menos el descuento del maestro
+						$amountTotal 										= $amountTotalBackupTm - (float)helper_StringToNumber($varDescuento);
 						$plazoAmortizacion 									= $objTMNew["reference2"];
 						$objCustomerCreditDocument["term"] 					= (int)ceil((float)helper_StringToNumber($objTMNew["reference2"]));
 						$objCustomerCreditDocument["termDecimal"] 			= (float)helper_StringToNumber($objTMNew["reference2"]);
@@ -2298,11 +2481,28 @@ class app_invoice_billing extends _BaseController {
 			$objTM["numberPhone"]					= /*inicio get post*/ $this->request->getPost("txtNumberPhone");
 			$objTM["entityIDSecondary"]				= /*inicio get post*/ $this->request->getPost("txtEmployeeID");
 			$objTM["dayExcluded"]					= /*inicio get post*/ $this->request->getPost("txtDayExcluded");
-			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);			
-			
-			
+			$this->core_web_auditoria->setAuditCreated($objTM,$dataSession,$this->request);
+
+			//Descuento por linea / global (parametro INVOICE_BILLING_DISCOUNT_BY_ITEM): primera pasada, calcular y validar antes de la transaccion
+			$objDiscountCalc						= $this->invoiceDiscountCalcular(
+														$dataSession,
+														$objComponentItem->componentID,
+														$this->request->getPost("txtItemID"),
+														$this->request->getPost("txtQuantity"),
+														$this->request->getPost("txtPrice"),
+														$this->request->getPost("txtDiscountByItem"),
+														$this->request->getPost("txtDiscountPercentageByItem"),
+														is_null($this->request->getPost("txtCheckApplyExoneracionValue")) ? "0" : $this->request->getPost("txtCheckApplyExoneracionValue")
+													);
+			if($objDiscountCalc != null)
+			{
+				$this->invoiceDiscountValidarClave($dataSession,$objDiscountCalc["totales"]["discount"]);
+				$varDescuento						= $objDiscountCalc["totales"]["discount"];
+				$varPorcentajeDescuento				= $objDiscountCalc["totales"]["pctGlobal"];
+			}
+
 			$db=db_connect();
-			$db->transException(true)->transStart();	
+			$db->transException(true)->transStart();
 
 			$objParameterInvoiceUpdateNameInTransactionOnly		= $this->core_web_parameter->getParameter("INVOICE_UPDATENAME_IN_TRANSACTION_ONLY",$companyID);
 			$objParameterInvoiceUpdateNameInTransactionOnly		= $objParameterInvoiceUpdateNameInTransactionOnly->value;			
@@ -2445,6 +2645,15 @@ class app_invoice_billing extends _BaseController {
 					$tax1 									= $price * $ivaPercentage;
 					$tax2									= $price * $taxServicesPercentage;
 
+					//Descuento por linea / global: segunda pasada con los valores calculados (IVA sobre el neto)
+					if($objDiscountCalc != null)
+					{
+						$discount							= $objDiscountCalc["lineas"][$key]["discount"];
+						$tax1								= $objDiscountCalc["lineas"][$key]["tax1Unit"];
+						$tax2								= $objDiscountCalc["lineas"][$key]["tax2Unit"];
+						$unitaryAmount						= $objDiscountCalc["lineas"][$key]["unitaryAmount"];
+					}
+
                     $infoSales				                = $arrayListInfoSales[$key];
                     $infoSerie				                = $arrayListInfoSerie[$key];
                     $infoReferencia				            = $arrayListInfoReferencia[$key];
@@ -2515,14 +2724,19 @@ class app_invoice_billing extends _BaseController {
 					$objTMD["inventoryWarehouseTargetID"]	= $objTM["targetWarehouseID"];
 					$objTMD["skuCatalogItemID"] 			= $skuCatalogItemID;
 					$objTMD["skuFormatoDescription"] 		= $skuFormatoDescription;
-					
-					
-					
-					$tax1Total								= $tax1Total + $tax1;
-					$tax2Total								= $tax2Total + $tax2;
+					if($objDiscountCalc != null)
+					{
+						$objTMD["tax4"]						= $objDiscountCalc["lineas"][$key]["discountLine"];		//descuento propio de la linea
+						$objTMD["reference4"]				= $objDiscountCalc["lineas"][$key]["discountPct"];		//porcentaje de la linea
+					}
+
+
+					//Impuestos del maestro = impuesto unitario por cantidad
+					$tax1Total								= $tax1Total + ($tax1 * $quantity);
+					$tax2Total								= $tax2Total + ($tax2 * $quantity);
 					$subAmountTotal							= $subAmountTotal + ($quantity * $price);
 					$amountTotal							= $amountTotal + $objTMD["amount"];
-					
+
 					$transactionMasterDetailID_				= $this->Transaction_Master_Detail_Model->insert_app_posme($objTMD);
 					
 					$objTMDC								= NULL;
@@ -3003,9 +3217,11 @@ class app_invoice_billing extends _BaseController {
 					$objTMD["skuFormatoDescription"] 		= 'UNIDAD';
 					$objTMD["amountCommision"] 				= $price * $comisionPorcentage * $quantity ;
 					$objTMD["typePriceID"]					= 154 /*publico*/;
+					$objTMD["tax4"]							= $value->Discount;		//descuento propio de la linea (coherencia con facturacion web)
 
-					$tax1Total								= $tax1Total + $tax1;
-					$tax2Total								= $tax2Total + $tax2;
+					//Impuestos del maestro = impuesto unitario por cantidad
+					$tax1Total								= $tax1Total + ($tax1 * $quantity);
+					$tax2Total								= $tax2Total + ($tax2 * $quantity);
 					$subAmountTotal							= $subAmountTotal + ($quantity * $price);
 					$amountTotal							= $amountTotal + $objTMD["amount"];
 					$discountTotal							= $discountTotal + $value->Discount;
@@ -3721,8 +3937,8 @@ class app_invoice_billing extends _BaseController {
 						
 					}
 					
-					//Sumarizar Variable Totales
-					$tax1Total								= $tax1Total + $tax1;
+					//Sumarizar Variable Totales (impuesto unitario por la cantidad del detalle)
+					$tax1Total								= $tax1Total + ($tax1 * $objTMD["quantity"]);
 					$subAmountTotal							= $subAmountTotal + ($quantity * $price);
 					$amountTotal							= $amountTotal + $objTMD["amount"];
 					
@@ -4251,9 +4467,12 @@ class app_invoice_billing extends _BaseController {
 			$objParameterInvoiceQsTrayPrinterName													= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"APP_INVOICE_QSTRAY_PRINTER_NAME");
 			$dataView["objParameterInvoiceUserQsTray"]												= $objParameterInvoiceUserQsTray ? $objParameterInvoiceUserQsTray->value : "false";
 			$dataView["objParameterInvoiceQsTrayPrinterName"]										= $objParameterInvoiceQsTrayPrinterName ? $objParameterInvoiceQsTrayPrinterName->value : "";
+			//Descuento por linea / global: lectura segura (la clave INVOICE_BILLING_DISCOUNT_PASSWORD nunca se envia a la vista)
+			$objParameterINVOICE_BILLING_DISCOUNT_BY_ITEM											= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_DISCOUNT_BY_ITEM");
+			$dataView["objParameterINVOICE_BILLING_DISCOUNT_BY_ITEM"]								= $objParameterINVOICE_BILLING_DISCOUNT_BY_ITEM ? $objParameterINVOICE_BILLING_DISCOUNT_BY_ITEM->value : "false";
 
 
-			$objParameterUrlServidorDeImpresion													= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_SERVER_PATH");
+			$objParameterUrlServidorDeImpresion												= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_BILLING_PRINTER_DIRECT_SERVER_PATH");
 			$objParameterUrlServidorDeImpresion														= $objParameterUrlServidorDeImpresion->value;
 			$dataView["objParameterUrlServidorDeImpresion"] 										= $objParameterUrlServidorDeImpresion;
 
@@ -11859,12 +12078,23 @@ class app_invoice_billing extends _BaseController {
 			    $row = array(					
 					sprintf("%01.2f",round($detail_->quantity,2)), 					
 					sprintf("%01.2f",round($detail_->unitaryPrice,2)),
-					sprintf("%01.2f",round($detail_->amount,2))					
+					sprintf("%01.2f",round($detail_->amount,2))
 				);
 			    array_push($detalle,$row);
+
+				//Descuento propio de la linea (tmd.tax4), en una fila aparte
+				if(isset($detail_->tax4) && $detail_->tax4 > 0)
+				{
+					$row = array(
+						"Desc: ".$prefixCurrency.sprintf("%01.2f",round($detail_->tax4,2))."-comand-new-row",
+						"none",
+						"none"
+					);
+					array_push($detalle,$row);
+				}
 			}
-			
-			
+
+
 			//Generar Reporte
 			$html = helper_reporte80mmTransactionMasterRepuestoCristoRey(
 			    "FACTURA",

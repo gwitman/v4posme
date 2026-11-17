@@ -7,6 +7,19 @@
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = 'false'
+WHERE p.name = 'INVOICE_BILLING_DISCOUNT_BY_ITEM'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'CAMBIAR_CLAVE'
+WHERE p.name = 'INVOICE_BILLING_DISCOUNT_PASSWORD'
+    AND cp.companyID = 2;
+	
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'false'
 WHERE p.name = 'CXC_ADVERTISING_ENABLED'
     AND cp.companyID = 2;
 	

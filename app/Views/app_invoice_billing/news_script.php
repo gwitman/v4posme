@@ -4,6 +4,7 @@
 <script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/qz-tray/qz-tray.js"></script>
 <script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme-qztray.js?v=1"></script>
 <?php } ?>
+<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme_invoice_discount.js?v=1"></script>
 <script>
     var heigthTop							= 0;
 	var objTableDetail 						= {};
@@ -57,7 +58,9 @@
 	var varParameterUrlServidorDeImpresion 					= '<?php echo $objParameterUrlServidorDeImpresion; ?>';
 	var varParameterINVOICE_BILLING_VALIDATE_EXONERATION 	= '<?php echo $objParameterINVOICE_BILLING_VALIDATE_EXONERATION; ?>';
 	var objParameterINVOICE_SHOW_FIELD_PESO					= '<?php echo $objParameterINVOICE_SHOW_FIELD_PESO; ?>';	
-	var objParameterEsRestaurante							= '<?php echo $objParameterEsResrarante; ?>'; 
+	var objParameterEsRestaurante							= '<?php echo $objParameterEsResrarante; ?>';
+	//Descuento por linea / global (INVOICE_BILLING_DISCOUNT_BY_ITEM); si no viene definido se trata como "false"
+	var varParameterInvoiceBillingDiscountByItem			= '<?php echo isset($objParameterINVOICE_BILLING_DISCOUNT_BY_ITEM) ? $objParameterINVOICE_BILLING_DISCOUNT_BY_ITEM : "false"; ?>';
 
 
 	var varPermisosEsPermitidoModificarPrecio 			= jLinq.from(varPermisos).where(function(obj){ return obj.display == "ES_PERMITIDO_MODIFICAR_PRECIO_EN_FACTURACION"}).select().length > 0 ? true:	false;
@@ -126,8 +129,17 @@
 		valueSku				: 23,
 		ratioSku				: 24,
 		discount				: 25,
-		comisionPosBanck		: 26
+		comisionPosBanck		: 26,
+		discountPercentage		: 27
     };
+
+	//Estado del descuento por linea / global (solo con varParameterInvoiceBillingDiscountByItem == "true")
+	let objDescuentoGlobal			= { pct: 0, monto: 0 };	//descuento global vigente
+	let varDescuentoModoActual		= "none";				//"none" | "line" | "global"
+	let varDescuentoAutorizado		= false;				//una autorizacion por factura
+	let varDescuentoModificado		= false;				//se intento poner un descuento > 0 en esta factura
+	let objDescuentoPendiente		= null;					//accion en espera de la clave {aceptar, cancelar}
+	let varInfoDescuentoOrigen		= null;					//modal de informacion: ultimo campo escrito "pct" | "valor"
 
 	const Toast = Swal.mixin({
 		toast				: true,
@@ -855,8 +867,36 @@
         //establecer referencia
         let infoReferencia 	= selectedDataInfoProducto[21];
         $('#txtReferenciaProducto').val(infoReferencia);
+
+        //Encabezado y resumen de la linea
+        fnInfoProductoCargarResumen();
+        //Descuento de la linea (solo con el parametro activo)
+        fnInfoProductoCargarDescuento();
+
         refreschChecked();
         mostrarModal('ModalInfoProducto');
+    });
+
+    //Modal de informacion: al cambiar el precio se recalcula el resumen y el descuento (se conserva el %)
+    $(document).on('change', '#selectPrecio', function(){
+        if(selectedDataInfoProducto === undefined)
+            return;
+        //Si la linea ya tenia descuento, el % se reaplica al nuevo precio al aceptar
+        if(varInfoDescuentoOrigen === null && fnDescuentoPorLineaActivo() && !$('#txtInfoDescuentoPct').prop('disabled') && PosmeInvoiceDiscount.num($('#txtInfoDescuentoPct').val()) > 0)
+            varInfoDescuentoOrigen = 'pct';
+        fnInfoProductoCalcularDescuento(varInfoDescuentoOrigen === "valor" ? "valor" : "pct");
+    });
+    //Modal de informacion: % <-> monto del descuento en vivo
+    $(document).on('input', '#txtInfoDescuentoPct, #txtInfoDescuentoMonto', function(){
+        //Solo numeros y hasta 2 decimales
+        let limpio = $(this).val().replace(/[^0-9.]/g, '').replace(/^(\d*\.\d{0,2}).*$/, '$1');
+        if(limpio !== $(this).val())
+            $(this).val(limpio);
+        varInfoDescuentoOrigen = this.id === 'txtInfoDescuentoPct' ? 'pct' : 'valor';
+        fnInfoProductoCalcularDescuento(varInfoDescuentoOrigen);
+    });
+    $(document).on('focus', '#txtInfoDescuentoPct, #txtInfoDescuentoMonto', function(){
+        $(this).select();
     });
 
 	//Regresar a la lista
@@ -1295,17 +1335,19 @@
 		 
 		 
     });
-	$('#txtPorcentajeDescuento').on('blur', function() {	
-		 
-		 
+	$('#txtPorcentajeDescuento').on('blur', function() {
+		 //Con descuento por linea el calculo lo hace el evento change (fnDescuentoCambioGlobal)
+		 if(fnDescuentoPorLineaActivo()) return;
+
 		 mostarModalPersonalizado('Calculando conceptos');
 		 fnRecalculateDetail(true,"");
 		 cerrarModal('ModalCargandoDatos');
 		 
     });
-	$('#txtDescuento').on('blur', function() {	
-		 
-		 
+	$('#txtDescuento').on('blur', function() {
+		 //Con descuento por linea el calculo lo hace el evento change (fnDescuentoCambioGlobal)
+		 if(fnDescuentoPorLineaActivo()) return;
+
 		 var amountDiscount 	= parseFloat($('#txtDescuento').val());
 		 var amountSub 			= parseFloat($("#txtSubTotal").val());
 		 var amountIva 			= parseFloat($("#txtIva").val());		 
@@ -1316,9 +1358,52 @@
 		 mostarModalPersonalizado('Calculando conceptos');
 		 fnRecalculateDetail(true,"");
 		 cerrarModal('ModalCargandoDatos');
-		 
+
     });
-	
+
+	//Descuento por linea / global (solo con INVOICE_BILLING_DISCOUNT_BY_ITEM = "true")
+	//Captura: solo numeros con hasta 2 decimales
+	$(document).on("input", ".txtDiscountItemPct, .txtDiscountItemAmount, #txtDescuento", function(){
+		if(!fnDescuentoPorLineaActivo()) return;
+		var valor 		= $(this).val();
+		var expresion 	= /^\d*\.?\d{0,2}$/;
+		if (!expresion.test(valor)) {
+			$(this).val(valor.slice(0, -1));
+		}
+	});
+	//Cambio del descuento de una linea (% o monto)
+	$(document).on("change", ".txtDiscountItemPct, .txtDiscountItemAmount", function(){
+		if(!fnDescuentoPorLineaActivo()) return;
+		fnDescuentoCambioLinea(this);
+	});
+	//Cambio del descuento global (% o monto)
+	$(document).on("change", "#txtPorcentajeDescuento", function(){
+		if(!fnDescuentoPorLineaActivo()) return;
+		fnDescuentoCambioGlobal("pct");
+	});
+	$(document).on("change", "#txtDescuento", function(){
+		if(!fnDescuentoPorLineaActivo()) return;
+		fnDescuentoCambioGlobal("valor");
+	});
+	//Modal de autorizacion del descuento
+	$(document).on("click", "#btnAceptarClaveDescuento", function(){
+		fnDescuentoValidarClave();
+	});
+	$(document).on("keydown", "#txtClaveDescuento", function(e){
+		if(e.key === "Enter"){
+			e.preventDefault();
+			fnDescuentoValidarClave();
+		}
+	});
+	$(document).on("click", "#btnCancelarClaveDescuento", function(){
+		cerrarModal("ModalAutorizarDescuento");
+		var pendiente 			= objDescuentoPendiente;
+		objDescuentoPendiente 	= null;
+		$("#txtClaveDescuento").val("");
+		if(pendiente && typeof pendiente.cancelar === "function")
+			pendiente.cancelar();
+	});
+
 
 	//Pago
 	$(document).on("click","#btnOptionPago",function(){
@@ -1837,7 +1922,8 @@
 					objRow.um,
 					objRow.skuRatio,
 					objRow.discount,
-					objRow.commisionBank
+					objRow.commisionBank,
+					0 /*discountPercentage: % de descuento de la linea*/
 				];
 
 				//Rediseño: el producto nuevo se inserta AL INICIO de la tabla.
@@ -1863,6 +1949,8 @@
 					if($cantidadFila.length > 0) dataFila[columnasTableDetail.cantidad] 	= $cantidadFila.val();
 					if($precioFila.length > 0) 	dataFila[columnasTableDetail.precio] 		= $precioFila.val();
 					if($pesoFila.length > 0) 	dataFila[18] 								= $pesoFila.val();
+					//Descuento por linea (cols 25 y 27): no se copia el input; el valor aplicado (y autorizado)
+					//ya vive en los datos por fnUpdate, asi un valor escrito sin autorizar no se cuela al reconstruir
 				}
 
 				var dataActual = objTableDetail.fnGetData().slice();
@@ -1967,6 +2055,24 @@
 			});
 			result = false;
         }
+
+		//Validar descuento por linea / global: rangos, exclusion y autorizacion
+		if(fnDescuentoPorLineaActivo())
+		{
+			let resultadoDescuento = fnDescuentoValidarAntesDeGuardar();
+			if(resultadoDescuento === "clave")
+			{
+				//Hay descuento sin autorizar: se pide la clave y el usuario vuelve a guardar
+				cerrarModal('ModalCargandoDatos');
+				fnDescuentoSolicitarClave(
+					function(){ ToastSuccess.fire({ icon: "success", title: "Descuento autorizado. Presione guardar nuevamente." }); },
+					function(){}
+				);
+				return;
+			}
+			if(resultadoDescuento === false)
+				result = false;
+		}
 
 		//Validar Estado de la factura
 		if($("#txtStatusIDOld").val() ==  varStatusInvoiceAplicado){
@@ -2224,6 +2330,9 @@
 		fnSetCheckBoxValue($("#txtCheckApplyExoneracion"), false);
 		fnSetCheckBoxValue($("#txtCheckReportSinRiesgo"), false);
 		fnSetCheckBoxValue($("#txtCheckDeEfectivo"), false);
+		//Descuento por linea / global: nueva factura sin autorizacion ni descuento global
+		if(fnDescuentoPorLineaActivo())
+			fnDescuentoReiniciar();
 
 
 		<?php echo getBehavio($company->type, 'app_invoice_billing', 'jsClearForm', '') ?>
@@ -2237,6 +2346,11 @@
         console.info("LOAD INVOICE");
         loadEdicion 		= true;
 		cargaCompletada 	= true;
+		//Descuento por linea / global: el parametro puede venir en la respuesta de edicion (no definido = "false")
+		varParameterInvoiceBillingDiscountByItem 	= (data.objParameterINVOICE_BILLING_DISCOUNT_BY_ITEM !== undefined && data.objParameterINVOICE_BILLING_DISCOUNT_BY_ITEM !== null) ? String(data.objParameterINVOICE_BILLING_DISCOUNT_BY_ITEM) : "false";
+		//Otra factura: se limpia la autorizacion del descuento
+		if(fnDescuentoPorLineaActivo())
+			fnDescuentoReiniciar();
 		objParameterINVOICE_BILLING_SHOW_COMMAND_BAR    = data.objParameterINVOICE_BILLING_SHOW_COMMAND_BAR;
         varParameterTipoPrinterDownload     			= data.objParameterTipoPrinterDonwload;
         objParameterPrinterDirectAndPreview 			= data.objParameterPrinterDirectAndPreview;
@@ -2448,6 +2562,23 @@
 					itemNumber 			= varDetail[i].barCode + " " + varDetail[i].itemNumber;
 				}
 
+				//Descuento por linea: tax4 = monto, reference4 = %; facturas viejas traen tax4 null -> 0.
+				//Sin monto no se toma el % (reference4 podria tener otro dato en facturas viejas).
+				var descLineaMonto 		= varDetail[i].discount; /*legado: monto del descuento de la linea*/
+				var descLineaPct 		= 0;
+				if(fnDescuentoPorLineaActivo())
+				{
+					var descTax4 		= PosmeInvoiceDiscount.round2(varDetail[i].tax4);
+					var descRef4 		= PosmeInvoiceDiscount.round4(varDetail[i].reference4);
+					var descBruto 		= PosmeInvoiceDiscount.num(varDetail[i].unitaryPrice) * PosmeInvoiceDiscount.num(varDetail[i].quantity);
+					descLineaMonto 		= descTax4 > 0 ? descTax4 : 0;
+					descLineaPct 		= 0;
+					if(descLineaMonto > 0)
+						descLineaPct 	= descRef4 > 0 ? descRef4 : (descBruto > 0 ? PosmeInvoiceDiscount.round4(descLineaMonto / descBruto * 100) : 0);
+					descLineaMonto 		= fnFormatNumber(descLineaMonto, 2);
+					descLineaPct 		= fnFormatPctDescuento(descLineaPct);
+				}
+
                 //Rellenar Datos
                 tmpData.push([
                     0,
@@ -2475,8 +2606,9 @@
                     fnFormatNumber(infoPrecio1, 2),
 					skuCatalogItemID,
 					skuQuantity,
-					varDetail[i].discount, /*discount by item*/
-					varDetail[i].tax3  /*comision bank by item*/
+					descLineaMonto, /*discount by item*/
+					varDetail[i].tax3,  /*comision bank by item*/
+					descLineaPct /*discountPercentage by item*/
                 ]);
             }
 			objTableDetail.fnAddData(tmpData);
@@ -2485,8 +2617,36 @@
 		
 		$("#txtTypePriceID").val(typePriceID);
 		$("#txtTypePriceID").trigger("change");		
+		if(!fnDescuentoPorLineaActivo())
+		{
         $("#txtDescuento").val(fnFormatNumber(objTransactionMaster.discount, 2));
         $("#txtPorcentajeDescuento").val(fnFormatNumber(objTransactionMaster.tax4,2));
+		}
+		else
+		{
+			//Descuento por linea: si ninguna linea trae monto (tax4) y el maestro trae descuento, es descuento global.
+			//No se pide clave mientras no se cambie el descuento.
+			let hayDescuentoLinea 	= false;
+			if(varDetail != null)
+			{
+				for(let d = 0; d < varDetail.length; d++)
+				{
+					if(PosmeInvoiceDiscount.num(varDetail[d].tax4) > 0) hayDescuentoLinea = true;
+				}
+			}
+			//Base del % global = SUB TOTAL bruto de las lineas ya cargadas en la tabla
+			let subtotalCarga 		= PosmeInvoiceDiscount.calcResumen(fnDescuentoLeerLineas(), "none", 0).subtotal;
+			let descuentoMaestro 	= PosmeInvoiceDiscount.round2(objTransactionMaster.discount);
+			objDescuentoGlobal 		= { pct: 0, monto: 0 };
+			if(!hayDescuentoLinea && descuentoMaestro > 0)
+			{
+				objDescuentoGlobal 	= {
+					monto 	: descuentoMaestro,
+					pct 	: subtotalCarga > 0 ? PosmeInvoiceDiscount.round4(descuentoMaestro / subtotalCarga * 100) : 0
+				};
+			}
+			varDescuentoModificado 	= false;
+		}
 
         fnRecalculateDetail(false,"sumarizar");
 
@@ -2970,6 +3130,10 @@
 			$("#txtReceiptAmountTarjeta").val("0");
 			$("#txtReceiptAmountTarjetaDol").val("0");
 			$("#txtReceiptAmountBankDol").val("0");
+
+			//Descuento por linea / global: sin detalle no hay descuento ni autorizacion
+			if(fnDescuentoPorLineaActivo())
+				fnDescuentoReiniciar();
 	}
 	
 	
@@ -3018,7 +3182,24 @@
 		var despuesDeRecalcularTotalRecibidoIgualCero	= <?php echo getBehavio($company->type, "app_invoice_billing", "despuesDeRecalcularTotalRecibidoIgualCero", "false"); ?>;
 		var invoiceTypeCredit 							= false;
 
-        if(index == -1 && tipo_calculate != "sumarizar")
+		//Descuento por linea / global: calculo con PosmeInvoiceDiscount (IVA sobre el neto)
+		if(fnDescuentoPorLineaActivo())
+		{
+			totalGeneral 		= fnRecalculateDetailDescuento(tipo_calculate, index);
+			if(tipo_calculate != "sumarizar")
+			{
+				var causalSelectDesc 	= $("#txtCausalID").val();
+				var causalCreditDesc 	= objCausalTypeCredit.value.split(",");
+				//Obtener si la factura es al credito
+				for(var i=0;i<causalCreditDesc.length;i++){
+					if(causalCreditDesc[i] === causalSelectDesc){
+						invoiceTypeCredit = true;
+					}
+				}
+			}
+		}
+
+        if(index == -1 && tipo_calculate != "sumarizar" && !fnDescuentoPorLineaActivo())
 		{
 			var cantidad 				= 0;
 			var iva 					= 0;
@@ -3095,7 +3276,7 @@
 			}
 		}
 
-		if(index > -1 && tipo_calculate != "sumarizar")
+		if(index > -1 && tipo_calculate != "sumarizar" && !fnDescuentoPorLineaActivo())
 		{
 			var NSSystemDetailInvoice		= objTableDetail.fnGetData();
 			var cantidadTemporal 	 		=  $(".txtQuantity")[index].value;
@@ -3161,9 +3342,9 @@
 			
 		}
 		
-		if(tipo_calculate == "sumarizar")
+		if(tipo_calculate == "sumarizar" && !fnDescuentoPorLineaActivo())
 		{
-			
+
 			var NSSystemDetailInvoice		= objTableDetail.fnGetData();
 			var subtotalGeneral 			= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.total]); })).sum().result;			
 			var descuento		 			= jLinq.from(jLinq.from(NSSystemDetailInvoice).select(function(a){ return parseFloat(a[columnasTableDetail.discount]); })).sum().result;			
@@ -3217,6 +3398,527 @@
 			}));
 		} catch(e) {}
 		
+	}
+
+	/* ======================================================================
+	 * Descuento por linea / global (INVOICE_BILLING_DISCOUNT_BY_ITEM = "true")
+	 * Calculo en public/resource/js/posme_invoice_discount.js (mismas reglas que
+	 * app/Libraries/core_web_invoice_discount.php, que revalida al guardar).
+	 * Col 25 = monto del descuento de la linea, col 27 = % de la linea.
+	 * En modo global las cols 25/27 van en 0 (el servidor prorratea).
+	 * ====================================================================== */
+
+	/**
+	 * Indica si el descuento por linea / global esta activo para la empresa.
+	 * @return {boolean}
+	 */
+	function fnDescuentoPorLineaActivo()
+	{
+		return String(varParameterInvoiceBillingDiscountByItem) === "true";
+	}
+
+	/**
+	 * Formatea un % de descuento: 2 decimales, o 4 si los tiene (% calculado desde un monto).
+	 * @param {*} pct
+	 * @return {string}
+	 */
+	function fnFormatPctDescuento(pct)
+	{
+		var valor = PosmeInvoiceDiscount.round4(pct);
+		return PosmeInvoiceDiscount.round2(valor) === valor ? fnFormatNumber(valor, 2) : fnFormatNumber(valor, 4);
+	}
+
+	/**
+	 * Lee las lineas de la tabla de detalle en el formato de PosmeInvoiceDiscount.
+	 * El origen se resuelve por linea: si el % corresponde al monto con el bruto actual
+	 * se respeta el monto; si cambio cantidad/precio se conserva el % y se recalcula el monto.
+	 * @return {Array}
+	 */
+	function fnDescuentoLeerLineas()
+	{
+		var D 		= PosmeInvoiceDiscount;
+		var datos 	= objTableDetail.fnGetData();
+		var lineas 	= [];
+		for(var i = 0; i < datos.length; i++)
+		{
+			var fila 		= datos[i];
+			var precio 		= D.num(fila[columnasTableDetail.precio]);
+			var cantidad 	= D.num(fila[columnasTableDetail.cantidad]);
+			var descPct 	= D.num(fila[columnasTableDetail.discountPercentage]);
+			var descValor 	= D.num(fila[columnasTableDetail.discount]);
+			lineas.push({
+				precio 			: precio,
+				cantidad 		: cantidad,
+				ivaPct 			: D.num(fila[columnasTableDetail.iva]),
+				taxServicesPct 	: D.num(fila[columnasTableDetail.taxServices]),
+				descPct 		: descPct,
+				descValor 		: descValor,
+				origen 			: D.resolverOrigen(precio * cantidad, descPct, descValor)
+			});
+		}
+		return lineas;
+	}
+
+	/**
+	 * Modo de descuento de la factura: "global" si hay descuento global, "line" si alguna
+	 * linea tiene descuento, "none" si no hay descuento (son excluyentes).
+	 * @param {Array} lineas
+	 * @return {string}
+	 */
+	function fnDescuentoModo(lineas)
+	{
+		if(objDescuentoGlobal.pct > 0 || objDescuentoGlobal.monto > 0)
+			return "global";
+		for(var i = 0; i < lineas.length; i++)
+		{
+			if(lineas[i].descValor > 0 || lineas[i].descPct > 0)
+				return "line";
+		}
+		return "none";
+	}
+
+	/**
+	 * Recalcula detalle y resumen con descuento por linea / global.
+	 * @param {string} tipo_calculate "sumarizar" = no sincroniza cantidad/precio desde los inputs
+	 * @param {number} index fila cambiada (-1 = todas)
+	 * @return {number} total de la factura
+	 */
+	function fnRecalculateDetailDescuento(tipo_calculate, index)
+	{
+		var D 		= PosmeInvoiceDiscount;
+		var datos 	= objTableDetail.fnGetData();
+		var i;
+
+		//Sincronizar cantidad y precio desde los inputs (igual que el calculo legado)
+		if(tipo_calculate != "sumarizar")
+		{
+			for(i = 0; i < datos.length; i++)
+			{
+				if(index > -1 && i != index)
+					continue;
+				var inputCantidad 	= $(".txtQuantity")[i];
+				var inputPrecio 	= $(".txtPrice")[i];
+				if(inputCantidad) 	objTableDetail.fnUpdate( inputCantidad.value, i, columnasTableDetail.cantidad );
+				if(inputPrecio) 	objTableDetail.fnUpdate( inputPrecio.value, i, columnasTableDetail.precio );
+				var skuQuantityBySku = D.num(datos[i][columnasTableDetail.cantidad]) * D.num(datos[i][columnasTableDetail.ratioSku]);
+				objTableDetail.fnUpdate( skuQuantityBySku, i, columnasTableDetail.skuQuantityBySku );
+			}
+		}
+
+		var lineas 			= fnDescuentoLeerLineas();
+		var modo 			= fnDescuentoModo(lineas);
+		var subtotalBruto 	= D.calcResumen(lineas, "none", 0).subtotal;
+
+		//Global: base = SUB TOTAL bruto sin IVA; si cambio el subtotal se conserva el % y se recalcula el monto
+		if(modo === "global" && D.resolverOrigen(subtotalBruto, objDescuentoGlobal.pct, objDescuentoGlobal.monto) === "pct")
+			objDescuentoGlobal.monto = D.round2(subtotalBruto * objDescuentoGlobal.pct / 100);
+
+		var resumen 			= D.calcResumen(lineas, modo, objDescuentoGlobal.monto);
+		varDescuentoModoActual 	= modo;
+
+		//Actualizar cada linea: total = bruto; col 25/27 solo con descuento por linea (en global van en 0)
+		for(i = 0; i < resumen.lineas.length; i++)
+		{
+			var linea 		= resumen.lineas[i];
+			var totalTxt 	= fnFormatNumber(linea.bruto, 2);
+			var montoTxt 	= fnFormatNumber(modo === "line" ? linea.desc : 0, 2);
+			var pctTxt 		= fnFormatPctDescuento(modo === "line" ? linea.descPct : 0);
+			if(String(datos[i][columnasTableDetail.total]) !== totalTxt)
+				objTableDetail.fnUpdate( totalTxt, i, columnasTableDetail.total );
+			if(String(datos[i][columnasTableDetail.discount]) !== montoTxt)
+				objTableDetail.fnUpdate( montoTxt, i, columnasTableDetail.discount );
+			if(String(datos[i][columnasTableDetail.discountPercentage]) !== pctTxt)
+				objTableDetail.fnUpdate( pctTxt, i, columnasTableDetail.discountPercentage );
+		}
+
+		//Resumen: TOTAL = SUB TOTAL - DESC + IVA (sobre el neto) + SERVICIO (sobre el bruto)
+		$("#txtSubTotal").val(fnFormatNumber(resumen.subtotal, 2));
+		$("#txtIva").val(fnFormatNumber(resumen.iva, 2));
+		$("#txtServices").val(fnFormatNumber(resumen.servicio, 2));
+		$("#txtDescuento").val(fnFormatNumber(resumen.desc, 2));
+		$("#txtPorcentajeDescuento").val(modo === "global" ? fnFormatPctDescuento(objDescuentoGlobal.pct) : "0");
+		$("#txtTotal").val(fnFormatNumber(resumen.total, 2));
+		$("#txtTotalAlternativo").text(fnFormatNumber(resumen.total, 2));
+		$("#txtDiscountMode").val(modo);
+
+		fnDescuentoAplicarBloqueo(modo);
+		return resumen.total;
+	}
+
+	/**
+	 * Bloqueo cruzado: con descuento por linea el global queda readonly; con global, los de linea.
+	 * Los inputs de linea bloqueados por permiso (data-bloqueo-permiso="1") no se desbloquean.
+	 * @param {string} modo
+	 */
+	function fnDescuentoAplicarBloqueo(modo)
+	{
+		$("#txtPorcentajeDescuento, #txtDescuento").prop("readonly", modo === "line");
+		$(".txtDiscountItemPct, .txtDiscountItemAmount").each(function(){
+			var porPermiso = $(this).attr("data-bloqueo-permiso") === "1";
+			$(this).prop("readonly", porPermiso || modo === "global");
+		});
+	}
+
+	/**
+	 * Html del input de descuento de una linea (monto o %).
+	 * @param {string} clase  txtDiscountItemAmount | txtDiscountItemPct
+	 * @param {string} nombre name del input
+	 * @param {*} data valor de la celda
+	 * @param {Array} full fila completa
+	 * @param {string} etiqueta texto del badge en useMobile=1
+	 * @return {string}
+	 */
+	function fnDescuentoRenderInput(clase, nombre, data, full, etiqueta)
+	{
+		//Mismas condiciones de solo lectura que la cantidad
+		var bloqueoPermiso 	= ((varPermisosNoPermitirEliminarProductosFactura || (varPermisosNoPermitirModificarDetalleFactura && loadEdicion)) && isAdmin !== "1");
+		var soloLectura 	= (bloqueoPermiso || varDescuentoModoActual === "global") ? " readonly " : "";
+		var valor 			= (data === undefined || data === null || data === "") ? "0" : data;
+		var str 			= '<input type="text" inputmode="decimal" class="col-lg-12 txt-numeric '+clase+'" id="'+clase+'Row'+full[2]+'" value="'+valor+'" name="'+nombre+'" data-bloqueo-permiso="'+(bloqueoPermiso ? '1' : '0')+'" style="text-align:right; <?php echo $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" '+soloLectura+'/>';
+		if (varUseMobile == "1")
+			str = str + " <span class='badge badge-inverse' >"+etiqueta+"</span>";
+		return str;
+	}
+
+	/**
+	 * Cambio del descuento de una linea (% o monto): valida, pide clave si hace falta y aplica.
+	 * @param {HTMLElement} input
+	 */
+	function fnDescuentoCambioLinea(input)
+	{
+		var tr 		= $(input).closest("tr")[0];
+		var aPos 	= objTableDetail.fnGetPosition(tr);
+		if(aPos === null || aPos === undefined || aPos < 0)
+			return;
+		fnDescuentoAplicarLinea(aPos, $(input).hasClass("txtDiscountItemPct") ? "pct" : "valor", $(input).val());
+	}
+
+	/**
+	 * Aplica el descuento de una linea (lo usa el modal de informacion del producto):
+	 * valida rango y exclusion, pide clave si hace falta y recalcula.
+	 * @param {number} aPos  posicion de la fila en la tabla
+	 * @param {string} campo "pct" | "valor"
+	 * @param {string} texto valor escrito
+	 */
+	function fnDescuentoAplicarLinea(aPos, campo, texto)
+	{
+		var D 			= PosmeInvoiceDiscount;
+		var fila 		= objTableDetail.fnGetData(aPos);
+		if(!fila)
+			return;
+		var bruto 		= D.num(fila[columnasTableDetail.precio]) * D.num(fila[columnasTableDetail.cantidad]);
+
+		//Rango: monto en [0, bruto], % en [0, 100]
+		var validacion 	= D.validarDescuento({ campo: campo, valor: texto, base: bruto });
+		if(!validacion.ok)
+		{
+			Toast.fire({ icon: "warning", title: validacion.mensaje });
+			fnDescuentoRevertirLinea(aPos);
+			return;
+		}
+
+		//Excluyente con el descuento global
+		var valorNuevo 	= D.num(texto);
+		if(valorNuevo > 0 && varDescuentoModoActual === "global")
+		{
+			Toast.fire({ icon: "warning", title: "La factura tiene descuento global; póngalo en 0 para usar descuento por línea" });
+			fnDescuentoRevertirLinea(aPos);
+			return;
+		}
+
+		var calculo 	= D.calcLinea({
+			precio 			: fila[columnasTableDetail.precio],
+			cantidad 		: fila[columnasTableDetail.cantidad],
+			ivaPct 			: fila[columnasTableDetail.iva],
+			taxServicesPct 	: fila[columnasTableDetail.taxServices],
+			descPct 		: campo === "pct" ? valorNuevo : 0,
+			descValor 		: campo === "valor" ? valorNuevo : 0,
+			origen 			: campo
+		});
+
+		//Sin cambio real (mismo descuento ya aplicado): solo se vuelve a mostrar
+		if(
+			calculo.descValor === D.round2(fila[columnasTableDetail.discount]) &&
+			calculo.descPct === D.round4(fila[columnasTableDetail.discountPercentage])
+		)
+		{
+			fnDescuentoRevertirLinea(aPos);
+			return;
+		}
+
+		var aplicar = function(){
+			objTableDetail.fnUpdate( fnFormatNumber(calculo.descValor, 2), aPos, columnasTableDetail.discount );
+			objTableDetail.fnUpdate( fnFormatPctDescuento(calculo.descPct), aPos, columnasTableDetail.discountPercentage );
+			fnRecalculateDetail(true, "", aPos);
+		};
+
+		if(calculo.descValor > 0 || calculo.descPct > 0)
+		{
+			varDescuentoModificado = true;
+			if(!varDescuentoAutorizado)
+			{
+				fnDescuentoSolicitarClave(aplicar, function(){ fnDescuentoRevertirLinea(aPos); });
+				return;
+			}
+		}
+		aplicar();
+	}
+
+	/**
+	 * Vuelve a mostrar en la linea el descuento aplicado (datos) y recalcula.
+	 * @param {number} aPos
+	 */
+	function fnDescuentoRevertirLinea(aPos)
+	{
+		var fila = objTableDetail.fnGetData(aPos);
+		if(!fila)
+			return;
+		objTableDetail.fnUpdate( fila[columnasTableDetail.discount], aPos, columnasTableDetail.discount );
+		objTableDetail.fnUpdate( fila[columnasTableDetail.discountPercentage], aPos, columnasTableDetail.discountPercentage );
+		fnRecalculateDetail(false, "sumarizar");
+	}
+
+	/**
+	 * Cambio del descuento global (% o monto) con base = SUB TOTAL bruto sin IVA.
+	 * @param {string} campo "pct" | "valor"
+	 */
+	function fnDescuentoCambioGlobal(campo)
+	{
+		var D 			= PosmeInvoiceDiscount;
+		var texto 		= campo === "pct" ? $("#txtPorcentajeDescuento").val() : $("#txtDescuento").val();
+		var subtotal 	= D.calcResumen(fnDescuentoLeerLineas(), "none", 0).subtotal;
+
+		//Rango: monto en [0, subtotal], % en [0, 100]
+		var validacion 	= D.validarDescuento({ campo: campo, valor: texto, base: subtotal });
+		if(!validacion.ok)
+		{
+			Toast.fire({ icon: "warning", title: validacion.mensaje });
+			fnDescuentoRevertirGlobal();
+			return;
+		}
+
+		//Excluyente con el descuento por linea
+		var valorNuevo 	= D.num(texto);
+		if(valorNuevo > 0 && varDescuentoModoActual === "line")
+		{
+			Toast.fire({ icon: "warning", title: "Hay descuentos por línea; póngalos en 0 para usar descuento global" });
+			fnDescuentoRevertirGlobal();
+			return;
+		}
+
+		//% <-> monto
+		var nuevo = { pct: 0, monto: 0 };
+		if(campo === "pct")
+		{
+			nuevo.pct 	= D.round4(valorNuevo);
+			nuevo.monto = D.round2(subtotal * nuevo.pct / 100);
+		}
+		else
+		{
+			nuevo.monto = D.round2(valorNuevo);
+			nuevo.pct 	= subtotal > 0 ? D.round4(nuevo.monto / subtotal * 100) : 0;
+		}
+
+		//Sin cambio real: solo se vuelve a mostrar
+		if(nuevo.pct === D.round4(objDescuentoGlobal.pct) && nuevo.monto === D.round2(objDescuentoGlobal.monto))
+		{
+			fnDescuentoRevertirGlobal();
+			return;
+		}
+
+		var aplicar = function(){
+			objDescuentoGlobal = nuevo;
+			fnRecalculateDetail(true, "");
+		};
+
+		if(nuevo.monto > 0 || nuevo.pct > 0)
+		{
+			varDescuentoModificado = true;
+			if(!varDescuentoAutorizado)
+			{
+				fnDescuentoSolicitarClave(aplicar, fnDescuentoRevertirGlobal);
+				return;
+			}
+		}
+		aplicar();
+	}
+
+	/**
+	 * Vuelve a mostrar el descuento global aplicado y recalcula.
+	 */
+	function fnDescuentoRevertirGlobal()
+	{
+		fnRecalculateDetail(false, "sumarizar");
+	}
+
+	/**
+	 * Abre el modal de autorizacion del descuento.
+	 * @param {Function} fnAceptar se ejecuta cuando el servidor valida la clave
+	 * @param {Function} fnCancelar se ejecuta al cancelar
+	 */
+	function fnDescuentoSolicitarClave(fnAceptar, fnCancelar)
+	{
+		objDescuentoPendiente = { aceptar: fnAceptar, cancelar: fnCancelar };
+		$("#txtClaveDescuento").val("");
+		$("#errorMessageClaveDescuento").text("").hide();
+		$("#btnAceptarClaveDescuento").removeClass("disabled");
+		mostrarModal("ModalAutorizarDescuento");
+		setTimeout(function(){ $("#txtClaveDescuento").focus(); }, 200);
+	}
+
+	/**
+	 * Muestra un error dentro del modal de autorizacion.
+	 * @param {string} mensaje
+	 */
+	function fnDescuentoMostrarErrorClave(mensaje)
+	{
+		$("#errorMessageClaveDescuento").text(mensaje).show();
+	}
+
+	/**
+	 * Valida la clave en el servidor (nunca se compara en JS).
+	 * POST app_invoice_billing/validateDiscountAuthorization con el campo password;
+	 * respuesta JSON {error, message}.
+	 */
+	function fnDescuentoValidarClave()
+	{
+		var $btn 	= $("#btnAceptarClaveDescuento");
+		var clave 	= $("#txtClaveDescuento").val();
+		if($btn.hasClass("disabled"))
+			return;
+		if(clave === "")
+		{
+			fnDescuentoMostrarErrorClave("Ingrese la clave de autorización.");
+			return;
+		}
+
+		$btn.addClass("disabled");
+		$("#errorMessageClaveDescuento").text("").hide();
+
+		var parametros = new FormData();
+		parametros.append("password", clave);
+
+		fetch('<?php echo base_url(); ?>/app_invoice_billing/validateDiscountAuthorization', {
+			method 	: 'POST',
+			headers : { 'X-Requested-With': 'XMLHttpRequest' },
+			body 	: parametros
+		})
+		.then(function(res){ return res.json(); })
+		.then(function(json){
+			//Sin datos: respuesta vacia o sin la propiedad error
+			if(!json || typeof json !== "object" || json.error === undefined)
+			{
+				fnDescuentoMostrarErrorClave("Respuesta no válida del servidor.");
+				return;
+			}
+			//Error: clave incorrecta u otro problema reportado por el servidor
+			if(json.error === true || json.error === "true" || json.error === 1 || json.error === "1")
+			{
+				fnDescuentoMostrarErrorClave(json.message ? json.message : "Clave incorrecta.");
+				return;
+			}
+			//Con datos: autorizado; la clave viaja oculta al guardar y el servidor la revalida
+			varDescuentoAutorizado = true;
+			$("#txtDiscountAuthorization").val(clave);
+			$("#txtClaveDescuento").val("");
+			cerrarModal("ModalAutorizarDescuento");
+			var pendiente 			= objDescuentoPendiente;
+			objDescuentoPendiente 	= null;
+			if(pendiente && typeof pendiente.aceptar === "function")
+				pendiente.aceptar();
+		})
+		.catch(function(){
+			fnDescuentoMostrarErrorClave("No se pudo validar la clave. Intente de nuevo.");
+		})
+		.finally(function(){
+			$btn.removeClass("disabled");
+		});
+	}
+
+	/**
+	 * Validacion del descuento antes de guardar.
+	 * @return {boolean|string} true = ok, false = invalido, "clave" = falta autorizacion
+	 */
+	function fnDescuentoValidarAntesDeGuardar()
+	{
+		var D 			= PosmeInvoiceDiscount;
+		var lineas 		= fnDescuentoLeerLineas();
+		var hayLinea 	= false;
+		for(var i = 0; i < lineas.length; i++)
+		{
+			var bruto 		= lineas[i].precio * lineas[i].cantidad;
+			var valPct 		= D.validarDescuento({ campo: "pct", valor: lineas[i].descPct, base: bruto });
+			var valMonto 	= D.validarDescuento({ campo: "valor", valor: lineas[i].descValor, base: bruto });
+			if(!valPct.ok || !valMonto.ok)
+			{
+				Toast.fire({ icon: "warning", title: "Línea " + (i + 1) + ": " + (!valPct.ok ? valPct.mensaje : valMonto.mensaje) });
+				return false;
+			}
+			if(lineas[i].descValor > 0 || lineas[i].descPct > 0)
+				hayLinea = true;
+		}
+
+		var subtotal 		= D.calcResumen(lineas, "none", 0).subtotal;
+		var valGlobalPct 	= D.validarDescuento({ campo: "pct", valor: objDescuentoGlobal.pct, base: subtotal });
+		var valGlobalMonto 	= D.validarDescuento({ campo: "valor", valor: objDescuentoGlobal.monto, base: subtotal });
+		if(!valGlobalPct.ok || !valGlobalMonto.ok)
+		{
+			Toast.fire({ icon: "warning", title: "Descuento global: " + (!valGlobalPct.ok ? valGlobalPct.mensaje : valGlobalMonto.mensaje) });
+			return false;
+		}
+
+		var hayGlobal = (objDescuentoGlobal.pct > 0 || objDescuentoGlobal.monto > 0);
+		if(hayLinea && hayGlobal)
+		{
+			Toast.fire({ icon: "warning", title: "No puede combinar descuento por línea y descuento global" });
+			return false;
+		}
+
+		if((hayLinea || hayGlobal) && varDescuentoModificado && !varDescuentoAutorizado)
+			return "clave";
+
+		return true;
+	}
+
+	/**
+	 * Limpia descuento global y autorizacion (nueva factura, otra factura o detalle limpio).
+	 */
+	function fnDescuentoReiniciar()
+	{
+		objDescuentoGlobal 		= { pct: 0, monto: 0 };
+		varDescuentoAutorizado 	= false;
+		varDescuentoModificado 	= false;
+		objDescuentoPendiente 	= null;
+		$("#txtDiscountAuthorization").val("");
+		$("#txtClaveDescuento").val("");
+
+		var modo = "none";
+		if(objTableDetail && typeof objTableDetail.fnGetData === "function")
+			modo = fnDescuentoModo(fnDescuentoLeerLineas());
+		varDescuentoModoActual = modo;
+		$("#txtDiscountMode").val(modo);
+		fnDescuentoAplicarBloqueo(modo);
+	}
+
+	/**
+	 * Prepara la pantalla para el descuento por linea: clase html (CSS de tablet),
+	 * inputs ocultos del form y desbloqueo de #txtPorcentajeDescuento / #txtDescuento.
+	 */
+	function fnDescuentoInicializar()
+	{
+		if(!fnDescuentoPorLineaActivo())
+			return;
+
+		//Inputs ocultos dentro del form (con el parametro en false no se crean: el servidor usa la logica legada)
+		var $form = $("#form-new-invoice");
+		if($("#txtDiscountMode").length == 0)
+			$form.append('<input type="hidden" name="txtDiscountMode" id="txtDiscountMode" value="none" />');
+		if($("#txtDiscountAuthorization").length == 0)
+			$form.append('<input type="hidden" name="txtDiscountAuthorization" id="txtDiscountAuthorization" value="" />');
+
+		$("#txtPorcentajeDescuento, #txtDescuento").prop("readonly", false);
+		$("#txtDescuento").attr("inputmode", "decimal").attr("autocomplete", "off");
+		fnDescuentoAplicarBloqueo(varDescuentoModoActual);
 	}
 
 	function fnFillListaProductos(data)
@@ -3937,7 +4639,130 @@
 
 
 	
+	/**
+	 * Formato visual del modal: miles con coma y dos decimales (no altera el valor).
+	 * @param {number} valor
+	 * @return {string}
+	 */
+	function fnInfoProductoMoneda(valor)
+	{
+		return PosmeInvoiceDiscount.num(valor).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+	}
+
+	/**
+	 * Modal de informacion: nombre, codigo, cantidad, precio y sub total de la linea seleccionada.
+	 */
+	function fnInfoProductoCargarResumen()
+	{
+		let fila 	= selectedDataInfoProducto;
+		let nombre 	= $('<div>').html(String(fila[columnasTableDetail.descripcion] || '')).text();
+		let codigo 	= $('<div>').html(String(fila[3] || '')).text();
+		$('#pmInfoNombre').text(nombre);
+		$('#pmInfoCodigo').text(codigo !== '' ? 'Código: ' + codigo : '');
+		$('#pmInfoCantidad').text(fnInfoProductoMoneda(fila[columnasTableDetail.cantidad]));
+		fnInfoProductoCalcularDescuento(null);
+	}
+
+	/**
+	 * Modal de informacion: muestra el descuento vigente de la linea y lo bloquea si
+	 * la factura tiene descuento global o el usuario no puede modificar el detalle.
+	 */
+	function fnInfoProductoCargarDescuento()
+	{
+		let $seccion 			= $('#pmInfoDescuento');
+		varInfoDescuentoOrigen 	= null;
+		if(!fnDescuentoPorLineaActivo())
+		{
+			$seccion.addClass('hidden');
+			return;
+		}
+		$seccion.removeClass('hidden');
+
+		let D 	 	= PosmeInvoiceDiscount;
+		let fila 	= selectedDataInfoProducto;
+		$('#txtInfoDescuentoPct').val(D.round2(D.num(fila[columnasTableDetail.discountPercentage])));
+		$('#txtInfoDescuentoMonto').val(fnFormatNumber(D.num(fila[columnasTableDetail.discount]), 2));
+
+		//Mismas condiciones de solo lectura que la cantidad, mas la exclusion con el descuento global
+		let bloqueoPermiso 	= ((varPermisosNoPermitirEliminarProductosFactura || (varPermisosNoPermitirModificarDetalleFactura && loadEdicion)) && isAdmin !== "1");
+		let mensaje 		= '';
+		if(varDescuentoModoActual === "global")
+			mensaje = 'La factura tiene descuento global. Póngalo en 0 para descontar por producto.';
+		else if(bloqueoPermiso)
+			mensaje = 'No tiene permiso para modificar el detalle de la factura.';
+
+		$('#txtInfoDescuentoPct, #txtInfoDescuentoMonto').prop('disabled', mensaje !== '');
+		$seccion.toggleClass('pm-info-descuento-bloqueado', mensaje !== '');
+		fnInfoProductoAviso(mensaje, 'info');
+		fnInfoProductoCalcularDescuento(null);
+	}
+
+	/**
+	 * Modal de informacion: recalcula sub total, descuento y neto con el precio elegido.
+	 * @param {string|null} origen "pct" | "valor" | null (solo refresca el resumen)
+	 */
+	function fnInfoProductoCalcularDescuento(origen)
+	{
+		let D 			= PosmeInvoiceDiscount;
+		let fila 		= selectedDataInfoProducto;
+		let precio 		= D.num($('#selectPrecio').val() || fila[columnasTableDetail.precio]);
+		let cantidad 	= D.num(fila[columnasTableDetail.cantidad]);
+		let bruto 		= D.round2(precio * cantidad);
+		$('#pmInfoPrecio').text(fnInfoProductoMoneda(precio));
+		$('#pmInfoSubtotal').text(fnInfoProductoMoneda(bruto));
+
+		if(!fnDescuentoPorLineaActivo())
+			return;
+
+		let pct 	= D.num($('#txtInfoDescuentoPct').val());
+		let monto 	= D.num($('#txtInfoDescuentoMonto').val());
+		if(origen === 'pct')
+		{
+			monto = D.round2(bruto * pct / 100);
+			$('#txtInfoDescuentoMonto').val(fnFormatNumber(monto, 2));
+		}
+		else if(origen === 'valor')
+		{
+			pct = bruto > 0 ? D.round2(monto / bruto * 100) : 0;
+			$('#txtInfoDescuentoPct').val(pct);
+		}
+
+		$('#pmInfoNeto').text(fnInfoProductoMoneda(D.round2(bruto - monto)));
+
+		//Validacion en vivo del rango
+		if($('#txtInfoDescuentoPct').prop('disabled'))
+			return;
+		let validacion = D.validarDescuento({ campo: 'valor', valor: monto, base: bruto });
+		if(validacion.ok && pct > 100)
+			validacion = { ok: false, mensaje: 'El porcentaje no puede ser mayor a 100%' };
+		fnInfoProductoAviso(validacion.ok ? '' : validacion.mensaje, 'error');
+	}
+
+	/**
+	 * Modal de informacion: muestra u oculta el aviso de la seccion de descuento.
+	 * @param {string} mensaje vacio = ocultar
+	 * @param {string} tipo    "info" | "error"
+	 */
+	function fnInfoProductoAviso(mensaje, tipo)
+	{
+		let $aviso = $('#pmInfoDescuentoAviso');
+		$aviso.text(mensaje)
+			.toggleClass('hidden', mensaje === '')
+			.toggleClass('pm-info-aviso-error', tipo === 'error');
+	}
+
 	function fnAceptarModalInfoProducto(){
+        //Descuento de la linea: se valida antes de cerrar el modal
+        let aplicarDescuento 	= fnDescuentoPorLineaActivo() && !$('#txtInfoDescuentoPct').prop('disabled');
+        let origenDescuento 	= varInfoDescuentoOrigen === 'pct' ? 'pct' : 'valor';
+        let valorDescuento 		= origenDescuento === 'pct' ? $('#txtInfoDescuentoPct').val() : $('#txtInfoDescuentoMonto').val();
+        if(aplicarDescuento)
+        {
+            fnInfoProductoCalcularDescuento(null);
+            if(!$('#pmInfoDescuentoAviso').hasClass('hidden'))
+                return;
+        }
+
         let precioRecomendado 	= $('#selectPrecio').val();
         let vendedor 			= $('#selectVendedor').val();
         let serie 				= $('#txtSerieProducto').val();
@@ -3949,6 +4774,10 @@
 		refreschChecked();
         fnRecalculateDetail(true,"",selectedFilaInfoProducto);
         cerrarModal('ModalInfoProducto');
+
+        //Aplica el descuento con el precio ya actualizado (valida, pide clave si hace falta y recalcula)
+        if(aplicarDescuento && varInfoDescuentoOrigen !== null)
+            fnDescuentoAplicarLinea(selectedFilaInfoProducto, origenDescuento, valorDescuento);
     }
 
 	function fnAceptarModalBackToList()
@@ -4631,7 +5460,7 @@
 							}
 						},
 						{
-							"aTargets"		: [ columnasTableDetail.discount ],//Descuento
+							"aTargets"		: [ columnasTableDetail.discount ],//Descuento (monto de la linea)
 							"bVisible"		: true,
 							"sClass"		: "hidden",
 							"bSearchable"	: false,
@@ -4648,9 +5477,21 @@
 								return '<input type="hidden" value="'+data+'" name="txtCommisionByBankByItem[]" />';
 							}
 						},
+						{
+							"aTargets"		: [ columnasTableDetail.discountPercentage ],//% de descuento de la linea
+							"bVisible"		: true,
+							"sClass"		: "hidden",
+							"bSearchable"	: false,
+							"mRender"		: function ( data, type, full ) {
+								return '<input type="hidden" value="'+data+'" name="txtDiscountPercentageByItem[]" />';
+							}
+						},
 
 			]
 		});
+
+		//Descuento por linea / global: inputs ocultos, clase html y desbloqueo del descuento global
+		fnDescuentoInicializar();
 
 		//Renderizar combobox de las lineas de credito
 		fnRenderLineaCredit(objListCustomerCreditLine,objCausalTypeCredit);

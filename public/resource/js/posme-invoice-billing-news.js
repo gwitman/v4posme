@@ -232,6 +232,11 @@
 		});
 		if (!abierto) {
 			$('[class^="modal-customer1-"], [class*=" modal-customer1-"]').each(function () {
+				//Los modales de espera (cada operacion) cubren todo la pantalla y duran milisegundos:
+				//no cuentan, para que la barra de captura y el cobro no parpadeen
+				if (this.id === 'ModalCargandoDatos' || this.id === 'ModalActualizandoCatalogo') {
+					return;
+				}
 				if (this.offsetWidth > 0 || this.offsetHeight > 0) {
 					abierto = true;
 					return false;
@@ -570,6 +575,11 @@
 			//Apertura/cierre de sidebars (style width) y de modales Bootstrap (body.modal-open): reaccion inmediata
 			var observadorPaneles = new window.MutationObserver(refrescar);
 			$('.sidebar').each(function () {
+				observadorPaneles.observe(this, { attributes: true, attributeFilter: ['style', 'class'] });
+			});
+			//Modales propios (helper_getHtmlOfModalDialog: mostrarModal/cerrarModal cambian style.display):
+			//sin esto la barra de captura quedaba encima del modal hasta el siguiente sondeo de 500 ms
+			$('[class^="modal-customer1-"], [class*=" modal-customer1-"]').each(function () {
 				observadorPaneles.observe(this, { attributes: true, attributeFilter: ['style', 'class'] });
 			});
 			if (document.body) {

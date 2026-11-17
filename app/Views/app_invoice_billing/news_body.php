@@ -874,6 +874,7 @@ echo helper_getHtmlOfPageLanding();
 										
 										<th>Descuento</th><!--Descuento-->
 										<th>Comision POS Banco</th><!--Comision Banco-->
+										<th>% Desc.</th><!--Porcentaje de descuento de la linea (INVOICE_BILLING_DISCOUNT_BY_ITEM)-->
 									</tr>
 								</thead>
 								<tbody id="body_tb_transaction_master_detail">
@@ -1448,18 +1449,29 @@ echo helper_getHtmlOfPageLanding();
 			?>
 
 
-            <div id="modalBodyHtmlInfoProducto" style="display:none">
-                <h3>INFORMACION DEL PRODUCTO</h3>
-                <hr />
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="selectPrecio">Precios:</label>
-                    <div class="col-md-8">
-                        <select class="pm-select" id="selectPrecio"></select>
+            <div id="modalBodyHtmlInfoProducto" class="pm-info-producto" style="display:none">
+                <!-- Encabezado: nombre, codigo y resumen de la linea -->
+                <div class="pm-info-header">
+                    <div class="pm-info-icono"><i class="fas fa-box-open"></i></div>
+                    <div class="pm-info-titulos">
+                        <span class="pm-info-etiqueta">Información del producto</span>
+                        <h3 id="pmInfoNombre">PRODUCTO</h3>
+                        <span class="pm-info-codigo" id="pmInfoCodigo"></span>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="selectVendedor">Vendedor:</label>
-                    <div class="col-md-8">
+                <div class="pm-info-resumen">
+                    <div class="pm-info-dato"><span>Cantidad</span><strong id="pmInfoCantidad">0</strong></div>
+                    <div class="pm-info-dato"><span>Precio</span><strong id="pmInfoPrecio">0.00</strong></div>
+                    <div class="pm-info-dato"><span>Sub total</span><strong id="pmInfoSubtotal">0.00</strong></div>
+                </div>
+
+                <div class="pm-info-cuerpo">
+                    <div class="pm-info-campo">
+                        <label for="selectPrecio">Precio</label>
+                        <select class="pm-select" id="selectPrecio"></select>
+                    </div>
+                    <div class="pm-info-campo">
+                        <label for="selectVendedor">Vendedor</label>
                         <select class="pm-select" id="selectVendedor">
                             <?php
                             $count					= 0;
@@ -1476,22 +1488,44 @@ echo helper_getHtmlOfPageLanding();
                             ?>
                         </select>
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="txtSerieProducto">Serie:</label>
-                    <div class="col-md-8">
-                        <input class="form-control" type="text" id="txtSerieProducto" value="" />
+                    <div class="pm-info-campo">
+                        <label for="txtSerieProducto">Serie</label>
+                        <input class="form-control" type="text" id="txtSerieProducto" value="" autocomplete="off" />
                     </div>
-                </div>
-                <div class="form-group">
-                    <label class="col-md-4 control-label" for="txtReferenciaProducto">Referencia:</label>
-                    <div class="col-md-8">
-                        <input class="form-control" type="text" id="txtReferenciaProducto" value="" />
+                    <div class="pm-info-campo">
+                        <label for="txtReferenciaProducto">Referencia</label>
+                        <input class="form-control" type="text" id="txtReferenciaProducto" value="" autocomplete="off" />
+                    </div>
+
+                    <!-- Descuento de la linea (solo con INVOICE_BILLING_DISCOUNT_BY_ITEM = true; se muestra por JS) -->
+                    <div class="pm-info-descuento hidden" id="pmInfoDescuento">
+                        <div class="pm-info-descuento-titulo">
+                            <span><i class="fas fa-tags"></i> Descuento del producto</span>
+                            <small><i class="fas fa-lock"></i> Requiere autorización</small>
+                        </div>
+                        <div class="pm-info-descuento-campos">
+                            <div class="pm-info-campo">
+                                <label for="txtInfoDescuentoPct">Descuento %</label>
+                                <div class="pm-info-input-sufijo">
+                                    <input class="form-control" type="text" inputmode="decimal" id="txtInfoDescuentoPct" value="0" autocomplete="off" />
+                                    <span>%</span>
+                                </div>
+                            </div>
+                            <div class="pm-info-campo">
+                                <label for="txtInfoDescuentoMonto">Descuento monto</label>
+                                <div class="pm-info-input-sufijo">
+                                    <input class="form-control" type="text" inputmode="decimal" id="txtInfoDescuentoMonto" value="0.00" autocomplete="off" />
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pm-info-descuento-neto">
+                            <span>Sub total con descuento</span>
+                            <strong id="pmInfoNeto">0.00</strong>
+                        </div>
+                        <div class="pm-info-aviso hidden" id="pmInfoDescuentoAviso"></div>
                     </div>
                 </div>
                 <input type="hidden" id="indexTransctionMasterDetail" value="" />
-                <p>&nbsp;</p>
-                <hr />
             </div>
             <?php
             helper_getHtmlOfModalDialog("ModalInfoProducto","modalBodyHtmlInfoProducto","fnAceptarModalInfoProducto",true);
@@ -1535,7 +1569,22 @@ echo helper_getHtmlOfPageLanding();
 					
 			</div>
 			<?php
-				helper_getHtmlOfModalDialog("ModalCodigoCaja","ModalCodigoCajaBody","",false);				
+				helper_getHtmlOfModalDialog("ModalCodigoCaja","ModalCodigoCajaBody","",false);
+			?>
+
+			<!-- Autorizacion del descuento por linea / global (INVOICE_BILLING_DISCOUNT_BY_ITEM). La clave se valida en el servidor. -->
+			<div id="ModalAutorizarDescuentoBody" style="display:none">
+				<h3>Autorizar descuento</h3>
+				<br/>
+				<input type="password" id="txtClaveDescuento" autocomplete="off" class="form-control" placeholder="Clave de autorización" />
+				<span id="errorMessageClaveDescuento" style="color: red; display: none;"></span>
+				<br/>
+				<button type="button" class="btn btn-default btn-flat btn-block" id="btnCancelarClaveDescuento">Cancelar</button>
+				<br/>
+				<a href="javascript:void(0);" class="btn btn-primary btn-flat btn-block" id="btnAceptarClaveDescuento">Aceptar</a>
+			</div>
+			<?php
+				helper_getHtmlOfModalDialog("ModalAutorizarDescuento","ModalAutorizarDescuentoBody","",false,false);
 			?>
 			
 			
