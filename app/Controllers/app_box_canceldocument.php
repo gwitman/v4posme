@@ -1114,6 +1114,11 @@ class app_box_canceldocument extends _BaseController {
 			
 			
 			
+			//Personalizacion por compania: estilo adicional (ej. mayusculas) y pie (ej. linea de firma del cliente)
+			$datViewReport												= array();
+			$datViewReport["reporte80mmTransactionMaster_Style"]		= getBehavio($objCompany->type,"app_box_canceldocument","viewRegisterFormatoPaginaNormal_Style","");
+			$datViewReport["reporte80mmTransactionMaster_Footer"]		= getBehavio($objCompany->type,"app_box_canceldocument","viewRegisterFormatoPaginaNormal_Footer","");
+
 			//Generar Reporte
 			$html = helper_reporte80mmTransactionMaster(
 			    "CANCELACION",
@@ -1132,7 +1137,7 @@ class app_box_canceldocument extends _BaseController {
 				"",
 				"",
 				"",
-				array()
+				$datViewReport
 			);
 			$this->dompdf->loadHTML($html);
 			
@@ -1150,8 +1155,13 @@ class app_box_canceldocument extends _BaseController {
 			$objParameterShowLinkDownload	= $objParameterShowLinkDownload->value;
 			
 			//visualizar
+			//Limpiar buffers para que no salga texto previo (espacios, avisos) antes del PDF
+			while (ob_get_level()) {
+				ob_end_clean();
+			}
 			$this->dompdf->stream("file.pdf", ['Attachment' => !$objParameterShowLinkDownload]);
-			
+			exit;
+
 			//descargar
 			//$this->dompdf->stream();
 			

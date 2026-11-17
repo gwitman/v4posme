@@ -10261,6 +10261,7 @@ function helper_reporte80mmTransactionMaster(
                           font-weight: bold;
                           font-family: Consolas, monaco, monospace;
                         }
+						".($datView["reporte80mmTransactionMaster_Style"] ?? "")."
                       </style>
                     </head>
         
@@ -10307,7 +10308,7 @@ function helper_reporte80mmTransactionMaster(
                           </td>
                         </tr>
                                 
-						".$datView["viewRegisterFormatoPaginaNormal80mmOpcion1_LabelAfterDateTime"]." 
+						".($datView["viewRegisterFormatoPaginaNormal80mmOpcion1_LabelAfterDateTime"] ?? "")." 
 
                          <tr>
                           <td colspan='3' style='text-align:center'>
@@ -10487,6 +10488,7 @@ function helper_reporte80mmTransactionMaster(
                           </td>
                         </tr>
 						
+						".($datView["reporte80mmTransactionMaster_Footer"] ?? "")."
 						".getBehavio($objCompany->type,"web_tools_report_helper","reporte80mmTransactionMaster_Devolucion","")."
 
                         <tr>
