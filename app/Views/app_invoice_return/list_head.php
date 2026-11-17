@@ -1,0 +1,23 @@
+<?php echo view('core_template/posme_v2_style'); ?>
+
+<!--titulo-->
+<div id="heading" class="page-header">
+    <h1><i class="icon20 i-cart-remove"></i> SUSTITUCION DE PRODUCTOS FACTURADOS</h1>
+</div>
+
+<!--botonera-->
+<div class="pv2">
+    <div class="pv2-card pv2-listbar">
+        <div class="pv2-actions">
+            <a href="#" class="btn btn-default" id="btnView"><i class="icon16 i-grid-2"></i> Vistas</a>
+            <a href="#" class="btn btn-default" id="btnEdit"><i class="icon16 i-pencil-4"></i> Editar</a>
+            <a href="#" class="btn btn-danger" id="btnEliminar"><i class="icon16 i-remove"></i> Eliminar</a>
+            <a href="#" class="btn btn-primary" id="btnNuevo"><i class="icon16 i-plus"></i> Nuevo</a>
+        </div>
+    </div>
+</div>
+
+<!--lista-->
+<div class="row">
+    <div class="col-lg-12">
+        <div id="div-container-list">
