@@ -807,6 +807,12 @@ $routes->match(['get', 'post'], 'app_sales_report/sales_by_references', 'app_sal
 $routes->match(['get', 'post'], 'app_sales_report/sales_by_references/(:any)', 'app_sales_report::sales_by_references');
 $routes->match(['get', 'post'], 'app_cxc_customer/edit', 'app_cxc_customer::edit');
 $routes->match(['get', 'post'], 'app_cxc_customer/edit/(:any)', 'app_cxc_customer::edit');
+$routes->match(['get', 'post'], 'app_cxc_import/index', 'app_cxc_import::index');
+$routes->match(['get', 'post'], 'app_cxc_import/index/(:any)', 'app_cxc_import::index');
+$routes->match(['get', 'post'], 'app_cxc_import/validateRows', 'app_cxc_import::validateRows');
+$routes->match(['get', 'post'], 'app_cxc_import/validateRows/(:any)', 'app_cxc_import::validateRows');
+$routes->match(['get', 'post'], 'app_cxc_import/importRows', 'app_cxc_import::importRows');
+$routes->match(['get', 'post'], 'app_cxc_import/importRows/(:any)', 'app_cxc_import::importRows');
 $routes->match(['get', 'post'], 'app_cxc_customer/delete', 'app_cxc_customer::delete');
 $routes->match(['get', 'post'], 'app_cxc_customer/updateElement', 'app_cxc_customer::updateElement');
 $routes->match(['get', 'post'], 'app_cxc_customer/updateElement/(:any)', 'app_cxc_customer::updateElement');

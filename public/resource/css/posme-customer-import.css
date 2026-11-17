@@ -1,0 +1,138 @@
+/* ==========================================================
+   Importación de clientes (app_cxc_import)
+   Todo bajo .pv2.cim; los colores salen de las variables de posme_v2_style.
+   ========================================================== */
+
+/* Vue monta la pantalla dentro de $(function(){...}); hasta entonces no se muestra */
+#app.cim { visibility: hidden; }
+
+.pv2.cim .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
+.pv2.cim button:focus-visible, .pv2.cim label:focus-within { outline: 2px solid var(--pv2-accent); outline-offset: 2px; }
+.pv2.cim .cim-muted { color: var(--pv2-muted); font-size: 13px; margin: 0 0 10px; }
+.pv2.cim .cim-subtitle { font-size: 12px; font-weight: 700; color: var(--pv2-accent); text-transform: uppercase; letter-spacing: .04em; margin: 14px 0 8px; }
+
+/* Alertas */
+.pv2.cim .cim-alert { display: flex; align-items: flex-start; flex-wrap: wrap; gap: 8px; border-radius: 10px; padding: 10px 14px; margin-bottom: 12px; font-size: 14px; overflow-wrap: anywhere; }
+.pv2.cim .cim-alert > span { flex: 1 1 200px; }
+.pv2.cim .cim-alert > i { margin-top: 2px; }
+.pv2.cim .cim-alert .btn { margin-left: auto; }
+.pv2.cim .cim-alert.is-error { background: var(--pv2-bad-bg); color: var(--pv2-bad); }
+.pv2.cim .cim-alert.is-warn { background: var(--pv2-warn-bg); color: var(--pv2-warn); }
+.pv2.cim .cim-alert.is-info { background: var(--pv2-info-bg); color: var(--pv2-info); }
+.pv2.cim .cim-block-reason { font-size: 12px; color: var(--pv2-muted); margin: -4px 0 10px; text-align: right; }
+
+/* Botones */
+.pv2.cim .btn { border-radius: 8px; }
+.pv2.cim .cim-btn-soft { background: var(--pv2-accent-bg); border-color: transparent; color: var(--pv2-accent); font-weight: 600; }
+.pv2.cim .cim-btn-soft:hover, .pv2.cim .cim-btn-soft:focus { background: #d6dbf3; color: var(--pv2-accent); }
+.pv2.cim .cim-btn-danger-soft { background: var(--pv2-bad-bg); border-color: transparent; color: var(--pv2-bad); font-weight: 600; }
+.pv2.cim .cim-btn-danger-soft:hover, .pv2.cim .cim-btn-danger-soft:focus { background: #f9d6d6; color: var(--pv2-bad); }
+.pv2.cim .cim-icon-btn { width: 44px; height: 44px; display: inline-flex; align-items: center; justify-content: center; border: 1px solid var(--pv2-border); border-radius: 8px; background: #fff; color: #1f2933; cursor: pointer; }
+.pv2.cim .cim-icon-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+/* Zona de archivo */
+.pv2.cim .cim-drop { position: relative; overflow: hidden; cursor: pointer; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 22px 12px; margin: 8px 0 12px; border: 2px dashed #b4bce8; border-radius: 12px; background: #f7f8fd; color: var(--pv2-accent); font-weight: 600; text-align: center; }
+.pv2.cim .cim-drop i { font-size: 28px; color: var(--pv2-accent-2); }
+.pv2.cim .cim-drop:hover { background: var(--pv2-accent-bg); }
+.pv2.cim .cim-drop.is-loading, .pv2.cim .cim-drop.is-disabled { opacity: .7; cursor: not-allowed; }
+.pv2.cim .cim-drop input[type="file"] { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; }
+.pv2.cim .cim-file-info { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; font-weight: 600; overflow-wrap: anywhere; }
+
+/* Valores válidos */
+.pv2.cim .cim-collapse { display: flex; align-items: center; justify-content: space-between; width: 100%; min-height: 44px; padding: 0; border: 0; background: transparent; text-align: left; cursor: pointer; }
+.pv2.cim .cim-collapse .pv2-card-title { margin: 0; }
+.pv2.cim .cim-catalog-body { margin-top: 10px; }
+.pv2.cim .cim-catalog-filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(200px, 100%), 1fr)); gap: 0 12px; }
+.pv2.cim .cim-catalog-lists { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); gap: 12px; }
+.pv2.cim .cim-list-title { font-size: 13px; font-weight: 700; margin: 0 0 6px; display: flex; align-items: center; gap: 6px; }
+.pv2.cim .cim-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.pv2.cim .cim-chips-scroll { max-height: 220px; overflow-y: auto; padding: 4px; border: 1px solid var(--pv2-border); border-radius: 10px; }
+.pv2.cim .cim-chip { display: inline-block; padding: 3px 10px; border-radius: 20px; background: var(--pv2-soft); border: 1px solid var(--pv2-border); font-size: 12px; font-weight: 600; color: #374151; overflow-wrap: anywhere; }
+
+/* Barra de la vista previa */
+.pv2.cim .cim-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.pv2.cim .cim-toolbar .btn { min-height: 38px; }
+.pv2.cim .cim-check { display: inline-flex; align-items: center; gap: 6px; min-height: 38px; margin: 0; font-weight: 600; cursor: pointer; }
+.pv2.cim .cim-check input { margin: 0; width: 18px; height: 18px; }
+
+/* Tabla */
+.pv2.cim .cim-table td { vertical-align: top; }
+.pv2.cim .cim-cell { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.pv2.cim .cim-cell-value { overflow-wrap: anywhere; }
+.pv2.cim .cim-cell-code { font-size: 12px; font-weight: 700; color: var(--pv2-accent); }
+.pv2.cim .cim-cell-msg { font-size: 11px; line-height: 1.3; overflow-wrap: anywhere; }
+.pv2.cim .cim-cell-msg.is-error { color: var(--pv2-bad); }
+.pv2.cim .cim-cell-msg.is-warn { color: var(--pv2-warn); }
+.pv2.cim .pv2-table td.cim-cell-error { background: var(--pv2-bad-bg) !important; box-shadow: inset 0 0 0 1px var(--pv2-bad); }
+.pv2.cim .pv2-table td.cim-cell-warn { background: var(--pv2-warn-bg) !important; }
+.pv2.cim .pv2-table tr.has-error td.pv2-doc { color: var(--pv2-bad); }
+.pv2.cim .pv2-table tr.is-done td { opacity: .75; }
+.pv2.cim .cim-col-estado { min-width: 130px; }
+
+/* Insignias de estado */
+.pv2.cim .cim-badge { display: inline-block; align-self: flex-start; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; white-space: nowrap; background: var(--pv2-soft); color: #374151; border: 1px solid var(--pv2-border); }
+.pv2.cim .cim-badge.is-ok { background: var(--pv2-ok-bg); color: var(--pv2-ok); border-color: transparent; }
+.pv2.cim .cim-badge.is-bad { background: var(--pv2-bad-bg); color: var(--pv2-bad); border-color: transparent; }
+.pv2.cim .cim-badge.is-warn { background: var(--pv2-warn-bg); color: var(--pv2-warn); border-color: transparent; }
+.pv2.cim .cim-badge.is-done { background: var(--pv2-purple-bg); color: var(--pv2-purple); border-color: transparent; }
+
+.pv2.cim .cim-pager { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 12px; margin-top: 10px; font-size: 14px; }
+.pv2.cim .cim-after { display: flex; justify-content: flex-end; margin-top: 12px; }
+
+/* Modal de progreso (Bootstrap 3, fuera de #app) */
+.cim-modal-dialog { width: auto; max-width: 640px; margin: 30px auto; padding: 0 10px; }
+.modal-content.pv2.cim { border: 0; border-radius: 14px; overflow: hidden; }
+.pv2.cim .cim-modal-header { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 16px 18px; background: linear-gradient(135deg, var(--pv2-accent), var(--pv2-accent-2)); color: #fff; border-bottom: 0; }
+.pv2.cim .cim-modal-head-info { display: flex; align-items: center; gap: 12px; min-width: 0; }
+.pv2.cim .cim-modal-icon { flex: 0 0 auto; width: 42px; height: 42px; display: inline-flex; align-items: center; justify-content: center; border-radius: 12px; background: rgba(255, 255, 255, .2); color: #fff; font-size: 20px; }
+.pv2.cim .cim-modal-header .modal-title { color: #fff; font-size: 17px; font-weight: 700; margin: 0; }
+.pv2.cim .cim-modal-sub { margin: 2px 0 0; font-size: 12px; color: rgba(255, 255, 255, .85); }
+.pv2.cim .cim-modal-close { flex: 0 0 auto; background: rgba(255, 255, 255, .15); border-color: rgba(255, 255, 255, .35); color: #fff; }
+.pv2.cim .cim-modal-close:hover, .pv2.cim .cim-modal-close:focus { background: #fff; color: var(--pv2-accent); }
+.pv2.cim .cim-modal-body { background: var(--pv2-soft); padding: 18px; max-height: calc(100vh - 200px); overflow-y: auto; }
+.pv2.cim .cim-modal-footer { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; background: #fff; border-top: 1px solid var(--pv2-border); padding: 12px 18px; }
+.pv2.cim .cim-modal-footer .btn { min-width: 140px; min-height: 44px; }
+.pv2.cim .cim-modal-footer .btn + .btn { margin-left: 0; }
+.pv2.cim .cim-progress { height: 22px; margin-bottom: 6px; border-radius: 11px; background: #e5e7eb; }
+.pv2.cim .cim-progress .progress-bar { line-height: 22px; font-weight: 700; transition: width .3s ease; }
+.pv2.cim .cim-progress-text { text-align: center; font-weight: 700; margin: 0 0 12px; font-variant-numeric: tabular-nums; }
+.pv2.cim .cim-counters { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+.pv2.cim .cim-counter { background: #fff; border: 1px solid var(--pv2-border); border-radius: 10px; padding: 8px 10px; text-align: center; min-width: 0; }
+.pv2.cim .cim-counter-label { display: block; font-size: 11px; font-weight: 600; color: var(--pv2-muted); text-transform: uppercase; }
+.pv2.cim .cim-counter-value { display: block; font-size: 20px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.pv2.cim .cim-counter.is-ok .cim-counter-value { color: var(--pv2-ok); }
+.pv2.cim .cim-counter.is-bad .cim-counter-value { color: var(--pv2-bad); }
+.pv2.cim .cim-log { background: #fff; border: 1px solid var(--pv2-border); border-radius: 10px; padding: 8px 10px; max-height: 200px; overflow-y: auto; font-size: 12px; }
+.pv2.cim .cim-log-item { margin: 0 0 3px; overflow-wrap: anywhere; }
+.pv2.cim .cim-log-item.is-ok { color: var(--pv2-ok); }
+.pv2.cim .cim-log-item.is-warn { color: var(--pv2-warn); }
+.pv2.cim .cim-log-item.is-error { color: var(--pv2-bad); }
+.pv2.cim .cim-log-item.is-info { color: var(--pv2-info); font-weight: 700; }
+
+/* Teléfono */
+@media (max-width: 767px) {
+    .pv2.cim .cim-toolbar { width: 100%; }
+    .pv2.cim .cim-toolbar .btn { flex: 1 1 100%; min-height: 44px; white-space: normal; }
+    .pv2.cim .cim-check { min-height: 44px; }
+    .pv2.cim .cim-file-info .btn, .pv2.cim .cim-after .btn, .pv2.cim .cim-alert .btn { min-height: 44px; }
+    .pv2.cim .cim-after .btn { flex: 1 1 100%; }
+    .pv2.cim .cim-block-reason { text-align: left; margin-top: 0; }
+
+    /* Tarjetas: la celda con mensaje se alinea a la derecha del rótulo */
+    .pv2.cim .pv2-table tr.row_razon td { align-items: flex-start; }
+    .pv2.cim .pv2-table tr.row_razon td .cim-cell { align-items: flex-end; text-align: right; flex: 1 1 auto; }
+    .pv2.cim .pv2-table tr.row_razon td.cim-cell-error, .pv2.cim .pv2-table tr.row_razon td.cim-cell-warn { padding: 4px 6px; border-radius: 6px; }
+    .pv2.cim .cim-badge { align-self: flex-end; }
+    .pv2.cim .cim-chips-scroll { max-height: 180px; }
+
+    /* Modal a pantalla completa */
+    .cim-modal-dialog { margin: 0 auto; padding: 0; max-width: none; }
+    .modal-content.pv2.cim { border-radius: 0; min-height: 100vh; box-shadow: none; display: flex; flex-direction: column; }
+    .pv2.cim .cim-modal-body { max-height: none; flex: 1 1 auto; padding: 12px; }
+    .pv2.cim .cim-modal-footer .btn { flex: 1 1 100%; min-width: 0; }
+    .pv2.cim .cim-counter-value { font-size: 17px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .pv2.cim .cim-progress .progress-bar { transition: none; }
+}

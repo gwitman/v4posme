@@ -235,8 +235,68 @@ Ruta: Menú > CXC > CLIENTES. La lista se llama **LISTA DE CLIENTES**. Según la
 Mensajes: "Escribir la Identificacion", "Escribir el sexo", "Escribir Primer Nombre", "Escribir Segundo Nombre", "Escribir Nombre Legal", "Escribir Nombre Comercial", "La linea ya esta configurada" y, según la configuración, "Error identificacion del cliente ya existe.".
 Notas: **Limite de Credito** y **Balance** traen un valor inicial alto: revíselos. Si no agrega líneas, se asigna una predeterminada con límite 300,000.00.
 Para modificarlo, selecciónelo y presione **Editar**. Si el balance de una línea supera su límite, al guardar el sistema ajusta automáticamente el balance al valor del límite.
-Ver también: Crear una línea de crédito.
+Ver también: Crear una línea de crédito; Importar clientes desde Excel (importación de clientes).
 <!-- REVISAR: Forma de Pago pide datos de tarjeta y CVC; uso sin documentar -->
+
+## Importar clientes desde Excel (importación de clientes)
+Ruta: Menú > CXC > IMPORTACION DE CLIENTES. La pantalla se llama **Importación de clientes**.
+Sirve para crear muchos clientes de una vez a partir de un archivo Excel o CSV, en lugar de registrarlos uno por uno.
+1. Presione **Descargar plantilla** y llene el archivo (una fila por cliente).
+2. Cargue el archivo en **Archivo de clientes**.
+3. Presione **Validar** para revisar todas las filas.
+4. Presione **Importar N filas válidas** y espere a que termine la ventana de progreso.
+5. Presione **Descargar resultados** para guardar qué se importó y qué no.
+Por cada cliente se crea lo mismo que en el registro manual: datos del cliente, línea de crédito por defecto, asignación a los colaboradores y teléfono principal.
+Restricciones: el rol del usuario debe tener permiso sobre la pantalla para ver la opción y para crear clientes. Si el permiso se acaba de asignar, cierre sesión y vuelva a entrar. Si faltan valores por defecto de clientes en la configuración de su empresa, aparece "Faltan parámetros de la empresa para importar clientes..." y debe configurarlos antes.
+Notas: la descarga de la plantilla y la lectura del archivo necesitan conexión a internet.
+Ver también: Importar clientes: llenar la plantilla (columnas y reglas); Importar clientes: cargar, validar e importar; Importar clientes: ventana de progreso y resultados; Importar clientes: errores frecuentes; Crear un cliente.
+<!-- REVISAR: el registro del menú IMPORTACION DE CLIENTES (CXC) no está en los seeds del repositorio; confirmar nombre y ubicación en el menú -->
+
+## Importar clientes: llenar la plantilla (columnas y reglas)
+Ruta: Menú > CXC > IMPORTACION DE CLIENTES > **Descargar plantilla**.
+Columnas: **Código**, **Nombre**, **Apellido**, **Teléfono**, **País**, **Departamento**, **Municipio**, **Dirección**, **Nombre comercial**, **Nombre legal**, **Tipo de identificación** y **Cédula**. Solo **Nombre** es obligatorio.
+Reglas:
+- El código del cliente lo genera el sistema. El **Código** del archivo se guarda como Referencia 1 del cliente.
+- Si **Cédula** viene vacía, se usa como identificación el código generado por el sistema.
+- Si **Nombre comercial** o **Nombre legal** vienen vacíos, se usa Nombre + Apellido.
+- **País**, **Departamento**, **Municipio** y **Tipo de identificación** se escriben con el nombre tal como está en el sistema (no importan mayúsculas ni tildes). Deben corresponder entre sí: el municipio debe ser del departamento y el departamento del país.
+- Si esas columnas vienen vacías, se usan los valores por defecto de su empresa.
+- Ningún texto puede pasar de 250 caracteres.
+Para consultar los nombres válidos abra el panel **Valores válidos**: muestra tipos de identificación, países, y departamentos y municipios con filtros **País**, **Departamento** y **Buscar**.
+Consejos: dé formato de texto a las columnas **Cédula**, **Código** y **Teléfono** para no perder ceros a la izquierda. Si usa CSV, no lo abra en Excel antes de importar (Excel puede cambiar esos valores). Las columnas que no reconoce se ignoran y las que faltan se envían vacías.
+
+## Importar clientes: cargar, validar e importar
+Ruta: Menú > CXC > IMPORTACION DE CLIENTES.
+1. En **Archivo de clientes** haga clic en **Seleccione un archivo .xlsx, .xls o .csv**. Se aceptan archivos de máximo 5 MB y 5,000 filas; la primera fila debe tener los títulos de columna (al menos **Nombre**).
+2. Revise la **Vista previa**: las filas con posibles problemas se marcan en amarillo. Para cambiar el archivo use **Cambiar archivo** o **Quitar**.
+3. Presione **Validar**. El sistema revisa todas las filas y muestra los contadores **Filas**, **Válidas** y **Con error**; cada error aparece en la celda que lo causa. Marque **Solo filas con error** para verlas.
+4. Corrija el archivo si lo desea, cárguelo de nuevo y presione **Validar de nuevo**.
+5. Presione **Importar N filas válidas** y confirme el mensaje "Se crearán N clientes en lotes de 20...".
+Notas: las filas con error no se importan; las válidas sí. Una vez importadas filas de un archivo ya no se puede volver a validar: para corregir las filas con error, páselas a un archivo nuevo. En el teléfono, **Validar** e **Importar** están en la barra inferior.
+Ver también: Importar clientes: ventana de progreso y resultados; Importar clientes: errores frecuentes.
+
+## Importar clientes: ventana de progreso y resultados
+Ruta: Menú > CXC > IMPORTACION DE CLIENTES > **Importar N filas válidas**.
+Al importar se abre la ventana **Importando clientes**:
+- Una barra con el porcentaje y "X de Y".
+- Contadores **Importados**, **Fallidos** y **Pendientes**.
+- Un **Registro** con el resultado de cada lote de 20 clientes.
+Restricciones: no cierre ni recargue la página mientras se importa.
+Cancelar: presione **Cancelar**. La importación se detiene al terminar el lote actual; los clientes ya creados se quedan.
+Al terminar, la ventana cambia a **Importación finalizada** con el resumen. Presione **Descargar resultados** para obtener un Excel con Fila, Código, Nombre, Apellido, Cédula, Código de sistema, Estado y Mensaje. También puede descargarlo debajo de la vista previa después de cerrar la ventana con **Cerrar**.
+Notas: las filas ya importadas no se vuelven a enviar. En la vista previa cada fila importada muestra el código de cliente que generó el sistema.
+
+## Importar clientes: errores frecuentes
+Ruta: Menú > CXC > IMPORTACION DE CLIENTES.
+- "El nombre es obligatorio.": la fila no tiene **Nombre**.
+- "La cédula '...' ya existe en el cliente ...": ya hay un cliente con esa cédula. Igual con "El código '...' ya existe...".
+- "... está repetido en el archivo (filas ...)": la misma cédula o código aparece en varias filas del archivo.
+- "El tipo de identificación '...' no existe. Valores válidos: ...": está mal escrito; copie el nombre del panel **Valores válidos**.
+- "El municipio '...' no existe en el departamento '...'": el municipio es de otro departamento (igual para departamento y país).
+- "El campo ... tiene N caracteres; el máximo es 250.": acorte el texto.
+- "El archivo no tiene la columna "Nombre" en la primera fila.", "El archivo supera los 5 MB." o "Formato no permitido.": revise el archivo o use la plantilla.
+Las filas con error no se importan; las válidas sí.
+Ver también: Importar clientes: llenar la plantilla (columnas y reglas).
 
 ## Crear un producto
 Ruta: Menú > INVENTARIO > PRODUCTO.
@@ -738,12 +798,13 @@ Ruta: Menú > CXC. Aquí se administran los clientes y sus créditos.
 - **NOTA D. CREDITO**: al aplicarla suma el monto al saldo del cliente.
 - **NOTA D. DEBITO**: al aplicarla resta el monto del saldo del cliente.
 - **CLIENTES**: catálogo de clientes.
+- **IMPORTACION DE CLIENTES**: crear muchos clientes de una vez desde un archivo Excel.
 - **PROCESOS**: pantalla **Procesos CxC**. En **Subir carga SIN Riesgo**, **Aceptar** ejecuta la carga en una pestaña nueva.
 - **REPORTES**: reportes de cuentas por cobrar.
 - **CAMPAÑAS WHATSAPP**: enviar promociones o recordatorios de cobro por WhatsApp a muchos clientes.
 Lo que ve cada usuario depende de los permisos de su rol.
 Notas: en el teléfono el botón **Guardar** está en la barra inferior, y los botones **Buscar** y **Agregar** de los formularios abren una ventana dentro de la misma pantalla. Los montos se muestran con formato 1,500.25.
-Ver también: Crear un cliente; Crear una línea de crédito; Consultar o ajustar documentos de crédito de un cliente; Consultar el buró de crédito de un cliente; Campañas de WhatsApp: enviar promociones o recordatorios de cobro masivos a clientes.
+Ver también: Crear un cliente; Importar clientes desde Excel (importación de clientes); Crear una línea de crédito; Consultar o ajustar documentos de crédito de un cliente; Consultar el buró de crédito de un cliente; Campañas de WhatsApp: enviar promociones o recordatorios de cobro masivos a clientes.
 <!-- REVISAR: en DOCUMENTOS, CLIENTES y LINEA D. CREDITO la caja de busqueda de la lista no tiene accion programada; no se documenta como funcional -->
 
 ## Consultar o ajustar documentos de crédito de un cliente
