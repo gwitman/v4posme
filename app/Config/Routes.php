@@ -1495,6 +1495,14 @@ $routes->match(['get', 'post'], 'app_invoice_price/insertElement', 'app_invoice_
 $routes->match(['get', 'post'], 'app_invoice_price/insertElement/(:any)', 'app_invoice_price::insertElement');
 $routes->match(['get', 'post'], 'app_invoice_price/save', 'app_invoice_price::save');
 $routes->match(['get', 'post'], 'app_invoice_price/save/(:any)', 'app_invoice_price::save');
+$routes->match(['get', 'post'], 'app_invoice_price/generateFile', 'app_invoice_price::generateFile');
+$routes->match(['get', 'post'], 'app_invoice_price/generateFile/(:any)', 'app_invoice_price::generateFile');
+$routes->match(['get', 'post'], 'app_invoice_price/downloadFile', 'app_invoice_price::downloadFile');
+$routes->match(['get', 'post'], 'app_invoice_price/downloadFile/(:any)', 'app_invoice_price::downloadFile');
+$routes->match(['get', 'post'], 'app_invoice_price/listFile', 'app_invoice_price::listFile');
+$routes->match(['get', 'post'], 'app_invoice_price/listFile/(:any)', 'app_invoice_price::listFile');
+$routes->match(['get', 'post'], 'app_invoice_price/processFile', 'app_invoice_price::processFile');
+$routes->match(['get', 'post'], 'app_invoice_price/processFile/(:any)', 'app_invoice_price::processFile');
 $routes->match(['get', 'post'], 'app_invoice_price/add', 'app_invoice_price::add');
 $routes->match(['get', 'post'], 'app_invoice_price/index', 'app_invoice_price::index');
 $routes->match(['get', 'post'], 'app_invoice_price/index/(:any)', 'app_invoice_price::index');

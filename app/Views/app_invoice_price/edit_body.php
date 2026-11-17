@@ -83,19 +83,115 @@
                             <div class="pv2-card">
                                 <p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-file"></i></span> Archivo de precios</p>
 
+                                <p class="pv2-help">
+                                    1. Genera el archivo (se descarga solo).<br>
+                                    2. Por cada producto escribe el precio en <b>valor</b> o en <b>%</b> sobre el costo.<br>
+                                    3. Subelo con <b>Subir</b>, seleccionalo y presiona <b>Procesar</b>.
+                                </p>
                                 <div class="form-group">
-                                    <label class="pv2-label" for="txtFilePrice">Actualizar Precios</label>
-                                    <input class="form-control" type="text" autocomplete="off" name="txtFilePrice" id="txtFilePrice" value="">
+                                    <a href="#" class="btn btn-default btn-block" id="btnGenerateFile"><i class="icon16 i-download-2"></i> Generar y descargar archivo</a>
                                 </div>
                                 <div class="form-group">
-                                    <label class="pv2-label" for="txtGenerateFile">Generar Archivo</label>
-                                    <label class="checkbox-inline">
-                                        <input type="checkbox" id="txtGenerateFile" name="txtGenerateFile" value="1">
-                                    </label>
+                                    <label class="pv2-label" for="cmbFilePrice">Archivo para actualizar precios</label>
+                                    <div class="price-file-row">
+                                        <!-- sin name: el archivo se procesa por AJAX, no con Guardar -->
+                                        <select class="form-control" id="cmbFilePrice" autocomplete="off">
+                                            <option value="">Cargando archivos...</option>
+                                        </select>
+                                        <a href="#" class="btn btn-default" id="btnRefreshFile" title="Refrescar lista de archivos"><i class="icon16 i-loop-4"></i></a>
+                                        <a href="#" class="btn btn-default" id="btnDownloadFile" title="Descargar archivo seleccionado"><i class="icon16 i-download-2"></i></a>
+                                        <a href="#" class="btn btn-default" id="btnUploadFile" title="Subir archivo"><i class="icon16 i-upload"></i></a>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <a href="#" class="btn btn-primary btn-block" id="btnProcessFile"><i class="icon16 i-checkmark-4"></i> Procesar archivo</a>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+                    <!-- resumen del procesamiento -->
+                    <div class="pv2-card" id="priceResumen" style="display:none;">
+                        <p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-coins"></i></span> Resumen del procesamiento <span class="pv2-count" id="priceResumenArchivo"></span></p>
+
+                        <div class="pv2-kpis">
+                            <div class="pv2-kpi k-info">
+                                <div class="pv2-kpi-icon"><i class="icon16 i-file"></i></div>
+                                <div class="pv2-kpi-body"><span class="pv2-kpi-label">Productos leidos</span><span class="pv2-kpi-value" id="kpiFilas">0</span></div>
+                            </div>
+                            <div class="pv2-kpi k-ok">
+                                <div class="pv2-kpi-icon"><i class="icon16 i-checkmark-4"></i></div>
+                                <div class="pv2-kpi-body"><span class="pv2-kpi-label">Productos actualizados</span><span class="pv2-kpi-value" id="kpiActualizados">0</span></div>
+                            </div>
+                            <div class="pv2-kpi k-purple">
+                                <div class="pv2-kpi-icon"><i class="icon16 i-coins"></i></div>
+                                <div class="pv2-kpi-body"><span class="pv2-kpi-label">Precios cambiados</span><span class="pv2-kpi-value" id="kpiPrecios">0</span></div>
+                            </div>
+                            <div class="pv2-kpi">
+                                <div class="pv2-kpi-icon"><i class="icon16 i-file"></i></div>
+                                <div class="pv2-kpi-body"><span class="pv2-kpi-label">Sin cambio</span><span class="pv2-kpi-value" id="kpiSinCambio">0</span></div>
+                            </div>
+                            <div class="pv2-kpi k-warn" id="kpiErroresBox">
+                                <div class="pv2-kpi-icon"><i class="icon16 i-remove"></i></div>
+                                <div class="pv2-kpi-body"><span class="pv2-kpi-label">Con error</span><span class="pv2-kpi-value" id="kpiErrores">0</span></div>
+                            </div>
+                        </div>
+
+                        <div class="pv2-listbar" style="margin-bottom:10px;">
+                            <div class="pv2-search">
+                                <input type="text" class="form-control" id="txtPriceFiltro" autocomplete="off" placeholder="Buscar por codigo, producto o tipo de precio">
+                            </div>
+                            <select class="form-control price-page-size" id="cmbPricePageSize" autocomplete="off">
+                                <option value="10">10 por pagina</option>
+                                <option value="25" selected>25 por pagina</option>
+                                <option value="50">50 por pagina</option>
+                                <option value="100">100 por pagina</option>
+                            </select>
+                        </div>
+
+                        <div class="pv2-table-wrap">
+                            <table class="pv2-table">
+                                <thead>
+                                    <tr>
+                                        <th>Codigo</th>
+                                        <th>Producto</th>
+                                        <th>Tipo</th>
+                                        <th class="pv2-num">Costo</th>
+                                        <th class="pv2-num">Precio ant.</th>
+                                        <th class="pv2-num">Precio nuevo</th>
+                                        <th class="pv2-num">% ant.</th>
+                                        <th class="pv2-num">% nuevo</th>
+                                        <th class="pv2-num">Comision</th>
+                                        <th>Cambio por</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="priceDetalleBody"></tbody>
+                            </table>
+                        </div>
+                        <div class="price-pager">
+                            <a href="#" class="btn btn-default" id="btnPricePrev"><i class="icon16 i-arrow-left"></i></a>
+                            <span id="pricePagInfo">Pagina 1 de 1</span>
+                            <a href="#" class="btn btn-default" id="btnPriceNext"><i class="icon16 i-arrow-right"></i></a>
+                        </div>
+
+                        <div id="priceErroresBox" style="display:none; margin-top:14px;">
+                            <p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-remove"></i></span> Productos no procesados</p>
+                            <div class="pv2-table-wrap">
+                                <table class="pv2-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Linea</th>
+                                            <th>Codigo</th>
+                                            <th>Producto</th>
+                                            <th>Motivo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="priceErroresBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /resumen del procesamiento -->
                 </div>
 
                 <div class="tab-pane fade" id="dropdown">

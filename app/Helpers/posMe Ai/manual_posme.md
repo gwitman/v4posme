@@ -251,19 +251,43 @@ Ruta: Menú > INVENTARIO > PRODUCTO.
 Ruta: Menú > FACTURACION > PRECIOS. La lista se llama **LISTA DE PRECIO**. Aquí se cambian los precios de toda una lista con un archivo.
 Para un solo producto use Menú > INVENTARIO > PRODUCTO, pestaña **Precios** (lista predeterminada de su empresa).
 1. Seleccione la lista y presione **Editar**. Para una lista nueva presione **Nuevo**, indique **Fecha Inicial**, **Fecha Final**, **Nombre** y **Estado**, y presione **Guardar**.
-2. En la tarjeta **Archivo de precios** marque **Generar Archivo** y presione **Guardar** (en el teléfono, en la barra inferior). Se crea un archivo con todos los productos.
-3. En **Mas** > **Archivos** descargue el archivo que empieza con list_price_default_ seguido de la fecha.
-4. Cambie los precios y comisiones. No modifique los títulos de columna ni **Codigo**. Escriba los números sin comas: 1500.25.
-5. Suba el archivo en **Mas** > **Archivos**.
-6. En **Actualizar Precios** escriba el nombre exacto del archivo con su extensión (precios.csv) y presione **Guardar**.
-Mensajes: "Las fechas son obligatorias"; "NO EXISTE EL ARCHIVO PARA IMPORTAR LOS PRECIOS..."; "Las columnas de valor no son numericas".
+2. En la tarjeta **Archivo de precios** presione **Generar y descargar archivo**. Se crea el archivo list_price_(número de lista)_(fecha).csv con los precios actuales y se descarga de inmediato.
+3. Abra el archivo y, por cada producto, cambie el precio en valor o en % sobre el costo, y la comisión. No modifique los títulos de columna ni **Codigo**.
+4. Súbalo con el botón **Subir** (abre el administrador de archivos; también puede usar **Mas** > **Archivos**).
+5. Presione **Refrescar** y elija el archivo en **Archivo para actualizar precios** (el más reciente sale primero). **Descargar** baja el archivo elegido.
+6. Presione **Procesar archivo** y confirme. Aparece el **Resumen del procesamiento**.
 Notas:
-- Importar reemplaza todos los precios de la lista: un producto que no venga en el archivo pierde sus precios en ella.
-- No use el archivo list_price_default.csv, creado al guardar una lista nueva: sus columnas son distintas.
+- **Guardar** solo guarda fechas, nombre, estado y nota; no procesa precios.
+- Solo cambian los precios modificados; los productos que no vienen en el archivo conservan su precio.
+- No use list_price_default.csv (creado con la lista nueva): sus columnas son distintas.
 - La columna **Costo** no cambia el costo del producto.
-- Según su estado, la lista puede no permitir cambios o permitir solo cambiar el **Estado**; en ese caso no se importa ni se genera el archivo.
+- Para procesar, el estado de la lista debe permitir edición total.
 <!-- REVISAR: Imprimir abre una página en blanco; el cuadro Buscar de la lista no tiene acción -->
 <!-- REVISAR: efecto de Fecha Inicial, Fecha Final y Estado al facturar -->
+
+## Archivo de precios: columnas y cálculo por valor o por porcentaje
+Ruta: Menú > FACTURACION > PRECIOS > Editar, tarjeta **Archivo de precios**.
+Columnas del archivo: **Codigo**, **Descripcion**, **Costo** y, por cada tipo de precio (por ejemplo PUBLICO):
+- (número)-(TIPO)-abs: precio en valor.
+- (número)-(TIPO)-%: porcentaje de ganancia sobre el costo.
+- (número)-COMISION%-abs: comisión.
+Cómo se calcula al procesar, por producto y tipo de precio:
+1. Si cambió el valor, se guarda el valor y se calcula el %: (precio × 100 / costo) − 100.
+2. Si no cambió el valor pero sí el %, se guarda el % y se calcula el precio: costo × (100 + %) / 100, redondeado a 2 decimales.
+3. Si cambian ambos, manda el valor.
+4. La comisión se guarda tal como viene.
+Notas:
+- Si el costo del producto es 0 no se puede calcular el precio por %: escriba el precio en valor.
+- Se aceptan columnas separadas por coma (,) o punto y coma (;) y números con coma de miles (1,500.25).
+
+## Resumen del procesamiento del archivo de precios (productos no procesados)
+Ruta: Menú > FACTURACION > PRECIOS > Editar > **Procesar archivo**.
+Después de procesar aparece **Resumen del procesamiento** con:
+- Indicadores: **Productos leidos**, **Productos actualizados**, **Precios cambiados**, **Sin cambio** y **Con error**.
+- Una tabla con **Codigo**, **Producto**, **Tipo**, **Costo**, **Precio ant.**, **Precio nuevo**, **% ant.**, **% nuevo**, **Comision** (anterior → nueva) y **Cambio por** (Valor, % o Comision). Puede mostrar 10, 25, 50 o 100 por página y buscar por código, producto o tipo de precio.
+- **Productos no procesados**: tabla con **Linea**, **Codigo**, **Producto** y **Motivo**.
+Restricciones: si un producto tiene un valor que no es número, un precio negativo o no existe (o está inactivo), no se guarda ninguno de sus precios y aparece en **Productos no procesados**; los demás productos sí se actualizan.
+Mensajes: "Seleccione el archivo a procesar. Si lo acaba de subir presione refrescar."; "No hubo cambios de precio en el archivo".
 
 ## Crear una tarjeta de fidelidad
 Ruta: Menú > VENTAS > FIDELIDAD. La lista se llama **LISTA DE TARJETAS DE FIDELIDAD**.
