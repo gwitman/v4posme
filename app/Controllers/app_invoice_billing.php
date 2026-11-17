@@ -8293,6 +8293,45 @@ class app_invoice_billing extends _BaseController {
 			$discount_percnetage 								= $datView["objTM"]->subAmount + $datView["objTM"]->discount;
 			$discount_percnetage								= ($datView["objTM"]->discount / $discount_percnetage)* 100;
 			$datViewArray["amount_discount_percentage"]			= sprintf("%.2f",$discount_percnetage);
+
+			//Datos adicionales para la plantilla: moneda extranjera, tasa de cambio, efectivo en moneda extranjera y credito
+			//La moneda extranjera es la contraria a la de la factura (factura C$ => US$, factura US$ => C$)
+			$currencyForeignID									= $this->core_web_currency->getTarget($companyID,$datView["objTM"]->currencyID);
+			$objCurrencyForeign									= $this->Currency_Model->get_rowByPK($currencyForeignID);
+			$objCurrencyDefault									= $this->core_web_currency->getCurrencyDefault($companyID);
+			$objCurrencyExternal								= $this->core_web_currency->getCurrencyExternal($companyID);
+			try
+			{
+				//Cuantos C$ equivalen a 1 US$ en la fecha de la factura
+				$exchangeRateDisplay							= $this->core_web_currency->getRatio(
+																		$companyID,
+																		date_format(date_create($datView["objTM"]->createdOn),"Y-m-d"),
+																		1,
+																		$objCurrencyDefault->currencyID,
+																		$objCurrencyExternal->currencyID
+																);
+			}
+			catch(\Exception $exRatio)
+			{
+				//Sin tasa registrada en la fecha: se deriva de la tasa guardada en la factura
+				$exchangeRateDisplay							= $datView["objTM"]->exchangeRate > 0 && $datView["objTM"]->exchangeRate < 1 ?
+																		1 / $datView["objTM"]->exchangeRate :
+																		$datView["objTM"]->exchangeRate;
+			}
+			$datViewArray["currencyForeignSimbol"]				= $objCurrencyForeign ? $objCurrencyForeign->simbol : "";
+			$datViewArray["exchangeRateDisplay"]				= sprintf("%.2f",$exchangeRateDisplay);
+			$datViewArray["amount_receipt_foreign"]				= sprintf("%.2f",$datView["objTMI"]->receiptAmountDol);
+			$datViewArray["isForeignCash"]						= $datView["objTMI"]->receiptAmountDol > 0 ? 1 : 0;
+
+			//Fecha de la ultima cuota del plan de pagos (solo facturas de credito)
+			$datViewArray["isCredit"]							= 0;
+			$datViewArray["creditLastShareDate"]				= "";
+			if($datView["objCCD"] && !empty($objCCDAmortizacion))
+			{
+				$datViewArray["isCredit"]						= 1;
+				$datViewArray["creditLastShareDate"]			= max(array_map(function($item) { return $item->dateApply;}, $objCCDAmortizacion));
+				$datViewArray["creditLastShareDate"]			= date_format(date_create($datViewArray["creditLastShareDate"]),"Y-m-d");
+			}
 			
 			//agregar item
 			foreach($datView["objTMD"] as $detail_)

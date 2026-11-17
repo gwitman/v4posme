@@ -2564,14 +2564,14 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8417-5596"
+	tb_company_parameter.value = "TEL: 2713-7822 / 8204-2539"
 WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND
 	tb_parameter.name = "CORE_PHONE";## TELEFONO DE LA FACTURACION 
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "TEL: 8417-5596"
+	tb_company_parameter.value = "TEL: 2713-7822 / 8204-2539"
 WHERE
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND
 	tb_parameter.name = "CORE_PROPIETARY_PHONE";## TELEFONO DEL PROPIETARIO 
@@ -2586,7 +2586,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Auto Repuesto Cristo Rey' , address = 'Frente a semaforos de ENABAS, costado sur-este, Esteli' ,
+	NAME = 'Auto Repuestos Cristo Rey' , address = 'Frente a semaforos de ENABAS, costado sur-este, Esteli' ,
 	flavorID = 1297 /*usuarioID*/,type='cristoRey02'  , abreviature='demo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
@@ -2627,7 +2627,7 @@ Eliminar o desactivar usuarios
 
 /*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
-	ratio = 36 
+	ratio = 36.60 
 where 
 	currencyID = 2
 	and targetCurrencyID = 1; 
@@ -2635,7 +2635,7 @@ where
 	
 /*tipo de cambio de dolares a cordoba*/
 update tb_exchange_rate set 
-	ratio = 0.027777 
+	ratio = 0.02732240437 
 where 
 	currencyID = 1
 	and targetCurrencyID = 2; 
@@ -2664,4 +2664,3 @@ update tb_currency set `name` = 'Dolar' where currencyID = 2;
 update tb_company_currency set `simb` = 'C$' where currencyID = 1;
 update tb_company_currency set `simb` = 'U$' where currencyID = 2;	
 
-	
