@@ -120,13 +120,60 @@ class Customer_Model extends Model  {
 		$sql = $sql.sprintf(" from tb_customer i");		
 		$sql = $sql.sprintf(" where i.companyID = $companyID");
 		$sql = $sql.sprintf(" and i.identification = '$identification' ");		
-		$sql = $sql.sprintf(" and i.isActive= 1 order by i.entityID asc limit 1");	
+		$sql = $sql.sprintf(" and i.isActive= 1 order by i.entityID asc limit 1");
 
-		
-		
+
+
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
+
+	/**
+	 * Devuelve los clientes activos de la compañía cuya cédula está en la lista.
+	 * Usa Query Builder (valores escapados) porque las cédulas vienen de un Excel.
+	 * @param int   $companyID
+	 * @param array $arrayIdentification Cédulas a buscar
+	 * @return array Filas con entityID, customerNumber, identification, reference1
+	 */
+	function get_rowByIdentificationList($companyID,$arrayIdentification){
+		return $this->get_rowByFieldList($companyID,"identification",$arrayIdentification);
+	}
+
+	/**
+	 * Devuelve los clientes activos de la compañía cuyo reference1 (código externo) está en la lista.
+	 * @param int   $companyID
+	 * @param array $arrayReference1 Códigos a buscar
+	 * @return array Filas con entityID, customerNumber, identification, reference1
+	 */
+	function get_rowByReference1List($companyID,$arrayReference1){
+		return $this->get_rowByFieldList($companyID,"reference1",$arrayReference1);
+	}
+
+	/**
+	 * Busca clientes activos por un campo de texto contra una lista de valores, en bloques de 1000.
+	 * @param int    $companyID
+	 * @param string $field Campo de tb_customer (identification o reference1)
+	 * @param array  $arrayValue Valores a buscar
+	 * @return array
+	 */
+	private function get_rowByFieldList($companyID,$field,$arrayValue){
+		$arrayValue	= array_values(array_unique(array_filter(array_map(function($value){ return trim((string)$value); },(array)$arrayValue),'strlen')));
+		$result		= array();
+		if(empty($arrayValue))
+			return $result;
+
+		$db			= db_connect();
+		foreach(array_chunk($arrayValue,1000) as $chunk){
+			$rows	= $db->table("tb_customer")
+						->select("entityID,customerNumber,identification,reference1")
+						->where("companyID",(int)$companyID)
+						->where("isActive",1)
+						->whereIn($field,$chunk)
+						->get()->getResult();
+			$result	= array_merge($result,$rows);
+		}
+		return $result;
+	}
    
    function get_rowByCompany_phoneAndEmail($companyID)
    {
