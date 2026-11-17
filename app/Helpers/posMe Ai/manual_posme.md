@@ -243,9 +243,14 @@ Ruta: Menú > INVENTARIO > PRODUCTO.
 1. Presione **Nuevo**.
 2. En **Informacion** complete *Nombre, *UM (unidad de medida), categoría, código de barras y *Estado.
 3. En la pestaña **Bodegas** use **Agregar bodega** para indicar en qué bodegas existe.
-4. En la pestaña **Precios** escriba los precios (público, por mayor, crédito...).
+4. En la pestaña **Precios** escriba los precios (público, por mayor, crédito...). En la columna **% Utilidad** (entre Precio y Comision) puede escribir el precio en monto y el % se calcula solo, o escribir el % y el precio se calcula solo.
 5. Opcional: pestaña **Sku** para presentaciones (caja, paquete) con **Agregar SKU**.
 6. Presione **Guardar**.
+Notas sobre **% Utilidad** (igual al crear y al editar un producto):
+- % = (precio × 100 / costo) − 100; precio = costo × (100 + %) / 100.
+- Si cambia el costo del producto, se conserva el precio y se recalcula el %.
+- Si el costo es 0, el % queda bloqueado (dice "Sin costo") y el precio se escribe en monto.
+- Al guardar se guardan el precio y su % (calculado con el costo del producto).
 
 ## Cambiar precios de productos
 Ruta: Menú > FACTURACION > PRECIOS. La lista se llama **LISTA DE PRECIO**. Aquí se cambian los precios de toda una lista con un archivo.
@@ -578,6 +583,8 @@ Ruta: Menú > INVENTARIO > COMPRA.
 3. Guarde y aplique la compra para que aumente el inventario. <!-- REVISAR -->
 Pantalla: la información está en tarjetas de color: **Documento**, **Proveedor**, **Resumen** y **Detalle**. El total se muestra con fondo de color y las filas del detalle se ven alternadas para leerlas mejor.
 Resumen siempre visible: en computadora o laptop, al bajar en la pantalla el **Resumen** (Sub total, Descuento, IVA, ISC y Total) queda fijo como una franja en la parte de arriba. En el teléfono los totales siguen en la barra de abajo, como siempre.
+% de utilidad en el detalle (ingreso de inventario nuevo y al editar): debajo del **Precio** de cada línea hay un campo % de utilidad sobre el costo de la línea. Escriba el precio y el % se calcula solo, o escriba el % y, al terminar, la línea se recalcula como si hubiera cambiado el precio. Al cambiar el costo o el precio, el % se actualiza. Sin costo, el % queda bloqueado.
+Ventana **Mas informacion** de cada línea: **Precio por mayor** y **Precio especial** tienen debajo su campo %, que funciona igual pero usa el costo del producto.
 Ver también: Importar el detalle de una compra desde un archivo CSV; Errores y códigos repetidos al importar una compra.
 
 ## Importar el detalle de una compra desde un archivo CSV

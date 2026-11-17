@@ -38,4 +38,11 @@
 	$(document).ready(function(){
 		PosmeInv.mobileDates("#txtVencimiento");
 	});
+	//Precio por mayor / especial <-> % de utilidad sobre el costo del producto
+	$(document).ready(function(){
+		pprEnlazar(".ppr-par", ".txtPopupPrecio", ".txtPopupPrecioPorc", function(){ return $("#txtCosto").val(); });
+		$(".ppr-par").each(function(){
+			pprRefrescarPar($(this).find(".txtPopupPrecio"), $(this).find(".txtPopupPrecioPorc"), $("#txtCosto").val());
+		});
+	});
 </script>

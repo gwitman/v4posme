@@ -7,6 +7,7 @@
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/decimal.js"></script>
 				<?php echo view('core_template/posme_v2_style'); ?>
 				<?php echo view('core_template/posme_v2_common'); ?>
+				<?php echo view('core_template/pv2_precio_porcentaje'); ?>
 				<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-inventory.css?v=1" rel="stylesheet" />
 				<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme-inventory.js?v=2"></script>
 				<?php echo view('app_inventory_inputunpost/resumen_flotante'); ?>

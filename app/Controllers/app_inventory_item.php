@@ -706,8 +706,8 @@ class app_inventory_item extends _BaseController
                     $dataPrice["listPriceID"]         = $listPriceID;
                     $dataPrice["itemID"]              = $itemID;
                     $dataPrice["typePriceID"]         = $typePriceID;
-                    $dataPrice["price"]               = $priceValue;
-                    $dataPrice["percentage"]          = 0;
+                    $dataPrice["price"]               = (float)helper_StringToNumber($priceValue);
+                    $dataPrice["percentage"]          = $this->calcularPorcentajePrecio($dataPrice["price"], helper_StringToNumber($this->request->getPost("txtCost")), ($this->request->getPost("txtDetailTypePricePorc") ?? [])[$key] ?? null);
                     $dataPrice["percentageCommision"] = $comisionValue;
 
                     $this->Price_Model->insert_app_posme($dataPrice);
@@ -1102,7 +1102,7 @@ class app_inventory_item extends _BaseController
                     $dataPrice["itemID"]              = $itemID;
                     $dataPrice["typePriceID"]         = $typePriceID;
                     $dataPrice["price"]               = $priceValue;
-                    $dataPrice["percentage"]          = 0;
+                    $dataPrice["percentage"]          = $this->calcularPorcentajePrecio($priceValue, $objItem["cost"] ?? 0);
                     $dataPrice["percentageCommision"] = $comisionValue;
 
                     $this->Price_Model->insert_app_posme($dataPrice);
@@ -1351,8 +1351,8 @@ class app_inventory_item extends _BaseController
                         $dataPrice["listPriceID"]         = $listPriceID;
                         $dataPrice["itemID"]              = $itemID;
                         $dataPrice["typePriceID"]         = $typePriceID;
-                        $dataPrice["price"]               = str_replace(',', '', $priceValue);
-                        $dataPrice["percentage"]          = 0;
+                        $dataPrice["price"]               = (float)helper_StringToNumber($priceValue);
+                        $dataPrice["percentage"]          = $this->calcularPorcentajePrecio($dataPrice["price"], helper_StringToNumber($this->request->getPost("txtCost")), ($this->request->getPost("txtDetailTypePricePorc") ?? [])[$key] ?? null);
                         $dataPrice["percentageCommision"] = $comisionValue;
 
                         $objPrice = $this->Price_Model->get_rowByPK($companyID, $listPriceID, $itemID, $typePriceID);
@@ -1582,6 +1582,12 @@ class app_inventory_item extends _BaseController
                 $listPriceID              = $objParameterPriceDefault->value;
                 $objTipePrice             = $this->core_web_catalog->getCatalogAllItem("tb_price", "typePriceID", $companyID);
 
+                //Costo para calcular el % de utilidad: el que envia la app o, si no viene, el actual del producto
+                $costoPrecioMovil = (float)helper_StringToNumber(helper_RequestGetValueObjet($item, "cost", 0));
+                if ($costoPrecioMovil == 0 && !empty($itemID)) {
+                    $objItemCostoPrecio = $this->Item_Model->get_rowByPK($companyID, $itemID);
+                    $costoPrecioMovil   = $objItemCostoPrecio ? (float)helper_RequestGetValueObjet($objItemCostoPrecio, "cost", 0) : 0;
+                }
                 foreach ($objTipePrice as $key => $price) {
                     $typePriceID   = $objTipePrice[$key];
                     $priceValue    = $item->precioPublico;
@@ -1593,7 +1599,7 @@ class app_inventory_item extends _BaseController
                     $dataPrice["itemID"]              = $itemID;
                     $dataPrice["typePriceID"]         = $typePriceID->catalogItemID;
                     $dataPrice["price"]               = $priceValue;
-                    $dataPrice["percentage"]          = 0;
+                    $dataPrice["percentage"]          = $this->calcularPorcentajePrecio($priceValue, $costoPrecioMovil);
                     $dataPrice["percentageCommision"] = $comisionValue;
 
                     $this->Price_Model->insert_app_posme($dataPrice);
@@ -1641,6 +1647,12 @@ class app_inventory_item extends _BaseController
                 $listPriceID              = $objParameterPriceDefault->value;
                 $objTipePrice             = $this->core_web_catalog->getCatalogAllItem("tb_price", "typePriceID", $companyID);
 
+                //Costo para calcular el % de utilidad: el que envia la app o, si no viene, el actual del producto
+                $costoPrecioMovil = (float)helper_StringToNumber(helper_RequestGetValueObjet($item, "cost", 0));
+                if ($costoPrecioMovil == 0 && !empty($itemID)) {
+                    $objItemCostoPrecio = $this->Item_Model->get_rowByPK($companyID, $itemID);
+                    $costoPrecioMovil   = $objItemCostoPrecio ? (float)helper_RequestGetValueObjet($objItemCostoPrecio, "cost", 0) : 0;
+                }
                 foreach ($objTipePrice as $key => $price) {
                     $typePriceID   = $objTipePrice[$key];
                     $priceValue    = $item->precioPublico;
@@ -1652,7 +1664,7 @@ class app_inventory_item extends _BaseController
                     $dataPrice["itemID"]              = $itemID;
                     $dataPrice["typePriceID"]         = $typePriceID->catalogItemID;
                     $dataPrice["price"]               = $priceValue;
-                    $dataPrice["percentage"]          = 0;
+                    $dataPrice["percentage"]          = $this->calcularPorcentajePrecio($priceValue, $costoPrecioMovil);
                     $dataPrice["percentageCommision"] = $comisionValue;
 
                     $objPrice = $this->Price_Model->get_rowByPK($companyID, $listPriceID, $itemID, $dataPrice["typePriceID"]);
@@ -2004,6 +2016,28 @@ class app_inventory_item extends _BaseController
      * y el detalle con el item, su cantidad y el nuevo costo.
      * Reutilizable desde la creacion/edicion web y desde los flujos mobile.
      */
+    /**
+     * Porcentaje de utilidad del precio sobre el costo (misma regla que app_invoice_price e ingreso de inventario).
+     * Con costo 0 se conserva la regla historica del sistema: precio / 100.
+     * Si la pantalla envia el % escrito por el usuario y ese % produce el mismo precio (a 2 decimales),
+     * se guarda tal cual para no perder precision por el redondeo del precio.
+     * @param  mixed $precio
+     * @param  mixed $costo
+     * @param  mixed $porcEnviado % escrito en pantalla (opcional)
+     * @return float
+     */
+    private function calcularPorcentajePrecio($precio, $costo, $porcEnviado = null)
+    {
+        $precio = (float)helper_StringToNumber($precio);
+        $costo  = (float)helper_StringToNumber($costo);
+        if ($costo > 0 && $porcEnviado !== null && trim((string)$porcEnviado) !== "" && is_numeric(helper_StringToNumber($porcEnviado))) {
+            $porc = (float)helper_StringToNumber($porcEnviado);
+            if (round($costo * (100 + $porc) / 100, 2) == round($precio, 2))
+                return $porc;
+        }
+        return $costo == 0 ? ($precio / 100) : (((100 * $precio) / $costo) - 100);
+    }
+
     private function generateCostAdjustmentByItem($dataSession, $companyID, $itemID, $itemNumber, $currencyID, $defaultWarehouseID, $quantity, $newCost)
     {
         $logTag = "[COST_ADJUSTMENT_BY_ITEM]";

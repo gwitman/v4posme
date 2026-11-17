@@ -30,18 +30,28 @@
 							<div class="pv2-card">
 								<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-coin"></i></span> Precios</p>
 								<div class="row">
-									<div class="col-xs-12 col-sm-6 form-group">
+									<div class="col-xs-12 col-sm-6 form-group ppr-par">
 										<label class="pv2-label" for="txtPrecio1">Precio por mayor</label>
 										<div class="input-group">
 											<span class="input-group-addon">$</span>
-											<input class="form-control pv2-num" id="txtPrecio1" type="text" placeholder="" value="<?php echo $precio1;?>">
+											<input class="form-control pv2-num txtPopupPrecio" id="txtPrecio1" type="text" placeholder="" autocomplete="off" value="<?php echo $precio1;?>">
+										</div>
+										<!-- % de utilidad sobre el costo: calcula el precio o se calcula con el -->
+										<div class="ppr-porc">
+											<input class="form-control txtPopupPrecioPorc" type="text" autocomplete="off" value="" title="% de utilidad sobre el costo">
+											<span>%</span>
 										</div>
 									</div>
-									<div class="col-xs-12 col-sm-6 form-group">
+									<div class="col-xs-12 col-sm-6 form-group ppr-par">
 										<label class="pv2-label" for="txtPrecio2">Precio especial</label>
 										<div class="input-group">
 											<span class="input-group-addon">$</span>
-											<input class="form-control pv2-num" id="txtPrecio2" type="text" placeholder="" value="<?php echo $precio2;?>">
+											<input class="form-control pv2-num txtPopupPrecio" id="txtPrecio2" type="text" placeholder="" autocomplete="off" value="<?php echo $precio2;?>">
+										</div>
+										<!-- % de utilidad sobre el costo: calcula el precio o se calcula con el -->
+										<div class="ppr-porc">
+											<input class="form-control txtPopupPrecioPorc" type="text" autocomplete="off" value="" title="% de utilidad sobre el costo">
+											<span>%</span>
 										</div>
 									</div>
 									<div class="col-xs-12 form-group">

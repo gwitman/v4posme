@@ -151,6 +151,7 @@
 							"aTargets"	: [ columnIndexPrice ],//precio
 							"mRender"	: function ( data, type, full ) {
 								var str = '<input type="text" class="col-lg-12 txtDetailPrice txt-numeric" value="'+data+'" name="txtDetailPrice[]" />';
+								str = str + pprHtmlPorc(data, full[columnIndexCostoBruto], "txtDetailPricePorc"); //% de utilidad (no se envia)
 								if (varUseMobile == "1")
 									str = str + " <span class='badge badge-inverse' >Precio</span>";
 								return str;
@@ -656,6 +657,22 @@
 			objTableDetailTransaction.fnUpdate(  result, objind_, columnIndexSubTotal );
 			fnUpdateDetail();
 			refreschChecked();
+		});
+		//Precio <-> % de utilidad sobre el costo de la linea
+		pprEnlazar("#tb_transaction_master_detail tbody tr", ".txtDetailPrice", ".txtDetailPricePorc",
+			function($fila){ return $fila.find("input[name='txtDetailCostBruto[]']").val(); },
+			function($precio){ $precio.trigger("blur"); } //ejecuta los recalculos existentes del precio
+		);
+		//Al cambiar costo o precio se conserva el precio y se refresca el %.
+		//Se hace al final y sobre todas las filas porque los recalculos existentes (y las personalizaciones)
+		//redibujan las celdas con fnUpdate y el input que disparo el evento queda fuera del DOM
+		$(document).on("blur","#tb_transaction_master_detail .txtDetailCost, #tb_transaction_master_detail .txtDetailPrice",function(){
+			setTimeout(function(){
+				$("#tb_transaction_master_detail tbody tr").each(function(){
+					if($(this).find(".txtDetailPricePorc").length == 0) return;
+					pprRefrescarPar($(this).find(".txtDetailPrice"), $(this).find(".txtDetailPricePorc"), $(this).find("input[name='txtDetailCostBruto[]']").val());
+				});
+			}, 0);
 		});
 		//Cambio en el Descuento
 		$(document).on("change","input#txtDiscount",function(){

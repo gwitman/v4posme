@@ -279,6 +279,12 @@
 			});
 		});
 
+		//Precio <-> % de utilidad sobre el costo en la tabla de precios
+		pprEnlazar("#tblPrecios tr.row_price", ".txtDetailTypePriceValue", ".txtDetailTypePricePorc", function(){ return $("#txtCost").val(); });
+		//Si cambia el costo se conserva el precio y se recalcula el %
+		$(document).on("input change","#txtCost",function(){ fnPrecioPorcRefrescarTodo(); });
+		fnPrecioPorcRefrescarTodo();
+
 		//Interfaz pv2: tablas como tarjetas en telefono y barra inferior
 		if(window.PosmeInv){
 			PosmeInv.labelTable('#tblPrecios');
@@ -351,5 +357,12 @@
 		PosmeInv.mobileSelects();
 		PosmeInv.mobileDates("#txtRealStateDateExpired");
 	});
+
+	//Recalcula el % de todos los precios con el costo actual
+	function fnPrecioPorcRefrescarTodo(){
+		$("#tblPrecios tr.row_price").each(function(){
+			pprRefrescarPar($(this).find(".txtDetailTypePriceValue"), $(this).find(".txtDetailTypePricePorc"), $("#txtCost").val());
+		});
+	}
 </script>
 <!--posMeHelp-->

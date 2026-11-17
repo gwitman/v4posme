@@ -835,6 +835,7 @@
 									  <tr>																													  	
 										<th>Tipo de Precio</th>
 										<th>Precio</th>
+										<th>% Utilidad</th>
 										<th>Comision</th>
 									  </tr>
 									</thead>
@@ -850,7 +851,14 @@
 														<?php echo getBehavio($company->type,"app_inventory_item_label_price",$ws->name,""); ?> 
 													</td>																		
 													<td>
-														<input class="form-control"  type="text" id="txtDetailTypePriceValue" name="txtDetailTypePriceValue[]" value="0">
+														<input class="form-control txtDetailTypePriceValue"  type="text" id="txtDetailTypePriceValue" name="txtDetailTypePriceValue[]" autocomplete="off" value="0">
+													</td>
+													<td>
+														<!-- % sobre el costo: se calcula en pantalla; el servidor lo recalcula con el precio -->
+														<div class="ppr-porc">
+															<input class="form-control txtDetailTypePricePorc" type="text" name="txtDetailTypePricePorc[]" autocomplete="off" value="">
+															<span>%</span>
+														</div>
 													</td>
 													<td>
 														<input class="form-control"  type="text" id="txtDetailTypeComisionValue" name="txtDetailTypeComisionValue[]" value="0">
