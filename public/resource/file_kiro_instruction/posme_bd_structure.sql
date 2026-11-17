@@ -3113,6 +3113,24 @@ CREATE TABLE `tb_transaction_concept`  (
 -- ----------------------------
 -- Table structure for tb_transaction_master
 -- ----------------------------
+-- CATALOGO: tb_transaction_master_replacement (Sustitucion de productos facturados)
+--   Controlador : app_invoice_return
+--   Transaccion : 'SUSTITUCION DE PRODUCTO' (signInventory 0; el inventario lo mueven
+--                 la Otra Entrada y la Otra Salida que genera al aplicarse)
+--   Flujo       : 'ESTADO DE SUSTITUCIONES' -> REGISTRADO (inicial, editableTotal, eliminable), APLICADO (aplicable)
+--   Serie       : SUS (tb_counter por sucursal, componentItemID 0)
+--   Parametros  : INVOICE_REPLACEMENT_MAX_DAYS (dias maximos desde la factura, 5)
+--                 INVOICE_REPLACEMENT_VALIDATE_STOCK ("true" valida existencias del sustituto; "false" no)
+--   Vista lista : 'LISTA DE SUSTITUCIONES' (callerID 1)
+--   Plantilla   : tb_company_page_setting_large keyi 'demo', controller 'app_invoice_return',
+--                 element 'templateReplacement', method 'viewRegister'
+--   Cabecera    : entityID = cliente; reference1 = transactionMasterID de la factura;
+--                 reference2 = transactionNumber de la factura; reference3 = transactionMasterID Otra Entrada;
+--                 reference4 = transactionMasterID Otra Salida; sourceWarehouseID/targetWarehouseID = bodega de la factura; sign = 0
+--   Detalle     : componentItemID = item devuelto; reference1 = transactionMasterDetailID de la linea de factura;
+--                 reference2 = itemID sustituto; reference3 = itemNumber sustituto;
+--                 itemNameLog = nombre devuelto; itemNameDescriptionLog = nombre sustituto; unitaryCost = costo linea factura
+--   Alta        : script ejecutado manualmente (17-nov-2026); archivo eliminado del repo
 DROP TABLE IF EXISTS `tb_transaction_master`;
 CREATE TABLE `tb_transaction_master`  (
   `transactionMasterID` int NOT NULL AUTO_INCREMENT,

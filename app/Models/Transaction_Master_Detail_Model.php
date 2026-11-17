@@ -617,10 +617,47 @@ class Transaction_Master_Detail_Model extends Model  {
 		$builder->where("transactionID",$transactionID);	
 		$builder->where("transactionMasterID",$transactionMasterID);
 		$builder->where("componentID",$componentID);
-		$builder->whereNotIn("transactionMasterDetailID",$listTMD_ID);	
+		$builder->whereNotIn("transactionMasterDetailID",$listTMD_ID);
 		return $builder->update($data);
 	}
-	
+
+	/**
+	 * Suma las cantidades ya sustituidas de una factura, por línea de factura y producto.
+	 * Considera las sustituciones activas en cualquier estado (registradas y aplicadas).
+	 * Mapeo: tm.reference1 = transactionMasterID de la factura; td.reference1 = transactionMasterDetailID de la línea de factura.
+	 * @param int $companyID
+	 * @param int $transactionIDReplacement   transactionID de SUSTITUCION DE PRODUCTO
+	 * @param int $invoiceTransactionMasterID transactionMasterID de la factura
+	 * @param int $excludeTransactionMasterID sustitución a excluir (la que se edita); 0 en nuevo
+	 * @return array filas {invoiceTransactionMasterDetailID, componentItemID, quantityReplaced}
+	 */
+	function get_sumQuantityReplacedByInvoice($companyID,$transactionIDReplacement,$invoiceTransactionMasterID,$excludeTransactionMasterID)
+	{
+		$db 	= db_connect();
+		$sql 	= "";
+		$sql 	= $sql.sprintf("select ");
+		$sql 	= $sql.sprintf("	CAST(td.reference1 AS UNSIGNED) as invoiceTransactionMasterDetailID, ");
+		$sql 	= $sql.sprintf("	td.componentItemID, ");
+		$sql 	= $sql.sprintf("	SUM(td.quantity) as quantityReplaced ");
+		$sql 	= $sql.sprintf("from tb_transaction_master tm ");
+		$sql 	= $sql.sprintf("inner join tb_transaction_master_detail td on ");
+		$sql 	= $sql.sprintf("	tm.companyID = td.companyID and ");
+		$sql 	= $sql.sprintf("	tm.transactionID = td.transactionID and ");
+		$sql 	= $sql.sprintf("	tm.transactionMasterID = td.transactionMasterID ");
+		$sql 	= $sql.sprintf("where tm.companyID = %d ", $companyID);
+		$sql 	= $sql.sprintf("and tm.transactionID = %d ", $transactionIDReplacement);
+		$sql 	= $sql.sprintf("and tm.reference1 = '%d' ", $invoiceTransactionMasterID);
+		$sql 	= $sql.sprintf("and tm.transactionMasterID <> %d ", $excludeTransactionMasterID);
+		$sql 	= $sql.sprintf("and tm.isActive = 1 ");
+		$sql 	= $sql.sprintf("and td.isActive = 1 ");
+		$sql 	= $sql.sprintf("group by ");
+		$sql 	= $sql.sprintf("	td.reference1, ");
+		$sql 	= $sql.sprintf("	td.componentItemID ");
+
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+	}
+
 	function get_rowByEntityIDAndCreditPending($companyID,$customerNumber)
 	{
 		$db 	= db_connect();

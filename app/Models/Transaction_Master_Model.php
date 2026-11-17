@@ -133,12 +133,38 @@ class Transaction_Master_Model extends Model  {
 		$sql = $sql.sprintf(" from tb_transaction_master tm");		
 		$sql = $sql.sprintf(" where tm.transactionNumber = '$transactionNumber' ");
 		$sql = $sql.sprintf(" and tm.companyID = $companyID");
-		$sql = $sql.sprintf(" and tm.isActive= 1");		
-		
+		$sql = $sql.sprintf(" and tm.isActive= 1");
+
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
-   
+
+   /**
+    * Obtiene una transacción activa por su número y tipo de transacción, con datos del estado.
+    * Se usa, por ejemplo, para ubicar la factura origen de una sustitución de productos.
+    * @param int    $companyID
+    * @param int    $transactionID     tipo de transacción (ej. factura)
+    * @param string $transactionNumber número de documento (ej. FAC00000001)
+    * @return object|null fila de tb_transaction_master + workflowStageName, workflowStageAplicable, workflowStageVinculable
+    */
+   function get_rowByTransactionNumberAndTransactionID($companyID,$transactionID,$transactionNumber){
+		$db 	= db_connect();
+		$sql 	= "";
+		$sql 	= $sql.sprintf("select tm.companyID, tm.transactionID, tm.transactionMasterID, tm.branchID, tm.transactionNumber, tm.transactionCausalID,tm.entityID, tm.transactionOn, tm.statusIDChangeOn, tm.componentID,tm.tax1,tm.tax2,tm.tax3,tm.tax4,tm.discount,tm.subAmount, tm.note, tm.sign, tm.currencyID, tm.currencyID2, tm.exchangeRate, tm.reference1, tm.reference2, tm.reference3, tm.reference4, tm.statusID, tm.amount, tm.isApplied, tm.journalEntryID, tm.classID, tm.areaID, tm.sourceWarehouseID, tm.targetWarehouseID, tm.createdBy, tm.createdAt, tm.createdOn, tm.createdIn, tm.isActive, tm.priorityID, tm.transactionOn2, tm.isTemplate, tm.periodPay, tm.nextVisit, tm.numberPhone, tm.printerQuantity, tm.entityIDSecondary, tm.dayExcluded, ");
+		$sql 	= $sql.sprintf(" ws.name as workflowStageName, ws.aplicable as workflowStageAplicable, ws.vinculable as workflowStageVinculable ");
+		$sql 	= $sql.sprintf(" from tb_transaction_master tm ");
+		$sql 	= $sql.sprintf(" inner join tb_workflow_stage ws on tm.statusID = ws.workflowStageID ");
+		$sql 	= $sql.sprintf(" where tm.companyID = %d ", $companyID);
+		$sql 	= $sql.sprintf(" and tm.transactionID = %d ", $transactionID);
+		$sql 	= $sql.sprintf(" and tm.transactionNumber = %s ", $db->escape(trim((string)$transactionNumber)));
+		$sql 	= $sql.sprintf(" and tm.isActive = 1 ");
+		$sql 	= $sql.sprintf(" order by tm.transactionMasterID desc ");
+		$sql 	= $sql.sprintf(" limit 1 ");
+
+		//Ejecutar Consulta
+		return $db->query($sql)->getRow();
+   }
+
    
    function get_rowByNotification($companyID)
    {

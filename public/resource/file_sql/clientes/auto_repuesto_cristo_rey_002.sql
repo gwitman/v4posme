@@ -6,6 +6,19 @@
 /******************************************************************/
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'false'
+WHERE p.name = 'INVOICE_REPLACEMENT_VALIDATE_STOCK'
+    AND cp.companyID = 2;
+
+
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '5'
+WHERE p.name = 'INVOICE_REPLACEMENT_MAX_DAYS'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = 'true'
 WHERE p.name = 'INVOICE_BILLING_DISCOUNT_BY_ITEM'
     AND cp.companyID = 2;

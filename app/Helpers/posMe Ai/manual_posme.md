@@ -123,6 +123,48 @@ Ruta: Menú > FACTURACION > FACTURAR.
 Restricciones: no se puede anular una factura de crédito que ya tiene abonos, ni una factura de un periodo contable cerrado. Se requiere permiso de eliminar en FACTURAR.
 Ver también: Mayorizar y cerrar un ciclo contable.
 
+## Sustituir un producto facturado (Sustitución)
+Ruta: Menú > FACTURACION > REMPLAZO.
+Úsela cuando el cliente regresa después de facturado, devuelve un producto y se lleva otro (cambio de producto). La sustitución solo mueve inventario: no modifica la factura ni cobra o reintegra diferencias de precio.
+1. En la lista (Número, Factura, Fecha, Estado, Comentario, Cliente, Código Cliente) presione **Nuevo**.
+2. En **Factura** presione **Examinar** y elija la factura. posMe llena el Cliente (no se puede cambiar), la Fecha de la factura, la Bodega y la lista de productos facturados. Use **Limpiar** para quitar la factura y elegir otra.
+3. En **Datos del documento** revise la **Fecha** y elija el **Estado**: REGISTRADO (queda pendiente y se puede editar) o APLICADO (mueve el inventario). Escriba un **Comentario** si desea.
+4. En **Productos a sustituir** elija en cada renglón el **Producto facturado**; posMe muestra lo **Facturado** y lo **Disponible**. Escriba la **Cantidad** y presione **Buscar** para elegir el **Producto sustituto**.
+5. Use **Agregar** para más renglones de la misma factura. Para quitar renglones, márquelos y presione **Quitar**.
+6. Presione **Guardar**.
+Para modificar una sustitución REGISTRADA, selecciónela en la lista y presione **Editar**; para borrarla, **Eliminar**.
+Ver también: Reglas y validaciones de la sustitución de productos; Aplicar una sustitución de productos (Otra Entrada y Otra Salida).
+
+## Reglas y validaciones de la sustitución de productos
+Ruta: Menú > FACTURACION > REMPLAZO.
+posMe no deja guardar la sustitución si:
+- La factura no está APLICADA o está ANULADA.
+- Pasaron más días de los permitidos entre la fecha de la factura y la fecha de la sustitución (por defecto 5 días, según la configuración de su empresa). La pantalla muestra el "Plazo máximo". Si cambia la Fecha a una fuera de plazo o anterior a la factura, tampoco deja guardar.
+- La Cantidad es 0 o mayor que lo Disponible. Disponible = cantidad facturada menos lo ya sustituido de ese producto en otras sustituciones REGISTRADAS o APLICADAS de la misma factura.
+- El Producto sustituto es el mismo producto devuelto o no se eligió. El producto que el cliente devuelve debe estar en la factura; el producto que se le entrega no necesita estar en la factura.
+- No agregó ningún producto a sustituir.
+- Al aplicar, no hay existencias suficientes del sustituto en la bodega de la factura (solo si su empresa tiene activada la validación de existencias), o el producto devuelto o el sustituto no están asignados a esa bodega.
+- El ciclo contable de la fecha está cerrado.
+Ver también: Sustituir un producto facturado (Sustitución); Parámetros de la empresa: Sustitución de productos.
+
+## Aplicar una sustitución de productos (Otra Entrada y Otra Salida)
+Ruta: Menú > FACTURACION > REMPLAZO.
+1. Abra la sustitución REGISTRADA con **Editar**, elija el **Estado** APLICADO y presione **Guardar** (o créela directamente en APLICADO).
+2. posMe genera automáticamente dos documentos de inventario ya aplicados en la bodega de la factura: una **Otra entrada (productos devueltos)**, por la que el producto devuelto vuelve a entrar, y una **Otra salida (productos sustitutos)**, por la que sale el producto que se lleva el cliente. Su comentario dice "Sustitución #... de factura #...: producto x cantidad por producto..." y quedan referenciados a la sustitución y a la factura.
+3. Al abrir la sustitución verá el recuadro **Documentos generados** con enlaces a ambos documentos.
+4. Presione **Imprimir** para obtener el PDF de la sustitución (el formato lo define la configuración de su empresa).
+Restricciones: una sustitución APLICADA queda en solo lectura; no se puede editar ni eliminar.
+Notas: si aparece "Aplicación pendiente" ("Este documento ya generó movimientos de inventario pero no terminó de aplicarse"), la aplicación se interrumpió. Solo puede cambiar el Estado a APLICADO y guardar para terminarla; posMe no duplica los documentos de inventario.
+Ver también: Preguntas frecuentes de la sustitución de productos.
+
+## Preguntas frecuentes de la sustitución de productos
+Ruta: Menú > FACTURACION > REMPLAZO.
+- ¿Por qué no puedo usar mi factura o me la rechaza? Revise que la factura esté APLICADA y no ANULADA, que no haya pasado el plazo máximo de días desde su fecha y que todavía tenga cantidad Disponible (si ya se sustituyó toda, no queda nada por cambiar).
+- ¿La sustitución cobra o devuelve la diferencia de precio? No. Solo mueve inventario; la factura no cambia. Si hay diferencia de precio, debe manejarse aparte.
+- ¿Puedo corregir una sustitución ya APLICADA? No se puede editar ni eliminar. Si el cliente vuelve a cambiar, registre otra sustitución: el producto que devuelve debe estar en una factura dentro del plazo, mientras que el producto que se le entrega puede ser cualquiera, aunque no esté en la factura.
+- ¿Puedo cambiar varios productos de la misma factura? Sí, agregue un renglón por cada producto con **Agregar**.
+Ver también: Reglas y validaciones de la sustitución de productos.
+
 ## Registrar un abono de un cliente
 Ruta: Menú > CAJA > ABONO.
 1. Entre a CAJA > ABONO y presione **Nuevo**.
@@ -2212,7 +2254,7 @@ Los parámetros controlan el comportamiento de posMe por empresa (por ejemplo, o
 Los parámetros contables se editan en CONTABILIDAD > PARAMETROS; el resto los configura el equipo de soporte de posMe.
 Google Calendar de las órdenes de taller: APP_GOOGLE_CLENDAR_ENABLE (true la activa), GOOGLE_CALENDAR_ID, GOOGLE_CALENDAR_SERVICE_EMAIL y GOOGLE_CALENDAR_PRIVATE_KEY; opcionales GOOGLE_CALENDAR_TIMEZONE (por defecto America/Managua) y GOOGLE_CALENDAR_DURATION_MINUTES (duración de cada evento, por defecto 60 minutos).
 Agente de IA de WhatsApp: WHATSAPP_AI_AGENT_ENABLE (true lo activa); WHATSAPP_AI_AGENT_CONTINUE_AFTER_HANDOFF (true: la IA sigue contestando tras derivar mientras ningún colaborador escriba); WHATSAPP_AI_AGENT_HANDOFF_MESSAGE (mensaje al derivar; vacío, la IA redacta el suyo); WHATSAPP_AI_AGENT_STAGE_ATTENDED_ID (etapa "atendida por IA"); WHATSAPP_AI_AGENT_DEBOUNCE_SECONDS (segundos de espera antes de responder, por defecto 3); WHATSAPP_AI_AGENT_MAX_TURNS (máximo de respuestas de la IA antes de pasar a una persona, por defecto 15); WHATSAPP_AI_AGENT_HISTORY_MESSAGES (mensajes anteriores que lee la IA, por defecto 12); WHATSAPP_AI_AGENT_EMPLOYEE_ENTITYID (colaborador "Asistente IA", nunca recibe asignaciones). El texto y las intenciones del agente por tipo de negocio los configura soporte.
-Ver también: Configurar los parámetros contables; Parámetros de la empresa: Campañas de WhatsApp; Parámetros de la empresa: Descuento en factura.
+Ver también: Configurar los parámetros contables; Parámetros de la empresa: Campañas de WhatsApp; Parámetros de la empresa: Descuento en factura; Parámetros de la empresa: Sustitución de productos.
 <!-- REVISAR: pantalla para que el cliente edite parametros generales -->
 
 ## Parámetros de la empresa: Campañas de WhatsApp
@@ -2230,6 +2272,12 @@ Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla FACTURACI
 - INVOICE_BILLING_DISCOUNT_BY_ITEM ("DESCUENTO POR PRODUCTO EN FACTURA"): true activa la sección **Descuento del producto** en la ventana Información del producto, el descuento global en el resumen y el cálculo del IVA sobre el precio con descuento; false (o sin configurar) deja la pantalla como siempre.
 - INVOICE_BILLING_DISCOUNT_PASSWORD ("CLAVE AUTORIZACION DE DESCUENTO EN FACTURA"): clave que se pide en la ventana **Autorizar descuento**. Si está vacío, no se pide clave.
 Ver también: Aplicar un descuento en una factura (por producto o global); Autorizar un descuento en una factura con clave.
+
+## Parámetros de la empresa: Sustitución de productos
+Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla FACTURACION > REMPLAZO.
+- INVOICE_REPLACEMENT_MAX_DAYS: días máximos entre la fecha de la factura y la fecha de la sustitución. Por defecto 5 (si no está configurado o no es un número).
+- INVOICE_REPLACEMENT_VALIDATE_STOCK: true exige existencias suficientes del producto sustituto en la bodega de la factura al aplicar; false permite aplicar sin existencias. Si no está configurado, se toma como true.
+Ver también: Sustituir un producto facturado (Sustitución); Reglas y validaciones de la sustitución de productos.
 
 ## Soporte
 Si no encuentra cómo hacer algo o hay un error en el sistema, contacte al equipo de soporte de posMe. <!-- REVISAR: telefono / correo de soporte -->
