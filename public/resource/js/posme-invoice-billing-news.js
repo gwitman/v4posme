@@ -577,6 +577,11 @@
 			$('.sidebar').each(function () {
 				observadorPaneles.observe(this, { attributes: true, attributeFilter: ['style', 'class'] });
 			});
+			//Modales propios (helper_getHtmlOfModalDialog: mostrarModal/cerrarModal cambian style.display):
+			//sin esto la barra de captura quedaba encima del modal hasta el siguiente sondeo de 500 ms
+			$('[class^="modal-customer1-"], [class*=" modal-customer1-"]').each(function () {
+				observadorPaneles.observe(this, { attributes: true, attributeFilter: ['style', 'class'] });
+			});
 			if (document.body) {
 				observadorPaneles.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 			}
