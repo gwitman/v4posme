@@ -874,6 +874,7 @@ echo helper_getHtmlOfPageLanding();
 										
 										<th>Descuento</th><!--Descuento-->
 										<th>Comision POS Banco</th><!--Comision Banco-->
+										<th>% Desc.</th><!--Porcentaje de descuento de la linea (INVOICE_BILLING_DISCOUNT_BY_ITEM)-->
 									</tr>
 								</thead>
 								<tbody id="body_tb_transaction_master_detail">
@@ -1535,7 +1536,22 @@ echo helper_getHtmlOfPageLanding();
 					
 			</div>
 			<?php
-				helper_getHtmlOfModalDialog("ModalCodigoCaja","ModalCodigoCajaBody","",false);				
+				helper_getHtmlOfModalDialog("ModalCodigoCaja","ModalCodigoCajaBody","",false);
+			?>
+
+			<!-- Autorizacion del descuento por linea / global (INVOICE_BILLING_DISCOUNT_BY_ITEM). La clave se valida en el servidor. -->
+			<div id="ModalAutorizarDescuentoBody" style="display:none">
+				<h3>Autorizar descuento</h3>
+				<br/>
+				<input type="password" id="txtClaveDescuento" autocomplete="off" class="form-control" placeholder="Clave de autorización" />
+				<span id="errorMessageClaveDescuento" style="color: red; display: none;"></span>
+				<br/>
+				<button type="button" class="btn btn-default btn-flat btn-block" id="btnCancelarClaveDescuento">Cancelar</button>
+				<br/>
+				<a href="javascript:void(0);" class="btn btn-primary btn-flat btn-block" id="btnAceptarClaveDescuento">Aceptar</a>
+			</div>
+			<?php
+				helper_getHtmlOfModalDialog("ModalAutorizarDescuento","ModalAutorizarDescuentoBody","",false,false);
 			?>
 			
 			

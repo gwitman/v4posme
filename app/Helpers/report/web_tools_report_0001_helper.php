@@ -13109,7 +13109,6 @@ function helper_reporte80mmTransactionMasterRepuestoCristoRey(
                           </td>
                         </tr>
 						
-						<!--
                         <tr>
                           <td colspan='2'>
                             SUB-TOTAL
@@ -13117,15 +13116,8 @@ function helper_reporte80mmTransactionMasterRepuestoCristoRey(
                           <td style='text-align:right'>
                             ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->subAmount)."
                           </td>
-                        </tr>  
-						<tr>
-                          <td colspan='2'>
-                            IVA
-                          </td>
-                          <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->tax1)."
-                          </td>
-                        </tr> 
+                        </tr>
+						".( $objTransactionMastser->discount > 0 ? "
                         <tr>
                           <td colspan='2'>
                             DESC
@@ -13133,14 +13125,21 @@ function helper_reporte80mmTransactionMasterRepuestoCristoRey(
                           <td style='text-align:right'>
                             ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->discount)."
                           </td>
-                        </tr> 
-						-->						
+                        </tr> " : "" )."
+						<tr>
+                          <td colspan='2'>
+                            IVA
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->tax1)."
+                          </td>
+                        </tr>
                         <tr>
                           <td colspan='2'>
                             TOTAL
                           </td>
                           <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount)."
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount - $objTransactionMastser->discount)."
                           </td>
                         </tr>
 						 <tr>
@@ -13148,7 +13147,7 @@ function helper_reporte80mmTransactionMasterRepuestoCristoRey(
                             TOTAL DOL
                           </td>
                           <td style='text-align:right'>
-                            "."$ "." ".sprintf("%.2f",$objTransactionMastser->amount*$objTransactionMastser->exchangeRate)."
+                            "."$ "." ".sprintf("%.2f",($objTransactionMastser->amount - $objTransactionMastser->discount)*$objTransactionMastser->exchangeRate)."
                           </td>
                         </tr>
    

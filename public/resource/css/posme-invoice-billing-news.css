@@ -606,6 +606,10 @@ body [class*="modal-content-customer1-"] .btn-default:hover {
 	#rowCssPrincipal .pm-table-wrap #tb_transaction_master_detail {
 		min-width		: 900px;
 	}
+	/* Descuento por linea (INVOICE_BILLING_DISCOUNT_BY_ITEM): dos columnas mas (Desc. y % Desc.) */
+	html.pm-desc-linea #rowCssPrincipal .pm-table-wrap #tb_transaction_master_detail {
+		min-width		: 1050px;
+	}
 }
 
 /*
@@ -613,7 +617,9 @@ body [class*="modal-content-customer1-"] .btn-default:hover {
  * Orden real de columnas (thead / columnasTableDetail), nth-child base 1:
  *   1 check | 2 transactionMasterDetailID* | 3 itemID* | 4 Codigo | 5 Descripcion | 6 U/M (sku)
  *   7 Cantidad | 8 Precio | 9 Total | 10 Iva* | 11 skuQuantityBySku* | 12 unitaryPriceInvidual*
- *   13 Accion | 14..18 ocultas* | 19 Peso (segun INVOICE_SHOW_FIELD_PESO) | 20..27 ocultas*
+ *   13 Accion | 14..18 ocultas* | 19 Peso (segun INVOICE_SHOW_FIELD_PESO) | 20..25 ocultas*
+ *   26 Desc. (monto de la linea) | 27 Comision banco* | 28 % Desc.
+ *   (26 y 28 solo visibles con INVOICE_BILLING_DISCOUNT_BY_ITEM = "true"; si no, td.hidden)
  *   (* = td.hidden, se excluyen solas de la rejilla)
  */
 @media (max-width: 767px) {
@@ -683,6 +689,12 @@ body [class*="modal-content-customer1-"] .btn-default:hover {
 		order			: 7;
 		grid-column		: span 2;
 	}
+	/* Descuento por linea: Desc. y % Desc. debajo de cantidad/precio/total */
+	#rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(26),
+	#rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(28) {
+		order			: 7;
+		grid-column		: span 3;
+	}
 	#rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(19) {
 		order			: 8;
 		grid-column		: span 6;
@@ -704,7 +716,9 @@ body [class*="modal-content-customer1-"] .btn-default:hover {
 	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(7)::before,
 	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(8)::before,
 	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(9)::before,
-	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(19)::before {
+	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(19)::before,
+	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(26)::before,
+	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(28)::before {
 		display			: block;
 		font-size		: 11px;
 		font-weight		: 600;
@@ -718,6 +732,8 @@ body [class*="modal-content-customer1-"] .btn-default:hover {
 	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(8)::before  { content: "Precio"; }
 	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(9)::before  { content: "Total"; }
 	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(19)::before { content: "Peso"; }
+	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(26)::before { content: "Desc."; }
+	.pm-invoice-news:not(.pm-usemobile) #rowCssPrincipal #tb_transaction_master_detail > tbody > tr > td:nth-child(28)::before { content: "% Desc."; }
 }
 
 /* ======================================================================

@@ -28,7 +28,7 @@ class core_web_ai
     const PREFIJO_CONTACTO_NUEVO = "posMeConnect_";
 
     /** Parametros de empresa con secretos (versiones anteriores; hoy estan en Constants.php): nunca se envian al navegador. */
-    const PARAMETROS_SECRETOS = ["AI_API_KEY", "AI_READONLY_USERNAME", "AI_READONLY_PASSWORD"];
+    const PARAMETROS_SECRETOS = ["AI_API_KEY", "AI_READONLY_USERNAME", "AI_READONLY_PASSWORD", "INVOICE_BILLING_DISCOUNT_PASSWORD"];
 
     /** Mensajes amigables por codigo de error. */
     public static $MENSAJES = [
