@@ -81,8 +81,16 @@
         });
         //Al salir del % se avisa a la pantalla que el precio cambio
         $(document).on("change", fila + " " + selPorc, function(){
+            var $fila = $(this).closest(fila);
+            //% en blanco = 0%: el precio queda igual al costo
+            if(!$(this).is("[readonly]") && $.trim($(this).val()) === ""){
+                var precio = pprPrecioDesdePorc(0, fnCosto($fila));
+                $(this).val("0.00");
+                if(precio !== null)
+                    $fila.find(selPrecio).val(precio);
+            }
             if(typeof fnPrecioCambiado === "function")
-                fnPrecioCambiado($(this).closest(fila).find(selPrecio));
+                fnPrecioCambiado($fila.find(selPrecio));
         });
     }
 </script>
