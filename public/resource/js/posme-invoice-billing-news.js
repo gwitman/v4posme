@@ -232,6 +232,11 @@
 		});
 		if (!abierto) {
 			$('[class^="modal-customer1-"], [class*=" modal-customer1-"]').each(function () {
+				//Los modales de espera (cada operacion) cubren todo la pantalla y duran milisegundos:
+				//no cuentan, para que la barra de captura y el cobro no parpadeen
+				if (this.id === 'ModalCargandoDatos' || this.id === 'ModalActualizandoCatalogo') {
+					return;
+				}
 				if (this.offsetWidth > 0 || this.offsetHeight > 0) {
 					abierto = true;
 					return false;
