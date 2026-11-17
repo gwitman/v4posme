@@ -833,13 +833,22 @@
         let precio3 				= selectedDataInfoProducto[columnasTableDetail.precio3];
         let precios 				= [fnFormatNumber(precio1, 2), fnFormatNumber(precio2, 2), fnFormatNumber(precio3, 2)];
         let selectPrecio 			= $('#selectPrecio');
-        let precio 					= selectedDataInfoProducto[columnasTableDetail.precio];
+        //El precio y la cantidad vigentes son los escritos en la fila (el precio pudo cambiarse a mano en txtPriceRow)
+        let $precioFila 			= selectTr.find('input.txtPrice');
+        let $cantidadFila 			= selectTr.find('input.txtQuantity');
+        if($precioFila.length > 0) 		selectedDataInfoProducto[columnasTableDetail.precio] 	= $precioFila.val();
+        if($cantidadFila.length > 0) 	selectedDataInfoProducto[columnasTableDetail.cantidad] 	= $cantidadFila.val();
+        let precio 					= PosmeInvoiceDiscount.round2(PosmeInvoiceDiscount.num(selectedDataInfoProducto[columnasTableDetail.precio]));
         selectPrecio.empty();
+
+        //Si el precio de la fila no es ninguno de los de la base, se agrega como primera opcion para no perderlo
+        if (precio>0 && !precios.some(function(p){ return PosmeInvoiceDiscount.num(p) === precio; }))
+            precios.unshift(fnFormatNumber(precio, 2));
 
         //establecer precios
         if (precio>0) {
             precios.forEach(function(p) {
-                let selected 	= parseFloat(p) === parseFloat(precio);
+                let selected 	= PosmeInvoiceDiscount.num(p) === precio;
 				let option 		= new Option(p, p, selected, selected);
                 selectPrecio.append(option);
             });

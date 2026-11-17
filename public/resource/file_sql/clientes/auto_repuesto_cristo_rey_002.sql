@@ -13,7 +13,7 @@ WHERE p.name = 'INVOICE_REPLACEMENT_VALIDATE_STOCK'
 
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
-SET cp.value = '5'
+SET cp.value = '365'
 WHERE p.name = 'INVOICE_REPLACEMENT_MAX_DAYS'
     AND cp.companyID = 2;
 	
@@ -25,7 +25,7 @@ WHERE p.name = 'INVOICE_BILLING_DISCOUNT_BY_ITEM'
 	
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
-SET cp.value = 'CAMBIAR_CLAVE'
+SET cp.value = ''
 WHERE p.name = 'INVOICE_BILLING_DISCOUNT_PASSWORD'
     AND cp.companyID = 2;
 	
