@@ -1154,7 +1154,22 @@ body [class*="modal-content-customer1-"] .btn-block + .btn-block {
 /* Con una sidebar/modal abierto, nada de lo sticky queda por encima (las .sidebar no tienen z-index) */
 .pm-superpuesto #rowCssPrincipal .pm-barra-captura,
 .pm-superpuesto #rowCssPrincipal .pm-col-main .pm-table-wrap #tb_transaction_master_detail > thead > tr > th,
-.pm-superpuesto #rowCssPrincipal .pm-col-cobro {
+.pm-superpuesto #rowCssPrincipal .pm-col-cobro,
+/* Modal de espera (guardar/aplicar factura): igual, solo el z-index; el cobro no se oculta para que no parpadee */
+.pm-espera #rowCssPrincipal .pm-barra-captura,
+.pm-espera #rowCssPrincipal .pm-col-main .pm-table-wrap #tb_transaction_master_detail > thead > tr > th,
+.pm-espera #rowCssPrincipal .pm-col-cobro {
+	z-index			: 0;
+}
+/*
+ * Los modales propios (helper_getHtmlOfModalDialog) viven dentro de #mySidebar (position fixed, crea su
+ * propio contexto de apilamiento), por eso su z-index 1000 no los pone sobre la barra sticky (z-index 30).
+ * mostrarModal() escribe style="display: flex": con :has() la barra baja en el mismo cuadro en que se
+ * abre cualquier modal (guardar, aplicar, actualizar catalogo, info del producto...), sin esperar al JS.
+ */
+html:has([class*="modal-customer1-"][style*="flex"]) #rowCssPrincipal .pm-barra-captura,
+html:has([class*="modal-customer1-"][style*="flex"]) #rowCssPrincipal .pm-col-main .pm-table-wrap #tb_transaction_master_detail > thead > tr > th,
+html:has([class*="modal-customer1-"][style*="flex"]) #rowCssPrincipal .pm-col-cobro {
 	z-index			: 0;
 }
 

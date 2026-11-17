@@ -249,6 +249,19 @@
 		return abierto;
 	}
 
+	//Modal de espera abierto (guardar/aplicar factura, cargar datos): solo baja la barra y el
+	//cobro detras del modal (clase pm-espera), sin ocultar ni cerrar el panel de cobro
+	function hayModalEspera() {
+		var abierto = false;
+		$('#ModalCargandoDatos, #ModalActualizandoCatalogo').each(function () {
+			if (this.offsetWidth > 0 || this.offsetHeight > 0) {
+				abierto = true;
+				return false;
+			}
+		});
+		return abierto;
+	}
+
 	/* ------------------------------------------------------------------
 	 * 6. Barra fija inferior (telefono), panel de cobro y auto-scroll
 	 *    Los totales se escriben con .val()/.text() sin disparar eventos,
@@ -522,6 +535,7 @@
 			try {
 				var superpuesto = hayPanelSuperpuesto();
 				alternarClaseHtml('pm-superpuesto', superpuesto);
+				alternarClaseHtml('pm-espera', hayModalEspera());
 
 				if (hayLayout) {
 					var sinCobro = cobroVacio();
