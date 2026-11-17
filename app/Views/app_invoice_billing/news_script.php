@@ -3795,11 +3795,7 @@
 		var clave 	= $("#txtClaveDescuento").val();
 		if($btn.hasClass("disabled"))
 			return;
-		if(clave === "")
-		{
-			fnDescuentoMostrarErrorClave("Ingrese la clave de autorización.");
-			return;
-		}
+		//La clave en blanco se envia igual: el servidor decide (si INVOICE_BILLING_DISCOUNT_PASSWORD esta vacio no se exige clave)
 
 		$btn.addClass("disabled");
 		$("#errorMessageClaveDescuento").text("").hide();

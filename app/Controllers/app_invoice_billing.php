@@ -1110,8 +1110,7 @@ class app_invoice_billing extends _BaseController {
 				throw new \Exception(NOT_ACCESS_CONTROL);
 			}
 
-			$objParameterClave	= $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"INVOICE_BILLING_DISCOUNT_PASSWORD");
-			$claveParametro		= $objParameterClave ? $objParameterClave->value : "";
+			$claveParametro		= $this->invoiceDiscountClaveParametro($dataSession);
 			$claveIngresada		= /*inicio get post*/ $this->request->getPost("password");
 
 			if(!$this->core_web_invoice_discount->verificarClave($claveParametro,$claveIngresada))
@@ -1193,9 +1192,46 @@ class app_invoice_billing extends _BaseController {
 	 * @return bool
 	 */
 	private function invoiceDiscountValidarClave($dataSession,$descuentoTotal){
-		$objParameterClave	= $this->core_web_parameter->getParameterFiltered($dataSession["companyParameter"],"INVOICE_BILLING_DISCOUNT_PASSWORD");
-		$claveParametro		= $objParameterClave ? $objParameterClave->value : "";
+		$claveParametro		= $this->invoiceDiscountClaveParametro($dataSession);
 		return $this->core_web_invoice_discount->validarClave((float)$descuentoTotal,$claveParametro,$this->request->getPost("txtDiscountAuthorization"));
+	}
+
+	/**
+	 * Lee la clave de autorizacion del descuento directo de la BD (no de la sesion),
+	 * asi un cambio del parametro aplica sin volver a iniciar sesion.
+	 * @param array $dataSession Sesion del usuario
+	 * @return string Valor de INVOICE_BILLING_DISCOUNT_PASSWORD ("" si no existe)
+	 */
+	private function invoiceDiscountClaveParametro($dataSession){
+		try{
+			$objParameterClave	= $this->core_web_parameter->getParameter("INVOICE_BILLING_DISCOUNT_PASSWORD",$dataSession["user"]->companyID);
+			return $objParameterClave ? (string)$objParameterClave->value : "";
+		}
+		catch(\Exception $ex){
+			//Si el parametro no existe para la compania no se exige clave
+			return "";
+		}
+	}
+
+	/**
+	 * Repite el contenido del <body> de la factura N veces, cada copia en una hoja nueva
+	 * (salto de pagina), para imprimir original y copias en un solo documento.
+	 * @param string $html   Factura ya renderizada
+	 * @param mixed  $copias Cantidad de hojas (1 o invalido = sin cambios)
+	 * @return string Html con las copias
+	 */
+	private function invoiceRepetirCopiasHtml($html,$copias){
+		$copias = (int)$copias;
+		if($copias <= 1)
+			return $html;
+
+		if(!preg_match('/(<body[^>]*>)(.*)(<\/body>)/is',$html,$match,PREG_OFFSET_CAPTURE))
+			return $html;
+
+		$contenido	= $match[2][0];
+		$separador	= "<div style='page-break-before: always;'></div>";
+		$cuerpo		= implode($separador,array_fill(0,$copias,$contenido));
+		return substr($html,0,$match[2][1]).$cuerpo.substr($html,$match[2][1] + strlen($contenido));
 	}
 
 	function updateElement($dataSession){
@@ -8551,7 +8587,22 @@ class app_invoice_billing extends _BaseController {
 				$datViewArray["creditLastShareDate"]			= max(array_map(function($item) { return $item->dateApply;}, $objCCDAmortizacion));
 				$datViewArray["creditLastShareDate"]			= date_format(date_create($datViewArray["creditLastShareDate"]),"Y-m-d");
 			}
-			
+
+			//Banderas para ocultar filas en la plantilla cuando el valor es cero
+			$datViewArray["hasDiscount"]						= round($datView["objTM"]->discount,2) > 0 ? 1 : 0;
+			$datViewArray["hasChange"]							= round($datView["objTMI"]->changeAmount,2) > 0 ? 1 : 0;
+			$datViewArray["hasIva"]								= round($datView["objTM"]->tax1,2) > 0 ? 1 : 0;
+
+			//Total de la factura (neto de descuento) expresado en moneda local y en moneda extranjera segun la tasa del dia
+			$totalNeto											= $datView["objTM"]->amount - $datView["objTM"]->discount;
+			$isCurrencyDefault									= $datView["objTM"]->currencyID == $objCurrencyDefault->currencyID;
+			$amountTotalDefault									= $isCurrencyDefault ? $totalNeto : $totalNeto * $exchangeRateDisplay;
+			$amountTotalExternal								= $isCurrencyDefault ? ($exchangeRateDisplay > 0 ? $totalNeto / $exchangeRateDisplay : 0) : $totalNeto;
+			$datViewArray["currencyDefaultSimbol"]				= $objCurrencyDefault->simbol;
+			$datViewArray["currencyExternalSimbol"]				= $objCurrencyExternal->simbol;
+			$datViewArray["amount_total_default"]				= sprintf("%.2f",$amountTotalDefault);
+			$datViewArray["amount_total_external"]				= sprintf("%.2f",$amountTotalExternal);
+
 			//agregar item
 			foreach($datView["objTMD"] as $detail_)
 			{
@@ -8628,10 +8679,19 @@ class app_invoice_billing extends _BaseController {
 					"pdf"
 			);
 
+			//Cantidad de copias (hojas) a imprimir segun sea factura de contado o de credito
+			$copias			= getBehavio(
+					$objCompany->type,
+					"app_invoice_billing",
+					$datViewArray["isCredit"] == 1 ? "viewRegisterFormatoPaginaNormal80mmOpcion1DB_copiasCredito" : "viewRegisterFormatoPaginaNormal80mmOpcion1DB_copiasContado",
+					"1"
+			);
+
 
 			if($printerPdf == "html")
 			{
 				$html = helper_RenderStringAsView($htmlTemplateCompany, $datViewArray);
+				$html = $this->invoiceRepetirCopiasHtml($html,$copias);
 				echo $html;
 				exit;
 			}
@@ -8639,6 +8699,7 @@ class app_invoice_billing extends _BaseController {
 			{
 				$parser 		= \Config\Services::parser();			
 				$html 			= $parser->setData($datViewArray)->renderString($htmlTemplateCompany);
+				$html 			= $this->invoiceRepetirCopiasHtml($html,$copias);
 				$this->dompdf->loadHTML($html);
 				
 				//1cm = 29.34666puntos

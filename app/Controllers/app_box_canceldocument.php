@@ -1118,6 +1118,11 @@ class app_box_canceldocument extends _BaseController {
 			$datViewReport												= array();
 			$datViewReport["reporte80mmTransactionMaster_Style"]		= getBehavio($objCompany->type,"app_box_canceldocument","viewRegisterFormatoPaginaNormal_Style","");
 			$datViewReport["reporte80mmTransactionMaster_Footer"]		= getBehavio($objCompany->type,"app_box_canceldocument","viewRegisterFormatoPaginaNormal_Footer","");
+			//Filas del resumen que la compania no muestra ("true" = ocultar)
+			$datViewReport["reporte80mmTransactionMaster_HideIva"]		= getBehavio($objCompany->type,"app_box_canceldocument","viewRegisterFormatoPaginaNormal_HideIva","false");
+			$datViewReport["reporte80mmTransactionMaster_HideServicio"]	= getBehavio($objCompany->type,"app_box_canceldocument","viewRegisterFormatoPaginaNormal_HideServicio","false");
+			$datViewReport["reporte80mmTransactionMaster_HideDescuento"]	= getBehavio($objCompany->type,"app_box_canceldocument","viewRegisterFormatoPaginaNormal_HideDescuento","false");
+			$datViewReport["reporte80mmTransactionMaster_HideCambio"]	= getBehavio($objCompany->type,"app_box_canceldocument","viewRegisterFormatoPaginaNormal_HideCambio","false");
 
 			//Generar Reporte
 			$html = helper_reporte80mmTransactionMaster(

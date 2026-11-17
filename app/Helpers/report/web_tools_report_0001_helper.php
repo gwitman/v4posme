@@ -10237,6 +10237,44 @@ function helper_reporte80mmTransactionMaster(
     $data    = file_get_contents($path);
     $base64  = 'data:image/' . $type . ';base64,' . base64_encode($data);
     
+    //Filas del resumen que la compania puede ocultar ($datView[...Hide*] = "true")
+    $rowIva       = ($datView["reporte80mmTransactionMaster_HideIva"] ?? "") == "true" ? "" : "
+                        <tr>
+                          <td colspan='2'>
+                            IVA
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->tax1)."
+                          </td>
+                        </tr>";
+    $rowServicio  = ($datView["reporte80mmTransactionMaster_HideServicio"] ?? "") == "true" ? "" : "
+                        <tr>
+                          <td colspan='2'>
+                            % SERVICIO
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->tax2)."
+                          </td>
+                        </tr>";
+    $rowDescuento = ($datView["reporte80mmTransactionMaster_HideDescuento"] ?? "") == "true" ? "" : "
+                        <tr>
+                          <td colspan='2'>
+                            DESC
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->discount)."
+                          </td>
+                        </tr>";
+    $rowCambio    = ($datView["reporte80mmTransactionMaster_HideCambio"] ?? "") == "true" ? "" : "
+                        <tr>
+                          <td colspan='2'>
+                            CAMBIO
+                          </td>
+                          <td style='text-align:right'>
+                            ".$objCurrency->simbol." ".sprintf("%.2f",($objTransactionMasterInfo->changeAmount))."
+                          </td>
+                        </tr>";
+
     $html    = "";
     $html    = "
                     <!--
@@ -10420,30 +10458,7 @@ function helper_reporte80mmTransactionMaster(
                             ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->subAmount)."
                           </td>
                         </tr>  
-						<tr>
-                          <td colspan='2'>
-                            IVA
-                          </td>
-                          <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->tax1)."
-                          </td>
-                        </tr> 
-						<tr>
-                          <td colspan='2'>
-                            % SERVICIO
-                          </td>
-                          <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->tax2)."
-                          </td>
-                        </tr> 
-                        <tr>
-                          <td colspan='2'>
-                            DESC
-                          </td>
-                          <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->discount)."
-                          </td>
-                        </tr>                              
+						".$rowIva.$rowServicio.$rowDescuento."                              
                         <tr>
                           <td colspan='2'>
                             TOTAL
@@ -10461,14 +10476,7 @@ function helper_reporte80mmTransactionMaster(
                             ".$objCurrency->simbol." ".sprintf("%.2f",$objTransactionMastser->amount + $objTransactionMasterInfo->changeAmount + $objTransactionMastser->tax2 )."
                           </td>
                         </tr>
-                         <tr>
-                          <td colspan='2'>
-                            CAMBIO
-                          </td>
-                          <td style='text-align:right'>
-                            ".$objCurrency->simbol." ".sprintf("%.2f", ($objTransactionMasterInfo->changeAmount)  )."
-                          </td>
-                        </tr>
+                         ".$rowCambio."
 
                          <tr>
                           <td colspan='3' style='text-align:center'>
