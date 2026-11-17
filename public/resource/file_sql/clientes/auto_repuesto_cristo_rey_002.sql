@@ -1,4 +1,4 @@
-/*BD: 	dba4zgpmwu7ouq:parametro_001_development*/
+/*BD: 	dba4zgpmwu7ouq:parametro_repueto_cristo_rey_002*/
 /*SERVIDOR:		siteground*/
 
 /******************************************************************/
@@ -2447,7 +2447,7 @@ WHERE
 	
 			
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "500" 
+	tb_company_parameter.value = "50" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "INVOICE_CANTIDAD_ITEM";## PANTALLA PARA LA FACTUACION
