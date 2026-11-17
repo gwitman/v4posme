@@ -323,6 +323,8 @@
 		<!-- detalle del movimiento-->
 
 	</div>
+	<!-- control de envio completo: debe ser el ULTIMO campo del formulario (si no llega al servidor, PHP corto el POST por max_input_vars) -->
+	<input type="hidden" name="txtFormularioCompleto" id="txtFormularioCompleto" value="1">
 	</form>
 	<!-- formulario -->
 

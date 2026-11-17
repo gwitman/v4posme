@@ -13,6 +13,7 @@
 	var objParameterUrlPrinterCode  								= '<?php echo $objParameterMasive; ?>';
 	var varUseMobile												= '<?php echo $useMobile; ?>';
 	var objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE	= <?php echo $objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE; ?>;
+	var maxInputVars												= <?php echo isset($maxInputVars) ? (int)$maxInputVars : 0; ?>;//limite de campos por envio del servidor (php.ini)
 	var objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY	= '<?php echo $objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY; ?>';
 	var objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES	= '<?php echo $objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES; ?>';
 	var sScrollY 													= objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE == true ?  "350px" : "auto";
@@ -368,6 +369,10 @@
 						fnImportValidarArchivo();
 						return;
 					}
+
+					//Sin archivo el detalle viaja en el POST: no enviar si supera el limite del servidor
+					if(!fnValidarLimiteCampos())
+						return;
 
 					fnWaitOpen();
 					$( "#form-new-transaction" ).submit();
@@ -803,6 +808,25 @@
 	var importTamanoLote = 200; //filas por peticion: cada una termina antes del timeout del servidor
 
 	//Hay archivo cuando el campo tiene un nombre distinto a la extension por defecto
+	//Valida que el formulario no supere max_input_vars del servidor (PHP descarta en silencio los campos excedentes
+	//y se borrarian las lineas del detalle que no llegan). Devuelve true si se puede enviar.
+	function fnValidarLimiteCampos()
+	{
+		//Margen para campos agregados por el navegador o el tema
+		var margen 		= 20;
+		var cantidad 	= $("#form-new-transaction").serializeArray().length;
+		if(maxInputVars <= 0 || (cantidad + margen) <= maxInputVars)
+			return true;
+
+		var filas = objTableDetailTransaction.fnGetData().length;
+		fnShowNotification(
+			"No se puede guardar: el detalle tiene " + fnImportMiles(filas) + " filas (" + fnImportMiles(cantidad) + " campos) " +
+			"y el servidor solo acepta " + fnImportMiles(maxInputVars) + " campos por envio. " +
+			"Seleccione el archivo .csv en el combo y guarde, o solicite aumentar max_input_vars en el servidor.","error",30000
+		);
+		return false;
+	}
+
 	function fnImportHayArchivo()
 	{
 		var archivo = $.trim($("#txtFileImport").val());
@@ -1035,6 +1059,8 @@
 					fnImportMiles(acumulado.omitidas) + " omitida(s). Guardando...","success",15000
 				);
 				$("#txtFileImportProcesado").val("1");
+				//El detalle ya quedo guardado desde el archivo: no se envia el grid (evita superar max_input_vars)
+				$("#body_detail_transaction").find("input, select, textarea").prop("disabled", true);
 				$("#form-new-transaction").submit();
 			},
 			error 		: function(xhr){

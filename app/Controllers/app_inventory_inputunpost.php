@@ -1902,6 +1902,12 @@ class app_inventory_inputunpost extends _BaseController {
 			
 			if($this->core_web_accounting->cycleIsCloseByDate($companyID,$objTM->transactionOn))
 			throw new \Exception("EL DOCUMENTO NO PUEDE ACTUALIZARCE, EL CICLO CONTABLE ESTA CERRADO");
+
+			//Envio incompleto: txtFormularioCompleto es el ultimo campo del formulario; si no llega, PHP descarto
+			//los campos que superaron max_input_vars y guardar borraria las lineas del detalle que no llegaron
+			if(/*inicio get post*/ $this->request->getPost("txtFormularioCompleto") != "1")
+			throw new \Exception("NO SE GUARDO: EL DETALLE SUPERA EL LIMITE DE CAMPOS DEL SERVIDOR (max_input_vars = ".ini_get("max_input_vars")."). SELECCIONE EL ARCHIVO .CSV EN EL COMBO Y GUARDE, O SOLICITE AUMENTAR max_input_vars EN EL SERVIDOR.");
+
 			//Obtener lista de precio
 			$objParameterPriceDefault					= $this->core_web_parameter->getParameter("INVOICE_DEFAULT_PRICELIST",$companyID);
 			$listPriceID 								= $objParameterPriceDefault->value;
@@ -3329,6 +3335,9 @@ class app_inventory_inputunpost extends _BaseController {
 					"",
 					$datView["objListCompanyPageSetting"]
 				);
+
+			//Limite de campos por envio del servidor (php.ini): la pantalla avisa antes de guardar si el grid lo supera
+			$datView["maxInputVars"]						= (int)ini_get("max_input_vars");
 
 			//Renderizar Resultado
 			$dataSession["notification"]					= $this->core_web_error->get_error($dataSession["user"]->userID);
