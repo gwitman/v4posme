@@ -564,6 +564,12 @@ $routes->match(['get', 'post'], 'app_cxc_advertising/paymentCreate', 'app_cxc_ad
 $routes->match(['get', 'post'], 'app_cxc_advertising/paymentCreate/(:any)', 'app_cxc_advertising::paymentCreate');
 $routes->match(['get', 'post'], 'app_cxc_advertising/paymentCheck', 'app_cxc_advertising::paymentCheck');
 $routes->match(['get', 'post'], 'app_cxc_advertising/paymentCheck/(:any)', 'app_cxc_advertising::paymentCheck');
+$routes->match(['get', 'post'], 'app_cxc_advertising/cronJobStatus', 'app_cxc_advertising::cronJobStatus');
+$routes->match(['get', 'post'], 'app_cxc_advertising/cronJobStatus/(:any)', 'app_cxc_advertising::cronJobStatus');
+$routes->match(['get', 'post'], 'app_cxc_advertising/cronJobCreate', 'app_cxc_advertising::cronJobCreate');
+$routes->match(['get', 'post'], 'app_cxc_advertising/cronJobCreate/(:any)', 'app_cxc_advertising::cronJobCreate');
+$routes->match(['get', 'post'], 'app_cxc_advertising/cronJobDelete', 'app_cxc_advertising::cronJobDelete');
+$routes->match(['get', 'post'], 'app_cxc_advertising/cronJobDelete/(:any)', 'app_cxc_advertising::cronJobDelete');
 $routes->match(['get', 'post'], 'app_purchase_garantia/index', 'app_purchase_garantia::index');
 $routes->match(['get', 'post'], 'app_purchase_garantia/index/(:any)', 'app_purchase_garantia::index');
 $routes->match(['get', 'post'], 'app_purchase_garantia/add', 'app_purchase_garantia::add');

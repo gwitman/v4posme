@@ -142,6 +142,23 @@
         };
     }
 
+    /**
+     * Estado del cron job que procesa la cola (objConfig.cronJob o respuesta de cronJob*).
+     *
+     * @param {Object} datos {active, jobId, url, createdOn, apiKeyConfigured}
+     * @return {Object}
+     */
+    function normalizarCron(datos) {
+        var origen = (datos && typeof datos === 'object') ? datos : {};
+        return {
+            active:           aBooleano(origen.active),
+            jobId:            (origen.jobId === null || origen.jobId === undefined) ? '' : String(origen.jobId),
+            url:              String(origen.url || ''),
+            createdOn:        String(origen.createdOn || ''),
+            apiKeyConfigured: aBooleano(origen.apiKeyConfigured)
+        };
+    }
+
     /* Deja solo los dígitos del teléfono de prueba */
     function soloDigitos(texto) {
         return String(texto === null || texto === undefined ? '' : texto).replace(/\D/g, '');
@@ -322,6 +339,11 @@
                 estado.plantillasCargadas = false;
                 estado.cargandoPlantillas = false;
                 estado.errorPlantillas    = '';
+                /* Cron job: fuera de estadoInicial() para que nuevaCampania lo conserve */
+                estado.cron               = normalizarCron(CONFIG_SERVIDOR && CONFIG_SERVIDOR.cronJob);
+                estado.cronConsultando    = false;
+                estado.cronProcesando     = false;
+                estado.errorCron          = '';
                 if (!estado.config.wabaConfigured) { estado.plantillaModo = 'manual'; }
                 return estado;
             },
@@ -492,6 +514,8 @@
                 /* Bloqueos comunes a pagar y enviar */
                 motivoBloqueoBase: function () {
                     if (!this.config.enabled)         { return 'Las campañas están deshabilitadas para esta empresa.'; }
+                    /* Sin cron job nadie procesa la cola: aplica también al modo prueba */
+                    if (!this.cron.active)            { return 'No se puede activar la campaña, primero hay que levantar el cron job.'; }
                     if (this.summary === null)        { return 'Calcule el resumen para poder enviar.'; }
                     if (this.resumenVencido)          { return 'Actualice el resumen antes de enviar.'; }
                     if (!this.summary.enabled)        { return 'Las campañas están deshabilitadas para esta empresa.'; }
@@ -512,6 +536,15 @@
                 },
                 puedePagar: function () {
                     return this.paso === 4 && this.mostrarPagar && !this.previsualizando && !this.enviando && !this.pagando && this.motivoBloqueoBase === '';
+                },
+                textoEstadoCron: function () {
+                    if (this.cronConsultando) { return 'Consultando...'; }
+                    if (this.cron.active)     { return this.cron.jobId !== '' ? 'Activo · Job ' + this.cron.jobId : 'Activo'; }
+                    return 'Sin cron job';
+                },
+                /* Levantar requiere la llave del servicio de cron configurada */
+                puedeLevantarCron: function () {
+                    return this.cron.apiKeyConfigured && !this.cron.active && !this.cronProcesando && !this.cronConsultando;
                 }
             },
             watch: {
@@ -1035,6 +1068,11 @@
 
                     /* Error */
                     if (json.error === true) {
+                        /* El servidor rechazó por falta de cron job (el mensaje puede traer número de línea delante) */
+                        if (String(json.message || '').toLowerCase().indexOf('primero hay que levantar el cron job') !== -1) {
+                            this.cron.active = false;
+                            this.cron.jobId  = '';
+                        }
                         this.erroresPaso = [json.message];
                         notificar(json.message, 'error');
                         return;
@@ -1057,11 +1095,91 @@
                     this.irArriba();
                 },
                 nuevaCampania: function () {
+                    /* estadoInicial() no incluye el cron: su estado se conserva */
                     var estado = estadoInicial();
                     if (!this.config.wabaConfigured) { estado.plantillaModo = 'manual'; }
                     borrarBorrador();
                     Object.assign(this, estado);
                     this.irArriba();
+                },
+
+                /* ---------------- Cron job (envío automático) ---------------- */
+                /* Copia el estado devuelto por cronJobStatus/Create/Delete; apiKeyConfigured solo viene en objConfig */
+                aplicarEstadoCron: function (json) {
+                    var datos           = normalizarCron(json);
+                    this.cron.active    = datos.active;
+                    this.cron.jobId     = datos.jobId;
+                    this.cron.url       = datos.url;
+                    this.cron.createdOn = datos.createdOn;
+                },
+                consultarCron: async function () {
+                    if (this.cronConsultando || this.cronProcesando) { return; }
+                    this.cronConsultando = true;
+                    this.errorCron       = '';
+                    var json = await llamar('cronJobStatus', {});
+                    this.cronConsultando = false;
+
+                    /* Error */
+                    if (json.error === true) {
+                        this.errorCron = json.message;
+                        return;
+                    }
+                    /* Sin datos / con datos: active=false significa que no hay cron job */
+                    this.aplicarEstadoCron(json);
+                },
+                levantarCron: async function () {
+                    if (!this.puedeLevantarCron) { return; }
+                    this.cronProcesando = true;
+                    this.errorCron      = '';
+                    var json = await llamar('cronJobCreate', {});
+                    this.cronProcesando = false;
+
+                    /* Error */
+                    if (json.error === true) {
+                        this.errorCron = json.message;
+                        notificar(json.message, 'error');
+                        return;
+                    }
+                    this.aplicarEstadoCron(json);
+                    /* Sin datos: el servidor no confirmó un cron activo */
+                    if (!this.cron.active) {
+                        this.errorCron = json.message || 'No se pudo confirmar el cron job. Actualice el estado.';
+                        notificar(this.errorCron, 'warning');
+                        return;
+                    }
+                    /* Con datos: creado ahora o ya existía (created:false) */
+                    if (aBooleano(json.created)) {
+                        notificar(json.message || 'Cron job levantado.', 'success');
+                    } else {
+                        notificar(json.message || 'El cron job ya estaba activo.', 'info');
+                    }
+                },
+                darDeBajaCron: function () {
+                    if (!this.cron.active || this.cronProcesando || this.cronConsultando || this.enviando) { return; }
+                    var self = this;
+                    fnShowConfirm(
+                        'Dar de baja Cron Job',
+                        'Los mensajes que estén en la cola dejarán de enviarse y no podrá enviar campañas hasta levantarlo de nuevo. ¿Desea continuar?',
+                        function () { self.ejecutarBajaCron(); }
+                    );
+                },
+                ejecutarBajaCron: async function () {
+                    if (this.cronProcesando) { return; }
+                    this.cronProcesando = true;
+                    this.errorCron      = '';
+                    var json = await llamar('cronJobDelete', {});
+                    this.cronProcesando = false;
+
+                    /* Error */
+                    if (json.error === true) {
+                        this.errorCron = json.message;
+                        notificar(json.message, 'error');
+                        return;
+                    }
+                    /* Sin datos / con datos: tras la baja el cron queda inactivo */
+                    this.aplicarEstadoCron(json);
+                    this.cron.active = false;
+                    notificar(json.message || 'Cron job dado de baja.', 'success');
                 },
 
                 /* ---------------- Pago (Pagadito) ---------------- */

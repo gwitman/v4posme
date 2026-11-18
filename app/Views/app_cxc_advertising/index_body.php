@@ -32,6 +32,27 @@
             <span>Las campañas están deshabilitadas para esta empresa (parámetro CXC_ADVERTISING_ENABLED). Puede preparar y revisar la campaña, pero no enviarla.</span>
         </div>
 
+        <!-- Envío automático (cron job): procesa la cola; sin él no se puede enviar -->
+        <div class="pv2-card adv-cron">
+            <div class="adv-cron-head">
+                <p class="pv2-card-title"><span class="pv2-ico"><i class="bi bi-clock-history" aria-hidden="true"></i></span> Envío automático (cron job)</p>
+                <span class="adv-badge" :class="cronConsultando ? 'is-info' : (cron.active ? 'is-ok' : 'is-bad')" aria-live="polite">{{ textoEstadoCron }}</span>
+            </div>
+            <p class="adv-muted">El cron job envía de forma gradual los mensajes que quedan en la cola. Debe estar activo para enviar cualquier campaña, incluso las de prueba.</p>
+            <p v-if="cron.active && cron.createdOn" class="pv2-help">Activo desde: {{ cron.createdOn }}</p>
+            <div v-if="!cron.apiKeyConfigured" class="adv-alert is-warn" role="alert"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i><span>Falta configurar el parámetro CXC_ADVERTISING_CRONJOB_API_KEY.</span></div>
+            <div v-if="errorCron" class="adv-alert is-error" role="alert"><i class="bi bi-x-circle-fill" aria-hidden="true"></i><span>{{ errorCron }}</span></div>
+            <div class="adv-cron-actions">
+                <button v-if="!cron.active" type="button" class="btn btn-primary adv-btn-wa" :disabled="!puedeLevantarCron" @click="levantarCron">
+                    <i class="bi bi-play-circle" aria-hidden="true"></i> {{ cronProcesando ? 'Procesando...' : 'Levantar Cron Job' }}
+                </button>
+                <button v-else type="button" class="btn btn-default adv-btn-danger-soft" :disabled="cronProcesando || cronConsultando || enviando" @click="darDeBajaCron">
+                    <i class="bi bi-stop-circle" aria-hidden="true"></i> {{ cronProcesando ? 'Procesando...' : 'Dar de baja Cron Job' }}
+                </button>
+                <button type="button" class="adv-icon-btn" aria-label="Actualizar estado" title="Actualizar estado" :disabled="cronProcesando || cronConsultando" @click="consultarCron"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
+            </div>
+        </div>
+
         <!-- Pasos -->
         <nav class="adv-steps" aria-label="Pasos de la campaña">
             <button v-for="item in pasos" :key="item.num" type="button" class="adv-step"
@@ -417,6 +438,11 @@
                         </div>
 
                         <div v-if="!summary.enabled" class="adv-alert is-error" role="alert"><i class="bi bi-lock-fill" aria-hidden="true"></i><span>El envío está bloqueado: las campañas están deshabilitadas para esta empresa.</span></div>
+                        <div v-if="!cron.active" class="adv-alert is-error" role="alert">
+                            <i class="bi bi-clock-history" aria-hidden="true"></i>
+                            <span>No se puede activar la campaña, primero hay que levantar el cron job.</span>
+                            <button type="button" class="btn btn-default adv-btn-soft" :disabled="!puedeLevantarCron" @click="levantarCron"><i class="bi bi-play-circle" aria-hidden="true"></i> {{ cronProcesando ? 'Procesando...' : 'Levantar Cron Job' }}</button>
+                        </div>
                         <div v-if="summary.overLimit > 0" class="adv-alert is-error" role="alert"><i class="bi bi-exclamation-octagon-fill" aria-hidden="true"></i><span>La campaña supera el máximo de {{ entero(summary.maxMessage) }} mensajes. Reduzca los destinatarios (filtros o archivo) para poder enviar.</span></div>
                         <div v-if="summary.valid > 0" class="adv-alert is-info"><i class="bi bi-clock-history" aria-hidden="true"></i><span>Los mensajes se envían de forma gradual para proteger su número: tiempo estimado {{ entero(summary.estimatedMinutes) }} min.</span></div>
 

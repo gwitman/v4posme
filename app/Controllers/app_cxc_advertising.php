@@ -13,19 +13,28 @@ namespace App\Controllers;
  * CXC_ADVERTISING_COST_EVOLUTION_FIXED, WHATSAP_META_WABA_ID, CXC_ADVERTISING_ALLOW_WITHOUT_PAYMENT,
  * CXC_ADVERTISING_FREE_MESSAGES. Las campanas que superan los mensajes gratuitos se pagan con Pagadito
  * (tb_transaction_master_pagadito, ERN CAM__companyID__transactionMasterID).
+ *
+ * Cron job: la cola se procesa con un job de cron-job.org (parametro CXC_ADVERTISING_CRONJOB_API_KEY) que invoca
+ * CRONJOB_PATH cada minuto. El job se registra en tb_public_catalog (systemName CRONJOB_SYSTEM_NAME, por flavorID)
+ * y tb_public_catalog_detail: name = jobId, reference1 = URL, reference2 = ACTIVO/BAJA, reference3 = fecha de
+ * creacion, reference4 = userID. Sin cron job activo no se puede enviar la campana.
  */
 class app_cxc_advertising extends _BaseController
 {
-    const MAX_IMAGE_BYTES   = 5242880;
-    const MAX_SAMPLE        = 20;
-    const MAX_DISCARDED     = 1000;
-    const MESSAGES_PER_MIN  = 15;
-    const ORIGIN_EXCEL      = "excel";
-    const ORIGIN_CUSTOMER   = "cliente";
-    const REASON_EMPTY      = "Teléfono vacío";
-    const REASON_INVALID    = "Teléfono inválido";
-    const REASON_DUPLICATE  = "Duplicado";
-    const REASON_OVER_LIMIT = "Excede el máximo";
+    const MAX_IMAGE_BYTES        = 5242880;
+    const MAX_SAMPLE             = 20;
+    const MAX_DISCARDED          = 1000;
+    const MESSAGES_PER_MIN       = 15;
+    const ORIGIN_EXCEL           = "excel";
+    const ORIGIN_CUSTOMER        = "cliente";
+    const REASON_EMPTY           = "Teléfono vacío";
+    const REASON_INVALID         = "Teléfono inválido";
+    const REASON_DUPLICATE       = "Duplicado";
+    const REASON_OVER_LIMIT      = "Excede el máximo";
+    const CRONJOB_SYSTEM_NAME    = 'tb_transaction_master_advertising.cron_job';
+    const CRONJOB_STATUS_ACTIVE  = "ACTIVO";
+    const CRONJOB_STATUS_DOWN    = "BAJA";
+    const CRONJOB_PATH           = "/app_notification/procesarColaWhatsappMasivo/maxMensajes/15/maxSegundos/25/pausa/3/";
 
     /**
      * Pantalla principal de campanas.
@@ -56,6 +65,29 @@ class app_cxc_advertising extends _BaseController
             }
 
             $config = $this->getConfig($companyID);
+
+            //Estado del cron job solo desde BD (sin llamar a la API); si falla la pantalla abre igual
+            $config["cronJob"] = [
+                "active"           => false,
+                "jobId"            => "",
+                "url"              => "",
+                "createdOn"        => "",
+                "apiKeyConfigured" => false
+            ];
+            try {
+                $cronJob = $this->getCronJobActive($companyID);
+                if ($cronJob) {
+                    $config["cronJob"]["active"]    = true;
+                    $config["cronJob"]["jobId"]     = (string) $cronJob->name;
+                    $config["cronJob"]["url"]       = (string) $cronJob->reference1;
+                    $config["cronJob"]["createdOn"] = (string) $cronJob->reference3;
+                }
+                //Al final: si el parametro no existe lanza excepcion y el estado del job ya quedo leido
+                $apiKey                                = trim((string) $this->core_web_parameter->getParameterValue("CXC_ADVERTISING_CRONJOB_API_KEY", $companyID));
+                $config["cronJob"]["apiKeyConfigured"] = $apiKey != "";
+            } catch (\Throwable $exCron) {
+                log_message("error", "[app_cxc_advertising::index] cron job: " . $exCron->getMessage());
+            }
 
             $dataView["company"]            = $dataSession["company"];
             $dataView["companyPageSetting"] = $dataSession["companyPageSetting"] ?? null;
@@ -196,6 +228,10 @@ class app_cxc_advertising extends _BaseController
             }
             if (!$config["enabled"]) {
                 throw new \Exception("Las campañas de WhatsApp no están habilitadas (CXC_ADVERTISING_ENABLED).");
+            }
+            //Sin cron job activo nadie procesaria la cola (aplica tambien al telefono de prueba)
+            if (!$this->getCronJobActive($companyID)) {
+                throw new \Exception("No se puede activar la campaña, primero hay que levantar el cron job.");
             }
 
             $build    = $this->buildMessages($companyID, $input, $config);
@@ -445,6 +481,152 @@ class app_cxc_advertising extends _BaseController
     }
 
     /**
+     * Estado del cron job de campanas (solo BD, no consulta cron-job.org).
+     * @return mixed JSON {error, message, active, jobId, url, createdOn}
+     */
+    function cronJobStatus()
+    {
+        try {
+            $dataSession = $this->authorizeAccess();
+            $companyID   = $dataSession["user"]->companyID;
+            $cronJob     = $this->getCronJobActive($companyID);
+
+            return $this->response->setJSON([
+                "error"     => false,
+                "message"   => $cronJob ? "Cron job activo (Job " . $cronJob->name . ")." : "No hay cron job activo.",
+                "active"    => $cronJob ? true : false,
+                "jobId"     => $cronJob ? (string) $cronJob->name : "",
+                "url"       => $cronJob ? (string) $cronJob->reference1 : "",
+                "createdOn" => $cronJob ? (string) $cronJob->reference3 : ""
+            ]);
+        } catch (\Throwable $ex) {
+            return $this->responseError($ex);
+        }
+    }
+
+    /**
+     * Levanta el cron job en cron-job.org (cada minuto contra CRONJOB_PATH) y lo registra en tb_public_catalog_detail.
+     * Usa GET_LOCK por flavorID para que dos solicitudes simultaneas no creen dos jobs.
+     * @return mixed JSON {error, created, message, active, jobId, url, createdOn}
+     */
+    function cronJobCreate()
+    {
+        try {
+            $dataSession = $this->authorizeAccess();
+            $companyID   = $dataSession["user"]->companyID;
+            $userID      = $dataSession["user"]->userID;
+            $apiKey      = $this->getCronJobApiKey($companyID);
+            $url         = $this->getCronJobUrl();
+            $flavorID    = $this->getCompanyFlavorID($companyID);
+            $lockName    = "posme_cronjob_" . $flavorID;
+            $db          = db_connect();
+
+            $lock = $db->query("SELECT GET_LOCK(?, 10) AS lockResult", [$lockName])->getRow();
+            if (!$lock || (int) $lock->lockResult !== 1) {
+                throw new \Exception("Otra solicitud está levantando el cron job, intente de nuevo.");
+            }
+
+            try {
+                //Se relee dentro del lock: otra solicitud pudo haberlo creado
+                $active = $this->getCronJobActive($companyID);
+                if ($active) {
+                    return $this->response->setJSON([
+                        "error"     => false,
+                        "created"   => false,
+                        "message"   => "Ya existe un cron job activo (Job " . $active->name . ").",
+                        "active"    => true,
+                        "jobId"     => (string) $active->name,
+                        "url"       => (string) $active->reference1,
+                        "createdOn" => (string) $active->reference3
+                    ]);
+                }
+
+                $catalog   = $this->getCronJobCatalog($companyID, true);
+                $jobId     = $this->core_web_cronjob->createJob($apiKey, $url);
+                $createdOn = helper_getDateTime();
+
+                try {
+                    $detailID = $this->Public_Catalog_Detail_Model->insert([
+                        "publicCatalogID"       => $catalog->publicCatalogID,
+                        "flavorID"              => $catalog->flavorID,
+                        "name"                  => (string) $jobId,
+                        "display"               => "cron-job.org",
+                        "reference1"            => $url,
+                        "reference2"            => self::CRONJOB_STATUS_ACTIVE,
+                        "reference3"            => $createdOn,
+                        "reference4"            => (string) $userID,
+                        "isActive"              => "1",
+                        "parentCatalogDetailID" => 0
+                    ]);
+                    if (!$detailID) {
+                        throw new \Exception("No se pudo registrar el cron job " . $jobId . " en la base de datos.");
+                    }
+                } catch (\Throwable $exInsert) {
+                    //Compensacion: si no quedo registrado se elimina el job remoto para no dejarlo huerfano
+                    try {
+                        $this->core_web_cronjob->deleteJob($apiKey, $jobId);
+                    } catch (\Throwable $exDelete) {
+                        log_message("error", "[app_cxc_advertising::cronJobCreate] Job " . $jobId . " quedo huerfano en cron-job.org: " . $exDelete->getMessage());
+                    }
+                    throw $exInsert;
+                }
+            } finally {
+                $db->query("SELECT RELEASE_LOCK(?) AS lockResult", [$lockName]);
+            }
+
+            log_message("info", "[app_cxc_advertising::cronJobCreate] companyID: " . $companyID . " | userID: " . $userID . " | jobId: " . $jobId . " | url: " . $url);
+
+            return $this->response->setJSON([
+                "error"     => false,
+                "created"   => true,
+                "message"   => "Cron job activo (Job " . $jobId . ").",
+                "active"    => true,
+                "jobId"     => (string) $jobId,
+                "url"       => $url,
+                "createdOn" => $createdOn
+            ]);
+        } catch (\Throwable $ex) {
+            return $this->responseError($ex);
+        }
+    }
+
+    /**
+     * Da de baja el cron job activo: lo elimina en cron-job.org (404 = ya no existia) y luego lo marca BAJA en BD.
+     * Si la API falla no se toca la BD.
+     * @return mixed JSON {error, message, active, jobId}
+     */
+    function cronJobDelete()
+    {
+        try {
+            $dataSession = $this->authorizeAccess();
+            $companyID   = $dataSession["user"]->companyID;
+            $active      = $this->getCronJobActive($companyID);
+            if (!$active) {
+                throw new \Exception("No hay cron job activo.");
+            }
+
+            $apiKey = $this->getCronJobApiKey($companyID);
+            $jobId  = (string) $active->name;
+            $this->core_web_cronjob->deleteJob($apiKey, (int) $jobId);
+
+            $this->Public_Catalog_Detail_Model->update($active->publicCatalogDetailID, [
+                "isActive"   => "0",
+                "reference2" => self::CRONJOB_STATUS_DOWN
+            ]);
+            log_message("info", "[app_cxc_advertising::cronJobDelete] companyID: " . $companyID . " | userID: " . $dataSession["user"]->userID . " | jobId: " . $jobId);
+
+            return $this->response->setJSON([
+                "error"   => false,
+                "message" => "Cron job dado de baja (Job " . $jobId . ").",
+                "active"  => false,
+                "jobId"   => $jobId
+            ]);
+        } catch (\Throwable $ex) {
+            return $this->responseError($ex);
+        }
+    }
+
+    /**
      * Validaciones comunes antes de encolar o cobrar la campana (tope, destinatarios, plantilla y mensajes vacios).
      * @param array $input  Cuerpo de la peticion
      * @param array $build  buildMessages()
@@ -514,6 +696,115 @@ class app_cxc_advertising extends _BaseController
             log_message("error", "[app_cxc_advertising::getCurrencyUsdID] " . $ex->getMessage());
             return null;
         }
+    }
+
+    /**
+     * flavorID de la empresa (el catalogo del cron job se guarda por flavor).
+     * @param int $companyID
+     * @return int
+     */
+    private function getCompanyFlavorID($companyID)
+    {
+        $objCompany = $this->Company_Model->get_rowByPK($companyID);
+        if (!$objCompany) {
+            throw new \Exception("No existe la empresa " . $companyID . ".");
+        }
+        return (int) $objCompany->flavorID;
+    }
+
+    /**
+     * Catalogo publico del cron job (CRONJOB_SYSTEM_NAME) del flavor de la empresa.
+     * @param int  $companyID
+     * @param bool $createIfMissing true = lo crea si no existe
+     * @return object|null {publicCatalogID, flavorID}
+     */
+    private function getCronJobCatalog($companyID, $createIfMissing)
+    {
+        $flavorID = $this->getCompanyFlavorID($companyID);
+        $list     = $this->Public_Catalog_Model->getBySystemNameAndFlavorID(self::CRONJOB_SYSTEM_NAME, $flavorID);
+        if ($list) {
+            return (object) [
+                "publicCatalogID" => (int) $list[0]->publicCatalogID,
+                "flavorID"        => (int) $list[0]->flavorID
+            ];
+        }
+        if (!$createIfMissing) {
+            return null;
+        }
+
+        $publicCatalogID = $this->Public_Catalog_Model->insert([
+            "name"        => "CRON JOB CAMPAÑAS WHATSAPP",
+            "systemName"  => self::CRONJOB_SYSTEM_NAME,
+            "statusID"    => 0,
+            "orden"       => 1,
+            "description" => "Jobs de cron-job.org de app_cxc_advertising",
+            "isActive"    => 1,
+            "flavorID"    => $flavorID
+        ]);
+        if (!$publicCatalogID) {
+            throw new \Exception("No se pudo crear el catálogo del cron job.");
+        }
+        return (object) [
+            "publicCatalogID" => (int) $publicCatalogID,
+            "flavorID"        => $flavorID
+        ];
+    }
+
+    /**
+     * Cron job activo registrado en BD (primer detalle con reference2 = ACTIVO).
+     * @param int $companyID
+     * @return object|null Fila de tb_public_catalog_detail (publicCatalogDetailID, name = jobId, reference1..4)
+     */
+    private function getCronJobActive($companyID)
+    {
+        $catalog = $this->getCronJobCatalog($companyID, false);
+        if (!$catalog) {
+            return null;
+        }
+        $listDetail = $this->Public_Catalog_Detail_Model->getView($catalog->publicCatalogID);
+        foreach (($listDetail ? $listDetail : []) as $detail) {
+            if (trim((string) $detail->reference2) == self::CRONJOB_STATUS_ACTIVE) {
+                return $detail;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * API key de cron-job.org de la empresa (nunca se escribe en el log).
+     * @param int $companyID
+     * @return string
+     */
+    private function getCronJobApiKey($companyID)
+    {
+        $apiKey = trim((string) $this->core_web_parameter->getParameter("CXC_ADVERTISING_CRONJOB_API_KEY", $companyID)->value);
+        if ($apiKey == "") {
+            throw new \Exception("Configure el parámetro CXC_ADVERTISING_CRONJOB_API_KEY.");
+        }
+        return $apiKey;
+    }
+
+    /**
+     * URL publica que invocara cron-job.org; se rechaza si el host no es accesible desde Internet.
+     * @return string
+     */
+    private function getCronJobUrl()
+    {
+        $url  = base_url() . self::CRONJOB_PATH;
+        $host = strtolower(trim((string) parse_url($url, PHP_URL_HOST), "[]"));
+
+        $isLocal = $host == ""
+            || $host == "localhost"
+            || substr($host, -10) == ".localhost"
+            || strpos($host, "127.") === 0
+            || $host == "::1";
+        if (!$isLocal && filter_var($host, FILTER_VALIDATE_IP) !== false) {
+            $isLocal = filter_var($host, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE) === false;
+        }
+        if ($isLocal) {
+            throw new \Exception("La URL del sistema (" . base_url() . ") no es accesible desde Internet; cron-job.org no podrá invocarla.");
+        }
+        return $url;
     }
 
     /**
