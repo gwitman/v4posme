@@ -945,8 +945,9 @@ Si falta algo, al presionar **Siguiente** aparece la lista de lo que debe correg
 Restricciones:
 - Solo puede enviar si su empresa tiene las campañas habilitadas. Si no, aparece "Las campañas están deshabilitadas para esta empresa..." y puede preparar y revisar la campaña, pero el envío queda bloqueado.
 - Máximo de mensajes por campaña: 1,000 o lo que indique la configuración de su empresa.
-Notas: los mensajes no salen todos de inmediato: quedan en una cola y se envían de forma gradual (unos 15 por minuto).
-Ver también: Campañas de WhatsApp: escribir el mensaje (paso 1); Campañas de WhatsApp: elegir los destinatarios (paso 2); Campañas de WhatsApp: elegir el proveedor y ver el costo (paso 3); Campañas de WhatsApp: enviar con plantilla de Meta; Campañas de WhatsApp: revisar el resumen y enviar (paso 4); Campañas de WhatsApp: pagar la campaña con Pagadito.
+- Para enviar, el envío automático (cron job) debe estar activo (tarjeta **Envío automático (cron job)**, arriba de los pasos).
+Notas: los mensajes quedan en una cola y se envían de forma gradual (unos 15 por minuto).
+Ver también: las secciones "Campañas de WhatsApp:" de escribir el mensaje (paso 1), elegir los destinatarios (paso 2), elegir el proveedor (paso 3), plantilla de Meta, revisar el resumen y enviar (paso 4), pagar con Pagadito y levantar o dar de baja el envío automático (cron job).
 
 ## Campañas de WhatsApp: escribir el mensaje (paso 1)
 Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > paso **Mensaje**.
@@ -1026,9 +1027,9 @@ Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > paso **Resumen**.
 5. Si la campaña requiere pago, primero presione **Pagar USD ...** (ver Campañas de WhatsApp: pagar la campaña con Pagadito).
 6. Presione **Enviar campaña** (en el teléfono, **Enviar**) y confirme en **Confirmar envío**.
 7. Aparece "Campaña enviada a la cola" con los mensajes encolados. **Nueva campaña** empieza otra.
-Restricciones: el envío se bloquea si las campañas están deshabilitadas, si no hay mensajes válidos, si falta el pago o si "La campaña supera el máximo de ... mensajes": reduzca destinatarios con filtros, el archivo o la **Cantidad máxima de mensajes**.
-Notas: los mensajes se envían en segundo plano de forma gradual; si nunca salen, avise a soporte (el proceso de envío programado debe estar activo).
-<!-- REVISAR: nombre y frecuencia de la tarea programada que procesa la cola (procesarColaWhatsappMasivo) en cada servidor -->
+Restricciones: el envío se bloquea si las campañas están deshabilitadas, si no hay mensajes válidos, si falta el pago o si "La campaña supera el máximo de ... mensajes": reduzca destinatarios con filtros, el archivo o la **Cantidad máxima de mensajes**. También si aparece "No se puede activar la campaña, primero hay que levantar el cron job.": presione **Levantar Cron Job** en ese mismo aviso.
+Notas: los mensajes se envían en segundo plano de forma gradual con el envío automático (cron job), que se ejecuta cada minuto; si nunca salen, revise que la tarjeta **Envío automático (cron job)** diga Activo.
+Ver también: Campañas de WhatsApp: levantar o dar de baja el envío automático (cron job).
 
 ## Campañas de WhatsApp: pagar la campaña con Pagadito
 Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > paso **Resumen**.
@@ -1043,6 +1044,29 @@ Notas:
 - Según la configuración de su empresa, puede enviar campañas sin pagar.
 Mensajes: "... supera los ... gratuitos: realice el pago con Pagadito antes de enviarla." y "El pago ... ya fue utilizado por otra campaña."
 Ver también: Campañas de WhatsApp: revisar el resumen y enviar (paso 4).
+
+## Campañas de WhatsApp: levantar o dar de baja el envío automático (cron job)
+Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > tarjeta **Envío automático (cron job)** (se ve en todos los pasos).
+Los mensajes de las campañas quedan en una cola. El cron job es una tarea automática del servicio cron-job.org que se ejecuta cada minuto y envía hasta 15 mensajes cada vez, con una pausa de 3 segundos entre mensajes. Debe estar activo para enviar cualquier campaña, incluso los mensajes de prueba.
+1. Revise el estado de la tarjeta: **Activo · Job N** (con "Activo desde: ..."), **Sin cron job** o **Consultando...**.
+2. Si dice **Sin cron job**, presione **Levantar Cron Job**. Aparece "Cron job levantado." y el estado cambia a Activo.
+3. Para refrescar el estado, presione el icono **Actualizar estado** (flecha circular).
+4. Para detener el envío automático, presione **Dar de baja Cron Job** y confirme. Los mensajes que estén en la cola dejan de enviarse y no podrá enviar campañas hasta levantarlo de nuevo.
+Restricciones:
+- Sin cron job activo, en el paso **Resumen** aparece "No se puede activar la campaña, primero hay que levantar el cron job." y no se puede enviar la campaña, ni el mensaje de prueba, ni pagar. Puede presionar **Levantar Cron Job** en ese mismo aviso.
+- Si aparece "Falta configurar el parámetro CXC_ADVERTISING_CRONJOB_API_KEY.", el botón **Levantar Cron Job** queda deshabilitado: pida al administrador o a soporte de posMe que configure la clave de cron-job.org.
+- Solo funciona si posMe está en un servidor accesible desde Internet.
+Ver también: Campañas de WhatsApp: errores al levantar el envío automático (cron job).
+
+## Campañas de WhatsApp: errores al levantar el envío automático (cron job)
+Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > tarjeta **Envío automático (cron job)**. Los errores se muestran en rojo dentro de la tarjeta.
+- "La URL del sistema (...) no es accesible desde Internet; cron-job.org no podrá invocarla.": posMe está instalado de forma local (en la misma computadora o en la red interna). El cron job solo funciona cuando el sistema está en un servidor accesible desde Internet.
+- "cron-job.org: API key inválida (401)...": la clave configurada no es correcta. Avise al administrador o a soporte de posMe.
+- "Cuota de cron-job.org agotada (100 peticiones/día...). Intente más tarde.": se alcanzó el límite diario del servicio. Espere e intente más tarde.
+- "cron-job.org: servicio no disponible (...). Intente más tarde.": el servicio no responde; intente más tarde.
+- Si el cron job se borró desde el panel de cron-job.org, la tarjeta puede seguir diciendo Activo y los mensajes no salen: presione **Dar de baja Cron Job** para limpiar el estado y luego **Levantar Cron Job**.
+- Si los mensajes de una campaña no salen, presione **Actualizar estado** y confirme que diga Activo; si persiste, avise a soporte.
+Ver también: Campañas de WhatsApp: levantar o dar de baja el envío automático (cron job).
 
 ## Ver a quién se notificó un mensaje de WhatsApp de un cliente (conversación con cliente)
 Ruta: en la lista de conversaciones (por ejemplo, la pestaña **LISTA DE CONVERSACIONES MIAS**), abra la conversación del cliente y vaya a la pestaña **Chat**.
@@ -2434,6 +2458,7 @@ Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla CXC > CAM
 - CXC_ADVERTISING_FREE_MESSAGES: mensajes que se pueden enviar sin pagar (por defecto 10). Las campañas que lo superan y tienen costo se pagan con Pagadito; los envíos de prueba no se cobran.
 - CXC_ADVERTISING_ALLOW_WITHOUT_PAYMENT: true permite a la empresa enviar campañas sin pagar.
 - WHATSAP_META_WABA_ID: identificador de la cuenta de WhatsApp Business en Meta; sin él no se pueden cargar las plantillas aprobadas (se escriben a mano).
+- CXC_ADVERTISING_CRONJOB_API_KEY: API key de la cuenta de cron-job.org. Sin ella no se puede levantar el envío automático (cron job) y no se pueden enviar campañas.
 Variables del mensaje: {{nombre}}, {{direccion}}, {{saldo}}, {{montoPagar}}, {{fechaPago}} y {{mora}} vienen configuradas. Para agregar otra, soporte registra una nueva variable de campaña (tabla tb_advertising_variable) indicando la vista y el campo del sistema de donde sale el dato; aparece sola en **Variables del cliente**.
 Ver también: Campañas de WhatsApp: enviar promociones o recordatorios de cobro masivos a clientes.
 
