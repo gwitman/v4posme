@@ -1125,6 +1125,8 @@
 	});
 	$(document).on("focus","input#txtReceiptAmountNoteCredit",function(){
 			$(this).data("ncPrev", fnNoteCreditNum($(this).val()));
+			//Si la consulta anterior fallo, se reintenta al entrar al campo
+			if(!varNoteCreditLoaded && !varNoteCreditPending && $("#txtStatusIDOld").val() != varStatusInvoiceAplicado) fnNoteCreditLoad();
 	});
 	$(document).on("change","input#txtReceiptAmountNoteCredit",function(){
 			//Si el recibido era el sugerido (total - NC anterior) se ajusta a total - NC nueva
@@ -1619,6 +1621,8 @@
 	var varNoteCreditBalance 	= 0;		//Saldo NC disponible del cliente en la moneda de la factura
 	var varNoteCreditLoaded 	= false;	//El saldo se consulto con exito para el cliente/moneda actuales
 	var varNoteCreditRequest 	= 0;		//Secuencia: solo se acepta la respuesta de la ultima consulta
+	var varNoteCreditPending 	= false;	//Hay una consulta de saldo en curso
+	var varNoteCreditError 		= "";		//Mensaje de la ultima consulta fallida (vacio si no hubo error)
 
 	//Numero puro con 2 decimales a partir del texto con comas (1,000.50 -> 1000.5)
 	function fnNoteCreditNum(value)
@@ -1673,6 +1677,8 @@
 		varNoteCreditRequest++;
 		varNoteCreditBalance 	= 0;
 		varNoteCreditLoaded 	= false;
+		varNoteCreditPending 	= false;
+		varNoteCreditError 		= "";
 		$("#lblNoteCreditAvailable").text("0.00");
 		if(clearAmount) $("#txtReceiptAmountNoteCredit").val("0");
 		fnNoteCreditRender();
@@ -1688,23 +1694,35 @@
 		var request 	= varNoteCreditRequest;
 		varNoteCreditBalance 	= 0;
 		varNoteCreditLoaded 	= false;
+		varNoteCreditPending 	= false;
+		varNoteCreditError 		= "";
 		$("#lblNoteCreditAvailable").text("0.00");
+		if(entityID === "" || currencyID === "")
+		{
+			varNoteCreditError = "Seleccione el cliente";
+			fnNoteCreditRender();
+			return;
+		}
+		varNoteCreditPending 	= true;
 		fnNoteCreditRender();
-		if(entityID === "" || currencyID === "") return;
 
 		$.ajax({
 			cache 		: false,
 			dataType 	: "json",
 			type 		: "POST",
+			timeout 	: 20000,
 			url 		: "<?php echo base_url(); ?>/app_invoice_billing/getNoteCreditAvailable",
 			data 		: { entityID : entityID, currencyID : currencyID },
 			success 	: function(data){
 				//Respuesta vieja (cambio el cliente o la moneda mientras se consultaba)
 				if(request !== varNoteCreditRequest) return;
+				varNoteCreditPending = false;
 
 				//Error
 				if(!data || data.error === true)
 				{
+					varNoteCreditError = (data && data.message) ? data.message : "No se pudo consultar el saldo de notas de credito";
+					console.error("getNoteCreditAvailable: " + varNoteCreditError);
 					fnNoteCreditRender();
 					if(fnNoteCreditNum($("#txtReceiptAmountNoteCredit").val()) > 0)
 						Toast.fire({ icon: "warning", title: (data && data.message) ? data.message : "No se pudo consultar el saldo de notas de credito" });
@@ -1717,8 +1735,12 @@
 				$("#lblNoteCreditAvailable").text(fnNoteCreditSimbolo() + " " + fnNoteCreditFmt(varNoteCreditBalance));
 				fnNoteCreditRender();
 			},
-			error 		: function(){
+			error 		: function(xhr, status){
 				if(request !== varNoteCreditRequest) return;
+				//Error del servidor o tiempo agotado: no se deja la etiqueta en "Consultando saldo..."
+				varNoteCreditPending 	= false;
+				varNoteCreditError 		= (status === "timeout") ? "Tiempo agotado al consultar el saldo" : "Error del servidor al consultar el saldo";
+				console.error("getNoteCreditAvailable: " + status + " " + (xhr && xhr.status ? xhr.status : "") + " " + (xhr && xhr.responseText ? xhr.responseText.substring(0, 500) : ""));
 				fnNoteCreditRender();
 			}
 		});
@@ -1758,9 +1780,14 @@
 			texto = "El monto no puede ser negativo";
 			clase = "pm-nc-error";
 		}
-		else if(monto > 0 && !varNoteCreditLoaded)
+		else if(monto > 0 && !varNoteCreditLoaded && varNoteCreditPending)
 		{
 			texto = "Consultando saldo...";
+		}
+		else if(monto > 0 && !varNoteCreditLoaded)
+		{
+			texto = (varNoteCreditError !== "" ? varNoteCreditError : "No se pudo consultar el saldo") + ". Salga y vuelva a entrar al campo para reintentar";
+			clase = "pm-nc-error";
 		}
 		else if(monto > 0 && monto > maximo)
 		{
@@ -1788,7 +1815,8 @@
 		if(monto < 0) 								return "El monto de notas de credito no puede ser negativo";
 		if(monto == 0) 								return "";
 		if(fnNoteCreditEsCredito()) 				return "Las notas de credito solo se aceptan en facturas de contado";
-		if(!varNoteCreditLoaded) 					return "No se ha podido consultar el saldo de notas de credito del cliente; intente de nuevo";
+		if(!varNoteCreditLoaded && varNoteCreditPending) 	return "Aun se esta consultando el saldo de notas de credito del cliente; espere un momento";
+		if(!varNoteCreditLoaded) 					return "No se ha podido consultar el saldo de notas de credito del cliente" + (varNoteCreditError !== "" ? ": " + varNoteCreditError : "") + "; intente de nuevo";
 		if(monto > total) 							return "El monto de notas de credito no puede ser mayor al total de la factura. Maximo permitido: " + fnNoteCreditFmt(Math.min(varNoteCreditBalance, total));
 		if(monto > varNoteCreditBalance) 			return "Saldo de notas de credito insuficiente. Maximo permitido: " + fnNoteCreditFmt(Math.min(varNoteCreditBalance, total));
 		return "";

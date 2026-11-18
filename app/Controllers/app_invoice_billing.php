@@ -907,7 +907,9 @@ class app_invoice_billing extends _BaseController {
 				'currencyID' 	=> $currencyID
 			));//--finjson
 		}
-		catch(\Exception $ex){
+		catch(\Throwable $ex){
+			//\Throwable: los errores de BD de CI4 (DatabaseException) no extienden \Exception
+			log_message("error", "getNoteCreditAvailable: " . $ex->getMessage() . " linea " . $ex->getLine());
 			return $this->response->setJSON(array(
 				'error'   		=> true,
 				'message' 		=> $ex->getLine()." ".$ex->getMessage(),

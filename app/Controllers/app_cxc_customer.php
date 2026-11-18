@@ -373,8 +373,10 @@ class app_cxc_customer extends _BaseController {
 			$db->transStart();			
 			//El Estado solo permite editar el workflow
 			if($this->core_web_workflow->validateWorkflowStage("tb_customer","statusID",$oldStatusID,COMMAND_EDITABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)){				
-				$objCustomer["statusID"] 		= /*inicio get post*/ $this->request->getPost('txtStatusID');//--fin peticion get o post
-				$this->Customer_Model->update_app_posme($companyID_,$branchID_,$entityID_,$objCustomer);
+				//Solo se envia el estado: los saldos de notas de credito (balanceCor / balanceDol) no se tocan desde esta pantalla
+				$objCustomerStatus 				= array();
+				$objCustomerStatus["statusID"] 	= /*inicio get post*/ $this->request->getPost('txtStatusID');//--fin peticion get o post
+				$this->Customer_Model->update_app_posme($companyID_,$branchID_,$entityID_,$objCustomerStatus);
 			}
 			else{
 				$objNatural["isActive"]		= true;

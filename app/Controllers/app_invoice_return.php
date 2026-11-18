@@ -438,9 +438,11 @@ class app_invoice_return extends _BaseController
             $objCustomer = $this->getCustomerOrEmpty($companyID, $objTM->entityID);
 
             //Detalle
-            $objDetail = array();
-            $rows      = $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID, $transactionID, $transactionMasterID);
+            $objDetail    = array();
+            $amountDetail = 0; //Monto de la NC que se generara: suma de cantidad x precio neto de cada linea
+            $rows         = $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID, $transactionID, $transactionMasterID);
             foreach ($rows as $row) {
+                $amountDetail = round($amountDetail + (float) $row->amount, 2);
                 $objItem      = $this->Item_Model->get_rowByPKAndInactive($companyID, (int) $row->componentItemID);
                 $objSustituto = empty($row->reference2) ? null : $this->Item_Model->get_rowByPKAndInactive($companyID, (int) $row->reference2);
 
@@ -482,7 +484,8 @@ class app_invoice_return extends _BaseController
                 'otherInputNumber'     => $objOtherInput ? $objOtherInput->transactionNumber : "",
                 'otherOutputNumber'    => $objOtherOutput ? $objOtherOutput->transactionNumber : "",
                 'noteCreditNumber'     => $objNoteCredit ? $objNoteCredit->transactionNumber : "",
-                'noteCreditAmount'     => $objNoteCredit ? $objTM->amount : 0,
+                //NC ya generada: su monto; si la devolucion aun no se aplica: el monto que se generara
+                'noteCreditAmount'     => $objNoteCredit ? round((float) $objNoteCredit->amount, 2) : $amountDetail,
                 'userNickName'         => $dataSession["user"]->nickname
             );
 
