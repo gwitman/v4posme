@@ -27,6 +27,7 @@ class app_cxc_advertising extends _BaseController
     const MESSAGES_PER_MIN       = 15;
     const ORIGIN_EXCEL           = "excel";
     const ORIGIN_CUSTOMER        = "cliente";
+    const ORIGIN_TEST            = "prueba";
     const REASON_EMPTY           = "Teléfono vacío";
     const REASON_INVALID         = "Teléfono inválido";
     const REASON_DUPLICATE       = "Duplicado";
@@ -991,10 +992,6 @@ class app_cxc_advertising extends _BaseController
         $excelRows   = $useExcel && is_array($input["excelRows"] ?? null) ? array_values($input["excelRows"]) : [];
         $maxMessage  = $config["maxMessage"];
 
-        if (!$useExcel && !$useCustomer) {
-            throw new \Exception("Seleccione al menos un origen de destinatarios (Excel o clientes).");
-        }
-
         //Cantidad de mensajes de la campana: 0 = todos los validos; mayor a 0 = seleccion al azar
         $campaignMaxRaw = $input["campaignMax"] ?? "0";
         $campaignMaxRaw = is_scalar($campaignMaxRaw) ? trim((string) $campaignMaxRaw) : "x";
@@ -1014,6 +1011,11 @@ class app_cxc_advertising extends _BaseController
             if (strlen($testPhone) < 11 || strlen($testPhone) > 15) {
                 throw new \Exception("El teléfono de prueba no es válido (debe tener entre 11 y 15 dígitos con el código de país).");
             }
+        }
+
+        //Con telefono de prueba no hace falta origen: el mensaje solo va a ese numero
+        if (!$useExcel && !$useCustomer && $testPhone == "") {
+            throw new \Exception("Seleccione al menos un origen de destinatarios (Excel o clientes).");
         }
 
         //El navegador corta el Excel en maxMessage * 5; mas filas indican una peticion manipulada
@@ -1159,11 +1161,10 @@ class app_cxc_advertising extends _BaseController
         $summary["validTotal"] = count($valid);
 
         if ($testPhone != "") {
-            //2a. Modo prueba: primer valido en el orden original, enviado al telefono de prueba
-            if (count($valid) < 1) {
-                throw new \Exception("No hay destinatarios válidos para armar el mensaje de prueba.");
-            }
-            $valid                = [["candidate" => $valid[0]["candidate"], "phone" => $testPhone]];
+            //2a. Modo prueba: primer valido en el orden original, enviado al telefono de prueba.
+            //    Sin destinatarios validos se arma con un candidato en blanco (variables vacias).
+            $candidateTest = count($valid) > 0 ? $valid[0]["candidate"] : $this->blankCandidate($variables, $excelColumns, $urlImage);
+            $valid                = [["candidate" => $candidateTest, "phone" => $testPhone]];
             $summary["testMode"]  = true;
             $summary["testPhone"] = $testPhone;
         } else {
@@ -1191,7 +1192,7 @@ class app_cxc_advertising extends _BaseController
             $items[] = $this->renderItem($selected["candidate"], $selected["phone"], $provider, $caption, $body, $template);
             if ($selected["candidate"]["origen"] == self::ORIGIN_EXCEL) {
                 $summary["fromExcel"]++;
-            } else {
+            } else if ($selected["candidate"]["origen"] == self::ORIGIN_CUSTOMER) {
                 $summary["fromCustomers"]++;
             }
         }
@@ -1246,6 +1247,34 @@ class app_cxc_advertising extends _BaseController
     {
         $transactionID = $this->core_web_payment->getTransactionPagaditoID($companyID);
         return $this->Transaction_Master_Model->get_rowByAdvertisingPaymentAvailable($companyID, $transactionID, $quantity, $provider);
+    }
+
+    /**
+     * Candidato en blanco para el envio de prueba cuando no hay destinatarios validos:
+     * las variables {{...}} quedan vacias y se usa la imagen general de la campana.
+     * @param array  $variables    Variables del catalogo (Advertising_Variable_Model)
+     * @param array  $excelColumns Columnas del Excel usadas como variables
+     * @param string $urlImage     Imagen general de la campana
+     * @return array Candidato con la misma forma que los de Excel/clientes
+     */
+    private function blankCandidate($variables, $excelColumns, $urlImage)
+    {
+        $values = [];
+        foreach ($variables as $variable) {
+            $values[$variable->name] = "";
+        }
+        foreach ($excelColumns as $column) {
+            $values[$column] = "";
+        }
+        return [
+            "origen"   => self::ORIGIN_TEST,
+            "telefono" => "",
+            "nombre"   => "",
+            "mensaje"  => "",
+            "urlImage" => $urlImage,
+            "excel"    => [],
+            "values"   => $values
+        ];
     }
 
     /**

@@ -151,7 +151,8 @@ class Advertising_Variable_Model extends Model {
         $sql = $sql.sprintf("FROM %s b ", self::BASE_VIEW);
         $sql = $sql.$joins;
         $sql = $sql.sprintf("WHERE b.companyID = %d ", $companyID);
-        $sql = $sql.sprintf("AND b.telefono <> '' ");
+        // LENGTH evita comparar texto: b.telefono (utf8mb4_bin) vs literal de la conexion (utf8mb3) da "Illegal mix of collations"
+        $sql = $sql.sprintf("AND LENGTH(b.telefono) > 0 ");
         $sql = $sql.sprintf("AND b.allowWhatsappPromotions = 1 ");
         if ($onlyBalance) {
             $sql = $sql.sprintf("AND b.saldo > 0 ");

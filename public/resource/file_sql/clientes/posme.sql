@@ -2,7 +2,7 @@
 /*servidor:	siteground*/
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
-SET cp.value = 'false'
+SET cp.value = 'true'
 WHERE p.name = 'CXC_ADVERTISING_ENABLED'
     AND cp.companyID = 2;
 	

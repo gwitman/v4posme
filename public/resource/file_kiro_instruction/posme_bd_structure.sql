@@ -1784,7 +1784,7 @@ CREATE TABLE `tb_entity_phone`  (
   `entityID` int NOT NULL DEFAULT 0,
   `entityPhoneID` bigint NOT NULL AUTO_INCREMENT,
   `typeID` int NULL DEFAULT NULL,
-  `number` varchar(250) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `number` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL,
   `isPrimary` tinyint NULL DEFAULT NULL,
   PRIMARY KEY (`entityPhoneID`) USING BTREE,
   INDEX `IDX_ENTITY_PHONE_001`(`companyID` ASC) USING BTREE,
@@ -1792,7 +1792,7 @@ CREATE TABLE `tb_entity_phone`  (
   INDEX `IDX_ENTITY_PHONE_003`(`entityID` ASC) USING BTREE,
   INDEX `IDX_ENTITY_PHONE_004`(`typeID` ASC) USING BTREE,
   INDEX `IDX_EP_ENTITY_PRIMARY`(`entityID` ASC, `isPrimary` ASC) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 990 CHARACTER SET = latin1 COLLATE = latin1_swedish_ci ROW_FORMAT = DYNAMIC;
+) ENGINE = InnoDB AUTO_INCREMENT = 990 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Table structure for tb_error

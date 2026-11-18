@@ -690,7 +690,8 @@
                         }
                     }
                     if (numero === 2) {
-                        if (!this.useExcel && !this.useCustomers) {
+                        /* Con teléfono de prueba no hace falta origen: el mensaje solo va a ese número */
+                        if (!this.useExcel && !this.useCustomers && soloDigitos(this.testPhone) === '') {
                             errores.push('Elija al menos un origen de destinatarios: Excel o clientes registrados.');
                         }
                         if (this.useExcel && this.excelRows.length === 0) {

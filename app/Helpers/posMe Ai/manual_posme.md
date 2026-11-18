@@ -1010,7 +1010,7 @@ Ver también: Crear un cliente; Campañas de WhatsApp: limitar la cantidad de me
 ## Campañas de WhatsApp: limitar la cantidad de mensajes o enviar una prueba
 Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > paso **Destinatarios** > tarjeta **Alcance y prueba**.
 1. **Cantidad máxima de mensajes**: déjelo vacío (o en 0) para enviar a todos los destinatarios válidos. Si escribe un número menor que los válidos (por ejemplo 100 de 1,000 clientes o filas del Excel), el sistema elige los destinatarios al azar. No puede superar el máximo por campaña de su empresa.
-2. **Teléfono de prueba (opcional)**: si lo llena, la campaña envía un solo mensaje a ese número, con los datos del primer destinatario. Escriba 8 dígitos (se antepone 505) o de 11 a 15 dígitos con código de país (ej. 50588887777).
+2. **Teléfono de prueba (opcional)**: si lo llena, la campaña envía un solo mensaje a ese número, con los datos del primer destinatario. Si no hay destinatarios válidos (o no eligió Excel ni clientes), el mensaje de prueba se envía igual, con las variables vacías. Escriba 8 dígitos (se antepone 505) o de 11 a 15 dígitos con código de país (ej. 50588887777).
 3. En el resumen aparece **Modo prueba** y el botón cambia a **Enviar prueba**; confirme en **Confirmar mensaje de prueba**. Al terminar se ve "Mensaje de prueba enviado a la cola".
 Mensajes: "La cantidad máxima de mensajes debe ser un número entero entre 1 y ..." y "El teléfono de prueba debe tener 8 dígitos o entre 11 y 15 con código de país (ej. 50588887777)."
 Notas:
