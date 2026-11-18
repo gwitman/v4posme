@@ -6392,6 +6392,7 @@ BEGIN
 	DECLARE amount2 DECIMAL(18,4) DEFAULT 0;
 	DECLARE amount3 DECIMAL(18,4) DEFAULT 0;
 	DECLARE amount4 DECIMAL(18,4) DEFAULT 0;
+	DECLARE amount5 DECIMAL(18,4) DEFAULT 0; /*pagado con notas de credito en facturas de contado*/
 
 	DECLARE currencyIDNameSource VARCHAR(250);
 	DECLARE currencyIDNameTarget VARCHAR(250);
@@ -6989,6 +6990,32 @@ BEGIN
 			(prUserIDFilter = 0)
 		);
 
+	/*Monto pagado con notas de credito en las mismas facturas de 'Vent Cont': no es efectivo*/
+	SET amount5 = (
+		select
+			IFNULL(sum(IFNULL(tmi.receiptAmountNoteCredit,0)),0)
+		from
+			tb_transaction_master tm
+			inner join tb_workflow_stage ws on
+				ws.workflowStageID = tm.statusID
+			inner join tb_transaction_master_info tmi on
+				tmi.companyID = tm.companyID and
+				tmi.transactionID = tm.transactionID and
+				tmi.transactionMasterID = tm.transactionMasterID
+		where
+			tm.transactionID = 19  and
+			tm.transactionCausalID in (23  , 21  ) and
+			tm.isActive = 1 and
+			ws.aplicable = 1 and
+			tm.companyID = prCompanyID and
+			tm.createdOn between prStartOn  and prEndOn AND
+			(
+				(tm.createdBy = prUserIDFilter and prUserIDFilter != 0) or
+				(prUserIDFilter = 0)
+			)
+	);
+	SET amount5 = IFNULL(amount5,0);
+
 
 
 
@@ -7376,6 +7403,7 @@ BEGIN
 		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Primas C$' );
 		SET varDif = varDif - (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'EGR. Efectivo C$' );
 		SET varDif = varDif - (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Cierre C$' );
+		SET varDif = varDif - amount5; /*pagado con notas de credito: no es efectivo esperado*/
 		insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
 		values ('No','Default','Diferencia','009.001','Dif C$',0,ifnull(varDif,0),ifnull(varDif,0),1,0);
 
@@ -7542,8 +7570,8 @@ BEGIN
 
 
 	UPDATE tb_tmp_closed set
-		total = amount1 -  (amount2 * 36.5) - amount4,
-		subtotal = amount1 -  (amount2 * 36.5) - amount4
+		total = amount1 -  (amount2 * 36.5) - amount4 - amount5,
+		subtotal = amount1 -  (amount2 * 36.5) - amount4 - amount5
 	WHERE
 		nombre = 'Efectivo C$' and
 		substitulo = 'Formas de Pago C$';
@@ -28112,6 +28140,7 @@ BEGIN
 										( ifnull(rx.tax2,0) * 1 )
 									) -
 								rx.receiptAmountPoint -
+								rx.receiptAmountNoteCredit -
 								CASE
 								  WHEN rx.statusName = 'ANULADA' THEN 0
 									ELSE
@@ -28175,6 +28204,7 @@ BEGIN
 					MAX(tmi.receiptAmountBank)  AS receiptAmountBank,
 					MAX(tmi.receiptAmountBankDol) AS receiptAmountBankDol,
 					MAX(tmi.receiptAmountPoint) AS receiptAmountPoint,
+					MAX(IFNULL(tmi.receiptAmountNoteCredit,0)) AS receiptAmountNoteCredit,
 
 					CASE
 						WHEN
@@ -28424,7 +28454,8 @@ BEGIN
 			rx.receiptAmountCardDol,
 			rx.receiptAmountBank,
 			rx.receiptAmountBankDol,
-			rx.receiptAmountPoint ;
+			rx.receiptAmountPoint,
+			rx.receiptAmountNoteCredit ;
 END ;;
 DELIMITER ;
 /*!50003 SET sql_mode              = @saved_sql_mode */ ;
@@ -30843,6 +30874,7 @@ BEGIN
 	DECLARE amount2 DECIMAL(18,4) DEFAULT 0;
 	DECLARE amount3 DECIMAL(18,4) DEFAULT 0;
 	DECLARE amount4 DECIMAL(18,4) DEFAULT 0;
+	DECLARE amount5 DECIMAL(18,4) DEFAULT 0; /*pagado con notas de credito en facturas de contado*/
 
 	DECLARE currencyIDNameSource VARCHAR(250);
 	DECLARE currencyIDNameTarget VARCHAR(250);
@@ -31382,6 +31414,28 @@ BEGIN
 		tm.companyID = prCompanyID and
 		tm.createdOn between prStartOn  and prEndOn ;
 
+	/*Monto pagado con notas de credito en las mismas facturas de 'Vent Cont': no es efectivo*/
+	SET amount5 = (
+		select
+			IFNULL(sum(IFNULL(tmi.receiptAmountNoteCredit,0)),0)
+		from
+			tb_transaction_master tm
+			inner join tb_workflow_stage ws on
+				ws.workflowStageID = tm.statusID
+			inner join tb_transaction_master_info tmi on
+				tmi.companyID = tm.companyID and
+				tmi.transactionID = tm.transactionID and
+				tmi.transactionMasterID = tm.transactionMasterID
+		where
+			tm.transactionID = 19  and
+			tm.transactionCausalID in (23  , 21  ) and
+			tm.isActive = 1 and
+			ws.aplicable = 1 and
+			tm.companyID = prCompanyID and
+			tm.createdOn between prStartOn  and prEndOn
+	);
+	SET amount5 = IFNULL(amount5,0);
+
 
 
 
@@ -31733,6 +31787,7 @@ BEGIN
 		SET varDif = varDif + (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'Primas C$' );
 		SET varDif = varDif - (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.nombre) = 'EGR. Efectivo C$' );
 		SET varDif = varDif - (select IFNULL(sum(u.total),0) from tb_tmp_closed u where upper(u.substitulo) = 'Cierre C$' );
+		SET varDif = varDif - amount5; /*pagado con notas de credito: no es efectivo esperado*/
 		insert into tb_tmp_closed (sumary,comandoProce,substitulo,codigo,nombre,cantidad,subtotal,total,moneda,tipoCambio)
 		values ('No','Default','Diferencia','009.001','Dif C$',0,ifnull(varDif,0),ifnull(varDif,0),1,0);
 
@@ -31865,8 +31920,8 @@ BEGIN
 
 
 	UPDATE tb_tmp_closed set
-		total = amount1 -  (amount2 * 36.5) - amount4,
-		subtotal = amount1 -  (amount2 * 36.5) - amount4
+		total = amount1 -  (amount2 * 36.5) - amount4 - amount5,
+		subtotal = amount1 -  (amount2 * 36.5) - amount4 - amount5
 	WHERE
 		nombre = 'Efectivo C$' and
 		substitulo = 'Formas de Pago C$';

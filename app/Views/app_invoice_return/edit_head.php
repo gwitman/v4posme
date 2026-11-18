@@ -7,5 +7,5 @@
 <?php echo view('app_invoice_return/ret_v2_common'); ?>
 
 <div id="heading" class="page-header">
-    <h1><i class="icon20 i-cart-remove"></i> <?php echo (isset($isApplied) && $isApplied) ? "CONSULTAR" : "EDITAR"; ?> SUSTITUCION DE PRODUCTOS</h1>
+    <h1><i class="icon20 i-cart-remove"></i> <?php echo (isset($isApplied) && $isApplied) ? "CONSULTAR" : "EDITAR"; ?> DEVOLUCION DE PRODUCTOS</h1>
 </div>

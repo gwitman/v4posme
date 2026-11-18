@@ -3126,7 +3126,12 @@ CREATE TABLE `tb_transaction_concept`  (
 --                 element 'templateReplacement', method 'viewRegister'
 --   Cabecera    : entityID = cliente; reference1 = transactionMasterID de la factura;
 --                 reference2 = transactionNumber de la factura; reference3 = transactionMasterID Otra Entrada;
---                 reference4 = transactionMasterID Otra Salida; sourceWarehouseID/targetWarehouseID = bodega de la factura; sign = 0
+--                 reference4 = transactionMasterID de la Nota de Credito generada (script_devoluciones_notas_credito.sql);
+--                 en documentos anteriores reference4 = Otra Salida (sustitucion historica);
+--                 sourceWarehouseID/targetWarehouseID = bodega de la factura; sign = 0
+--   Renombre    : desde script_devoluciones_notas_credito.sql se llama "DEVOLUCION DE PRODUCTO" /
+--                 'ESTADO DE DEVOLUCIONES' / 'LISTA DE DEVOLUCIONES'; ya no hay producto sustituto
+--                 (detalle reference2/reference3 vacios en documentos nuevos)
 --   Detalle     : componentItemID = item devuelto; reference1 = transactionMasterDetailID de la linea de factura;
 --                 reference2 = itemID sustituto; reference3 = itemNumber sustituto;
 --                 itemNameLog = nombre devuelto; itemNameDescriptionLog = nombre sustituto; unitaryCost = costo linea factura
@@ -3454,6 +3459,18 @@ CREATE TABLE `tb_transaction_master_detail_temp`  (
 -- ----------------------------
 -- Table structure for tb_transaction_master_info
 -- ----------------------------
+-- Notas de credito (NC) y devoluciones (script_devoluciones_notas_credito.sql):
+--   Saldo NC del cliente = tb_customer.balanceCor (moneda por defecto) / balanceDol (moneda externa).
+--   NC (tb_transaction_master_cxc_notacredit) en tb_transaction_master:
+--     amount = monto NC, discount = saldo NC del cliente antes, subAmount = saldo NC del cliente despues.
+--     Generada por devolucion: entityID = cliente de la factura, currencyID/exchangeRate = factura,
+--     reference1 = transactionMasterID factura, reference2 = numero factura,
+--     reference3 = transactionMasterID devolucion, reference4 = numero devolucion.
+--   Devolucion (tb_transaction_master_replacement) en tb_transaction_master:
+--     reference1/reference2 = factura, reference3 = transactionMasterID Otra Entrada,
+--     reference4 = transactionMasterID de la NC (documentos viejos: Otra Salida = sustitucion historica).
+--   Fila info de la NC: receiptAmountNoteCredit = monto, noteCreditBalance = saldo disponible (solo > 0 si fue aplicada).
+--   Fila info de la factura: receiptAmountNoteCredit = pagado con NC, noteCreditDetail = detalle FIFO consumido.
 DROP TABLE IF EXISTS `tb_transaction_master_info`;
 CREATE TABLE `tb_transaction_master_info`  (
   `transactionMasterInfoID` int NOT NULL AUTO_INCREMENT,
@@ -3483,6 +3500,10 @@ CREATE TABLE `tb_transaction_master_info`  (
   `receiptAmountCardDol` decimal(19, 2) NOT NULL DEFAULT 0.00,
   `receiptAmountCardBankDolID` int NULL DEFAULT 0,
   `receiptAmountCardBankDolReference` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL,
+  `receiptAmountNoteCredit` decimal(19, 2) NOT NULL DEFAULT 0.00 COMMENT 'En NC: monto de la NC. En factura: total pagado con NC',
+  `noteCreditBalance` decimal(19, 2) NOT NULL DEFAULT 0.00 COMMENT 'En NC: saldo disponible de esa NC',
+  `customerBalanceNoteCredit` decimal(19, 2) NOT NULL DEFAULT 0.00 COMMENT 'Saldo NC del cliente despues del movimiento',
+  `noteCreditDetail` varchar(1000) CHARACTER SET latin1 COLLATE latin1_swedish_ci NULL DEFAULT NULL COMMENT 'En factura: idNC|numeroNC|montoAplicado|saldoNCnuevo;... Prefijo REVERTIDO: si se revirtio',
   PRIMARY KEY (`transactionMasterInfoID`) USING BTREE,
   INDEX `IDX_TRANSACTION_MASTER_INFO_001`(`companyID` ASC) USING BTREE,
   INDEX `IDX_TRANSACTION_MASTER_INFO_002`(`transactionID` ASC) USING BTREE,

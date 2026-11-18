@@ -1,13 +1,19 @@
 <?php
 /*
- * Sustitucion de productos facturados - edicion / consulta.
- * Aplicado: todo solo lectura. Aplicacion interrumpida (ya genero Otra Entrada u
- * Otra Salida sin quedar aplicado): solo se puede cambiar el estado para terminar.
+ * Devolucion de productos facturados - edicion / consulta.
+ * Aplicado: todo solo lectura (genero Nota de Credito aplicada y Otra Entrada).
+ * Documentos viejos con aplicacion interrumpida (ya tienen documentos generados sin
+ * quedar aplicados): solo se puede cambiar el estado.
  */
 $isApplied   = isset($isApplied) && $isApplied;
 $isPartial   = !$isApplied && (trim((string) $objTM->reference3) != "" || trim((string) $objTM->reference4) != "");
 $isReadOnly  = $isApplied || $isPartial;
 $isMobileCls = (isset($useMobile) && $useMobile == "1") ? " pv2-mobile" : "";
+
+//Documentos generados (el controlador los entrega; los documentos viejos pueden traer una Otra Salida)
+$objOtherInput          = isset($objOtherInput) ? $objOtherInput : null;
+$objNoteCredit          = isset($objNoteCredit) ? $objNoteCredit : null;
+$objOtherOutputHistoric = isset($objOtherOutputHistoric) ? $objOtherOutputHistoric : null;
 
 //Datos de la factura (si ya no existe se muestran los guardados en el documento)
 $invNumber    = $objInvoice ? $objInvoice["transactionNumber"] : $objTM->reference2;
@@ -16,6 +22,8 @@ $invDate      = $objInvoice ? $objInvoice["transactionOn"] : "";
 $invWarehouse = $objInvoice ? $objInvoice["warehouseName"] : "";
 $custNumber   = $objInvoice ? $objInvoice["customerNumber"] : ($objCustomer ? $objCustomer->customerNumber : "");
 $custName     = $objInvoice ? $objInvoice["customerName"] : ($objCustomer ? $objCustomer->firstName : "");
+$curName      = ($objInvoice && isset($objInvoice["currencyName"])) ? $objInvoice["currencyName"] : "";
+$curSymbol    = ($objInvoice && isset($objInvoice["currencySymbol"])) ? $objInvoice["currencySymbol"] : (($objInvoice && isset($objInvoice["simbolo"])) ? $objInvoice["simbolo"] : "");
 
 /**
  * Une dos textos con un separador omitiendo los vacios ("codigo / nombre").
@@ -30,6 +38,7 @@ $joinText = function ($a, $b, $separator) {
     return ($a != "" && $b != "") ? $a . $separator . $b : $a . $b;
 };
 $custText     = $joinText($custNumber, $custName, " / ");
+$curText      = $joinText($curName, $curSymbol, " / ");
 
 /**
  * Cantidad para mostrar: 1,000.00; conserva los decimales significativos si son mas de 2.
@@ -43,6 +52,24 @@ $fmtQty = function ($value) {
     $decimals = $pos === false ? 2 : max(2, strlen($text) - $pos - 1);
     return number_format($number, $decimals, ".", ",");
 };
+
+/**
+ * Monto para mostrar con simbolo de la moneda de la factura: "C$ 1,000.00".
+ * @param mixed $value
+ * @return string
+ */
+$fmtMoney = function ($value) use ($curSymbol) {
+    $text = number_format(round((float) $value, 2), 2, ".", ",");
+    return trim((string) $curSymbol) != "" ? trim((string) $curSymbol) . " " . $text : $text;
+};
+
+//Total de la devolucion: el de la Nota de Credito generada o, si aun no existe, el estimado del detalle
+$totalNC = 0;
+if ($isReadOnly && $objTMD)
+    foreach ($objTMD as $row)
+        $totalNC = round($totalNC + round((float) $row->quantity * (isset($row->unitaryPrice) ? (float) $row->unitaryPrice : 0), 2), 2);
+if ($objNoteCredit && isset($objNoteCredit->amount))
+    $totalNC = round((float) $objNoteCredit->amount, 2);
 
 /**
  * URL de edicion de una transaccion generada.
@@ -70,7 +97,7 @@ $urlLinked = function ($controller, $obj) {
                         <span class="pv2-chip">Editando</span>
                     <?php } ?>
                 </p>
-                <p class="pv2-header-sub">El cliente devuelve un producto facturado y se lleva otro</p>
+                <p class="pv2-header-sub">El cliente devuelve productos facturados y recibe una Nota de Crédito</p>
             </div>
         </div>
         <div class="pv2-actions">
@@ -90,7 +117,11 @@ $urlLinked = function ($controller, $obj) {
     <div class="ret-aviso">
         <i class="icon16 i-info"></i>
         <div>
-            <p>La sustitución solo mueve inventario; no modifica la factura ni cobra diferencias de precio.</p>
+            <?php if ($isApplied) { ?>
+                <p>Esta devolución ya está aplicada: generó la Nota de Crédito y la Otra Entrada indicadas en Documentos generados.</p>
+            <?php } else { ?>
+                <p>Al aplicar la devolución se generará una Nota de Crédito aplicada al cliente y una Otra Entrada de inventario. La factura no se modifica.</p>
+            <?php } ?>
             <p>Plazo máximo: <b class="ret-max-days"><?php echo (int) $maxDays; ?></b> días desde la fecha de la factura.</p>
         </div>
     </div>
@@ -98,7 +129,7 @@ $urlLinked = function ($controller, $obj) {
         <div class="ret-aviso is-warn">
             <i class="icon16 i-warning"></i>
             <div>
-                <p>Este documento ya generó movimientos de inventario pero no terminó de aplicarse. Solo puede cambiar el estado a uno aplicado para terminar la sustitución.</p>
+                <p>Este documento ya generó documentos relacionados pero no terminó de aplicarse. Solo puede cambiar el estado.</p>
             </div>
         </div>
     <?php } ?>
@@ -167,6 +198,12 @@ $urlLinked = function ($controller, $obj) {
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="form-group">
+                                <label class="pv2-label" for="txtInvoiceCurrency">Moneda</label>
+                                <input class="form-control" readonly id="txtInvoiceCurrency" type="text" autocomplete="off" value="<?php echo esc($curText, 'attr'); ?>">
+                                <span class="pv2-help">La Nota de Crédito se genera en la moneda de la factura.</span>
+                            </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-6">
@@ -217,14 +254,22 @@ $urlLinked = function ($controller, $obj) {
                                 <span>—</span>
                             <?php } ?>
                         </div>
-                        <div class="ret-docs-item">
-                            <span>Otra salida (productos sustitutos)</span>
-                            <?php if ($objOtherOutput) { ?>
-                                <a href="<?php echo $urlLinked("app_inventory_otheroutput", $objOtherOutput); ?>" target="_blank" rel="noopener"><?php echo esc($objOtherOutput->transactionNumber); ?></a>
-                            <?php } else { ?>
-                                <span>—</span>
-                            <?php } ?>
-                        </div>
+                        <?php if ($objOtherOutputHistoric) { ?>
+                            <!-- documento viejo: la sustitucion generaba una Otra Salida en lugar de Nota de Credito -->
+                            <div class="ret-docs-item">
+                                <span>Otra salida (sustitución histórica)<span class="ret-docs-note">Documento anterior a las Notas de Crédito</span></span>
+                                <a href="<?php echo $urlLinked("app_inventory_otheroutput", $objOtherOutputHistoric); ?>" target="_blank" rel="noopener"><?php echo esc($objOtherOutputHistoric->transactionNumber); ?></a>
+                            </div>
+                        <?php } else { ?>
+                            <div class="ret-docs-item">
+                                <span>Nota de Crédito aplicada<?php if ($objNoteCredit) { ?><span class="ret-docs-note"><?php echo esc($fmtMoney($totalNC)); ?></span><?php } ?></span>
+                                <?php if ($objNoteCredit) { ?>
+                                    <a href="<?php echo $urlLinked("app_cxc_notecredit", $objNoteCredit); ?>" target="_blank" rel="noopener"><?php echo esc($objNoteCredit->transactionNumber); ?></a>
+                                <?php } else { ?>
+                                    <span>—</span>
+                                <?php } ?>
+                            </div>
+                        <?php } ?>
                     </div>
                 <?php } ?>
             </div>
@@ -243,7 +288,7 @@ $urlLinked = function ($controller, $obj) {
         <!-- detalle -->
         <div class="pv2-card">
             <div class="pv2-detail-head">
-                <p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-list-2"></i></span> Productos a sustituir <span class="pv2-count" id="afxDetailCount">0</span></p>
+                <p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-list-2"></i></span> Productos a devolver <span class="pv2-count" id="afxDetailCount">0</span></p>
                 <?php if (!$isReadOnly) { ?>
                     <div class="pv2-actions">
                         <button type="button" class="btn btn-default btn-sm" id="btnDeleteDetailTransaction"><i class="icon16 i-remove"></i> Quitar</button>
@@ -260,9 +305,11 @@ $urlLinked = function ($controller, $obj) {
                             <?php } ?>
                             <th class="ret-col-line">Producto facturado</th>
                             <th class="ret-col-num">Facturado</th>
+                            <th class="ret-col-num">Ya devuelto</th>
                             <th class="ret-col-num">Disponible</th>
                             <th class="ret-col-qty">Cantidad</th>
-                            <th>Producto sustituto</th>
+                            <th class="ret-col-num">Precio</th>
+                            <th class="ret-col-num">Subtotal</th>
                             <th class="ret-col-um">U/M</th>
                         </tr>
                     </thead>
@@ -271,15 +318,20 @@ $urlLinked = function ($controller, $obj) {
                         //Solo lectura: se pinta aqui. Editable: lo arma el script con retAddRow
                         if ($isReadOnly && $objTMD)
                             foreach ($objTMD as $row) {
-                                $lineText = $joinText($row->itemNumber, $row->itemName, " - ");
-                                $sustText = $joinText($row->itemNumberSustituto, $row->itemNameSustituto, " - ");
+                                $lineText  = $joinText($row->itemNumber, $row->itemName, " - ");
+                                //Documentos viejos (sustitucion historica): se muestra el producto entregado si existe
+                                $sustText  = $joinText(isset($row->itemNumberSustituto) ? $row->itemNumberSustituto : "", isset($row->itemNameSustituto) ? $row->itemNameSustituto : "", " - ");
+                                $returned  = isset($row->quantityReturned) ? $row->quantityReturned : (isset($row->quantityReplaced) ? $row->quantityReplaced : 0);
+                                $unitPrice = isset($row->unitaryPrice) ? (float) $row->unitaryPrice : 0;
                                 ?>
                                 <tr class="row_razon">
-                                    <td data-label="Producto facturado"><span><?php echo esc($lineText); ?></span></td>
+                                    <td data-label="Producto facturado"><span><?php echo esc($lineText); ?><?php if ($sustText != "") { ?><br><small>Sustituto: <?php echo esc($sustText); ?></small><?php } ?></span></td>
                                     <td data-label="Facturado" class="pv2-num"><span><?php echo $fmtQty($row->quantityInvoiced); ?></span></td>
+                                    <td data-label="Ya devuelto" class="pv2-num"><span><?php echo $fmtQty($returned); ?></span></td>
                                     <td data-label="Disponible" class="pv2-num"><span><?php echo $fmtQty($row->quantityAvailable); ?></span></td>
                                     <td data-label="Cantidad" class="pv2-num"><span><?php echo $fmtQty($row->quantity); ?></span></td>
-                                    <td data-label="Producto sustituto"><span><?php echo esc($sustText); ?></span></td>
+                                    <td data-label="Precio" class="pv2-num"><span><?php echo number_format(round($unitPrice, 2), 2, ".", ","); ?></span></td>
+                                    <td data-label="Subtotal" class="pv2-num"><span><?php echo number_format(round((float) $row->quantity * $unitPrice, 2), 2, ".", ","); ?></span></td>
                                     <td data-label="U/M"><span><?php echo esc($row->unitMeasureName); ?></span></td>
                                 </tr>
                                 <?php
@@ -290,8 +342,14 @@ $urlLinked = function ($controller, $obj) {
             </div>
             <div class="pv2-empty" id="afxDetailEmpty">
                 <i class="icon20 i-file-plus"></i>
-                <?php echo $isReadOnly ? "Este documento no tiene productos." : "Seleccione la factura y toque <b>Agregar</b> para indicar los productos a sustituir."; ?>
+                <?php echo $isReadOnly ? "Este documento no tiene productos." : "Seleccione la factura y toque <b>Agregar</b> para indicar los productos a devolver."; ?>
             </div>
+            <?php if (!$objOtherOutputHistoric) { ?>
+                <div class="ret-total">
+                    <span class="ret-total-label"><?php echo $objNoteCredit ? "Total de la Nota de Crédito" : "Total estimado de la Nota de Crédito"; ?></span>
+                    <span class="ret-total-value<?php echo $isReadOnly ? "" : " ret-total-nc"; ?>" id="retTotalNC"><?php echo esc($fmtMoney($totalNC)); ?></span>
+                </div>
+            <?php } ?>
         </div>
         <!-- /detalle -->
 
@@ -302,7 +360,8 @@ $urlLinked = function ($controller, $obj) {
         <!-- barra inferior (telefono) -->
         <div class="pv2-mbar">
             <div class="pv2-mbar-info">
-                <p class="pv2-mbar-label">Editar sustitución de productos</p>
+                <p class="pv2-mbar-label">Nota de Crédito estimada</p>
+                <p class="pv2-mbar-total<?php echo $isReadOnly ? "" : " ret-total-nc"; ?>" id="retTotalNCMobile"><?php echo esc($fmtMoney($totalNC)); ?></p>
             </div>
             <a href="#" class="btn btn-primary" id="btnAceptMobile"><i class="icon16 i-checkmark-4"></i> Guardar</a>
         </div>

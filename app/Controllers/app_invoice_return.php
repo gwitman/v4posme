@@ -3,14 +3,16 @@
 namespace App\Controllers;
 
 /**
- * Sustitucion de productos facturados.
- * El cliente devuelve un producto de una factura aplicada y se lleva otro.
- * Al aplicar se generan una Otra Entrada (productos devueltos) y una Otra Salida
- * (productos sustitutos) en la bodega de la factura.
+ * Devolucion de productos facturados.
+ * El cliente devuelve uno o varios productos de una factura aplicada.
+ * Al aplicar se generan, en una sola transaccion de BD, una Nota de Credito aplicada
+ * (saldo a favor del cliente, en la moneda de la factura) y una Otra Entrada
+ * (productos devueltos) en la bodega de la factura.
+ * Documentos viejos (sustitucion) pueden tener reference4 apuntando a una Otra Salida.
  */
 class app_invoice_return extends _BaseController
 {
-    /** Componente / transaccion del documento de sustitucion */
+    /** Componente / transaccion del documento de devolucion */
     private $componentName          = "tb_transaction_master_replacement";
 
     /** Componente / transaccion de la factura */
@@ -20,7 +22,7 @@ class app_invoice_return extends _BaseController
     private $noteMaxLength          = 3500;
 
     /**
-     * Lista de documentos de sustitucion (data view por defecto del componente).
+     * Lista de documentos de devolucion (data view por defecto del componente).
      * @param int|null $dataViewID Vista alterna
      */
     function index($dataViewID = null)
@@ -76,7 +78,7 @@ class app_invoice_return extends _BaseController
     }
 
     /**
-     * Pantalla de nuevo documento de sustitucion.
+     * Pantalla de nuevo documento de devolucion.
      */
     function add()
     {
@@ -109,7 +111,8 @@ class app_invoice_return extends _BaseController
             $dataView["objCustomer"]            = null;
             $dataView["isApplied"]              = false;
             $dataView["objOtherInput"]          = null;
-            $dataView["objOtherOutput"]         = null;
+            $dataView["objNoteCredit"]          = null;
+            $dataView["objOtherOutputHistoric"] = null;
 
             //Renderizar Resultado
             $dataSession["notification"] = $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -125,7 +128,7 @@ class app_invoice_return extends _BaseController
     }
 
     /**
-     * Pantalla de edicion / consulta de un documento de sustitucion.
+     * Pantalla de edicion / consulta de un documento de devolucion.
      */
     function edit()
     {
@@ -158,7 +161,7 @@ class app_invoice_return extends _BaseController
 
             $objTM = $this->Transaction_Master_Model->get_rowByPK($companyID, $transactionID, $transactionMasterID);
             if (!$objTM)
-                throw new \Exception("EL DOCUMENTO DE SUSTITUCION NO EXISTE O FUE ELIMINADO");
+                throw new \Exception("EL DOCUMENTO DE DEVOLUCION NO EXISTE O FUE ELIMINADO");
             $objTM->transactionOn = date_format(date_create($objTM->transactionOn), "Y-m-d");
 
             //Factura y lineas disponibles (excluyendo este documento)
@@ -175,7 +178,17 @@ class app_invoice_return extends _BaseController
             $dataView["objListWorkflowStage"]   = $this->core_web_workflow->getWorkflowStageByStageInit($this->componentName, "statusID", $objTM->statusID, $companyID, $branchID, $roleID);
             $dataView["isApplied"]              = ((int) $objTM->isApplied) == 1;
             $dataView["objOtherInput"]          = $this->getLinkedTransaction($companyID, $objTM->reference3);
-            $dataView["objOtherOutput"]         = $this->getLinkedTransaction($companyID, $objTM->reference4);
+            $dataView["objNoteCredit"]          = null;
+            $dataView["objOtherOutputHistoric"] = null;
+
+            //reference4: NC (devolucion) o, en documentos viejos de sustitucion, una Otra Salida
+            $objLinked4 = $this->getLinkedTransaction($companyID, $objTM->reference4);
+            if ($objLinked4) {
+                if ((int) $objLinked4->transactionID == (int) $this->core_web_note_credit->getTransactionIDNoteCredit($companyID))
+                    $dataView["objNoteCredit"]          = $objLinked4;
+                else
+                    $dataView["objOtherOutputHistoric"] = $objLinked4;
+            }
 
             //Renderizar Resultado
             $dataSession["notification"] = $this->core_web_error->get_error($dataSession["user"]->userID);
@@ -232,7 +245,7 @@ class app_invoice_return extends _BaseController
     }
 
     /**
-     * Elimina (soft delete) un documento de sustitucion no aplicado. Responde JSON.
+     * Elimina (soft delete) un documento de devolucion no aplicado. Responde JSON.
      */
     function delete()
     {
@@ -263,14 +276,14 @@ class app_invoice_return extends _BaseController
 
             $objTM = $this->Transaction_Master_Model->get_rowByPK($companyID, $transactionID, $transactionMasterID);
             if (!$objTM)
-                throw new \Exception("EL DOCUMENTO DE SUSTITUCION NO EXISTE O YA FUE ELIMINADO");
+                throw new \Exception("EL DOCUMENTO DE DEVOLUCION NO EXISTE O YA FUE ELIMINADO");
 
             if ($resultPermission == PERMISSION_ME && ($objTM->createdBy != $dataSession["user"]->userID))
                 throw new \Exception(NOT_DELETE);
 
-            //Con movimientos de inventario generados no se puede eliminar
+            //Con documentos generados (Otra Entrada / Nota de Credito) no se puede eliminar
             if (((int) $objTM->isApplied) == 1 || trim((string) $objTM->reference3) != "" || trim((string) $objTM->reference4) != "")
-                throw new \Exception("EL DOCUMENTO YA GENERO MOVIMIENTOS DE INVENTARIO (OTRA ENTRADA / OTRA SALIDA), NO PUEDE ELIMINARSE");
+                throw new \Exception("LA DEVOLUCION YA GENERO SUS DOCUMENTOS (OTRA ENTRADA / NOTA DE CREDITO), NO PUEDE ELIMINARSE");
 
             if (!$this->core_web_workflow->validateWorkflowStage($this->componentName, "statusID", $objTM->statusID, COMMAND_ELIMINABLE, $companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID))
                 throw new \Exception(NOT_WORKFLOW_DELETE);
@@ -295,7 +308,8 @@ class app_invoice_return extends _BaseController
     }
 
     /**
-     * Devuelve la factura (validada) y sus lineas con la cantidad disponible para sustituir.
+     * Devuelve la factura (validada, con su moneda) y sus lineas con la cantidad disponible
+     * para devolver y el precio neto de devolucion por unidad.
      * POST: invoiceNumber, excludeTransactionMasterID (opcional), transactionOn (opcional, Y-m-d).
      * Responde JSON {error, message, maxDays, invoice, detail}.
      */
@@ -344,8 +358,11 @@ class app_invoice_return extends _BaseController
                     "unitMeasureName"           => $line->unitMeasureName,
                     "quantityInvoiced"          => $line->quantityInvoiced,
                     "quantityReplaced"          => $line->quantityReplaced,
+                    "quantityReturned"          => $line->quantityReplaced,
                     "quantityAvailable"         => $line->quantityAvailable,
-                    "unitaryCost"               => $line->unitaryCost
+                    "unitaryCost"               => $line->unitaryCost,
+                    "unitaryPrice"              => $line->unitaryPrice,
+                    "amountAvailable"           => $line->amountAvailable
                 );
             }
 
@@ -396,7 +413,7 @@ class app_invoice_return extends _BaseController
 
             $objTM = $this->Transaction_Master_Model->get_rowByPK($companyID, $transactionID, $transactionMasterID);
             if (!$objTM)
-                throw new \Exception("EL DOCUMENTO DE SUSTITUCION NO EXISTE O FUE ELIMINADO");
+                throw new \Exception("EL DOCUMENTO DE DEVOLUCION NO EXISTE O FUE ELIMINADO");
             $objTM->transactionOn = date_format(date_create($objTM->transactionOn), "Y-m-d");
 
             $objCompany       = $this->Company_Model->get_rowByPK($companyID);
@@ -425,7 +442,7 @@ class app_invoice_return extends _BaseController
             $rows      = $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID, $transactionID, $transactionMasterID);
             foreach ($rows as $row) {
                 $objItem      = $this->Item_Model->get_rowByPKAndInactive($companyID, (int) $row->componentItemID);
-                $objSustituto = $this->Item_Model->get_rowByPKAndInactive($companyID, (int) $row->reference2);
+                $objSustituto = empty($row->reference2) ? null : $this->Item_Model->get_rowByPKAndInactive($companyID, (int) $row->reference2);
 
                 $obj                      = new \stdClass();
                 $obj->itemNumber          = $objItem ? $objItem->itemNumber : "";
@@ -436,8 +453,14 @@ class app_invoice_return extends _BaseController
                 $objDetail[]              = $obj;
             }
 
+            //reference4: NC (devolucion) u Otra Salida (documentos viejos de sustitucion)
             $objOtherInput  = $this->getLinkedTransaction($companyID, $objTM->reference3);
             $objOtherOutput = $this->getLinkedTransaction($companyID, $objTM->reference4);
+            $objNoteCredit  = null;
+            if ($objOtherOutput && (int) $objOtherOutput->transactionID == (int) $this->core_web_note_credit->getTransactionIDNoteCredit($companyID)) {
+                $objNoteCredit  = $objOtherOutput;
+                $objOtherOutput = null;
+            }
 
             //Plantilla de la compania, si no existe la de demo
             $htmlTemplate = getBahavioLargeDB($objCompany->type, "app_invoice_return", "templateReplacement", "");
@@ -447,7 +470,7 @@ class app_invoice_return extends _BaseController
                 throw new \Exception("NO EXISTE LA PLANTILLA DE IMPRESION 'templateReplacement' DEL CONTROLADOR 'app_invoice_return' EN tb_company_page_setting_large (NI PARA EL TIPO DE COMPANIA NI PARA 'demo')");
 
             $data = array(
-                'titulo'               => 'SUSTITUCION DE PRODUCTO',
+                'titulo'               => 'DEVOLUCION DE PRODUCTO',
                 'objCompany'           => $objCompany,
                 'objParameterLogo'     => $objParameterLogo,
                 'objParameterTelefono' => $objParameterTelefono,
@@ -458,6 +481,8 @@ class app_invoice_return extends _BaseController
                 'objDetail'            => $objDetail,
                 'otherInputNumber'     => $objOtherInput ? $objOtherInput->transactionNumber : "",
                 'otherOutputNumber'    => $objOtherOutput ? $objOtherOutput->transactionNumber : "",
+                'noteCreditNumber'     => $objNoteCredit ? $objNoteCredit->transactionNumber : "",
+                'noteCreditAmount'     => $objNoteCredit ? $objTM->amount : 0,
                 'userNickName'         => $dataSession["user"]->nickname
             );
 
@@ -466,7 +491,7 @@ class app_invoice_return extends _BaseController
             $this->dompdf->render();
 
             $objParameterShowLinkDownload = $this->core_web_parameter->getParameter("CORE_SHOW_LINK_DOWNOAD", $companyID)->value;
-            $this->dompdf->stream("sustitucion_" . $objTM->transactionNumber . ".pdf", ['Attachment' => !$objParameterShowLinkDownload]);
+            $this->dompdf->stream("devolucion_" . $objTM->transactionNumber . ".pdf", ['Attachment' => !$objParameterShowLinkDownload]);
             exit;
         } catch (\Exception $ex) {
             return $this->renderErrorView(isset($dataSession) ? $dataSession : null, $ex);
@@ -479,7 +504,7 @@ class app_invoice_return extends _BaseController
 
     /**
      * Inserta un documento nuevo (cabecera + detalle) y, si el estado elegido es
-     * aplicable, aplica la sustitucion.
+     * aplicable, aplica la devolucion (NC + Otra Entrada).
      * @param array $dataSession
      */
     private function insertElement($dataSession)
@@ -526,7 +551,7 @@ class app_invoice_return extends _BaseController
             $warehouseID = $this->getInvoiceWarehouseID($objInvoice, $lines);
             $detail      = $this->validateDetail($companyID, $lines, $this->readDetailFromPost());
 
-            //Si el estado elegido es aplicable se guarda con el estado inicial; applyReplacement pone el aplicado al final
+            //Si el estado elegido es aplicable se guarda con el estado inicial; applyReturn pone el aplicado al final
             $applyNow      = $this->core_web_workflow->validateWorkflowStage($this->componentName, "statusID", $statusID, COMMAND_APLICABLE, $companyID, $branchID, $roleID);
             $statusIDSaved = $statusID;
             if ($applyNow) {
@@ -548,9 +573,10 @@ class app_invoice_return extends _BaseController
             $objTM["componentID"]           = $objComponent->componentID;
             $objTM["note"]                  = mb_substr($note, 0, $this->noteMaxLength);
             $objTM["sign"]                  = 0;
-            $objTM["currencyID"]            = $this->core_web_currency->getCurrencyDefault($companyID)->currencyID;
+            //Moneda de la factura: la NC se genera en esa moneda
+            $objTM["currencyID"]            = $objInvoice->currencyID;
             $objTM["currencyID2"]           = $objTM["currencyID"];
-            $objTM["exchangeRate"]          = 1;
+            $objTM["exchangeRate"]          = $objInvoice->exchangeRate;
             $objTM["reference1"]            = $objInvoice->transactionMasterID;
             $objTM["reference2"]            = $objInvoice->transactionNumber;
             $objTM["reference3"]            = "";
@@ -583,7 +609,7 @@ class app_invoice_return extends _BaseController
                 throw $exDb;
             }
             if ($db->transStatus() === false)
-                throw new \Exception("NO FUE POSIBLE GUARDAR EL DOCUMENTO DE SUSTITUCION");
+                throw new \Exception("NO FUE POSIBLE GUARDAR EL DOCUMENTO DE DEVOLUCION");
 
             //Carpeta de archivos del documento
             $path_ = PATH_FILE_OF_APP . "/company_" . $companyID . "/component_" . $objComponent->componentID . "/component_item_" . $transactionMasterID;
@@ -592,10 +618,10 @@ class app_invoice_return extends _BaseController
 
             $urlEdit = $this->getUrlEdit($companyID, $transactionID, $transactionMasterID);
 
-            //Aplicar (fuera de la transaccion; es idempotente y se puede reintentar desde edit)
+            //Aplicar en su propia transaccion (todo o nada); si falla el documento queda guardado sin aplicar
             if ($applyNow) {
                 try {
-                    $this->applyReplacement($dataSession, $transactionID, $transactionMasterID, $statusID);
+                    $this->applyReturn($dataSession, $transactionID, $transactionMasterID, $statusID);
                 } catch (\Exception $exApply) {
                     $this->core_web_notification->set_message(true, "EL DOCUMENTO SE GUARDO PERO NO SE PUDO APLICAR: " . $exApply->getMessage());
                     return $this->response->redirect($urlEdit);
@@ -611,8 +637,8 @@ class app_invoice_return extends _BaseController
     }
 
     /**
-     * Actualiza un documento no aplicado. Si ya tiene Otra Entrada / Otra Salida
-     * generadas (aplicacion interrumpida) solo permite reintentar la aplicacion.
+     * Actualiza un documento no aplicado y, si el estado elegido es aplicable,
+     * aplica la devolucion (NC + Otra Entrada) en una sola transaccion.
      * @param array $dataSession
      */
     private function updateElement($dataSession)
@@ -646,7 +672,7 @@ class app_invoice_return extends _BaseController
 
             $objTM = $this->Transaction_Master_Model->get_rowByPK($companyID, $transactionID, $transactionMasterID);
             if (!$objTM)
-                throw new \Exception("EL DOCUMENTO DE SUSTITUCION NO EXISTE O FUE ELIMINADO");
+                throw new \Exception("EL DOCUMENTO DE DEVOLUCION NO EXISTE O FUE ELIMINADO");
 
             if ($resultPermission == PERMISSION_ME && ($objTM->createdBy != $dataSession["user"]->userID))
                 throw new \Exception(NOT_EDIT);
@@ -657,16 +683,9 @@ class app_invoice_return extends _BaseController
             $statusID = (int) $this->request->getPost("txtStatusID");
             $applyNow = $this->core_web_workflow->validateWorkflowStage($this->componentName, "statusID", $statusID, COMMAND_APLICABLE, $companyID, $branchID, $roleID);
 
-            //Aplicacion interrumpida: no se toca cabecera ni detalle, solo se reintenta aplicar
-            $partialApplied = trim((string) $objTM->reference3) != "" || trim((string) $objTM->reference4) != "";
-            if ($partialApplied) {
-                if (!$applyNow)
-                    throw new \Exception("EL DOCUMENTO YA GENERO MOVIMIENTOS DE INVENTARIO; SOLO PUEDE PASARSE A UN ESTADO APLICADO PARA TERMINAR LA SUSTITUCION");
-
-                $this->applyReplacement($dataSession, $transactionID, $transactionMasterID, $statusID);
-                $this->core_web_notification->set_message(false, SUCCESS);
-                return $this->response->redirect($urlEdit);
-            }
+            //Documentos viejos de sustitucion con movimientos generados y sin aplicar: no se tocan
+            if (trim((string) $objTM->reference3) != "" || trim((string) $objTM->reference4) != "")
+                throw new \Exception("EL DOCUMENTO YA TIENE DOCUMENTOS GENERADOS (OTRA ENTRADA / NOTA DE CREDITO / OTRA SALIDA), NO PUEDE EDITARSE");
 
             if (!$this->core_web_workflow->validateWorkflowStage($this->componentName, "statusID", $objTM->statusID, COMMAND_EDITABLE_TOTAL, $companyID, $branchID, $roleID))
                 throw new \Exception(NOT_WORKFLOW_EDIT);
@@ -693,7 +712,10 @@ class app_invoice_return extends _BaseController
             $objTMNew["reference2"]         = $objInvoice->transactionNumber;
             $objTMNew["sourceWarehouseID"]  = $warehouseID;
             $objTMNew["targetWarehouseID"]  = $warehouseID;
-            //Si el estado es aplicable, applyReplacement lo asigna al terminar
+            $objTMNew["currencyID"]         = $objInvoice->currencyID;
+            $objTMNew["currencyID2"]        = $objInvoice->currencyID;
+            $objTMNew["exchangeRate"]       = $objInvoice->exchangeRate;
+            //Si el estado es aplicable, applyReturn lo asigna al terminar
             if (!$applyNow)
                 $objTMNew["statusID"]       = $statusID;
 
@@ -734,12 +756,12 @@ class app_invoice_return extends _BaseController
                 throw $exDb;
             }
             if ($db->transStatus() === false)
-                throw new \Exception("NO FUE POSIBLE ACTUALIZAR EL DOCUMENTO DE SUSTITUCION");
+                throw new \Exception("NO FUE POSIBLE ACTUALIZAR EL DOCUMENTO DE DEVOLUCION");
 
-            //Aplicar (fuera de la transaccion)
+            //Aplicar en su propia transaccion (todo o nada); si falla el documento queda guardado sin aplicar
             if ($applyNow) {
                 try {
-                    $this->applyReplacement($dataSession, $transactionID, $transactionMasterID, $statusID);
+                    $this->applyReturn($dataSession, $transactionID, $transactionMasterID, $statusID);
                 } catch (\Exception $exApply) {
                     $this->core_web_notification->set_message(true, "EL DOCUMENTO SE GUARDO PERO NO SE PUDO APLICAR: " . $exApply->getMessage());
                     return $this->response->redirect($urlEdit);
@@ -755,82 +777,25 @@ class app_invoice_return extends _BaseController
     }
 
     /**
-     * Aplica la sustitucion de forma idempotente:
-     * 1) valida todo otra vez; 2) si reference3 vacio crea la Otra Entrada (devueltos) y la guarda;
-     * 3) si reference4 vacio crea la Otra Salida (sustitutos) y la guarda; 4) marca el documento aplicado.
-     * Si falla a mitad, lo ya generado queda registrado y el reintento continua desde ahi.
+     * Aplica la devolucion en UNA transaccion de BD (todo o nada):
+     * revalida factura y cantidades, crea la Nota de Credito aplicada (suma al saldo del cliente),
+     * crea la Otra Entrada con los productos devueltos y marca el documento aplicado
+     * (reference3 = Otra Entrada, reference4 = NC, amount = monto de la NC).
+     * Si algo falla se revierte todo y se relanza la excepcion.
      * @param array $dataSession
      * @param int   $transactionID
      * @param int   $transactionMasterID
      * @param int   $statusIDApplied Estado aplicable destino
+     * @return void
      */
-    private function applyReplacement($dataSession, $transactionID, $transactionMasterID, $statusIDApplied)
+    private function applyReturn($dataSession, $transactionID, $transactionMasterID, $statusIDApplied)
     {
         $companyID = $dataSession["user"]->companyID;
         $branchID  = $dataSession["user"]->branchID;
         $roleID    = $dataSession["role"]->roleID;
 
-        $objTM = $this->Transaction_Master_Model->get_rowByPK($companyID, $transactionID, $transactionMasterID);
-        if (!$objTM)
-            throw new \Exception("EL DOCUMENTO DE SUSTITUCION NO EXISTE O FUE ELIMINADO");
-
-        //Ya aplicado: nada que hacer
-        if (((int) $objTM->isApplied) == 1)
-            return;
-
         if (!$this->core_web_workflow->validateWorkflowStage($this->componentName, "statusID", $statusIDApplied, COMMAND_APLICABLE, $companyID, $branchID, $roleID))
             throw new \Exception("EL ESTADO SELECCIONADO NO ES APLICABLE");
-
-        $transactionOn = date_format(date_create($objTM->transactionOn), "Y-m-d");
-        if ($this->core_web_accounting->cycleIsCloseByDate($companyID, $transactionOn))
-            throw new \Exception("EL DOCUMENTO NO PUEDE APLICARSE, EL CICLO CONTABLE ESTA CERRADO");
-
-        //Revalidar factura, dias y detalle guardado
-        $maxDays       = $this->getParameterMaxDays($companyID);
-        $validateStock = $this->getParameterValidateStock($companyID);
-        $objInvoice    = $this->getInvoiceValidated($companyID, null, (int) $objTM->reference1, $transactionOn, $maxDays);
-        $lines         = $this->getInvoiceLines($companyID, $objInvoice, $transactionID, $transactionMasterID);
-        $warehouseID   = $this->getInvoiceWarehouseID($objInvoice, $lines);
-
-        $rows   = $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID, $transactionID, $transactionMasterID);
-        $posted = array();
-        foreach ($rows as $row) {
-            $posted[] = array(
-                "transactionMasterDetailID" => $row->transactionMasterDetailID,
-                "invoiceDetailID"           => $row->reference1,
-                "itemID"                    => $row->componentItemID,
-                "itemSustitutoID"           => $row->reference2,
-                "quantity"                  => $row->quantity
-            );
-        }
-        $detail = $this->validateDetail($companyID, $lines, $posted);
-
-        //Fila de bodega obligatoria para devuelto y sustituto; existencias del sustituto si aplica
-        $quantityBySustituto = array();
-        foreach ($detail as $row) {
-            $objIWReturned = $this->Itemwarehouse_Model->getByPK($companyID, (int) $row["itemID"], (int) $warehouseID);
-            if (!$objIWReturned)
-                throw new \Exception("EL PRODUCTO DEVUELTO '" . $row["objItem"]->itemNumber . " " . $row["objItem"]->name . "' NO ESTA ASIGNADO A LA BODEGA DE LA FACTURA");
-
-            $objIWSustituto = $this->Itemwarehouse_Model->getByPK($companyID, (int) $row["itemSustitutoID"], (int) $warehouseID);
-            if (!$objIWSustituto)
-                throw new \Exception("EL PRODUCTO SUSTITUTO '" . $row["objSustituto"]->itemNumber . " " . $row["objSustituto"]->name . "' NO ESTA ASIGNADO A LA BODEGA DE LA FACTURA; AGREGUELO A LA BODEGA ANTES DE APLICAR");
-
-            $key = (int) $row["itemSustitutoID"];
-            if (!isset($quantityBySustituto[$key]))
-                $quantityBySustituto[$key] = array("quantity" => 0, "stock" => $objIWSustituto->quantity, "objItem" => $row["objSustituto"]);
-            $quantityBySustituto[$key]["quantity"] += $row["quantity"];
-        }
-
-        $outputPending = trim((string) $objTM->reference4) == "";
-        if ($outputPending && $validateStock == "true") {
-            foreach ($quantityBySustituto as $item) {
-                if (round($item["quantity"], 6) > round($item["stock"], 6))
-                    throw new \Exception("NO HAY EXISTENCIAS SUFICIENTES DEL SUSTITUTO '" . $item["objItem"]->itemNumber . " " . $item["objItem"]->name . "' EN LA BODEGA (DISPONIBLE " . $item["stock"] . ", REQUERIDO " . $item["quantity"] . ")");
-            }
-        }
-
-        $note = $this->buildNote($objTM, $objInvoice, $detail);
 
         //Tipo de costo del inventario: con ULTIMO COSTO la entrada usa el costo actual del producto
         $typeCost = "";
@@ -840,8 +805,77 @@ class app_invoice_return extends _BaseController
             $typeCost = "";
         }
 
-        //1) Otra Entrada con los productos devueltos
-        if (trim((string) $objTM->reference3) == "") {
+        $db = db_connect();
+        $db->transException(true)->transStart();
+        try {
+            //Bloquear el documento: evita aplicar dos veces en paralelo
+            $objTMLock = $this->Transaction_Master_Model->get_rowByPKForUpdate($companyID, $transactionID, $transactionMasterID);
+            if (!$objTMLock)
+                throw new \Exception("EL DOCUMENTO DE DEVOLUCION NO EXISTE O FUE ELIMINADO");
+
+            if (((int) $objTMLock->isApplied) == 1)
+                throw new \Exception("EL DOCUMENTO DE DEVOLUCION YA ESTA APLICADO");
+
+            if (trim((string) $objTMLock->reference3) != "" || trim((string) $objTMLock->reference4) != "")
+                throw new \Exception("EL DOCUMENTO YA TIENE DOCUMENTOS GENERADOS (OTRA ENTRADA / NOTA DE CREDITO / OTRA SALIDA)");
+
+            $objTM         = $this->Transaction_Master_Model->get_rowByPK($companyID, $transactionID, $transactionMasterID);
+            $transactionOn = date_format(date_create($objTM->transactionOn), "Y-m-d");
+            if ($this->core_web_accounting->cycleIsCloseByDate($companyID, $transactionOn))
+                throw new \Exception("EL DOCUMENTO NO PUEDE APLICARSE, EL CICLO CONTABLE ESTA CERRADO");
+
+            //Revalidar factura y dias; bloquear la factura para que dos devoluciones no superen lo facturado
+            $maxDays    = $this->getParameterMaxDays($companyID);
+            $objInvoice = $this->getInvoiceValidated($companyID, null, (int) $objTM->reference1, $transactionOn, $maxDays);
+            $this->Transaction_Master_Model->get_rowByPKForUpdate($companyID, $objInvoice->transactionID, $objInvoice->transactionMasterID);
+
+            //Cantidades ya devueltas en otras devoluciones (excluye este documento) y detalle guardado
+            $lines       = $this->getInvoiceLines($companyID, $objInvoice, $transactionID, $transactionMasterID);
+            $warehouseID = $this->getInvoiceWarehouseID($objInvoice, $lines);
+
+            $rows   = $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID, $transactionID, $transactionMasterID);
+            $posted = array();
+            foreach ($rows as $row) {
+                $posted[] = array(
+                    "transactionMasterDetailID" => $row->transactionMasterDetailID,
+                    "invoiceDetailID"           => $row->reference1,
+                    "itemID"                    => $row->componentItemID,
+                    "quantity"                  => $row->quantity
+                );
+            }
+            $detail = $this->validateDetail($companyID, $lines, $posted);
+
+            //Fila de bodega obligatoria para el producto devuelto; monto de la NC = cantidad x precio neto
+            $amountNoteCredit = 0;
+            foreach ($detail as $row) {
+                $objIWReturned = $this->Itemwarehouse_Model->getByPK($companyID, (int) $row["itemID"], (int) $warehouseID);
+                if (!$objIWReturned)
+                    throw new \Exception("EL PRODUCTO DEVUELTO '" . $row["objItem"]->itemNumber . " " . $row["objItem"]->name . "' NO ESTA ASIGNADO A LA BODEGA DE LA FACTURA");
+
+                //Redondeo por renglon, igual que el estimado de pantalla (retUpdateTotal)
+                $amountNoteCredit = $amountNoteCredit + round($row["quantity"] * $row["line"]->unitaryPrice, 2);
+            }
+            $amountNoteCredit = round($amountNoteCredit, 2);
+            if ($amountNoteCredit <= 0)
+                throw new \Exception("EL MONTO DE LA DEVOLUCION ES 0; NO SE PUEDE GENERAR LA NOTA DE CREDITO");
+
+            //1) Nota de Credito aplicada (moneda y tasa de la factura)
+            $noteNC       = $this->buildNote($objTM, $objInvoice, $detail, "");
+            $resultNC     = $this->core_web_note_credit->crearNcAplicada(
+                $dataSession,
+                $objInvoice->entityID,
+                $objInvoice->currencyID,
+                $objInvoice->exchangeRate,
+                $amountNoteCredit,
+                $transactionOn,
+                $noteNC,
+                $objInvoice->transactionMasterID,
+                $objInvoice->transactionNumber,
+                $transactionMasterID,
+                $objTM->transactionNumber
+            );
+
+            //2) Otra Entrada con los productos devueltos
             $listInput = array();
             foreach ($detail as $row) {
                 $listInput[] = array(
@@ -850,30 +884,27 @@ class app_invoice_return extends _BaseController
                     "unitaryCost" => $typeCost == "ULTIMO COSTO" ? $row["objItem"]->cost : $row["line"]->unitaryCost
                 );
             }
-            $resultInput = $this->core_web_inventory->createOtherInputApplied($dataSession, $warehouseID, $transactionOn, $note, $objTM->transactionNumber, $objInvoice->transactionNumber, $listInput);
-            $this->Transaction_Master_Model->update_app_posme($companyID, $transactionID, $transactionMasterID, array("reference3" => $resultInput["transactionMasterID"]));
-        }
+            $noteInput   = $this->buildNote($objTM, $objInvoice, $detail, $resultNC["transactionNumber"]);
+            $resultInput = $this->core_web_inventory->createOtherInputApplied($dataSession, $warehouseID, $transactionOn, $noteInput, $objTM->transactionNumber, $objInvoice->transactionNumber, $listInput);
 
-        //2) Otra Salida con los productos sustitutos
-        if ($outputPending) {
-            $listOutput = array();
-            foreach ($detail as $row) {
-                $listOutput[] = array(
-                    "itemID"      => $row["itemSustitutoID"],
-                    "quantity"    => $row["quantity"],
-                    "unitaryCost" => $row["objSustituto"]->cost
-                );
-            }
-            $resultOutput = $this->core_web_inventory->createOtherOutputApplied($dataSession, $warehouseID, $transactionOn, $note, $objTM->transactionNumber, $objInvoice->transactionNumber, $listOutput);
-            $this->Transaction_Master_Model->update_app_posme($companyID, $transactionID, $transactionMasterID, array("reference4" => $resultOutput["transactionMasterID"]));
-        }
+            //3) Documento aplicado
+            $this->Transaction_Master_Model->update_app_posme($companyID, $transactionID, $transactionMasterID, array(
+                "reference3"       => $resultInput["transactionMasterID"],
+                "reference4"       => $resultNC["transactionMasterID"],
+                "amount"           => $amountNoteCredit,
+                "statusID"         => $statusIDApplied,
+                "statusIDChangeOn" => helper_getDateTime(),
+                "isApplied"        => 1
+            ));
 
-        //3) Documento aplicado
-        $this->Transaction_Master_Model->update_app_posme($companyID, $transactionID, $transactionMasterID, array(
-            "statusID"         => $statusIDApplied,
-            "statusIDChangeOn" => helper_getDateTime(),
-            "isApplied"        => 1
-        ));
+            $db->transCommit();
+        } catch (\Throwable $exApply) {
+            $db->transRollback();
+            //DatabaseException de CI4 no extiende \Exception: se normaliza para los llamadores
+            if ($exApply instanceof \Exception)
+                throw $exApply;
+            throw new \Exception($exApply->getMessage());
+        }
     }
 
     /**
@@ -882,7 +913,7 @@ class app_invoice_return extends _BaseController
      * @param int         $companyID
      * @param string|null $invoiceNumber              Numero de factura (prioritario)
      * @param int         $invoiceTransactionMasterID Id de la factura (si no hay numero, o para confirmar)
-     * @param string      $transactionOn              Fecha de la sustitucion (Y-m-d)
+     * @param string      $transactionOn              Fecha de la devolucion (Y-m-d)
      * @param int         $maxDays
      * @return object Fila de Transaction_Master_Model::get_rowByPK de la factura
      */
@@ -921,23 +952,27 @@ class app_invoice_return extends _BaseController
         if (!$this->core_web_workflow->validateWorkflowStage($this->componentNameBilling, "statusID", $objInvoice->statusID, COMMAND_APLICABLE, $companyID, APP_BRANCH, APP_ROL_SUPERADMIN))
             throw new \Exception("LA FACTURA #" . $objInvoice->transactionNumber . " NO ESTA APLICADA (ESTADO: " . $objInvoice->workflowStageName . ")");
 
-        //Dias transcurridos entre la factura y la sustitucion
+        //Dias transcurridos entre la factura y la devolucion
         $days = $this->getDaysBetween($objInvoice->transactionOn, $transactionOn);
         if ($days < 0)
-            throw new \Exception("LA FECHA DE LA SUSTITUCION ES ANTERIOR A LA FECHA DE LA FACTURA #" . $objInvoice->transactionNumber);
+            throw new \Exception("LA FECHA DE LA DEVOLUCION ES ANTERIOR A LA FECHA DE LA FACTURA #" . $objInvoice->transactionNumber);
         if ($days > $maxDays)
-            throw new \Exception("LA FACTURA #" . $objInvoice->transactionNumber . " TIENE " . $days . " DIAS; EL MAXIMO PERMITIDO PARA SUSTITUIR ES " . $maxDays . " DIAS");
+            throw new \Exception("LA FACTURA #" . $objInvoice->transactionNumber . " TIENE " . $days . " DIAS; EL MAXIMO PERMITIDO PARA DEVOLVER ES " . $maxDays . " DIAS");
 
         return $objInvoice;
     }
 
     /**
-     * Lineas de producto de la factura con cantidad facturada, ya sustituida y disponible.
+     * Lineas de producto de la factura con cantidad facturada, ya devuelta, disponible
+     * y precio neto de devolucion por unidad (unitaryPrice, 2 decimales).
+     * Precio neto: tmd.amount es bruto (cantidad x (precio + impuestos)) y el descuento va aparte.
+     * - Si la suma de tmd.discount coincide con tm.discount: (tmd.amount - tmd.discount) / cantidad.
+     * - Si no (descuento solo global en cabecera): tmd.amount / cantidad x (1 - tm.discount / SUM(tmd.amount)).
      * Usa get_rowByTransactionToShare (sin joins) para no perder lineas sin categoria/unidad.
      * @param int    $companyID
      * @param object $objInvoice
      * @param int    $transactionIDReplacement
-     * @param int    $excludeTransactionMasterID Documento de sustitucion a excluir (0 = ninguno)
+     * @param int    $excludeTransactionMasterID Documento de devolucion a excluir (0 = ninguno)
      * @return array Objetos indexados por transactionMasterDetailID
      */
     private function getInvoiceLines($companyID, $objInvoice, $transactionIDReplacement, $excludeTransactionMasterID)
@@ -956,9 +991,15 @@ class app_invoice_return extends _BaseController
             }
         }
 
-        $result = array();
-        $rows   = $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID, $objInvoice->transactionID, $objInvoice->transactionMasterID);
+        $result      = array();
+        $sumAmount   = 0;
+        $sumDiscount = 0;
+        $rows        = $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID, $objInvoice->transactionID, $objInvoice->transactionMasterID);
         foreach ($rows as $row) {
+            //Totales de todas las lineas (el descuento de cabecera se reparte sobre todas)
+            $sumAmount   = $sumAmount + (float) $row->amount;
+            $sumDiscount = $sumDiscount + (float) $row->discount;
+
             if ((int) $row->componentID != (int) $objComponentItem->componentID)
                 continue;
 
@@ -982,7 +1023,24 @@ class app_invoice_return extends _BaseController
             $line->quantityAvailable         = max(0, round((float) $row->quantity - $quantityReplaced, 6));
             $line->unitaryCost               = (float) $row->unitaryCost;
             $line->inventoryWarehouseSourceID = $row->inventoryWarehouseSourceID;
+            $line->lineAmount                = (float) $row->amount;
+            $line->lineDiscount              = (float) $row->discount;
             $result[$key]                    = $line;
+        }
+
+        //Precio neto de devolucion por unidad
+        $invoiceDiscount = (float) $objInvoice->discount;
+        $useLineDiscount = abs($sumDiscount - $invoiceDiscount) < 0.01;
+        foreach ($result as $line) {
+            $net = 0;
+            if ($line->quantityInvoiced > 0) {
+                if ($useLineDiscount)
+                    $net = ($line->lineAmount - $line->lineDiscount) / $line->quantityInvoiced;
+                else if ($sumAmount > 0)
+                    $net = ($line->lineAmount / $line->quantityInvoiced) * (1 - $invoiceDiscount / $sumAmount);
+            }
+            $line->unitaryPrice    = round(max(0, $net), 2);
+            $line->amountAvailable = round($line->quantityAvailable * $line->unitaryPrice, 2);
         }
         return $result;
     }
@@ -991,13 +1049,13 @@ class app_invoice_return extends _BaseController
      * Valida el detalle contra las lineas de la factura y devuelve el detalle enriquecido.
      * @param int   $companyID
      * @param array $lines   Resultado de getInvoiceLines
-     * @param array $detail  Filas ['transactionMasterDetailID','invoiceDetailID','itemID','itemSustitutoID','quantity']
-     * @return array Filas con ademas 'line', 'objItem', 'objSustituto'
+     * @param array $detail  Filas ['transactionMasterDetailID','invoiceDetailID','itemID','quantity']
+     * @return array Filas con ademas 'line', 'objItem'
      */
     private function validateDetail($companyID, $lines, $detail)
     {
         if (empty($detail))
-            throw new \Exception("DEBE AGREGAR AL MENOS UN PRODUCTO A SUSTITUIR");
+            throw new \Exception("DEBE AGREGAR AL MENOS UN PRODUCTO A DEVOLVER");
 
         $result        = array();
         $sumByLine     = array();
@@ -1005,7 +1063,6 @@ class app_invoice_return extends _BaseController
             $lineNumber      = $index + 1;
             $invoiceDetailID = (int) $row["invoiceDetailID"];
             $itemID          = (int) $row["itemID"];
-            $itemSustitutoID = (int) $row["itemSustitutoID"];
             $quantity        = $row["quantity"];
 
             if (!isset($lines[$invoiceDetailID]))
@@ -1019,43 +1076,32 @@ class app_invoice_return extends _BaseController
                 throw new \Exception("LA LINEA " . $lineNumber . ": LA CANTIDAD DEBE SER MAYOR QUE 0");
             $quantity = (float) $quantity;
 
-            if (!$itemSustitutoID)
-                throw new \Exception("LA LINEA " . $lineNumber . ": DEBE SELECCIONAR EL PRODUCTO SUSTITUTO");
-            if ($itemSustitutoID == $itemID)
-                throw new \Exception("LA LINEA " . $lineNumber . ": EL PRODUCTO SUSTITUTO DEBE SER DISTINTO AL DEVUELTO");
-
-            $objSustituto = $this->Item_Model->get_rowByPK($companyID, $itemSustitutoID);
-            if (!$objSustituto)
-                throw new \Exception("LA LINEA " . $lineNumber . ": EL PRODUCTO SUSTITUTO NO EXISTE O ESTA INACTIVO");
-
-            $objItem = $this->Item_Model->get_rowByPKAndInactive($companyID, $itemID);
+            $objItem =$this->Item_Model->get_rowByPKAndInactive($companyID, $itemID);
             if (!$objItem)
                 throw new \Exception("LA LINEA " . $lineNumber . ": EL PRODUCTO DEVUELTO NO EXISTE");
 
             //Suma por linea de factura (puede repetirse en varias filas)
             $sumByLine[$invoiceDetailID] = (isset($sumByLine[$invoiceDetailID]) ? $sumByLine[$invoiceDetailID] : 0) + $quantity;
             if (round($sumByLine[$invoiceDetailID], 6) > round($line->quantityAvailable, 6))
-                throw new \Exception("EL PRODUCTO '" . $line->itemNumber . " " . $line->itemName . "' SUPERA LA CANTIDAD DISPONIBLE PARA SUSTITUIR (FACTURADO " . $line->quantityInvoiced . ", YA SUSTITUIDO " . $line->quantityReplaced . ", DISPONIBLE " . $line->quantityAvailable . ")");
+                throw new \Exception("EL PRODUCTO '" . $line->itemNumber . " " . $line->itemName . "' SUPERA LA CANTIDAD DISPONIBLE PARA DEVOLVER (FACTURADO " . $line->quantityInvoiced . ", YA DEVUELTO " . $line->quantityReplaced . ", DISPONIBLE " . $line->quantityAvailable . ")");
 
-            $row["quantity"]     = $quantity;
-            $row["line"]         = $line;
-            $row["objItem"]      = $objItem;
-            $row["objSustituto"] = $objSustituto;
-            $result[]            = $row;
+            $row["quantity"] = $quantity;
+            $row["line"]     = $line;
+            $row["objItem"]  = $objItem;
+            $result[]        = $row;
         }
         return $result;
     }
 
     /**
      * Lee los arreglos de detalle del POST.
-     * @return array Filas ['transactionMasterDetailID','invoiceDetailID','itemID','itemSustitutoID','quantity']
+     * @return array Filas ['transactionMasterDetailID','invoiceDetailID','itemID','quantity']
      */
     private function readDetailFromPost()
     {
         $listTMD_ID       = $this->request->getPost("txtDetailTransactionDetailID");
         $listInvoiceTMDID = $this->request->getPost("txtDetailInvoiceDetailID");
         $listItemID       = $this->request->getPost("txtDetailItemID");
-        $listSustitutoID  = $this->request->getPost("txtDetailItemSustitutoID");
         $listQuantity     = $this->request->getPost("txtDetailQuantity");
 
         $result = array();
@@ -1067,15 +1113,16 @@ class app_invoice_return extends _BaseController
                 "transactionMasterDetailID" => isset($listTMD_ID[$key]) ? (int) $listTMD_ID[$key] : 0,
                 "invoiceDetailID"           => isset($listInvoiceTMDID[$key]) ? (int) $listInvoiceTMDID[$key] : 0,
                 "itemID"                    => (int) $itemID,
-                "itemSustitutoID"           => isset($listSustitutoID[$key]) ? (int) $listSustitutoID[$key] : 0,
-                "quantity"                  => helper_StringToNumber(isset($listQuantity[$key]) ? $listQuantity[$key] : "")
+                "quantity"               => helper_StringToNumber(isset($listQuantity[$key]) ? $listQuantity[$key] : "")
             );
         }
         return $result;
     }
 
     /**
-     * Arma la fila de tb_transaction_master_detail del documento de sustitucion.
+     * Arma la fila de tb_transaction_master_detail del documento de devolucion
+     * (unitaryPrice = precio neto de devolucion, amount = cantidad x precio; referencial,
+     * el monto definitivo de la NC se recalcula al aplicar).
      * @return array
      */
     private function buildDetailRow($companyID, $transactionID, $transactionMasterID, $componentItemID, $warehouseID, $row)
@@ -1089,16 +1136,16 @@ class app_invoice_return extends _BaseController
         $objTMD["quantity"]                     = $row["quantity"];
         $objTMD["unitaryCost"]                  = $row["line"]->unitaryCost;
         $objTMD["cost"]                         = $row["quantity"] * $row["line"]->unitaryCost;
-        $objTMD["unitaryAmount"]                = 0;
-        $objTMD["amount"]                       = 0;
+        $objTMD["unitaryAmount"]                = $row["line"]->unitaryPrice;
+        $objTMD["amount"]                       = round($row["quantity"] * $row["line"]->unitaryPrice, 2);
         $objTMD["discount"]                     = 0;
-        $objTMD["unitaryPrice"]                 = 0;
+        $objTMD["unitaryPrice"]                 = $row["line"]->unitaryPrice;
         $objTMD["promotionID"]                  = 0;
         $objTMD["reference1"]                   = $row["invoiceDetailID"];
-        $objTMD["reference2"]                   = $row["itemSustitutoID"];
-        $objTMD["reference3"]                   = $row["objSustituto"]->itemNumber;
+        $objTMD["reference2"]                   = "";
+        $objTMD["reference3"]                   = "";
         $objTMD["itemNameLog"]                  = $row["objItem"]->name;
-        $objTMD["itemNameDescriptionLog"]       = $row["objSustituto"]->name;
+        $objTMD["itemNameDescriptionLog"]       = "";
         $objTMD["catalogStatusID"]              = 0;
         $objTMD["inventoryStatusID"]            = 0;
         $objTMD["isActive"]                     = 1;
@@ -1122,7 +1169,8 @@ class app_invoice_return extends _BaseController
         $rows   = $this->Transaction_Master_Detail_Model->get_rowByTransactionToShare($companyID, $transactionID, $transactionMasterID);
         foreach ($rows as $row) {
             $objItem      = $this->Item_Model->get_rowByPKAndInactive($companyID, (int) $row->componentItemID);
-            $objSustituto = $this->Item_Model->get_rowByPKAndInactive($companyID, (int) $row->reference2);
+            //Sustituto solo en documentos viejos de sustitucion (en devoluciones reference2 va vacio)
+            $objSustituto = empty($row->reference2) ? null : $this->Item_Model->get_rowByPKAndInactive($companyID, (int) $row->reference2);
             $line         = isset($lines[(int) $row->reference1]) ? $lines[(int) $row->reference1] : null;
 
             $obj                             = new \stdClass();
@@ -1139,7 +1187,11 @@ class app_invoice_return extends _BaseController
             $obj->unitaryCost                = $row->unitaryCost;
             $obj->quantityInvoiced           = $line ? $line->quantityInvoiced : 0;
             $obj->quantityReplaced           = $line ? $line->quantityReplaced : 0;
+            $obj->quantityReturned           = $obj->quantityReplaced;
             $obj->quantityAvailable          = $line ? $line->quantityAvailable : 0;
+            //Precio neto: el de la linea de factura; si no existe, el guardado en el detalle
+            $obj->unitaryPrice               = $line ? $line->unitaryPrice : round((float) $row->unitaryPrice, 2);
+            $obj->amount                     = round((float) $row->quantity * $obj->unitaryPrice, 2);
             $result[]                        = $obj;
         }
         return $result;
@@ -1197,7 +1249,13 @@ class app_invoice_return extends _BaseController
             $warehouseName = $objWarehouse ? $objWarehouse->name : "";
         }
 
+        //Moneda de la factura (la NC se genera en esa moneda)
+        $objCurrency = empty($objInvoice->currencyID) ? null : $this->Currency_Model->get_rowByPK((int) $objInvoice->currencyID);
+
         return array(
+            "currencyID"          => $objInvoice->currencyID,
+            "currencyName"        => $objCurrency ? $objCurrency->name : "",
+            "currencySymbol"      => $objCurrency ? $objCurrency->simbol : "",
             "transactionMasterID" => $objInvoice->transactionMasterID,
             "transactionNumber"   => $objInvoice->transactionNumber,
             "transactionOn"       => date_format(date_create($objInvoice->transactionOn), "Y-m-d"),
@@ -1272,21 +1330,29 @@ class app_invoice_return extends _BaseController
         $obj->transactionID       = $objTM->transactionID;
         $obj->transactionMasterID = $objTM->transactionMasterID;
         $obj->transactionNumber   = $objTM->transactionNumber;
+        $obj->amount              = round((float) $objTM->amount, 2);
         return $obj;
     }
 
     /**
-     * Comentario de la Otra Entrada / Otra Salida:
-     * "Sustitucion #<numero> de factura #<factura>: <devuelto> x <cant> por <sustituto>; ... <comentario>"
+     * Comentario de la Nota de Credito / Otra Entrada:
+     * "Devolución #<numero> de factura #<factura> [NC #<nc>]: <producto> x <cant>; ... <comentario>"
+     * @param object $objTM                Documento de devolucion
+     * @param object $objInvoice           Factura
+     * @param array  $detail               Detalle validado
+     * @param string $noteCreditNumber     Numero de la NC ("" si aun no existe)
      * @return string Recortado a la longitud de tb_transaction_master.note
      */
-    private function buildNote($objTM, $objInvoice, $detail)
+    private function buildNote($objTM, $objInvoice, $detail, $noteCreditNumber)
     {
         $parts = array();
         foreach ($detail as $row) {
-            $parts[] = $row["objItem"]->itemNumber . " " . $row["objItem"]->name . " x " . ($row["quantity"] + 0) . " por " . $row["objSustituto"]->itemNumber . " " . $row["objSustituto"]->name;
+            $parts[] = $row["objItem"]->itemNumber . " " . $row["objItem"]->name . " x " . ($row["quantity"] + 0);
         }
-        $note = "Sustitución #" . $objTM->transactionNumber . " de factura #" . $objInvoice->transactionNumber . ": " . implode("; ", $parts);
+        $note = "Devolución #" . $objTM->transactionNumber . " de factura #" . $objInvoice->transactionNumber;
+        if (trim((string) $noteCreditNumber) != "")
+            $note = $note . " NC #" . $noteCreditNumber;
+        $note = $note . ": " . implode("; ", $parts);
         if (trim((string) $objTM->note) != "")
             $note = $note . ". " . trim($objTM->note);
 
@@ -1347,7 +1413,7 @@ class app_invoice_return extends _BaseController
     }
 
     /**
-     * transactionID de la sustitucion.
+     * transactionID de la devolucion.
      * @return int
      */
     private function getTransactionIDReplacement($companyID)

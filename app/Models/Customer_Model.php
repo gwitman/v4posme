@@ -605,7 +605,47 @@ class Customer_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
    }
-   
-   
+
+	/**
+	 * Bloquea (FOR UPDATE) el cliente para mover su saldo de notas de credito.
+	 * Sin branchID: el saldo NC es por cliente. Llamar dentro de una transaccion abierta.
+	 * @param int $companyID
+	 * @param int $entityID
+	 * @return object|null {entityID, branchID, balanceCor, balanceDol}
+	 */
+	function get_rowByEntityForUpdate($companyID,$entityID){
+		$db  = db_connect();
+		$sql = "";
+		$sql = $sql.sprintf("SELECT ");
+		$sql = $sql.sprintf("c.entityID, ");
+		$sql = $sql.sprintf("c.branchID, ");
+		$sql = $sql.sprintf("IFNULL(c.balanceCor,0) AS balanceCor, ");
+		$sql = $sql.sprintf("IFNULL(c.balanceDol,0) AS balanceDol ");
+		$sql = $sql.sprintf("FROM tb_customer c ");
+		$sql = $sql.sprintf("WHERE c.companyID = %d ", $companyID);
+		$sql = $sql.sprintf("AND c.entityID = %d ", $entityID);
+		$sql = $sql.sprintf("AND c.isActive = 1 ");
+		$sql = $sql.sprintf("FOR UPDATE");
+		return $db->query($sql)->getRow();
+	}
+
+	/**
+	 * Actualiza campos del cliente (p. ej. balanceCor / balanceDol) por companyID + entityID, sin branchID.
+	 * @param int   $companyID
+	 * @param int   $entityID
+	 * @param array $data Campos a actualizar
+	 * @return int Filas afectadas
+	 */
+	function update_balanceByEntity($companyID,$entityID,$data){
+		$db      = db_connect();
+		$builder = $db->table("tb_customer");
+		$builder->where("companyID",$companyID);
+		$builder->where("entityID",$entityID);
+		$builder->where("isActive",1);
+		$builder->update($data);
+		return $db->affectedRows();
+	}
+
+
 }
 ?>

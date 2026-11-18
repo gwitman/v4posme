@@ -1777,6 +1777,27 @@ class Transaction_Master_Model extends Model  {
 		return $db->query($sql)->getResult();
    }
 
+	/**
+	 * Devuelve la fila simple de tb_transaction_master bloqueandola (FOR UPDATE).
+	 * Debe llamarse dentro de una transaccion abierta por el llamador.
+	 * @param int $companyID
+	 * @param int $transactionID
+	 * @param int $transactionMasterID
+	 * @return object|null
+	 */
+	function get_rowByPKForUpdate($companyID,$transactionID,$transactionMasterID){
+		$db  = db_connect();
+		$sql = "";
+		$sql = $sql.sprintf("SELECT tm.* ");
+		$sql = $sql.sprintf("FROM tb_transaction_master tm ");
+		$sql = $sql.sprintf("WHERE tm.companyID = %d ", $companyID);
+		$sql = $sql.sprintf("AND tm.transactionID = %d ", $transactionID);
+		$sql = $sql.sprintf("AND tm.transactionMasterID = %d ", $transactionMasterID);
+		$sql = $sql.sprintf("AND tm.isActive = 1 ");
+		$sql = $sql.sprintf("FOR UPDATE");
+		return $db->query($sql)->getRow();
+	}
+
 }
 
 ?>

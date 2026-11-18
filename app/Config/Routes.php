@@ -1311,6 +1311,8 @@ $routes->match(['get', 'post'], 'app_invoice_billing/insertElement/(:any)', 'app
 $routes->match(['get', 'post'], 'app_invoice_billing/saveApi', 'app_invoice_billing::saveApi');
 $routes->match(['get', 'post'], 'app_invoice_billing/save', 'app_invoice_billing::save');
 $routes->match(['get', 'post'], 'app_invoice_billing/save/(:any)', 'app_invoice_billing::save');
+$routes->match(['get', 'post'], 'app_invoice_billing/getNoteCreditAvailable', 'app_invoice_billing::getNoteCreditAvailable');
+$routes->match(['get', 'post'], 'app_invoice_billing/getNoteCreditAvailable/(:any)', 'app_invoice_billing::getNoteCreditAvailable');
 $routes->match(['get', 'post'], 'app_invoice_billing/validateDiscountAuthorization', 'app_invoice_billing::validateDiscountAuthorization');
 $routes->match(['get', 'post'], 'app_invoice_billing/validateDiscountAuthorization/(:any)', 'app_invoice_billing::validateDiscountAuthorization');
 $routes->match(['get', 'post'], 'app_invoice_billing/add', 'app_invoice_billing::add');

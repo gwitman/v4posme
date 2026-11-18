@@ -1094,6 +1094,18 @@ echo helper_getHtmlOfPageLanding();
 										<th style="text-align:left" >PT</th>
 										<td >
 											<input type="text" id="txtReceiptAmountPoint" name="txtReceiptAmountPoint"  class="col-lg-12 txt-numeric" inputmode="decimal" value="" style="text-align:<?php echo $useMobile != "1" ? "right" : "left"  ?>"/>
+										</td>
+									</tr>
+
+									<!-- Pago con Notas de Credito del cliente: solo contado, misma moneda de la factura; el servidor consume las NC mas antiguas primero -->
+									<tr id="rowReceiptAmountNoteCredit" class="pm-fila-nota-credito" >
+										<th style="text-align:left" >NOTAS CRÉD.</th>
+										<td colspan="3" >
+											<input type="text" id="txtReceiptAmountNoteCredit" name="txtReceiptAmountNoteCredit"  class="col-lg-12 txt-numeric" inputmode="decimal" autocomplete="off" value="" placeholder="0.00" style="text-align:<?php echo $useMobile != "1" ? "right" : "left"  ?>"/>
+											<div class="pm-nc-info">
+												<span class="pm-nc-saldo">Disponible: <b id="lblNoteCreditAvailable">0.00</b></span>
+												<span class="pm-nc-mensaje" id="lblNoteCreditMessage"></span>
+											</div>
 										</td>								
 									</tr>
 									

@@ -1,6 +1,6 @@
 <style>
     /* ==========================================================
-       Sustitucion de productos facturados (prefijo ret)
+       Devolucion de productos facturados (prefijo ret)
        Usada por: app_invoice_return news / edit.
        Requiere: core_template/posme_v2_style, posme_v2_common y
        app_afx_fixedassent/afx_v2_common.
@@ -20,36 +20,41 @@
     .pv2 .ret-docs-item { display:flex; justify-content:space-between; align-items:center; gap:10px; padding:8px 0; border-top:1px solid var(--pv2-border); font-size:14px; }
     .pv2 .ret-docs-item:first-of-type { border-top:0; }
     .pv2 .ret-docs-item a { font-weight:700; }
+    .pv2 .ret-docs-item .ret-docs-note { display:block; font-size:12px; color:var(--pv2-muted); }
+
+    /* Total estimado de la Nota de Credito (debajo del detalle) */
+    .pv2 .ret-total { display:flex; justify-content:flex-end; align-items:baseline; flex-wrap:wrap; gap:8px; padding-top:10px; margin-top:10px; border-top:1px solid var(--pv2-border); }
+    .pv2 .ret-total-label { font-size:13px; color:var(--pv2-muted); }
+    .pv2 .ret-total-value { font-size:20px; font-weight:700; }
 
     /* Detalle: anchos relativos (sin px fijos salvo la casilla de quitar) */
     @media (min-width:768px) {
-        .pv2 #tb_transaction_master_detail th.ret-col-line { width:28%; }
-        .pv2 #tb_transaction_master_detail th.ret-col-num  { width:10%; }
-        .pv2 #tb_transaction_master_detail th.ret-col-qty  { width:12%; }
-        .pv2 #tb_transaction_master_detail th.ret-col-um   { width:8%; }
+        .pv2 #tb_transaction_master_detail th.ret-col-line { width:26%; }
+        .pv2 #tb_transaction_master_detail th.ret-col-num  { width:9%; }
+        .pv2 #tb_transaction_master_detail th.ret-col-qty  { width:11%; }
+        .pv2 #tb_transaction_master_detail th.ret-col-um   { width:7%; }
         .pv2-table tr.row_razon.has-error td { background:var(--pv2-bad-bg) !important; }
-        .pv2 .ret-sust-search .btn span { display:none; }
     }
 
     @media (max-width:767px) {
-        /* El buscador del sustituto tiene un solo boton: a todo el ancho */
-        .pv2 .ret-sust-search > .input-group-btn { flex:1 1 100%; }
-        .pv2-table tr.row_razon td.afx-col-block > .ret-sust-search { width:100%; }
+        /* En telefono el total ocupa todo el ancho y no se sale de la pantalla */
+        .pv2 .ret-total { justify-content:space-between; }
+        .pv2 .ret-total-value { word-break:break-word; }
     }
 </style>
 <script>
     /* ==========================================================
-       Sustitucion de productos facturados - funciones compartidas de news / edit.
+       Devolucion de productos facturados - funciones compartidas de news / edit.
+       Al aplicarse genera una Nota de Credito aplicada al cliente y una Otra Entrada.
        Cada pantalla define antes la variable retConfig:
          urlBase, componentItemID, cantidadItemPopup, maxDays,
          transactionMasterID (0 en nuevo), partial (bool), saveUrl.
-       Las cantidades se muestran 1,000.00 y se envian como numero puro.
+       Las cantidades y montos se muestran 1,000.00 y se envian como numero puro.
        ========================================================== */
 
     var retInvoice        = null;   //Factura elegida (objeto devuelto por getInvoiceDetailAvailable)
     var retLinesByID      = {};     //Lineas de la factura por transactionMasterDetailID
     var retLineOrder      = [];     //Ids de las lineas en el orden de la factura
-    var retActiveRow      = null;   //Renglon que abrio la busqueda del producto sustituto
     var retInvoiceInvalid = false;  //La ultima consulta de la factura fallo: bloquea guardar
     var retLastQueryDate  = "";     //Fecha con la que se valido la factura por ultima vez
     var retSubmitting     = false;  //Evita doble envio del formulario
@@ -77,12 +82,53 @@
         return retJoin(line.itemNumber, line.itemName, " - ");
     }
 
+    //Cantidad ya devuelta de la linea (quantityReturned; los datos viejos traen quantityReplaced)
+    function retLineReturned(line){
+        if(!line) return 0;
+        return pv2Num(line.quantityReturned !== undefined && line.quantityReturned !== null ? line.quantityReturned : line.quantityReplaced);
+    }
+
+    //Precio neto de devolucion por unidad (ya trae descuentos e impuestos prorrateados desde el servidor)
+    function retLinePrice(line){
+        return line ? pv2Num(line.unitaryPrice) : 0;
+    }
+
+    //Simbolo de la moneda de la factura (la Nota de Credito se genera en esa moneda)
+    function retCurrencySymbol(){
+        if(!retInvoice) return "";
+        var simbolo = retInvoice.currencySymbol !== undefined && retInvoice.currencySymbol !== null ? retInvoice.currencySymbol : retInvoice.simbolo;
+        return $.trim(simbolo === undefined || simbolo === null ? "" : String(simbolo));
+    }
+
+    //Monto con simbolo: "C$ 1,000.00"
+    function retFmtMoney(value){
+        var simbolo = retCurrencySymbol();
+        return (simbolo !== "" ? simbolo + " " : "") + pv2Fmt(value);
+    }
+
+    /* Recalcula el subtotal de cada renglon (cantidad x precio, 2 decimales) y el total
+       estimado de la Nota de Credito. El monto definitivo lo calcula el servidor al aplicar. */
+    function retUpdateTotal(){
+        var total = 0;
+        $("#body_tb_transaction_master_detail").find("tr").each(function(){
+            var $tr      = $(this);
+            var line     = retLinesByID[String($tr.find(".ret-invoice-line").val() || "")];
+            /* toFixed(10) evita el error de flotante (350.175 -> 350.17499..) y redondea igual que round() de PHP */
+            var subtotal = line ? Math.round(Number((pv2Num($tr.find(".ret-quantity").val()) * retLinePrice(line)).toFixed(10)) * 100) / 100 : 0;
+            $tr.find(".ret-subtotal").text(line ? pv2Fmt(subtotal) : "");
+            total = Math.round((total + subtotal) * 100) / 100;
+        });
+        $(".ret-total-nc").text(retFmtMoney(total));
+        return total;
+    }
+
     function retHasDetail(){
         return $("#body_tb_transaction_master_detail").find("tr").length > 0;
     }
 
     function retClearDetail(){
         $("#body_tb_transaction_master_detail").empty();
+        retUpdateTotal();
     }
 
     function retSetMaxDays(maxDays){
@@ -114,6 +160,7 @@
         $("#txtCustomerDescription").val(invoice ? retJoin(invoice.customerNumber, invoice.customerName, " / ") : "");
         $("#txtInvoiceDate").val(invoice ? invoice.transactionOn : "");
         $("#txtInvoiceWarehouse").val(invoice ? invoice.warehouseName : "");
+        $("#txtInvoiceCurrency").val(invoice ? retJoin(invoice.currencyName, retCurrencySymbol(), " / ") : "");
     }
 
     function retClearInvoice(){
@@ -121,6 +168,7 @@
         retSetLines([]);
         retSetInvalid(false);
         retLastQueryDate = "";
+        retUpdateTotal();
     }
 
     //Opciones del combo "Producto facturado"; las lineas sin disponible quedan deshabilitadas
@@ -138,12 +186,14 @@
         $select.val(selectedID !== "" && retLinesByID[selectedID] ? selectedID : "");
     }
 
-    //Copia al renglon los datos de la linea elegida (producto, facturado, disponible, U/M)
+    //Copia al renglon los datos de la linea elegida (producto, facturado, ya devuelto, disponible, precio, U/M)
     function retApplyLineToRow($tr){
         var line = retLinesByID[String($tr.find(".ret-invoice-line").val())];
         $tr.find(".ret-item-id").val(line ? line.itemID : "");
         $tr.find(".ret-facturado").text(line ? retFmtQty(line.quantityInvoiced) : "");
+        $tr.find(".ret-devuelto").text(line ? retFmtQty(retLineReturned(line)) : "");
         $tr.find(".ret-disponible").text(line ? retFmtQty(line.quantityAvailable) : "");
+        $tr.find(".ret-precio").text(line ? pv2Fmt(retLinePrice(line)) : "");
         $tr.find(".ret-um").text(line ? (line.unitMeasureName || "") : "");
     }
 
@@ -154,19 +204,19 @@
             retBuildOptions($tr.find(".ret-invoice-line"), $tr.find(".ret-invoice-line").val());
             retApplyLineToRow($tr);
         });
+        retUpdateTotal();
     }
 
-    /* Agrega un renglon. row: {transactionMasterDetailID, invoiceDetailID, itemSustitutoID, sustitutoText, quantity} */
+    /* Agrega un renglon. row: {transactionMasterDetailID, invoiceDetailID, quantity} */
     function retAddRow(row){
         row     = row || {};
         var $tr = $($("#tmpl_ret_row").html());
         $tr.find(".ret-tmd-id").val(row.transactionMasterDetailID || 0);
         retBuildOptions($tr.find(".ret-invoice-line"), row.invoiceDetailID);
-        $tr.find(".ret-sustituto-id").val(row.itemSustitutoID || "");
-        $tr.find(".ret-sustituto-desc").val(row.sustitutoText || "");
         $tr.find(".ret-quantity").val(row.quantity === undefined || row.quantity === null || row.quantity === "" ? "" : afxFmtMonto(row.quantity));
         $("#body_tb_transaction_master_detail").append($tr);
         retApplyLineToRow($tr);
+        retUpdateTotal();
         return $tr;
     }
 
@@ -185,6 +235,7 @@
         if(!line || $.trim($qty.val()) !== "") return;
         var disponible = pv2Num(line.quantityAvailable);
         if(disponible > 0) $qty.val(afxFmtMonto(disponible < 1 ? disponible : 1));
+        retUpdateTotal();
     }
 
     /* Consulta la factura y sus lineas disponibles.
@@ -223,7 +274,7 @@
 
                 //Sin datos: la factura no tiene productos
                 if(!data.invoice || !data.detail || data.detail.length == 0){
-                    onFail("La factura #" + invoiceNumber + " no tiene productos para sustituir");
+                    onFail("La factura #" + invoiceNumber + " no tiene productos para devolver");
                     return;
                 }
 
@@ -270,21 +321,6 @@
         proceed();
     }
 
-    //Respuesta del buscador de productos: [1] itemID, [2] codigo, [3] nombre
-    function onCompleteSustituto(objResponse){
-        if(!objResponse || !objResponse[0] || !retActiveRow || retActiveRow.closest("body").length == 0) return;
-        var itemID = String(objResponse[0][1]);
-
-        if(itemID === String(retActiveRow.find(".ret-item-id").val())){
-            fnShowNotification("El producto sustituto debe ser distinto al producto facturado", "error", 15000);
-            return;
-        }
-
-        retActiveRow.find(".ret-sustituto-id").val(itemID);
-        retActiveRow.find(".ret-sustituto-desc").val(retJoin(objResponse[0][2], objResponse[0][3], " - "));
-        retActiveRow.removeClass("has-error");
-    }
-
     /* Validaciones antes de guardar. Devuelve true si el formulario es valido */
     function retValidateForm(){
         var errors = [];
@@ -305,9 +341,9 @@
         else if(retInvoiceInvalid || !retInvoice)
             errors.push("La factura no es valida para la fecha indicada; revise la fecha o elija otra factura");
 
-        if($rows.length == 0) errors.push("Agregue al menos un producto a sustituir");
+        if($rows.length == 0) errors.push("Agregue al menos un producto a devolver");
 
-        //Por renglon: producto, cantidad y sustituto
+        //Por renglon: producto y cantidad
         var sumByLine = {};
         var rowsByLine = {};
         $rows.each(function(index){
@@ -316,13 +352,10 @@
             var lineID   = String($tr.find(".ret-invoice-line").val() || "");
             var line     = retLinesByID[lineID];
             var quantity = pv2Num($tr.find(".ret-quantity").val());
-            var sustID   = $.trim($tr.find(".ret-sustituto-id").val());
             var rowOk    = true;
 
             if(!line){ errors.push("Linea " + number + ": seleccione el producto facturado"); rowOk = false; }
             if(quantity <= 0){ errors.push("Linea " + number + ": la cantidad debe ser mayor que 0"); rowOk = false; }
-            if(sustID === ""){ errors.push("Linea " + number + ": seleccione el producto sustituto"); rowOk = false; }
-            else if(line && sustID === String(line.itemID)){ errors.push("Linea " + number + ": el producto sustituto debe ser distinto al facturado"); rowOk = false; }
             if(!rowOk) $tr.addClass("has-error");
 
             if(line){
@@ -335,10 +368,14 @@
         $.each(sumByLine, function(lineID, total){
             var line = retLinesByID[lineID];
             if(total > afxRedondear(line.quantityAvailable)){
-                errors.push("El producto '" + retLineText(line) + "' supera la cantidad disponible (disponible " + retFmtQty(line.quantityAvailable) + ", solicitado " + retFmtQty(total) + ")");
+                errors.push("El producto '" + retLineText(line) + "' supera la cantidad disponible para devolver (facturado " + retFmtQty(line.quantityInvoiced) + ", ya devuelto " + retFmtQty(retLineReturned(line)) + ", disponible " + retFmtQty(line.quantityAvailable) + ", solicitado " + retFmtQty(total) + ")");
                 $.each(rowsByLine[lineID], function(i, $tr){ $tr.addClass("has-error"); });
             }
         });
+
+        //La Nota de Credito debe tener monto: sin precio no hay nada que acreditar
+        if(errors.length == 0 && retUpdateTotal() <= 0)
+            errors.push("El total de la Nota de Credito es 0.00; revise los productos y cantidades");
 
         retShowErrors(errors);
         return errors.length == 0;
@@ -406,42 +443,22 @@
                 return;
             }
             $marcados.closest("tr").remove();
+            retUpdateTotal();
         });
 
-        //Cambio de producto facturado en un renglon
+        //Cambio de producto facturado en un renglon: datos de la linea, cantidad sugerida y subtotal
         $(document).on("change", "#body_tb_transaction_master_detail .ret-invoice-line", function(){
             var $tr = $(this).closest("tr");
             retApplyLineToRow($tr);
             $tr.removeClass("has-error");
-
-            //El sustituto no puede ser el mismo producto
-            var itemID = String($tr.find(".ret-item-id").val());
-            if(itemID !== "" && itemID === String($tr.find(".ret-sustituto-id").val())){
-                $tr.find(".ret-sustituto-id").val("");
-                $tr.find(".ret-sustituto-desc").val("");
-                fnShowNotification("El producto sustituto debe ser distinto al producto facturado", "error", 15000);
-            }
             retDefaultQuantity($tr);
+            retUpdateTotal();
         });
 
-        //Al escribir la cantidad se quita la marca de error del renglon
-        $(document).on("input", "#body_tb_transaction_master_detail .ret-quantity", function(){
+        //Al escribir la cantidad se quita la marca de error y se recalcula el total de la Nota de Credito
+        $(document).on("input change", "#body_tb_transaction_master_detail .ret-quantity", function(){
             $(this).closest("tr").removeClass("has-error");
-        });
-
-        //Buscar producto sustituto (filtrado por la bodega de la factura)
-        $(document).on("click", "#body_tb_transaction_master_detail .btnRetSearchSustituto", function(){
-            if(!retInvoice){
-                fnShowNotification("Seleccione primero la factura", "error", 15000);
-                return;
-            }
-            if(!retInvoice.warehouseID){
-                fnShowNotification("No se pudo determinar la bodega de la factura", "error", 15000);
-                return;
-            }
-            retActiveRow    = $(this).closest("tr");
-            var url_request = retConfig.urlBase + "/core_view/showviewbynamepaginate/" + retConfig.componentItemID + "/onCompleteSustituto/SELECCIONAR_ITEM_TO_OUTPUT_PAGINATED/true/" + encodeURI("{\"warehouseID\"|\"" + retInvoice.warehouseID + "\"}") + "/false/not_redirect_when_empty/1/1/" + retConfig.cantidadItemPopup + "/";
-            pv2OpenSearch(url_request, "Buscar producto sustituto", "onCompleteSustituto", onCompleteSustituto, "width=900,height=450");
+            retUpdateTotal();
         });
 
         retBindSave();
@@ -469,26 +486,18 @@
             <input type="checkbox" class="txtCheckedIsActive" value="1" aria-label="Quitar">
             <input type="hidden" class="ret-tmd-id" name="txtDetailTransactionDetailID[]" value="0">
             <input type="hidden" class="ret-item-id" name="txtDetailItemID[]" value="">
-            <input type="hidden" class="ret-sustituto-id" name="txtDetailItemSustitutoID[]" value="">
         </td>
         <td class="afx-col-block" data-label="Producto facturado">
             <select class="form-control ret-invoice-line" name="txtDetailInvoiceDetailID[]" aria-label="Producto facturado"></select>
         </td>
         <td data-label="Facturado" class="pv2-num"><span class="ret-facturado"></span></td>
+        <td data-label="Ya devuelto" class="pv2-num"><span class="ret-devuelto"></span></td>
         <td data-label="Disponible" class="pv2-num"><span class="ret-disponible"></span></td>
         <td data-label="Cantidad">
             <input class="form-control pv2-num afx-monto afx-sin-negativo ret-quantity" type="text" inputmode="decimal" autocomplete="off" name="txtDetailQuantity[]" value="" placeholder="0.00" aria-label="Cantidad">
         </td>
-        <td class="afx-col-block" data-label="Producto sustituto">
-            <div class="input-group afx-search ret-sust-search">
-                <input class="form-control ret-sustituto-desc" type="text" readonly autocomplete="off" value="" placeholder="Buscar producto..." aria-label="Producto sustituto">
-                <span class="input-group-btn">
-                    <button class="btn btn-primary btnRetSearchSustituto" type="button" title="Buscar producto sustituto">
-                        <i aria-hidden="true" class="i-search-5"></i> <span>Buscar</span>
-                    </button>
-                </span>
-            </div>
-        </td>
+        <td data-label="Precio" class="pv2-num"><span class="ret-precio"></span></td>
+        <td data-label="Subtotal" class="pv2-num"><span class="ret-subtotal"></span></td>
         <td data-label="U/M"><span class="ret-um"></span></td>
     </tr>
 </script>

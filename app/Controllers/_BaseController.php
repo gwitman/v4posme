@@ -32,6 +32,7 @@ use App\Libraries\core_web_error;
 use App\Libraries\core_web_inventory;
 use App\Libraries\core_web_javascript;
 use App\Libraries\core_web_menu;
+use App\Libraries\core_web_note_credit;
 use App\Libraries\core_web_notification;
 use App\Libraries\core_web_parameter;
 use App\Libraries\core_web_permission;
@@ -283,6 +284,7 @@ abstract class _BaseController extends Controller
     protected $core_web_javascript;
     protected $core_web_logs;
     protected $core_web_menu;
+    protected $core_web_note_credit;
     protected $core_web_notification;
     protected $core_web_parameter;
     protected $core_web_permission;
@@ -484,6 +486,7 @@ abstract class _BaseController extends Controller
         $this->core_web_javascript= new core_web_javascript();
 
         $this->core_web_menu= new core_web_menu();
+        $this->core_web_note_credit= new core_web_note_credit();
         $this->core_web_notification= new core_web_notification();
         $this->core_web_parameter= new core_web_parameter();
         $this->core_web_permission= new core_web_permission();

@@ -1377,6 +1377,32 @@ html:has([class*="modal-customer1-"][style*="flex"]) #rowCssPrincipal .pm-col-co
 #rowCssPrincipal .pm-col-cobro .pm-cobro-pagos.pm-collapsed #table-resumen > tbody > tr.pm-pago-extra {
 	display			: none;
 }
+/* Notas de credito: saldo disponible y aviso debajo del monto (se parte en lineas, sin scroll horizontal) */
+#table-resumen .pm-nc-info {
+	display			: flex;
+	flex-wrap		: wrap;
+	justify-content	: space-between;
+	gap				: 2px 8px;
+	clear			: both;
+	padding-top		: 3px;
+	font-size		: 12px;
+	line-height		: 1.3;
+	color			: #475569;
+	white-space		: normal;
+	word-break		: break-word;
+}
+#table-resumen .pm-nc-mensaje.pm-nc-ok {
+	color			: #15803D;
+	font-weight		: 600;
+}
+#table-resumen .pm-nc-mensaje.pm-nc-error {
+	color			: #B91C1C;
+	font-weight		: 700;
+}
+#table-resumen #txtReceiptAmountNoteCredit.pm-nc-invalido {
+	border-color	: #DC2626;
+	box-shadow		: inset 0 0 0 1px #FCA5A5;
+}
 #rowCssPrincipal .pm-col-cobro .pm-btn-mas-pagos {
 	display			: block;
 	width			: 100%;

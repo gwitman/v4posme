@@ -7,5 +7,5 @@
 <?php echo view('app_invoice_return/ret_v2_common'); ?>
 
 <div id="heading" class="page-header">
-    <h1><i class="icon20 i-cart-remove"></i> AGREGAR SUSTITUCION DE PRODUCTOS</h1>
+    <h1><i class="icon20 i-cart-remove"></i> AGREGAR DEVOLUCION DE PRODUCTOS</h1>
 </div>

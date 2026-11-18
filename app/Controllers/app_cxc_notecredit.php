@@ -375,7 +375,7 @@ class app_cxc_notecredit extends _BaseController
 				$this->response->redirect(base_url() . "/" . 'app_cxc_notecredit/edit/companyID/' . $companyID . "/transactionID/" . $objTM["transactionID"] . "/transactionMasterID/" . $transactionMasterID);
 			} else {
 				$db->transRollback();
-				$this->core_web_notification->set_message(true, $this->$db->_error_message());
+				$this->core_web_notification->set_message(true, $db->error()["message"]);
 				$this->response->redirect(base_url() . "/" . 'app_cxc_notecredit/add');
 			}
 		} catch (Exception $ex) {
@@ -483,20 +483,11 @@ class app_cxc_notecredit extends _BaseController
 			}
 
 
-			if ($this->core_web_workflow->validateWorkflowStage("tb_transaction_master_cxc_notacredit", "statusID", $objTMNew["statusID"], COMMAND_APLICABLE, $companyID, $branchID, $roleID)) {
-
-				if ($objTMNew["currencyID"] == 1/*CORDOBA*/) {
-					$objTMNew["discount"]			= $objC->balanceCor;
-					$objTMNew["subAmount"]			= $monto + $objC->balanceCor;
-					$objCNew["balanceCor"]          = $objTMNew["subAmount"];
-				} else /*DOLAR*/ {
-					$objTMNew["discount"]			= $objC->balanceDol;
-					$objTMNew["subAmount"]			= $monto + $objC->balanceDol;
-					$objCNew["balanceDol"]			= $objTMNew["subAmount"];
-				}
-
-				$this->Transaction_Master_Model->update_app_posme($companyID, $transactionID, $transactionMasterID, $objTMNew);
-				$this->Customer_Model->update_app_posme($companyID, $branchID, $entityID, $objCNew);
+			//Al pasar a estado aplicable (y solo la primera vez) la NC suma al saldo del cliente:
+			//moneda por defecto -> balanceCor, otra -> balanceDol; tm.discount = antes, tm.subAmount = despues
+			$oldStatusIsApplicable = $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_cxc_notacredit", "statusID", $objTM->statusID, COMMAND_APLICABLE, $companyID, $branchID, $roleID);
+			if (!$oldStatusIsApplicable && $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_cxc_notacredit", "statusID", $objTMNew["statusID"], COMMAND_APLICABLE, $companyID, $branchID, $roleID)) {
+				$this->core_web_note_credit->sumarNcAlSaldo($dataSession, $transactionID, $transactionMasterID);
 			}
 
 			if ($db->transStatus() !== false) {
@@ -505,10 +496,13 @@ class app_cxc_notecredit extends _BaseController
 				$this->response->redirect(base_url() . "/" . 'app_cxc_notecredit/edit/companyID/' . $companyID . "/transactionID/" . $transactionID . "/transactionMasterID/" . $transactionMasterID);
 			} else {
 				$db->transRollback();
-				$this->core_web_notification->set_message(true, $this->$db->_error_message());
+				$this->core_web_notification->set_message(true, $db->error()["message"]);
 				$this->response->redirect(base_url() . "/" . 'app_cxc_notecredit/add');
 			}
 		} catch (Exception $ex) {
+			if (isset($db))
+				$db->transRollback();
+
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
@@ -562,7 +556,13 @@ class app_cxc_notecredit extends _BaseController
 			if (!$this->core_web_workflow->validateWorkflowStage("tb_transaction_master_cxc_notacredit", "statusID", $objTM->statusID, COMMAND_ELIMINABLE, $dataSession["user"]->companyID, $dataSession["user"]->branchID, $dataSession["role"]->roleID))
 				throw new Exception(NOT_WORKFLOW_DELETE);
 
-			//Eliminar el Registro			
+			//Una NC ya usada como pago (saldo menor que su monto) no puede eliminarse
+			//(get_rowByPK no trae las columnas de NC; esta consulta trae i.*)
+			$objTMInfo 				= $this->Transaction_Master_Info_Model->get_rowByTransactionMasterIDForUpdate($companyID, $transactionID, $transactionMasterID);
+			if ($objTMInfo && round((float)$objTMInfo->noteCreditBalance, 2) < round((float)$objTMInfo->receiptAmountNoteCredit, 2))
+				throw new Exception("LA NOTA DE CREDITO YA FUE UTILIZADA, NO PUEDE ELIMINARSE");
+
+			//Eliminar el Registro
 			$this->Transaction_Master_Model->delete_app_posme($companyID, $transactionID, $transactionMasterID);
 
 			return $this->response->setJSON(array(

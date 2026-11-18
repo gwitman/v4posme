@@ -100,7 +100,9 @@ $jsonFlags  = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
                 unitMeasureName           : row.unitMeasureName,
                 quantityInvoiced          : row.quantityInvoiced,
                 quantityReplaced          : row.quantityReplaced,
-                quantityAvailable         : row.quantityAvailable
+                quantityReturned          : row.quantityReturned,
+                quantityAvailable         : row.quantityAvailable,
+                unitaryPrice              : row.unitaryPrice
             });
         });
         retSetLines(lineas);
@@ -110,8 +112,6 @@ $jsonFlags  = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
             retAddRow({
                 transactionMasterDetailID : row.transactionMasterDetailID,
                 invoiceDetailID           : row.invoiceTransactionMasterDetailID,
-                itemSustitutoID           : row.itemSustitutoID,
-                sustitutoText             : retJoin(row.itemNumberSustituto, row.itemNameSustituto, " - "),
                 quantity                  : row.quantity
             });
         });

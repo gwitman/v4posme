@@ -801,6 +801,9 @@
 	$(document).on("click","#btnClearCustomer",function(){
 				$("#txtCustomerID").val("");
 				$("#txtCustomerDescription").val("");
+				//Sin cliente no hay saldo de notas de credito
+				fnNoteCreditReset(true);
+				fnCalculateAmountPay();
 	});
 
 	$(document).on("change","#txtCausalID,#txtCustomerCreditLineID,#txtCurrencyID,#txtWarehouseID",function(){
@@ -1115,6 +1118,32 @@
 	});
 	$(document).on("change","input#txtReceiptAmountPoint",function(){
 			fnCalculateAmountPay();
+	});
+	//Notas de credito (eventos delegados: las personalizaciones mueven #divPaymentOption)
+	$(document).on("input","input#txtReceiptAmountNoteCredit",function(){
+			fnNoteCreditRender();
+	});
+	$(document).on("focus","input#txtReceiptAmountNoteCredit",function(){
+			$(this).data("ncPrev", fnNoteCreditNum($(this).val()));
+	});
+	$(document).on("change","input#txtReceiptAmountNoteCredit",function(){
+			//Si el recibido era el sugerido (total - NC anterior) se ajusta a total - NC nueva
+			var total 		= fnNoteCreditNum($("#txtTotal").val());
+			var previo 		= Math.min(fnNoteCreditNum($(this).data("ncPrev")), Math.max(total, 0));
+			var recibido 	= fnNoteCreditNum($("#txtReceiptAmount").val());
+			if(!$("#txtReceiptAmount").prop("readonly") && Math.abs(recibido - (total - previo)) < 0.005)
+			{
+				$("#txtReceiptAmount").val(fnFormatNumber(Math.max(total - fnNoteCreditAplicable(total), 0),2));
+			}
+			$(this).data("ncPrev", fnNoteCreditNum($(this).val()));
+			fnCalculateAmountPay();
+	});
+	$(document).on("blur","input#txtReceiptAmountNoteCredit",function(){
+			if($.trim($(this).val()) !== "") $(this).val(fnNoteCreditFmt($(this).val()));
+	});
+	//Cambio de moneda: el saldo de NC es por moneda
+	$(document).on("change","#txtCurrencyID",function(){
+			fnNoteCreditLoad();
 	});
 	$(document).on("focus","input#txtReceiptAmountTarjeta",function(){
 			$(this).val("");
@@ -1569,9 +1598,201 @@
 				) - parseFloat(total);
 		}
 
+		//Notas de credito: se suman al recibido en la moneda de la factura, pero el vuelto nunca sale de la NC
+		//(como mucho cubren el total): cambio = otros pagos - (total - NC)
+		if( currencyId === "1" || currencyId === "2" )
+		{
+			resultTotal = parseFloat(resultTotal) + fnNoteCreditAplicable(total);
+		}
+
         resultTotal = fnFormatNumber(resultTotal,2);
         $("#txtChangeAmount").val(resultTotal);
+		fnNoteCreditRender();
     }
+
+	/* ==========================================================
+	   Pago con Notas de Credito (NC) del cliente
+	   - Solo facturas de contado y en la moneda de la factura.
+	   - El cajero escribe solo el monto; el servidor consume las NC mas antiguas primero.
+	   - Visual 1,000.00; se envia como numero puro (txtReceiptAmountNoteCredit).
+	   ========================================================== */
+	var varNoteCreditBalance 	= 0;		//Saldo NC disponible del cliente en la moneda de la factura
+	var varNoteCreditLoaded 	= false;	//El saldo se consulto con exito para el cliente/moneda actuales
+	var varNoteCreditRequest 	= 0;		//Secuencia: solo se acepta la respuesta de la ultima consulta
+
+	//Numero puro con 2 decimales a partir del texto con comas (1,000.50 -> 1000.5)
+	function fnNoteCreditNum(value)
+	{
+		var texto 	= String(value === null || value === undefined ? "" : value).replace(/,/g, "");
+		var numero 	= parseFloat(texto);
+		return isNaN(numero) ? 0 : Math.round(numero * 100) / 100;
+	}
+
+	//Formato visual 1,000.00 (no altera el valor)
+	function fnNoteCreditFmt(value)
+	{
+		var numero 	= fnNoteCreditNum(value);
+		var partes 	= Math.abs(numero).toFixed(2).split(".");
+		partes[0] 	= partes[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+		return (numero < 0 ? "-" : "") + partes[0] + "." + partes[1];
+	}
+
+	//Simbolo de la moneda seleccionada en la factura (si no es la moneda de cordoba se usa su nombre)
+	function fnNoteCreditSimbolo()
+	{
+		var currencyID = $("#txtCurrencyID").val();
+		if(objCurrencyCordoba && String(objCurrencyCordoba.currencyID) === String(currencyID))
+			return (objCurrencyCordoba.simbol ? objCurrencyCordoba.simbol : varCurrencyDefaultSimbol);
+		return $.trim($("#txtCurrencyID option:selected").text());
+	}
+
+	//La causal seleccionada es de credito
+	function fnNoteCreditEsCredito()
+	{
+		var causalSelect 	= $("#txtCausalID").val();
+		var causalCredit 	= (objCausalTypeCredit && objCausalTypeCredit.value) ? String(objCausalTypeCredit.value).split(",") : [];
+		for(var i = 0; i < causalCredit.length; i++)
+		{
+			if(causalCredit[i] == causalSelect) return true;
+		}
+		return false;
+	}
+
+	//Monto de NC que entra al calculo del pago: nunca mas que el total de la factura
+	function fnNoteCreditAplicable(total)
+	{
+		var monto 		= fnNoteCreditNum($("#txtReceiptAmountNoteCredit").val());
+		var totalFac 	= fnNoteCreditNum(total);
+		if(monto <= 0) return 0;
+		return Math.min(monto, Math.max(totalFac, 0));
+	}
+
+	//Limpia el saldo mostrado; con clearAmount tambien el monto escrito
+	function fnNoteCreditReset(clearAmount)
+	{
+		varNoteCreditRequest++;
+		varNoteCreditBalance 	= 0;
+		varNoteCreditLoaded 	= false;
+		$("#lblNoteCreditAvailable").text("0.00");
+		if(clearAmount) $("#txtReceiptAmountNoteCredit").val("0");
+		fnNoteCreditRender();
+	}
+
+	/* Consulta el saldo de NC del cliente en la moneda de la factura.
+	   Casos: error (saldo 0 y aviso), sin saldo (0.00), con saldo. */
+	function fnNoteCreditLoad()
+	{
+		var entityID 	= $.trim($("#txtCustomerID").val() || "");
+		var currencyID 	= $.trim($("#txtCurrencyID").val() || "");
+		varNoteCreditRequest++;
+		var request 	= varNoteCreditRequest;
+		varNoteCreditBalance 	= 0;
+		varNoteCreditLoaded 	= false;
+		$("#lblNoteCreditAvailable").text("0.00");
+		fnNoteCreditRender();
+		if(entityID === "" || currencyID === "") return;
+
+		$.ajax({
+			cache 		: false,
+			dataType 	: "json",
+			type 		: "POST",
+			url 		: "<?php echo base_url(); ?>/app_invoice_billing/getNoteCreditAvailable",
+			data 		: { entityID : entityID, currencyID : currencyID },
+			success 	: function(data){
+				//Respuesta vieja (cambio el cliente o la moneda mientras se consultaba)
+				if(request !== varNoteCreditRequest) return;
+
+				//Error
+				if(!data || data.error === true)
+				{
+					fnNoteCreditRender();
+					if(fnNoteCreditNum($("#txtReceiptAmountNoteCredit").val()) > 0)
+						Toast.fire({ icon: "warning", title: (data && data.message) ? data.message : "No se pudo consultar el saldo de notas de credito" });
+					return;
+				}
+
+				//Sin saldo / con saldo
+				varNoteCreditBalance 	= Math.max(fnNoteCreditNum(data.balance), 0);
+				varNoteCreditLoaded 	= true;
+				$("#lblNoteCreditAvailable").text(fnNoteCreditSimbolo() + " " + fnNoteCreditFmt(varNoteCreditBalance));
+				fnNoteCreditRender();
+			},
+			error 		: function(){
+				if(request !== varNoteCreditRequest) return;
+				fnNoteCreditRender();
+			}
+		});
+	}
+
+	//Mensaje bajo el monto: "Le quedara C$ X" o "Maximo permitido: C$ Y"
+	function fnNoteCreditRender()
+	{
+		var $input 		= $("#txtReceiptAmountNoteCredit");
+		var $mensaje 	= $("#lblNoteCreditMessage");
+		if($input.length === 0) return;
+
+		var monto 		= fnNoteCreditNum($input.val());
+		var total 		= fnNoteCreditNum($("#txtTotal").val());
+		var maximo 		= Math.max(Math.min(varNoteCreditBalance, total), 0);
+		var simbolo 	= fnNoteCreditSimbolo();
+		var texto 		= "";
+		var clase 		= "";
+
+		$mensaje.removeClass("pm-nc-ok pm-nc-error");
+		$input.removeClass("pm-nc-invalido");
+
+		//Factura ya aplicada: la NC ya se consumio, solo se muestra el monto
+		if($("#txtStatusIDOld").val() == varStatusInvoiceAplicado)
+		{
+			$mensaje.text("");
+			return;
+		}
+
+		if(fnNoteCreditEsCredito())
+		{
+			texto = "Solo en facturas de contado";
+			clase = monto > 0 ? "pm-nc-error" : "";
+		}
+		else if(monto < 0)
+		{
+			texto = "El monto no puede ser negativo";
+			clase = "pm-nc-error";
+		}
+		else if(monto > 0 && !varNoteCreditLoaded)
+		{
+			texto = "Consultando saldo...";
+		}
+		else if(monto > 0 && monto > maximo)
+		{
+			texto = "Máximo permitido: " + simbolo + " " + fnNoteCreditFmt(maximo);
+			clase = "pm-nc-error";
+		}
+		else if(monto > 0)
+		{
+			texto = "Le quedará " + simbolo + " " + fnNoteCreditFmt(varNoteCreditBalance - monto);
+			clase = "pm-nc-ok";
+		}
+
+		$mensaje.text(texto);
+		if(clase !== "") $mensaje.addClass(clase);
+		if(clase === "pm-nc-error") $input.addClass("pm-nc-invalido");
+	}
+
+	//Validacion antes de guardar; devuelve el mensaje de error o "" si es valido
+	function fnNoteCreditValidar()
+	{
+		var monto 	= fnNoteCreditNum($("#txtReceiptAmountNoteCredit").val());
+		var total 	= fnNoteCreditNum($("#txtTotal").val());
+		//Factura ya aplicada: la NC ya se consumio; el servidor no la vuelve a aplicar
+		if($("#txtStatusIDOld").val() == varStatusInvoiceAplicado) 	return "";
+		if(monto < 0) 								return "El monto de notas de credito no puede ser negativo";
+		if(monto == 0) 								return "";
+		if(fnNoteCreditEsCredito()) 				return "Las notas de credito solo se aceptan en facturas de contado";
+		if(!varNoteCreditLoaded) 					return "No se ha podido consultar el saldo de notas de credito del cliente; intente de nuevo";
+		if(monto > total) 							return "El monto de notas de credito no puede ser mayor al total de la factura. Maximo permitido: " + fnNoteCreditFmt(Math.min(varNoteCreditBalance, total));
+		if(monto > varNoteCreditBalance) 			return "Saldo de notas de credito insuficiente. Maximo permitido: " + fnNoteCreditFmt(Math.min(varNoteCreditBalance, total));
+		return "";
+	}
 
 	function fnImprimir(){
 
@@ -2153,6 +2374,17 @@
 		}
 
 
+		//Validar pago con notas de credito: >= 0, <= total, <= saldo del cliente y solo en contado
+		var errorNoteCredit 			= fnNoteCreditValidar();
+		if(errorNoteCredit !== "")
+		{
+			result = false;
+			Toast.fire({
+				icon	: "warning",
+				title	: errorNoteCredit
+			});
+		}
+
 		//Si es de credito que la factura no supere la linea de credito
 		var causalSelect 				= $("#txtCausalID").val();
 		var customerCreditLineID 		= $("#txtCustomerCreditLineID").val();
@@ -2263,6 +2495,8 @@
 
 		if(result)
 		{
+			//La nota de credito se envia como numero puro (sin comas)
+			$("#txtReceiptAmountNoteCredit").val(fnNoteCreditNum($("#txtReceiptAmountNoteCredit").val()).toFixed(2));
 			$("#form-new-invoice" ).submit();
 			return;
 		}
@@ -2286,6 +2520,8 @@
 		mostarModalPersonalizado('Cargando nueva factura, por favor espere...');
         $("#form-new-invoice")[0].reset();
 		$('#invoice-num').text("00000000");
+		//Notas de credito: nueva factura sin monto ni saldo (se vuelve a consultar con el cliente por defecto)
+		fnNoteCreditReset(true);
 		$("select").each(function() {
 			let firstValue = $(this).find("option:first").val();
 			if(firstValue !== undefined){
@@ -2323,6 +2559,7 @@
 		$('#txtDateFirst').val(moment().add('days', 0).format("YYYY-MM-DD"));
 		$("#txtDateFirst").datepicker("update");
 		$('#txtCustomerID').val(<?php echo $objCustomerDefault->entityID; ?>);
+		fnNoteCreditLoad();
 		$('#btnLinkPayment').css('display','none');
 		$('#rowBotoneraFacturaFila5').css('display','none');
 		$('.showComandoDeCocina').css('display', 'none');
@@ -2672,6 +2909,9 @@
         $('#txtReceiptAmountBank').val(fnFormatNumber(objTransactionMasterInfo.receiptAmountBank, 2));
         $('#txtReceiptAmountBankDol').val(fnFormatNumber(objTransactionMasterInfo.receiptAmountBankDol, 2));
         $('#txtReceiptAmountPoint').val(fnFormatNumber(objTransactionMasterInfo.receiptAmountPoint, 2));
+		//Notas de credito: monto guardado en la factura y saldo actual del cliente en la moneda de la factura
+		$('#txtReceiptAmountNoteCredit').val(fnNoteCreditFmt(objTransactionMasterInfo && objTransactionMasterInfo.receiptAmountNoteCredit !== undefined && objTransactionMasterInfo.receiptAmountNoteCredit !== null ? objTransactionMasterInfo.receiptAmountNoteCredit : 0));
+		fnNoteCreditLoad();
 
         $('#txtReceiptAmountBank_Reference').val(objTransactionMasterInfo.receiptAmountBankReference);
         $('#txtReceiptAmountBankDol_Reference').val(objTransactionMasterInfo.receiptAmountBankDolReference);
@@ -3139,6 +3379,9 @@
 			$("#txtReceiptAmountTarjeta").val("0");
 			$("#txtReceiptAmountTarjetaDol").val("0");
 			$("#txtReceiptAmountBankDol").val("0");
+			//Notas de credito: se limpia el monto (el saldo del cliente se conserva)
+			$("#txtReceiptAmountNoteCredit").val("0");
+			fnNoteCreditRender();
 
 			//Descuento por linea / global: sin detalle no hay descuento ni autorizacion
 			if(fnDescuentoPorLineaActivo())
@@ -3181,6 +3424,18 @@
 				$(this).off("mousedown.disableSelect click.disableSelect").css("background-color", "");
 			});
 		}
+
+		//Notas de credito: solo contado; en credito se bloquea siempre (sin depender de lockPayment)
+		var $noteCredit = $("#txtReceiptAmountNoteCredit");
+		if(fnNoteCreditEsCredito())
+		{
+			$noteCredit.val("0").prop("readonly", true).css("background-color","#eee");
+		}
+		else if(!lockPayment)
+		{
+			$noteCredit.prop("readonly", false).css("background-color", "");
+		}
+		fnNoteCreditRender();
 	}
 
 	function fnRecalculateDetail(clearRecibo,tipo_calculate, index=-1)
@@ -3382,9 +3637,10 @@
 		}
 		else{
 			
-			$("#txtReceiptAmount").val(fnFormatNumber(totalGeneral,2));
+			//Lo que cubren las notas de credito no se pide en efectivo (el vuelto nunca sale de la NC)
+			$("#txtReceiptAmount").val(fnFormatNumber(Math.max(totalGeneral - fnNoteCreditAplicable(totalGeneral), 0),2));
 		}
-		
+
 		if (clearRecibo)
 		{
 				$("#txtReceiptAmountDol").val("0.00");
@@ -4257,6 +4513,8 @@
 	}
 
 	function fnGetCustomerClient(){
+		//Saldo de notas de credito del cliente elegido (moneda de la factura)
+		fnNoteCreditLoad();
 		$.ajax({
 			cache       : false,
 			dataType    : 'json',

@@ -6,7 +6,7 @@
             <div class="pv2-header-icon"><i class="icon20 i-cart-remove"></i></div>
             <div>
                 <p class="pv2-header-title">NUMERO:#<span class="invoice-num">00000000</span> <span class="pv2-chip">Nueva</span></p>
-                <p class="pv2-header-sub">El cliente devuelve un producto facturado y se lleva otro</p>
+                <p class="pv2-header-sub">El cliente devuelve productos facturados y recibe una Nota de Crédito</p>
             </div>
         </div>
         <div class="pv2-actions">
@@ -20,7 +20,7 @@
     <div class="ret-aviso">
         <i class="icon16 i-info"></i>
         <div>
-            <p>La sustitución solo mueve inventario; no modifica la factura ni cobra diferencias de precio.</p>
+            <p>Al aplicar la devolución se generará una Nota de Crédito aplicada al cliente y una Otra Entrada de inventario. La factura no se modifica.</p>
             <p>Plazo máximo: <b class="ret-max-days"><?php echo (int) $maxDays; ?></b> días desde la fecha de la factura.</p>
         </div>
     </div>
@@ -82,6 +82,12 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="form-group">
+                                <label class="pv2-label" for="txtInvoiceCurrency">Moneda</label>
+                                <input class="form-control" readonly id="txtInvoiceCurrency" type="text" autocomplete="off" value="">
+                                <span class="pv2-help">La Nota de Crédito se genera en la moneda de la factura.</span>
+                            </div>
                         </div>
                     </div>
                     <div class="col-xs-12 col-md-6">
@@ -128,7 +134,7 @@
         <!-- detalle -->
         <div class="pv2-card">
             <div class="pv2-detail-head">
-                <p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-list-2"></i></span> Productos a sustituir <span class="pv2-count" id="afxDetailCount">0</span></p>
+                <p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-list-2"></i></span> Productos a devolver <span class="pv2-count" id="afxDetailCount">0</span></p>
                 <div class="pv2-actions">
                     <button type="button" class="btn btn-default btn-sm" id="btnDeleteDetailTransaction"><i class="icon16 i-remove"></i> Quitar</button>
                     <button type="button" class="btn btn-primary btn-sm" id="btnNewDetailTransaction"><i class="icon16 i-plus"></i> Agregar</button>
@@ -141,9 +147,11 @@
                             <th class="afx-col-quitar">Quitar</th>
                             <th class="ret-col-line">Producto facturado</th>
                             <th class="ret-col-num">Facturado</th>
+                            <th class="ret-col-num">Ya devuelto</th>
                             <th class="ret-col-num">Disponible</th>
                             <th class="ret-col-qty">Cantidad</th>
-                            <th>Producto sustituto</th>
+                            <th class="ret-col-num">Precio</th>
+                            <th class="ret-col-num">Subtotal</th>
                             <th class="ret-col-um">U/M</th>
                         </tr>
                     </thead>
@@ -153,7 +161,11 @@
             </div>
             <div class="pv2-empty" id="afxDetailEmpty">
                 <i class="icon20 i-file-plus"></i>
-                Seleccione la factura y toque <b>Agregar</b> para indicar los productos a sustituir.
+                Seleccione la factura y toque <b>Agregar</b> para indicar los productos a devolver.
+            </div>
+            <div class="ret-total">
+                <span class="ret-total-label">Total estimado de la Nota de Crédito</span>
+                <span class="ret-total-value ret-total-nc" id="retTotalNC">0.00</span>
             </div>
         </div>
         <!-- /detalle -->
@@ -164,7 +176,8 @@
     <!-- barra inferior (telefono) -->
     <div class="pv2-mbar">
         <div class="pv2-mbar-info">
-            <p class="pv2-mbar-label">Nueva sustitución de productos</p>
+            <p class="pv2-mbar-label">Nota de Crédito estimada</p>
+            <p class="pv2-mbar-total ret-total-nc" id="retTotalNCMobile">0.00</p>
         </div>
         <a href="#" class="btn btn-primary" id="btnAceptMobile"><i class="icon16 i-checkmark-4"></i> Guardar</a>
     </div>

@@ -46,10 +46,10 @@ Ruta: Menú > FACTURACION > FACTURAR (o FACTURACION > NUEVA FACTURA).
 4. Agregue los productos con **AGREGAR PRO** (o escaneando el código de barras) e indique cantidad y precio.
 5. Según la configuración de su empresa, puede aplicar un descuento por producto o un descuento global (ver Aplicar un descuento en una factura).
 6. Para quitar un producto use **ELIMINAR PRO**.
-7. Presione **PROCESAR PAGO**, registre lo recibido (efectivo, tarjeta, transferencia, córdobas o dólares) y aplique la factura.
+7. Presione **PROCESAR PAGO**, registre lo recibido (efectivo, tarjeta, transferencia, córdobas o dólares) y aplique la factura. En facturas de contado, el cliente también puede pagar con su saldo de notas de crédito en la fila **NOTAS CRÉD.**
 8. Use **IMPRIMIR** para imprimir el ticket o factura.
 Notas: algunas cajas exigen tener la caja abierta (**ABRIR CAJA**) antes de facturar. <!-- REVISAR: confirmar el orden exacto de PROCESAR PAGO / aplicar segun la configuracion -->
-Ver también: Imprimir una factura (Preview, A4 o directo a la impresora); Aplicar un descuento en una factura (por producto o global).
+Ver también: Imprimir una factura (Preview, A4 o directo a la impresora); Aplicar un descuento en una factura (por producto o global); Pagar una factura con notas de crédito del cliente (NOTAS CRÉD.).
 
 ## Aplicar un descuento en una factura (por producto o global)
 Ruta: Menú > FACTURACION > FACTURAR (nueva factura o edición de una factura).
@@ -118,52 +118,74 @@ Ver también: Preparar un equipo para imprimir facturas con QZ Tray.
 Ruta: Menú > FACTURACION > FACTURAR.
 1. Busque la factura en la lista y ábrala.
 2. Presione **ELIMINAR FAC** y confirme.
-3. Si la factura ya estaba APLICADA, posMe genera automáticamente un documento de reversión: devuelve el inventario y, si era a crédito, anula el documento de crédito. La factura queda en estado ANULADA.
+3. Si la factura ya estaba APLICADA, posMe genera automáticamente un documento de reversión: devuelve el inventario y, si era a crédito, anula el documento de crédito. Si se pagó con notas de crédito, ese monto se devuelve a las notas de crédito y al saldo del cliente. La factura queda en estado ANULADA.
 4. Si la factura estaba solo REGISTRADA (sin aplicar), simplemente se elimina.
 Restricciones: no se puede anular una factura de crédito que ya tiene abonos, ni una factura de un periodo contable cerrado. Se requiere permiso de eliminar en FACTURAR.
 Ver también: Mayorizar y cerrar un ciclo contable.
 
-## Sustituir un producto facturado (Sustitución)
-Ruta: Menú > FACTURACION > REMPLAZO.
-Úsela cuando el cliente regresa después de facturado, devuelve un producto y se lleva otro (cambio de producto). La sustitución solo mueve inventario: no modifica la factura ni cobra o reintegra diferencias de precio.
-1. En la lista (Número, Factura, Fecha, Estado, Comentario, Cliente, Código Cliente) presione **Nuevo**.
-2. En **Factura** presione **Examinar** y elija la factura. posMe llena el Cliente (no se puede cambiar), la Fecha de la factura, la Bodega y la lista de productos facturados. Use **Limpiar** para quitar la factura y elegir otra.
-3. En **Datos del documento** revise la **Fecha** y elija el **Estado**: REGISTRADO (queda pendiente y se puede editar) o APLICADO (mueve el inventario). Escriba un **Comentario** si desea.
-4. En **Productos a sustituir** elija en cada renglón el **Producto facturado**; posMe muestra lo **Facturado** y lo **Disponible**. Escriba la **Cantidad** y presione **Buscar** para elegir el **Producto sustituto**.
-5. Use **Agregar** para más renglones de la misma factura. Para quitar renglones, márquelos y presione **Quitar**.
-6. Presione **Guardar**.
-Para modificar una sustitución REGISTRADA, selecciónela en la lista y presione **Editar**; para borrarla, **Eliminar**.
-Ver también: Reglas y validaciones de la sustitución de productos; Aplicar una sustitución de productos (Otra Entrada y Otra Salida).
+## Pagar una factura con notas de crédito del cliente (NOTAS CRÉD.)
+Ruta: Menú > FACTURACION > FACTURAR.
+Úsela cuando el cliente tiene saldo a favor por notas de crédito (por ejemplo, de una devolución) y quiere usarlo para pagar una compra.
+1. Cree la factura como siempre y elija el cliente. En la fila **NOTAS CRÉD.** de las formas de pago, posMe muestra **Disponible: X**, el saldo de notas de crédito del cliente en la moneda de la factura. Si cambia la moneda o el cliente, el saldo se vuelve a consultar.
+2. Escriba en **NOTAS CRÉD.** solo el monto que pagará con notas de crédito. Debajo verá "Le quedará X" (saldo que le sobra al cliente) o "Máximo permitido: Y" si escribió de más.
+3. Complete el resto del pago (efectivo, tarjeta, transferencia) si las notas de crédito no cubren todo, y aplique la factura.
+4. posMe usa automáticamente las notas de crédito más antiguas del cliente primero; no tiene que elegirlas.
+Notas: el saldo del cliente se descuenta cuando la factura queda APLICADA; mientras está REGISTRADA solo queda reservado en la factura. El vuelto nunca sale de las notas de crédito.
+Ver también: Reglas y mensajes del pago con notas de crédito; Registrar una nota de crédito de cliente; Devolver productos facturados (Devolución).
 
-## Reglas y validaciones de la sustitución de productos
+## Reglas y mensajes del pago con notas de crédito
+Ruta: Menú > FACTURACION > FACTURAR.
+- Solo se aceptan en facturas de CONTADO. En una factura de crédito la fila **NOTAS CRÉD.** queda bloqueada en 0. Mensaje: "LAS NOTAS DE CREDITO SOLO SE ACEPTAN EN FACTURAS DE CONTADO".
+- El monto no puede superar el saldo del cliente. Mensaje: "SALDO DE NOTAS DE CREDITO INSUFICIENTE: DISPONIBLE X".
+- El monto no puede ser mayor que el total de la factura. Mensaje: "EL MONTO PAGADO CON NOTAS DE CREDITO (X) NO PUEDE SER MAYOR QUE EL TOTAL DE LA FACTURA (Y)".
+- Lo pagado con notas de crédito no acumula puntos de fidelidad.
+- Si anula una factura APLICADA que se pagó con notas de crédito, el monto se devuelve a esas notas de crédito y al saldo del cliente.
+- En los reportes Resumen de ventas y Cierre de caja, lo pagado con notas de crédito se resta del efectivo, porque no es dinero recibido en caja.
+Ver también: Pagar una factura con notas de crédito del cliente (NOTAS CRÉD.); Anular una factura.
+
+## Devolver productos facturados (Devolución)
+Ruta: Menú > FACTURACION > REMPLAZO. La lista se llama **DEVOLUCION DE PRODUCTOS FACTURADOS**.
+<!-- REVISAR: el texto del menu (REMPLAZO) puede cambiar a DEVOLUCION segun el script SQL que ejecute el usuario; confirmar el nombre final en tb_menu_element -->
+Úsela cuando el cliente regresa productos ya facturados. Al aplicarla, el cliente recibe una Nota de Crédito a su favor y los productos vuelven al inventario. La factura original no se modifica.
+1. En la lista presione **Nuevo** (se abre **AGREGAR DEVOLUCION DE PRODUCTOS**).
+2. En **Factura** presione **Examinar** y elija la factura. posMe llena el Cliente (no se puede cambiar), la Fecha de la factura, la Bodega, la **Moneda** (la Nota de Crédito se genera en la moneda de la factura) y los productos facturados. Use **Limpiar** para elegir otra factura.
+3. En **Datos del documento** revise la **Fecha** y elija el **Estado**: REGISTRADO (pendiente, se puede editar) o APLICADO. Escriba un **Comentario** si desea.
+4. En **Productos a devolver** presione **Agregar** y elija el **Producto facturado**. posMe muestra **Facturado**, **Ya devuelto**, **Disponible**, **Precio** y **Subtotal**. Escriba la **Cantidad**. Agregue un renglón por cada producto; para quitar renglones, márquelos y presione **Quitar**.
+5. Revise el **Total estimado de la Nota de Crédito** y presione **Guardar**.
+Para modificar una devolución REGISTRADA, selecciónela en la lista y presione **Editar**; para borrarla, **Eliminar**.
+Ver también: Reglas y validaciones de la devolución de productos; Aplicar una devolución de productos (Nota de Crédito y Otra Entrada).
+
+## Reglas y validaciones de la devolución de productos
 Ruta: Menú > FACTURACION > REMPLAZO.
-posMe no deja guardar la sustitución si:
+posMe no deja guardar la devolución si:
 - La factura no está APLICADA o está ANULADA.
-- Pasaron más días de los permitidos entre la fecha de la factura y la fecha de la sustitución (por defecto 5 días, según la configuración de su empresa). La pantalla muestra el "Plazo máximo". Si cambia la Fecha a una fuera de plazo o anterior a la factura, tampoco deja guardar.
-- La Cantidad es 0 o mayor que lo Disponible. Disponible = cantidad facturada menos lo ya sustituido de ese producto en otras sustituciones REGISTRADAS o APLICADAS de la misma factura.
-- El Producto sustituto es el mismo producto devuelto o no se eligió. El producto que el cliente devuelve debe estar en la factura; el producto que se le entrega no necesita estar en la factura.
-- No agregó ningún producto a sustituir.
-- Al aplicar, no hay existencias suficientes del sustituto en la bodega de la factura (solo si su empresa tiene activada la validación de existencias), o el producto devuelto o el sustituto no están asignados a esa bodega.
+- Pasaron más días de los permitidos entre la fecha de la factura y la fecha de la devolución (por defecto 5 días, según la configuración de su empresa). La pantalla muestra el "Plazo máximo". Tampoco deja guardar con una Fecha anterior a la factura.
+- La Cantidad es 0 o mayor que lo Disponible ("...SUPERA LA CANTIDAD DISPONIBLE PARA DEVOLVER"). Disponible = cantidad facturada menos lo Ya devuelto de ese producto en otras devoluciones de la misma factura.
+- No agregó ningún producto a devolver.
+- El total de la Nota de Crédito es 0 ("EL MONTO DE LA DEVOLUCION ES 0; NO SE PUEDE GENERAR LA NOTA DE CREDITO").
+- Al aplicar, el producto devuelto no está asignado a la bodega de la factura.
 - El ciclo contable de la fecha está cerrado.
-Ver también: Sustituir un producto facturado (Sustitución); Parámetros de la empresa: Sustitución de productos.
+Una misma factura puede tener varias devoluciones en días distintos, mientras quede cantidad Disponible y no pase el plazo.
+Ver también: Devolver productos facturados (Devolución); Parámetros de la empresa: Devolución de productos.
 
-## Aplicar una sustitución de productos (Otra Entrada y Otra Salida)
+## Aplicar una devolución de productos (Nota de Crédito y Otra Entrada)
 Ruta: Menú > FACTURACION > REMPLAZO.
-1. Abra la sustitución REGISTRADA con **Editar**, elija el **Estado** APLICADO y presione **Guardar** (o créela directamente en APLICADO).
-2. posMe genera automáticamente dos documentos de inventario ya aplicados en la bodega de la factura: una **Otra entrada (productos devueltos)**, por la que el producto devuelto vuelve a entrar, y una **Otra salida (productos sustitutos)**, por la que sale el producto que se lleva el cliente. Su comentario dice "Sustitución #... de factura #...: producto x cantidad por producto..." y quedan referenciados a la sustitución y a la factura.
-3. Al abrir la sustitución verá el recuadro **Documentos generados** con enlaces a ambos documentos.
-4. Presione **Imprimir** para obtener el PDF de la sustitución (el formato lo define la configuración de su empresa).
-Restricciones: una sustitución APLICADA queda en solo lectura; no se puede editar ni eliminar.
-Notas: si aparece "Aplicación pendiente" ("Este documento ya generó movimientos de inventario pero no terminó de aplicarse"), la aplicación se interrumpió. Solo puede cambiar el Estado a APLICADO y guardar para terminarla; posMe no duplica los documentos de inventario.
-Ver también: Preguntas frecuentes de la sustitución de productos.
+1. Abra la devolución REGISTRADA con **Editar**, elija el **Estado** APLICADO y presione **Guardar** (o créela directamente en APLICADO).
+2. posMe genera automáticamente dos documentos ya aplicados: una **Nota de Crédito** a favor del cliente, en la moneda de la factura y por el total de la devolución (se suma al saldo de notas de crédito del cliente), y una **Otra entrada (productos devueltos)** en la bodega de la factura, por la que los productos vuelven al inventario.
+3. Al abrir la devolución verá el recuadro **Documentos generados** con enlaces a la **Nota de Crédito aplicada** y a la **Otra entrada (productos devueltos)**, y el **Total de la Nota de Crédito**.
+4. Presione **Imprimir** para obtener el PDF de la devolución (el formato lo define la configuración de su empresa).
+Restricciones: una devolución con documentos generados queda en solo lectura; no se puede editar ni eliminar.
+Notas: los documentos antiguos, hechos cuando esta pantalla era de sustitución, muestran **Otra salida (sustitución histórica)** en lugar de la Nota de Crédito. Si aparece "Aplicación pendiente", el documento ya generó documentos relacionados pero no terminó de aplicarse: solo puede cambiar el Estado.
+Ver también: Preguntas frecuentes de la devolución de productos; Pagar una factura con notas de crédito del cliente (NOTAS CRÉD.).
 
-## Preguntas frecuentes de la sustitución de productos
+## Preguntas frecuentes de la devolución de productos
 Ruta: Menú > FACTURACION > REMPLAZO.
-- ¿Por qué no puedo usar mi factura o me la rechaza? Revise que la factura esté APLICADA y no ANULADA, que no haya pasado el plazo máximo de días desde su fecha y que todavía tenga cantidad Disponible (si ya se sustituyó toda, no queda nada por cambiar).
-- ¿La sustitución cobra o devuelve la diferencia de precio? No. Solo mueve inventario; la factura no cambia. Si hay diferencia de precio, debe manejarse aparte.
-- ¿Puedo corregir una sustitución ya APLICADA? No se puede editar ni eliminar. Si el cliente vuelve a cambiar, registre otra sustitución: el producto que devuelve debe estar en una factura dentro del plazo, mientras que el producto que se le entrega puede ser cualquiera, aunque no esté en la factura.
-- ¿Puedo cambiar varios productos de la misma factura? Sí, agregue un renglón por cada producto con **Agregar**.
-Ver también: Reglas y validaciones de la sustitución de productos.
+- ¿Por qué no puedo usar mi factura o me la rechaza? Revise que la factura esté APLICADA y no ANULADA, que no haya pasado el plazo máximo de días desde su fecha y que todavía tenga cantidad Disponible (si ya se devolvió toda, no queda nada por devolver).
+- ¿Se le devuelve dinero al cliente? No en efectivo. Recibe una Nota de Crédito que puede usar para pagar otra factura de contado con la fila NOTAS CRÉD.
+- ¿Y si el cliente quiere cambiar el producto por otro? Registre la devolución (genera la Nota de Crédito) y haga una factura nueva con el producto que se lleva, pagándola con la nota de crédito.
+- ¿Se modifica la factura original? No. La factura queda igual; la devolución genera sus propios documentos.
+- ¿Puedo corregir una devolución ya APLICADA? No se puede editar ni eliminar.
+Ver también: Reglas y validaciones de la devolución de productos.
 
 ## Registrar un abono de un cliente
 Ruta: Menú > CAJA > ABONO.
@@ -871,13 +893,22 @@ Ruta: Menú > CXC > NOTA D. CREDITO. La lista se llama **LISTA DE NOTAS DE CREDI
 2. En la tarjeta **Datos de la nota** revise **Fecha** (arranca en hoy), **Estado** (al crear, el único es REGISTRADO) y **Moneda**. Escriba el **Monto** y elija el **Cliente** con **Buscar** (**Limpiar** borra lo elegido).
 3. Opcional, en la tarjeta **Referencias y comentario**: **Referencia 1**, **Referencia 2**, **Referencia 3** y **Comentario**.
 4. Presione **Guardar** (en el teléfono, en la barra inferior). La nota queda REGISTRADA y todavía no cambia el saldo del cliente.
-5. Para aplicarla, ábrala en edición, cambie **Estado** a APLICADO y presione **Guardar**. Solo la pantalla de edición permite este paso. Al aplicarla, el monto se suma al saldo del cliente en la moneda elegida (**Balance Cordobas** o **Balance Dolares** en su ficha).
+5. Para aplicarla, siga Aplicar o eliminar una nota de crédito de cliente.
 Mensajes: "Establecer Fecha al Documento", "El monto no puede ser 0", "El monto no puede ser negativo" y "Seleccione el cliente".
 Para modificarla, escriba el número en **Buscar por número…** o seleccione la fila y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Eliminar**, **Imprimir** y **Guardar**. En **Mas** > **Archivos** adjunta documentos.
+Notas: esta pantalla es para clientes; las devoluciones de productos crean su nota de crédito automáticamente, ya APLICADA. Las notas de proveedor están en CXP y las de banco en su propio módulo.
+Ver también: Aplicar o eliminar una nota de crédito de cliente; Registrar una nota de débito de cliente; Notas de crédito y débito de banco.
+
+## Aplicar o eliminar una nota de crédito de cliente
+Ruta: Menú > CXC > NOTA D. CREDITO.
+1. Busque la nota REGISTRADA con **Buscar por número…** o selecciónela y presione **Editar**.
+2. Cambie **Estado** a APLICADO y presione **Guardar**. Solo la pantalla de edición permite este paso.
+3. Al aplicarla, el monto se suma una sola vez al saldo de notas de crédito del cliente en la moneda elegida (**Balance Cordobas** o **Balance Dolares** en su ficha), aunque la vuelva a guardar. Ese saldo se puede usar para pagar facturas de contado en la fila **NOTAS CRÉD.**
+4. Para borrar una nota, selecciónela y presione **Eliminar**.
 Si el estado no lo permite, verá "EL REGISTRO NO PUEDE SER EDITADO POR SU ESTADO ACTUAL" o "EL REGISTRO NO PUEDE SER ELIMINADO POR SU ESTADO ACTUAL".
-Notas: esta pantalla es para clientes; las notas de proveedor están en CXP y las de banco en su propio módulo.
-<!-- REVISAR: confirmar si una nota APLICADA admite editarse o eliminarse; eliminar no revierte el saldo del cliente -->
-Ver también: Registrar una nota de débito de cliente; Notas de crédito y débito de banco.
+Restricciones: una nota que ya se usó para pagar una factura no puede eliminarse: "LA NOTA DE CREDITO YA FUE UTILIZADA, NO PUEDE ELIMINARSE".
+<!-- REVISAR: confirmar si una nota APLICADA que aún no se ha usado admite editarse o eliminarse; eliminar no revierte el saldo del cliente -->
+Ver también: Registrar una nota de crédito de cliente; Pagar una factura con notas de crédito del cliente (NOTAS CRÉD.); Devolver productos facturados (Devolución).
 
 ## Registrar una nota de débito de cliente
 Ruta: Menú > CXC > NOTA D. DEBITO. La lista se llama **LISTA DE NOTAS DE DEBITO DE CLIENTES**.
@@ -2364,7 +2395,7 @@ Los parámetros controlan el comportamiento de posMe por empresa (por ejemplo, o
 Los parámetros contables se editan en CONTABILIDAD > PARAMETROS; el resto los configura el equipo de soporte de posMe.
 Google Calendar de las órdenes de taller: APP_GOOGLE_CLENDAR_ENABLE (true la activa), GOOGLE_CALENDAR_ID, GOOGLE_CALENDAR_SERVICE_EMAIL y GOOGLE_CALENDAR_PRIVATE_KEY; opcionales GOOGLE_CALENDAR_TIMEZONE (por defecto America/Managua) y GOOGLE_CALENDAR_DURATION_MINUTES (duración de cada evento, por defecto 60 minutos).
 Agente de IA de WhatsApp: WHATSAPP_AI_AGENT_ENABLE (true lo activa); WHATSAPP_AI_AGENT_CONTINUE_AFTER_HANDOFF (true: la IA sigue contestando tras derivar mientras ningún colaborador escriba); WHATSAPP_AI_AGENT_HANDOFF_MESSAGE (mensaje al derivar; vacío, la IA redacta el suyo); WHATSAPP_AI_AGENT_STAGE_ATTENDED_ID (etapa "atendida por IA"); WHATSAPP_AI_AGENT_DEBOUNCE_SECONDS (segundos de espera antes de responder, por defecto 3); WHATSAPP_AI_AGENT_MAX_TURNS (máximo de respuestas de la IA antes de pasar a una persona, por defecto 15); WHATSAPP_AI_AGENT_HISTORY_MESSAGES (mensajes anteriores que lee la IA, por defecto 12); WHATSAPP_AI_AGENT_EMPLOYEE_ENTITYID (colaborador "Asistente IA", nunca recibe asignaciones). El texto y las intenciones del agente por tipo de negocio los configura soporte.
-Ver también: Configurar los parámetros contables; Parámetros de la empresa: Campañas de WhatsApp; Parámetros de la empresa: Descuento en factura; Parámetros de la empresa: Sustitución de productos.
+Ver también: Configurar los parámetros contables; Parámetros de la empresa: Campañas de WhatsApp; Parámetros de la empresa: Descuento en factura; Parámetros de la empresa: Devolución de productos.
 <!-- REVISAR: pantalla para que el cliente edite parametros generales -->
 
 ## Parámetros de la empresa: Campañas de WhatsApp
@@ -2383,11 +2414,11 @@ Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla FACTURACI
 - INVOICE_BILLING_DISCOUNT_PASSWORD ("CLAVE AUTORIZACION DE DESCUENTO EN FACTURA"): clave que se pide en la ventana **Autorizar descuento**. Si está vacío, no se pide clave.
 Ver también: Aplicar un descuento en una factura (por producto o global); Autorizar un descuento en una factura con clave.
 
-## Parámetros de la empresa: Sustitución de productos
-Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla FACTURACION > REMPLAZO.
-- INVOICE_REPLACEMENT_MAX_DAYS: días máximos entre la fecha de la factura y la fecha de la sustitución. Por defecto 5 (si no está configurado o no es un número).
-- INVOICE_REPLACEMENT_VALIDATE_STOCK: true exige existencias suficientes del producto sustituto en la bodega de la factura al aplicar; false permite aplicar sin existencias. Si no está configurado, se toma como true.
-Ver también: Sustituir un producto facturado (Sustitución); Reglas y validaciones de la sustitución de productos.
+## Parámetros de la empresa: Devolución de productos
+Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla FACTURACION > REMPLAZO (devolución de productos).
+- INVOICE_REPLACEMENT_MAX_DAYS: días máximos entre la fecha de la factura y la fecha de la devolución. Por defecto 5 (si no está configurado o no es un número).
+- INVOICE_REPLACEMENT_VALIDATE_STOCK: ya no cambia el funcionamiento. Se usaba cuando la pantalla era de sustitución, para exigir existencias del producto que se entregaba; la devolución solo hace entrar productos al inventario.
+Ver también: Devolver productos facturados (Devolución); Reglas y validaciones de la devolución de productos.
 
 ## Soporte
 Si no encuentra cómo hacer algo o hay un error en el sistema, contacte al equipo de soporte de posMe. <!-- REVISAR: telefono / correo de soporte -->

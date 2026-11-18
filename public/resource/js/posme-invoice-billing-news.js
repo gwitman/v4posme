@@ -290,7 +290,7 @@
 		$('#txtReceiptAmount').closest('tr').addClass('pm-fila-recibido');
 		$('#txtReceiptAmountDol').closest('tr').addClass('pm-fila-recibido-ext');
 		$('#txtChangeAmount').closest('tr').addClass('pm-fila-cambio');
-		$('#txtReceiptAmountTarjeta, #txtReceiptAmountTarjetaDol, #txtReceiptAmountBank, #txtReceiptAmountBankDol, #txtReceiptAmountPoint').closest('tr').addClass('pm-pago-extra');
+		$('#txtReceiptAmountTarjeta, #txtReceiptAmountTarjetaDol, #txtReceiptAmountBank, #txtReceiptAmountBankDol, #txtReceiptAmountPoint, #txtReceiptAmountNoteCredit').closest('tr').addClass('pm-pago-extra');
 		$('#txtCustomerDescription').closest('.form-group').addClass('pm-campo-ancho');
 
 		if (hayLayout) {

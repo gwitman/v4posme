@@ -2,7 +2,7 @@
 
 <!--titulo-->
 <div id="heading" class="page-header">
-    <h1><i class="icon20 i-cart-remove"></i> SUSTITUCION DE PRODUCTOS FACTURADOS</h1>
+    <h1><i class="icon20 i-cart-remove"></i> DEVOLUCION DE PRODUCTOS FACTURADOS</h1>
 </div>
 
 <!--botonera-->

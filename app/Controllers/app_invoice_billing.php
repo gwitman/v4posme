@@ -201,6 +201,11 @@ class app_invoice_billing extends _BaseController {
             $dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
             $dataView["objTransactionMasterReferences"]			= $this->Transaction_Master_References_Model->get_rowByTransactionMaster($transactionMasterID);
             $dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+            //get_rowByPK no trae las columnas de notas de credito: se agrega el monto pagado con NC
+            if($dataView["objTransactionMasterInfo"]){
+                $objTMINoteCredit 															= $this->Transaction_Master_Info_Model->get_noteCreditByTransactionMasterID($companyID,$transactionID,$transactionMasterID);
+                $dataView["objTransactionMasterInfo"]->receiptAmountNoteCredit 			= $objTMINoteCredit ? (float) $objTMINoteCredit->receiptAmountNoteCredit : 0;
+            }
             $dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
             $dataView["objTransactionMasterDetailReferences"] 	= $this->Transaction_Master_Detail_References_Model->get_rowByTransactionMasterIDAndComponentID($transactionMasterID,$objComponentItem->componentID);
             $dataView["objTransactionMasterDetailWarehouse"]	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterID);
@@ -555,6 +560,11 @@ class app_invoice_billing extends _BaseController {
 			$dataView["urlPrinterDocumentDirect"]				= $urlPrinterDocumentDirect->value;
 			$dataView["objTransactionMaster"]					= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterInfo"]				= $this->Transaction_Master_Info_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			//get_rowByPK no trae las columnas de notas de credito: se agrega el monto pagado con NC
+			if($dataView["objTransactionMasterInfo"]){
+				$objTMINoteCredit 														= $this->Transaction_Master_Info_Model->get_noteCreditByTransactionMasterID($companyID,$transactionID,$transactionMasterID);
+				$dataView["objTransactionMasterInfo"]->receiptAmountNoteCredit 		= $objTMINoteCredit ? (float) $objTMINoteCredit->receiptAmountNoteCredit : 0;
+			}
 			$dataView["objTransactionMasterDetail"]				= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterDetailWarehouse"]	= $this->Transaction_Master_Detail_Model->get_rowByTransactionAndWarehouse($companyID,$transactionID,$transactionMasterID);
 			$dataView["objTransactionMasterDetailConcept"]		= $this->Transaction_Master_Concept_Model->get_rowByTransactionMasterConcept($companyID,$transactionID,$transactionMasterID,$objComponentItem->componentID);
@@ -761,6 +771,15 @@ class app_invoice_billing extends _BaseController {
 			if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_billing","statusID",$objTM->statusID,COMMAND_APLICABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID))
 			{
 				log_message("error",print_r("prueba crear contra documento",true));
+
+				//Anulacion atomica: devolucion de notas de credito, contra documento y credito
+				//(pr_transaction_revert no hace COMMIT propio)
+				$db = db_connect();
+				$db->transException(true)->transStart();
+
+				//Devolver a cada nota de credito y al saldo del cliente lo pagado con NC
+				$this->core_web_note_credit->revertirNcDeFactura($dataSession,$companyID,$transactionID,$transactionMasterID);
+
 				//Actualizar fecha en la transacciones original y concatenar comentario si viene
 				$dataNewTM 										= array();
 				$dataNewTM["statusIDChangeOn"]					= date("Y-m-d H:i:s");
@@ -802,14 +821,16 @@ class app_invoice_billing extends _BaseController {
 					$objCustomerCredit							= $this->Customer_Credit_Model->get_rowByPK($objTM->companyID,$objCustomer->branchID,$objTM->entityID);
 					$objCustomerCreditNew["balanceDol"]			= $objCustomerCredit->balanceDol + $amountDol;
 					$this->Customer_Credit_Model->update_app_posme($objTM->companyID,$objCustomer->branchID,$objTM->entityID,$objCustomerCreditNew);
-					
+
+					$db->transCommit();
 					return $this->response->setJSON(array(
 							'error'   => false,
 							'message' => SUCCESS." Factura anulada"
-					));//--finjson				
-				
+					));//--finjson
+
 				}
-				
+
+				$db->transCommit();
 				return $this->response->setJSON(array(
 							'error'   => false,
 							'message' => SUCCESS." Factura anulada"
@@ -836,19 +857,66 @@ class app_invoice_billing extends _BaseController {
 				
 			}
 			
-			
+
 		}
-		catch(\Exception $ex){
+		catch(\Throwable $ex){
+			//Throwable: con transException(true) los errores de BD llegan como DatabaseException (no extiende \Exception)
+			if(isset($db))
+				$db->transRollback();
 			log_message("error",print_r($ex,true));
-			
+
 			$this->core_web_notification->set_message(true,$ex->getLine()." ".$ex->getMessage());
 			return $this->response->setJSON(array(
 				'error'   => true,
 				'message' => $ex->getLine()." ".$ex->getMessage()
-			));//--finjson			
-		}	
+			));//--finjson
+		}
 	}
-	
+
+	/**
+	 * Saldo disponible de notas de credito de un cliente en una moneda (AJAX de la pantalla de facturacion).
+	 * POST: entityID, currencyID.
+	 * @return \CodeIgniter\HTTP\ResponseInterface JSON {error, message, balance, currencyID}
+	 */
+	function getNoteCreditAvailable(){
+		try{
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+
+			//PERMISO SOBRE LA FUNCTION
+			if(APP_NEED_AUTHENTICATION == true){
+				$permited = false;
+				$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+				if(!$permited)
+				throw new \Exception(NOT_ACCESS_CONTROL);
+			}
+
+			//La compania siempre es la de la sesion
+			$companyID 		= $dataSession["user"]->companyID;
+			$entityID 		= (int) /*inicio get post*/ $this->request->getPost("entityID");
+			$currencyID 	= (int) /*inicio get post*/ $this->request->getPost("currencyID");
+
+			$balance 		= $this->core_web_note_credit->getSaldoDisponible($companyID,$entityID,$currencyID);
+
+			return $this->response->setJSON(array(
+				'error'   		=> false,
+				'message' 		=> "",
+				'balance' 		=> round($balance,2),
+				'currencyID' 	=> $currencyID
+			));//--finjson
+		}
+		catch(\Exception $ex){
+			return $this->response->setJSON(array(
+				'error'   		=> true,
+				'message' 		=> $ex->getLine()." ".$ex->getMessage(),
+				'balance' 		=> 0,
+				'currencyID' 	=> 0
+			));//--finjson
+		}
+	}
+
 	function duplicate(){
 		try{ 
 			//AUTENTICADO
@@ -1365,18 +1433,32 @@ class app_invoice_billing extends _BaseController {
 			$objTMInfoNew["receiptAmountCardDol"]		= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountTarjetaDol"));
 			$objTMInfoNew["receiptAmountCard"]			= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountTarjeta"));
 			$objTMInfoNew["changeAmount"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtChangeAmount"));
-			
+			//Monto pagado con notas de credito (en REGISTRADA es solo reserva; se consume al APLICAR)
+			$objTMInfoNew["receiptAmountNoteCredit"]	= round(helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountNoteCredit")),2);
+
 			$objTMInfoNew["receiptAmountBankReference"]					= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountBank_Reference"));
 			$objTMInfoNew["receiptAmountBankDolReference"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountBankDol_Reference"));
 			$objTMInfoNew["receiptAmountCardBankReference"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountTarjeta_Reference"));
 			$objTMInfoNew["receiptAmountCardBankDolReference"]			= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountTarjetaDol_Reference"));
-			
+
 			$objTMInfoNew["receiptAmountBankID"]					= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountBank_BankID"));
 			$objTMInfoNew["receiptAmountBankDolID"]					= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountBankDol_BankID"));
 			$objTMInfoNew["receiptAmountCardBankID"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountTarjeta_BankID"));
 			$objTMInfoNew["receiptAmountCardBankDolID"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountTarjetaDol_BankID"));
 			$objTMInfoNew["reference1"]								= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtTMIReference1"));
-			$objTMInfoNew["reference2"]								= $objTMInfoOld ? 
+
+			//Las notas de credito solo se aceptan en facturas de contado
+			if($objTMInfoNew["receiptAmountNoteCredit"] < 0)
+			throw new \Exception("EL MONTO PAGADO CON NOTAS DE CREDITO NO PUEDE SER NEGATIVO");
+			if($objTMInfoNew["receiptAmountNoteCredit"] > 0)
+			{
+				$causalIDTypeCreditNC 	= explode(",", $parameterCausalTypeCredit->value);
+				$exisCausalInCreditNC 	= array_search($objTMNew["transactionCausalID"],$causalIDTypeCreditNC);
+				if($exisCausalInCreditNC || $exisCausalInCreditNC === 0)
+				throw new \Exception("LAS NOTAS DE CREDITO SOLO SE ACEPTAN EN FACTURAS DE CONTADO");
+			}
+
+			$objTMInfoNew["reference2"]								= $objTMInfoOld ?
 																			(
 																				$objTMInfoOld->reference2 != "not_used" ? 
 																					$objTMInfoOld->reference2 : 
@@ -1966,36 +2048,58 @@ class app_invoice_billing extends _BaseController {
 				$objTMNew003["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->locationID,"tb_transaction_master_billing",0);
 				$objTMNew003["createdOn"]						= date("Y-m-d H:i:s");
 				$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMNew003);
-				
+
+				//Pago con notas de credito: se consume ANTES del kardex de salida
+				//(pr_inventory_calculate_kardex_new_output hace COMMIT implicito)
+				if($objTMInfoNew["receiptAmountNoteCredit"] > 0)
+				{
+					$objInvoiceNC 					= array(
+						"companyID"				=> $companyID,
+						"transactionID"			=> $transactionID,
+						"transactionMasterID"	=> $transactionMasterID,
+						"entityID"				=> !empty($objTMNew["entityID"]) ? $objTMNew["entityID"] : $objTM->entityID,
+						"currencyID"			=> !empty($objTMNew["currencyID"]) ? $objTMNew["currencyID"] : $objTM->currencyID,
+						//Total de la factura = amount (bruto con impuestos) - descuento
+						"amount"				=> round($amountTotal - helper_StringToNumber($varDescuento),2)
+					);
+					$resultNC 						= $this->core_web_note_credit->consumirNcEnFactura($dataSession,$objInvoiceNC,$objTMInfoNew["receiptAmountNoteCredit"]);
+					$objTMInfoNC 									= array();
+					$objTMInfoNC["receiptAmountNoteCredit"]		= $resultNC["amount"];
+					$objTMInfoNC["customerBalanceNoteCredit"]	= $resultNC["customerBalance"];
+					$objTMInfoNC["noteCreditDetail"]			= $resultNC["detail"];
+					$this->Transaction_Master_Info_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMInfoNC);
+				}
+
 				//Guardar los puntos iniciales
-				$objCustomer 						= $this->Customer_Model->get_rowByEntity($companyID, $objTMNew["entityID"] );				
+				$objCustomer 						= $this->Customer_Model->get_rowByEntity($companyID, $objTMNew["entityID"] );
 				$objTMReferenceNew					= null;
 				$objTMReferenceNew["reference3"]	= $objCustomer->balancePoint;
 				$this->Transaction_Master_References_Model->update_app_posme_by_transactionMasterID($transactionMasterID,$objTMReferenceNew);
-				
+
 				//Acumular punto del cliente.
 				if($objTMNew["currencyID"]  == $objCurrencyCordoba->currencyID )
 				{
 					$objCustomer 					= $this->Customer_Model->get_rowByEntity($companyID, $objTMNew["entityID"] );
-					$objNatural						= $this->Natural_Model->get_rowByPK($companyID,$dataSession["user"]->branchID,$objTMNew["entityID"]);					
-										
-					//Reglas unicamente para FarmaLey con respecto al calculo de los Puntos.(maz)					
+					$objNatural						= $this->Natural_Model->get_rowByPK($companyID,$dataSession["user"]->branchID,$objTMNew["entityID"]);
+
+					//Reglas unicamente para FarmaLey con respecto al calculo de los Puntos.(maz)
+					//Lo pagado con puntos o con notas de credito no acumula puntos
 					if($dataSession["company"]->type == "farma_ley" )
 					{
 						if($varDescuento == 0)
-						{							
-							$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + (($amountTotal - $objTMInfoNew["receiptAmountPoint"]) * $ratioPont);
+						{
+							$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + (($amountTotal - $objTMInfoNew["receiptAmountPoint"] - $objTMInfoNew["receiptAmountNoteCredit"]) * $ratioPont);
 						}
-						else 
+						else
 						{
 							$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint;
-						}							
+						}
 					}
-					else 
+					else
 					{
 						if($varDescuento == 0)
-						{							
-							$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + (($amountTotal - $objTMInfoNew["receiptAmountPoint"]) * $ratioPont);
+						{
+							$objCustomerNew["balancePoint"]	= $objCustomer->balancePoint + (($amountTotal - $objTMInfoNew["receiptAmountPoint"] - $objTMInfoNew["receiptAmountNoteCredit"]) * $ratioPont);
 						}
 						else 
 						{
@@ -2337,7 +2441,9 @@ class app_invoice_billing extends _BaseController {
         }
         catch(\Exception $ex)
         {
-			
+			//Revertir lo hecho (p.ej. saldo de notas de credito insuficiente al aplicar)
+			if(isset($db))
+				$db->transRollback();
 			log_message("error",print_r($ex,true));
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
@@ -2464,10 +2570,18 @@ class app_invoice_billing extends _BaseController {
 			if($exisCausalInCredit || $exisCausalInCredit === 0){
 				$exisCausalInCredit = "true";
 			}
+
+			//Monto pagado con notas de credito: solo en facturas de contado
+			$receiptAmountNoteCredit				= round(helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountNoteCredit")),2);
+			if($receiptAmountNoteCredit < 0)
+			throw new \Exception("EL MONTO PAGADO CON NOTAS DE CREDITO NO PUEDE SER NEGATIVO");
+			if($receiptAmountNoteCredit > 0 && $exisCausalInCredit == "true")
+			throw new \Exception("LAS NOTAS DE CREDITO SOLO SE ACEPTAN EN FACTURAS DE CONTADO");
+
 			//Si esta configurado como auto aplicado
 			//y es al credito. cambiar el estado por el estado inicial, que es registrada
 			$statusID = "";
-			if($objParameterInvoiceAutoApply == "true" && $exisCausalInCredit == "true" ){				
+			if($objParameterInvoiceAutoApply == "true" && $exisCausalInCredit == "true" ){
 				$statusID = $objListWorkflowStage[0]->workflowStageID;
 			}
 			//si la factura es al contado, y esta como auto aplicada cambiar el estado
@@ -2478,8 +2592,8 @@ class app_invoice_billing extends _BaseController {
 			else {
 				$statusID = /*inicio get post*/ $this->request->getPost("txtStatusID");
 			}
-			
-			
+
+
 			$codigoMesero							= /*inicio get post*/ $this->request->getPost("txtCodigoMesero");
             $varDescuento		 					= /*inicio get post*/ $this->request->getPost("txtDescuento");
             $varPorcentajeDescuento		 		    = /*inicio get post*/ $this->request->getPost("txtPorcentajeDescuento");
@@ -2583,8 +2697,10 @@ class app_invoice_billing extends _BaseController {
 			$objTMInfo["receiptAmountCardBankDolID"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountTarjetaDol_BankID"));			
 			$objTMInfo["reference1"]								= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtTMIReference1"));
 			$objTMInfo["reference2"]								= "not_used";
-			
-			
+			//En REGISTRADA es solo reserva; se consume al APLICAR
+			$objTMInfo["receiptAmountNoteCredit"]					= $receiptAmountNoteCredit;
+
+
 			$this->Transaction_Master_Info_Model->insert_app_posme($objTMInfo);
 			//Ingresar TransactionMaster Reference
 			$objTMReference["transactionMasterID"]		= $transactionMasterID;
@@ -2833,14 +2949,35 @@ class app_invoice_billing extends _BaseController {
 			//Las factuas de credito no se auto aplican auque este el parametro, por que hay que crer el documento
 			//y esto debe ser revisado cuidadosamente
 			if( $this->core_web_workflow->validateWorkflowStage("tb_transaction_master_billing","statusID",$objTM["statusID"],COMMAND_APLICABLE,$dataSession["user"]->companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID)){
-				
+
+				//Pago con notas de credito: se consume ANTES del kardex de salida
+				//(pr_inventory_calculate_kardex_new_output hace COMMIT implicito)
+				if($receiptAmountNoteCredit > 0)
+				{
+					$objInvoiceNC 					= array(
+						"companyID"				=> $companyID,
+						"transactionID"			=> $transactionID,
+						"transactionMasterID"	=> $transactionMasterID,
+						"entityID"				=> $objTM["entityID"],
+						"currencyID"			=> $objTM["currencyID"],
+						//Total de la factura = amount (bruto con impuestos) - descuento
+						"amount"				=> round($amountTotal - helper_StringToNumber($varDescuento),2)
+					);
+					$resultNC 						= $this->core_web_note_credit->consumirNcEnFactura($dataSession,$objInvoiceNC,$receiptAmountNoteCredit);
+					$objTMInfoNC 									= array();
+					$objTMInfoNC["receiptAmountNoteCredit"]		= $resultNC["amount"];
+					$objTMInfoNC["customerBalanceNoteCredit"]	= $resultNC["customerBalance"];
+					$objTMInfoNC["noteCreditDetail"]			= $resultNC["detail"];
+					$this->Transaction_Master_Info_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMInfoNC);
+				}
+
 				//Ingresar en Kardex.
-				$this->core_web_inventory->calculateKardexNewOutput($companyID,$transactionID,$transactionMasterID);			
-			
+				$this->core_web_inventory->calculateKardexNewOutput($companyID,$transactionID,$transactionMasterID);
+
 				//Crear Conceptos.
 				$this->core_web_concept->billing($companyID,$transactionID,$transactionMasterID);
-				
-				
+
+
 				//Actualizar el numero de factura
 				$objTMNew003["transactionNumber"]				= $this->core_web_counter->goNextNumber($dataSession["user"]->companyID,$dataSession["user"]->branchID,"tb_transaction_master_billing",0);
 				$this->Transaction_Master_Model->update_app_posme($companyID,$transactionID,$transactionMasterID,$objTMNew003);
@@ -2918,6 +3055,8 @@ class app_invoice_billing extends _BaseController {
 			}		
 		}
 		catch (DatabaseException $e) {
+			if(isset($db))
+				$db->transRollback();
 			log_message("error",print_r($e,true));
             $response = [
 				'success' 	=> false,
@@ -2929,10 +3068,12 @@ class app_invoice_billing extends _BaseController {
 									'codigoMesero' => $codigoMesero
 				]
 			];
-			return $this->response->setJSON($response);	
+			return $this->response->setJSON($response);
         }
 		catch(\Exception $ex)
 		{
+			if(isset($db))
+				$db->transRollback();
 			log_message("error",print_r($ex,true));
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
