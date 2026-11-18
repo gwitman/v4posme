@@ -126,18 +126,30 @@ class app_cxc_import extends _BaseController
             $rows        = $this->importGetRows(self::MAX_ROWS_INSERT);
             $ctx         = $this->importBuildContext($dataSession, true);
 
+            //Opcion de la pantalla: importar tambien las filas con error (se corrigen con valores por defecto)
+            $input          = $this->request->getJSON(true);
+            $incluirErrores = is_array($input) && !empty($input["incluirErrores"]);
+
             //Licencia: una sola vez por lote
             $this->core_web_permission->getValueLicense($companyID, get_class($this) . "/" . "index");
 
             $validated = $this->importValidate($rows, $ctx, $companyID);
             foreach ($validated as $item) {
-                if (empty($item["errors"]) && $item["data"]["telefono"] !== "" && empty($ctx["phoneTypeID"])) {
+                if (($incluirErrores || empty($item["errors"])) && $item["data"]["telefono"] !== "" && empty($ctx["phoneTypeID"])) {
                     throw new \Exception("No existe el catálogo de tipos de teléfono (tb_entity_phone.typeID); no se pueden importar teléfonos.");
                 }
             }
 
             $result = [];
             foreach ($validated as $item) {
+                $corrected = "";
+                if (!empty($item["errors"]) && $incluirErrores) {
+                    $corrected = implode(" ", array_map(function ($e) {
+                        return $e["message"];
+                    }, $item["errors"]));
+                    $item      = $this->importForceRow($item, $ctx);
+                }
+
                 if (!empty($item["errors"])) {
                     $result[] = [
                         "row"            => $item["row"],
@@ -158,7 +170,7 @@ class app_cxc_import extends _BaseController
                         "ok"             => true,
                         "customerNumber" => $inserted["customerNumber"],
                         "entityID"       => $inserted["entityID"],
-                        "message"        => "Importado"
+                        "message"        => $corrected === "" ? "Importado" : "Importado con correcciones. Errores originales: " . $corrected
                     ];
                 } catch (\Throwable $exRow) {
                     log_message("error", "[app_cxc_import::importRows] fila " . $item["row"] . " companyID: " . $companyID . " | " . $exRow->getLine() . " " . $exRow->getMessage());
@@ -478,6 +490,44 @@ class app_cxc_import extends _BaseController
         }
 
         return array_values($result);
+    }
+
+    /**
+     * Corrige una fila con error para poder importarla igual (opcion "Importar tambien filas con error"):
+     * nombre vacio -> codigo, cedula o "SIN NOMBRE"; textos mas largos que la columna se recortan;
+     * tipo de identificacion invalido -> parametro por defecto; si pais, departamento o municipio no se
+     * resolvieron, los tres toman los parametros por defecto para no mezclar padres e hijos.
+     * Los codigos y cedulas repetidos se dejan tal cual (el cliente se crea igual).
+     * @param array $item Elemento de importValidate() con errores
+     * @param array $ctx  importBuildContext()
+     * @return array El mismo elemento corregido y sin errores
+     */
+    private function importForceRow($item, $ctx)
+    {
+        $param = $ctx["param"];
+        $data  = $item["data"];
+        $ids   = $item["ids"];
+
+        foreach (self::FIELDS as $field) {
+            $data[$field] = mb_substr($data[$field], 0, self::MAX_LENGTH, "UTF-8");
+        }
+        if ($data["nombre"] === "") {
+            $data["nombre"] = $data["codigo"] !== "" ? $data["codigo"] : ($data["cedula"] !== "" ? $data["cedula"] : "SIN NOMBRE");
+        }
+
+        if ($ids["identificationType"] === null) {
+            $ids["identificationType"] = $param["CXC_IDENTIFICATION_TYPE_DEFAULT"];
+        }
+        if ($ids["countryID"] === null || $ids["stateID"] === null || $ids["cityID"] === null) {
+            $ids["countryID"] = $param["CXC_PAIS_DEFAULT"];
+            $ids["stateID"]   = $param["CXC_DEPARTAMENTO_DEFAULT"];
+            $ids["cityID"]    = $param["CXC_MUNICIPIO_DEFAULT"];
+        }
+
+        $item["data"]   = $data;
+        $item["ids"]    = $ids;
+        $item["errors"] = [];
+        return $item;
     }
 
     /**

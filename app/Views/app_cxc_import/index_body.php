@@ -166,11 +166,14 @@
                         <label class="cim-check">
                             <input type="checkbox" v-model="soloErrores"> <span>Solo filas con error</span>
                         </label>
+                        <label class="cim-check" title="Las filas con error se importan corrigiendo lo posible: catálogos inválidos toman el valor por defecto, textos largos se recortan, nombre vacío toma el código o la cédula y los repetidos se crean igual.">
+                            <input type="checkbox" v-model="incluirErrores" :disabled="ocupado"> <span>Importar también filas con error</span>
+                        </label>
                         <button type="button" class="btn btn-default cim-btn-soft" :disabled="!puedeValidar" @click="validar">
                             <i class="bi bi-shield-check" aria-hidden="true"></i> {{ validando ? 'Validando...' : (validado ? 'Validar de nuevo' : 'Validar') }}
                         </button>
                         <button type="button" class="btn btn-primary" :disabled="!puedeImportar" :title="motivoBloqueo" @click="confirmarImportacion">
-                            <i class="bi bi-cloud-upload" aria-hidden="true"></i> Importar {{ entero(totalPendientesImportar) }} filas válidas
+                            <i class="bi bi-cloud-upload" aria-hidden="true"></i> Importar {{ entero(totalPendientesImportar) }} {{ incluirErrores ? 'filas' : 'filas válidas' }}
                         </button>
                     </div>
                 </div>

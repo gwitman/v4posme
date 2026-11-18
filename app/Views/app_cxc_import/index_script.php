@@ -76,6 +76,8 @@
     };
     /* Estados que se pueden (re)enviar a importar: nunca se reenvía una fila importada o rechazada */
     var ESTADOS_IMPORTABLES = ['valida', 'fallida', 'noprocesada'];
+    /* Con "Importar también filas con error" se envían además las filas con error o rechazadas */
+    var ESTADOS_IMPORTABLES_CON_ERROR = ['error', 'rechazada'];
     var ESTADOS_CON_ERROR   = ['error', 'rechazada', 'fallida'];
 
     var promesaSheetJs = null;
@@ -287,6 +289,7 @@
 
                     /* Vista previa */
                     soloErrores:          false,
+                    incluirErrores:       false,
                     pagina:               1,
 
                     /* Validación */
@@ -352,7 +355,8 @@
                     return this.filas.filter(function (fila) { return Object.keys(fila.avisos).length > 0; }).length;
                 },
                 filasImportables: function () {
-                    return this.filas.filter(function (fila) { return ESTADOS_IMPORTABLES.indexOf(fila.estado) !== -1; });
+                    var estados = this.incluirErrores ? ESTADOS_IMPORTABLES.concat(ESTADOS_IMPORTABLES_CON_ERROR) : ESTADOS_IMPORTABLES;
+                    return this.filas.filter(function (fila) { return estados.indexOf(fila.estado) !== -1; });
                 },
                 totalPendientesImportar: function () {
                     return this.filasImportables.length;
@@ -375,7 +379,7 @@
                 motivoBloqueo: function () {
                     if (this.filas.length === 0)          { return 'Cargue un archivo.'; }
                     if (!this.validado)                   { return 'Valide el archivo antes de importar.'; }
-                    if (this.totalPendientesImportar < 1) { return 'No hay filas válidas pendientes de importar.'; }
+                    if (this.totalPendientesImportar < 1) { return this.incluirErrores ? 'No hay filas pendientes de importar.' : 'No hay filas válidas pendientes de importar.'; }
                     return '';
                 },
                 puedeImportar: function () {
@@ -695,11 +699,13 @@
                 /* ---------------- Importación por lotes ---------------- */
                 confirmarImportacion: function () {
                     if (!this.puedeImportar) { return; }
-                    var self = this;
+                    var self       = this;
+                    var conErrores = this.incluirErrores ? this.filasImportables.filter(function (fila) { return ESTADOS_IMPORTABLES_CON_ERROR.indexOf(fila.estado) !== -1; }).length : 0;
+                    var avisoError = conErrores > 0 ? ' Incluye ' + entero(conErrores) + ' filas con error: se corregirán con valores por defecto y los repetidos se crearán igual.' : '';
                     /* fnShowConfirm ya codifica el texto al pintarlo: aquí no se escapa */
                     fnShowConfirm(
                         'Importar clientes',
-                        'Se crearán ' + entero(this.totalPendientesImportar) + ' clientes en lotes de ' + TAMANO_LOTE + '. No cierre la página mientras se importan. ¿Desea continuar?',
+                        'Se crearán ' + entero(this.totalPendientesImportar) + ' clientes en lotes de ' + TAMANO_LOTE + '.' + avisoError + ' No cierre la página mientras se importan. ¿Desea continuar?',
                         function () { self.importar(); }
                     );
                 },
@@ -729,7 +735,7 @@
                         var lote = pendientes.slice(indice, indice + TAMANO_LOTE);
                         numLote++;
                         var self = this;
-                        var json = await llamar('importRows', { rows: lote.map(function (fila) { return self.payloadFila(fila); }) });
+                        var json = await llamar('importRows', { rows: lote.map(function (fila) { return self.payloadFila(fila); }), incluirErrores: this.incluirErrores });
 
                         /* Error de red: el lote se marca como fallido (se puede reintentar) y se sigue con el siguiente */
                         if (json.error === true && json.red === true) {

@@ -249,7 +249,7 @@ Sirve para crear muchos clientes de una vez a partir de un archivo Excel o CSV, 
 Por cada cliente se crea lo mismo que en el registro manual: datos del cliente, línea de crédito por defecto, asignación a los colaboradores y teléfono principal.
 Restricciones: el rol del usuario debe tener permiso sobre la pantalla para ver la opción y para crear clientes. Si el permiso se acaba de asignar, cierre sesión y vuelva a entrar. Si faltan valores por defecto de clientes en la configuración de su empresa, aparece "Faltan parámetros de la empresa para importar clientes..." y debe configurarlos antes.
 Notas: la descarga de la plantilla y la lectura del archivo necesitan conexión a internet.
-Ver también: Importar clientes: llenar la plantilla (columnas y reglas); Importar clientes: cargar, validar e importar; Importar clientes: ventana de progreso y resultados; Importar clientes: errores frecuentes; Crear un cliente.
+Ver también: Importar clientes: llenar la plantilla (columnas y reglas); Importar clientes: cargar, validar e importar; Importar clientes: importar también las filas con error; Importar clientes: ventana de progreso y resultados; Importar clientes: errores frecuentes; Crear un cliente.
 <!-- REVISAR: el registro del menú IMPORTACION DE CLIENTES (CXC) no está en los seeds del repositorio; confirmar nombre y ubicación en el menú -->
 
 ## Importar clientes: llenar la plantilla (columnas y reglas)
@@ -272,8 +272,26 @@ Ruta: Menú > CXC > IMPORTACION DE CLIENTES.
 3. Presione **Validar**. El sistema revisa todas las filas y muestra los contadores **Filas**, **Válidas** y **Con error**; cada error aparece en la celda que lo causa. Marque **Solo filas con error** para verlas.
 4. Corrija el archivo si lo desea, cárguelo de nuevo y presione **Validar de nuevo**.
 5. Presione **Importar N filas válidas** y confirme el mensaje "Se crearán N clientes en lotes de 20...".
-Notas: las filas con error no se importan; las válidas sí. Una vez importadas filas de un archivo ya no se puede volver a validar: para corregir las filas con error, páselas a un archivo nuevo. En el teléfono, **Validar** e **Importar** están en la barra inferior.
-Ver también: Importar clientes: ventana de progreso y resultados; Importar clientes: errores frecuentes.
+Notas: las filas con error no se importan, salvo que marque **Importar también filas con error**; las válidas sí. Una vez importadas filas de un archivo ya no se puede volver a validar: para corregir las filas con error, páselas a un archivo nuevo. En el teléfono, **Validar** e **Importar** están en la barra inferior.
+Ver también: Importar clientes: importar también las filas con error; Importar clientes: ventana de progreso y resultados; Importar clientes: errores frecuentes.
+
+## Importar clientes: importar también las filas con error
+Ruta: Menú > CXC > IMPORTACION DE CLIENTES > **Vista previa**.
+Junto a **Solo filas con error** está la casilla **Importar también filas con error**.
+- Sin marcarla: se importan solo las filas válidas (como siempre).
+- Marcada: el botón cambia a **Importar N filas** e importa también las filas con error, corrigiéndolas así:
+  - Nombre vacío: se usa el código; si no hay, la cédula; si tampoco, "SIN NOMBRE".
+  - Textos de más de 250 caracteres: se recortan.
+  - Tipo de identificación que no existe: se usa el tipo por defecto de su empresa.
+  - País, departamento o municipio que no existe: los tres toman los valores por defecto de su empresa.
+  - Código o cédula repetidos (en el archivo o ya registrados en el sistema): el cliente se crea igual y queda duplicado.
+1. Presione **Validar**.
+2. Marque **Importar también filas con error**.
+3. Presione **Importar N filas**. La confirmación indica cuántas filas con error se incluirán.
+4. En **Descargar resultados**, esas filas aparecen con el mensaje "Importado con correcciones. Errores originales: ..." para que las revise después.
+Volver a intentar: si una importación terminó con filas rechazadas, marque la casilla y presione otra vez **Importar N filas**. Solo se envían las pendientes; las ya importadas no se repiten.
+Advertencia: use esta opción con cuidado, porque puede crear clientes duplicados. Un cliente duplicado se corrige inactivándolo.
+Ver también: Importar clientes: errores frecuentes; Importar clientes: ventana de progreso y resultados.
 
 ## Importar clientes: ventana de progreso y resultados
 Ruta: Menú > CXC > IMPORTACION DE CLIENTES > **Importar N filas válidas**.
@@ -295,7 +313,7 @@ Ruta: Menú > CXC > IMPORTACION DE CLIENTES.
 - "El municipio '...' no existe en el departamento '...'": el municipio es de otro departamento (igual para departamento y país).
 - "El campo ... tiene N caracteres; el máximo es 250.": acorte el texto.
 - "El archivo no tiene la columna "Nombre" en la primera fila.", "El archivo supera los 5 MB." o "Formato no permitido.": revise el archivo o use la plantilla.
-Las filas con error no se importan; las válidas sí.
+Las filas con error no se importan; las válidas sí. Si necesita importarlas igual, vea Importar clientes: importar también las filas con error.
 Ver también: Importar clientes: llenar la plantilla (columnas y reglas).
 
 ## Crear un producto

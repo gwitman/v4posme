@@ -158,6 +158,10 @@ class Customer_Model extends Model  {
 	 */
 	private function get_rowByFieldList($companyID,$field,$arrayValue){
 		$arrayValue	= array_values(array_unique(array_filter(array_map(function($value){ return trim((string)$value); },(array)$arrayValue),'strlen')));
+		//Las columnas de tb_customer son latin1 y la conexion utf8mb4: un valor con caracteres fuera de latin1
+		//(guiones Unicode, emojis, letras de otros alfabetos) provoca "Illegal mix of collations for operation ' IN '".
+		//Ese valor no puede existir en la columna, asi que se descarta de la busqueda.
+		$arrayValue	= array_values(array_filter($arrayValue,function($value){ return @iconv("UTF-8","CP1252",$value) !== false; }));
 		$result		= array();
 		if(empty($arrayValue))
 			return $result;
