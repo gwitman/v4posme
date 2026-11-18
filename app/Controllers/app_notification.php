@@ -2566,8 +2566,7 @@ Le recordamos que tiene un saldo pendiente:
 	 * Segmentos opcionales de la URL:
 	 *  - maxMensajes : mensajes por ejecucion (por defecto 15)
 	 *  - maxSegundos : duracion maxima de la ejecucion (por defecto 50)
-	 *  - pausa       : segundos entre envios para evitar bloqueos de WhatsApp (por defecto 3)
-	 * Ej: app_notification/procesarColaWhatsappMasivo/maxMensajes/15/maxSegundos/50/pausa/3
+	 *  - pausa       : segundos entre envios para evitar bloqueos de WhatsApp (por defecto 3)	 * Ej: app_notification/procesarColaWhatsappMasivo/maxMensajes/15/maxSegundos/50/pausa/3
 	 * @return \CodeIgniter\HTTP\Response JSON con el resumen del consumo
 	 */
 	//http://localhost/posmev4/app_notification/procesarColaWhatsappMasivo

@@ -69,7 +69,7 @@ WHERE p.name = 'RABBITMQ_QUEUE_WHATSAPP'
 	
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
-SET cp.value = '__RABBITMQ_URL__'
+SET cp.value = 'amqps://znxnucuc:eku9YZMKmaMEOKqqs8lRF82NdtsDFv-m@fuji.lmq.cloudamqp.com/znxnucuc'
 WHERE p.name = 'RABBITMQ_URL'
     AND cp.companyID = 2;
 	

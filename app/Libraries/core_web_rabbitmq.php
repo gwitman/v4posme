@@ -5,15 +5,15 @@ namespace App\Libraries;
 use PhpAmqpLib\Connection\AMQPConnectionConfig;
 use PhpAmqpLib\Connection\AMQPConnectionFactory;
 use PhpAmqpLib\Message\AMQPMessage;
+use App\Models\Core\Company_Model;
 
 /**
  * Cliente de colas compatible con RabbitMQ / LavinMQ (CloudAMQP) usando php-amqplib.
  *
  * Parametros por empresa (tb_company_parameter):
  *  - RABBITMQ_URL             : amqps://usuario:clave@host/vhost (amqp:// para conexion sin SSL)
- *  - RABBITMQ_QUEUE_WHATSAPP  : nombre de la cola de WhatsApp masivo. Debe ser unico por
- *                               instalacion, porque varias BD comparten el mismo companyID.
- *
+ *  - RABBITMQ_QUEUE_WHATSAPP  : prefijo de la cola de WhatsApp masivo; la cola real es
+ *                               <valor>_<tb_company.type>. *
  * Los mensajes viajan como JSON y son persistentes (sobreviven a un reinicio del broker).
  * Los que fallan se reencolan al final con el contador "intentos"; al llegar al maximo
  * se mueven a la cola "<cola>_error" para revision manual.
@@ -22,8 +22,7 @@ class core_web_rabbitmq
 {
     const PARAMETER_URL             = "RABBITMQ_URL";
     const PARAMETER_QUEUE_WHATSAPP  = "RABBITMQ_QUEUE_WHATSAPP";
-    const SUFFIX_QUEUE_ERROR        = "_error";
-    //Valor que puede devolver el callback de consume para mandar el mensaje directo a la cola de error (sin reintentos)
+    const SUFFIX_QUEUE_ERROR        = "_error";    //Valor que puede devolver el callback de consume para mandar el mensaje directo a la cola de error (sin reintentos)
     const RESULT_DESCARTAR          = "descartar";
 
     public function __construct()
@@ -85,7 +84,8 @@ class core_web_rabbitmq
     }
 
     /**
-     * Nombre de la cola de WhatsApp masivo configurada para la empresa.
+     * Nombre de la cola de WhatsApp masivo: valor del parametro RABBITMQ_QUEUE_WHATSAPP + "_" + tb_company.type.
+     * El type distingue las instalaciones que comparten el mismo broker.
      * @param int $companyID empresa
      * @return string nombre de la cola
      */
@@ -96,7 +96,23 @@ class core_web_rabbitmq
         if ($queueName == "" || $queueName == "0") {
             throw new \Exception("El parametro " . self::PARAMETER_QUEUE_WHATSAPP . " esta vacio para la company " . $companyID);
         }
-        return $queueName;
+        return $queueName . "_" . $this->getCompanyType($companyID);
+    }
+
+    /**
+     * Tipo de la compañia (tb_company.type), usado para formar los nombres de las colas.
+     * @param int $companyID empresa
+     * @return string type de la compañia
+     */
+    function getCompanyType($companyID)
+    {
+        $Company_Model = new Company_Model();
+        $objCompany    = $Company_Model->get_rowByPK($companyID);
+        $type          = $objCompany ? trim((string) $objCompany->type) : "";
+        if ($type == "") {
+            throw new \Exception("La company " . $companyID . " no tiene tb_company.type para formar el nombre de la cola");
+        }
+        return $type;
     }
 
     /**
