@@ -113,6 +113,12 @@ class core_web_whatsap {
    /*************************************************************/
 	private $CI;
 
+	//Vigencia de la cache de la instancia de Evolution con prefijo <tb_company.type>_
+	const EVOLUTION_INSTANCE_CACHE_SEGUNDOS			= 3600;	//consulta correcta (haya o no instancia)
+	const EVOLUTION_INSTANCE_CACHE_ERROR_SEGUNDOS	= 300;	//Evolution no respondio: no reintentar en cada mensaje
+	//Memoria del proceso: companyID_type => nombre de instancia ("" = no hay)
+	private static $evolutionInstanceMemo			= [];
+
 
    /**********************Funciones******************************/
    /*************************************************************/
@@ -194,7 +200,11 @@ class core_web_whatsap {
 		return true;
    }
 
-   function sendMessageGeneric( $typeCompany,$companyID, $message, $phoneDestino,$esperarRespuesta,$instanciaName)
+   /**
+    * Envia texto por el proveedor de la empresa (segun tb_company.type).
+    * @param string $instanciaEvolution Instancia de Evolution a usar si el envio sale por Evolution; vacio = parametro WHATSAP_URL_REQUEST_SESSION
+    */
+   function sendMessageGeneric( $typeCompany,$companyID, $message, $phoneDestino,$esperarRespuesta,$instanciaName, $instanciaEvolution = "")
    {
 
 	   if($typeCompany == "posme")
@@ -206,12 +216,12 @@ class core_web_whatsap {
 		   }
 		   else if($instanciaName == "EvolutionApi")
 		   {
-				return $this->sendMessageByEvolutionApiText( $companyID, $message, $phoneDestino, $instanciaName);
+				return $this->sendMessageByEvolutionApiText( $companyID, $message, $phoneDestino, $instanciaName, $instanciaEvolution);
 		   }
 	   }
 	   else if ($typeCompany == "gymJalapa")
 	   {   
-		   return $this->sendMessageByEvolutionApiText( $companyID, $message, $phoneDestino, $instanciaName);
+		   return $this->sendMessageByEvolutionApiText( $companyID, $message, $phoneDestino, $instanciaName, $instanciaEvolution);
 	   }
 	   else if ($typeCompany == "arteDigital")
 	   {
@@ -223,7 +233,7 @@ class core_web_whatsap {
 	   }
 	   else if($typeCompany == "alphaDblMotor")
 	   {
-			return $this->sendMessageByEvolutionApiText( $companyID, $message, $phoneDestino, $instanciaName);
+			return $this->sendMessageByEvolutionApiText( $companyID, $message, $phoneDestino, $instanciaName, $instanciaEvolution);
 	   }
 	   else
 	   {
@@ -234,11 +244,15 @@ class core_web_whatsap {
 		   }
 		   else
 		   {
-			   return $this->sendMessageByEvolutionApiText( $companyID, $message, $phoneDestino, $instanciaName);
+			   return $this->sendMessageByEvolutionApiText( $companyID, $message, $phoneDestino, $instanciaName, $instanciaEvolution);
 		   }
 	   }
    }
-   function sendMessageTypeImagGeneric( $typeCompany,$companyID, $urlImagen,$message, $phoneDestino,$esperarRespuesta,$instanciaName )
+   /**
+    * Envia imagen por el proveedor de la empresa (segun tb_company.type).
+    * @param string $instanciaEvolution Instancia de Evolution a usar si el envio sale por Evolution; vacio = parametro WHATSAP_URL_REQUEST_SESSION
+    */
+   function sendMessageTypeImagGeneric( $typeCompany,$companyID, $urlImagen,$message, $phoneDestino,$esperarRespuesta,$instanciaName, $instanciaEvolution = "" )
    {
 	   if($this->isSendByMetaCloud($companyID))
 	   {
@@ -252,11 +266,11 @@ class core_web_whatsap {
 	   }
 	   else if ($typeCompany == "posme")
 	   {   
-		   return $this->sendMessageByEvolutionApiImage( $companyID, $urlImagen, $message, $phoneDestino, $instanciaName);
+		   return $this->sendMessageByEvolutionApiImage( $companyID, $urlImagen, $message, $phoneDestino, $instanciaName, $instanciaEvolution);
 	   }
 	   else if ($typeCompany == "gymJalapa")
 	   {   
-		   return $this->sendMessageByEvolutionApiImage( $companyID, $urlImagen, $message, $phoneDestino, $instanciaName);
+		   return $this->sendMessageByEvolutionApiImage( $companyID, $urlImagen, $message, $phoneDestino, $instanciaName, $instanciaEvolution);
 	   }
 	   else if ($typeCompany == "arteDigital")
 	   {
@@ -264,7 +278,7 @@ class core_web_whatsap {
 	   }
 	   else if($typeCompany == "alphaDblMotor")
 	   {
-			return $this->sendMessageByEvolutionApiImage( $companyID, $urlImagen, $message, $phoneDestino,$instanciaName);
+			return $this->sendMessageByEvolutionApiImage( $companyID, $urlImagen, $message, $phoneDestino,$instanciaName, $instanciaEvolution);
 	   }
 	   else
 	   {
@@ -2010,9 +2024,10 @@ class core_web_whatsap {
 	 * @param string $message Mensaje de texto a enviar
 	 * @param string $phoneDestino Numero de telefono destino
 	 * @param string $instanciaName Nombre de la instancia de Evolution API
+	 * @param string $instanciaEvolution Instancia real a usar; vacio = la del parametro WHATSAP_URL_REQUEST_SESSION
 	 * @return array Respuesta de la API
 	 */
-	function sendMessageByEvolutionApiText($companyID, $message, $phoneDestino, $instanciaName)
+	function sendMessageByEvolutionApiText($companyID, $message, $phoneDestino, $instanciaName, $instanciaEvolution = "")
 	{
 		$Parameter_Model 			= new Parameter_Model();
 		$Company_Parameter_Model 	= new Company_Parameter_Model();
@@ -2038,7 +2053,8 @@ class core_web_whatsap {
 		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
 
 		// Evolution API: POST {url}/message/sendText/{instancia}
-		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendText/' . $objPWhatsappInstanciName->value;
+		$instancia	= $this->evolutionResolveSendInstance($companyID, $instanciaEvolution, $objPWhatsappInstanciName->value);
+		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendText/' . $instancia["name"];
 		$payload 	= [
 			'number' => $phoneDestino,
 			'text'   => $message
@@ -2062,6 +2078,7 @@ class core_web_whatsap {
 		$response = curl_exec($ch);
 		$error    = curl_error($ch);
 		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$this->evolutionCheckSendInstance($companyID, $instancia, $httpCode);
 		curl_close($ch);
 
 		log_message('info', '[sendMessageByEvolutionApiText] HTTP: ' . $httpCode . ' | response: ' . $response);
@@ -2080,9 +2097,10 @@ class core_web_whatsap {
 	 * @param string $message Caption de la imagen
 	 * @param string $phoneDestino Numero de telefono destino
 	 * @param string $instanciaName Nombre de la instancia de Evolution API
+	 * @param string $instanciaEvolution Instancia real a usar; vacio = la del parametro WHATSAP_URL_REQUEST_SESSION
 	 * @return array Respuesta de la API
 	 */
-	function sendMessageByEvolutionApiImage($companyID, $urlImagen, $message, $phoneDestino, $instanciaName)
+	function sendMessageByEvolutionApiImage($companyID, $urlImagen, $message, $phoneDestino, $instanciaName, $instanciaEvolution = "")
 	{
 		$Parameter_Model 			= new Parameter_Model();
 		$Company_Parameter_Model 	= new Company_Parameter_Model();
@@ -2108,7 +2126,8 @@ class core_web_whatsap {
 		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
 
 		// Evolution API: POST {url}/message/sendMedia/{instancia}
-		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $objPWhatsappInstanciName->value;
+		$instancia	= $this->evolutionResolveSendInstance($companyID, $instanciaEvolution, $objPWhatsappInstanciName->value);
+		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $instancia["name"];
 		$payload 	= [
 			'number'    => $phoneDestino,
 			'mediatype' => 'image',
@@ -2134,6 +2153,7 @@ class core_web_whatsap {
 		$response = curl_exec($ch);
 		$error    = curl_error($ch);
 		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$this->evolutionCheckSendInstance($companyID, $instancia, $httpCode);
 		curl_close($ch);
 
 		log_message('info', '[sendMessageByEvolutionApiImage] HTTP: ' . $httpCode . ' | response: ' . $response);
@@ -2153,9 +2173,10 @@ class core_web_whatsap {
 	 * @param string $message Caption del documento
 	 * @param string $phoneDestino Numero de telefono destino
 	 * @param string $instanciaName Nombre de la instancia de Evolution API
+	 * @param string $instanciaEvolution Instancia real a usar; vacio = la del parametro WHATSAP_URL_REQUEST_SESSION
 	 * @return array Respuesta de la API
 	 */
-	function sendMessageByEvolutionApiPdf($companyID, $urlPdf, $fileName, $message, $phoneDestino, $instanciaName)
+	function sendMessageByEvolutionApiPdf($companyID, $urlPdf, $fileName, $message, $phoneDestino, $instanciaName, $instanciaEvolution = "")
 	{
 		$Parameter_Model 			= new Parameter_Model();
 		$Company_Parameter_Model 	= new Company_Parameter_Model();
@@ -2181,7 +2202,8 @@ class core_web_whatsap {
 		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
 
 		// Evolution API: POST {url}/message/sendMedia/{instancia}
-		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $objPWhatsappInstanciName->value;
+		$instancia	= $this->evolutionResolveSendInstance($companyID, $instanciaEvolution, $objPWhatsappInstanciName->value);
+		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $instancia["name"];
 		$payload 	= [
 			'number'    => $phoneDestino,
 			'mediatype' => 'document',
@@ -2208,6 +2230,7 @@ class core_web_whatsap {
 		$response = curl_exec($ch);
 		$error    = curl_error($ch);
 		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$this->evolutionCheckSendInstance($companyID, $instancia, $httpCode);
 		curl_close($ch);
 
 		log_message('info', '[sendMessageByEvolutionApiPdf] HTTP: ' . $httpCode . ' | response: ' . $response);
@@ -2226,9 +2249,10 @@ class core_web_whatsap {
 	 * @param string $message Caption del video
 	 * @param string $phoneDestino Numero de telefono destino
 	 * @param string $instanciaName Nombre de la instancia de Evolution API
+	 * @param string $instanciaEvolution Instancia real a usar; vacio = la del parametro WHATSAP_URL_REQUEST_SESSION
 	 * @return array Respuesta de la API
 	 */
-	function sendMessageByEvolutionApiVideo($companyID, $urlVideo, $message, $phoneDestino, $instanciaName)
+	function sendMessageByEvolutionApiVideo($companyID, $urlVideo, $message, $phoneDestino, $instanciaName, $instanciaEvolution = "")
 	{
 		$Parameter_Model 			= new Parameter_Model();
 		$Company_Parameter_Model 	= new Company_Parameter_Model();
@@ -2254,7 +2278,8 @@ class core_web_whatsap {
 		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
 
 		// Evolution API: POST {url}/message/sendMedia/{instancia}
-		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $objPWhatsappInstanciName->value;
+		$instancia	= $this->evolutionResolveSendInstance($companyID, $instanciaEvolution, $objPWhatsappInstanciName->value);
+		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $instancia["name"];
 		$payload 	= [
 			'number'    => $phoneDestino,
 			'mediatype' => 'video',
@@ -2280,6 +2305,7 @@ class core_web_whatsap {
 		$response = curl_exec($ch);
 		$error    = curl_error($ch);
 		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$this->evolutionCheckSendInstance($companyID, $instancia, $httpCode);
 		curl_close($ch);
 
 		log_message('info', '[sendMessageByEvolutionApiVideo] HTTP: ' . $httpCode . ' | response: ' . $response);
@@ -2297,9 +2323,10 @@ class core_web_whatsap {
 	 * @param string $urlAudio URL publica del audio
 	 * @param string $phoneDestino Numero de telefono destino
 	 * @param string $instanciaName Nombre de la instancia de Evolution API
+	 * @param string $instanciaEvolution Instancia real a usar; vacio = la del parametro WHATSAP_URL_REQUEST_SESSION
 	 * @return array Respuesta de la API
 	 */
-	function sendMessageByEvolutionApiAudio($companyID, $urlAudio, $phoneDestino, $instanciaName)
+	function sendMessageByEvolutionApiAudio($companyID, $urlAudio, $phoneDestino, $instanciaName, $instanciaEvolution = "")
 	{
 		$Parameter_Model 			= new Parameter_Model();
 		$Company_Parameter_Model 	= new Company_Parameter_Model();
@@ -2325,7 +2352,8 @@ class core_web_whatsap {
 		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
 
 		// Evolution API: POST {url}/message/sendWhatsAppAudio/{instancia}
-		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendWhatsAppAudio/' . $objPWhatsappInstanciName->value;
+		$instancia	= $this->evolutionResolveSendInstance($companyID, $instanciaEvolution, $objPWhatsappInstanciName->value);
+		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendWhatsAppAudio/' . $instancia["name"];
 		$payload 	= [
 			'number' => $phoneDestino,
 			'audio'  => $urlAudio
@@ -2349,6 +2377,7 @@ class core_web_whatsap {
 		$response = curl_exec($ch);
 		$error    = curl_error($ch);
 		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		$this->evolutionCheckSendInstance($companyID, $instancia, $httpCode);
 		curl_close($ch);
 
 		log_message('info', '[sendMessageByEvolutionApiAudio] HTTP: ' . $httpCode . ' | response: ' . $response);
@@ -3319,7 +3348,6 @@ class core_web_whatsap {
 	function evolutionGetInstanceConfig($companyID)
 	{
 		$core_web_parameter = new core_web_parameter();
-		$Company_Model      = new Company_Model();
 
 		$url     = rtrim(trim((string) $core_web_parameter->getParameterValue("WAHTSAP_URL_ENVIO_MENSAJE", $companyID)), '/');
 		$apiKey  = trim((string) $core_web_parameter->getParameterValue("WHATSAP_TOCKEN", $companyID));
@@ -3331,9 +3359,7 @@ class core_web_whatsap {
 			throw new \Exception("Configure la llave de Evolution API en el parámetro WHATSAP_TOCKEN.");
 		}
 
-		$objCompany = $Company_Model->get_rowByPK($companyID);
-		$prefix     = $this->evolutionCleanName($objCompany ? (trim((string) $objCompany->type) != "" ? $objCompany->type : $objCompany->name) : "");
-		$prefix     = $prefix == "" ? "company" . $companyID : $prefix;
+		$prefix     = $this->evolutionCompanyTypeClean($companyID);
 		$base       = $this->evolutionCleanName($current);
 		$base       = $base == "" ? "whatsapp" : $base;
 
@@ -3428,6 +3454,209 @@ class core_web_whatsap {
 			$message = "Evolution API rechazó la llave (WHATSAP_TOCKEN). " . $message;
 		}
 		return "Evolution API (HTTP " . $result["httpCode"] . ")" . ($message != "" ? ": " . $message : ".");
+	}
+
+	/**
+	 * Busca en Evolution API la instancia de la compania: la que empieza con tb_company.type + "_" (ej. cristoRey02_whatsapp),
+	 * que es el nombre con que la crea la pantalla de campañas (app_cxc_advertising) al escanear el QR (evolutionGetInstanceConfig).
+	 * Si hay varias con ese prefijo se prefiere la que coincide con evolutionGetInstanceConfig()["instanceName"].
+	 * Se usa para enviar por la instancia propia de la compania en lugar de WHATSAP_URL_REQUEST_SESSION.
+	 * La busqueda no distingue mayusculas. Ante cualquier error (sin URL, sin llave, servidor caido) devuelve "".
+	 * No consulta Evolution en cada mensaje: el resultado se guarda en memoria y en writable/cache/evolution_instance/
+	 * por EVOLUTION_INSTANCE_CACHE_SEGUNDOS (si la consulta fallo, por EVOLUTION_INSTANCE_CACHE_ERROR_SEGUNDOS).
+	 * @param int $companyID
+	 * @return string Nombre exacto de la instancia encontrada o "" si no hay ninguna
+	 */
+	function evolutionFindInstanceByCompanyType($companyID)
+	{
+		$type = $this->evolutionCompanyTypeClean($companyID);
+		if ($type == "") {
+			return "";
+		}
+
+		//1. Memoria del proceso (un cron o request que envia varios mensajes)
+		$key = $companyID . "_" . $type;
+		if (array_key_exists($key, self::$evolutionInstanceMemo)) {
+			return self::$evolutionInstanceMemo[$key];
+		}
+
+		//2. Archivo de cache: se reutiliza mientras no venza (exito u error tienen distinta vigencia)
+		$file  = $this->evolutionInstanceCacheFile($companyID, $type);
+		$cache = is_file($file) ? json_decode((string) @file_get_contents($file), true) : null;
+		if (is_array($cache) && isset($cache["expira"]) && intval($cache["expira"]) > time()) {
+			self::$evolutionInstanceMemo[$key] = (string) ($cache["instanceName"] ?? "");
+			return self::$evolutionInstanceMemo[$key];
+		}
+
+		//3. Consulta a Evolution API y se guarda el resultado
+		$ok   = true;
+		$name = $this->evolutionFetchInstanceByCompanyType($companyID, $type, $ok);
+		$ttl  = $ok ? self::EVOLUTION_INSTANCE_CACHE_SEGUNDOS : self::EVOLUTION_INSTANCE_CACHE_ERROR_SEGUNDOS;
+		$this->evolutionInstanceCacheSave($file, [
+			"companyID"    => $companyID,
+			"type"         => $type,
+			"instanceName" => $name,
+			"consultado"   => date("Y-m-d H:i:s"),
+			"expira"       => time() + $ttl
+		]);
+		self::$evolutionInstanceMemo[$key] = $name;
+		return $name;
+	}
+
+	/**
+	 * Borra la cache de la instancia por prefijo para que el proximo envio vuelva a consultar Evolution
+	 * (ej. la instancia guardada ya no existe).
+	 * @param int $companyID
+	 * @return void
+	 */
+	function evolutionClearInstanceCache($companyID)
+	{
+		$type = $this->evolutionCompanyTypeClean($companyID);
+		unset(self::$evolutionInstanceMemo[$companyID . "_" . $type]);
+		$file = $this->evolutionInstanceCacheFile($companyID, $type);
+		if (is_file($file)) {
+			@unlink($file);
+		}
+		log_message('info', '[evolutionClearInstanceCache] companyID: ' . $companyID);
+	}
+
+	/**
+	 * Instancia con la que se envia por Evolution: la explicita si viene; si no, la que empieza con
+	 * <tb_company.type>_ (cacheada); si no existe, la del parametro WHATSAP_URL_REQUEST_SESSION.
+	 * @param int    $companyID
+	 * @param string $instanciaEvolution Instancia explicita (puede venir vacia)
+	 * @param string $instanciaParametro Valor de WHATSAP_URL_REQUEST_SESSION
+	 * @return array {name, fromPrefix}
+	 */
+	function evolutionResolveSendInstance($companyID, $instanciaEvolution, $instanciaParametro)
+	{
+		$explicita = trim((string) $instanciaEvolution);
+		if ($explicita != "") {
+			return ["name" => $explicita, "fromPrefix" => false];
+		}
+		$byPrefix = $this->evolutionFindInstanceByCompanyType($companyID);
+		if ($byPrefix != "") {
+			return ["name" => $byPrefix, "fromPrefix" => true];
+		}
+		return ["name" => (string) $instanciaParametro, "fromPrefix" => false];
+	}
+
+	/**
+	 * Si el envio por una instancia tomada del prefijo responde 404 (la instancia ya no existe), borra la cache.
+	 * @param int   $companyID
+	 * @param array $instancia evolutionResolveSendInstance()
+	 * @param int   $httpCode
+	 * @return void
+	 */
+	function evolutionCheckSendInstance($companyID, $instancia, $httpCode)
+	{
+		if ($instancia["fromPrefix"] && intval($httpCode) == 404) {
+			$this->evolutionClearInstanceCache($companyID);
+		}
+	}
+
+	/**
+	 * Prefijo del nombre de instancia de la compania: tb_company.type limpio (si esta vacio, el nombre de la
+	 * compania; si tampoco hay, "company<ID>"). Es la misma regla con que se crea la instancia.
+	 * @param int $companyID
+	 * @return string
+	 */
+	function evolutionCompanyTypeClean($companyID)
+	{
+		$Company_Model 	= new Company_Model();
+		$objCompany 	= $Company_Model->get_rowByPK($companyID);
+		$prefix     	= $this->evolutionCleanName($objCompany ? (trim((string) $objCompany->type) != "" ? $objCompany->type : $objCompany->name) : "");
+		return $prefix == "" ? "company" . $companyID : $prefix;
+	}
+
+	/**
+	 * Ruta del archivo de cache de la instancia por prefijo (writable/cache/evolution_instance/).
+	 * Lleva companyID y type porque el mismo companyID se repite entre compañias.
+	 * @param int    $companyID
+	 * @param string $type
+	 * @return string
+	 */
+	function evolutionInstanceCacheFile($companyID, $type)
+	{
+		return WRITEPATH . "cache" . DIRECTORY_SEPARATOR . "evolution_instance" . DIRECTORY_SEPARATOR . "company_" . intval($companyID) . "_" . $type . ".json";
+	}
+
+	/**
+	 * Guarda la cache de forma atomica (archivo temporal + rename) para no dejar JSON a medias.
+	 * @param string $file
+	 * @param array  $data
+	 * @return void
+	 */
+	function evolutionInstanceCacheSave($file, $data)
+	{
+		try
+		{
+			$dir = dirname($file);
+			if (!is_dir($dir)) {
+				@mkdir($dir, 0775, true);
+			}
+			$tmp = $file . "." . getmypid() . ".tmp";
+			if (@file_put_contents($tmp, json_encode($data), LOCK_EX) !== false) {
+				@rename($tmp, $file);
+			}
+		}
+		catch (\Throwable $ex)
+		{
+			log_message('error', '[evolutionInstanceCacheSave] ' . $ex->getMessage());
+		}
+	}
+
+	/**
+	 * Consulta Evolution API (GET /instance/fetchInstances) y devuelve la instancia que empieza con <type>_.
+	 * @param int    $companyID
+	 * @param string $type Prefijo (evolutionCompanyTypeClean)
+	 * @param bool   $ok   Sale en false si no se pudo consultar (se cachea menos tiempo)
+	 * @return string Nombre de la instancia o ""
+	 */
+	function evolutionFetchInstanceByCompanyType($companyID, $type, &$ok)
+	{
+		$ok = true;
+		try
+		{
+			$config = $this->evolutionGetInstanceConfig($companyID);
+			$result = $this->evolutionInstanceRequest($config, "GET", "/instance/fetchInstances");
+			if ($result["httpCode"] < 200 || $result["httpCode"] >= 300) {
+				$ok = false;
+				return "";
+			}
+
+			//Misma regla que evolutionGetInstanceConfig: igual al prefijo o que empiece con "<prefijo>_"
+			$prefix     = strtolower($type);
+			$preferida  = strtolower($config["instanceName"]);
+			$encontrada = "";
+			foreach ($result["json"] as $row) {
+				if (!is_array($row)) {
+					continue;
+				}
+				//v2 trae "name" en la raiz; v1 trae instance.instanceName
+				$name  = (string) ($row["name"] ?? ($row["instanceName"] ?? ($row["instance"]["instanceName"] ?? "")));
+				$lower = strtolower($name);
+				if ($name == "" || ($lower !== $prefix && strpos($lower, $prefix . "_") !== 0)) {
+					continue;
+				}
+				if ($lower === $preferida) {
+					$encontrada = $name;
+					break;
+				}
+				if ($encontrada == "") {
+					$encontrada = $name;
+				}
+			}
+
+			log_message('info', '[evolutionFindInstanceByCompanyType] companyID: ' . $companyID . ' | prefijo: ' . $prefix . '_ | instancia: ' . ($encontrada == "" ? "(ninguna)" : $encontrada));
+			return $encontrada;
+		}
+		catch (\Throwable $ex)
+		{
+			log_message('error', '[evolutionFindInstanceByCompanyType] ' . $ex->getMessage());
+			$ok = false;
+			return "";
+		}
 	}
 
 	/**

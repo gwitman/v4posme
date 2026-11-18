@@ -2401,6 +2401,41 @@ class app_notification extends _BaseController
 		echo "SUCCESS";
 	}
 	
+	/**
+	 * Sube a la cola de WhatsApp de RabbitMQ (RABBITMQ_QUEUE_WHATSAPP) los mensajes armados por un job.
+	 * No envia nada: los envia procesarColaWhatsappMasivo (cron cada minuto).
+	 * @param array  $chatSend Mensajes: phoneNumber, mensaje, urlImage y opcional provider/templateName/...
+	 * @param string $logTag   Etiqueta para el log
+	 * @return array {error, message, cola, totalMensajes, totalEncolados}
+	 */
+	private function encolarWhatsappNotificacion($chatSend, $logTag)
+	{
+		$resultado = [
+			'error'				=> false,
+			'message'			=> SUCCESS,
+			'cola'				=> '',
+			'totalMensajes'		=> count($chatSend),
+			'totalEncolados'	=> 0
+		];
+
+		if(count($chatSend) <= 0)
+			return $resultado;
+
+		try
+		{
+			$resultado['cola']				= $this->core_web_rabbitmq->getQueueWhatsapp(APP_COMPANY);
+			$resultado['totalEncolados']	= $this->core_web_rabbitmq->publishBatch(APP_COMPANY, $resultado['cola'], $chatSend);
+			log_message('info', $logTag . ' Cola: ' . $resultado['cola'] . ' | Encolados: ' . $resultado['totalEncolados']);
+		}
+		catch(\Throwable $ex)
+		{
+			log_message('error', $logTag . ' Error encolando en RabbitMQ: ' . $ex->getMessage());
+			$resultado['error']		= true;
+			$resultado['message']	= 'Error encolando en RabbitMQ: ' . $ex->getMessage();
+		}
+		return $resultado;
+	}
+
 	function sendWhatsappDiarioMasivePosMeConnectCobranza()
 	{
 		//Recorrer todos los cobros, 
@@ -2436,14 +2471,15 @@ Le recordamos que tiene un saldo pendiente:
 /*Equipo de posMe*/
 ";
 			$rowx["urlImage"] 		= "";
+			$rowx["provider"] 		= "evolution";
+			$rowx["origen"] 		= "sendWhatsappDiarioMasivePosMeConnectCobranza";
 			$chatSend[]				= $rowx;
 		}
-		
-		
-		$this->core_web_whatsap->sendMessageEvolutionApiOnlyTextMsive(APP_COMPANY,$chatSend,$pathRemember,"");
-		return;
-		
-		
+
+		//Los mensajes no se envian aqui: se suben a RabbitMQ y los envia procesarColaWhatsappMasivo (cron cada minuto)
+		return $this->response->setJSON($this->encolarWhatsappNotificacion($chatSend, '[sendWhatsappDiarioMasivePosMeConnectCobranza]'));
+
+
 	}
 	
 	function sendWhatsappDiarioMasiveWapi2CobranzaNjGym()
@@ -2562,11 +2598,14 @@ Le recordamos que tiene un saldo pendiente:
 	 *  - "meta"    : con templateName usa la plantilla (languageCode, bodyParams, headerImage);
 	 *                sin templateName envia imagen o texto libre por Meta Cloud API
 	 *  - "evolution": imagen o texto por Evolution API (instancia EvolutionApi)
-	 * Los mensajes con provider los encola app_cxc_advertising::send.
+	 * La instancia de Evolution la resuelve core_web_whatsap (evolutionResolveSendInstance): la que empieza con
+	 * <tb_company.type>_ si existe, si no la del parametro WHATSAP_URL_REQUEST_SESSION; cacheada en archivo.
+	 * Los mensajes con provider los encola app_cxc_advertising::send y los jobs de cobranza/citas de este controlador.
 	 * Segmentos opcionales de la URL:
 	 *  - maxMensajes : mensajes por ejecucion (por defecto 15)
 	 *  - maxSegundos : duracion maxima de la ejecucion (por defecto 50)
-	 *  - pausa       : segundos entre envios para evitar bloqueos de WhatsApp (por defecto 3)	 * Ej: app_notification/procesarColaWhatsappMasivo/maxMensajes/15/maxSegundos/50/pausa/3
+	 *  - pausa       : segundos entre envios para evitar bloqueos de WhatsApp (por defecto 3)
+	 * Ej: app_notification/procesarColaWhatsappMasivo/maxMensajes/15/maxSegundos/50/pausa/3
 	 * @return \CodeIgniter\HTTP\Response JSON con el resumen del consumo
 	 */
 	//http://localhost/posmev4/app_notification/procesarColaWhatsappMasivo
@@ -2665,8 +2704,9 @@ Le recordamos que tiene un saldo pendiente:
 	}
 
 	/**
-	 * Copia de sendWhatsappDiarioMasiveWapi2CobranzaNjGym que SI envia el recordatorio,
-	 * usando una plantilla aprobada de WhatsApp por Meta Cloud API (sirve fuera de la ventana de 24 h).
+	 * Copia de sendWhatsappDiarioMasiveWapi2CobranzaNjGym que encola el recordatorio en RabbitMQ
+	 * con una plantilla aprobada de WhatsApp por Meta Cloud API (sirve fuera de la ventana de 24 h).
+	 * El envio lo hace procesarColaWhatsappMasivo.
 	 * Segmentos opcionales de la URL:
 	 *  - templateName : nombre de la plantilla en Meta (por defecto recordatorio_pago_njgym)
 	 *  - languageCode : idioma de la plantilla (por defecto es)
@@ -2695,8 +2735,10 @@ Le recordamos que tiene un saldo pendiente:
 			return $this->response->setJSON(array(
 				'error'			=> false,
 				'message'		=> 'No se encontraron cobros pendientes',
+				'cola'			=> '',
+				'totalMensajes'	=> 0,
+				'totalEncolados'=> 0,
 				'totalCobros'	=> 0,
-				'totalEnviados'	=> 0,
 				'totalErrores'	=> 0,
 				'data'			=> []
 			));
@@ -2705,7 +2747,7 @@ Le recordamos que tiene un saldo pendiente:
 		log_message('info', $logTag . ' Total cobros encontrados: ' . count($objListCollections));
 
 		$resultado		= [];
-		$totalEnviados	= 0;
+		$chatSend		= [];
 		$totalErrores	= 0;
 		foreach($objListCollections as $item)
 		{
@@ -2728,37 +2770,29 @@ Le recordamos que tiene un saldo pendiente:
 			}
 
 			//{{1}} = nombre, {{2}} = codigo de cliente (mismo orden que la plantilla)
-			$bodyParams		= [
+			$rowx["mensaje"]		= "";
+			$rowx["urlImage"]		= "";
+			$rowx["provider"]		= "meta";
+			$rowx["templateName"]	= $templateName;
+			$rowx["languageCode"]	= $languageCode;
+			$rowx["bodyParams"]		= [
 				$item->firstName,
 				$item->customerNumber
 			];
-			$response		= $this->core_web_whatsap->sendMessageByMetaCloudTemplate(APP_COMPANY, $templateName, $languageCode, $bodyParams, $phoneNumber);
-			$enviado		= !empty($response["success"]);
-
-			$rowx["enviado"]	= $enviado;
-			$rowx["mensaje"]	= (string)($response["message"] ?? "");
-			$rowx["wamid"]		= (string)($response["messages"][0]["id"] ?? "");
-			$resultado[]		= $rowx;
-
-			if($enviado)
-				$totalEnviados++;
-			else
-				$totalErrores++;
-
-			//Pausa corta entre envios para no saturar la API de Meta
-			usleep(300000);
+			$rowx["origen"]			= "sendWhatsappDiarioMasiveMetaTemplateCobranzaNjGym";
+			$chatSend[]				= $rowx;
+			$resultado[]			= $rowx;
 		}
 
-		log_message('info', $logTag . ' Fin del proceso | Enviados: ' . $totalEnviados . ' | Errores: ' . $totalErrores);
+		//Los mensajes no se envian aqui: se suben a RabbitMQ y los envia procesarColaWhatsappMasivo (cron cada minuto)
+		$encolado					= $this->encolarWhatsappNotificacion($chatSend, $logTag);
+		$encolado['totalCobros']	= count($objListCollections);
+		$encolado['totalErrores']	= $totalErrores;
+		$encolado['data']			= $resultado;
 
-		return $this->response->setJSON(array(
-			'error'			=> false,
-			'message'		=> SUCCESS,
-			'totalCobros'	=> count($objListCollections),
-			'totalEnviados'	=> $totalEnviados,
-			'totalErrores'	=> $totalErrores,
-			'data'			=> $resultado
-		));
+		log_message('info', $logTag . ' Fin del proceso | Encolados: ' . $encolado['totalEncolados'] . ' | Sin telefono: ' . $totalErrores);
+
+		return $this->response->setJSON($encolado);
 	}
 
 	function sendWhatsappDiarioMasivePosMeConnect()
@@ -3045,7 +3079,8 @@ Le recordamos que tiene un saldo pendiente:
 		$phoneProperty 	= $phoneProperty->value;		
 		$objCompany  	= $this->Company_Model->get_rowByPK(APP_COMPANY);
 		$objNotificar 	= $this->Transaction_Master_Detail_Model->ChicExtensiones_get_Citas(APP_COMPANY);
-		
+		$chatSend		= [];
+
 		if ($objNotificar)
 		{	
 			//Obener los numeros de los colaboradores
@@ -3105,15 +3140,15 @@ Le recordamos que tiene un saldo pendiente:
 					
 					// También lo dejas en log si lo necesitas
 					log_message("info", "Cita de: $cliente programada para: $fecha $hora");
-					//Mandar mensajes a los cliente
-					$this->core_web_whatsap->sendMessageGeneric(
-						$objCompany->type,
-						APP_COMPANY, 
-						$row, 
-						getNumberPhone(clearNumero($phone)),
-						true,
-						""
-					);
+					//Mensaje al cliente: se encola en RabbitMQ (proveedor de la empresa)
+					$chatSend[] = [
+						"firstName"		=> $cliente,
+						"phoneNumber"	=> getNumberPhone(clearNumero($phone)),
+						"mensaje"		=> $row,
+						"urlImage"		=> "",
+						"provider"		=> "",
+						"origen"		=> "sendWhatsapp_ChicExtensiones_Citas"
+					];
 				}
 				
 				
@@ -3128,19 +3163,22 @@ Le recordamos que tiene un saldo pendiente:
 				echo "</br>";
 				echo "</br>";
 				echo "Sucursal:--".$tabla;
-				//Mandar mensaje de wahtapp al propietario
-				$this->core_web_whatsap->sendMessageGeneric(
-					$objCompany->type,
-					APP_COMPANY, 
-					$tabla, 
-					getNumberPhone(clearNumero($phoneEmployer)),
-					true,
-					""
-				);
+				//Mensaje al colaborador con el listado: se encola en RabbitMQ (proveedor de la empresa)
+				$chatSend[] = [
+					"firstName"		=> "",
+					"phoneNumber"	=> getNumberPhone(clearNumero($phoneEmployer)),
+					"mensaje"		=> $tabla,
+					"urlImage"		=> "",
+					"provider"		=> "",
+					"origen"		=> "sendWhatsapp_ChicExtensiones_Citas"
+				];
 			}
 		}
-		
-		
+
+		//Los mensajes no se envian aqui: se suben a RabbitMQ y los envia procesarColaWhatsappMasivo (cron cada minuto)
+		$encolado = $this->encolarWhatsappNotificacion($chatSend, "[sendWhatsapp_ChicExtensiones_Citas]");
+		echo "</br>Cola: " . $encolado["cola"] . " | Encolados: " . $encolado["totalEncolados"] . " " . $encolado["message"];
+
 		echo "
 		SUCCESS";
 	}
