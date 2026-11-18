@@ -50,6 +50,7 @@ use App\Libraries\core_web_deploy;
 use App\Libraries\core_web_upgrade;
 use App\Libraries\core_web_invoice_discount;
 use App\Libraries\core_web_pagadito\core_web_pagadito;
+use App\Libraries\core_web_payment;
 
 
 use App\Libraries\core_web_barcode\core_web_barcode;
@@ -302,6 +303,7 @@ abstract class _BaseController extends Controller
     protected $core_web_upgrade;
     protected $core_web_invoice_discount;
     protected $core_web_pagadito;
+    protected $core_web_payment;
 
 
     protected $financial_amort;
@@ -504,6 +506,7 @@ abstract class _BaseController extends Controller
         $this->core_web_upgrade = new core_web_upgrade();
         $this->core_web_invoice_discount = new core_web_invoice_discount();
         $this->core_web_pagadito = new core_web_pagadito();
+        $this->core_web_payment = new core_web_payment();
 
         $this->financial_amort = new financial_amort();
         $this->core_web_barcode = new core_web_barcode();

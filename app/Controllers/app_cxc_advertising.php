@@ -10,7 +10,9 @@ namespace App\Controllers;
  * (parametro RABBITMQ_QUEUE_WHATSAPP); el consumidor es app_notification::procesarColaWhatsappMasivo.
  *
  * Parametros: CXC_ADVERTISING_ENABLED, CXC_ADVERTISING_MAX_MESSAGE, CXC_ADVERTISING_COST_META_MESSAGE,
- * CXC_ADVERTISING_COST_EVOLUTION_FIXED, WHATSAP_META_WABA_ID.
+ * CXC_ADVERTISING_COST_EVOLUTION_FIXED, WHATSAP_META_WABA_ID, CXC_ADVERTISING_ALLOW_WITHOUT_PAYMENT,
+ * CXC_ADVERTISING_FREE_MESSAGES. Las campanas que superan los mensajes gratuitos se pagan con Pagadito
+ * (tb_transaction_master_pagadito, ERN CAM__companyID__transactionMasterID).
  */
 class app_cxc_advertising extends _BaseController
 {
@@ -200,27 +202,16 @@ class app_cxc_advertising extends _BaseController
             $summary  = $build["summary"];
             $provider = $summary["provider"];
 
-            if ($summary["overLimit"] > 0) {
-                throw new \Exception("La campaña supera el máximo de " . $config["maxMessage"] . " mensajes (" . $summary["overLimit"] . " de más). Reduzca los destinatarios.");
-            }
-            if ($summary["valid"] < 1) {
-                throw new \Exception("No hay destinatarios válidos para enviar.");
-            }
-            if ($summary["valid"] > $config["maxMessage"]) {
-                throw new \Exception("La campaña supera el máximo de " . $config["maxMessage"] . " mensajes.");
-            }
+            $this->validateCampaign($input, $build, $config);
 
-            if ($provider == "meta") {
-                $this->validateTemplate($input, $build["valid"]);
-            } else {
-                $empty = 0;
-                foreach ($build["valid"] as $item) {
-                    if (trim($item["mensaje"]) == "" && $item["urlImage"] == "") {
-                        $empty++;
-                    }
-                }
-                if ($empty > 0) {
-                    throw new \Exception("Hay " . $empty . " mensajes vacíos (sin texto ni imagen).");
+            //Pago Pagadito: se busca un pago aprobado y libre que cubra la campana
+            $payment       = null;
+            $transactionID = 0;
+            if ($summary["requiresPayment"]) {
+                $transactionID = $this->core_web_payment->getTransactionPagaditoID($companyID);
+                $payment       = $this->Transaction_Master_Model->get_rowByAdvertisingPaymentAvailable($companyID, $transactionID, $summary["valid"], $provider);
+                if (!$payment) {
+                    throw new \Exception("La campaña tiene " . $summary["valid"] . " mensajes y supera los " . $config["freeMessages"] . " gratuitos: realice el pago con Pagadito antes de enviarla.");
                 }
             }
 
@@ -250,19 +241,278 @@ class app_cxc_advertising extends _BaseController
                 }
             }
 
-            $queueName   = $this->core_web_rabbitmq->getQueueWhatsapp($companyID);
-            $totalQueued = $this->core_web_rabbitmq->publishBatch($companyID, $queueName, $payloads);
-            log_message("info", "[app_cxc_advertising::send] companyID: " . $companyID . " | userID: " . $dataSession["user"]->userID . " | proveedor: " . $provider . " | encolados: " . $totalQueued);
+            $queueName = $this->core_web_rabbitmq->getQueueWhatsapp($companyID);
+
+            //Se marca el pago como usado antes de encolar (solo si seguia libre) para que no se reutilice
+            if ($payment) {
+                //Quien pago queda en createdBy; aqui se anota quien y cuando lo consumio
+                $dataPayment["descriptionReference"] = json_encode([
+                    "quantity" => $summary["valid"],
+                    "provider" => $provider,
+                    "usedOn"   => helper_getDateTime(),
+                    "usedBy"   => $dataSession["user"]->userID
+                ]);
+                $affected = $this->Transaction_Master_Model->update_advertisingPaymentApplied($companyID, $transactionID, $payment->transactionMasterID, $dataPayment);
+                if ($affected < 1) {
+                    throw new \Exception("El pago " . $payment->transactionNumber . " ya fue utilizado por otra campaña.");
+                }
+            }
+
+            try {
+                $totalQueued = $this->core_web_rabbitmq->publishBatch($companyID, $queueName, $payloads);
+            } catch (\Throwable $exQueue) {
+                if ($payment) {
+                    $this->Transaction_Master_Model->update_advertisingPaymentRelease($companyID, $transactionID, $payment->transactionMasterID);
+                }
+                throw $exQueue;
+            }
+            log_message("info", "[app_cxc_advertising::send] companyID: " . $companyID . " | userID: " . $dataSession["user"]->userID . " | proveedor: " . $provider . " | encolados: " . $totalQueued . " | pago: " . ($payment ? $payment->transactionNumber : "no requerido"));
 
             return $this->response->setJSON([
-                "error"       => false,
-                "message"     => "Campaña encolada: " . $totalQueued . " mensajes.",
-                "totalQueued" => $totalQueued,
-                "queue"       => $queueName,
-                "summary"     => $summary
+                "error"         => false,
+                "message"       => "Campaña encolada: " . $totalQueued . " mensajes.",
+                "totalQueued"   => $totalQueued,
+                "queue"         => $queueName,
+                "summary"       => $summary,
+                "paymentNumber" => $payment ? $payment->transactionNumber : ""
             ]);
         } catch (\Throwable $ex) {
             return $this->responseError($ex);
+        }
+    }
+
+    /**
+     * Registra el pago Pagadito de la campana (tb_transaction_master_pagadito) y devuelve la URL de cobro.
+     * Mismo cuerpo JSON que preview/send. El retorno de Pagadito llega a core_user/payment_user_back (ERN CAM__companyID__transactionMasterID).
+     * @return mixed JSON {error, message, urlPayment, transactionNumber, amount, quantity}
+     */
+    function paymentCreate()
+    {
+        try {
+            $dataSession = $this->authorizeAccess();
+            $companyID   = $dataSession["user"]->companyID;
+            $branchID    = $dataSession["user"]->branchID;
+            $roleID      = $dataSession["role"]->roleID;
+            $userID      = $dataSession["user"]->userID;
+            $input       = $this->getInput();
+            $config      = $this->getConfig($companyID);
+
+            if (!$config["enabled"]) {
+                throw new \Exception("Las campañas de WhatsApp no están habilitadas (CXC_ADVERTISING_ENABLED).");
+            }
+
+            $build    = $this->buildMessages($companyID, $input, $config);
+            $summary  = $build["summary"];
+            $provider = $summary["provider"];
+
+            if ($summary["testMode"] || !$summary["requiresPayment"]) {
+                throw new \Exception("Esta campaña no requiere pago.");
+            }
+            if ($summary["paidAvailable"]) {
+                throw new \Exception("Ya tiene un pago aprobado que cubre esta campaña.");
+            }
+            $this->validateCampaign($input, $build, $config);
+
+            $transactionID = $this->core_web_payment->getTransactionPagaditoID($companyID);
+            $statusID      = $this->core_web_payment->getWorkflowStageID($companyID, $branchID, $roleID, false);
+            if ($statusID < 1) {
+                throw new \Exception("No hay un estado inicial del workflow de '" . \App\Libraries\core_web_payment::TRANSACTION_PAGADITO . "' disponible para su rol.");
+            }
+            $objComponent = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master");
+            if (!$objComponent) {
+                throw new \Exception("EL COMPONENTE 'tb_transaction_master' NO EXISTE...");
+            }
+
+            $quantity = (int) $summary["valid"];
+            $cost     = (float) $summary["cost"];
+
+            $objTM["companyID"]            = $companyID;
+            $objTM["transactionID"]        = $transactionID;
+            $objTM["branchID"]             = $branchID;
+            $objTM["transactionNumber"]    = "CAM__" . $companyID . "__0";
+            $objTM["transactionOn"]        = helper_getDateTime();
+            $objTM["statusIDChangeOn"]     = helper_getDateTime();
+            $objTM["componentID"]          = $objComponent->componentID;
+            $objTM["note"]                 = "Pago campaña WhatsApp";
+            $objTM["currencyID"]           = $this->getCurrencyUsdID($companyID);
+            $objTM["exchangeRate"]         = 1;
+            $objTM["amount"]               = $cost;
+            $objTM["subAmount"]            = $cost;
+            $objTM["periodPay"]            = $quantity;
+            $objTM["reference1"]           = "";
+            $objTM["reference2"]           = "";
+            $objTM["reference3"]           = $provider;
+            $objTM["reference4"]           = "REGISTERED";
+            $objTM["descriptionReference"] = json_encode(["userID" => $userID, "quantity" => $quantity, "provider" => $provider]);
+            $objTM["statusID"]             = $statusID;
+            $objTM["isApplied"]            = 0;
+            $objTM["isActive"]             = 1;
+            $this->core_web_auditoria->setAuditCreated($objTM, $dataSession, $this->request);
+
+            $transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
+            $ern                 = "CAM__" . $companyID . "__" . $transactionMasterID;
+            $this->Transaction_Master_Model->update_app_posme($companyID, $transactionID, $transactionMasterID, ["transactionNumber" => $ern]);
+
+            try {
+                $payment = $this->core_web_payment->getPaymentUrl(
+                    $companyID,
+                    $ern,
+                    "Campaña WhatsApp " . $quantity . " mensajes (" . $provider . ")",
+                    1,
+                    $cost,
+                    base_url() . "/app_cxc_advertising/index"
+                );
+            } catch (\Throwable $exPayment) {
+                $this->Transaction_Master_Model->update_app_posme($companyID, $transactionID, $transactionMasterID, ["reference4" => "FAILED", "isActive" => 0]);
+                throw $exPayment;
+            }
+
+            $this->Transaction_Master_Model->update_app_posme($companyID, $transactionID, $transactionMasterID, ["reference1" => $payment["token"]]);
+            log_message("info", "[app_cxc_advertising::paymentCreate] companyID: " . $companyID . " | userID: " . $userID . " | pago: " . $ern . " | mensajes: " . $quantity . " | monto: " . $cost);
+
+            return $this->response->setJSON([
+                "error"             => false,
+                "message"           => "Pago registrado: complete el cobro en Pagadito.",
+                "urlPayment"        => $payment["url"],
+                "transactionNumber" => $ern,
+                "amount"            => $cost,
+                "quantity"          => $quantity
+            ]);
+        } catch (\Throwable $ex) {
+            return $this->responseError($ex);
+        }
+    }
+
+    /**
+     * Consulta en Pagadito los pagos de campana pendientes (REGISTERED/VERIFYING) de los ultimos 7 dias
+     * y actualiza su estado (reference4), NAP (reference2) y statusID cuando quedan aprobados.
+     * @return mixed JSON {error, message, checked, completed}
+     */
+    function paymentCheck()
+    {
+        try {
+            $dataSession   = $this->authorizeAccess();
+            $companyID     = $dataSession["user"]->companyID;
+            $branchID      = $dataSession["user"]->branchID;
+            $roleID        = $dataSession["role"]->roleID;
+            $transactionID = $this->core_web_payment->getTransactionPagaditoID($companyID);
+            $listPending   = $this->Transaction_Master_Model->get_rowByAdvertisingPaymentPending($companyID, $transactionID);
+            $checked       = 0;
+            $completed     = 0;
+            $statusApplied = null;
+
+            foreach (($listPending ? $listPending : []) as $pending) {
+                if (trim((string) $pending->reference1) == "") {
+                    continue;
+                }
+
+                try {
+                    $status = $this->core_web_payment->getPaymentStatus($companyID, $pending->reference1);
+                } catch (\Throwable $exStatus) {
+                    log_message("error", "[app_cxc_advertising::paymentCheck] " . $pending->transactionNumber . " " . $exStatus->getMessage());
+                    continue;
+                }
+                $checked++;
+
+                if ($status["status"] == "") {
+                    continue;
+                }
+                $data               = [];
+                $data["reference4"] = $status["status"];
+                $data["reference2"] = $status["nap"];
+                if ($status["status"] == "COMPLETED") {
+                    if ($statusApplied === null) {
+                        $statusApplied = $this->getStageAppliedID($companyID, $branchID, $roleID);
+                    }
+                    if ($statusApplied > 0) {
+                        $data["statusID"]         = $statusApplied;
+                        $data["statusIDChangeOn"] = helper_getDateTime();
+                    }
+                    $completed++;
+                }
+                $this->Transaction_Master_Model->update_app_posme($companyID, $transactionID, $pending->transactionMasterID, $data);
+            }
+
+            return $this->response->setJSON([
+                "error"     => false,
+                "message"   => "Pagos verificados: " . $checked . ". Aprobados: " . $completed . ".",
+                "checked"   => $checked,
+                "completed" => $completed
+            ]);
+        } catch (\Throwable $ex) {
+            return $this->responseError($ex);
+        }
+    }
+
+    /**
+     * Validaciones comunes antes de encolar o cobrar la campana (tope, destinatarios, plantilla y mensajes vacios).
+     * @param array $input  Cuerpo de la peticion
+     * @param array $build  buildMessages()
+     * @param array $config getConfig()
+     * @return void
+     */
+    private function validateCampaign($input, $build, $config)
+    {
+        $summary = $build["summary"];
+        if ($summary["overLimit"] > 0) {
+            throw new \Exception("La campaña supera el máximo de " . $config["maxMessage"] . " mensajes (" . $summary["overLimit"] . " de más). Reduzca los destinatarios.");
+        }
+        if ($summary["valid"] < 1) {
+            throw new \Exception("No hay destinatarios válidos para enviar.");
+        }
+        if ($summary["valid"] > $config["maxMessage"]) {
+            throw new \Exception("La campaña supera el máximo de " . $config["maxMessage"] . " mensajes.");
+        }
+
+        if ($summary["provider"] == "meta") {
+            $this->validateTemplate($input, $build["valid"]);
+            return;
+        }
+
+        $empty = 0;
+        foreach ($build["valid"] as $item) {
+            if (trim($item["mensaje"]) == "" && $item["urlImage"] == "") {
+                $empty++;
+            }
+        }
+        if ($empty > 0) {
+            throw new \Exception("Hay " . $empty . " mensajes vacíos (sin texto ni imagen).");
+        }
+    }
+
+    /**
+     * Estado aplicable del workflow de pagos Pagadito; 0 si no esta configurado o el rol no lo tiene.
+     * @param int $companyID
+     * @param int $branchID
+     * @param int $roleID
+     * @return int
+     */
+    private function getStageAppliedID($companyID, $branchID, $roleID)
+    {
+        try {
+            return $this->core_web_payment->getWorkflowStageID($companyID, $branchID, $roleID, true);
+        } catch (\Throwable $ex) {
+            log_message("error", "[app_cxc_advertising::getStageAppliedID] " . $ex->getMessage());
+            return 0;
+        }
+    }
+
+    /**
+     * Moneda del pago (Pagadito cobra en USD): moneda externa de la empresa o, si no existe, la funcional.
+     * @param int $companyID
+     * @return int|null
+     */
+    private function getCurrencyUsdID($companyID)
+    {
+        try {
+            $objCurrency = $this->core_web_currency->getCurrencyExternal($companyID);
+            if (!$objCurrency) {
+                $objCurrency = $this->core_web_currency->getCurrencyDefault($companyID);
+            }
+            return $objCurrency ? $objCurrency->currencyID : null;
+        } catch (\Throwable $ex) {
+            log_message("error", "[app_cxc_advertising::getCurrencyUsdID] " . $ex->getMessage());
+            return null;
         }
     }
 
@@ -320,29 +570,34 @@ class app_cxc_advertising extends _BaseController
     /**
      * Configuracion de campanas de la empresa.
      * @param int $companyID
-     * @return array {enabled, maxMessage, costMeta, costEvolution, wabaConfigured}
+     * @return array {enabled, maxMessage, costMeta, costEvolution, wabaConfigured, allowWithoutPayment, freeMessages}
      */
     private function getConfig($companyID)
     {
-        $enabled       = strtolower(trim((string) $this->core_web_parameter->getParameterValue("CXC_ADVERTISING_ENABLED", $companyID)));
-        $maxMessage    = (int) $this->core_web_parameter->getParameterValue("CXC_ADVERTISING_MAX_MESSAGE", $companyID);
-        $costMeta      = (float) $this->core_web_parameter->getParameterValue("CXC_ADVERTISING_COST_META_MESSAGE", $companyID);
-        $costEvolution = (float) $this->core_web_parameter->getParameterValue("CXC_ADVERTISING_COST_EVOLUTION_FIXED", $companyID);
-        $wabaID        = trim((string) $this->core_web_parameter->getParameterValue("WHATSAP_META_WABA_ID", $companyID));
+        $enabled             = strtolower(trim((string) $this->core_web_parameter->getParameterValue("CXC_ADVERTISING_ENABLED", $companyID)));
+        $maxMessage          = (int) $this->core_web_parameter->getParameterValue("CXC_ADVERTISING_MAX_MESSAGE", $companyID);
+        $costMeta            = (float) $this->core_web_parameter->getParameterValue("CXC_ADVERTISING_COST_META_MESSAGE", $companyID);
+        $costEvolution       = (float) $this->core_web_parameter->getParameterValue("CXC_ADVERTISING_COST_EVOLUTION_FIXED", $companyID);
+        $wabaID              = trim((string) $this->core_web_parameter->getParameterValue("WHATSAP_META_WABA_ID", $companyID));
+        $allowWithoutPayment = strtolower(trim((string) $this->core_web_parameter->getParameterValue("CXC_ADVERTISING_ALLOW_WITHOUT_PAYMENT", $companyID)));
+        $freeMessages        = (int) $this->core_web_parameter->getParameterValue("CXC_ADVERTISING_FREE_MESSAGES", $companyID);
 
         return [
-            "enabled"        => $enabled === "true",
-            "maxMessage"     => $maxMessage > 0 ? $maxMessage : 1000,
-            "costMeta"       => $costMeta,
-            "costEvolution"  => $costEvolution,
-            "wabaConfigured" => $wabaID != ""
+            "enabled"             => $enabled === "true",
+            "maxMessage"          => $maxMessage > 0 ? $maxMessage : 1000,
+            "costMeta"            => $costMeta,
+            "costEvolution"       => $costEvolution,
+            "wabaConfigured"      => $wabaID != "",
+            "allowWithoutPayment" => $allowWithoutPayment === "true",
+            "freeMessages"        => $freeMessages > 0 ? $freeMessages : 10
         ];
     }
 
     /**
      * Arma la lista de mensajes de la campana (compartido por preview y send).
-     * Orden: filas de Excel y luego clientes; en duplicados gana Excel. Los validos que superan
-     * CXC_ADVERTISING_MAX_MESSAGE se cuentan en overLimit (no se truncan en silencio).
+     * Orden: filas de Excel y luego clientes; en duplicados gana Excel. Si campaignMax > 0 se eligen
+     * al azar esa cantidad de validos; los que aun superan CXC_ADVERTISING_MAX_MESSAGE se cuentan en
+     * overLimit (no se truncan en silencio). Con testPhone se arma un solo mensaje (primer valido) hacia ese numero.
      * @param int   $companyID
      * @param array $input  Cuerpo de la peticion (ver contrato)
      * @param array $config getConfig()
@@ -369,8 +624,29 @@ class app_cxc_advertising extends _BaseController
             throw new \Exception("Seleccione al menos un origen de destinatarios (Excel o clientes).");
         }
 
-        //El navegador corta el Excel en maxMessage * 1.5; mas filas indican una peticion manipulada
-        $maxExcel = (int) ceil($maxMessage * 1.5);
+        //Cantidad de mensajes de la campana: 0 = todos los validos; mayor a 0 = seleccion al azar
+        $campaignMaxRaw = $input["campaignMax"] ?? "0";
+        $campaignMaxRaw = is_scalar($campaignMaxRaw) ? trim((string) $campaignMaxRaw) : "x";
+        $campaignMaxRaw = $campaignMaxRaw === "" ? "0" : $campaignMaxRaw;
+        if (!ctype_digit($campaignMaxRaw)) {
+            throw new \Exception("La cantidad de mensajes de la campaña debe ser un número entero mayor o igual a 0.");
+        }
+        $campaignMax = (int) $campaignMaxRaw;
+        if ($campaignMax > $maxMessage) {
+            throw new \Exception("La cantidad de mensajes de la campaña (" . $campaignMax . ") supera el máximo de " . $maxMessage . ".");
+        }
+
+        //Telefono de prueba: la campana se envia una sola vez a este numero
+        $testPhone = preg_replace('/\D/', '', $this->toText($input["testPhone"] ?? ""));
+        if ($testPhone != "") {
+            $testPhone = preg_replace('/\D/', '', getNumberPhone(clearNumero($testPhone)));
+            if (strlen($testPhone) < 11 || strlen($testPhone) > 15) {
+                throw new \Exception("El teléfono de prueba no es válido (debe tener entre 11 y 15 dígitos con el código de país).");
+            }
+        }
+
+        //El navegador corta el Excel en maxMessage * 5; mas filas indican una peticion manipulada
+        $maxExcel = (int) ($maxMessage * 5);
         if (count($excelRows) > $maxExcel) {
             throw new \Exception("El Excel tiene " . count($excelRows) . " filas; el máximo permitido es " . $maxExcel . ".");
         }
@@ -379,7 +655,7 @@ class app_cxc_advertising extends _BaseController
         $variables = $this->Advertising_Variable_Model->get_rowByCompany($companyID);
         $variables = is_array($variables) ? $variables : [];
 
-        //Clientes: se piden mas que el maximo para poder detectar el exceso
+        //Clientes: se piden mas que el maximo para poder detectar el exceso y elegir al azar
         $customers = [];
         if ($useCustomer) {
             $customers = $this->Advertising_Variable_Model->get_rowCustomerByAdvertising(
@@ -388,7 +664,7 @@ class app_cxc_advertising extends _BaseController
                 !empty($filters["onlyBalance"]),
                 !empty($filters["onlyMora"]),
                 (int) ($filters["categoryID"] ?? 0),
-                $maxMessage * 2
+                $maxMessage * 5
             );
             $customers = is_array($customers) ? $customers : [];
         }
@@ -467,12 +743,21 @@ class app_cxc_advertising extends _BaseController
             "cost"             => 0.0,
             "enabled"          => $config["enabled"],
             "maxMessage"       => $maxMessage,
-            "estimatedMinutes" => 0
+            "estimatedMinutes" => 0,
+            "validTotal"       => 0,
+            "notSelected"      => 0,
+            "randomSelected"   => false,
+            "testMode"         => false,
+            "testPhone"        => "",
+            "freeMessages"     => $config["freeMessages"],
+            "requiresPayment"  => false,
+            "paidAvailable"    => false
         ];
         $discarded = [];
         $valid     = [];
         $phones    = [];
 
+        //1. Depuracion: vacios, invalidos y duplicados (se guarda el candidato crudo; se renderiza al final)
         foreach ($candidates as $candidate) {
             $rawPhone = trim($candidate["telefono"]);
             $phone    = preg_replace('/\D/', '', getNumberPhone(clearNumero($rawPhone)));
@@ -487,41 +772,109 @@ class app_cxc_advertising extends _BaseController
             } else if (isset($phones[$phone])) {
                 $reason = self::REASON_DUPLICATE;
                 $summary["duplicate"]++;
-            } else if (count($valid) >= $maxMessage) {
-                $reason = self::REASON_OVER_LIMIT;
-                $summary["overLimit"]++;
             }
 
             if ($reason != "") {
-                if (count($discarded) < self::MAX_DISCARDED) {
-                    $discarded[] = [
-                        "telefono" => $rawPhone,
-                        "nombre"   => $candidate["nombre"],
-                        "origen"   => $candidate["origen"],
-                        "motivo"   => $reason
-                    ];
-                }
+                $this->addDiscarded($discarded, $candidate, $rawPhone, $reason);
                 continue;
             }
 
             $phones[$phone] = true;
-            $valid[]        = $this->renderItem($candidate, $phone, $provider, $caption, $body, $template);
-            if ($candidate["origen"] == self::ORIGIN_EXCEL) {
+            $valid[]        = [
+                "candidate" => $candidate,
+                "phone"     => $phone
+            ];
+        }
+        $summary["validTotal"] = count($valid);
+
+        if ($testPhone != "") {
+            //2a. Modo prueba: primer valido en el orden original, enviado al telefono de prueba
+            if (count($valid) < 1) {
+                throw new \Exception("No hay destinatarios válidos para armar el mensaje de prueba.");
+            }
+            $valid                = [["candidate" => $valid[0]["candidate"], "phone" => $testPhone]];
+            $summary["testMode"]  = true;
+            $summary["testPhone"] = $testPhone;
+        } else {
+            //2b. Seleccion al azar cuando el usuario limita la cantidad de mensajes
+            if ($campaignMax > 0 && count($valid) > $campaignMax) {
+                shuffle($valid);
+                $summary["notSelected"]    = count($valid) - $campaignMax;
+                $summary["randomSelected"] = true;
+                $valid                     = array_slice($valid, 0, $campaignMax);
+            }
+
+            //3. Tope de la empresa: el excedente se informa en overLimit (no se trunca en silencio)
+            if (count($valid) > $maxMessage) {
+                foreach (array_slice($valid, $maxMessage) as $over) {
+                    $this->addDiscarded($discarded, $over["candidate"], trim($over["candidate"]["telefono"]), self::REASON_OVER_LIMIT);
+                }
+                $summary["overLimit"] = count($valid) - $maxMessage;
+                $valid                = array_slice($valid, 0, $maxMessage);
+            }
+        }
+
+        //4. Render solo de los destinatarios finalmente elegidos
+        $items = [];
+        foreach ($valid as $selected) {
+            $items[] = $this->renderItem($selected["candidate"], $selected["phone"], $provider, $caption, $body, $template);
+            if ($selected["candidate"]["origen"] == self::ORIGIN_EXCEL) {
                 $summary["fromExcel"]++;
             } else {
                 $summary["fromCustomers"]++;
             }
         }
+        $valid = $items;
 
         $summary["valid"]            = count($valid);
         $summary["cost"]             = $provider == "meta" ? round($summary["valid"] * $config["costMeta"], 4) : $config["costEvolution"];
         $summary["estimatedMinutes"] = (int) ceil($summary["valid"] / self::MESSAGES_PER_MIN);
+
+        //5. Pago: requerido si supera los mensajes gratuitos, tiene costo y no es prueba ni empresa exenta
+        $summary["requiresPayment"]  = !$config["allowWithoutPayment"] && !$summary["testMode"] && $summary["valid"] > $config["freeMessages"] && $summary["cost"] > 0;
+        if ($summary["requiresPayment"]) {
+            $summary["paidAvailable"] = $this->getPaymentAvailable($companyID, $summary["valid"], $provider) != null;
+        }
 
         return [
             "summary"   => $summary,
             "discarded" => $discarded,
             "valid"     => $valid
         ];
+    }
+
+    /**
+     * Agrega un destinatario descartado respetando el tope MAX_DISCARDED.
+     * @param array  $discarded Lista acumulada (por referencia)
+     * @param array  $candidate Candidato crudo
+     * @param string $rawPhone  Telefono tal como vino
+     * @param string $reason    Motivo (constantes REASON_*)
+     * @return void
+     */
+    private function addDiscarded(&$discarded, $candidate, $rawPhone, $reason)
+    {
+        if (count($discarded) >= self::MAX_DISCARDED) {
+            return;
+        }
+        $discarded[] = [
+            "telefono" => $rawPhone,
+            "nombre"   => $candidate["nombre"],
+            "origen"   => $candidate["origen"],
+            "motivo"   => $reason
+        ];
+    }
+
+    /**
+     * Pago Pagadito aprobado y sin usar que cubre la cantidad de mensajes del proveedor.
+     * @param int    $companyID
+     * @param int    $quantity  Mensajes de la campana
+     * @param string $provider  meta | evolution
+     * @return object|null Fila de tb_transaction_master
+     */
+    private function getPaymentAvailable($companyID, $quantity, $provider)
+    {
+        $transactionID = $this->core_web_payment->getTransactionPagaditoID($companyID);
+        return $this->Transaction_Master_Model->get_rowByAdvertisingPaymentAvailable($companyID, $transactionID, $quantity, $provider);
     }
 
     /**

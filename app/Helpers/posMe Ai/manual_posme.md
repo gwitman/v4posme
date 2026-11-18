@@ -938,15 +938,15 @@ Notas:
 Ruta: Menú > CXC > CAMPAÑAS WHATSAPP. La pantalla se llama **Campañas WhatsApp** ("Envíe promociones y recordatorios de cobro a sus clientes").
 La campaña se arma en 4 pasos. Avance con **Siguiente** y regrese con **Anterior**; también puede tocar el paso en la barra superior. A la derecha (o abajo en el teléfono) la **Vista previa** muestra cómo recibirá el cliente el mensaje, y arriba se ve el **Costo estimado** en USD.
 1. **Mensaje** (Texto e imagen): título, imagen y texto con variables.
-2. **Destinatarios** (Excel y clientes): archivo Excel y/o clientes registrados.
+2. **Destinatarios** (Excel y clientes): archivo Excel y/o clientes registrados, cantidad máxima y teléfono de prueba.
 3. **Proveedor** (Envío y costo): Evolution API o Meta Cloud API.
-4. **Resumen** (Revisar y enviar): cantidades, depurados, costo y botón **Enviar campaña**.
+4. **Resumen** (Revisar y enviar): cantidades, depurados, costo, pago si corresponde y botón **Enviar campaña**.
 Si falta algo, al presionar **Siguiente** aparece la lista de lo que debe corregir.
 Restricciones:
 - Solo puede enviar si su empresa tiene las campañas habilitadas. Si no, aparece "Las campañas están deshabilitadas para esta empresa..." y puede preparar y revisar la campaña, pero el envío queda bloqueado.
 - Máximo de mensajes por campaña: 1,000 o lo que indique la configuración de su empresa.
 Notas: los mensajes no salen todos de inmediato: quedan en una cola y se envían de forma gradual (unos 15 por minuto).
-Ver también: Campañas de WhatsApp: escribir el mensaje (paso 1); Campañas de WhatsApp: elegir los destinatarios (paso 2); Campañas de WhatsApp: elegir el proveedor y ver el costo (paso 3); Campañas de WhatsApp: enviar con plantilla de Meta; Campañas de WhatsApp: revisar el resumen y enviar (paso 4).
+Ver también: Campañas de WhatsApp: escribir el mensaje (paso 1); Campañas de WhatsApp: elegir los destinatarios (paso 2); Campañas de WhatsApp: elegir el proveedor y ver el costo (paso 3); Campañas de WhatsApp: enviar con plantilla de Meta; Campañas de WhatsApp: revisar el resumen y enviar (paso 4); Campañas de WhatsApp: pagar la campaña con Pagadito.
 
 ## Campañas de WhatsApp: escribir el mensaje (paso 1)
 Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > paso **Mensaje**.
@@ -977,7 +977,19 @@ Notas:
 - Si un teléfono viene en el Excel y también es de un cliente, se usa la fila del Excel.
 - El archivo acepta hasta 1.5 veces el máximo de mensajes (1,500 si el máximo es 1,000). Si trae más, solo se toman las primeras filas y se avisa: divida el archivo.
 - Los números de 8 dígitos se completan con 505 al inicio. Un teléfono válido queda con 11 a 15 dígitos.
-Ver también: Crear un cliente.
+Ver también: Crear un cliente; Campañas de WhatsApp: limitar la cantidad de mensajes o enviar una prueba.
+
+## Campañas de WhatsApp: limitar la cantidad de mensajes o enviar una prueba
+Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > paso **Destinatarios** > tarjeta **Alcance y prueba**.
+1. **Cantidad máxima de mensajes**: déjelo vacío (o en 0) para enviar a todos los destinatarios válidos. Si escribe un número menor que los válidos (por ejemplo 100 de 1,000 clientes o filas del Excel), el sistema elige los destinatarios al azar. No puede superar el máximo por campaña de su empresa.
+2. **Teléfono de prueba (opcional)**: si lo llena, la campaña envía un solo mensaje a ese número, con los datos del primer destinatario. Escriba 8 dígitos (se antepone 505) o de 11 a 15 dígitos con código de país (ej. 50588887777).
+3. En el resumen aparece **Modo prueba** y el botón cambia a **Enviar prueba**; confirme en **Confirmar mensaje de prueba**. Al terminar se ve "Mensaje de prueba enviado a la cola".
+Mensajes: "La cantidad máxima de mensajes debe ser un número entero entre 1 y ..." y "El teléfono de prueba debe tener 8 dígitos o entre 11 y 15 con código de país (ej. 50588887777)."
+Notas:
+- El envío de prueba no requiere pago.
+- Con selección al azar el resumen muestra **No seleccionados** y "Seleccionados ... de ... válidos al azar"; el envío elige su propia muestra, que puede ser distinta a la del resumen.
+- Para enviar la campaña real, borre el teléfono de prueba.
+Ver también: Campañas de WhatsApp: revisar el resumen y enviar (paso 4).
 
 ## Campañas de WhatsApp: elegir el proveedor y ver el costo (paso 3)
 Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > paso **Proveedor**. Elija una tarjeta:
@@ -1011,11 +1023,26 @@ Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > paso **Resumen**.
 2. Revise **Mensajes a enviar**, **Depurados**, **Excel / Clientes** y **Costo USD**, la **Muestra de mensajes** y el tiempo aproximado.
 3. En **Registros depurados** vea **Teléfono**, **Nombre**, **Origen** y **Motivo** (Teléfono vacío, Teléfono inválido, Duplicado o Excede el máximo). Use **Filtrar por motivo** y **Anterior** / **Siguiente** (se muestran hasta 1,000).
 4. Si cambió algo, presione **Actualizar resumen**.
-5. Presione **Enviar campaña** (en el teléfono, **Enviar**) y confirme en **Confirmar envío**.
-6. Aparece "Campaña enviada a la cola" con los mensajes encolados. **Nueva campaña** empieza otra.
-Restricciones: el envío se bloquea si las campañas están deshabilitadas, si no hay mensajes válidos o si "La campaña supera el máximo de ... mensajes": reduzca destinatarios con filtros o el archivo (no se recorta sola).
+5. Si la campaña requiere pago, primero presione **Pagar USD ...** (ver Campañas de WhatsApp: pagar la campaña con Pagadito).
+6. Presione **Enviar campaña** (en el teléfono, **Enviar**) y confirme en **Confirmar envío**.
+7. Aparece "Campaña enviada a la cola" con los mensajes encolados. **Nueva campaña** empieza otra.
+Restricciones: el envío se bloquea si las campañas están deshabilitadas, si no hay mensajes válidos, si falta el pago o si "La campaña supera el máximo de ... mensajes": reduzca destinatarios con filtros, el archivo o la **Cantidad máxima de mensajes**.
 Notas: los mensajes se envían en segundo plano de forma gradual; si nunca salen, avise a soporte (el proceso de envío programado debe estar activo).
 <!-- REVISAR: nombre y frecuencia de la tarea programada que procesa la cola (procesarColaWhatsappMasivo) en cada servidor -->
+
+## Campañas de WhatsApp: pagar la campaña con Pagadito
+Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > paso **Resumen**.
+Las campañas de hasta 10 mensajes (o lo que indique la configuración de su empresa) y los envíos de prueba no requieren pago. Si la campaña supera los mensajes gratuitos y tiene costo, aparece "Esta campaña supera ... mensajes gratuitos: realice el pago para enviarla" y **Enviar campaña** queda bloqueado.
+1. Presione **Pagar USD ...** (en el teléfono, **Pagar**) y acepte en **Confirmar pago**. Será redirigido a Pagadito.
+2. Pague en Pagadito. Al volver, el sistema confirma el pago, informa el NAP (número de aprobación) y aparece **Pago aprobado disponible**.
+3. Presione **Enviar campaña**.
+4. Si al volver de Pagadito no se reflejó el pago, presione **Verificar pago**: consulta en Pagadito los pagos pendientes de los últimos 7 días.
+Notas:
+- El borrador de la campaña se conserva al ir y volver de Pagadito.
+- El pago cubre una campaña de esa cantidad de mensajes (o menos), del mismo proveedor, y se usa una sola vez.
+- Según la configuración de su empresa, puede enviar campañas sin pagar.
+Mensajes: "... supera los ... gratuitos: realice el pago con Pagadito antes de enviarla." y "El pago ... ya fue utilizado por otra campaña."
+Ver también: Campañas de WhatsApp: revisar el resumen y enviar (paso 4).
 
 ## Ver a quién se notificó un mensaje de WhatsApp de un cliente (conversación con cliente)
 Ruta: en la lista de conversaciones (por ejemplo, la pestaña **LISTA DE CONVERSACIONES MIAS**), abra la conversación del cliente y vaya a la pestaña **Chat**.
@@ -2404,6 +2431,8 @@ Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla CXC > CAM
 - CXC_ADVERTISING_MAX_MESSAGE: máximo de mensajes por campaña (por defecto 1000). El archivo Excel acepta hasta 1.5 veces este valor.
 - CXC_ADVERTISING_COST_META_MESSAGE: costo estimado en USD por mensaje con Meta Cloud API (por defecto 0.023).
 - CXC_ADVERTISING_COST_EVOLUTION_FIXED: costo estimado en USD fijo por campaña con Evolution API (por defecto 10).
+- CXC_ADVERTISING_FREE_MESSAGES: mensajes que se pueden enviar sin pagar (por defecto 10). Las campañas que lo superan y tienen costo se pagan con Pagadito; los envíos de prueba no se cobran.
+- CXC_ADVERTISING_ALLOW_WITHOUT_PAYMENT: true permite a la empresa enviar campañas sin pagar.
 - WHATSAP_META_WABA_ID: identificador de la cuenta de WhatsApp Business en Meta; sin él no se pueden cargar las plantillas aprobadas (se escriben a mano).
 Variables del mensaje: {{nombre}}, {{direccion}}, {{saldo}}, {{montoPagar}}, {{fechaPago}} y {{mora}} vienen configuradas. Para agregar otra, soporte registra una nueva variable de campaña (tabla tb_advertising_variable) indicando la vista y el campo del sistema de donde sale el dato; aparece sola en **Variables del cliente**.
 Ver también: Campañas de WhatsApp: enviar promociones o recordatorios de cobro masivos a clientes.

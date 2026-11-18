@@ -114,6 +114,37 @@ class core_web_pagadito {
     }
 
     /**
+     * Igual que exec_trans pero sin redireccionar: devuelve la URL de cobro de Pagadito.
+     * Permite al controlador guardar el token antes de redirigir o responder JSON.
+     * @param string $ern External Reference Number (único por transacción).
+     * @return string|bool URL decodificada cuando la respuesta es PG1002; false en otro caso.
+     */
+    public function exec_trans_url($ern){
+        if($this->get_rs_code() == "PG1001"){
+            $params = array(
+                'operation'     => $this->op_exec_trans_key,
+                'token'         => $this->get_rs_value(),
+                'ern'           => $ern,
+                'amount'        => $this->calc_amount(),
+                'details'       => json_encode($this->details),
+                'custom_params' => json_encode($this->custom_params),
+                'currency'      => $this->currency,
+                'format_return' => $this->format_return
+            );
+            $this->response = $this->call($params);
+            if($this->get_rs_code() == "PG1002"){
+                return urldecode($this->get_rs_value());
+            }
+            else{
+                return false;
+            }
+        }
+        else{
+            return false;
+        }
+    }
+
+    /**
      * Solicita el estado de una transacción en base a su token.
      * @param string $token_trans El identificador de la conexión a consultar.
      * @return bool

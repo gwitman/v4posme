@@ -166,6 +166,97 @@ class Transaction_Master_Model extends Model  {
    }
 
    
+   /**
+    * Pago Pagadito de campaña WhatsApp aprobado (reference4 = COMPLETED), aún no consumido (isApplied = 0)
+    * y que cubre al menos la cantidad de mensajes indicada (periodPay = mensajes pagados).
+    * @param int    $companyID
+    * @param int    $transactionID tipo tb_transaction_master_pagadito
+    * @param int    $quantity      mensajes a enviar
+    * @param string $provider      meta | evolution (reference3)
+    * @return object|null
+    */
+   function get_rowByAdvertisingPaymentAvailable($companyID,$transactionID,$quantity,$provider){
+		$db 	= db_connect();
+		$sql 	= "";
+		$sql 	= $sql.sprintf("select tm.companyID, tm.transactionID, tm.transactionMasterID, tm.transactionNumber, tm.amount, tm.periodPay, ");
+		$sql 	= $sql.sprintf(" tm.reference1, tm.reference2, tm.reference3, tm.reference4, tm.statusID, tm.isApplied, tm.createdOn ");
+		$sql 	= $sql.sprintf(" from tb_transaction_master tm ");
+		$sql 	= $sql.sprintf(" where tm.companyID = %d ", $companyID);
+		$sql 	= $sql.sprintf(" and tm.transactionID = %d ", $transactionID);
+		$sql 	= $sql.sprintf(" and tm.reference4 = 'COMPLETED' ");
+		$sql 	= $sql.sprintf(" and tm.reference3 = %s ", $db->escape(trim((string)$provider)));
+		$sql 	= $sql.sprintf(" and ifnull(tm.isApplied,0) = 0 ");
+		$sql 	= $sql.sprintf(" and ifnull(tm.periodPay,0) >= %d ", $quantity);
+		$sql 	= $sql.sprintf(" and tm.isActive = 1 ");
+		$sql 	= $sql.sprintf(" order by tm.periodPay asc, tm.transactionMasterID asc ");
+		$sql 	= $sql.sprintf(" limit 1 ");
+
+		//Ejecutar Consulta
+		return $db->query($sql)->getRow();
+   }
+
+   /**
+    * Marca como consumido un pago de campaña solo si seguía libre (evita que dos envíos usen el mismo pago).
+    * @param int   $companyID
+    * @param int   $transactionID
+    * @param int   $transactionMasterID
+    * @param array $data campos extra a guardar junto con isApplied = 1
+    * @return int filas afectadas (0 = el pago ya fue tomado por otro envío)
+    */
+   function update_advertisingPaymentApplied($companyID,$transactionID,$transactionMasterID,$data){
+		$db 				= db_connect();
+		$builder			= $db->table("tb_transaction_master");
+		$data["isApplied"] 	= 1;
+
+		$builder->where("companyID",$companyID);
+		$builder->where("transactionID",$transactionID);
+		$builder->where("transactionMasterID",$transactionMasterID);
+		$builder->where("ifnull(isApplied,0) = 0",null,false);
+		$builder->update($data);
+		return $db->affectedRows();
+   }
+
+   /**
+    * Libera un pago de campaña consumido (isApplied = 0) cuando el encolado falla después de tomarlo.
+    * @param int $companyID
+    * @param int $transactionID
+    * @param int $transactionMasterID
+    * @return bool
+    */
+   function update_advertisingPaymentRelease($companyID,$transactionID,$transactionMasterID){
+		$db 	= db_connect();
+		$builder	= $db->table("tb_transaction_master");
+
+		$builder->where("companyID",$companyID);
+		$builder->where("transactionID",$transactionID);
+		$builder->where("transactionMasterID",$transactionMasterID);
+		return $builder->update(["isApplied" => 0]);
+   }
+
+   /**
+    * Pagos Pagadito de campaña sin resultado final (REGISTERED o VERIFYING) de los últimos 7 días,
+    * para consultar su estado en Pagadito desde "Verificar pago".
+    * @param int $companyID
+    * @param int $transactionID tipo tb_transaction_master_pagadito
+    * @return array
+    */
+   function get_rowByAdvertisingPaymentPending($companyID,$transactionID){
+		$db 	= db_connect();
+		$sql 	= "";
+		$sql 	= $sql.sprintf("select tm.companyID, tm.transactionID, tm.transactionMasterID, tm.transactionNumber, tm.amount, tm.periodPay, ");
+		$sql 	= $sql.sprintf(" tm.reference1, tm.reference2, tm.reference3, tm.reference4, tm.statusID, tm.isApplied, tm.createdOn ");
+		$sql 	= $sql.sprintf(" from tb_transaction_master tm ");
+		$sql 	= $sql.sprintf(" where tm.companyID = %d ", $companyID);
+		$sql 	= $sql.sprintf(" and tm.transactionID = %d ", $transactionID);
+		$sql 	= $sql.sprintf(" and tm.reference4 in ('REGISTERED','VERIFYING') ");
+		$sql 	= $sql.sprintf(" and tm.createdOn >= date_sub(now(), interval 7 day) ");
+		$sql 	= $sql.sprintf(" and tm.isActive = 1 ");
+		$sql 	= $sql.sprintf(" order by tm.transactionMasterID desc ");
+
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+   }
+
    function get_rowByNotification($companyID)
    {
 	   $db 	= db_connect();

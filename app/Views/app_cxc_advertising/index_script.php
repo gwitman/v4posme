@@ -48,6 +48,9 @@
     var TIPOS_IMAGEN        = ['image/png', 'image/jpeg', 'image/webp'];
     var MAX_IMAGEN          = 5 * 1024 * 1024;
     var POR_PAGINA          = 50;
+    /* Borrador local: conserva la campaña mientras el usuario paga en Pagadito */
+    var CLAVE_BORRADOR      = 'posme_adv_borrador';
+    var VIGENCIA_BORRADOR   = 2 * 60 * 60 * 1000;
 
     var secuenciaPreview = 0;
     var promesaSheetJs   = null;
@@ -127,13 +130,25 @@
     function normalizarConfig(datos) {
         var origen = (datos && typeof datos === 'object') ? datos : {};
         var maximo = parseInt(origen.maxMessage, 10);
+        var gratis = parseInt(origen.freeMessages, 10);
         return {
-            enabled:        aBooleano(origen.enabled),
-            maxMessage:     isNaN(maximo) || maximo < 1 ? 1000 : maximo,
-            costMeta:       pv2Num(origen.costMeta),
-            costEvolution:  pv2Num(origen.costEvolution),
-            wabaConfigured: aBooleano(origen.wabaConfigured)
+            enabled:             aBooleano(origen.enabled),
+            maxMessage:          isNaN(maximo) || maximo < 1 ? 1000 : maximo,
+            costMeta:            pv2Num(origen.costMeta),
+            costEvolution:       pv2Num(origen.costEvolution),
+            wabaConfigured:      aBooleano(origen.wabaConfigured),
+            allowWithoutPayment: aBooleano(origen.allowWithoutPayment),
+            freeMessages:        isNaN(gratis) || gratis < 0 ? 10 : gratis
         };
+    }
+
+    /* Deja solo los dígitos del teléfono de prueba */
+    function soloDigitos(texto) {
+        return String(texto === null || texto === undefined ? '' : texto).replace(/\D/g, '');
+    }
+
+    function borrarBorrador() {
+        try { window.localStorage.removeItem(CLAVE_BORRADOR); } catch (ex) { console.warn(ex); }
     }
 
     /* SheetJS se descarga solo cuando se usa el Excel */
@@ -263,6 +278,8 @@
             descargandoPlantilla: false,
             useCustomers:    true,
             filters:         { onlyBalance: false, onlyMora: false, categoryID: 0 },
+            campaignMax:     '',
+            testPhone:       '',
 
             /* Proveedor y plantilla */
             provider:        'evolution',
@@ -282,9 +299,11 @@
             filtroMotivo:    '',
             paginaDescartados: 1,
 
-            /* Envío */
+            /* Envío y pago */
             enviando:        false,
-            resultado:       null
+            resultado:       null,
+            pagando:         false,
+            verificandoPago: false
         };
     }
 
@@ -309,7 +328,10 @@
             computed: {
                 /* Filas máximas por archivo: el servidor rechaza archivos más grandes */
                 limiteExcel: function () {
-                    return Math.ceil(this.config.maxMessage * 1.5);
+                    return Math.ceil(this.config.maxMessage * 5);
+                },
+                placeholderMax: function () {
+                    return 'Todos (máx. ' + this.entero(this.config.maxMessage) + ')';
                 },
                 /* Columnas extra del Excel que se pueden usar como variables */
                 columnasVariables: function () {
@@ -434,8 +456,41 @@
                     var inicio = (this.paginaDescartados - 1) * POR_PAGINA;
                     return this.discardedFiltrados.slice(inicio, inicio + POR_PAGINA);
                 },
-                motivoBloqueo: function () {
-                    if (this.enviando)                { return ''; }
+                /* Modo prueba: lo decide el servidor; sin resumen se deduce del teléfono escrito */
+                modoPrueba: function () {
+                    if (this.summary && this.summary.testMode !== undefined) { return aBooleano(this.summary.testMode); }
+                    return soloDigitos(this.testPhone) !== '';
+                },
+                telefonoPrueba: function () {
+                    var telefono = this.summary && this.summary.testPhone ? soloDigitos(this.summary.testPhone) : '';
+                    return telefono !== '' ? telefono : soloDigitos(this.testPhone);
+                },
+                mensajesGratis: function () {
+                    if (this.summary && this.summary.freeMessages !== undefined && this.summary.freeMessages !== null) {
+                        return pv2Num(this.summary.freeMessages);
+                    }
+                    return this.config.freeMessages;
+                },
+                seleccionAleatoria: function () {
+                    return this.summary !== null && aBooleano(this.summary.randomSelected);
+                },
+                /* Se usa summary.requiresPayment del servidor; el cálculo local es solo respaldo */
+                requierePago: function () {
+                    if (this.config.allowWithoutPayment) { return false; }
+                    if (this.summary === null)           { return false; }
+                    if (this.modoPrueba)                 { return false; }
+                    if (this.summary.requiresPayment !== undefined) { return aBooleano(this.summary.requiresPayment); }
+                    return pv2Num(this.summary.valid) > this.mensajesGratis;
+                },
+                pagoDisponible: function () {
+                    return this.summary !== null && aBooleano(this.summary.paidAvailable);
+                },
+                /* Falta el pago: se muestra Pagar como acción principal y Enviar queda bloqueado */
+                mostrarPagar: function () {
+                    return this.requierePago && !this.pagoDisponible;
+                },
+                /* Bloqueos comunes a pagar y enviar */
+                motivoBloqueoBase: function () {
                     if (!this.config.enabled)         { return 'Las campañas están deshabilitadas para esta empresa.'; }
                     if (this.summary === null)        { return 'Calcule el resumen para poder enviar.'; }
                     if (this.resumenVencido)          { return 'Actualice el resumen antes de enviar.'; }
@@ -444,8 +499,19 @@
                     if (pv2Num(this.summary.valid) < 1)     { return 'No hay mensajes válidos para enviar.'; }
                     return '';
                 },
+                motivoBloqueo: function () {
+                    if (this.enviando || this.pagando) { return ''; }
+                    if (this.motivoBloqueoBase !== '') { return this.motivoBloqueoBase; }
+                    if (this.mostrarPagar) {
+                        return 'Esta campaña supera ' + this.entero(this.mensajesGratis) + ' mensajes gratuitos: realice el pago para enviarla.';
+                    }
+                    return '';
+                },
                 puedeEnviar: function () {
-                    return this.paso === 4 && !this.previsualizando && !this.enviando && this.motivoBloqueo === '';
+                    return this.paso === 4 && !this.previsualizando && !this.enviando && !this.pagando && this.motivoBloqueo === '';
+                },
+                puedePagar: function () {
+                    return this.paso === 4 && this.mostrarPagar && !this.previsualizando && !this.enviando && !this.pagando && this.motivoBloqueoBase === '';
                 }
             },
             watch: {
@@ -521,6 +587,9 @@
                             onlyMora:    !!this.filters.onlyMora,
                             categoryID:  parseInt(this.filters.categoryID, 10) || 0
                         },
+                        /* 0 = todos los válidos; si hay más, el servidor elige al azar */
+                        campaignMax:  Math.max(0, parseInt(this.campaignMax, 10) || 0),
+                        testPhone:    soloDigitos(this.testPhone),
                         template: {
                             name:         this.template.name,
                             language:     this.template.language,
@@ -553,6 +622,19 @@
                         }
                         if (this.useExcel && this.excelRows.length === 0) {
                             errores.push('Cargue el archivo Excel o desactive esa opción.');
+                        }
+                        /* Máximo de la campaña: vacío = todos; si no, entero entre 1 y el máximo permitido */
+                        var maximoTexto = String(this.campaignMax === null || this.campaignMax === undefined ? '' : this.campaignMax).trim();
+                        if (maximoTexto !== '') {
+                            var maximoNumero = Number(maximoTexto);
+                            if (!/^\d+$/.test(maximoTexto) || maximoNumero < 1 || maximoNumero > this.config.maxMessage) {
+                                errores.push('La cantidad máxima de mensajes debe ser un número entero entre 1 y ' + this.entero(this.config.maxMessage) + '.');
+                            }
+                        }
+                        /* Teléfono de prueba: vacío, 8 dígitos (el servidor antepone 505) o de 11 a 15 con código de país; igual que buildMessages */
+                        var telefonoPrueba = soloDigitos(this.testPhone);
+                        if (telefonoPrueba !== '' && telefonoPrueba.length !== 8 && (telefonoPrueba.length < 11 || telefonoPrueba.length > 15)) {
+                            errores.push('El teléfono de prueba debe tener 8 dígitos o entre 11 y 15 con código de país (ej. 50588887777).');
                         }
                     }
                     if (numero === 3 && this.provider === 'meta') {
@@ -752,7 +834,7 @@
                             return;
                         }
 
-                        /* Se corta en 1.5 veces el máximo: el servidor rechaza archivos con más filas */
+                        /* Se corta en 5 veces el máximo: el servidor rechaza archivos con más filas */
                         var limite           = this.limiteExcel;
                         this.excelTotalLeido = registros.length;
                         this.excelTruncado   = registros.length > limite;
@@ -928,6 +1010,14 @@
                     var self      = this;
                     var proveedor = this.provider === 'meta' ? 'Meta Cloud API' : 'Evolution API';
                     /* fnShowConfirm ya codifica el texto al pintarlo con $.tmpl: aquí no se escapa */
+                    if (this.modoPrueba) {
+                        fnShowConfirm(
+                            'Confirmar mensaje de prueba',
+                            'Se enviará 1 mensaje de prueba a +' + this.telefonoPrueba + ' con los datos del primer destinatario.',
+                            function () { self.ejecutarEnvio(); }
+                        );
+                        return;
+                    }
                     fnShowConfirm(
                         'Confirmar envío',
                         'Se enviarán ' + this.entero(this.summary.valid) + ' mensajes por ' + proveedor +
@@ -957,15 +1047,194 @@
                         return;
                     }
                     /* Con datos */
-                    this.resultado = { totalQueued: pv2Num(json.totalQueued), queue: String(json.queue || '') };
+                    borrarBorrador();
+                    this.resultado = {
+                        totalQueued: pv2Num(json.totalQueued),
+                        queue:       String(json.queue || ''),
+                        testMode:    this.modoPrueba
+                    };
                     notificar(json.message || 'Campaña enviada a la cola.', 'success');
                     this.irArriba();
                 },
                 nuevaCampania: function () {
                     var estado = estadoInicial();
                     if (!this.config.wabaConfigured) { estado.plantillaModo = 'manual'; }
+                    borrarBorrador();
                     Object.assign(this, estado);
                     this.irArriba();
+                },
+
+                /* ---------------- Pago (Pagadito) ---------------- */
+                pagar: function () {
+                    if (!this.puedePagar) { return; }
+                    var self = this;
+                    fnShowConfirm(
+                        'Confirmar pago',
+                        'Será redirigido a Pagadito para pagar USD ' + this.fmt(this.summary.cost) + ' por ' + this.entero(this.summary.valid) + ' mensajes.',
+                        function () { self.ejecutarPago(); }
+                    );
+                },
+                ejecutarPago: async function () {
+                    if (this.pagando) { return; }
+                    this.pagando     = true;
+                    this.erroresPaso = [];
+                    var json = await llamar('paymentCreate', this.construirPayload(false));
+
+                    /* Error */
+                    if (json.error === true) {
+                        this.pagando     = false;
+                        this.erroresPaso = [json.message];
+                        notificar(json.message, 'error');
+                        return;
+                    }
+                    /* Sin datos */
+                    if (!json.urlPayment) {
+                        this.pagando     = false;
+                        this.erroresPaso = ['El servidor no devolvió la dirección de pago.'];
+                        notificar('El servidor no devolvió la dirección de pago.', 'error');
+                        return;
+                    }
+                    /* Con datos: se guarda la campaña y se va a Pagadito (pagando queda activo hasta salir) */
+                    this.guardarBorrador();
+                    window.location.href = String(json.urlPayment);
+                },
+                /* Consulta en el servidor los pagos pendientes de confirmar y recalcula el resumen */
+                verificarPago: async function () {
+                    if (this.verificandoPago) { return; }
+                    this.verificandoPago = true;
+                    var json = await llamar('paymentCheck', {});
+                    this.verificandoPago = false;
+
+                    if (json.error === true) {
+                        notificar(json.message, 'error');
+                        return;
+                    }
+                    if (aBooleano(json.completed)) {
+                        notificar(json.message || 'Pago aprobado.', 'success');
+                    } else {
+                        notificar(json.message || 'Aún no hay un pago aprobado para esta campaña.', 'warning');
+                    }
+                    this.previsualizar();
+                },
+
+                /* ---------------- Borrador local ---------------- */
+                /**
+                 * Guarda la campaña en localStorage antes de ir a pagar. Si no cabe
+                 * (cuota excedida) se guarda sin las filas del Excel.
+                 *
+                 * @return {boolean} true si se pudo guardar.
+                 */
+                guardarBorrador: function () {
+                    var datos = {
+                        paso:            this.paso,
+                        caption:         this.caption,
+                        body:            this.body,
+                        urlImage:        this.urlImage,
+                        imagenNombre:    this.imagenNombre,
+                        useExcel:        this.useExcel,
+                        excelRows:       this.excelRows,
+                        excelColumnas:   this.excelColumnas,
+                        excelArchivo:    this.excelArchivo,
+                        excelTotalLeido: this.excelTotalLeido,
+                        excelTruncado:   this.excelTruncado,
+                        excelOmitido:    false,
+                        useCustomers:    this.useCustomers,
+                        filters:         this.filters,
+                        campaignMax:     this.campaignMax,
+                        testPhone:       this.testPhone,
+                        provider:        this.provider,
+                        plantillaModo:   this.plantillaModo,
+                        template:        this.template,
+                        manualCantidad:  this.manualCantidad,
+                        manualNombres:   this.manualNombres
+                    };
+                    try {
+                        window.localStorage.setItem(CLAVE_BORRADOR, JSON.stringify({ savedAt: Date.now(), datos: datos }));
+                        return true;
+                    } catch (ex) {
+                        console.warn(ex);
+                    }
+                    /* Respaldo: sin las filas del Excel; al volver se pedirá cargarlo de nuevo */
+                    datos.excelOmitido = this.useExcel && this.excelRows.length > 0;
+                    datos.excelRows    = [];
+                    try {
+                        window.localStorage.setItem(CLAVE_BORRADOR, JSON.stringify({ savedAt: Date.now(), datos: datos }));
+                        return true;
+                    } catch (ex) {
+                        console.error(ex);
+                        return false;
+                    }
+                },
+                /**
+                 * Restaura la campaña guardada antes de pagar (vigencia 2 h) y la borra.
+                 *
+                 * @return {boolean} true si se restauró un borrador.
+                 */
+                restaurarBorrador: function () {
+                    var texto = null;
+                    try { texto = window.localStorage.getItem(CLAVE_BORRADOR); } catch (ex) { console.warn(ex); return false; }
+                    if (!texto) { return false; }
+                    borrarBorrador();
+
+                    var borrador = null;
+                    try { borrador = JSON.parse(texto); } catch (ex) { console.warn(ex); return false; }
+                    if (!borrador || typeof borrador !== 'object' || !borrador.datos || typeof borrador.datos !== 'object') { return false; }
+                    if (!borrador.savedAt || (Date.now() - Number(borrador.savedAt)) > VIGENCIA_BORRADOR) { return false; }
+
+                    var d = borrador.datos;
+                    this.caption         = String(d.caption || '');
+                    this.body            = String(d.body || '');
+                    this.urlImage        = String(d.urlImage || '');
+                    this.imagenNombre    = String(d.imagenNombre || '');
+                    this.useExcel        = !!d.useExcel;
+                    this.excelColumnas   = Array.isArray(d.excelColumnas) ? d.excelColumnas : [];
+                    this.excelRows       = Array.isArray(d.excelRows) ? d.excelRows : [];
+                    this.excelArchivo    = this.excelRows.length > 0 ? String(d.excelArchivo || '') : '';
+                    this.excelTotalLeido = this.excelRows.length > 0 ? pv2Num(d.excelTotalLeido) : 0;
+                    this.excelTruncado   = this.excelRows.length > 0 && !!d.excelTruncado;
+                    if (this.excelRows.length === 0) { this.excelColumnas = []; }
+                    this.useCustomers    = d.useCustomers === undefined ? true : !!d.useCustomers;
+                    if (d.filters && typeof d.filters === 'object') {
+                        this.filters = {
+                            onlyBalance: !!d.filters.onlyBalance,
+                            onlyMora:    !!d.filters.onlyMora,
+                            categoryID:  parseInt(d.filters.categoryID, 10) || 0
+                        };
+                    }
+                    this.campaignMax     = (d.campaignMax === null || d.campaignMax === undefined) ? '' : d.campaignMax;
+                    this.testPhone       = String(d.testPhone || '');
+                    this.plantillaModo   = d.plantillaModo === 'lista' && this.config.wabaConfigured ? 'lista' : 'manual';
+                    this.plantillaClave  = '';
+                    if (d.template && typeof d.template === 'object') {
+                        var base = plantillaVacia();
+                        this.template = {
+                            name:         String(d.template.name || ''),
+                            language:     String(d.template.language || base.language),
+                            headerType:   String(d.template.headerType || ''),
+                            variableType: d.template.variableType === 'named' ? 'named' : 'positional',
+                            body:         String(d.template.body || ''),
+                            mapping:      Array.isArray(d.template.mapping) ? d.template.mapping : []
+                        };
+                    }
+                    this.manualCantidad  = parseInt(d.manualCantidad, 10) || 0;
+                    this.manualNombres   = String(d.manualNombres || '');
+                    /* Al pasar a Meta el watcher de provider carga las plantillas y recupera la selección */
+                    this.provider        = d.provider === 'meta' ? 'meta' : 'evolution';
+                    var paso             = parseInt(d.paso, 10);
+                    this.paso            = (paso >= 1 && paso <= 4) ? paso : 1;
+
+                    if (d.excelOmitido) {
+                        notificar('Se restauró la campaña, pero el archivo Excel no se pudo conservar: vuelva a cargarlo en el paso 2.', 'warning');
+                    } else {
+                        notificar('Se restauró la campaña en curso.', 'success');
+                    }
+                    return true;
+                },
+                /* Al volver de Pagadito: confirma el pago en el servidor y recalcula el resumen */
+                reanudarTrasPago: async function () {
+                    var json = await llamar('paymentCheck', {});
+                    if (json.error === true) { console.warn(json.message); }
+                    if (this.paso === 4) { this.previsualizar(); }
                 }
             },
             mounted: function () {
@@ -973,6 +1242,7 @@
                 this.horaActual = dosDigitos(ahora.getHours()) + ':' + dosDigitos(ahora.getMinutes());
                 document.getElementById('app').style.visibility = 'visible';
                 pv2BindMobileBar();
+                if (this.restaurarBorrador()) { this.reanudarTrasPago(); }
             }
         }).mount('#app');
     }

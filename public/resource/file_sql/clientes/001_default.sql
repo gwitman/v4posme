@@ -6,6 +6,18 @@
 /******************************************************************/
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '10'
+WHERE p.name = 'CXC_ADVERTISING_FREE_MESSAGES'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'false'
+WHERE p.name = 'CXC_ADVERTISING_ALLOW_WITHOUT_PAYMENT'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = 'false'
 WHERE p.name = 'INVOICE_REPLACEMENT_VALIDATE_STOCK'
     AND cp.companyID = 2;

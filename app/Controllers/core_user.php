@@ -1125,7 +1125,10 @@ class core_user extends _BaseController {
 		
 		//Orignes de pago 4:	app_invoice_api/getLinkPaymentPagadito
 		//PAGO DE FACTURA DE CLIENTES Y PARA CLIENTES	= FCCLI_FLAVORID_FECHA
-		
+
+		//Orignes de pago 5:	app_cxc_advertising/paymentCreate
+		//PAGO DE CAMPAÑA WHATSAPP	= CAM__COMPANYID__TRANSACTIONMASTERID (tb_transaction_master_pagadito)
+
 		
 		
 		
@@ -1200,6 +1203,11 @@ class core_user extends _BaseController {
 		{
 			$urlRedirect = base_url()."/".$urlResultadoFacturacion;
 		}
+		//pago de campaña whatsapp
+		else if($facturaParteApp == "CAM")
+		{
+			$urlRedirect = base_url()."/app_cxc_advertising/index";
+		}
 		//woocomerce
 		else 
 		{
@@ -1235,8 +1243,72 @@ class core_user extends _BaseController {
 				 * get_status(). Le pasamos como parámetro el token recibido vía
 				 * GET en nuestra URL de retorno.
 				 */
-				if ($Pagadito->get_status( $tocken ) ) 
+				if ($Pagadito->get_status( $tocken ) )
 				{
+					//Pago de campaña WhatsApp: se actualiza tb_transaction_master_pagadito antes de armar el mensaje
+					//campaignResult: ok | token (no coincide, no se actualiza) | notfound (no existe o error)
+					$campaignResult 	= "";
+					$campaignNap 		= $Pagadito->get_rs_reference();
+					if($facturaParteApp == "CAM")
+					{
+						$campaignResult = "notfound";
+						try
+						{
+							$campaignCompanyID 		= (int)$facturaParteClient;
+							$campaignMasterID 		= (int)$facturaParteConsercutivo;
+							$campaignStatus 		= $Pagadito->get_rs_status();
+							$campaignTransactionID 	= $this->core_web_payment->getTransactionPagaditoID($campaignCompanyID);
+							$objCampaign 			= $this->Transaction_Master_Model->get_rowByPK($campaignCompanyID,$campaignTransactionID,$campaignMasterID);
+
+							if(!$objCampaign)
+							{
+								$campaignResult = "notfound";
+							}
+							else if((string)$objCampaign->reference1 !== (string)$tocken)
+							{
+								$campaignResult = "token";
+								log_message("error","[core_user::payment_user_back] token no coincide para ".$factura." NAP ".$campaignNap);
+							}
+							else
+							{
+								$campaignResult = "ok";
+								if(in_array($campaignStatus,array("COMPLETED","VERIFYING","REVOKED","FAILED")))
+								{
+									$dataCampaign 					= array();
+									$dataCampaign["reference4"] 	= $campaignStatus;
+									$dataCampaign["reference2"] 	= $campaignNap;
+
+									//Estado aplicable del workflow: requiere la sesion del usuario (rol); si no hay, manda reference4
+									$sessionCallback = $this->session->get();
+									if($campaignStatus == "COMPLETED" && !empty($sessionCallback["user"]) && !empty($sessionCallback["role"]) && $sessionCallback["user"]->companyID == $campaignCompanyID)
+									{
+										try
+										{
+											$campaignStatusID = $this->core_web_payment->getWorkflowStageID($campaignCompanyID,$sessionCallback["user"]->branchID,$sessionCallback["role"]->roleID,true);
+											if($campaignStatusID > 0)
+											{
+												$dataCampaign["statusID"] 			= $campaignStatusID;
+												$dataCampaign["statusIDChangeOn"] 	= helper_getDateTime();
+											}
+										}
+										catch(\Throwable $exStage)
+										{
+											log_message("error","[core_user::payment_user_back] estado aplicable ".$exStage->getMessage());
+										}
+									}
+
+									$this->Transaction_Master_Model->update_app_posme($campaignCompanyID,$campaignTransactionID,$campaignMasterID,$dataCampaign);
+								}
+							}
+						}
+						catch(\Throwable $exCampaign)
+						{
+							$campaignResult = "notfound";
+							log_message("error","[core_user::payment_user_back] campaña ".$factura." ".$exCampaign->getMessage());
+						}
+						log_message("info","[core_user::payment_user_back] campaña ".$factura." estado ".$Pagadito->get_rs_status()." resultado ".$campaignResult." NAP ".$campaignNap);
+					}
+
 					/*
 					 * Luego validamos el estado de la transacción, consultando el
 					 * estado devuelto por la API.
@@ -1246,7 +1318,9 @@ class core_user extends _BaseController {
 						case "COMPLETED":
 							/*
 							 * Tratamiento para una transacción exitosa.
-							 */ ///////////////////////////////////////////////////////////////////////////////////////////////////////	
+							 */ ///////////////////////////////////////////////////////////////////////////////////////////////////////
+							$msgError 		= false;
+							$msgSecundario 	= "";
 
 							//transaccion completa de posmeCalendar
 							if($facturaParteApp == "AGE")
@@ -1318,13 +1392,39 @@ class core_user extends _BaseController {
 										  </tr>
 									</table>
 								';
-								
+
 							}
-							
-							
-							
-							
-							$this->core_web_notification->set_message(false,$msgSecundario);
+
+							//transaccion completa de licencia posMe (no extiende la licencia: solo informa)
+							if($facturaParteApp == "POS")
+							{
+								$msgSecundario = ''.
+								'Gracias por comprar en posMe.</br> '.
+								'NAP: ' .$Pagadito->get_rs_reference(). "</br>" .
+								'Fecha Respuesta:' .$Pagadito->get_rs_date_trans();
+								log_message("info","[core_user::payment_user_back] pago licencia ".$factura." NAP ".$Pagadito->get_rs_reference());
+							}
+
+							//transaccion completa de campaña whatsapp
+							if($facturaParteApp == "CAM")
+							{
+								if($campaignResult == "ok")
+								{
+									$msgSecundario 	= "Pago de campaña aprobado. NAP: ".$campaignNap.". Ya puede enviar la campaña.";
+								}
+								else if($campaignResult == "token")
+								{
+									$msgError 		= true;
+									$msgSecundario 	= "El pago (NAP ".$campaignNap.") no corresponde a la campaña registrada; no se aplicó. Comuníquese con soporte.";
+								}
+								else
+								{
+									$msgError 		= true;
+									$msgSecundario 	= "El pago fue aprobado (NAP ".$campaignNap.") pero no se encontró la campaña en esta instalación; use Verificar pago desde la pantalla de campañas.";
+								}
+							}
+
+							$this->core_web_notification->set_message($msgError,$msgSecundario);
 							$this->response->redirect($urlRedirect);
 							break;
 						

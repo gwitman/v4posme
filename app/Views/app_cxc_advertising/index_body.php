@@ -200,6 +200,25 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Alcance y prueba -->
+                    <div class="pv2-card">
+                        <p class="pv2-card-title"><span class="pv2-ico"><i class="bi bi-sliders" aria-hidden="true"></i></span> Alcance y prueba</p>
+                        <div class="adv-grid">
+                            <div class="form-group">
+                                <label class="pv2-label" for="advCampaignMax">Cantidad máxima de mensajes</label>
+                                <input type="number" id="advCampaignMax" class="form-control pv2-num" min="1" :max="config.maxMessage" step="1" inputmode="numeric" autocomplete="off"
+                                       :placeholder="placeholderMax" v-model="campaignMax">
+                                <span class="pv2-help">Si hay más destinatarios válidos, se eligen al azar.</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="pv2-label" for="advTestPhone">Teléfono de prueba (opcional)</label>
+                                <input type="tel" id="advTestPhone" class="form-control" maxlength="20" inputmode="tel" autocomplete="off"
+                                       placeholder="50588887777" v-model.trim="testPhone">
+                                <span class="pv2-help">Con código de país, ej. 50588887777. Envía 1 solo mensaje con los datos del primer destinatario.</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- (3) Proveedor -->
@@ -348,7 +367,7 @@
                     <!-- Resultado del envío -->
                     <div v-if="resultado" class="pv2-card adv-result" role="status">
                         <div class="adv-result-icon" aria-hidden="true"><i class="bi bi-check2-circle"></i></div>
-                        <p class="adv-result-title">Campaña enviada a la cola</p>
+                        <p class="adv-result-title">{{ resultado.testMode ? 'Mensaje de prueba enviado a la cola' : 'Campaña enviada a la cola' }}</p>
                         <p class="adv-result-sub">Se encolaron <strong>{{ entero(resultado.totalQueued) }}</strong> mensajes<span v-if="resultado.queue"> en la cola <code>{{ resultado.queue }}</code></span>. Se enviarán de forma gradual{{ summary && summary.estimatedMinutes ? ' (aprox. ' + entero(summary.estimatedMinutes) + ' min)' : '' }}.</p>
                         <button type="button" class="btn btn-primary adv-btn-wa" @click="nuevaCampania"><i class="bi bi-plus-lg" aria-hidden="true"></i> Nueva campaña</button>
                     </div>
@@ -383,6 +402,18 @@
                             <span class="adv-badge">Duplicados: {{ entero(summary.duplicate) }}</span>
                             <span class="adv-badge" :class="{ 'is-bad': summary.overLimit > 0 }">Exceden máximo: {{ entero(summary.overLimit) }}</span>
                             <span class="adv-badge">Máximo por campaña: {{ entero(summary.maxMessage) }}</span>
+                            <span v-if="Number(summary.notSelected) > 0" class="adv-badge">No seleccionados: {{ entero(summary.notSelected) }}</span>
+                            <span v-if="!config.allowWithoutPayment" class="adv-badge">Mensajes gratuitos: {{ entero(mensajesGratis) }}</span>
+                            <span v-if="modoPrueba" class="adv-badge is-info"><i class="bi bi-phone" aria-hidden="true"></i> Modo prueba</span>
+                            <span v-if="pagoDisponible && !modoPrueba" class="adv-badge is-ok"><i class="bi bi-patch-check-fill" aria-hidden="true"></i> Pago aprobado disponible</span>
+                        </div>
+
+                        <div v-if="seleccionAleatoria" class="adv-alert is-info"><i class="bi bi-shuffle" aria-hidden="true"></i><span>Seleccionados {{ entero(summary.valid) }} de {{ entero(summary.validTotal) }} válidos al azar; el envío elegirá su propia muestra aleatoria.</span></div>
+                        <div v-if="modoPrueba" class="adv-alert is-warn"><i class="bi bi-phone" aria-hidden="true"></i><span>Modo prueba: 1 mensaje a +{{ telefonoPrueba }} con los datos del primer destinatario (sin costo de campaña)</span></div>
+                        <div v-if="mostrarPagar" class="adv-alert is-warn">
+                            <i class="bi bi-credit-card" aria-hidden="true"></i>
+                            <span>Esta campaña supera {{ entero(mensajesGratis) }} mensajes gratuitos: realice el pago para enviarla. Si ya pagó, verifique el pago.</span>
+                            <button type="button" class="btn btn-default adv-btn-soft" :disabled="verificandoPago || previsualizando" @click="verificarPago"><i class="bi bi-arrow-repeat" aria-hidden="true"></i> {{ verificandoPago ? 'Verificando...' : 'Verificar pago' }}</button>
                         </div>
 
                         <div v-if="!summary.enabled" class="adv-alert is-error" role="alert"><i class="bi bi-lock-fill" aria-hidden="true"></i><span>El envío está bloqueado: las campañas están deshabilitadas para esta empresa.</span></div>
@@ -463,11 +494,16 @@
 
                 <!-- Navegación -->
                 <div v-if="!resultado" class="adv-nav">
-                    <button type="button" class="btn btn-default adv-btn-soft" :disabled="paso === 1 || enviando" @click="anterior"><i class="bi bi-arrow-left" aria-hidden="true"></i> Anterior</button>
+                    <button type="button" class="btn btn-default adv-btn-soft" :disabled="paso === 1 || enviando || pagando" @click="anterior"><i class="bi bi-arrow-left" aria-hidden="true"></i> Anterior</button>
                     <button v-if="paso < 4" type="button" class="btn btn-primary adv-btn-wa" @click="siguiente">Siguiente <i class="bi bi-arrow-right" aria-hidden="true"></i></button>
-                    <button v-else type="button" class="btn btn-primary adv-btn-wa adv-btn-send" :disabled="!puedeEnviar" :title="motivoBloqueo" @click="enviar">
-                        <i class="bi bi-whatsapp" aria-hidden="true"></i> {{ enviando ? 'Enviando...' : 'Enviar campaña' }}
-                    </button>
+                    <div v-else class="adv-nav-actions">
+                        <button v-if="mostrarPagar" type="button" class="btn btn-primary adv-btn-pay" :disabled="!puedePagar" @click="pagar">
+                            <i class="bi bi-credit-card" aria-hidden="true"></i> {{ pagando ? 'Redirigiendo...' : 'Pagar USD ' + fmt(summary ? summary.cost : 0) }}
+                        </button>
+                        <button type="button" class="btn adv-btn-wa" :class="mostrarPagar ? 'btn-default' : 'btn-primary adv-btn-send'" :disabled="!puedeEnviar" :title="motivoBloqueo" @click="enviar">
+                            <i class="bi bi-whatsapp" aria-hidden="true"></i> {{ enviando ? 'Enviando...' : (modoPrueba ? 'Enviar prueba' : 'Enviar campaña') }}
+                        </button>
+                    </div>
                 </div>
                 <p v-if="paso === 4 && !resultado && motivoBloqueo && !previsualizando" class="adv-block-reason">{{ motivoBloqueo }}</p>
             </div>
@@ -502,7 +538,8 @@
                 <p class="pv2-mbar-label">USD {{ fmt(costoEstimado) }}</p>
             </div>
             <button v-if="paso < 4" type="button" class="btn btn-primary adv-btn-wa" @click="siguiente">Siguiente <i class="bi bi-arrow-right" aria-hidden="true"></i></button>
-            <button v-else type="button" class="btn btn-primary adv-btn-wa" :disabled="!puedeEnviar" @click="enviar"><i class="bi bi-whatsapp" aria-hidden="true"></i> {{ enviando ? 'Enviando...' : 'Enviar' }}</button>
+            <button v-else-if="mostrarPagar" type="button" class="btn btn-primary adv-btn-pay" :disabled="!puedePagar" @click="pagar"><i class="bi bi-credit-card" aria-hidden="true"></i> {{ pagando ? 'Redirigiendo...' : 'Pagar' }}</button>
+            <button v-else type="button" class="btn btn-primary adv-btn-wa" :disabled="!puedeEnviar" @click="enviar"><i class="bi bi-whatsapp" aria-hidden="true"></i> {{ enviando ? 'Enviando...' : (modoPrueba ? 'Enviar prueba' : 'Enviar') }}</button>
         </div>
     </form>
 </script>

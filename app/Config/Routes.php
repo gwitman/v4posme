@@ -560,6 +560,10 @@ $routes->match(['get', 'post'], 'app_cxc_advertising/preview', 'app_cxc_advertis
 $routes->match(['get', 'post'], 'app_cxc_advertising/preview/(:any)', 'app_cxc_advertising::preview');
 $routes->match(['get', 'post'], 'app_cxc_advertising/send', 'app_cxc_advertising::send');
 $routes->match(['get', 'post'], 'app_cxc_advertising/send/(:any)', 'app_cxc_advertising::send');
+$routes->match(['get', 'post'], 'app_cxc_advertising/paymentCreate', 'app_cxc_advertising::paymentCreate');
+$routes->match(['get', 'post'], 'app_cxc_advertising/paymentCreate/(:any)', 'app_cxc_advertising::paymentCreate');
+$routes->match(['get', 'post'], 'app_cxc_advertising/paymentCheck', 'app_cxc_advertising::paymentCheck');
+$routes->match(['get', 'post'], 'app_cxc_advertising/paymentCheck/(:any)', 'app_cxc_advertising::paymentCheck');
 $routes->match(['get', 'post'], 'app_purchase_garantia/index', 'app_purchase_garantia::index');
 $routes->match(['get', 'post'], 'app_purchase_garantia/index/(:any)', 'app_purchase_garantia::index');
 $routes->match(['get', 'post'], 'app_purchase_garantia/add', 'app_purchase_garantia::add');
@@ -1779,8 +1783,6 @@ $routes->match(['get', 'post'], 'core_acount/rememberpassword', 'core_acount::re
 $routes->match(['get', 'post'], 'core_acount/edit', 'core_acount::edit');
 $routes->match(['get', 'post'], 'core_acount/payment', 'core_acount::payment');
 $routes->match(['get', 'post'], 'core_acount/payment/(:any)', 'core_acount::payment');
-$routes->match(['get', 'post'], 'core_acount/paymentBack', 'core_acount::paymentBack');
-$routes->match(['get', 'post'], 'core_acount/paymentBack/(:any)', 'core_acount::paymentBack');
 $routes->match(['get', 'post'], 'core_acount/getReviewLoginSession', 'core_acount::getReviewLoginSession');
 $routes->match(['get', 'post'], 'core_acount/getReviewLoginSession/(:any)', 'core_acount::getReviewLoginSession');
 $routes->match(['get', 'post'], 'core_acount/setReviewLoginSession', 'core_acount::setReviewLoginSession');

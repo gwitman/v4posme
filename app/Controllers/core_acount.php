@@ -274,7 +274,7 @@ class core_acount extends _BaseController {
 			//Procesar Pago
 			if($pagoCantidadMonto > 0 )
 			{
-				$this->response->redirect(base_url()."/"."core_acount/payment/pagoCantidadDeMeses/".$pagoCantidadDeMeses);
+				return $this->response->redirect(base_url()."/"."core_acount/payment/pagoCantidadDeMeses/".$pagoCantidadDeMeses);
 			}
 			//Validar Fecha de Expiracion
 			$objCompany 	= $this->Company_Model->get_rowByPK($objUser["user"]->companyID);
@@ -663,58 +663,42 @@ class core_acount extends _BaseController {
 		//core_user/payment_user_back
 		
 		
-		//AUTENTICACION
-		if(!$this->core_web_authentication->isAuthenticated())
-		throw new \Exception(USER_NOT_AUTENTICATED);
-		$dataSession			= $this->session->get();
-								
-		
-		//Obtener Datos
-		$pagoCantidadDeMeses		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"pagoCantidadDeMeses");//--finuri
-		$parameterSendBox 			= $this->core_web_parameter->getParameter("CORE_PAYMENT_SENDBOX",$dataSession["user"]->companyID);
-		$parameterSendBox 			= $parameterSendBox->value;
-		$parameterSendBoxUsuario 	= $this->core_web_parameter->getParameter("CORE_PAYMENT_PRUEBA_USUARIO",$dataSession["user"]->companyID);
-		$parameterSendBoxUsuario 	= $parameterSendBoxUsuario->value;
-		$parameterSendBoxClave 		= $this->core_web_parameter->getParameter("CORE_PAYMENT_PRUEBA_CLAVE",$dataSession["user"]->companyID);
-		$parameterSendBoxClave 		= $parameterSendBoxClave->value;
-		$parameterProduccionUsuario = $this->core_web_parameter->getParameter("CORE_PAYMENT_PRODUCCION_USUARIO",$dataSession["user"]->companyID);
-		$parameterProduccionUsuario = $parameterProduccionUsuario->value;
-		$parameterProduccionClave 	= $this->core_web_parameter->getParameter("CORE_PAYMENT_PRODUCCION_CLAVE",$dataSession["user"]->companyID);
-		$parameterProduccionClave 	= $parameterProduccionClave->value;
-		$parameterPrice				= $this->core_web_parameter->getParameter("CORE_CUST_PRICE",$dataSession["user"]->companyID);
-		$parameterPrice 			= $parameterPrice->value;
-		$parameterTipoPlan 			= $this->core_web_parameter->getParameter("CORE_CUST_PRICE_TIPO_PLAN",$dataSession["user"]->companyID);
-		$parameterTipoPlan 			= $parameterTipoPlan->value;
-		$parameterTemporal1 = $this->core_web_parameter->getParameter("CORE_TEMPORAL001",$dataSession["user"]->companyID);
-		$parameterTemporal2 = $this->core_web_parameter->getParameter("CORE_TEMPORAL002",$dataSession["user"]->companyID);
-		$parameterTemporal3 = $this->core_web_parameter->getParameter("CORE_TEMPORAL003",$dataSession["user"]->companyID);
-		
-		
-		$parameterFechaExpiration = $this->core_web_parameter->getParameter("CORE_CUST_PRICE_LICENCES_EXPIRED",$dataSession["user"]->companyID);
-		$parameterFechaExpiration = $parameterFechaExpiration->value;
-		$parameterFechaExpiration = \DateTime::createFromFormat('Y-m-d',$parameterFechaExpiration);			
-		$pagoCantidadMonto		  = $pagoCantidadDeMeses * $parameterPrice;
-		$fechaNow  				  = \DateTime::createFromFormat('Y-m-d',date("Y-m-d"));
-		
-		
-		$uidt 			= "";
-		$wskt 			= "";
-		$urlProducto 	= "localhost/posme";
-		$sendBox 		= $parameterSendBox == "true"? true : false;
-		$cantidad 		= $pagoCantidadDeMeses;
-		$precio  		= $pagoCantidadMonto;
-		if($sendBox){
-			$uidt = $parameterSendBoxUsuario;
-			$wskt = $parameterSendBoxClave;
-		}
-		else
+		try
 		{
-			$uidt = $parameterProduccionUsuario;
-			$wskt = $parameterProduccionClave;
+			//AUTENTICACION
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession			= $this->session->get();
+			$companyID				= $dataSession["user"]->companyID;
+
+			//Obtener Datos
+			$pagoCantidadDeMeses	= (int) /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"pagoCantidadDeMeses");//--finuri
+			$parameterPrice			= (float) $this->core_web_parameter->getParameterValue("CORE_CUST_PRICE",$companyID);
+			if($pagoCantidadDeMeses <= 0)
+			throw new \Exception("Indique una cantidad de meses válida para pagar la licencia.");
+
+			//Pagadito multiplica cantidad x precio: el precio unitario es el de un mes (CORE_CUST_PRICE)
+			$flavorID 	= !empty($dataSession["company"]->flavorID) ? $dataSession["company"]->flavorID : $companyID;
+			$ern 		= "POS__".$flavorID."__".date("YmdHis");
+			$payment 	= $this->core_web_payment->getPaymentUrl(
+				$companyID,
+				$ern,
+				"Licencia posMe ".$pagoCantidadDeMeses." mes(es)",
+				$pagoCantidadDeMeses,
+				$parameterPrice,
+				base_url()
+			);
+
+			log_message("info","[core_acount::payment] companyID: ".$companyID." | ern: ".$ern." | meses: ".$pagoCantidadDeMeses);
+			return redirect()->to($payment["url"]);
 		}
-		
-		
-		
+		catch(\Throwable $ex)
+		{
+			//core_user/payment es publica y muestra la notificacion; es la misma pantalla de retorno de los pagos POS
+			log_message("error","[core_acount::payment] ".$ex->getLine()." ".$ex->getMessage());
+			$this->core_web_notification->set_message(true,$ex->getMessage());
+			return redirect()->to(base_url("core_user/payment"));
+		}
 	}
 	
 	//Revisar si el propietario ya autorizo el acceso
