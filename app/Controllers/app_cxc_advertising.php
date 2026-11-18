@@ -89,6 +89,15 @@ class app_cxc_advertising extends _BaseController
                 log_message("error", "[app_cxc_advertising::index] cron job: " . $exCron->getMessage());
             }
 
+            //Conexion WhatsApp: solo el nombre de la instancia (el estado se consulta al abrir la pestana)
+            $config["whatsapp"] = ["instanceName" => "", "configError" => ""];
+            try {
+                $evolution                          = $this->core_web_whatsap->evolutionGetInstanceConfig($companyID);
+                $config["whatsapp"]["instanceName"] = $evolution["instanceName"];
+            } catch (\Throwable $exWhatsapp) {
+                $config["whatsapp"]["configError"] = $exWhatsapp->getMessage();
+            }
+
             $dataView["company"]            = $dataSession["company"];
             $dataView["companyPageSetting"] = $dataSession["companyPageSetting"] ?? null;
             $dataView["title"]              = "Campañas WhatsApp";
@@ -621,6 +630,77 @@ class app_cxc_advertising extends _BaseController
                 "active"  => false,
                 "jobId"   => $jobId
             ]);
+        } catch (\Throwable $ex) {
+            return $this->responseError($ex);
+        }
+    }
+
+    /**
+     * Estado de la conexion de WhatsApp (instancia de Evolution API de la empresa).
+     * @return mixed JSON {error, message, instanceName, exists, state, number, profileName, profilePicUrl}
+     */
+    function whatsappStatus()
+    {
+        try {
+            $dataSession = $this->authorizeAccess();
+            $companyID   = $dataSession["user"]->companyID;
+            $status      = $this->core_web_whatsap->evolutionInstanceStatus($companyID);
+
+            return $this->response->setJSON(array_merge(["error" => false, "message" => SUCCESS], $status));
+        } catch (\Throwable $ex) {
+            return $this->responseError($ex);
+        }
+    }
+
+    /**
+     * Conecta el WhatsApp: crea la instancia si no existe y devuelve el QR para escanear.
+     * @return mixed JSON {error, message, instanceName, state, qrBase64, pairingCode, created}
+     */
+    function whatsappConnect()
+    {
+        try {
+            $dataSession = $this->authorizeAccess();
+            $companyID   = $dataSession["user"]->companyID;
+            $result      = $this->core_web_whatsap->evolutionInstanceConnect($companyID);
+            log_message("info", "[app_cxc_advertising::whatsappConnect] companyID: " . $companyID . " | userID: " . $dataSession["user"]->userID . " | instancia: " . $result["instanceName"] . " | estado: " . $result["state"]);
+
+            return $this->response->setJSON(array_merge(["error" => false], $result));
+        } catch (\Throwable $ex) {
+            return $this->responseError($ex);
+        }
+    }
+
+    /**
+     * Reinicia la conexion de WhatsApp en Evolution API.
+     * @return mixed JSON {error, message, instanceName}
+     */
+    function whatsappRestart()
+    {
+        try {
+            $dataSession = $this->authorizeAccess();
+            $companyID   = $dataSession["user"]->companyID;
+            $result      = $this->core_web_whatsap->evolutionInstanceRestart($companyID);
+            log_message("info", "[app_cxc_advertising::whatsappRestart] companyID: " . $companyID . " | userID: " . $dataSession["user"]->userID . " | instancia: " . $result["instanceName"]);
+
+            return $this->response->setJSON(array_merge(["error" => false], $result));
+        } catch (\Throwable $ex) {
+            return $this->responseError($ex);
+        }
+    }
+
+    /**
+     * Desconecta el telefono de WhatsApp (logout de la instancia).
+     * @return mixed JSON {error, message, instanceName}
+     */
+    function whatsappLogout()
+    {
+        try {
+            $dataSession = $this->authorizeAccess();
+            $companyID   = $dataSession["user"]->companyID;
+            $result      = $this->core_web_whatsap->evolutionInstanceLogout($companyID);
+            log_message("info", "[app_cxc_advertising::whatsappLogout] companyID: " . $companyID . " | userID: " . $dataSession["user"]->userID . " | instancia: " . $result["instanceName"]);
+
+            return $this->response->setJSON(array_merge(["error" => false], $result));
         } catch (\Throwable $ex) {
             return $this->responseError($ex);
         }

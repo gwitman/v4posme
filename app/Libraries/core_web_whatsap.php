@@ -3307,5 +3307,310 @@ class core_web_whatsap {
 			return $result;
 		}
 	}
+
+	/**
+	 * Configuracion para administrar la instancia de Evolution API de la empresa.
+	 * URL base = WAHTSAP_URL_ENVIO_MENSAJE, apikey = WHATSAP_TOCKEN, instancia = WHATSAP_URL_REQUEST_SESSION.
+	 * El nombre de la instancia lleva al inicio el tipo de la compania (tb_company.type) para identificarla
+	 * en el servidor de Evolution: <type>_<instancia>. Si el parametro ya trae ese prefijo no se repite.
+	 * @param int $companyID
+	 * @return array {url, apiKey, instanceName, parameterValue}
+	 */
+	function evolutionGetInstanceConfig($companyID)
+	{
+		$core_web_parameter = new core_web_parameter();
+		$Company_Model      = new Company_Model();
+
+		$url     = rtrim(trim((string) $core_web_parameter->getParameterValue("WAHTSAP_URL_ENVIO_MENSAJE", $companyID)), '/');
+		$apiKey  = trim((string) $core_web_parameter->getParameterValue("WHATSAP_TOCKEN", $companyID));
+		$current = trim((string) $core_web_parameter->getParameterValue("WHATSAP_URL_REQUEST_SESSION", $companyID));
+		if ($url == "" || stripos($url, "http") !== 0) {
+			throw new \Exception("Configure la URL de Evolution API en el parámetro WAHTSAP_URL_ENVIO_MENSAJE.");
+		}
+		if ($apiKey == "") {
+			throw new \Exception("Configure la llave de Evolution API en el parámetro WHATSAP_TOCKEN.");
+		}
+
+		$objCompany = $Company_Model->get_rowByPK($companyID);
+		$prefix     = $this->evolutionCleanName($objCompany ? (trim((string) $objCompany->type) != "" ? $objCompany->type : $objCompany->name) : "");
+		$prefix     = $prefix == "" ? "company" . $companyID : $prefix;
+		$base       = $this->evolutionCleanName($current);
+		$base       = $base == "" ? "whatsapp" : $base;
+
+		$hasPrefix    = strcasecmp($base, $prefix) == 0 || stripos($base, $prefix . "_") === 0;
+		$instanceName = $hasPrefix ? $base : $prefix . "_" . $base;
+
+		return [
+			"url"            => $url,
+			"apiKey"         => $apiKey,
+			"instanceName"   => $instanceName,
+			"parameterValue" => $current
+		];
+	}
+
+	/**
+	 * Deja un nombre apto para instancia de Evolution: sin acentos, solo letras, numeros, guion y guion bajo.
+	 * @param string $text
+	 * @return string
+	 */
+	function evolutionCleanName($text)
+	{
+		$text = strtr((string) $text, [
+			'á' => 'a', 'é' => 'e', 'í' => 'i', 'ó' => 'o', 'ú' => 'u', 'ü' => 'u', 'ñ' => 'n',
+			'Á' => 'A', 'É' => 'E', 'Í' => 'I', 'Ó' => 'O', 'Ú' => 'U', 'Ü' => 'U', 'Ñ' => 'N'
+		]);
+		$text = preg_replace('/[^A-Za-z0-9_\-]+/', '_', $text);
+		$text = preg_replace('/_+/', '_', $text);
+		return trim($text, '_-');
+	}
+
+	/**
+	 * Llamada HTTP a Evolution API (administracion de instancias). La apikey nunca se escribe en el log.
+	 * @param array      $config evolutionGetInstanceConfig()
+	 * @param string     $method GET | POST | PUT | DELETE
+	 * @param string     $path   Ruta sin la URL base, ej. /instance/connectionState/{instancia}
+	 * @param array|null $body   Cuerpo JSON
+	 * @return array {httpCode, json}
+	 */
+	function evolutionInstanceRequest($config, $method, $path, $body = null)
+	{
+		$ch = curl_init($config["url"] . $path);
+		$options = [
+			CURLOPT_RETURNTRANSFER => true,
+			CURLOPT_CUSTOMREQUEST  => $method,
+			CURLOPT_CONNECTTIMEOUT => 10,
+			CURLOPT_TIMEOUT        => 30,
+			CURLOPT_HTTPHEADER     => [
+				'Content-Type: application/json',
+				'apikey: ' . $config["apiKey"]
+			],
+			CURLOPT_SSL_VERIFYPEER => false,
+			CURLOPT_SSL_VERIFYHOST => false
+		];
+		if ($body !== null) {
+			$options[CURLOPT_POSTFIELDS] = json_encode($body);
+		}
+		curl_setopt_array($ch, $options);
+
+		$response = curl_exec($ch);
+		$error    = curl_error($ch);
+		$httpCode = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+		curl_close($ch);
+
+		log_message('info', '[evolutionInstanceRequest] ' . $method . ' ' . $path . ' | HTTP: ' . $httpCode);
+		if ($error) {
+			throw new \Exception("No se pudo conectar con Evolution API: " . $error);
+		}
+
+		$json = json_decode((string) $response, true);
+		return [
+			"httpCode" => $httpCode,
+			"json"     => is_array($json) ? $json : []
+		];
+	}
+
+	/**
+	 * Mensaje de error legible de una respuesta de Evolution API.
+	 * @param array $result evolutionInstanceRequest()
+	 * @return string
+	 */
+	function evolutionErrorMessage($result)
+	{
+		$json    = $result["json"];
+		$message = $json["response"]["message"] ?? ($json["message"] ?? ($json["error"] ?? ""));
+		if (is_array($message)) {
+			$message = implode(" ", array_map(function ($item) {
+				return is_array($item) ? json_encode($item) : (string) $item;
+			}, $message));
+		}
+		$message = trim((string) $message);
+		if ($result["httpCode"] == 401 || $result["httpCode"] == 403) {
+			$message = "Evolution API rechazó la llave (WHATSAP_TOCKEN). " . $message;
+		}
+		return "Evolution API (HTTP " . $result["httpCode"] . ")" . ($message != "" ? ": " . $message : ".");
+	}
+
+	/**
+	 * Estado de la instancia de WhatsApp de la empresa en Evolution API.
+	 * state: open (conectado) | connecting (esperando QR) | close (desconectado) | not_found (no existe la instancia).
+	 * @param int $companyID
+	 * @return array {instanceName, exists, state, number, profileName, profilePicUrl, parameterSynced}
+	 */
+	function evolutionInstanceStatus($companyID)
+	{
+		$config = $this->evolutionGetInstanceConfig($companyID);
+		$name   = rawurlencode($config["instanceName"]);
+		$data   = [
+			"instanceName"    => $config["instanceName"],
+			"exists"          => false,
+			"state"           => "not_found",
+			"number"          => "",
+			"profileName"     => "",
+			"profilePicUrl"   => "",
+			"parameterSynced" => $config["parameterValue"] === $config["instanceName"]
+		];
+
+		$result = $this->evolutionInstanceRequest($config, "GET", "/instance/connectionState/" . $name);
+		if ($result["httpCode"] == 404) {
+			return $data;
+		}
+		if ($result["httpCode"] < 200 || $result["httpCode"] >= 300) {
+			throw new \Exception($this->evolutionErrorMessage($result));
+		}
+
+		$state          = strtolower((string) ($result["json"]["instance"]["state"] ?? ($result["json"]["state"] ?? "close")));
+		$data["exists"] = true;
+		$data["state"]  = $state == "" ? "close" : $state;
+
+		//Datos del telefono conectado (v2 devuelve los campos en la raiz; v1 dentro de "instance")
+		try {
+			$info = $this->evolutionInstanceRequest($config, "GET", "/instance/fetchInstances?instanceName=" . $name);
+			$row  = isset($info["json"][0]) ? $info["json"][0] : $info["json"];
+			$row  = isset($row["instance"]) && is_array($row["instance"]) ? $row["instance"] : $row;
+			$owner                 = (string) ($row["ownerJid"] ?? ($row["owner"] ?? ""));
+			$data["number"]        = preg_replace('/\D/', '', explode("@", $owner)[0]);
+			$data["profileName"]   = (string) ($row["profileName"] ?? "");
+			$data["profilePicUrl"] = (string) ($row["profilePicUrl"] ?? ($row["profilePictureUrl"] ?? ""));
+		} catch (\Throwable $ex) {
+			log_message('error', '[evolutionInstanceStatus] fetchInstances: ' . $ex->getMessage());
+		}
+		return $data;
+	}
+
+	/**
+	 * Conecta la instancia de la empresa: la crea si no existe y devuelve el QR para escanear.
+	 * Deja WHATSAP_URL_REQUEST_SESSION con el nombre de la instancia (con prefijo) para que los envios la usen.
+	 * @param int $companyID
+	 * @return array {instanceName, state, qrBase64, pairingCode, created, message}
+	 */
+	function evolutionInstanceConnect($companyID)
+	{
+		$config  = $this->evolutionGetInstanceConfig($companyID);
+		$status  = $this->evolutionInstanceStatus($companyID);
+		$name    = rawurlencode($config["instanceName"]);
+		$created = false;
+		$qr      = "";
+		$pairing = "";
+
+		if (!$status["exists"]) {
+			$result = $this->evolutionInstanceRequest($config, "POST", "/instance/create", [
+				"instanceName" => $config["instanceName"],
+				"qrcode"       => true,
+				"integration"  => "WHATSAPP-BAILEYS"
+			]);
+			if ($result["httpCode"] < 200 || $result["httpCode"] >= 300) {
+				throw new \Exception($this->evolutionErrorMessage($result));
+			}
+			$created = true;
+			$qr      = (string) ($result["json"]["qrcode"]["base64"] ?? "");
+			$pairing = (string) ($result["json"]["qrcode"]["pairingCode"] ?? "");
+			log_message('info', '[evolutionInstanceConnect] companyID: ' . $companyID . ' | instancia creada: ' . $config["instanceName"]);
+		}
+
+		$this->evolutionSyncInstanceParameter($companyID, $config);
+
+		if ($status["state"] == "open") {
+			return [
+				"instanceName" => $config["instanceName"],
+				"state"        => "open",
+				"qrBase64"     => "",
+				"pairingCode"  => "",
+				"created"      => false,
+				"message"      => "El WhatsApp ya está conectado."
+			];
+		}
+
+		if ($qr == "") {
+			$result = $this->evolutionInstanceRequest($config, "GET", "/instance/connect/" . $name);
+			if ($result["httpCode"] < 200 || $result["httpCode"] >= 300) {
+				throw new \Exception($this->evolutionErrorMessage($result));
+			}
+			$qr      = (string) ($result["json"]["base64"] ?? ($result["json"]["qrcode"]["base64"] ?? ""));
+			$pairing = (string) ($result["json"]["pairingCode"] ?? "");
+			$state   = strtolower((string) ($result["json"]["instance"]["state"] ?? ""));
+			if ($qr == "" && $state == "open") {
+				return [
+					"instanceName" => $config["instanceName"],
+					"state"        => "open",
+					"qrBase64"     => "",
+					"pairingCode"  => "",
+					"created"      => $created,
+					"message"      => "El WhatsApp ya está conectado."
+				];
+			}
+		}
+
+		//Solo se aceptan imagenes en base64 para pintarlas en un <img>
+		if ($qr != "" && strpos($qr, "data:image/") !== 0) {
+			$qr = "data:image/png;base64," . $qr;
+		}
+
+		return [
+			"instanceName" => $config["instanceName"],
+			"state"        => "connecting",
+			"qrBase64"     => $qr,
+			"pairingCode"  => $pairing,
+			"created"      => $created,
+			"message"      => $qr != "" ? "Escanee el código QR desde WhatsApp en su teléfono." : "Evolution API aún no generó el código QR, presione Refrescar QR en unos segundos."
+		];
+	}
+
+	/**
+	 * Reinicia la conexion de la instancia (v2 usa POST, v1 usa PUT).
+	 * @param int $companyID
+	 * @return array {instanceName, message}
+	 */
+	function evolutionInstanceRestart($companyID)
+	{
+		$config = $this->evolutionGetInstanceConfig($companyID);
+		$path   = "/instance/restart/" . rawurlencode($config["instanceName"]);
+		$result = $this->evolutionInstanceRequest($config, "POST", $path);
+		if ($result["httpCode"] == 404 || $result["httpCode"] == 405) {
+			$result = $this->evolutionInstanceRequest($config, "PUT", $path);
+		}
+		if ($result["httpCode"] < 200 || $result["httpCode"] >= 300) {
+			throw new \Exception($this->evolutionErrorMessage($result));
+		}
+		return [
+			"instanceName" => $config["instanceName"],
+			"message"      => "Conexión reiniciada."
+		];
+	}
+
+	/**
+	 * Cierra la sesion de WhatsApp de la instancia (el telefono queda desvinculado; la instancia se conserva).
+	 * @param int $companyID
+	 * @return array {instanceName, message}
+	 */
+	function evolutionInstanceLogout($companyID)
+	{
+		$config = $this->evolutionGetInstanceConfig($companyID);
+		$result = $this->evolutionInstanceRequest($config, "DELETE", "/instance/logout/" . rawurlencode($config["instanceName"]));
+		if ($result["httpCode"] < 200 || $result["httpCode"] >= 300) {
+			throw new \Exception($this->evolutionErrorMessage($result));
+		}
+		return [
+			"instanceName" => $config["instanceName"],
+			"message"      => "WhatsApp desconectado."
+		];
+	}
+
+	/**
+	 * Guarda en WHATSAP_URL_REQUEST_SESSION el nombre de la instancia con prefijo (lo usan los envios por Evolution).
+	 * @param int   $companyID
+	 * @param array $config evolutionGetInstanceConfig()
+	 * @return void
+	 */
+	function evolutionSyncInstanceParameter($companyID, $config)
+	{
+		if ($config["parameterValue"] === $config["instanceName"]) {
+			return;
+		}
+		$core_web_parameter      = new core_web_parameter();
+		$Company_Parameter_Model = new Company_Parameter_Model();
+		$parameterID             = $core_web_parameter->getParameterId("WHATSAP_URL_REQUEST_SESSION", $companyID);
+		$Company_Parameter_Model->update_app_posme($companyID, $parameterID, ["value" => $config["instanceName"]]);
+		log_message('info', '[evolutionSyncInstanceParameter] companyID: ' . $companyID . ' | WHATSAP_URL_REQUEST_SESSION: ' . $config["parameterValue"] . ' -> ' . $config["instanceName"]);
+	}
 }
 ?>

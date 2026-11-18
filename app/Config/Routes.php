@@ -570,6 +570,14 @@ $routes->match(['get', 'post'], 'app_cxc_advertising/cronJobCreate', 'app_cxc_ad
 $routes->match(['get', 'post'], 'app_cxc_advertising/cronJobCreate/(:any)', 'app_cxc_advertising::cronJobCreate');
 $routes->match(['get', 'post'], 'app_cxc_advertising/cronJobDelete', 'app_cxc_advertising::cronJobDelete');
 $routes->match(['get', 'post'], 'app_cxc_advertising/cronJobDelete/(:any)', 'app_cxc_advertising::cronJobDelete');
+$routes->match(['get', 'post'], 'app_cxc_advertising/whatsappStatus', 'app_cxc_advertising::whatsappStatus');
+$routes->match(['get', 'post'], 'app_cxc_advertising/whatsappStatus/(:any)', 'app_cxc_advertising::whatsappStatus');
+$routes->match(['get', 'post'], 'app_cxc_advertising/whatsappConnect', 'app_cxc_advertising::whatsappConnect');
+$routes->match(['get', 'post'], 'app_cxc_advertising/whatsappConnect/(:any)', 'app_cxc_advertising::whatsappConnect');
+$routes->match(['get', 'post'], 'app_cxc_advertising/whatsappRestart', 'app_cxc_advertising::whatsappRestart');
+$routes->match(['get', 'post'], 'app_cxc_advertising/whatsappRestart/(:any)', 'app_cxc_advertising::whatsappRestart');
+$routes->match(['get', 'post'], 'app_cxc_advertising/whatsappLogout', 'app_cxc_advertising::whatsappLogout');
+$routes->match(['get', 'post'], 'app_cxc_advertising/whatsappLogout/(:any)', 'app_cxc_advertising::whatsappLogout');
 $routes->match(['get', 'post'], 'app_purchase_garantia/index', 'app_purchase_garantia::index');
 $routes->match(['get', 'post'], 'app_purchase_garantia/index/(:any)', 'app_purchase_garantia::index');
 $routes->match(['get', 'post'], 'app_purchase_garantia/add', 'app_purchase_garantia::add');

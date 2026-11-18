@@ -27,6 +27,62 @@
             </div>
         </div>
 
+        <!-- Pestañas -->
+        <div class="adv-tabs" role="tablist" aria-label="Secciones">
+            <button type="button" class="adv-tab" role="tab" :class="{ 'is-active': tab === 'campania' }" :aria-selected="tab === 'campania'" @click="cambiarTab('campania')">
+                <i class="bi bi-megaphone" aria-hidden="true"></i> Campañas
+            </button>
+            <button type="button" class="adv-tab" role="tab" :class="{ 'is-active': tab === 'conexion' }" :aria-selected="tab === 'conexion'" @click="cambiarTab('conexion')">
+                <i class="bi bi-phone" aria-hidden="true"></i> Conexión WhatsApp
+                <span class="adv-tab-dot" :class="wa.state === 'open' ? 'is-ok' : (wa.consultado ? 'is-bad' : '')" aria-hidden="true"></span>
+            </button>
+        </div>
+
+        <!-- (Pestaña) Conexión WhatsApp con Evolution API -->
+        <div v-if="tab === 'conexion'" class="pv2-card adv-wa-conn">
+            <div class="adv-cron-head">
+                <p class="pv2-card-title"><span class="pv2-ico"><i class="bi bi-whatsapp" aria-hidden="true"></i></span> Conexión WhatsApp (Evolution API)</p>
+                <span class="adv-badge" :class="claseEstadoWa" aria-live="polite">{{ textoEstadoWa }}</span>
+            </div>
+            <p class="adv-muted">Vincule el teléfono desde el que se enviarán los mensajes por Evolution API. Si el teléfono se desconecta, vuelva a conectarlo escaneando un nuevo código QR.</p>
+
+            <div v-if="config.whatsapp.configError" class="adv-alert is-warn" role="alert"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i><span>{{ config.whatsapp.configError }}</span></div>
+            <div v-if="wa.error" class="adv-alert is-error" role="alert"><i class="bi bi-x-circle-fill" aria-hidden="true"></i><span>{{ wa.error }}</span></div>
+
+            <dl class="adv-wa-info">
+                <div><dt>Instancia</dt><dd>{{ wa.instanceName || config.whatsapp.instanceName || '—' }}</dd></div>
+                <div v-if="wa.state === 'open' && wa.number"><dt>Teléfono</dt><dd>+{{ wa.number }}</dd></div>
+                <div v-if="wa.state === 'open' && wa.profileName"><dt>Perfil</dt><dd>{{ wa.profileName }}</dd></div>
+            </dl>
+
+            <div v-if="wa.qrBase64 && wa.state !== 'open'" class="adv-wa-qr">
+                <img :src="wa.qrBase64" alt="Código QR para vincular WhatsApp">
+                <ol class="adv-wa-steps">
+                    <li>Abra WhatsApp en su teléfono.</li>
+                    <li>Toque <strong>Menú</strong> o <strong>Configuración</strong> y elija <strong>Dispositivos vinculados</strong>.</li>
+                    <li>Toque <strong>Vincular un dispositivo</strong> y escanee este código.</li>
+                </ol>
+                <p v-if="wa.pairingCode" class="pv2-help">Código de vinculación: <strong>{{ wa.pairingCode }}</strong></p>
+                <p class="pv2-help">El código vence en pocos segundos; si no lo alcanza a escanear presione «Refrescar QR». La pantalla detecta sola cuando el teléfono queda conectado.</p>
+            </div>
+
+            <div class="adv-cron-actions">
+                <button v-if="wa.state !== 'open'" type="button" class="btn btn-primary adv-btn-wa" :disabled="waOcupado || !!config.whatsapp.configError" @click="conectarWa">
+                    <i class="bi bi-qr-code" aria-hidden="true"></i> {{ wa.procesando === 'connect' ? 'Procesando...' : (wa.qrBase64 ? 'Refrescar QR' : (wa.exists ? 'Volver a conectar' : 'Conectar WhatsApp')) }}
+                </button>
+                <button v-if="wa.exists" type="button" class="btn btn-default adv-btn-soft" :disabled="waOcupado" @click="reiniciarWa">
+                    <i class="bi bi-arrow-repeat" aria-hidden="true"></i> {{ wa.procesando === 'restart' ? 'Procesando...' : 'Reiniciar conexión' }}
+                </button>
+                <button v-if="wa.exists && wa.state !== 'close'" type="button" class="btn btn-default adv-btn-danger-soft" :disabled="waOcupado" @click="desconectarWa">
+                    <i class="bi bi-box-arrow-right" aria-hidden="true"></i> {{ wa.procesando === 'logout' ? 'Procesando...' : 'Desconectar' }}
+                </button>
+                <button type="button" class="adv-icon-btn" aria-label="Actualizar estado" title="Actualizar estado" :disabled="waOcupado || !!config.whatsapp.configError" @click="consultarWa(false)"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
+            </div>
+        </div>
+
+        <!-- (Pestaña) Campañas -->
+        <div v-show="tab === 'campania'">
+
         <div v-if="!config.enabled" class="adv-alert is-warn" role="alert">
             <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
             <span>Las campañas están deshabilitadas para esta empresa (parámetro CXC_ADVERTISING_ENABLED). Puede preparar y revisar la campaña, pero no enviarla.</span>
@@ -567,5 +623,7 @@
             <button v-else-if="mostrarPagar" type="button" class="btn btn-primary adv-btn-pay" :disabled="!puedePagar" @click="pagar"><i class="bi bi-credit-card" aria-hidden="true"></i> {{ pagando ? 'Redirigiendo...' : 'Pagar' }}</button>
             <button v-else type="button" class="btn btn-primary adv-btn-wa" :disabled="!puedeEnviar" @click="enviar"><i class="bi bi-whatsapp" aria-hidden="true"></i> {{ enviando ? 'Enviando...' : (modoPrueba ? 'Enviar prueba' : 'Enviar') }}</button>
         </div>
+
+        </div><!-- /Pestaña Campañas -->
     </form>
 </script>

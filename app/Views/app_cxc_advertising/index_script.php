@@ -344,6 +344,27 @@
                 estado.cronConsultando    = false;
                 estado.cronProcesando     = false;
                 estado.errorCron          = '';
+                /* Pestaña activa y conexión WhatsApp (Evolution API) */
+                var waServidor            = (CONFIG_SERVIDOR && CONFIG_SERVIDOR.whatsapp) ? CONFIG_SERVIDOR.whatsapp : {};
+                estado.config.whatsapp    = {
+                    instanceName: String(waServidor.instanceName || ''),
+                    configError:  String(waServidor.configError || '')
+                };
+                estado.tab                = 'campania';
+                estado.wa                 = {
+                    instanceName: '',
+                    exists:       false,
+                    state:        '',
+                    number:       '',
+                    profileName:  '',
+                    qrBase64:     '',
+                    pairingCode:  '',
+                    consultando:  false,
+                    consultado:   false,
+                    procesando:   '',
+                    error:        ''
+                };
+                estado.waSondeo           = null;
                 if (!estado.config.wabaConfigured) { estado.plantillaModo = 'manual'; }
                 return estado;
             },
@@ -536,6 +557,25 @@
                 },
                 puedePagar: function () {
                     return this.paso === 4 && this.mostrarPagar && !this.previsualizando && !this.enviando && !this.pagando && this.motivoBloqueoBase === '';
+                },
+                /* Estado de la conexión WhatsApp para el distintivo */
+                textoEstadoWa: function () {
+                    if (this.wa.consultando && !this.wa.consultado) { return 'Consultando...'; }
+                    if (!this.wa.consultado)                         { return 'Sin consultar'; }
+                    if (this.wa.state === 'open')                    { return 'Conectado'; }
+                    if (this.wa.state === 'connecting')              { return 'Esperando escaneo'; }
+                    if (this.wa.state === 'not_found')               { return 'Sin instancia'; }
+                    return 'Desconectado';
+                },
+                claseEstadoWa: function () {
+                    if (!this.wa.consultado)                         { return 'is-info'; }
+                    if (this.wa.state === 'open')                    { return 'is-ok'; }
+                    if (this.wa.state === 'connecting')              { return 'is-info'; }
+                    return 'is-bad';
+                },
+                /* Bloquea los botones mientras hay una acción en curso */
+                waOcupado: function () {
+                    return this.wa.procesando !== '' || (this.wa.consultando && !this.waSondeo);
                 },
                 textoEstadoCron: function () {
                     if (this.cronConsultando) { return 'Consultando...'; }
@@ -1103,6 +1143,148 @@
                     this.irArriba();
                 },
 
+                /* ---------------- Conexión WhatsApp (Evolution API) ---------------- */
+                cambiarTab: function (tab) {
+                    this.tab = tab;
+                    if (tab === 'conexion') {
+                        /* Se consulta al abrir la pestaña; si hay QR en pantalla se retoma el sondeo */
+                        if (!this.config.whatsapp.configError) { this.consultarWa(false); }
+                        if (this.wa.qrBase64 && this.wa.state !== 'open') { this.iniciarSondeoWa(); }
+                    } else {
+                        this.detenerSondeoWa();
+                    }
+                },
+                /* Copia la respuesta de whatsappStatus */
+                aplicarEstadoWa: function (json) {
+                    this.wa.instanceName = String(json.instanceName || this.wa.instanceName || '');
+                    this.wa.exists       = json.exists === true;
+                    this.wa.state        = String(json.state || '');
+                    this.wa.number       = String(json.number || '');
+                    this.wa.profileName  = String(json.profileName || '');
+                    this.wa.consultado   = true;
+                },
+                /**
+                 * Consulta el estado de la conexión.
+                 * @param {boolean} silencioso true = llamada del sondeo (no muestra errores en pantalla)
+                 */
+                consultarWa: async function (silencioso) {
+                    if (this.wa.consultando) { return; }
+                    this.wa.consultando = true;
+                    if (!silencioso) { this.wa.error = ''; }
+                    var estadoPrevio = this.wa.state;
+                    var json = await llamar('whatsappStatus', {});
+                    this.wa.consultando = false;
+                    /* Error */
+                    if (json.error === true) {
+                        if (!silencioso) { this.wa.error = json.message; this.wa.consultado = true; }
+                        return;
+                    }
+                    /* Sin datos */
+                    if (!json.state) {
+                        if (!silencioso) { this.wa.error = 'Evolution API no devolvió el estado de la conexión.'; }
+                        return;
+                    }
+                    /* Con datos */
+                    this.aplicarEstadoWa(json);
+                    if (this.wa.state === 'open') {
+                        this.wa.qrBase64    = '';
+                        this.wa.pairingCode = '';
+                        this.detenerSondeoWa();
+                        if (silencioso && estadoPrevio !== 'open') { notificar('WhatsApp conectado correctamente.', 'success'); }
+                    }
+                },
+                /* Crea la instancia si no existe y muestra el QR (también sirve para refrescarlo) */
+                conectarWa: async function () {
+                    if (this.waOcupado) { return; }
+                    this.wa.procesando = 'connect';
+                    this.wa.error      = '';
+                    var json = await llamar('whatsappConnect', {});
+                    this.wa.procesando = '';
+                    /* Error */
+                    if (json.error === true) {
+                        this.wa.error = json.message;
+                        notificar(json.message, 'error');
+                        return;
+                    }
+                    this.wa.instanceName = String(json.instanceName || this.wa.instanceName || '');
+                    this.wa.exists       = true;
+                    this.wa.consultado   = true;
+                    this.wa.state        = String(json.state || 'connecting');
+                    /* Ya estaba conectado */
+                    if (this.wa.state === 'open') {
+                        this.wa.qrBase64 = '';
+                        notificar(json.message || 'El WhatsApp ya está conectado.', 'info');
+                        this.consultarWa(true);
+                        return;
+                    }
+                    /* Sin datos: aún no hay QR */
+                    var qr = String(json.qrBase64 || '');
+                    if (qr.indexOf('data:image/') !== 0) {
+                        this.wa.qrBase64 = '';
+                        notificar(json.message || 'Aún no hay código QR, intente de nuevo.', 'warning');
+                        return;
+                    }
+                    /* Con datos: se muestra el QR y se vigila hasta que el teléfono quede conectado */
+                    this.wa.qrBase64    = qr;
+                    this.wa.pairingCode = String(json.pairingCode || '');
+                    this.iniciarSondeoWa();
+                },
+                reiniciarWa: async function () {
+                    if (this.waOcupado) { return; }
+                    this.wa.procesando = 'restart';
+                    this.wa.error      = '';
+                    var json = await llamar('whatsappRestart', {});
+                    this.wa.procesando = '';
+                    if (json.error === true) {
+                        this.wa.error = json.message;
+                        notificar(json.message, 'error');
+                        return;
+                    }
+                    notificar(json.message || 'Conexión reiniciada.', 'success');
+                    this.consultarWa(false);
+                },
+                desconectarWa: function () {
+                    if (this.waOcupado) { return; }
+                    var self = this;
+                    fnShowConfirm(
+                        'Desconectar WhatsApp',
+                        'El teléfono quedará desvinculado y no se podrán enviar mensajes por Evolution API hasta volver a escanear el código QR. ¿Desea continuar?',
+                        function () { self.ejecutarDesconexionWa(); }
+                    );
+                },
+                ejecutarDesconexionWa: async function () {
+                    if (this.wa.procesando !== '') { return; }
+                    this.wa.procesando = 'logout';
+                    this.wa.error      = '';
+                    var json = await llamar('whatsappLogout', {});
+                    this.wa.procesando = '';
+                    if (json.error === true) {
+                        this.wa.error = json.message;
+                        notificar(json.message, 'error');
+                        return;
+                    }
+                    this.detenerSondeoWa();
+                    this.wa.qrBase64    = '';
+                    this.wa.pairingCode = '';
+                    this.wa.state       = 'close';
+                    notificar(json.message || 'WhatsApp desconectado.', 'success');
+                    this.consultarWa(false);
+                },
+                /* Consulta cada 5 segundos mientras el QR está en pantalla (máximo 3 minutos) */
+                iniciarSondeoWa: function () {
+                    this.detenerSondeoWa();
+                    var self    = this;
+                    var vueltas = 0;
+                    this.waSondeo = window.setInterval(function () {
+                        vueltas++;
+                        if (vueltas > 36 || self.tab !== 'conexion') { self.detenerSondeoWa(); return; }
+                        self.consultarWa(true);
+                    }, 5000);
+                },
+                detenerSondeoWa: function () {
+                    if (this.waSondeo) { window.clearInterval(this.waSondeo); }
+                    this.waSondeo = null;
+                },
                 /* ---------------- Cron job (envío automático) ---------------- */
                 /* Copia el estado devuelto por cronJobStatus/Create/Delete; apiKeyConfigured solo viene en objConfig */
                 aplicarEstadoCron: function (json) {

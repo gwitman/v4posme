@@ -935,7 +935,7 @@ Notas:
 <!-- REVISAR: qué créditos incluye el archivo y cómo se entrega a SIN Riesgo -->
 
 ## Campañas de WhatsApp: enviar promociones o recordatorios de cobro masivos a clientes
-Ruta: Menú > CXC > CAMPAÑAS WHATSAPP. La pantalla se llama **Campañas WhatsApp** ("Envíe promociones y recordatorios de cobro a sus clientes").
+Ruta: Menú > CXC > CAMPAÑAS WHATSAPP. La pantalla se llama **Campañas WhatsApp** ("Envíe promociones y recordatorios de cobro a sus clientes"). Tiene dos pestañas: **Campañas** y **Conexión WhatsApp** (teléfono que envía por Evolution API).
 La campaña se arma en 4 pasos. Avance con **Siguiente** y regrese con **Anterior**; también puede tocar el paso en la barra superior. A la derecha (o abajo en el teléfono) la **Vista previa** muestra cómo recibirá el cliente el mensaje, y arriba se ve el **Costo estimado** en USD.
 1. **Mensaje** (Texto e imagen): título, imagen y texto con variables.
 2. **Destinatarios** (Excel y clientes): archivo Excel y/o clientes registrados, cantidad máxima y teléfono de prueba.
@@ -947,7 +947,34 @@ Restricciones:
 - Máximo de mensajes por campaña: 1,000 o lo que indique la configuración de su empresa.
 - Para enviar, el envío automático (cron job) debe estar activo (tarjeta **Envío automático (cron job)**, arriba de los pasos).
 Notas: los mensajes quedan en una cola y se envían de forma gradual (unos 15 por minuto).
-Ver también: las secciones "Campañas de WhatsApp:" de escribir el mensaje (paso 1), elegir los destinatarios (paso 2), elegir el proveedor (paso 3), plantilla de Meta, revisar el resumen y enviar (paso 4), pagar con Pagadito y levantar o dar de baja el envío automático (cron job).
+Ver también: las secciones "Campañas de WhatsApp:" de cada paso (1 a 4), plantilla de Meta, pago con Pagadito, envío automático (cron job) y conectar el teléfono de WhatsApp.
+
+## Campañas de WhatsApp: conectar o vincular el teléfono de WhatsApp (Evolution API, código QR)
+Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > pestaña **Conexión WhatsApp**.
+Aquí se vincula el teléfono desde el que se envían los mensajes por Evolution API. Un punto verde en la pestaña indica que está conectado; rojo, que no.
+1. Revise el estado en la tarjeta **Conexión WhatsApp (Evolution API)**: **Conectado**, **Esperando escaneo**, **Desconectado** o **Sin instancia**. Se muestra la **Instancia** y, si está conectado, el **Teléfono** y el **Perfil**.
+2. Presione **Conectar WhatsApp** (si no existe la instancia, el sistema la crea) o **Volver a conectar**. Aparece un código QR.
+3. En el teléfono abra WhatsApp, toque **Menú** o **Configuración** > **Dispositivos vinculados** > **Vincular un dispositivo** y escanee el código.
+4. El código vence en pocos segundos: si no lo alcanza a escanear, presione **Refrescar QR**.
+5. La pantalla detecta sola cuando el teléfono queda conectado (revisa cada 5 segundos por hasta 3 minutos) y muestra "WhatsApp conectado correctamente.".
+6. Para revisar el estado en cualquier momento, presione el icono **Actualizar estado** (flecha circular).
+Notas:
+- El nombre de la instancia empieza con el tipo de su compañía (ej. miempresa_whatsapp) para identificarla en el servidor de Evolution.
+- Si aparece "Evolution API aún no generó el código QR...", espere unos segundos y presione **Refrescar QR**.
+- Esta conexión solo se usa con el proveedor Evolution API; Meta Cloud API no la necesita.
+Ver también: Campañas de WhatsApp: reiniciar o desconectar el teléfono de WhatsApp (Conexión WhatsApp); Parámetros de la empresa: Campañas de WhatsApp.
+
+## Campañas de WhatsApp: reiniciar o desconectar el teléfono de WhatsApp (Conexión WhatsApp)
+Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > pestaña **Conexión WhatsApp**.
+1. Si los mensajes por Evolution API no salen o el envío falla, presione **Reiniciar conexión**: reinicia la sesión en Evolution API ("Conexión reiniciada."). Luego presione **Actualizar estado** (flecha circular) y confirme que diga **Conectado**.
+2. Si sigue **Desconectado**, presione **Volver a conectar** y escanee el nuevo código QR.
+3. Para desvincular el teléfono, presione **Desconectar** y confirme. Aparece "WhatsApp desconectado.".
+Restricciones:
+- Después de **Desconectar** no se pueden enviar mensajes por Evolution API hasta volver a escanear el código QR.
+- La pestaña necesita que su empresa tenga configurada la URL, la llave y el nombre de la instancia de Evolution API. Si falta alguno aparece un aviso (por ejemplo "Configure la URL de Evolution API en el parámetro WAHTSAP_URL_ENVIO_MENSAJE.") y los botones quedan deshabilitados: avise al administrador o a soporte de posMe.
+- "Evolution API rechazó la llave (WHATSAP_TOCKEN)...": la llave configurada no es correcta; avise a soporte.
+- "No se pudo conectar con Evolution API...": el servidor de Evolution no responde; intente más tarde.
+Ver también: Campañas de WhatsApp: conectar o vincular el teléfono de WhatsApp (Evolution API, código QR).
 
 ## Campañas de WhatsApp: escribir el mensaje (paso 1)
 Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > paso **Mensaje**.
@@ -1003,7 +1030,8 @@ Notas:
 - "El costo es estimado; el monto final se confirma en el resumen."
 - Los montos de costo dependen de la configuración de su empresa.
 - Con Meta Cloud API el editor libre del paso 1 queda deshabilitado.
-Ver también: Campañas de WhatsApp: enviar con plantilla de Meta.
+- Con Evolution API el teléfono de la empresa debe estar **Conectado** en la pestaña **Conexión WhatsApp**.
+Ver también: Campañas de WhatsApp: enviar con plantilla de Meta; Campañas de WhatsApp: conectar o vincular el teléfono de WhatsApp (Evolution API, código QR).
 
 ## Campañas de WhatsApp: enviar con plantilla de Meta
 Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > paso **Proveedor** > **Meta Cloud API** > tarjeta **Plantilla**.
@@ -2457,9 +2485,10 @@ Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla CXC > CAM
 - CXC_ADVERTISING_COST_EVOLUTION_FIXED: costo estimado en USD fijo por campaña con Evolution API (por defecto 10).
 - CXC_ADVERTISING_FREE_MESSAGES: mensajes que se pueden enviar sin pagar (por defecto 10). Las campañas que lo superan y tienen costo se pagan con Pagadito; los envíos de prueba no se cobran.
 - CXC_ADVERTISING_ALLOW_WITHOUT_PAYMENT: true permite a la empresa enviar campañas sin pagar.
-- WHATSAP_META_WABA_ID: identificador de la cuenta de WhatsApp Business en Meta; sin él no se pueden cargar las plantillas aprobadas (se escriben a mano).
-- CXC_ADVERTISING_CRONJOB_API_KEY: API key de la cuenta de cron-job.org. Sin ella no se puede levantar el envío automático (cron job) y no se pueden enviar campañas.
-Variables del mensaje: {{nombre}}, {{direccion}}, {{saldo}}, {{montoPagar}}, {{fechaPago}} y {{mora}} vienen configuradas. Para agregar otra, soporte registra una nueva variable de campaña (tabla tb_advertising_variable) indicando la vista y el campo del sistema de donde sale el dato; aparece sola en **Variables del cliente**.
+- WHATSAP_META_WABA_ID: cuenta de WhatsApp Business en Meta; sin él no se cargan las plantillas aprobadas (se escriben a mano).
+- CXC_ADVERTISING_CRONJOB_API_KEY: API key de cron-job.org. Sin ella no se levanta el envío automático (cron job) ni se envían campañas.
+- WAHTSAP_URL_ENVIO_MENSAJE, WHATSAP_TOCKEN y WHATSAP_URL_REQUEST_SESSION: URL, llave e instancia de Evolution API (pestaña **Conexión WhatsApp**; al conectar, la instancia toma el prefijo de la compañía).
+Variables del mensaje: {{nombre}}, {{direccion}}, {{saldo}}, {{montoPagar}}, {{fechaPago}} y {{mora}} vienen configuradas. Para agregar otra, soporte registra una variable de campaña (tabla tb_advertising_variable) con la vista y el campo de donde sale el dato; aparece sola en **Variables del cliente**.
 Ver también: Campañas de WhatsApp: enviar promociones o recordatorios de cobro masivos a clientes.
 
 ## Parámetros de la empresa: Descuento en factura
