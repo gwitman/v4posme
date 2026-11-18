@@ -15,6 +15,8 @@
  *  - IVA sobre el neto de cada linea: iva_i = (bruto_i - desc_i) * ivaPct.
  *  - Servicio (taxServices) sobre el bruto.
  *  - TOTAL = SUB TOTAL - DESC + IVA + SERVICIO.
+ *  - Con descuento por linea, cambiar el total de descuento del COBRO reparte la
+ *    diferencia en proporcion al descuento que ya tenia cada linea (ajustarDescuentoLineas).
  *
  * Modulo UMD: window.PosmeInvoiceDiscount en el navegador y module.exports en Jest.
  */
@@ -183,6 +185,62 @@
     }
 
     /**
+     * Ajusta los descuentos por linea a un nuevo total de descuento (cuadro de COBRO).
+     * La diferencia (nuevo - actual) se reparte en proporcion al descuento que ya tenia
+     * cada linea: desc_i' = round2(desc_i * nuevo / actual), con tope [0, bruto_i].
+     * El residuo del redondeo (o lo que no cupo por el tope) se aplica desde la ultima
+     * linea con descuento hacia arriba y, si aun sobra, en las demas lineas con bruto.
+     * @param {Array} lineas      [{bruto, desc}] descuento actual de cada linea
+     * @param {number} nuevoTotal nuevo total de descuento de la factura
+     * @return {Array|null} nuevo descuento de cada linea (mismo orden); null si no hay descuento actual
+     */
+    function ajustarDescuentoLineas(lineas, nuevoTotal) {
+        lineas = lineas || [];
+        var actual    = 0;
+        var subtotal  = 0;
+        var resultado = [];
+        var suma      = 0;
+        var i;
+
+        for (i = 0; i < lineas.length; i++) {
+            actual   += num(lineas[i].desc);
+            subtotal += num(lineas[i].bruto);
+        }
+        actual = round2(actual);
+        if (actual <= 0) {
+            return null;
+        }
+        // El descuento total no puede superar el subtotal
+        var nuevo = Math.min(Math.max(round2(nuevoTotal), 0), round2(subtotal));
+
+        for (i = 0; i < lineas.length; i++) {
+            var tope  = round2(num(lineas[i].bruto));
+            var desc  = round2(num(lineas[i].desc) * nuevo / actual);
+            desc      = Math.min(Math.max(desc, 0), Math.max(tope, 0));
+            suma     += desc;
+            resultado.push(desc);
+        }
+
+        // Residuo: primero lineas que ya tenian descuento (de la ultima hacia arriba), luego las demas
+        var residuo = round2(nuevo - suma);
+        var pasadas = [true, false];
+        for (var p = 0; p < pasadas.length && residuo !== 0; p++) {
+            for (i = lineas.length - 1; i >= 0 && residuo !== 0; i--) {
+                var teniaDesc = num(lineas[i].desc) > 0;
+                var topeL     = round2(num(lineas[i].bruto));
+                if (teniaDesc !== pasadas[p] || topeL <= 0) {
+                    continue;
+                }
+                var nuevoL   = Math.min(Math.max(round2(resultado[i] + residuo), 0), topeL);
+                var aplicado = round2(nuevoL - resultado[i]);
+                resultado[i] = nuevoL;
+                residuo      = round2(residuo - aplicado);
+            }
+        }
+        return resultado;
+    }
+
+    /**
      * Calcula el resumen de la factura.
      * @param {Array} lineas       [{precio, cantidad, ivaPct, taxServicesPct, descPct, descValor, origen}]
      * @param {string} modo        'none' | 'line' | 'global'
@@ -297,6 +355,7 @@
         resolverOrigen   : resolverOrigen,
         calcLinea        : calcLinea,
         prorratearGlobal : prorratearGlobal,
+        ajustarDescuentoLineas : ajustarDescuentoLineas,
         calcResumen      : calcResumen,
         validarDescuento : validarDescuento
     };

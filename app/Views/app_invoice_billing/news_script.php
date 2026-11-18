@@ -4,7 +4,7 @@
 <script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/qz-tray/qz-tray.js"></script>
 <script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme-qztray.js?v=1"></script>
 <?php } ?>
-<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme_invoice_discount.js?v=1"></script>
+<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme_invoice_discount.js?v=2"></script>
 <script>
     var heigthTop							= 0;
 	var objTableDetail 						= {};
@@ -3845,11 +3845,24 @@
 	 */
 	function fnDescuentoAplicarBloqueo(modo)
 	{
-		$("#txtPorcentajeDescuento, #txtDescuento").prop("readonly", modo === "line");
+		//Con descuento por linea el % global queda bloqueado; el monto del COBRO sigue editable
+		//para ajustar el total (la diferencia se reparte en las lineas), salvo bloqueo por permiso
+		$("#txtPorcentajeDescuento").prop("readonly", modo === "line");
+		$("#txtDescuento").prop("readonly", modo === "line" && fnDescuentoBloqueoPorPermiso());
 		$(".txtDiscountItemPct, .txtDiscountItemAmount").each(function(){
 			var porPermiso = $(this).attr("data-bloqueo-permiso") === "1";
 			$(this).prop("readonly", porPermiso || modo === "global");
 		});
+	}
+
+	/**
+	 * Indica si el usuario no puede modificar el descuento de las lineas por permisos
+	 * (mismas condiciones de solo lectura que la cantidad).
+	 * @return {boolean}
+	 */
+	function fnDescuentoBloqueoPorPermiso()
+	{
+		return ((varPermisosNoPermitirEliminarProductosFactura || (varPermisosNoPermitirModificarDetalleFactura && loadEdicion)) && isAdmin !== "1");
 	}
 
 	/**
@@ -3864,7 +3877,7 @@
 	function fnDescuentoRenderInput(clase, nombre, data, full, etiqueta)
 	{
 		//Mismas condiciones de solo lectura que la cantidad
-		var bloqueoPermiso 	= ((varPermisosNoPermitirEliminarProductosFactura || (varPermisosNoPermitirModificarDetalleFactura && loadEdicion)) && isAdmin !== "1");
+		var bloqueoPermiso 	= fnDescuentoBloqueoPorPermiso();
 		var soloLectura 	= (bloqueoPermiso || varDescuentoModoActual === "global") ? " readonly " : "";
 		var valor 			= (data === undefined || data === null || data === "") ? "0" : data;
 		var str 			= '<input type="text" inputmode="decimal" class="col-lg-12 txt-numeric '+clase+'" id="'+clase+'Row'+full[2]+'" value="'+valor+'" name="'+nombre+'" data-bloqueo-permiso="'+(bloqueoPermiso ? '1' : '0')+'" style="text-align:right; <?php echo $useMobile == "1" ? 'width: 100%;' : '' ?>" autocomplete="off" '+soloLectura+'/>';
@@ -3990,6 +4003,13 @@
 			return;
 		}
 
+		//Con descuento por linea, el monto del COBRO ajusta las lineas (reparte la diferencia)
+		if(campo === "valor" && varDescuentoModoActual === "line")
+		{
+			fnDescuentoAjustarLineas(texto);
+			return;
+		}
+
 		//Excluyente con el descuento por linea
 		var valorNuevo 	= D.num(texto);
 		if(valorNuevo > 0 && varDescuentoModoActual === "line")
@@ -4025,6 +4045,68 @@
 		};
 
 		if(nuevo.monto > 0 || nuevo.pct > 0)
+		{
+			varDescuentoModificado = true;
+			if(!varDescuentoAutorizado)
+			{
+				fnDescuentoSolicitarClave(aplicar, fnDescuentoRevertirGlobal);
+				return;
+			}
+		}
+		aplicar();
+	}
+
+	/**
+	 * Ajusta el total del descuento escrito en el cuadro de COBRO cuando la factura tiene
+	 * descuento por linea: la diferencia (nuevo - actual) se reparte en proporcion al
+	 * descuento que ya tenia cada linea; la factura sigue en modo "line".
+	 * Ej.: lineas con 100 y 50 de descuento, total 150 -> 180: +30 se reparte 20 / 10.
+	 * @param {string} texto nuevo total de descuento escrito
+	 */
+	function fnDescuentoAjustarLineas(texto)
+	{
+		var D 			= PosmeInvoiceDiscount;
+		var lineas 		= fnDescuentoLeerLineas();
+		var resumen 	= D.calcResumen(lineas, "line", 0);
+
+		//Rango: monto en [0, subtotal]
+		var validacion 	= D.validarDescuento({ campo: "valor", valor: texto, base: resumen.subtotal });
+		if(!validacion.ok)
+		{
+			Toast.fire({ icon: "warning", title: validacion.mensaje });
+			fnDescuentoRevertirGlobal();
+			return;
+		}
+
+		//Sin cambio real: solo se vuelve a mostrar
+		var nuevoTotal 	= D.round2(D.num(texto));
+		if(nuevoTotal === D.round2(resumen.desc))
+		{
+			fnDescuentoRevertirGlobal();
+			return;
+		}
+
+		//Reparto proporcional al descuento actual de cada linea
+		var nuevos 		= D.ajustarDescuentoLineas(resumen.lineas, nuevoTotal);
+		if(nuevos === null)
+		{
+			fnDescuentoRevertirGlobal();
+			return;
+		}
+
+		var aplicar = function(){
+			for(var i = 0; i < nuevos.length; i++)
+			{
+				var bruto 	= resumen.lineas[i].bruto;
+				var pct 	= bruto > 0 ? D.round4(nuevos[i] / bruto * 100) : 0;
+				objTableDetail.fnUpdate( fnFormatNumber(nuevos[i], 2), i, columnasTableDetail.discount );
+				objTableDetail.fnUpdate( fnFormatPctDescuento(pct), i, columnasTableDetail.discountPercentage );
+			}
+			fnRecalculateDetail(true, "");
+		};
+
+		//Igual que en la linea: si queda descuento se exige autorizacion
+		if(nuevoTotal > 0)
 		{
 			varDescuentoModificado = true;
 			if(!varDescuentoAutorizado)

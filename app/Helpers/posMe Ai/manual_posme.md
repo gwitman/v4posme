@@ -61,8 +61,24 @@ Solo está disponible si su empresa tiene activo el descuento por producto en fa
 5. Continúe la factura y guárdela de la forma normal.
 Restricciones:
 - El descuento de un producto no puede ser mayor que precio × cantidad de esa línea ni mayor a 100%.
-- En una misma factura se usa uno u otro: si algún producto tiene descuento, **% DESC** y **DESC** del resumen quedan bloqueados; si hay descuento global, los descuentos por producto quedan bloqueados. Al volver el descuento a 0 se desbloquean.
+- En una misma factura se usa uno u otro: si algún producto tiene descuento, **% DESC** queda bloqueado y **DESC** solo ajusta el total de los descuentos por producto (ver Ajustar el total del descuento en el cobro cuando hay descuento por producto); si hay descuento global, los descuentos por producto quedan bloqueados. Al volver el descuento a 0 se desbloquean.
 Notas: el detalle de la factura ya no muestra columnas de descuento; el descuento de cada producto se ve y se cambia en la ventana **Información del producto**, donde también se elige el precio, el vendedor, la serie y la referencia. Si la sección está bloqueada, un aviso indica el motivo (hay descuento global o no tiene permiso para modificar el detalle).
+Ver también: Autorizar un descuento en una factura con clave; Cómo se calcula el IVA y el total de una factura con descuento.
+
+## Ajustar el total del descuento en el cobro cuando hay descuento por producto
+Ruta: Menú > FACTURACION > FACTURAR (nueva factura o edición de una factura), panel **Cobro**.
+Disponible según la configuración de su empresa, cuando algún producto ya tiene descuento.
+1. Aplique el descuento a uno o varios productos (ver Aplicar un descuento en una factura).
+2. En el panel **Cobro**, en el campo **DESC** (monto), escriba el nuevo total de descuento que desea para la factura y salga del campo.
+3. Si el descuento aún no se ha autorizado en esa factura, se pide la clave (ver Autorizar un descuento en una factura con clave). Si presiona **Cancelar**, se mantiene el descuento anterior.
+4. La diferencia entre el nuevo total y el descuento actual se reparte sola entre los productos, en proporción al descuento que ya tenía cada uno. Cada producto actualiza su descuento en monto y en %; el precio unitario no cambia.
+Ejemplo: dos productos con 100 de descuento cada uno (DESC = 200). Si escribe 205, cada producto queda con 102.50.
+Notas:
+- Sirve para aumentar o disminuir el descuento, por ejemplo para "cerrar" el precio en una negociación.
+- Los productos sin descuento no reciben parte del ajuste, salvo que no quepa en los demás: ningún producto puede tener un descuento mayor que su precio × cantidad, y el total no puede ser mayor que el SUB TOTAL.
+- **% DESC** sigue bloqueado mientras haya descuento por producto.
+- Si no tiene permiso para modificar el detalle de la factura, **DESC** queda bloqueado.
+- El descuento se calcula sobre el SUB TOTAL sin IVA: si los productos llevan IVA, el total a pagar baja un poco más que lo que aumentó el descuento.
 Ver también: Autorizar un descuento en una factura con clave; Cómo se calcula el IVA y el total de una factura con descuento.
 
 ## Autorizar un descuento en una factura con clave
