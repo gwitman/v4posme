@@ -83,7 +83,7 @@ WHERE p.name = 'WHATSAP_META_WABA_ID'
 	
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
-SET cp.value = 'whatsapp_masivo_njgym'
+SET cp.value = 'whatsapp_masivo'
 WHERE p.name = 'RABBITMQ_QUEUE_WHATSAPP'
     AND cp.companyID = 2;
 	
