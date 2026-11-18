@@ -35,7 +35,7 @@ class app_cxc_advertising extends _BaseController
     const CRONJOB_SYSTEM_NAME    = 'tb_transaction_master_advertising.cron_job';
     const CRONJOB_STATUS_ACTIVE  = "ACTIVO";
     const CRONJOB_STATUS_DOWN    = "BAJA";
-    const CRONJOB_PATH           = "/app_notification/procesarColaWhatsappMasivo/maxMensajes/15/maxSegundos/25/pausa/3/";
+    const CRONJOB_PATH           = "/app_notification/procesarColaWhatsappMasivo/maxMensajes/15/maxSegundos/25/pausa/3";
 
     /**
      * Pantalla principal de campanas.
