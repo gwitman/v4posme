@@ -1169,7 +1169,14 @@ body [class*="modal-content-customer1-"] .btn-block + .btn-block {
  */
 html:has([class*="modal-customer1-"][style*="flex"]) #rowCssPrincipal .pm-barra-captura,
 html:has([class*="modal-customer1-"][style*="flex"]) #rowCssPrincipal .pm-col-main .pm-table-wrap #tb_transaction_master_detail > thead > tr > th,
-html:has([class*="modal-customer1-"][style*="flex"]) #rowCssPrincipal .pm-col-cobro {
+html:has([class*="modal-customer1-"][style*="flex"]) #rowCssPrincipal .pm-col-cobro,
+/*
+ * Carga inicial: #ModalCargandoDatos nace visible por su clase (display:flex en news_body.php), sin style
+ * en linea, y el JS (pm-espera) aun no corre. Mientras cerrarModal() no le escriba display:none, la barra baja.
+ */
+html:has(#ModalCargandoDatos:not([style*="none"])) #rowCssPrincipal .pm-barra-captura,
+html:has(#ModalCargandoDatos:not([style*="none"])) #rowCssPrincipal .pm-col-main .pm-table-wrap #tb_transaction_master_detail > thead > tr > th,
+html:has(#ModalCargandoDatos:not([style*="none"])) #rowCssPrincipal .pm-col-cobro {
 	z-index			: 0;
 }
 
