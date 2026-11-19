@@ -1,5 +1,12 @@
 /*BD:	dbs3obkhhc1pgu:posme*/
 /*servidor:	siteground*/
+
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '1000'
+WHERE p.name = 'CXC_ADVERTISING_FREE_MESSAGES'
+    AND cp.companyID = 2;
+	
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = 'true'
