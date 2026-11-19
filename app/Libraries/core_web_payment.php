@@ -103,6 +103,65 @@ class core_web_payment
     }
 
     /**
+     * Código de origen de esta instalación para el ERN de los pagos (APP__ORIGEN__ID__CONSECUTIVO).
+     * Se configura en tb_company_page_setting_large (controller core_user, element paymentOriginCode).
+     * @return string código alfanumérico en mayúsculas o "" si no está configurado (ERN sin origen)
+     */
+    function getOriginCode()
+    {
+        $code = trim((string) $this->getSettingLarge("paymentOriginCode"));
+        return preg_match('/^[A-Za-z0-9]{1,20}$/', $code) ? strtoupper($code) : "";
+    }
+
+    /**
+     * URL base (.../public) de un origen autorizado en la lista blanca de pagos.
+     * Lista blanca en tb_company_page_setting_large (controller core_user, element paymentOrigins),
+     * JSON {"CODIGO":"https://servidor/v4posme/carpeta/public", ...}. Solo la usa la instalación que recibe el retorno de Pagadito.
+     * @param string $code Código de origen que viene en el ERN
+     * @return string URL sin "/" final o "" si el origen no está autorizado
+     */
+    function getOriginUrl($code)
+    {
+        $json = trim((string) $this->getSettingLarge("paymentOrigins"));
+        $json = preg_replace('/^\xEF\xBB\xBF/', '', $json);
+        $list = json_decode($json, true);
+        if (!is_array($list)) {
+            return "";
+        }
+
+        foreach ($list as $key => $url) {
+            if (strcasecmp(trim((string) $key), trim((string) $code)) != 0) {
+                continue;
+            }
+            //Solo URLs http/https bien formadas: evita redirecciones a esquemas o valores no validos
+            $url    = rtrim(trim((string) $url), "/");
+            $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
+            if (filter_var($url, FILTER_VALIDATE_URL) === false || !in_array($scheme, ["http", "https"])) {
+                return "";
+            }
+            return $url;
+        }
+        return "";
+    }
+
+    /**
+     * Valor de tb_company_page_setting_large para core_user según el tipo de la empresa de la instalación (APP_COMPANY);
+     * si no existe se usa el de "demo".
+     * @param string $element
+     * @return string
+     */
+    private function getSettingLarge($element)
+    {
+        $Company_Model = new \App\Models\Core\Company_Model();
+        $objCompany    = $Company_Model->get_rowByPK(APP_COMPANY);
+        $value         = $objCompany ? getBahavioLargeDB($objCompany->type, "core_user", $element, "") : "";
+        if (trim((string) $value) == "") {
+            $value = getBahavioLargeDB("demo", "core_user", $element, "");
+        }
+        return (string) $value;
+    }
+
+    /**
      * Inicializa Pagadito con las credenciales de la empresa y abre la conexión.
      * @param int $companyID
      * @return core_web_pagadito

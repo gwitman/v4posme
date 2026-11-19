@@ -1128,6 +1128,8 @@ class core_user extends _BaseController {
 
 		//Orignes de pago 5:	app_cxc_advertising/paymentCreate
 		//PAGO DE CAMPAÑA WHATSAPP	= CAM__COMPANYID__TRANSACTIONMASTERID (tb_transaction_master_pagadito)
+		//							  CAM__ORIGEN__COMPANYID__TRANSACTIONMASTERID cuando la instalacion tiene paymentOriginCode;
+		//							  si ORIGEN es otra instalacion se reenvia a la URL de la lista blanca paymentOrigins
 
 		
 		
@@ -1187,7 +1189,33 @@ class core_user extends _BaseController {
 	
 		if(count($facturaParte) >= 3)
 		$facturaParteConsercutivo	= $facturaParte[2];
-	
+
+		//Pago de campaña con origen (CAM__ORIGEN__COMPANYID__TRANSACTIONMASTERID): Pagadito solo regresa a esta instalacion,
+		//si el origen es otra instalacion (otra carpeta u otro servidor) se reenvia a su payment_user_back segun la lista blanca.
+		//reenviado=1 garantiza un solo salto: quien recibe un reenvio procesa localmente y nunca vuelve a reenviar.
+		$facturaParteOrigen			= "";
+		if($facturaParteApp == "CAM" && count($facturaParte) >= 4)
+		{
+			$facturaParteOrigen			= $facturaParte[1];
+			$facturaParteClient			= $facturaParte[2];
+			$facturaParteConsercutivo	= $facturaParte[3];
+		}
+		$pagoReenviado				= $this->request->getGet("reenviado") == "1";
+		if($facturaParteOrigen != "" && !$pagoReenviado && strcasecmp($facturaParteOrigen,$this->core_web_payment->getOriginCode()) != 0)
+		{
+			$urlOrigen = $this->core_web_payment->getOriginUrl($facturaParteOrigen);
+			if($urlOrigen != "" && strcasecmp($urlOrigen,rtrim(base_url(),"/")) != 0)
+			{
+				$urlReenvio = $urlOrigen."/core_user/payment_user_back?".http_build_query(array("parametro1" => $tocken,"parametro2" => $factura,"reenviado" => "1"));
+				log_message("info","[core_user::payment_user_back] pago ".$factura." reenviado a ".$urlOrigen);
+				$this->response->redirect($urlReenvio);
+				return;
+			}
+			//Origen no autorizado: se procesa aqui (no encontrara la campaña) y se recupera con Verificar pago en el origen
+			if($urlOrigen == "")
+			log_message("error","[core_user::payment_user_back] origen ".$facturaParteOrigen." no esta en la lista blanca paymentOrigins, pago ".$factura);
+		}
+
 		$urlRedirect = "";
 		//aplicacion de agenda
 		if($facturaParteApp == "AGE")

@@ -329,7 +329,8 @@ class app_cxc_advertising extends _BaseController
 
     /**
      * Registra el pago Pagadito de la campana (tb_transaction_master_pagadito) y devuelve la URL de cobro.
-     * Mismo cuerpo JSON que preview/send. El retorno de Pagadito llega a core_user/payment_user_back (ERN CAM__companyID__transactionMasterID).
+     * Mismo cuerpo JSON que preview/send. El retorno de Pagadito llega a core_user/payment_user_back
+     * (ERN CAM__companyID__transactionMasterID o CAM__ORIGEN__companyID__transactionMasterID si hay paymentOriginCode).
      * @return mixed JSON {error, message, urlPayment, transactionNumber, amount, quantity}
      */
     function paymentCreate()
@@ -397,7 +398,11 @@ class app_cxc_advertising extends _BaseController
             $this->core_web_auditoria->setAuditCreated($objTM, $dataSession, $this->request);
 
             $transactionMasterID = $this->Transaction_Master_Model->insert_app_posme($objTM);
-            $ern                 = "CAM__" . $companyID . "__" . $transactionMasterID;
+            //Con codigo de origen el ERN es CAM__ORIGEN__companyID__id para que posme reenvie el retorno de Pagadito a esta instalacion
+            $originCode          = $this->core_web_payment->getOriginCode();
+            $ern                 = $originCode != ""
+                ? "CAM__" . $originCode . "__" . $companyID . "__" . $transactionMasterID
+                : "CAM__" . $companyID . "__" . $transactionMasterID;
             $this->Transaction_Master_Model->update_app_posme($companyID, $transactionID, $transactionMasterID, ["transactionNumber" => $ern]);
 
             try {
