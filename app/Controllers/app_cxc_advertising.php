@@ -6,7 +6,7 @@ namespace App\Controllers;
  * Campanas de WhatsApp (publicidad / cobranza masiva).
  *
  * El usuario arma un mensaje (texto libre con Evolution o plantilla aprobada con Meta), elige el origen
- * de los destinatarios (Excel y/o clientes de la empresa) y los mensajes se encolan en RabbitMQ
+ * de los destinatarios (Excel, clientes de la empresa y/o contactos del telefono conectado a Evolution) y los mensajes se encolan en RabbitMQ
  * (parametro RABBITMQ_QUEUE_WHATSAPP); el consumidor es app_notification::procesarColaWhatsappMasivo.
  *
  * Parametros: CXC_ADVERTISING_ENABLED, CXC_ADVERTISING_MAX_MESSAGE, CXC_ADVERTISING_COST_META_MESSAGE,
@@ -28,6 +28,7 @@ class app_cxc_advertising extends _BaseController
     const ORIGIN_EXCEL           = "excel";
     const ORIGIN_CUSTOMER        = "cliente";
     const ORIGIN_TEST            = "prueba";
+    const ORIGIN_CONTACT         = "contacto";
     const REASON_EMPTY           = "Teléfono vacío";
     const REASON_INVALID         = "Teléfono inválido";
     const REASON_DUPLICATE       = "Duplicado";
@@ -643,6 +644,30 @@ class app_cxc_advertising extends _BaseController
     }
 
     /**
+     * Contactos del telefono conectado a Evolution API: total y una muestra para la pantalla.
+     * El envio vuelve a consultarlos en buildMessages (nunca se toman del navegador).
+     * @return mixed JSON {error, message, instanceName, total, sample}
+     */
+    function phoneContacts()
+    {
+        try {
+            $dataSession = $this->authorizeAccess();
+            $companyID   = $dataSession["user"]->companyID;
+            $result      = $this->core_web_whatsap->evolutionFindContacts($companyID);
+
+            return $this->response->setJSON([
+                "error"        => false,
+                "message"      => count($result["contacts"]) > 0 ? SUCCESS : "El teléfono conectado no tiene contactos sincronizados.",
+                "instanceName" => $result["instanceName"],
+                "total"        => count($result["contacts"]),
+                "sample"       => array_slice($result["contacts"], 0, self::MAX_SAMPLE)
+            ]);
+        } catch (\Throwable $ex) {
+            return $this->responseError($ex);
+        }
+    }
+
+    /**
      * Estado de la conexion de WhatsApp (instancia de Evolution API de la empresa).
      * @return mixed JSON {error, message, instanceName, exists, state, number, profileName, profilePicUrl}
      */
@@ -973,7 +998,7 @@ class app_cxc_advertising extends _BaseController
 
     /**
      * Arma la lista de mensajes de la campana (compartido por preview y send).
-     * Orden: filas de Excel y luego clientes; en duplicados gana Excel. Si campaignMax > 0 se eligen
+     * Orden: filas de Excel, clientes y contactos del telefono; en duplicados gana el primero (Excel, luego clientes). Si campaignMax > 0 se eligen
      * al azar esa cantidad de validos; los que aun superan CXC_ADVERTISING_MAX_MESSAGE se cuentan en
      * overLimit (no se truncan en silencio). Con testPhone se arma un solo mensaje (primer valido) hacia ese numero.
      * @param int   $companyID
@@ -993,6 +1018,7 @@ class app_cxc_advertising extends _BaseController
         $urlImage    = $this->cleanUrl((string) ($input["urlImage"] ?? ""), false);
         $useExcel    = !empty($input["useExcel"]);
         $useCustomer = !empty($input["useCustomers"]);
+        $useContact  = !empty($input["usePhoneContacts"]);
         $filters     = is_array($input["filters"] ?? null) ? $input["filters"] : [];
         $template    = is_array($input["template"] ?? null) ? $input["template"] : [];
         $excelRows   = $useExcel && is_array($input["excelRows"] ?? null) ? array_values($input["excelRows"]) : [];
@@ -1021,8 +1047,8 @@ class app_cxc_advertising extends _BaseController
         }
 
         //Con telefono de prueba no hace falta origen: el mensaje solo va a ese numero
-        if (!$useExcel && !$useCustomer && $testPhone == "") {
-            throw new \Exception("Seleccione al menos un origen de destinatarios (Excel o clientes).");
+        if (!$useExcel && !$useCustomer && !$useContact && $testPhone == "") {
+            throw new \Exception("Seleccione al menos un origen de destinatarios (Excel, clientes o contactos del teléfono).");
         }
 
         //El navegador corta el Excel en maxMessage * 5; mas filas indican una peticion manipulada
@@ -1047,6 +1073,13 @@ class app_cxc_advertising extends _BaseController
                 $maxMessage * 5
             );
             $customers = is_array($customers) ? $customers : [];
+        }
+
+        //Contactos del telefono conectado (Evolution); igual que clientes, se limitan a maxMessage * 5
+        $contacts = [];
+        if ($useContact) {
+            $contacts = $this->core_web_whatsap->evolutionFindContacts($companyID)["contacts"];
+            $contacts = array_slice($contacts, 0, $maxMessage * 5);
         }
 
         //Columnas del Excel que son variables {{columna}}
@@ -1107,6 +1140,27 @@ class app_cxc_advertising extends _BaseController
                 "values"   => $values
             ];
         }
+        foreach ($contacts as $contact) {
+            //Del contacto solo se conoce el nombre de WhatsApp: el resto de variables queda vacio
+            $values = [];
+            foreach ($variables as $variable) {
+                $values[$variable->name] = strtolower($variable->name) == "nombre" ? $contact["nombre"] : "";
+            }
+            foreach ($excelColumns as $column) {
+                if (!array_key_exists($column, $values)) {
+                    $values[$column] = "";
+                }
+            }
+            $candidates[] = [
+                "origen"   => self::ORIGIN_CONTACT,
+                "telefono" => $contact["telefono"],
+                "nombre"   => $contact["nombre"],
+                "mensaje"  => "",
+                "urlImage" => $urlImage,
+                "excel"    => [],
+                "values"   => $values
+            ];
+        }
 
         $summary = [
             "totalInput"       => count($candidates),
@@ -1117,6 +1171,7 @@ class app_cxc_advertising extends _BaseController
             "overLimit"        => 0,
             "fromExcel"        => 0,
             "fromCustomers"    => 0,
+            "fromContacts"     => 0,
             "provider"         => $provider,
             "costUnit"         => $provider == "meta" ? $config["costMeta"] : 0,
             "costFixed"        => $provider == "meta" ? 0 : $config["costEvolution"],
@@ -1203,6 +1258,8 @@ class app_cxc_advertising extends _BaseController
                 $summary["fromExcel"]++;
             } else if ($selected["candidate"]["origen"] == self::ORIGIN_CUSTOMER) {
                 $summary["fromCustomers"]++;
+            } else if ($selected["candidate"]["origen"] == self::ORIGIN_CONTACT) {
+                $summary["fromContacts"]++;
             }
         }
         $valid = $items;

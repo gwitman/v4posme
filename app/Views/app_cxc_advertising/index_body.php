@@ -278,6 +278,44 @@
                         </div>
                     </div>
 
+                    <!-- Contactos del teléfono conectado a Evolution API -->
+                    <div class="pv2-card adv-source" :class="{ 'is-on': usePhoneContacts }">
+                        <div class="adv-source-head">
+                            <label class="adv-switch">
+                                <input type="checkbox" v-model="usePhoneContacts">
+                                <span class="adv-switch-ui" aria-hidden="true"></span>
+                                <span class="adv-source-title"><i class="bi bi-person-lines-fill" aria-hidden="true"></i> Contactos del teléfono</span>
+                            </label>
+                            <button v-if="usePhoneContacts" type="button" class="btn btn-default adv-btn-soft" :disabled="contactos.cargando" @click="cargarContactos"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ contactos.cargando ? 'Consultando...' : 'Actualizar' }}</button>
+                        </div>
+                        <p class="adv-muted">Contactos del WhatsApp conectado en la pestaña WhatsApp (sin grupos). Solo se conoce su nombre de WhatsApp; las demás variables quedan vacías. Si un teléfono ya viene en el Excel o en clientes, se usa ese registro.</p>
+
+                        <div v-if="usePhoneContacts">
+                            <div v-if="contactos.cargando" class="adv-alert is-info"><i class="bi bi-hourglass-split" aria-hidden="true"></i><span>Consultando los contactos del teléfono...</span></div>
+                            <div v-else-if="contactos.error" class="adv-alert is-error" role="alert"><i class="bi bi-x-circle-fill" aria-hidden="true"></i><span>{{ contactos.error }}</span></div>
+                            <template v-else-if="contactos.total > 0">
+                                <div class="adv-file-info">
+                                    <span><i class="bi bi-person-check" aria-hidden="true"></i> Contactos encontrados</span>
+                                    <span class="pv2-count">{{ entero(contactos.total) }}</span>
+                                </div>
+                                <div class="pv2-table-wrap adv-excel-preview">
+                                    <table class="pv2-table">
+                                        <caption class="sr-only">Primeros contactos del teléfono</caption>
+                                        <thead>
+                                            <tr><th scope="col">Teléfono</th><th scope="col">Nombre</th></tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr v-for="(item, indice) in contactos.muestra.slice(0, 5)" :key="indice" class="row_razon">
+                                                <td data-label="Teléfono"><span class="adv-cell">+{{ item.telefono }}</span></td>
+                                                <td data-label="Nombre"><span class="adv-cell">{{ item.nombre || '-' }}</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
                     <!-- Alcance y prueba -->
                     <div class="pv2-card">
                         <p class="pv2-card-title"><span class="pv2-ico"><i class="bi bi-sliders" aria-hidden="true"></i></span> Alcance y prueba</p>
@@ -464,7 +502,7 @@
                             </div>
                             <div class="pv2-kpi k-info">
                                 <div class="pv2-kpi-icon"><i class="bi bi-diagram-3" aria-hidden="true"></i></div>
-                                <div class="pv2-kpi-body"><span class="pv2-kpi-label">Excel / Clientes</span><span class="pv2-kpi-value">{{ entero(summary.fromExcel) }} / {{ entero(summary.fromCustomers) }}</span></div>
+                                <div class="pv2-kpi-body"><span class="pv2-kpi-label">Excel / Clientes / Contactos</span><span class="pv2-kpi-value">{{ entero(summary.fromExcel) }} / {{ entero(summary.fromCustomers) }} / {{ entero(summary.fromContacts) }}</span></div>
                             </div>
                             <div class="pv2-kpi k-purple">
                                 <div class="pv2-kpi-icon"><i class="bi bi-currency-dollar" aria-hidden="true"></i></div>
@@ -513,7 +551,7 @@
                                     <div class="adv-sample-head">
                                         <span class="adv-sample-name">{{ item.nombre || 'Sin nombre' }}</span>
                                         <span class="adv-sample-phone">+{{ item.telefono }}</span>
-                                        <span class="adv-badge" :class="item.origen === 'excel' ? 'is-ok' : 'is-info'">{{ item.origen === 'excel' ? 'Excel' : 'Cliente' }}</span>
+                                        <span class="adv-badge" :class="item.origen === 'excel' ? 'is-ok' : 'is-info'">{{ etiquetaOrigen(item.origen) }}</span>
                                     </div>
                                     <div class="adv-wa-chat is-mini">
                                         <div class="adv-bubble">
@@ -551,7 +589,7 @@
                                             <tr v-for="(item, indice) in discardedPagina" :key="indice" class="row_razon">
                                                 <td data-label="Teléfono"><span>{{ item.telefono || '(vacío)' }}</span></td>
                                                 <td data-label="Nombre"><span>{{ item.nombre || '-' }}</span></td>
-                                                <td data-label="Origen"><span>{{ item.origen === 'excel' ? 'Excel' : 'Cliente' }}</span></td>
+                                                <td data-label="Origen"><span>{{ etiquetaOrigen(item.origen) }}</span></td>
                                                 <td data-label="Motivo"><span class="adv-badge is-bad">{{ item.motivo }}</span></td>
                                             </tr>
                                         </tbody>

@@ -3825,6 +3825,54 @@ class core_web_whatsap {
 	}
 
 	/**
+	 * Contactos del telefono conectado a la instancia de Evolution API de la empresa (POST /chat/findContacts/{instancia}).
+	 * Solo se devuelven contactos individuales (@s.whatsapp.net / @c.us): se excluyen grupos, listas de difusion,
+	 * estados y los @lid (no traen el numero). El telefono sale solo con digitos y sin repetir.
+	 * @param int $companyID
+	 * @return array {instanceName, contacts: [{telefono, nombre}]}
+	 */
+	function evolutionFindContacts($companyID)
+	{
+		$config = $this->evolutionGetInstanceConfig($companyID);
+		$result = $this->evolutionInstanceRequest($config, "POST", "/chat/findContacts/" . rawurlencode($config["instanceName"]), ["where" => new \stdClass()]);
+		if ($result["httpCode"] == 404) {
+			throw new \Exception("La instancia de WhatsApp " . $config["instanceName"] . " no existe: conéctela en la pestaña WhatsApp.");
+		}
+		if ($result["httpCode"] < 200 || $result["httpCode"] >= 300) {
+			throw new \Exception($this->evolutionErrorMessage($result));
+		}
+
+		$contacts = [];
+		$phones   = [];
+		foreach ($result["json"] as $row) {
+			if (!is_array($row)) {
+				continue;
+			}
+			//v2 trae remoteJid; v1 trae el jid en id
+			$jid    = strtolower(trim((string) ($row["remoteJid"] ?? ($row["id"] ?? ""))));
+			$domain = substr($jid, strpos($jid, "@") === false ? strlen($jid) : strpos($jid, "@"));
+			if ($domain != "@s.whatsapp.net" && $domain != "@c.us") {
+				continue;
+			}
+			$phone = preg_replace('/\D/', '', explode("@", $jid)[0]);
+			if ($phone == "" || isset($phones[$phone])) {
+				continue;
+			}
+			$phones[$phone] = true;
+			$contacts[]     = [
+				"telefono" => $phone,
+				"nombre"   => trim((string) ($row["pushName"] ?? ($row["name"] ?? "")))
+			];
+		}
+
+		log_message('info', '[evolutionFindContacts] companyID: ' . $companyID . ' | instancia: ' . $config["instanceName"] . ' | contactos: ' . count($contacts));
+		return [
+			"instanceName" => $config["instanceName"],
+			"contacts"     => $contacts
+		];
+	}
+
+	/**
 	 * Guarda en WHATSAP_URL_REQUEST_SESSION el nombre de la instancia con prefijo (lo usan los envios por Evolution).
 	 * @param int   $companyID
 	 * @param array $config evolutionGetInstanceConfig()

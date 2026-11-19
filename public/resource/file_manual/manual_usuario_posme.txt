@@ -1202,7 +1202,7 @@ Notas:
 Ruta: Menú > CXC > CAMPAÑAS WHATSAPP. La pantalla se llama Campañas WhatsApp ("Envíe promociones y recordatorios de cobro a sus clientes"). Tiene dos pestañas: Campañas y Conexión WhatsApp (teléfono que envía por Evolution API).
 La campaña se arma en 4 pasos. Avance con Siguiente y regrese con Anterior; también puede tocar el paso en la barra superior. A la derecha (o abajo en el teléfono) la Vista previa muestra cómo recibirá el cliente el mensaje, y arriba se ve el Costo estimado en USD.
   1. Mensaje (Texto e imagen): título, imagen y texto con variables.
-  2. Destinatarios (Excel y clientes): archivo Excel y/o clientes registrados, cantidad máxima y teléfono de prueba.
+  2. Destinatarios (Excel, clientes y contactos): archivo Excel, clientes registrados y/o contactos del teléfono, cantidad máxima y teléfono de prueba.
   3. Proveedor (Envío y costo): Evolution API o Meta Cloud API.
   4. Resumen (Revisar y enviar): cantidades, depurados, costo, pago si corresponde y botón Enviar campaña.
 Si falta algo, al presionar Siguiente aparece la lista de lo que debe corregir.
@@ -1260,7 +1260,7 @@ Ver también: Campañas de WhatsApp: enviar con plantilla de Meta.
 
 80. CAMPAÑAS DE WHATSAPP: ELEGIR LOS DESTINATARIOS (PASO 2)
 ----------------------------------------------------------------------
-Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > paso Destinatarios. Active uno o los dos orígenes.
+Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > paso Destinatarios. Active uno o varios orígenes.
 Desde archivo Excel:
   1. Presione Descargar plantilla para obtener un modelo con las columnas telefono, mensaje, imagen y nombre.
   2. Columnas: telefono (obligatoria); mensaje (opcional: si la llena, esa fila usa su propio texto en lugar del general); imagen (opcional: enlace https a una imagen para esa fila); cualquier otra columna se puede usar como variable.
@@ -1268,9 +1268,14 @@ Desde archivo Excel:
 Clientes registrados:
   1. Active Clientes registrados. Solo entran clientes con teléfono y con la casilla Permite WhatsApp Publicidad marcada en su ficha (CXC > CLIENTES, pestaña Informacion; márquela solo si el cliente aceptó promociones).
   2. Filtros opcionales: Solo con saldo pendiente, Solo con mora y Categoría (Todas las categorías por defecto).
-Mensajes: "Elija al menos un origen de destinatarios: Excel o clientes registrados." y "Cargue el archivo Excel o desactive esa opción."
+Contactos del teléfono:
+  1. Primero conecte el teléfono en la pestaña Conexión WhatsApp.
+  2. Active Contactos del teléfono. El sistema consulta los contactos de ese WhatsApp y muestra Contactos encontrados con los primeros 5. Use Actualizar para volver a consultarlos.
+  3. No incluye grupos. De cada contacto solo se conoce su nombre de WhatsApp (variable nombre); las demás variables quedan vacías.
+Mensajes: "Elija al menos un origen de destinatarios: Excel, clientes registrados o contactos del teléfono.", "Cargue el archivo Excel o desactive esa opción." y "El teléfono conectado no tiene contactos; elija otro origen de destinatarios."
 Notas:
-  * Si un teléfono viene en el Excel y también es de un cliente, se usa la fila del Excel.
+  * Si un teléfono viene en el Excel y también es de un cliente, se usa la fila del Excel. Si un contacto del teléfono ya viene en el Excel o en clientes, se usa ese registro.
+  * Al enviar, los contactos se consultan de nuevo, por lo que la cantidad puede variar si cambió el teléfono.
   * El archivo acepta hasta 1.5 veces el máximo de mensajes (1,500 si el máximo es 1,000). Si trae más, solo se toman las primeras filas y se avisa: divida el archivo.
   * Los números de 8 dígitos se completan con 505 al inicio. Un teléfono válido queda con 11 a 15 dígitos.
 Ver también: Crear un cliente; Campañas de WhatsApp: limitar la cantidad de mensajes o enviar una prueba.

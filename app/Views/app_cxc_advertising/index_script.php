@@ -269,7 +269,7 @@
             paso:            1,
             pasos: [
                 { num: 1, titulo: 'Mensaje',       sub: 'Texto e imagen' },
-                { num: 2, titulo: 'Destinatarios', sub: 'Excel y clientes' },
+                { num: 2, titulo: 'Destinatarios', sub: 'Excel, clientes y contactos' },
                 { num: 3, titulo: 'Proveedor',     sub: 'Envío y costo' },
                 { num: 4, titulo: 'Resumen',       sub: 'Revisar y enviar' }
             ],
@@ -295,6 +295,9 @@
             descargandoPlantilla: false,
             useCustomers:    true,
             filters:         { onlyBalance: false, onlyMora: false, categoryID: 0 },
+            /* Contactos del teléfono conectado a Evolution (el servidor los vuelve a consultar al enviar) */
+            usePhoneContacts:   false,
+            contactos:          { total: 0, muestra: [], cargando: false, cargado: false, error: '' },
             campaignMax:     '',
             testPhone:       '',
 
@@ -600,6 +603,10 @@
                 },
                 useExcel: function () {
                     this.errorExcel = '';
+                },
+                /* Al activar los contactos se consultan una vez para mostrar cuántos hay */
+                usePhoneContacts: function (valor) {
+                    if (valor && !this.contactos.cargado && !this.contactos.cargando) { this.cargarContactos(); }
                 }
             },
             methods: {
@@ -655,6 +662,7 @@
                         useExcel:     usarExcel,
                         excelRows:    usarExcel ? this.excelRows : [],
                         useCustomers: this.useCustomers,
+                        usePhoneContacts: this.usePhoneContacts,
                         filters: {
                             onlyBalance: !!this.filters.onlyBalance,
                             onlyMora:    !!this.filters.onlyMora,
@@ -691,8 +699,11 @@
                     }
                     if (numero === 2) {
                         /* Con teléfono de prueba no hace falta origen: el mensaje solo va a ese número */
-                        if (!this.useExcel && !this.useCustomers && soloDigitos(this.testPhone) === '') {
-                            errores.push('Elija al menos un origen de destinatarios: Excel o clientes registrados.');
+                        if (!this.useExcel && !this.useCustomers && !this.usePhoneContacts && soloDigitos(this.testPhone) === '') {
+                            errores.push('Elija al menos un origen de destinatarios: Excel, clientes registrados o contactos del teléfono.');
+                        }
+                        if (this.usePhoneContacts && this.contactos.cargado && this.contactos.total === 0 && !this.useExcel && !this.useCustomers && soloDigitos(this.testPhone) === '') {
+                            errores.push('El teléfono conectado no tiene contactos; elija otro origen de destinatarios.');
                         }
                         if (this.useExcel && this.excelRows.length === 0) {
                             errores.push('Cargue el archivo Excel o desactive esa opción.');
@@ -1155,6 +1166,40 @@
                         this.detenerSondeoWa();
                     }
                 },
+                /* Consulta en Evolution API los contactos del teléfono conectado (total y muestra) */
+                cargarContactos: async function () {
+                    if (this.contactos.cargando) { return; }
+                    this.contactos.cargando = true;
+                    this.contactos.error    = '';
+                    var json = await llamar('phoneContacts', {});
+                    this.contactos.cargando = false;
+                    this.contactos.cargado  = true;
+                    /* Error */
+                    if (json.error === true) {
+                        this.contactos.total   = 0;
+                        this.contactos.muestra = [];
+                        this.contactos.error   = json.message;
+                        return;
+                    }
+                    /* Sin datos */
+                    if (!Array.isArray(json.sample) || pv2Num(json.total) === 0) {
+                        this.contactos.total   = 0;
+                        this.contactos.muestra = [];
+                        this.contactos.error   = json.message || 'El teléfono conectado no tiene contactos sincronizados.';
+                        return;
+                    }
+                    /* Con datos */
+                    this.contactos.total   = pv2Num(json.total);
+                    this.contactos.muestra = json.sample.map(function (item) {
+                        return { telefono: String(item.telefono || ''), nombre: String(item.nombre || '') };
+                    });
+                },
+                /* Etiqueta del origen de un destinatario en el resumen */
+                etiquetaOrigen: function (origen) {
+                    if (origen === 'excel')    { return 'Excel'; }
+                    if (origen === 'contacto') { return 'Contacto'; }
+                    return 'Cliente';
+                },
                 /* Copia la respuesta de whatsappStatus */
                 aplicarEstadoWa: function (json) {
                     this.wa.instanceName = String(json.instanceName || this.wa.instanceName || '');
@@ -1444,6 +1489,7 @@
                         excelTruncado:   this.excelTruncado,
                         excelOmitido:    false,
                         useCustomers:    this.useCustomers,
+                        usePhoneContacts: this.usePhoneContacts,
                         filters:         this.filters,
                         campaignMax:     this.campaignMax,
                         testPhone:       this.testPhone,
@@ -1499,6 +1545,7 @@
                     this.excelTruncado   = this.excelRows.length > 0 && !!d.excelTruncado;
                     if (this.excelRows.length === 0) { this.excelColumnas = []; }
                     this.useCustomers    = d.useCustomers === undefined ? true : !!d.useCustomers;
+                    this.usePhoneContacts = !!d.usePhoneContacts;
                     if (d.filters && typeof d.filters === 'object') {
                         this.filters = {
                             onlyBalance: !!d.filters.onlyBalance,
