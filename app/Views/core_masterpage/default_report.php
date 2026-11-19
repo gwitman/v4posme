@@ -90,8 +90,8 @@
 	
 		<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/genyx-utilis.js"></script>  
 		<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/genyx-fn.js?v=2"></script>  
-		<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/genyx-app-init.js"></script>
-	
+		<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/genyx-app-init.js?v=4"></script>
+
 	
 	
 	</head>
@@ -100,7 +100,9 @@
 					<?php echo $message; ?>
 					
 					<?php echo $head; ?>
-					
+					<!-- Pantalla de espera moderna (fnWaitOpen). Despues del view_head para ganar a is-loading-master/style.css -->
+					<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-loading.css?v=5" rel="stylesheet" />
+
 					<?php echo $body;?>
 				</div>			
 	</body>

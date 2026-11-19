@@ -1,0 +1,168 @@
+/*
+ * posme-loading.css
+ * Pantalla de espera para fnWaitOpen() / $.isLoading() y fnWaitOpenV2() (#divLoandingCustom).
+ * Diseño: fondo negro + tarjeta centrada en degradado azul corporativo con letras blancas.
+ * Rendimiento: sin backdrop-filter ni animaciones de entrada (aparece al instante);
+ * las animaciones solo usan transform/opacity.
+ * El plugin jquery.isloading pinta el overlay con estilos inline (fondo negro, alto fijo),
+ * por eso aquí se sobrescriben con !important.
+ */
+
+:root {
+    --pm-load-primario:   #006E98;
+    --pm-load-celeste:    #00A3D9;
+    --pm-load-verde:      #22C55E;
+    --pm-load-amarillo:   #FFD166;
+    --pm-load-naranja:    #F97316;
+    --pm-load-texto:      #0F172A;
+    --pm-load-suave:      #64748B;
+    --pm-load-pista:      #E6F4F9;
+}
+
+/* Fondo oscuro suave: bloquea clics (evita doble envío) y deja ver la pantalla detrás */
+.isloading-overlay {
+    position:        fixed !important;
+    top:             0 !important;
+    left:            0 !important;
+    width:           100% !important;
+    height:          100% !important;
+    z-index:         100000 !important;
+    /* sin !important: así .hidden y display:none (fnWaitCloseV2 / #divLoandingCustom) siguen ocultándolo */
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    padding:         16px;
+    box-sizing:      border-box;
+    background:      #000000 !important;
+    text-align:      center;
+    cursor:          progress;
+}
+
+/* Tarjeta centrada */
+.isloading-overlay .isloading-wrapper.pm-loading-card {
+    position:       relative;
+    display:        flex;
+    flex-direction: column;
+    width:          100%;
+    max-width:      300px;
+    margin:         0 auto;
+    padding:        0;
+    box-sizing:     border-box;
+    /* Tarjeta completa en degradado azul corporativo: contraste fuerte contra el fondo negro */
+    background:     linear-gradient(160deg, var(--pm-load-primario) 0%, #0088BF 55%, var(--pm-load-celeste) 100%);
+    border:         1px solid rgba(255, 255, 255, 0.25);
+    border-radius:  18px;
+    box-shadow:     0 0 40px rgba(0, 163, 217, 0.45), 0 20px 50px rgba(0, 0, 0, 0.6);
+    overflow:       hidden;
+    font-family:    "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+/* Encabezado degradado con círculos decorativos */
+.pm-loading-head {
+    position:        relative;
+    display:         flex;
+    align-items:     center;
+    justify-content: center;
+    height:          104px;
+    background:      transparent;
+    overflow:        hidden;
+}
+.pm-loading-head::before,
+.pm-loading-head::after {
+    content:       "";
+    position:      absolute;
+    border-radius: 50%;
+    background:    rgba(255, 255, 255, 0.12);
+}
+.pm-loading-head::before { width: 120px; height: 120px; top: -50px;    left: -30px;  }
+.pm-loading-head::after  { width: 90px;  height: 90px;  bottom: -40px; right: -20px; }
+
+/* Spinner blanco con anillo interior amarillo */
+.pm-loading-spinner {
+    position: relative;
+    z-index:  1;
+    width:    54px;
+    height:   54px;
+}
+.pm-loading-spinner .pm-loading-ring {
+    position:      absolute;
+    inset:         0;
+    border-radius: 50%;
+    border:        5px solid rgba(255, 255, 255, 0.25);
+    border-top-color: #FFFFFF;
+    animation:     pmLoadSpin 0.8s linear infinite;
+    will-change:   transform;
+}
+.pm-loading-spinner .pm-loading-ring2 {
+    inset:               11px;
+    border-width:        4px;
+    border-color:        transparent;
+    border-top-color:    var(--pm-load-amarillo);
+    border-left-color:   var(--pm-load-amarillo);
+    animation-duration:  0.6s;
+    animation-direction: reverse;
+}
+
+/* Cuerpo con textos */
+.pm-loading-body {
+    padding: 0 20px 24px;
+}
+.pm-loading-title {
+    color:       #FFFFFF;
+    font-size:   17px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+.pm-loading-title .pm-loading-dots span {
+    display:   inline-block;
+    animation: pmLoadDots 1.2s infinite both;
+}
+.pm-loading-title .pm-loading-dots span:nth-child(2) { animation-delay: 0.2s; }
+.pm-loading-title .pm-loading-dots span:nth-child(3) { animation-delay: 0.4s; }
+.pm-loading-sub {
+    margin-top:  4px;
+    color:       #D6F2FF;
+    font-size:   13px;
+    line-height: 1.35;
+}
+
+/* Barra de colores animada al pie de la tarjeta */
+.pm-loading-bar {
+    position:   absolute;
+    left:       0;
+    right:      0;
+    bottom:     0;
+    height:     4px;
+    background: rgba(255, 255, 255, 0.2);
+    overflow:   hidden;
+}
+.pm-loading-bar i {
+    position:    absolute;
+    top:         0;
+    left:        0;
+    width:       50%;
+    height:      100%;
+    background:  linear-gradient(90deg, var(--pm-load-primario), var(--pm-load-celeste), var(--pm-load-verde), var(--pm-load-amarillo), var(--pm-load-naranja));
+    animation:   pmLoadBar 1.1s ease-in-out infinite;
+    will-change: transform;
+}
+
+/* Teléfonos */
+@media (max-width: 480px) {
+    .isloading-overlay .isloading-wrapper.pm-loading-card { max-width: 260px; border-radius: 16px; }
+    .pm-loading-head    { height: 88px; }
+    .pm-loading-spinner { width: 46px; height: 46px; }
+    .pm-loading-title   { font-size: 15px; }
+    .pm-loading-sub     { font-size: 12px; }
+}
+
+/* Accesibilidad: menos movimiento */
+@media (prefers-reduced-motion: reduce) {
+    .pm-loading-title .pm-loading-dots span { animation: none; }
+    .pm-loading-spinner .pm-loading-ring    { animation-duration: 1.6s; }
+    .pm-loading-bar i                       { animation-duration: 2.2s; }
+}
+
+@keyframes pmLoadSpin { to { transform: rotate(360deg); } }
+@keyframes pmLoadDots { 0%, 80%, 100% { opacity: 0; } 40% { opacity: 1; } }
+@keyframes pmLoadBar  { 0% { transform: translateX(-100%); } 100% { transform: translateX(200%); } }

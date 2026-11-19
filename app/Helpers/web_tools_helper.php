@@ -838,25 +838,24 @@ function helper_convertToUTF8($texto)
 
 function helper_getHtmlOfPageLanding()
 {
+	// Pantalla de espera V2 (fnWaitOpenV2 / fnWaitCloseV2). Mismo diseño que fnWaitOpen: estilos en resource/css/posme-loading.css
 	echo '
-	<div 
-		class="isloading-overlay"
-		id="divLoandingCustom"
-		style="position:fixed; left:0; top:0; z-index: 10000; background: white; width: 100%; height: 1090px;"	
-	>
-		 <div style="width: 100%; height: 4px; background: #ddd; position: relative; overflow: hidden; border-radius: 10px;">
-			<div style="width: 0; height: 100%; background: #007bff; position: absolute; animation: carga 2s infinite;"></div>
+	<link href="'.APP_URL_RESOURCE_CSS_JS.'/resource/css/posme-loading.css?v=5" rel="stylesheet" />
+	<div class="isloading-overlay" id="divLoandingCustom">
+		<div class="isloading-wrapper pm-loading-card" role="status" aria-live="polite">
+			<div class="pm-loading-head">
+				<div class="pm-loading-spinner">
+					<span class="pm-loading-ring"></span>
+					<span class="pm-loading-ring pm-loading-ring2"></span>
+				</div>
+			</div>
+			<div class="pm-loading-body">
+				<div class="pm-loading-title">Espere un momento<span class="pm-loading-dots"><span>.</span><span>.</span><span>.</span></span></div>
+				<div class="pm-loading-sub">Procesando su solicitud</div>
+			</div>
+			<div class="pm-loading-bar"><i></i></div>
 		</div>
 	</div>
-	
-	<style>
-		@keyframes carga {
-			0% { width: 0%; }
-			50% { width: 100%; }
-			100% { width: 0%; }
-		}
-	</style>
-
 	';
 }
 

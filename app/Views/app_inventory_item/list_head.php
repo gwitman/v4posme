@@ -1,14 +1,5 @@
 				
-<div 
-	class="isloading-overlay"
-	id="divLoandingCustom"
-	style="position:fixed; left:0; top:0; z-index: 10000; background: rgba(0,0,0,1); width: 100%; height: 1090px;"	
->
-	<span class="isloading-wrapper  isloading-show  isloading-overlay">espere un momento ...  
-		<i class="icon-refresh icon-spin">
-		</i>
-	</span>
-</div>
+<?php helper_getHtmlOfPageLanding(); ?>
 
 <div id="heading" class="page-header">
 	<h1><i class="icon20   i-cube-3"></i> LISTA DE PRODUCTOS</h1>

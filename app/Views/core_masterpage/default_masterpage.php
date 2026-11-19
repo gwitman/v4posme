@@ -107,8 +107,10 @@
 
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/genyx-utilis.js"></script>
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/genyx-fn.js?v=2"></script>
-	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/genyx-app-init.js"></script>
+	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/genyx-app-init.js?v=4"></script>
 	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/is-loading-master/jquery.isloading.min.js"></script>
+	<!-- Pantalla de espera moderna / responsive (fnWaitOpen) -->
+	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-loading.css?v=5" rel="stylesheet" />
 	<!-- Barra superior moderna / responsive (#header.pm-topbar). Al final para ganar a theme-genyx/app_css.php -->
 	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-topbar.css?v=5" rel="stylesheet" />
 	<!-- Menu lateral moderno / responsive (#sidebar) + buscador. Al final para ganar a app_css.php y genyx-app.css -->
