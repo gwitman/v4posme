@@ -1339,13 +1339,14 @@ class core_web_view {
 							'Dom'				: \"<'row'<'col-lg-6'l><'col-lg-6'f>r>t<'row'<'col-lg-6'i><'col-lg-6'p>>\",
 							'sPaginationType'	: 'bootstrap',							
 							'bJQueryUI'			: false,
-							'bAutoWidth'		: false,							
-							'iDisplayLength'	: ".$displayLength.",							
+							'bAutoWidth'		: false,
+							'iDisplayLength'	: ".$displayLength.",
+							'aaSorting'			: [], //Respetar el ORDER BY de la consulta (sin esto DataTables ordena asc por la columna 0)
 							'oLanguage'	: {
 								'sSearch'		: '<span>Filtro:</span> _INPUT_   ',
 								//'sLengthMenu'	: '<span>_MENU_ elementos</span>',
 								'sLengthMenu'	: '',
-								//'oPaginate'	: { 'sFirst': 'First', 'sLast': 'Last' } 
+								//'oPaginate'	: { 'sFirst': 'First', 'sLast': 'Last' }
 								'oPaginate' 	: ''
 								//'sInfo'		: '_START_ de _END_ total _TOTAL_'
 							}
