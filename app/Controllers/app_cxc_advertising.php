@@ -33,6 +33,7 @@ class app_cxc_advertising extends _BaseController
     const REASON_INVALID         = "Teléfono inválido";
     const REASON_DUPLICATE       = "Duplicado";
     const REASON_OVER_LIMIT      = "Excede el máximo";
+    const REASON_OPT_OUT         = "No acepta promociones";
     const CRONJOB_SYSTEM_NAME    = 'tb_transaction_master_advertising.cron_job';
     const CRONJOB_STATUS_ACTIVE  = "ACTIVO";
     const CRONJOB_STATUS_DOWN    = "BAJA";
@@ -1075,6 +1076,8 @@ class app_cxc_advertising extends _BaseController
         $filters     = is_array($input["filters"] ?? null) ? $input["filters"] : [];
         $template    = is_array($input["template"] ?? null) ? $input["template"] : [];
         $excelRows   = $useExcel && is_array($input["excelRows"] ?? null) ? array_values($input["excelRows"]) : [];
+        //Por defecto se excluyen los clientes con allowWhatsappPromotions = 0; solo se incluyen si el usuario desmarca la casilla
+        $excludeOptOut = !isset($input["excludeOptOut"]) || !empty($input["excludeOptOut"]);
         $maxMessage  = $config["maxMessage"];
 
         //Cantidad de mensajes de la campana: 0 = todos los validos; mayor a 0 = seleccion al azar
@@ -1123,7 +1126,8 @@ class app_cxc_advertising extends _BaseController
                 !empty($filters["onlyBalance"]),
                 !empty($filters["onlyMora"]),
                 (int) ($filters["categoryID"] ?? 0),
-                $maxMessage * 5
+                $maxMessage * 5,
+                $excludeOptOut
             );
             $customers = is_array($customers) ? $customers : [];
         }
@@ -1221,6 +1225,7 @@ class app_cxc_advertising extends _BaseController
             "empty"            => 0,
             "invalid"          => 0,
             "duplicate"        => 0,
+            "optOut"           => 0,
             "overLimit"        => 0,
             "fromExcel"        => 0,
             "fromCustomers"    => 0,
@@ -1245,7 +1250,19 @@ class app_cxc_advertising extends _BaseController
         $valid     = [];
         $phones    = [];
 
-        //1. Depuracion: vacios, invalidos y duplicados (se guarda el candidato crudo; se renderiza al final)
+        //Teléfonos de clientes que no aceptan promociones (allowWhatsappPromotions = 0), en el mismo formato
+        //de envío: se excluyen sin importar el origen (Excel, contactos del teléfono o base de datos)
+        $optOut = [];
+        if ($excludeOptOut && count($candidates) > 0) {
+            foreach ($this->Advertising_Variable_Model->get_phoneOptOutByCompany($companyID) as $row) {
+                $phoneOptOut = getNumberPhone(preg_replace('/\D/', '', (string) $row->telefono));
+                if ($phoneOptOut != "") {
+                    $optOut[$phoneOptOut] = true;
+                }
+            }
+        }
+
+        //1. Depuracion: vacios, invalidos, sin permiso de promociones y duplicados (se guarda el candidato crudo; se renderiza al final)
         foreach ($candidates as $candidate) {
             $rawPhone = trim($candidate["telefono"]);
             //Primero se deja solo digitos (quita letras, acentos, puntos, barras...) y despues se agrega el 505
@@ -1259,6 +1276,9 @@ class app_cxc_advertising extends _BaseController
             } else if (strlen($phone) < 11 || strlen($phone) > 15) {
                 $reason = self::REASON_INVALID;
                 $summary["invalid"]++;
+            } else if (isset($optOut[$phone])) {
+                $reason = self::REASON_OPT_OUT;
+                $summary["optOut"]++;
             } else if (isset($phones[$phone])) {
                 $reason = self::REASON_DUPLICATE;
                 $summary["duplicate"]++;

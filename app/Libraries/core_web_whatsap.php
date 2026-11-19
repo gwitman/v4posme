@@ -3836,7 +3836,7 @@ class core_web_whatsap {
 		$config = $this->evolutionGetInstanceConfig($companyID);
 		$result = $this->evolutionInstanceRequest($config, "POST", "/chat/findContacts/" . rawurlencode($config["instanceName"]), ["where" => new \stdClass()]);
 		if ($result["httpCode"] == 404) {
-			throw new \Exception("La instancia de WhatsApp " . $config["instanceName"] . " no existe: conéctela en la pestaña WhatsApp.");
+			throw new \Exception("La instancia de WhatsApp " . $config["instanceName"] . " no existe: conéctela en la pestaña Conexión y envío.");
 		}
 		if ($result["httpCode"] < 200 || $result["httpCode"] >= 300) {
 			throw new \Exception($this->evolutionErrorMessage($result));

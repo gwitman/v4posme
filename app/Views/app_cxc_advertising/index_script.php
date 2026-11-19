@@ -297,7 +297,9 @@
             filters:         { onlyBalance: false, onlyMora: false, categoryID: 0 },
             /* Contactos del teléfono conectado a Evolution (el servidor los vuelve a consultar al enviar) */
             usePhoneContacts:   false,
-            contactos:          { total: 0, muestra: [], cargando: false, cargado: false, error: '' },
+            /* No enviar a teléfonos de clientes con allowWhatsappPromotions = 0 (cruce por teléfono en el servidor) */
+            excludeOptOut:      true,
+            contactos:         { total: 0, muestra: [], cargando: false, cargado: false, error: '' },
             campaignMax:     '',
             testPhone:       '',
 
@@ -492,7 +494,7 @@
                 totalDescartados: function () {
                     if (!this.summary) { return 0; }
                     var s = this.summary;
-                    return pv2Num(s.empty) + pv2Num(s.invalid) + pv2Num(s.duplicate) + pv2Num(s.overLimit);
+                    return pv2Num(s.empty) + pv2Num(s.invalid) + pv2Num(s.duplicate) + pv2Num(s.optOut) + pv2Num(s.overLimit);
                 },
                 motivos: function () {
                     var lista = [];
@@ -684,6 +686,7 @@
                         excelRows:    usarExcel ? this.excelRows : [],
                         useCustomers: this.useCustomers,
                         usePhoneContacts: this.usePhoneContacts,
+                        excludeOptOut: !!this.excludeOptOut,
                         filters: {
                             onlyBalance: !!this.filters.onlyBalance,
                             onlyMora:    !!this.filters.onlyMora,
@@ -1184,6 +1187,9 @@
                         /* Se consulta al abrir la pestaña; si hay QR en pantalla se retoma el sondeo */
                         if (!this.config.whatsapp.configError) { this.consultarWa(false); }
                         if (this.wa.qrBase64 && this.wa.state !== 'open') { this.iniciarSondeoWa(); }
+                        /* La pestaña también muestra el cron job y la campaña en curso: se refrescan al abrirla */
+                        this.consultarCron();
+                        this.consultarCola(false);
                     } else {
                         this.detenerSondeoWa();
                     }
@@ -1388,7 +1394,8 @@
                     if (this.colaSondeo) { return; }
                     var self = this;
                     this.colaSondeo = window.setInterval(function () {
-                        if (self.tab === 'campania') { self.consultarCola(true); }
+                        /* Se sigue consultando en ambas pestañas: el contador también se ve en la pestaña Conexión y envío */
+                        self.consultarCola(true);
                     }, 30000);
                 },
                 detenerSondeoCola: function () {
@@ -1580,6 +1587,7 @@
                         excelOmitido:    false,
                         useCustomers:    this.useCustomers,
                         usePhoneContacts: this.usePhoneContacts,
+                        excludeOptOut:   this.excludeOptOut,
                         filters:         this.filters,
                         campaignMax:     this.campaignMax,
                         testPhone:       this.testPhone,
@@ -1636,6 +1644,7 @@
                     if (this.excelRows.length === 0) { this.excelColumnas = []; }
                     this.useCustomers    = d.useCustomers === undefined ? true : !!d.useCustomers;
                     this.usePhoneContacts = !!d.usePhoneContacts;
+                    this.excludeOptOut    = d.excludeOptOut === undefined ? true : !!d.excludeOptOut;
                     if (d.filters && typeof d.filters === 'object') {
                         this.filters = {
                             onlyBalance: !!d.filters.onlyBalance,

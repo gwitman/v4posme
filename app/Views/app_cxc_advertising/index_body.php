@@ -30,16 +30,20 @@
         <!-- Pestañas -->
         <div class="adv-tabs" role="tablist" aria-label="Secciones">
             <button type="button" class="adv-tab" role="tab" :class="{ 'is-active': tab === 'campania' }" :aria-selected="tab === 'campania'" @click="cambiarTab('campania')">
-                <i class="bi bi-megaphone" aria-hidden="true"></i> Campañas
+                <i class="bi bi-pencil-square" aria-hidden="true"></i> Redacción de la campaña
             </button>
             <button type="button" class="adv-tab" role="tab" :class="{ 'is-active': tab === 'conexion' }" :aria-selected="tab === 'conexion'" @click="cambiarTab('conexion')">
-                <i class="bi bi-phone" aria-hidden="true"></i> Conexión WhatsApp
+                <i class="bi bi-phone" aria-hidden="true"></i> Conexión y envío
+                <span v-if="cola.pending > 0" class="adv-badge is-info" :title="entero(cola.pending) + ' mensajes pendientes'">{{ entero(cola.pending) }}</span>
                 <span class="adv-tab-dot" :class="wa.state === 'open' ? 'is-ok' : (wa.consultado ? 'is-bad' : '')" aria-hidden="true"></span>
             </button>
         </div>
 
-        <!-- (Pestaña) Conexión WhatsApp con Evolution API -->
-        <div v-if="tab === 'conexion'" class="pv2-card adv-wa-conn">
+        <!-- (Pestaña 2) Conexión y envío: QR de WhatsApp, cron job y campaña en curso -->
+        <div v-show="tab === 'conexion'">
+
+        <!-- Conexión WhatsApp con Evolution API -->
+        <div class="pv2-card adv-wa-conn">
             <div class="adv-cron-head">
                 <p class="pv2-card-title"><span class="pv2-ico"><i class="bi bi-whatsapp" aria-hidden="true"></i></span> Conexión WhatsApp (Evolution API)</p>
                 <span class="adv-badge" :class="claseEstadoWa" aria-live="polite">{{ textoEstadoWa }}</span>
@@ -78,14 +82,6 @@
                 </button>
                 <button type="button" class="adv-icon-btn" aria-label="Actualizar estado" title="Actualizar estado" :disabled="waOcupado || !!config.whatsapp.configError" @click="consultarWa(false)"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
             </div>
-        </div>
-
-        <!-- (Pestaña) Campañas -->
-        <div v-show="tab === 'campania'">
-
-        <div v-if="!config.enabled" class="adv-alert is-warn" role="alert">
-            <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
-            <span>Las campañas están deshabilitadas para esta empresa (parámetro CXC_ADVERTISING_ENABLED). Puede preparar y revisar la campaña, pero no enviarla.</span>
         </div>
 
         <!-- Envío automático (cron job): procesa la cola; sin él no se puede enviar -->
@@ -138,6 +134,15 @@
                 </button>
                 <button type="button" class="adv-icon-btn" aria-label="Actualizar mensajes pendientes" title="Actualizar" :disabled="cola.consultando || cola.cancelando" @click="consultarCola(false)"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
             </div>
+        </div>
+        </div>
+
+        <!-- (Pestaña 1) Redacción de la campaña: 4 pasos -->
+        <div v-show="tab === 'campania'">
+
+        <div v-if="!config.enabled" class="adv-alert is-warn" role="alert">
+            <i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i>
+            <span>Las campañas están deshabilitadas para esta empresa (parámetro CXC_ADVERTISING_ENABLED). Puede preparar y revisar la campaña, pero no enviarla.</span>
         </div>
 
         <!-- Pasos -->
@@ -319,7 +324,7 @@
                             </label>
                             <button v-if="usePhoneContacts" type="button" class="btn btn-default adv-btn-soft" :disabled="contactos.cargando" @click="cargarContactos"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i> {{ contactos.cargando ? 'Consultando...' : 'Actualizar' }}</button>
                         </div>
-                        <p class="adv-muted">Contactos del WhatsApp conectado en la pestaña WhatsApp (sin grupos). Solo se conoce su nombre de WhatsApp; las demás variables quedan vacías. Si un teléfono ya viene en el Excel o en clientes, se usa ese registro.</p>
+                        <p class="adv-muted">Contactos del WhatsApp conectado en la pestaña Conexión y envío (sin grupos). Solo se conoce su nombre de WhatsApp; las demás variables quedan vacías. Si un teléfono ya viene en el Excel o en clientes, se usa ese registro.</p>
 
                         <div v-if="usePhoneContacts">
                             <div v-if="contactos.cargando" class="adv-alert is-info"><i class="bi bi-hourglass-split" aria-hidden="true"></i><span>Consultando los contactos del teléfono...</span></div>
@@ -345,6 +350,19 @@
                                 </div>
                             </template>
                         </div>
+                    </div>
+
+                    <!-- Exclusión de clientes que denegaron las promociones (allowWhatsappPromotions = 0) -->
+                    <div class="pv2-card adv-source" :class="{ 'is-on': excludeOptOut }">
+                        <div class="adv-source-head">
+                            <label class="adv-switch">
+                                <input type="checkbox" v-model="excludeOptOut">
+                                <span class="adv-switch-ui" aria-hidden="true"></span>
+                                <span class="adv-source-title"><i class="bi bi-person-x" aria-hidden="true"></i> Excluir clientes que no aceptan promociones</span>
+                            </label>
+                        </div>
+                        <p class="adv-muted">Busca cada teléfono (del Excel, de los contactos o de clientes) en la base de datos y no envía a los clientes que no tienen marcada la casilla «Permite WhatsApp Publicidad». Recomendado: esos clientes pidieron no recibir más mensajes.</p>
+                        <div v-if="!excludeOptOut" class="adv-alert is-warn" role="alert"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i><span>Se enviará también a clientes que pidieron no recibir promociones.</span></div>
                     </div>
 
                     <!-- Alcance y prueba -->
@@ -546,6 +564,7 @@
                             <span class="adv-badge">Sin teléfono: {{ entero(summary.empty) }}</span>
                             <span class="adv-badge">Inválidos: {{ entero(summary.invalid) }}</span>
                             <span class="adv-badge">Duplicados: {{ entero(summary.duplicate) }}</span>
+                            <span class="adv-badge" :class="{ 'is-info': summary.optOut > 0 }">No aceptan promociones: {{ entero(summary.optOut) }}</span>
                             <span class="adv-badge" :class="{ 'is-bad': summary.overLimit > 0 }">Exceden máximo: {{ entero(summary.overLimit) }}</span>
                             <span class="adv-badge">Máximo por campaña: {{ entero(summary.maxMessage) }}</span>
                             <span v-if="Number(summary.notSelected) > 0" class="adv-badge">No seleccionados: {{ entero(summary.notSelected) }}</span>

@@ -37,6 +37,42 @@ class Advertising_Variable_Model extends Model {
     }
 
     /**
+     * Teléfonos de clientes activos que NO aceptan promociones por WhatsApp (allowWhatsappPromotions = 0 o NULL).
+     * Incluye el teléfono del cliente y todos los de tb_entity_phone: la campaña no debe escribir a ninguno,
+     * venga el número del Excel, de los contactos del teléfono o de la base de datos.
+     * @param int $companyID
+     * @return array objetos {telefono} sin normalizar (el controlador los deja en el formato de envío)
+     */
+    function get_phoneOptOutByCompany($companyID){
+        $db  = db_connect();
+        $sql = "";
+        $sql = $sql.sprintf("SELECT ");
+        $sql = $sql.sprintf("  c.phoneNumber AS telefono ");
+        $sql = $sql.sprintf("FROM tb_customer c ");
+        $sql = $sql.sprintf("WHERE c.companyID = %d ", $companyID);
+        $sql = $sql.sprintf("AND c.isActive = 1 ");
+        $sql = $sql.sprintf("AND IFNULL(c.allowWhatsappPromotions + 0, 0) = 0 ");
+        // LENGTH evita comparar texto con literales (mezcla de collations)
+        $sql = $sql.sprintf("AND LENGTH(TRIM(IFNULL(c.phoneNumber, ''))) > 0 ");
+        $listCustomer = $db->query($sql)->getResult();
+
+        // Consulta aparte (no UNION): tb_customer.phoneNumber y tb_entity_phone.number pueden tener collations distintas
+        $sql = "";
+        $sql = $sql.sprintf("SELECT ");
+        $sql = $sql.sprintf("  ep.number AS telefono ");
+        $sql = $sql.sprintf("FROM tb_customer c ");
+        $sql = $sql.sprintf("INNER JOIN tb_entity_phone ep ON ");
+        $sql = $sql.sprintf("  ep.entityID = c.entityID ");
+        $sql = $sql.sprintf("WHERE c.companyID = %d ", $companyID);
+        $sql = $sql.sprintf("AND c.isActive = 1 ");
+        $sql = $sql.sprintf("AND IFNULL(c.allowWhatsappPromotions + 0, 0) = 0 ");
+        $sql = $sql.sprintf("AND LENGTH(TRIM(IFNULL(ep.number, ''))) > 0 ");
+        $listPhone = $db->query($sql)->getResult();
+
+        return array_merge($listCustomer, $listPhone);
+    }
+
+    /**
      * Clientes destinatarios de una campaña con el valor de cada variable del catálogo.
      * Solo clientes con teléfono y que aceptaron promociones por WhatsApp (allowWhatsappPromotions = 1).
      * Las variables con identificadores inválidos o inexistentes en information_schema se descartan y se registran en el log.
@@ -47,9 +83,10 @@ class Advertising_Variable_Model extends Model {
      * @param bool  $onlyMora    solo clientes con mora > 0
      * @param int   $categoryID  categoría del cliente (0 = todas)
      * @param int   $limit       máximo de filas
+     * @param bool  $onlyAllowPromotions true = solo clientes con allowWhatsappPromotions = 1; false = también los que no aceptan
      * @return array objetos {entityID,customerNumber,nombre,telefono,moneda,var_<name>...}
      */
-    function get_rowCustomerByAdvertising($companyID, $variables, $onlyBalance, $onlyMora, $categoryID, $limit){
+    function get_rowCustomerByAdvertising($companyID, $variables, $onlyBalance, $onlyMora, $categoryID, $limit, $onlyAllowPromotions = true){
         $db        = db_connect();
         $limit     = intval($limit) > 0 ? intval($limit) : 1000;
         $regex     = "/^[A-Za-z0-9_]+$/";
@@ -153,7 +190,9 @@ class Advertising_Variable_Model extends Model {
         $sql = $sql.sprintf("WHERE b.companyID = %d ", $companyID);
         // LENGTH evita comparar texto: b.telefono (utf8mb4_bin) vs literal de la conexion (utf8mb3) da "Illegal mix of collations"
         $sql = $sql.sprintf("AND LENGTH(b.telefono) > 0 ");
-        $sql = $sql.sprintf("AND b.allowWhatsappPromotions = 1 ");
+        if ($onlyAllowPromotions) {
+            $sql = $sql.sprintf("AND b.allowWhatsappPromotions = 1 ");
+        }
         if ($onlyBalance) {
             $sql = $sql.sprintf("AND b.saldo > 0 ");
         }
