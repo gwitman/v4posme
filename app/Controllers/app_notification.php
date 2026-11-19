@@ -2525,7 +2525,7 @@ Le recordamos que tiene un saldo pendiente:
 			
 			$rowx 					= array();
 			$rowx["firstName"] 		= $item->firstName;
-			$rowx["phoneNumber"] 	= "50584766457";//getNumberPhone(clearNumero($item->phoneNumber));
+			$rowx["phoneNumber"] 	= getNumberPhone(clearNumero($item->phoneNumber));
 
 			//Cliente sin telefono valido (vacio, "nd", etc.): no se encola
 			if(!ctype_digit((string)$rowx["phoneNumber"]) || strlen($rowx["phoneNumber"]) < 8)
