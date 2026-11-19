@@ -281,6 +281,95 @@ class core_web_rabbitmq
     }
 
     /**
+     * Estado de una cola y de su cola de error, sin crearlas (declaracion pasiva).
+     * pending = mensajes listos para enviar; no cuenta el que el consumidor tiene tomado en ese instante.
+     * @param int    $companyID empresa
+     * @param string $queueName cola
+     * @return array {queue, exists, pending, consumers, errorPending}
+     */
+    function queueStatus($companyID, $queueName)
+    {
+        $connection = $this->getConnection($companyID);
+        $channel    = null;
+        $data       = [
+            "queue"        => $queueName,
+            "exists"       => false,
+            "pending"      => 0,
+            "consumers"    => 0,
+            "errorPending" => 0
+        ];
+
+        try {
+            $channel = $connection->channel();
+            $info    = $this->queueInfo($channel, $queueName);
+            if ($info !== null) {
+                $data["exists"]    = true;
+                $data["pending"]   = $info["messages"];
+                $data["consumers"] = $info["consumers"];
+            } else {
+                //Si la cola no existe el broker cierra el canal: se abre otro para la cola de error
+                $channel = $connection->channel();
+            }
+            $infoError = $this->queueInfo($channel, $queueName . self::SUFFIX_QUEUE_ERROR);
+            if ($infoError !== null) {
+                $data["errorPending"] = $infoError["messages"];
+            }
+        } finally {
+            $this->close($channel, $connection);
+        }
+        return $data;
+    }
+
+    /**
+     * Elimina todos los mensajes pendientes de una cola (la cola se conserva).
+     * El mensaje que el consumidor tenga tomado en ese instante no se elimina.
+     * @param int    $companyID empresa
+     * @param string $queueName cola
+     * @return int cantidad de mensajes eliminados
+     */
+    function purgeQueue($companyID, $queueName)
+    {
+        $connection = $this->getConnection($companyID);
+        $channel    = null;
+        $total      = 0;
+
+        try {
+            $channel = $connection->channel();
+            if ($this->queueInfo($channel, $queueName) === null) {
+                return 0;
+            }
+            $total = (int) $channel->queue_purge($queueName);
+        } finally {
+            $this->close($channel, $connection);
+        }
+
+        log_message("info", "[core_web_rabbitmq] purgeQueue - cola: " . $queueName . " | eliminados: " . $total);
+        return $total;
+    }
+
+    /**
+     * Mensajes y consumidores de una cola con declaracion pasiva (no la crea).
+     * @param \PhpAmqpLib\Channel\AMQPChannel $channel canal abierto
+     * @param string $queueName cola
+     * @return array|null {messages, consumers} o null si la cola no existe (el canal queda cerrado)
+     */
+    function queueInfo($channel, $queueName)
+    {
+        try {
+            $info = $channel->queue_declare($queueName, true);
+        } catch (\PhpAmqpLib\Exception\AMQPProtocolChannelException $ex) {
+            if ((int) $ex->getCode() == 404) {
+                return null;
+            }
+            throw $ex;
+        }
+        return [
+            "messages"  => is_array($info) ? (int) $info[1] : 0,
+            "consumers" => is_array($info) ? (int) $info[2] : 0
+        ];
+    }
+
+    /**
      * Declara una cola durable (no se borra al reiniciar el broker ni al cerrar la conexion).
      * @param \PhpAmqpLib\Channel\AMQPChannel $channel canal abierto
      * @param string $queueName nombre de la cola

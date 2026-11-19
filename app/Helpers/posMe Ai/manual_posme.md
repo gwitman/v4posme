@@ -1117,6 +1117,15 @@ Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > tarjeta **Envío automático (cron job)
 - Si los mensajes de una campaña no salen, presione **Actualizar estado** y confirme que diga Activo; si persiste, avise a soporte.
 Ver también: Campañas de WhatsApp: levantar o dar de baja el envío automático (cron job).
 
+## Campañas de WhatsApp: ver la campaña en curso, mensajes pendientes y cancelarla
+Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > pestaña **Campañas** > tarjeta **Campaña en curso** (debajo de Envío automático).
+1. Al abrir la pantalla y después de enviar una campaña, la tarjeta muestra **En curso** si quedan mensajes por enviar o **Sin pendientes** si la cola está vacía.
+2. Revise **Mensajes pendientes** (los que faltan por enviar), **Tiempo estimado** (unos 15 mensajes por minuto) y **Con error (no se reintentan)** (mensajes que fallaron todos sus intentos).
+3. Mientras haya pendientes la tarjeta se actualiza sola cada 30 segundos; para actualizarla de inmediato presione el botón de flecha circular.
+4. Para detener la campaña presione **Cancelar campaña (eliminar pendientes)** y confirme: se eliminan de la cola todos los mensajes que faltaban por enviar.
+Notas: la cancelación elimina los pendientes de todas las campañas encoladas de la empresa, no solo de la última. Los mensajes ya enviados no se pueden revertir y el pago de Pagadito ya usado no se devuelve. El mensaje que se esté enviando justo en ese momento puede salir igual. Si aparece "Hay mensajes pendientes pero el cron job no está activo", presione **Levantar Cron Job** para que se envíen.
+Ver también: Campañas de WhatsApp: levantar o dar de baja el envío automático (cron job); Campañas de WhatsApp: revisar el resumen y enviar (paso 4).
+
 ## Ver a quién se notificó un mensaje de WhatsApp de un cliente (conversación con cliente)
 Ruta: en la lista de conversaciones (por ejemplo, la pestaña **LISTA DE CONVERSACIONES MIAS**), abra la conversación del cliente y vaya a la pestaña **Chat**.
 <!-- REVISAR: nombre exacto de la opción de menú de conversaciones (CRM / WhatsApp) y cómo se abre la conversación desde la lista -->

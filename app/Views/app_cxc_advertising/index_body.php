@@ -109,6 +109,37 @@
             </div>
         </div>
 
+        <!-- Campaña en curso: mensajes que faltan por enviar en la cola -->
+        <div class="pv2-card adv-cron">
+            <div class="adv-cron-head">
+                <p class="pv2-card-title"><span class="pv2-ico"><i class="bi bi-hourglass-split" aria-hidden="true"></i></span> Campaña en curso</p>
+                <span class="adv-badge" :class="claseEstadoCola" aria-live="polite">{{ textoEstadoCola }}</span>
+            </div>
+            <p class="adv-muted">Mensajes en la cola que aún no se han enviado (de todas las campañas encoladas). Se actualiza solo mientras haya pendientes.</p>
+            <div v-if="cola.error" class="adv-alert is-error" role="alert"><i class="bi bi-x-circle-fill" aria-hidden="true"></i><span>{{ cola.error }}</span></div>
+            <div v-if="cola.consultado && !cola.error" class="pv2-kpis">
+                <div class="pv2-kpi" :class="cola.pending > 0 ? 'k-info' : 'k-ok'">
+                    <div class="pv2-kpi-icon"><i class="bi bi-envelope-paper" aria-hidden="true"></i></div>
+                    <div class="pv2-kpi-body"><span class="pv2-kpi-label">Mensajes pendientes</span><span class="pv2-kpi-value">{{ entero(cola.pending) }}</span></div>
+                </div>
+                <div class="pv2-kpi k-purple">
+                    <div class="pv2-kpi-icon"><i class="bi bi-stopwatch" aria-hidden="true"></i></div>
+                    <div class="pv2-kpi-body"><span class="pv2-kpi-label">Tiempo estimado</span><span class="pv2-kpi-value">{{ entero(cola.estimatedMinutes) }} min</span></div>
+                </div>
+                <div class="pv2-kpi" :class="cola.errorPending > 0 ? 'is-negative' : 'k-info'">
+                    <div class="pv2-kpi-icon"><i class="bi bi-exclamation-octagon" aria-hidden="true"></i></div>
+                    <div class="pv2-kpi-body"><span class="pv2-kpi-label">Con error (no se reintentan)</span><span class="pv2-kpi-value">{{ entero(cola.errorPending) }}</span></div>
+                </div>
+            </div>
+            <div v-if="cola.pending > 0 && !cron.active" class="adv-alert is-warn" role="alert"><i class="bi bi-exclamation-triangle-fill" aria-hidden="true"></i><span>Hay mensajes pendientes pero el cron job no está activo: no se enviarán hasta levantarlo.</span></div>
+            <div class="adv-cron-actions">
+                <button v-if="cola.pending > 0" type="button" class="btn btn-default adv-btn-danger-soft" :disabled="cola.cancelando || cola.consultando || enviando" @click="cancelarCampania">
+                    <i class="bi bi-x-octagon" aria-hidden="true"></i> {{ cola.cancelando ? 'Cancelando...' : 'Cancelar campaña (eliminar pendientes)' }}
+                </button>
+                <button type="button" class="adv-icon-btn" aria-label="Actualizar mensajes pendientes" title="Actualizar" :disabled="cola.consultando || cola.cancelando" @click="consultarCola(false)"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
+            </div>
+        </div>
+
         <!-- Pasos -->
         <nav class="adv-steps" aria-label="Pasos de la campaña">
             <button v-for="item in pasos" :key="item.num" type="button" class="adv-step"

@@ -368,6 +368,17 @@
                     error:        ''
                 };
                 estado.waSondeo           = null;
+                /* Cola de envío (campaña en curso): fuera de estadoInicial() para que nuevaCampania la conserve */
+                estado.cola               = {
+                    pending:          0,
+                    errorPending:     0,
+                    estimatedMinutes: 0,
+                    consultando:      false,
+                    consultado:       false,
+                    cancelando:       false,
+                    error:            ''
+                };
+                estado.colaSondeo         = null;
                 if (!estado.config.wabaConfigured) { estado.plantillaModo = 'manual'; }
                 return estado;
             },
@@ -579,6 +590,16 @@
                 /* Bloquea los botones mientras hay una acción en curso */
                 waOcupado: function () {
                     return this.wa.procesando !== '' || (this.wa.consultando && !this.waSondeo);
+                },
+                /* Estado de la cola para el distintivo de Campaña en curso */
+                textoEstadoCola: function () {
+                    if (this.cola.consultando && !this.cola.consultado) { return 'Consultando...'; }
+                    if (!this.cola.consultado || this.cola.error)       { return 'Sin consultar'; }
+                    return this.cola.pending > 0 ? 'En curso' : 'Sin pendientes';
+                },
+                claseEstadoCola: function () {
+                    if (!this.cola.consultado || this.cola.error) { return 'is-info'; }
+                    return this.cola.pending > 0 ? 'is-info' : 'is-ok';
                 },
                 textoEstadoCron: function () {
                     if (this.cronConsultando) { return 'Consultando...'; }
@@ -1144,6 +1165,7 @@
                         testMode:    this.modoPrueba
                     };
                     notificar(json.message || 'Campaña enviada a la cola.', 'success');
+                    this.consultarCola(true);
                     this.irArriba();
                 },
                 nuevaCampania: function () {
@@ -1332,6 +1354,74 @@
                     this.waSondeo = null;
                 },
                 /* ---------------- Cron job (envío automático) ---------------- */
+                /* ---------------- Campaña en curso (cola de envío) ---------------- */
+                /**
+                 * Consulta los mensajes pendientes de la cola. Mientras haya pendientes se vuelve a consultar cada 30 s.
+                 * @param {boolean} silencioso true = llamada del sondeo (no muestra errores en pantalla)
+                 */
+                consultarCola: async function (silencioso) {
+                    if (this.cola.consultando) { return; }
+                    this.cola.consultando = true;
+                    if (!silencioso) { this.cola.error = ''; }
+                    var json = await llamar('campaignQueueStatus', {});
+                    this.cola.consultando = false;
+                    /* Error */
+                    if (json.error === true) {
+                        if (!silencioso) { this.cola.error = json.message; }
+                        this.cola.consultado = true;
+                        this.detenerSondeoCola();
+                        return;
+                    }
+                    /* Sin datos / con datos: la cola sin mensajes (o inexistente) vale 0 */
+                    this.cola.error            = '';
+                    this.cola.consultado       = true;
+                    this.cola.pending          = pv2Num(json.pending);
+                    this.cola.errorPending     = pv2Num(json.errorPending);
+                    this.cola.estimatedMinutes = pv2Num(json.estimatedMinutes);
+                    if (this.cola.pending > 0) {
+                        this.iniciarSondeoCola();
+                    } else {
+                        this.detenerSondeoCola();
+                    }
+                },
+                iniciarSondeoCola: function () {
+                    if (this.colaSondeo) { return; }
+                    var self = this;
+                    this.colaSondeo = window.setInterval(function () {
+                        if (self.tab === 'campania') { self.consultarCola(true); }
+                    }, 30000);
+                },
+                detenerSondeoCola: function () {
+                    if (!this.colaSondeo) { return; }
+                    window.clearInterval(this.colaSondeo);
+                    this.colaSondeo = null;
+                },
+                cancelarCampania: function () {
+                    if (this.cola.cancelando || this.cola.pending < 1) { return; }
+                    var self = this;
+                    fnShowConfirm(
+                        'Cancelar campaña',
+                        'Se eliminarán de la cola los ' + this.entero(this.cola.pending) + ' mensajes que faltan por enviar (de todas las campañas encoladas). Los mensajes ya enviados no se pueden revertir y el pago usado no se devuelve. ¿Desea continuar?',
+                        function () { self.ejecutarCancelarCampania(); }
+                    );
+                },
+                ejecutarCancelarCampania: async function () {
+                    if (this.cola.cancelando) { return; }
+                    this.cola.cancelando = true;
+                    this.cola.error      = '';
+                    var json = await llamar('campaignQueueCancel', { confirm: true });
+                    this.cola.cancelando = false;
+                    /* Error */
+                    if (json.error === true) {
+                        this.cola.error = json.message;
+                        notificar(json.message, 'error');
+                        return;
+                    }
+                    /* Sin datos / con datos: se refresca el conteo real de la cola */
+                    notificar(json.message || 'Campaña cancelada.', pv2Num(json.deleted) > 0 ? 'success' : 'info');
+                    this.consultarCola(false);
+                },
+
                 /* Copia el estado devuelto por cronJobStatus/Create/Delete; apiKeyConfigured solo viene en objConfig */
                 aplicarEstadoCron: function (json) {
                     var datos           = normalizarCron(json);
@@ -1599,6 +1689,7 @@
                 this.horaActual = dosDigitos(ahora.getHours()) + ':' + dosDigitos(ahora.getMinutes());
                 document.getElementById('app').style.visibility = 'visible';
                 pv2BindMobileBar();
+                this.consultarCola(true);
                 if (this.restaurarBorrador()) { this.reanudarTrasPago(); }
             }
         }).mount('#app');

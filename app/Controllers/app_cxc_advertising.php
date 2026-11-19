@@ -644,6 +644,59 @@ class app_cxc_advertising extends _BaseController
     }
 
     /**
+     * Campana en curso: mensajes pendientes en la cola de WhatsApp masivo de la empresa.
+     * La cola no distingue campanas: pending es la suma de todo lo encolado que falta enviar.
+     * @return mixed JSON {error, message, queue, exists, pending, consumers, errorPending, inProgress, estimatedMinutes}
+     */
+    function campaignQueueStatus()
+    {
+        try {
+            $dataSession = $this->authorizeAccess();
+            $companyID   = $dataSession["user"]->companyID;
+            $queueName   = $this->core_web_rabbitmq->getQueueWhatsapp($companyID);
+            $status      = $this->core_web_rabbitmq->queueStatus($companyID, $queueName);
+
+            $status["inProgress"]       = $status["pending"] > 0;
+            $status["estimatedMinutes"] = (int) ceil($status["pending"] / self::MESSAGES_PER_MIN);
+            return $this->response->setJSON(array_merge(["error" => false, "message" => SUCCESS], $status));
+        } catch (\Throwable $ex) {
+            return $this->responseError($ex);
+        }
+    }
+
+    /**
+     * Cancela la campana en curso: elimina de la cola todos los mensajes que faltan por enviar.
+     * Los ya enviados no se revierten y el pago Pagadito consumido no se devuelve.
+     * Cuerpo JSON: {confirm: true}
+     * @return mixed JSON {error, message, deleted, pending}
+     */
+    function campaignQueueCancel()
+    {
+        try {
+            $dataSession = $this->authorizeAccess();
+            $companyID   = $dataSession["user"]->companyID;
+            $input       = $this->getInput();
+            if (empty($input["confirm"])) {
+                throw new \Exception("Debe confirmar la cancelación de la campaña.");
+            }
+
+            $queueName = $this->core_web_rabbitmq->getQueueWhatsapp($companyID);
+            $deleted   = $this->core_web_rabbitmq->purgeQueue($companyID, $queueName);
+            $status    = $this->core_web_rabbitmq->queueStatus($companyID, $queueName);
+            log_message("info", "[app_cxc_advertising::campaignQueueCancel] companyID: " . $companyID . " | userID: " . $dataSession["user"]->userID . " | cola: " . $queueName . " | eliminados: " . $deleted);
+
+            return $this->response->setJSON([
+                "error"   => false,
+                "message" => $deleted > 0 ? "Campaña cancelada: se eliminaron " . $deleted . " mensajes pendientes." : "No había mensajes pendientes en la cola.",
+                "deleted" => $deleted,
+                "pending" => $status["pending"]
+            ]);
+        } catch (\Throwable $ex) {
+            return $this->responseError($ex);
+        }
+    }
+
+    /**
      * Contactos del telefono conectado a Evolution API: total y una muestra para la pantalla.
      * El envio vuelve a consultarlos en buildMessages (nunca se toman del navegador).
      * @return mixed JSON {error, message, instanceName, total, sample}
