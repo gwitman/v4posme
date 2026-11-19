@@ -1013,7 +1013,8 @@ class app_cxc_advertising extends _BaseController
         //Telefono de prueba: la campana se envia una sola vez a este numero
         $testPhone = preg_replace('/\D/', '', $this->toText($input["testPhone"] ?? ""));
         if ($testPhone != "") {
-            $testPhone = preg_replace('/\D/', '', getNumberPhone(clearNumero($testPhone)));
+            //Ya viene solo con digitos; el 505 se agrega despues de limpiar
+            $testPhone = getNumberPhone($testPhone);
             if (strlen($testPhone) < 11 || strlen($testPhone) > 15) {
                 throw new \Exception("El teléfono de prueba no es válido (debe tener entre 11 y 15 dígitos con el código de país).");
             }
@@ -1139,7 +1140,9 @@ class app_cxc_advertising extends _BaseController
         //1. Depuracion: vacios, invalidos y duplicados (se guarda el candidato crudo; se renderiza al final)
         foreach ($candidates as $candidate) {
             $rawPhone = trim($candidate["telefono"]);
-            $phone    = preg_replace('/\D/', '', getNumberPhone(clearNumero($rawPhone)));
+            //Primero se deja solo digitos (quita letras, acentos, puntos, barras...) y despues se agrega el 505
+            //a los de 8 digitos; al reves, "8888.7777" o "Cel 88887777" quedaban sin 505 y se descartaban
+            $phone    = getNumberPhone(preg_replace('/\D/', '', $rawPhone));
             $reason   = "";
 
             if ($rawPhone == "") {
