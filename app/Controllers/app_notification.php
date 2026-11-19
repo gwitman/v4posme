@@ -2525,7 +2525,7 @@ Le recordamos que tiene un saldo pendiente:
 			
 			$rowx 					= array();
 			$rowx["firstName"] 		= $item->firstName;
-			$rowx["phoneNumber"] 	= "84766457";//getNumberPhone(clearNumero($item->phoneNumber));
+			$rowx["phoneNumber"] 	= "50584766457";//getNumberPhone(clearNumero($item->phoneNumber));
 
 			//Cliente sin telefono valido (vacio, "nd", etc.): no se encola
 			if(!ctype_digit((string)$rowx["phoneNumber"]) || strlen($rowx["phoneNumber"]) < 8)
@@ -2550,6 +2550,7 @@ Le recordamos que tiene un saldo pendiente:
 			$rowx["mensaje"] 		= implode("\n", $lineas);
 
 			$rowx["urlImage"] 		= "";
+			$rowx["provider"] 		= "evolution"; //Mensajes masivos de la cola: siempre por Evolution
 			$rowx["origen"] 		= "sendWhatsappDiarioMasiveWapi2CobranzaNjGym";
 			$chatSend[]				= $rowx;
 		}
@@ -2595,8 +2596,9 @@ Le recordamos que tiene un saldo pendiente:
 	 * Pensado para un cron cada minuto: procesa un lote acotado y termina antes del siguiente disparo.
 	 * Cada mensaje trae phoneNumber, mensaje y urlImage (opcional). El campo provider decide el envio:
 	 *  - ""        : proveedor configurado para la empresa (sendMessageGeneric segun tb_company.type)
-	 *  - "meta"    : con templateName usa la plantilla (languageCode, bodyParams, headerImage);
-	 *                sin templateName envia imagen o texto libre por Meta Cloud API
+	 *  - "meta"    : sin templateName envia imagen o texto libre por Meta Cloud API
+	 *  - Con templateName siempre se usa la plantilla de Meta (languageCode, bodyParams, headerImage),
+	 *    sin importar el provider (app_notification encola sus masivos como evolution)
 	 *  - "evolution": imagen o texto por Evolution API (instancia EvolutionApi)
 	 * La instancia de Evolution la resuelve core_web_whatsap (evolutionResolveSendInstance): la que empieza con
 	 * <tb_company.type>_ si existe, si no la del parametro WHATSAP_URL_REQUEST_SESSION; cacheada en archivo.
@@ -2641,7 +2643,10 @@ Le recordamos que tiene un saldo pendiente:
 					$urlImage		= trim((string)($payload["urlImage"] ?? ""));
 					$provider		= strtolower(trim((string)($payload["provider"] ?? "")));
 					$templateName	= trim((string)($payload["templateName"] ?? ""));
-					$esPlantilla	= $provider == "meta" && $templateName != "";
+					//Solo las plantillas aprobadas van por Meta: con templateName se fuerza el proveedor meta
+					//(app_notification encola todo como evolution; la plantilla no tiene texto para Evolution)
+					$esPlantilla	= $templateName != "";
+					$provider		= $esPlantilla ? "meta" : $provider;
 
 					//Telefono invalido (vacio, "nd", etc.) o sin texto: no se reintenta, va a la cola de error.
 					//Sin telefono la libreria de WhatsApp enviaria al numero del comercio.
@@ -2772,7 +2777,7 @@ Le recordamos que tiene un saldo pendiente:
 			//{{1}} = nombre, {{2}} = codigo de cliente (mismo orden que la plantilla)
 			$rowx["mensaje"]		= "";
 			$rowx["urlImage"]		= "";
-			$rowx["provider"]		= "meta";
+			$rowx["provider"]		= "evolution"; //Masivo de la cola; procesarColaWhatsappMasivo lo envia por Meta al traer templateName
 			$rowx["templateName"]	= $templateName;
 			$rowx["languageCode"]	= $languageCode;
 			$rowx["bodyParams"]		= [
@@ -3140,13 +3145,13 @@ Le recordamos que tiene un saldo pendiente:
 					
 					// También lo dejas en log si lo necesitas
 					log_message("info", "Cita de: $cliente programada para: $fecha $hora");
-					//Mensaje al cliente: se encola en RabbitMQ (proveedor de la empresa)
+					//Mensaje al cliente: se encola en RabbitMQ (masivo: siempre por Evolution)
 					$chatSend[] = [
 						"firstName"		=> $cliente,
 						"phoneNumber"	=> getNumberPhone(clearNumero($phone)),
 						"mensaje"		=> $row,
 						"urlImage"		=> "",
-						"provider"		=> "",
+						"provider"		=> "evolution",
 						"origen"		=> "sendWhatsapp_ChicExtensiones_Citas"
 					];
 				}
@@ -3163,13 +3168,13 @@ Le recordamos que tiene un saldo pendiente:
 				echo "</br>";
 				echo "</br>";
 				echo "Sucursal:--".$tabla;
-				//Mensaje al colaborador con el listado: se encola en RabbitMQ (proveedor de la empresa)
+				//Mensaje al colaborador con el listado: se encola en RabbitMQ (masivo: siempre por Evolution)
 				$chatSend[] = [
 					"firstName"		=> "",
 					"phoneNumber"	=> getNumberPhone(clearNumero($phoneEmployer)),
 					"mensaje"		=> $tabla,
 					"urlImage"		=> "",
-					"provider"		=> "",
+					"provider"		=> "evolution",
 					"origen"		=> "sendWhatsapp_ChicExtensiones_Citas"
 				];
 			}
