@@ -1403,19 +1403,23 @@
                 verificarPago: async function () {
                     if (this.verificandoPago) { return; }
                     this.verificandoPago = true;
-                    var json = await llamar('paymentCheck', {});
-                    this.verificandoPago = false;
+                    try {
+                        var json = await llamar('paymentCheck', {});
 
-                    if (json.error === true) {
-                        notificar(json.message, 'error');
-                        return;
+                        if (json.error === true) {
+                            notificar(json.message, 'error');
+                            return;
+                        }
+                        if (aBooleano(json.completed)) {
+                            notificar(json.message || 'Pago aprobado.', 'success');
+                        } else {
+                            notificar(json.message || 'Aún no hay un pago aprobado para esta campaña.', 'warning');
+                        }
+                        /* El resumen se recalcula con verificandoPago activo para que el aviso diga "Verificando pago..." */
+                        await this.previsualizar();
+                    } finally {
+                        this.verificandoPago = false;
                     }
-                    if (aBooleano(json.completed)) {
-                        notificar(json.message || 'Pago aprobado.', 'success');
-                    } else {
-                        notificar(json.message || 'Aún no hay un pago aprobado para esta campaña.', 'warning');
-                    }
-                    this.previsualizar();
                 },
 
                 /* ---------------- Borrador local ---------------- */
@@ -1533,9 +1537,14 @@
                 },
                 /* Al volver de Pagadito: confirma el pago en el servidor y recalcula el resumen */
                 reanudarTrasPago: async function () {
-                    var json = await llamar('paymentCheck', {});
-                    if (json.error === true) { console.warn(json.message); }
-                    if (this.paso === 4) { this.previsualizar(); }
+                    this.verificandoPago = true;
+                    try {
+                        var json = await llamar('paymentCheck', {});
+                        if (json.error === true) { console.warn(json.message); }
+                        if (this.paso === 4) { await this.previsualizar(); }
+                    } finally {
+                        this.verificandoPago = false;
+                    }
                 }
             },
             mounted: function () {

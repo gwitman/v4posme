@@ -75,12 +75,13 @@ class core_web_payment
      */
     function getTransactionPagaditoID($companyID)
     {
+        //La transaccion se resuelve por el componente (tb_component + tb_company_component_flavor), igual que las demas pantallas
         $core_web_transaction = new core_web_transaction();
-        $objTransaction       = $core_web_transaction->getTransaction($companyID, self::TRANSACTION_PAGADITO);
-        if (!$objTransaction) {
-            throw new \Exception("No existe el tipo de transacción '" . self::TRANSACTION_PAGADITO . "' para la empresa " . $companyID . ".");
+        $transactionID        = $core_web_transaction->getTransactionID($companyID, self::TRANSACTION_PAGADITO, 0);
+        if (!$transactionID) {
+            throw new \Exception("No existe la transacción del componente '" . self::TRANSACTION_PAGADITO . "' para la empresa " . $companyID . ".");
         }
-        return (int) $objTransaction->transactionID;
+        return (int) $transactionID;
     }
 
     /**

@@ -434,7 +434,7 @@
 
                 <!-- (4) Resumen y envío -->
                 <div v-show="paso === 4">
-                    <div v-if="previsualizando" class="pv2-card adv-loading" aria-live="polite"><span class="adv-spinner" aria-hidden="true"></span> Calculando destinatarios y mensajes...</div>
+                    <div v-if="previsualizando" class="pv2-card adv-loading" aria-live="polite"><span class="adv-spinner" aria-hidden="true"></span> {{ verificandoPago ? 'Verificando pago...' : 'Calculando destinatarios y mensajes...' }}</div>
                     <div v-if="errorPreview" class="adv-alert is-error" role="alert">
                         <i class="bi bi-x-circle-fill" aria-hidden="true"></i>
                         <span>{{ errorPreview }}</span>

@@ -1081,7 +1081,7 @@ Las campañas de hasta 10 mensajes (o lo que indique la configuración de su emp
 1. Presione **Pagar USD ...** (en el teléfono, **Pagar**) y acepte en **Confirmar pago**. Será redirigido a Pagadito.
 2. Pague en Pagadito. Al volver, el sistema confirma el pago, informa el NAP (número de aprobación) y aparece **Pago aprobado disponible**.
 3. Presione **Enviar campaña**.
-4. Si al volver de Pagadito no se reflejó el pago, presione **Verificar pago**: consulta en Pagadito los pagos pendientes de los últimos 7 días.
+4. Si al volver de Pagadito no se reflejó el pago, presione **Verificar pago**: consulta en Pagadito los pagos pendientes de los últimos 7 días. Mientras tanto la pantalla muestra "Verificando pago..." y al terminar recalcula el resumen.
 Notas:
 - El borrador de la campaña se conserva al ir y volver de Pagadito.
 - El pago cubre una campaña de esa cantidad de mensajes (o menos), del mismo proveedor, y se usa una sola vez.

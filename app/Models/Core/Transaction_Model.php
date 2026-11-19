@@ -12,7 +12,7 @@ class Transaction_Model extends Model  {
    function get_rowByPK($companyID,$name){
 		$db 	= db_connect();    
 		$sql = "";
-		$sql = sprintf("select companyID,transactionID,name,description,workflowID,accountID,isCountable,reference1,reference2,reference3,generateTransactionNumber,decimalPlaces,isActive,classID,journalTypeID");
+		$sql = sprintf("select companyID,transactionID,name,description,workflowID,isCountable,reference1,reference2,reference3,generateTransactionNumber,decimalPlaces,isActive,journalTypeID");
 		$sql = $sql.sprintf(" from tb_transaction");
 		$sql = $sql.sprintf(" where companyID = $companyID");
 		$sql = $sql.sprintf(" and name = '$name' ");
