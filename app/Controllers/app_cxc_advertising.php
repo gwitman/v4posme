@@ -364,9 +364,10 @@ class app_cxc_advertising extends _BaseController
             if ($statusID < 1) {
                 throw new \Exception("No hay un estado inicial del workflow de '" . \App\Libraries\core_web_payment::TRANSACTION_PAGADITO . "' disponible para su rol.");
             }
-            $objComponent = $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master");
+            //Igual que las demas pantallas: el componentID es el componente propio de la transaccion
+            $objComponent = $this->core_web_tools->getComponentIDBy_ComponentName(\App\Libraries\core_web_payment::TRANSACTION_PAGADITO);
             if (!$objComponent) {
-                throw new \Exception("EL COMPONENTE 'tb_transaction_master' NO EXISTE...");
+                throw new \Exception("EL COMPONENTE '" . \App\Libraries\core_web_payment::TRANSACTION_PAGADITO . "' NO EXISTE...");
             }
 
             $quantity = (int) $summary["valid"];
