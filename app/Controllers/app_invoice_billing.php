@@ -8757,6 +8757,8 @@ class app_invoice_billing extends _BaseController {
 					"itemNumber"							=>$detail_->itemNumber,
 					"itemBarCode"							=>$detail_->barCode,
 					"itemName"								=>$detail_->itemName. " ". strtolower($detail_->skuFormatoDescription),
+					"itemCategoryName"						=>is_null($detail_->categoryName) ? "" : $detail_->categoryName,
+					"itemReference3"						=>is_null($detail_->itemReference3) ? "" : $detail_->itemReference3,
 					"itemNameQuantity"						=>sprintf("%01.2f",round($detail_->quantity,2)),
 					"itemNamePrice"							=>sprintf("%01.2f",round($detail_->unitaryPrice,2)),
 					"itemNameAmount"						=>sprintf("%01.2f",round($detail_->amount,2)),

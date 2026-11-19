@@ -496,6 +496,7 @@ class Transaction_Master_Detail_Model extends Model  {
 							td.skuQuantityBySku,
 							td.skuFormatoDescription,
 							ic.name as categoryName,
+							i.reference3 as itemReference3,
 							REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(replace(td.itemNameLog,'\"',''), '\r\n', ''), '\n\r', ''),'\n', ''),'\t','') , '?', '')  
 								as itemNameLog,
 							td.amountCommision,
