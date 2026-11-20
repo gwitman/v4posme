@@ -139,6 +139,7 @@
                     continue;
                 }
                 if (enlaces[i].offsetParent !== null) {
+                    mostrarCargando();
                     window.location.href = enlaces[i].href;
                     return;
                 }
@@ -245,11 +246,54 @@
         } catch (e) { /* navegadores antiguos */ }
     }
 
+    /**
+     * Muestra la pantalla de espera (fnWaitOpen de genyx-fn.js) mientras navega.
+     */
+    function mostrarCargando() {
+        if (typeof window.fnWaitOpen === 'function') {
+            window.fnWaitOpen();
+        }
+    }
+
+    /**
+     * Al hacer clic en una opción del menú con dirección real, muestra la pantalla
+     * de espera. Se omiten los padres de submenú, los enlaces que abren otra
+     * pestaña y los clics con Ctrl/Shift/Cmd o botón central.
+     * @param {HTMLElement} sidebar Elemento #sidebar
+     */
+    function activarCargandoAlNavegar(sidebar) {
+        sidebar.addEventListener('click', function (ev) {
+            var a = ev.target.closest('#mainnav a[href]');
+            if (!a || ev.defaultPrevented || ev.button !== 0) {
+                return;
+            }
+            if (ev.ctrlKey || ev.shiftKey || ev.metaKey || ev.altKey) {
+                return;
+            }
+            var href = a.getAttribute('href') || '';
+            if (href === '' || href.charAt(0) === '#' || href.indexOf('javascript') === 0) {
+                return;
+            }
+            if (a.target && a.target !== '_self') {
+                return;
+            }
+            mostrarCargando();
+        });
+
+        // Si el navegador restaura la página desde caché (Atrás), quitar la espera
+        window.addEventListener('pageshow', function (ev) {
+            if (ev.persisted && typeof window.fnWaitClose === 'function') {
+                window.fnWaitClose();
+            }
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', function () {
         var sidebar = document.getElementById('sidebar');
         if (!sidebar) {
             return;
         }
+        activarCargandoAlNavegar(sidebar);
         // Se espera a que genyxAdmin agregue sus clases (hasSub, notExpand)
         setTimeout(function () { marcarActual(sidebar); }, 0);
         crearBuscador(sidebar);

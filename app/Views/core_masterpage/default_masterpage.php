@@ -115,7 +115,7 @@
 	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-topbar.css?v=5" rel="stylesheet" />
 	<!-- Menu lateral moderno / responsive (#sidebar) + buscador. Al final para ganar a app_css.php y genyx-app.css -->
 	<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-menu-left.css?v=3" rel="stylesheet" />
-	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme-menu-left.js?v=2"></script>
+	<script src="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/js/posme-menu-left.js?v=3"></script>
 
 
 </head>
