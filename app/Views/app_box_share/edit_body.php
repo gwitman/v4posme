@@ -315,21 +315,38 @@
 		<a href="#" class="btn btn-primary" id="btnAceptMobile"><i class="icon16 i-checkmark-4"></i> Guardar</a>
 	</div>
 
-	<div class="modal fade" tabindex="-1" id="modalDialogPrinterV2" role="dialog">
+	<!-- ventana imprimir documento (estilo en core_template/posme_v2_print_dialog) -->
+	<?php echo view('core_template/posme_v2_print_dialog'); ?>
+	<div class="modal fade pv2pd-modal" tabindex="-1" id="modalDialogPrinterV2" role="dialog">
 	  <div class="modal-dialog" role="document">
-		<div class="modal-content">
-		  <div class="modal-header">
-			<button type="button" class="close" data-dismiss="modal" aria-label="Cerrar"><span aria-hidden="true">&times;</span></button>
-			<h4 class="modal-title">Imprimir documento</h4>
+		<div class="modal-content pv2pd">
+		  <div class="pv2pd-head">
+			<div class="pv2pd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></div>
+			<div class="pv2pd-head-text">
+				<p class="pv2pd-title">Imprimir documento</p>
+				<p class="pv2pd-sub">Elige el formato de impresion</p>
+			</div>
+			<button type="button" class="pv2pd-x" data-dismiss="modal" aria-label="Cerrar">&times;</button>
 		  </div>
-		  <div class="modal-body">
-			<p style="margin:0">Elige el formato de impresion.</p>
+		  <div class="pv2pd-body">
+			<a href="#" class="pv2pd-opt hidden" id="btnPrinterIndividual">
+				<span class="pv2pd-opt-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg></span>
+				<span class="pv2pd-opt-text">Individual</span>
+				<span class="pv2pd-opt-arrow">&rsaquo;</span>
+			</a>
+			<a href="#" class="pv2pd-opt" id="btnPrinterGeneral">
+				<span class="pv2pd-opt-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span>
+				<span class="pv2pd-opt-text">General</span>
+				<span class="pv2pd-opt-arrow">&rsaquo;</span>
+			</a>
+			<a href="#" class="pv2pd-opt" id="btnPrinterBasico">
+				<span class="pv2pd-opt-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="9" y1="7" x2="15" y2="7"/><line x1="9" y1="11" x2="15" y2="11"/></svg></span>
+				<span class="pv2pd-opt-text">Basico</span>
+				<span class="pv2pd-opt-arrow">&rsaquo;</span>
+			</a>
 		  </div>
-		  <div class="modal-footer">
-			<button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
-			<a href="#" class="btn btn-primary hidden" id="btnPrinterIndividual">Individual</a>
-			<a href="#" class="btn btn-primary" id="btnPrinterGeneral">General</a>
-			<a href="#" class="btn btn-primary" id="btnPrinterBasico">Basico</a>
+		  <div class="pv2pd-foot">
+			<button type="button" class="pv2pd-btn" data-dismiss="modal">Cerrar</button>
 		  </div>
 		</div>
 	  </div>

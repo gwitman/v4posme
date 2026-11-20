@@ -328,8 +328,18 @@
 	</form>
 	<!-- formulario -->
 
+	<!-- ventana imprimir documento (estilo en core_template/posme_v2_print_dialog; los botones los pone edit_script) -->
+	<?php echo view('core_template/posme_v2_print_dialog'); ?>
 	<div id="modalDialogOpenPrimter" title="Formato de Impresion" class="dialog">
-		<p>Seleccione el formato que desea imprimir la factura</p>
+		<div class="pv2pd">
+			<div class="pv2pd-head">
+				<div class="pv2pd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></div>
+				<div class="pv2pd-head-text">
+					<p class="pv2pd-title">Imprimir documento</p>
+					<p class="pv2pd-sub">Seleccione el formato que desea imprimir la factura</p>
+				</div>
+			</div>
+		</div>
 	</div>
 
 	<!-- Importacion CSV: aviso de codigos repetidos -->

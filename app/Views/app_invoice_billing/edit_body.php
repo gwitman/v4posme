@@ -1486,18 +1486,27 @@ echo helper_getHtmlOfPageLanding();
 			<!-- /body -->
 			
 			
+			<!-- ventana opciones de impresion (estilo en core_template/posme_v2_print_dialog) -->
+			<?php echo view('core_template/posme_v2_print_dialog'); ?>
 			<div id="modalDialogHtmlPrinterV2" style="display:none">
-				<h3>Opciones de impresion</h3>
-				</br>
-				<button type="button" class="btn btn-flat btn-block btnCerrarModalOpcionesImpresion " data-dismiss="modal" id="btnCloseModalOpcionesImpresion" >Cerrar</button>
-				</br>
-				<a href="javascript:void(0);" class="btn hidden btn-flat btn-block btnAceptarModalOpcionesImpresion" id="btnAceptarDialogPrinterV2AceptarTabla">Tabla</a>
-				</br>
-				<a href="javascript:void(0);" class="btn btn-flat btn-block btnAceptarModalOpcionesImpresion" id="btnAceptarDialogPrinterV2AceptarDocument">Preview</a>
-				</br>
-				<a href="javascript:void(0);" class="btn btn-flat btn-block btnAceptarModalOpcionesImpresion <?php echo getBehavio($company->type,"app_invoice_billing","divOpcionViewA4","hidden"); ?> " id="btnAceptarDialogPrinterV2AceptarDocumentA4">Preview A4</a>
-				</br>
-				<a href="javascript:void(0);" class="btn hidden btn-flat btn-block btnAceptarModalOpcionesImpresion" id="btnAceptarDialogPrinterV2AceptarDirect">Directa</a>
+				<div class="pv2pd">
+					<div class="pv2pd-head">
+						<div class="pv2pd-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg></div>
+						<div class="pv2pd-head-text">
+							<p class="pv2pd-title">Opciones de impresion</p>
+							<p class="pv2pd-sub">Elige el formato de impresion</p>
+						</div>
+					</div>
+					<div class="pv2pd-body">
+						<a href="javascript:void(0);" class="pv2pd-opt hidden btnAceptarModalOpcionesImpresion" id="btnAceptarDialogPrinterV2AceptarTabla"><span class="pv2pd-opt-text">Tabla</span><span class="pv2pd-opt-arrow">&rsaquo;</span></a>
+						<a href="javascript:void(0);" class="pv2pd-opt btnAceptarModalOpcionesImpresion" id="btnAceptarDialogPrinterV2AceptarDocument"><span class="pv2pd-opt-text">Preview</span><span class="pv2pd-opt-arrow">&rsaquo;</span></a>
+						<a href="javascript:void(0);" class="pv2pd-opt btnAceptarModalOpcionesImpresion <?php echo getBehavio($company->type,"app_invoice_billing","divOpcionViewA4","hidden"); ?> " id="btnAceptarDialogPrinterV2AceptarDocumentA4"><span class="pv2pd-opt-text">Preview A4</span><span class="pv2pd-opt-arrow">&rsaquo;</span></a>
+						<a href="javascript:void(0);" class="pv2pd-opt hidden btnAceptarModalOpcionesImpresion" id="btnAceptarDialogPrinterV2AceptarDirect"><span class="pv2pd-opt-text">Directa</span><span class="pv2pd-opt-arrow">&rsaquo;</span></a>
+					</div>
+					<div class="pv2pd-foot">
+						<button type="button" class="pv2pd-btn btnCerrarModalOpcionesImpresion" data-dismiss="modal" id="btnCloseModalOpcionesImpresion">Cerrar</button>
+					</div>
+				</div>
 			</div>
 			<?php
 				helper_getHtmlOfModalDialog("ModalOpcionesImpresion","modalDialogHtmlPrinterV2","fnAceptarModalDialogHtmlPrinterV2",false);

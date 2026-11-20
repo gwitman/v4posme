@@ -8,7 +8,7 @@
 	var objWindowSearchProduct;								
 	var objListaProductos2											= {};
 	var objListaProductos3											= {};
-	var objectParameterButtoms 										= {};
+	var objectParameterButtoms 										= [];
 	var objParameterUrlPrinter										= '<?php echo $objParameterUrlPrinter; ?>';
 	var objParameterUrlPrinterCode  								= '<?php echo $objParameterMasive; ?>';
 	var varUseMobile												= '<?php echo $useMobile; ?>';
@@ -250,29 +250,35 @@
 		onCompletePantalla();	
 		fnUpdateDetail();
 		
-		if(objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES == "true"){		
-			objectParameterButtoms.Imprmir_Cantidades=function(){
+		//Botones de la ventana de impresion (estilo pv2pd: Cerrar, formatos y el principal al final)
+		objectParameterButtoms.push({ text : "Cerrar", click : function(){
+			$(this).dialog("close");
+		}});
+
+		if(objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES == "true"){
+			objectParameterButtoms.push({ text : "Imprimir cantidades", click : function(){
 				fnWaitOpen();
 				window.open("<?php echo base_url(); ?>/"+objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY +"/companyID/<?php echo $objTM->companyID;?>/transactionID/<?php echo $objTM->transactionID;?>/transactionMasterID/<?php echo $objTM->transactionMasterID;?>","_blank");
 				fnWaitClose();
 				$(this).dialog("close");
-			};		
+			}});
 		}
-		
-		objectParameterButtoms.Imprimir=function(){
-			fnWaitOpen();							
+
+		objectParameterButtoms.push({ text : "Imprimir", "class" : "pv2pd-btn-primary", click : function(){
+			fnWaitOpen();
 			window.open("<?php echo base_url(); ?>/"+objParameterUrlPrinter+"/companyID/<?php echo $objTM->companyID;?>/transactionID/<?php echo $objTM->transactionID;?>/transactionMasterID/<?php echo $objTM->transactionMasterID;?>","_blank");
 			fnWaitClose();
 			$(this).dialog("close");
-		};		
-		
-		
+		}});
+
+
 		$("#modalDialogOpenPrimter").dialog({
-				autoOpen: false,
-				modal: true,
-				width:520,
-				dialogClass: "dialog",
-				buttons: objectParameterButtoms
+				autoOpen	: false,
+				modal		: true,
+				width		: Math.min(480, $(window).width() - 32),
+				dialogClass	: "dialog pv2pd-dialog",
+				open		: function(){ $(".ui-widget-overlay").last().addClass("pv2pd-overlay"); },
+				buttons		: objectParameterButtoms
 		});
 		
 		

@@ -493,7 +493,10 @@
 		$("#mySidebarZona").removeClass("hidden");
 	});
 	$(document).on("focus",'#txtReceiptAmount', function(e) {
-		$(this).val("");
+		//No se borra el monto: el panel de cobro enfoca este campo al abrirse y en edicion dejaba el valor cargado en blanco.
+		//Se selecciona el texto para que al escribir se reemplace (setTimeout: el click del mouse quitaria la seleccion)
+		var input = this;
+		setTimeout(function(){ input.select(); }, 0);
 	});
 	$(document).on("click","#btnLinkPayment",function(){
 		mostarModalPersonalizado('ABRIENDO LINK DE PAGO');
@@ -2930,7 +2933,16 @@
         $('#txtReceiptAmountBankDol_BankID').val(objTransactionMasterInfo.receiptAmountBankDolID).trigger("change");
 
         $('#txtChangeAmount').val(fnFormatNumber(objTransactionMasterInfo.changeAmount, 2));
-        $('#txtReceiptAmount').val(fnFormatNumber(objTransactionMasterInfo.receiptAmount, 2));
+        //Si la factura no tiene ningun pago guardado (todo en 0) se deja el monto recibido que calculo fnRecalculateDetail
+        //(total de la factura, o 0 si es credito), igual que la pantalla ExtJS; si no, se veia en 0 y al enfocar quedaba en blanco
+        var totalPagosGuardados = 0;
+        ['receiptAmount','receiptAmountDol','receiptAmountCard','receiptAmountCardDol','receiptAmountBank','receiptAmountBankDol','receiptAmountPoint'].forEach(function(campo){
+            totalPagosGuardados += (parseFloat(objTransactionMasterInfo[campo]) || 0);
+        });
+        if (totalPagosGuardados != 0)
+        {
+            $('#txtReceiptAmount').val(fnFormatNumber(objTransactionMasterInfo.receiptAmount, 2));
+        }
         $('#txtReceiptAmountDol').val(fnFormatNumber(objTransactionMasterInfo.receiptAmountDol, 2));
         $('#txtReceiptAmountTarjeta').val(fnFormatNumber(objTransactionMasterInfo.receiptAmountCard, 2));
         $('#txtReceiptAmountTarjetaDol').val(fnFormatNumber(objTransactionMasterInfo.receiptAmountCardDol, 2));
