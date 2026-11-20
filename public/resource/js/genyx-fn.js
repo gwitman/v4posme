@@ -72,26 +72,38 @@ function fnTableSelectedRow(obj, event) {
   $(event.target.parentNode).addClass("row-selected");
 }
 
+/**
+ * Arma el aviso moderno (estilos .pm-alert en resource/css/posme-modal.css).
+ * @param {string} tipo    "success" | "error"
+ * @param {string} titulo  Título en negrita
+ * @param {string} icono   SVG del ícono
+ * @param {string} message Texto o HTML del mensaje
+ * @return {string} HTML del aviso
+ */
+function fnBuildPmAlert(tipo, titulo, icono, message) {
+  var claseBs = tipo === "success" ? "alert-success" : "alert-error";
+  return (
+    '<div class="alert ' + claseBs + ' pm-alert pm-alert-' + tipo + '" role="alert">' +
+    '<button type="button" class="close" data-dismiss="alert" aria-label="Cerrar">&times;</button>' +
+    '<span class="pm-alert-icon">' + icono + "</span>" +
+    '<div class="pm-alert-body">' +
+    '<strong class="pm-alert-title">' + titulo + "</strong>" +
+    '<div class="pm-alert-text">' + message + "</div>" +
+    "</div>" +
+    "</div>"
+  );
+}
 function fnShowMessageSuccess(message) {
-  var _success =
-    "" +
-    '<div class="alert alert-success" style="margin-top:15px">' +
-    '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
-    '<strong><i class="icon24 i-checkmark-circle"></i> Success!</strong>' +
-    message +
-    "</div>";
-
-  $("#main_content").prepend(_success);
+  var icono =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">' +
+    '<polyline points="5 12.5 10 17.5 19 7"></polyline></svg>';
+  $("#main_content").prepend(fnBuildPmAlert("success", "¡Listo!", icono, message));
 }
 function fnShowMessageError(message) {
-  var _error =
-    "" +
-    '<div class="alert alert-error" style="margin-top:15px">' +
-    '<button type="button" class="close" data-dismiss="alert">&times;</button>' +
-    '<strong><i class="icon24 i-close-4"></i> Error!</strong>' +
-    message +
-    "</div>";
-  $("#main_content").prepend(_error);
+  var icono =
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">' +
+    '<line x1="7" y1="7" x2="17" y2="17"></line><line x1="17" y1="7" x2="7" y2="17"></line></svg>';
+  $("#main_content").prepend(fnBuildPmAlert("error", "Error", icono, message));
 }
 /*
  * Notificaciones tipo "toast" de posMe (reemplaza a jGrowl en fnShowNotification).
@@ -325,16 +337,43 @@ function fnShowNotification(message, type, time) {
     });
   }
 }
+/**
+ * Carga una sola vez el estilo moderno de los modales (resource/css/posme-modal.css).
+ * La ruta se toma del propio genyx-fn.js, así funciona en masterpages y en reportes
+ * que cargan este archivo por su cuenta.
+ */
+(function () {
+  try {
+    if (document.getElementById("posmeModalCss")) return;
+    var script = document.currentScript;
+    if (!script || !script.src) return;
+    var link  = document.createElement("link");
+    link.id   = "posmeModalCss";
+    link.rel  = "stylesheet";
+    link.href = script.src.replace(/\/js\/genyx-fn\.js.*$/, "/css/posme-modal.css?v=2");
+    document.getElementsByTagName("head")[0].appendChild(link);
+  } catch (e) { /* si falla, el modal se ve con el estilo anterior */ }
+})();
+
+// Íconos SVG de los modales (no dependen de fuentes de íconos del tema)
+var pmModalIconConfirm =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+  '<circle cx="12" cy="12" r="9"></circle><line x1="12" y1="7.5" x2="12" y2="13"></line><line x1="12" y1="16.5" x2="12.01" y2="16.5"></line></svg>';
+var pmModalIconPrompt =
+  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">' +
+  '<path d="M12 20h9"></path><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"></path></svg>';
+
 function fnShowConfirm(title_, body_, callback_) {
   var template =
     "<div>" +
-    '<div class="modal fade" id="myModalConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
+    '<div class="modal fade pm-modal pm-modal-confirm" id="myModalConfirm" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
     '	<div class="modal-dialog">' +
     '	  <div class="modal-content">' +
     '		<div class="modal-header">' +
     '		  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
     '		  <h4 class="modal-title">${title}</h4>' +
     "		</div>" +
+    '		<div class="pm-modal-icon"><span>' + pmModalIconConfirm + "</span></div>" +
     '		<div class="modal-body">' +
     "			${body}" +
     "		</div>" +
@@ -359,13 +398,14 @@ function fnShowConfirm(title_, body_, callback_) {
 function fnShowPrompt(title_, label_, callback_) {
   var template =
     "<div>" +
-    '<div class="modal fade" id="myModalPrompt" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
+    '<div class="modal fade pm-modal pm-modal-prompt" id="myModalPrompt" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">' +
     '	<div class="modal-dialog">' +
     '	  <div class="modal-content">' +
     '		<div class="modal-header">' +
     '		  <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>' +
     '		  <h4 class="modal-title">${title}</h4>' +
     "		</div>" +
+    '		<div class="pm-modal-icon"><span>' + pmModalIconPrompt + "</span></div>" +
     '		<div class="modal-body">' +
     '				<form id="myModalPromptForm" class="form-horizontal" role="form">' +
     "						<fieldset>			" +
