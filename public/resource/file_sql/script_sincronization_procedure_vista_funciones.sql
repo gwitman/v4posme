@@ -22587,7 +22587,9 @@ BEGIN
 		tm.inventoryWarehouseTargetID,tm.componentItemID,0,current_timestamp(),varSign,
 		varTransactionOn,
 		IF(tm.transactionID = 20  ,tm.skuQuantityBySku,tm.quantity) as tm_quantity,
-		tm.unitaryCost,
+		/*Reversion de factura (20) que trae costo 0 (factura hecha sin existencia o sin costo):
+		  entra al costo actual del producto para no dejarlo en 0 con ULTIMO COSTO ni bajar el PROMEDIO*/
+		IF(tm.transactionID = 20 AND IFNULL(tm.unitaryCost,0) = 0, IFNULL(i.cost,0), tm.unitaryCost) as tm_unitaryCost,
 		ifnull(iw.quantity,0),i.quantity
 	from
 		tb_transaction_master_detail tm
