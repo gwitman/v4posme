@@ -13,7 +13,7 @@ class Log_Session_Model extends Model
 
     protected $returnType     = 'array';
     protected $useSoftDeletes = false;
-    protected $allowedFields = ['session_id','userID', 'ip_address','user_agent','last_activity','last_update','user_data'];
+    protected $allowedFields = ['session_id','userID','companyID','ip_address','user_agent','last_activity','last_update','user_data','authorizationStatus','authorizationTokenHash','authorizationExpiresOn','authorizationOn','authorizationBy','authorizationIP'];
 
     // Dates
     protected $useTimestamps = false;
@@ -66,15 +66,100 @@ class Log_Session_Model extends Model
 				c.user_agent,
 				c.last_activity,
 				c.last_update,
-				c.user_data
-			from 
-				tb_log_session c 
-			where 
-				c.session_id = '$sessionID'
+				c.user_data,
+				c.companyID,
+				c.authorizationStatus,
+				c.authorizationTokenHash,
+				c.authorizationExpiresOn,
+				c.authorizationOn,
+				c.authorizationBy,
+				c.authorizationIP
+			from
+				tb_log_session c
+			where
+				c.session_id = ?
 
 		";
 
-		return $db->query($sql)->getResult();
+		return $db->query($sql, [(string)$sessionID])->getResult();
+	}
+
+	/**
+	 * Obtiene la sesion asociada a un token de autorizacion de login (hash SHA-256 del token).
+	 * @param string $tokenHash hash del token enviado por correo
+	 * @return object|null fila de tb_log_session o null si no existe
+	 */
+	public function get_rowByAuthorizationTokenHash($tokenHash)
+	{
+		$db = db_connect();
+
+		$sql = "
+			select
+				c.session_id,
+				c.userID,
+				c.companyID,
+				c.ip_address,
+				c.user_agent,
+				c.last_activity,
+				c.last_update,
+				c.user_data,
+				c.authorizationStatus,
+				c.authorizationTokenHash,
+				c.authorizationExpiresOn,
+				c.authorizationOn,
+				c.authorizationBy,
+				c.authorizationIP
+			from
+				tb_log_session c
+			where
+				c.authorizationTokenHash = ?
+			limit 1
+		";
+
+		return $db->query($sql, [(string)$tokenHash])->getRow();
+	}
+
+	/**
+	 * Resuelve (autoriza o rechaza) una solicitud de autorizacion de login de forma atomica:
+	 * solo actualiza si la solicitud sigue 'pending' y no ha vencido, evitando que un
+	 * mismo enlace se use dos veces.
+	 * @param string $tokenHash hash del token de autorizacion
+	 * @param string $status    'authorized' | 'rejected'
+	 * @param int    $userIDBy  usuario que resuelve la solicitud
+	 * @param string $ip        IP desde donde se resuelve
+	 * @param string $now       fecha/hora actual (helper_getDateTime()) del llamador
+	 * @param string $userData  nuevo valor de user_data (bitacora)
+	 * @return int filas afectadas (1 = aplicado, 0 = vencido, ya usado o inexistente)
+	 */
+	public function update_app_posme_authorization($tokenHash, $status, $userIDBy, $ip, $now, $userData)
+	{
+		$db = db_connect();
+
+		$sql = "
+			update tb_log_session
+			set
+				authorizationStatus = ?,
+				authorizationOn     = ?,
+				authorizationBy     = ?,
+				authorizationIP     = ?,
+				user_data           = ?
+			where
+				authorizationTokenHash = ? and
+				authorizationStatus    = 'pending' and
+				authorizationExpiresOn >= ?
+		";
+
+		$db->query($sql, [
+			(string)$status,
+			(string)$now,
+			(int)$userIDBy,
+			(string)$ip,
+			(string)$userData,
+			(string)$tokenHash,
+			(string)$now
+		]);
+
+		return $db->affectedRows();
 	}
 	public function get_rowByUserID($userID)
 	{

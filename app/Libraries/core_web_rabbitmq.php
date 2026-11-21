@@ -14,6 +14,7 @@ use App\Models\Core\Company_Model;
  *  - RABBITMQ_URL             : amqps://usuario:clave@host/vhost (amqp:// para conexion sin SSL)
  *  - RABBITMQ_QUEUE_WHATSAPP  : habilitador de las colas de WhatsApp (vacio o 0 = deshabilitadas).
  *                               Las colas se llaman <tb_company.type>_Notificacion_ y <tb_company.type>_Campana_.
+ *  - RABBITMQ_QUEUE_EMAIL     : habilitador de la cola de correo <tb_company.type>_Email_ (vacio o 0 = envio directo).
  *
  * Los mensajes viajan como JSON y son persistentes (sobreviven a un reinicio del broker).
  * Los que fallan se reencolan al final con el contador "intentos"; al llegar al maximo
@@ -23,10 +24,15 @@ class core_web_rabbitmq
 {
     const PARAMETER_URL             = "RABBITMQ_URL";
     const PARAMETER_QUEUE_WHATSAPP  = "RABBITMQ_QUEUE_WHATSAPP";
+    const PARAMETER_QUEUE_EMAIL     = "RABBITMQ_QUEUE_EMAIL";
     const QUEUE_TIPO_NOTIFICACION   = "Notificacion";   //Cola <type>_Notificacion_
     const QUEUE_TIPO_CAMPANA        = "Campana";        //Cola <type>_Campana_
+    const QUEUE_TIPO_EMAIL          = "Email";          //Cola <type>_Email_
     const SUFFIX_QUEUE_ERROR        = "_error";    //Valor que puede devolver el callback de consume para mandar el mensaje directo a la cola de error (sin reintentos)
     const RESULT_DESCARTAR          = "descartar";
+    //Valor que puede devolver el callback de consume cuando el destino no esta disponible (ej. SMTP caido):
+    //el mensaje vuelve al final de la cola SIN sumar intentos y se detiene la ejecucion actual
+    const RESULT_POSPONER           = "posponer";
 
     public function __construct()
     {
@@ -126,6 +132,37 @@ class core_web_rabbitmq
     }
 
     /**
+     * Indica si la cola de correo esta habilitada para la empresa (RABBITMQ_QUEUE_EMAIL distinto de vacio y de "0").
+     * Si el parametro no existe se considera deshabilitada (envio directo).
+     * @param int $companyID empresa
+     * @return bool true si los correos deben encolarse
+     */
+    function isQueueEmailEnabled($companyID)
+    {
+        try {
+            $core_web_parameter = new core_web_parameter();
+            $habilitado         = trim((string) $core_web_parameter->getParameterValue(self::PARAMETER_QUEUE_EMAIL, $companyID));
+        } catch (\Throwable $ex) {
+            $habilitado         = "";
+        }
+        return !($habilitado == "" || $habilitado == "0");
+    }
+
+    /**
+     * Nombre de la cola de CORREO: <tb_company.type>_Email_.
+     * RABBITMQ_QUEUE_EMAIL solo actua como habilitador (vacio o "0" = cola deshabilitada, envio directo).
+     * @param int $companyID empresa
+     * @return string nombre de la cola
+     */
+    function getQueueEmail($companyID)
+    {
+        if (!$this->isQueueEmailEnabled($companyID)) {
+            throw new \Exception("El parametro " . self::PARAMETER_QUEUE_EMAIL . " esta vacio para la company " . $companyID . " (cola de correo deshabilitada)");
+        }
+        return $this->getCompanyType($companyID) . "_" . self::QUEUE_TIPO_EMAIL . "_";
+    }
+
+    /**
      * Tipo de la compañia (tb_company.type), usado para formar los nombres de las colas.
      * @param int $companyID empresa
      * @return string type de la compañia
@@ -193,17 +230,18 @@ class core_web_rabbitmq
      * Toma un mensaje a la vez (basic_get) y llama $callback($payload); si devuelve true se
      * confirma (ack), si devuelve RESULT_DESCARTAR va directo a "<cola>_error", si devuelve
      * false o lanza excepcion se reencola con intentos + 1, y al superar $maxIntentos se
-     * mueve a "<cola>_error".
+     * mueve a "<cola>_error". Si devuelve RESULT_POSPONER se reencola sin sumar intentos y
+     * se detiene la ejecucion (los callbacks existentes no lo usan: comportamiento igual).
      * Un candado de archivo evita que dos ejecuciones del cron consuman la misma cola a la vez.
      *
      * @param int      $companyID   empresa
      * @param string   $queueName   cola a consumir
-     * @param callable $callback    function(array $payload): bool|string (true, false o RESULT_DESCARTAR)
+     * @param callable $callback    function(array $payload): bool|string (true, false, RESULT_DESCARTAR o RESULT_POSPONER)
      * @param int      $maxMessages maximo de mensajes a procesar en esta ejecucion
      * @param int      $maxSeconds  tiempo maximo de la ejecucion (debe ser menor al intervalo del cron)
      * @param int      $pauseSeconds pausa entre mensajes procesados (evita bloqueos de WhatsApp)
      * @param int      $maxIntentos intentos antes de mover el mensaje a la cola de error
-     * @return array resumen: procesados, exitosos, reencolados, error, pendientes, bloqueado
+     * @return array resumen: procesados, exitosos, reencolados, error, pendientes, bloqueado, pospuesto
      */
     function consume($companyID, $queueName, $callback, $maxMessages = 20, $maxSeconds = 50, $pauseSeconds = 3, $maxIntentos = 3)
     {
@@ -213,7 +251,8 @@ class core_web_rabbitmq
             "reencolados" => 0,
             "error"       => 0,
             "pendientes"  => 0,
-            "bloqueado"   => false
+            "bloqueado"   => false,
+            "pospuesto"   => false
         ];
 
         $lockHandle = $this->acquireLock($queueName);
@@ -263,6 +302,15 @@ class core_web_rabbitmq
                         $channel->basic_ack($message->getDeliveryTag());
                         $result["error"]++;
                         continue;
+                    }
+
+                    //Destino no disponible: vuelve a la cola sin sumar intentos y se corta esta ejecucion
+                    if ($respuesta === self::RESULT_POSPONER) {
+                        $channel->basic_publish($this->createMessage($payload), "", $queueName);
+                        $channel->basic_ack($message->getDeliveryTag());
+                        $result["reencolados"]++;
+                        $result["pospuesto"] = true;
+                        break;
                     }
 
                     if (!$exitoso) {

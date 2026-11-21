@@ -868,12 +868,8 @@ class app_notification extends _BaseController
 			$params_["mensaje"]  	= $table;				
 			$body  					= /*--inicio view*/ view('core_template/email_notificacion', $params_); //--finview
 			
-			$this->email->setFrom(EMAIL_APP);
-			$this->email->setTo( $emailProperty /*"www.witman@gmail.com"*/ );
-			$this->email->setSubject($subject);
-			$this->email->setMessage($body);
-			$resultSend01 = $this->email->send();
-			
+			$resultSend01 = $this->core_web_email->queueEmail(APP_COMPANY, $emailProperty, $subject, $body, array(), "app_notification::sendEmailItemExpired");
+
 		}
 		echo "SUCCESS";
 	}
@@ -887,15 +883,25 @@ class app_notification extends _BaseController
 		if ($objListNotification)
 			foreach ($objListNotification as $i) {
 
-				//Enviar Email			
-				$this->email->setFrom(EMAIL_APP, HELLOW);
-				$this->email->setTo($i->to);
-				$this->email->setSubject($i->subject);
-				$this->email->setMessage("Hola mi nombre es:" . $i->title . " agende una cita con el objetivo " . $i->message . " (" . $i->phoneFrom . " " . $i->from . ")");
 				$data["sendOn"]			= date_format(date_create(), "Y-m-d H:i:s");
 				$data["sendEmailOn"]	= date_format(date_create(), "Y-m-d H:i:s");
-				$this->Notification_Model->update_app_posme($i->notificationID, $data);
-				$resultSend01 			= $this->email->send();
+
+				//Destino invalido: se marca como procesada para que no se reintente en cada ejecucion
+				if (count($this->core_web_email->normalizeRecipients($i->to)) == 0)
+				{
+					log_message("error", "[app_notification::sendEmail] notificacion " . $i->notificationID . " descartada, correo invalido: " . $i->to);
+					$this->Notification_Model->update_app_posme($i->notificationID, $data);
+					continue;
+				}
+
+				//Los datos vienen del formulario publico: se escapan antes de armar el HTML
+				$mensaje = "Hola mi nombre es:" . htmlspecialchars((string)$i->title) . " agende una cita con el objetivo " . htmlspecialchars((string)$i->message) . " (" . htmlspecialchars((string)$i->phoneFrom) . " " . htmlspecialchars((string)$i->from) . ")";
+
+				//Solo se marca como enviada si quedo en la cola o se envio; si no, se reintenta en la siguiente ejecucion
+				if ($this->core_web_email->queueEmail(APP_COMPANY, $i->to, $i->subject, $mensaje, array("fromName" => HELLOW), "app_notification::sendEmail"))
+					$this->Notification_Model->update_app_posme($i->notificationID, $data);
+				else
+					log_message("error", "[app_notification::sendEmail] notificacion " . $i->notificationID . " no enviada: " . $this->core_web_email->getLastError());
 			}
 
 		echo "SUCCESS";
@@ -1161,27 +1167,11 @@ class app_notification extends _BaseController
 		/////////////////////////////////////////////
 		/////////////////////////////////////////////
 		/////////////////////////////////////////////
-		$this->email->setFrom(EMAIL_APP);
-		$this->email->setTo($parameterEmail);
-		$this->email->setSubject($subject3);
-		$this->email->setMessage($body3);
-		$resultSend01 = $this->email->send();
-		$resultSend02 = $this->email->printDebugger();
+		//Un solo correo al propietario con copia oculta al administrador de posme
+		$resultSend01 = $this->core_web_email->queueEmail($companyID, $parameterEmail, $subject3, $body3, array("bcc" => EMAIL_APP_COPY), "app_notification::file_job_send_report_daly_reprote_de_caja");
 		echo "*****************************<br/>";
-		echo print_r($resultSend02, true);
+		echo "correo: " . ($resultSend01 ? "encolado/enviado" : "no enviado") . "<br/>";
 		echo "*****************************<br/>";
-		sleep(60);
-		//enviar al administrador de posme
-		$this->email->setFrom(EMAIL_APP);
-		$this->email->setTo(EMAIL_APP_COPY);
-		$this->email->setSubject($subject3);
-		$this->email->setMessage($body3);
-		$resultSend01 = $this->email->send();
-		$resultSend02 = $this->email->printDebugger();
-		echo "*****************************<br/>";
-		echo print_r($resultSend02, true);
-		echo "*****************************<br/>";
-		sleep(60);
 
 
 
@@ -1313,27 +1303,11 @@ class app_notification extends _BaseController
 		/////////////////////////////////////////////
 		/////////////////////////////////////////////
 		/////////////////////////////////////////////
-		$this->email->setFrom(EMAIL_APP);
-		$this->email->setTo($parameterEmail);
-		$this->email->setSubject($subject1);
-		$this->email->setMessage($body1);
-		$resultSend01 = $this->email->send();
-		$resultSend02 = $this->email->printDebugger();
+		//Un solo correo al propietario con copia oculta al administrador de posme
+		$resultSend01 = $this->core_web_email->queueEmail($companyID, $parameterEmail, $subject1, $body1, array("bcc" => EMAIL_APP_COPY), "app_notification::file_job_send_report_daly_reprote_de_detalle_de_ventas");
 		echo "*****************************<br/>";
-		echo print_r($resultSend02, true);
+		echo "correo: " . ($resultSend01 ? "encolado/enviado" : "no enviado") . "<br/>";
 		echo "*****************************<br/>";
-		sleep(60);
-		//enviar al administrador de posme
-		$this->email->setFrom(EMAIL_APP);
-		$this->email->setTo(EMAIL_APP_COPY);
-		$this->email->setSubject($subject1);
-		$this->email->setMessage($body1);
-		$resultSend01 = $this->email->send();
-		$resultSend02 = $this->email->printDebugger();
-		echo "*****************************<br/>";
-		echo print_r($resultSend02, true);
-		echo "*****************************<br/>";
-		sleep(60);
 
 		return view('core_template/close'); //--finview-r
 
@@ -1432,25 +1406,10 @@ class app_notification extends _BaseController
 		/////////////////////////////////////////////
 		/////////////////////////////////////////////
 		/////////////////////////////////////////////
-		$this->email->setFrom(EMAIL_APP);
-		$this->email->setTo($parameterEmail);
-		$this->email->setSubject($subject4);
-		$this->email->setMessage($body4);
-		$resultSend01 = $this->email->send();
-		$resultSend02 = $this->email->printDebugger();
+		//Un solo correo al propietario con copia oculta al administrador de posme
+		$resultSend01 = $this->core_web_email->queueEmail($companyID, $parameterEmail, $subject4, $body4, array("bcc" => EMAIL_APP_COPY), "app_notification::file_job_send_report_daly_reprote_de_tran_registradas");
 		echo "*****************************<br/>";
-		echo print_r($resultSend02, true);
-		echo "*****************************<br/>";
-		sleep(60);
-		//enviar al administrador de posme
-		$this->email->setFrom(EMAIL_APP);
-		$this->email->setTo(EMAIL_APP_COPY);
-		$this->email->setSubject($subject4);
-		$this->email->setMessage($body4);
-		$resultSend01 = $this->email->send();
-		$resultSend02 = $this->email->printDebugger();
-		echo "*****************************<br/>";
-		echo print_r($resultSend02, true);
+		echo "correo: " . ($resultSend01 ? "encolado/enviado" : "no enviado") . "<br/>";
 		echo "*****************************<br/>";
 
 
@@ -1560,27 +1519,11 @@ class app_notification extends _BaseController
 		/////////////////////////////////////////////
 		/////////////////////////////////////////////
 		/////////////////////////////////////////////
-		$this->email->setFrom(EMAIL_APP);
-		$this->email->setTo($parameterEmail);
-		$this->email->setSubject($subject2);
-		$this->email->setMessage($body2);
-		$resultSend01 = $this->email->send();
-		$resultSend02 = $this->email->printDebugger();
+		//Un solo correo al propietario con copia oculta al administrador de posme
+		$resultSend01 = $this->core_web_email->queueEmail($companyID, $parameterEmail, $subject2, $body2, array("bcc" => EMAIL_APP_COPY), "app_notification::file_job_send_report_daly_reprote_de_compras");
 		echo "*****************************<br/>";
-		echo print_r($resultSend02, true);
+		echo "correo: " . ($resultSend01 ? "encolado/enviado" : "no enviado") . "<br/>";
 		echo "*****************************<br/>";
-		sleep(60);
-		//enviar al administrador de posme
-		$this->email->setFrom(EMAIL_APP);
-		$this->email->setTo(EMAIL_APP_COPY);
-		$this->email->setSubject($subject2);
-		$this->email->setMessage($body2);
-		$resultSend01 = $this->email->send();
-		$resultSend02 = $this->email->printDebugger();
-		echo "*****************************<br/>";
-		echo print_r($resultSend02, true);
-		echo "*****************************<br/>";
-		sleep(60);
 
 		return view('core_template/close'); //--finview-r
 
@@ -1752,16 +1695,10 @@ class app_notification extends _BaseController
 			/////////////////////////////////////////////
 			/////////////////////////////////////////////
 			/////////////////////////////////////////////
-			$this->email->setFrom(EMAIL_APP);
-			$this->email->setTo($parameterEmail);
-			$this->email->setSubject($subject3);
-			$this->email->setMessage($body3);
-			$resultSend01 = $this->email->send();
-			$resultSend02 = $this->email->printDebugger();
+			$resultSend01 = $this->core_web_email->queueEmail($companyID, $parameterEmail, $subject3, $body3, array(), "app_notification::file_monitory_cash_box");
 			echo "*****************************<br/>";
-			echo print_r($resultSend02, true);
+			echo "correo: " . ($resultSend01 ? "encolado/enviado" : "no enviado") . "<br/>";
 			echo "*****************************<br/>";
-			sleep(60);
 
 			/////////////////////////////////////////////
 			/////////////////////////////////////////////
@@ -1909,41 +1846,14 @@ class app_notification extends _BaseController
 				//Ruta del logo para adjuntarlo como imagen embebida (CID)
 				$logoPath = PATH_FILE_OF_APP_ROOT . '/img/logos/' . $params_["objLogo"]->value;
 
-				//enviar correo
-				$this->email->clear(true);
-				$this->email->setFrom(EMAIL_APP);
-				$this->email->setTo($parameterEmail);
-				$this->email->setSubject($subject);
-				$this->email->setMailType('html');
-				$this->email->wordWrap = false;
-				$params_["logoCID"] = '';
-				if (file_exists($logoPath)) {
-					$this->email->attach($logoPath);
-					$params_["logoCID"] = $this->email->setAttachmentCID($logoPath);
-				}
+				//enviar correo (propietario + copia oculta): el marcador del logo se cambia por el CID real al enviar
+				$params_["logoCID"]	= file_exists($logoPath) ? \App\Libraries\core_web_email::CID_LOGO : '';
+				$optionsEmail		= array("bcc" => EMAIL_APP_COPY);
+				if ($params_["logoCID"] != '')
+					$optionsEmail["inline"] = array(array("path" => $logoPath, "placeholder" => \App\Libraries\core_web_email::CID_LOGO));
 				$htmlEmail = /*--inicio view*/ view('app_box_report/share_summary_80mm_general/view_a_disemp', $params_); //--finview
-				$this->email->setMessage($htmlEmail);
-				$resultSend01 = $this->email->send();
-				$resultSend02 = $this->email->printDebugger();
-
-
-				//enviar correo
-				$this->email->clear(true);
-				$this->email->setFrom(EMAIL_APP);
-				$this->email->setTo(EMAIL_APP_COPY);
-				$this->email->setSubject($subject);
-				$this->email->setMailType('html');
-				$this->email->wordWrap = false;
-				$params_["logoCID"] = '';
-				if (file_exists($logoPath)) {
-					$this->email->attach($logoPath);
-					$params_["logoCID"] = $this->email->setAttachmentCID($logoPath);
-				}
-				$htmlEmail = /*--inicio view*/ view('app_box_report/share_summary_80mm_general/view_a_disemp', $params_); //--finview
-				$this->email->setMessage($htmlEmail);
-				$resultSend01 = $this->email->send();
-				$resultSend02 = $this->email->printDebugger();
-			} 
+				$this->core_web_email->queueEmail($companyID, $parameterEmail, $subject, $htmlEmail, $optionsEmail, "app_notification::share_sumary_80mm_general");
+			}
 			else 
 			{
 				$this->dompdf->loadHTML($html);
@@ -2142,202 +2052,6 @@ class app_notification extends _BaseController
 	
 	
 	
-	/*ejecutar cada 2 horas*/
-	//curl "https://posme.net/v4posme/glamcuts/public/app_notification/sendEmailGlamCustCitas"
-	//0 */2 * * *
-	function sendEmailGlamCustCitas()
-	{
-		log_message("info", print_r("sendEmailGlamCustCitas", true));
-		$emailProperty = $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL", APP_COMPANY);
-		$emailProperty = $emailProperty->value;
-		$objCompany  	= $this->Company_Model->get_rowByPK(APP_COMPANY);
-
-		$objNotificar = $this->Transaction_Master_Detail_Model->GlamCust_get_Citas(APP_COMPANY);
-		
-		if ($objNotificar)
-		{	
-			// Cabecera de la tabla
-			$tabla = "
-				<table border='1' cellspacing='0' cellpadding='6' style='border-collapse:collapse; width:100%; font-family:Arial, sans-serif;'>
-					<thead style='background:#f2f2f2;'>
-						<tr>
-							<th>Fecha</th>
-							<th>Hora</th>
-							<th>Cliente</th>
-							<th>Descripción</th>
-						</tr>
-					</thead>
-					<tbody>
-			";
-			foreach ($objNotificar as $i) {
-				$dt = \DateTime::createFromFormat('Y-m-d H:i:s', $i->SiguienteVisita);
-
-				$fecha       = $dt->format("Y-m-d");
-				$hora        = $dt->format("h:i A");
-				$cliente     = $i->firstName;
-				$descripcion = $i->note ?? "Cita programada"; // si tienes ese campo en DB úsalo
-
-				$tabla .= "
-					<tr>
-						<td>{$fecha}</td>
-						<td>{$hora}</td>
-						<td>{$cliente}</td>
-						<td>{$descripcion}</td>
-					</tr>
-				";
-
-				// También lo dejas en log si lo necesitas
-				log_message("info", "Cita de: $cliente programada para: $fecha $hora");
-			}
-			 // Cerrar la tabla
-			$tabla .= "</tbody></table>";
-			
-			log_message("info", print_r($tabla,true));
-
-			// Parámetros para la vista del correo
-			$params_["objCompany"]  = $objCompany;
-			$params_["mensaje"]       = $tabla;
-
-			// Asunto y cuerpo
-			$subject = "Citas programadas";
-			$body    = view('core_template/email_notificacion', $params_);
-
-			echo $body;
-			// Configuración del correo
-			$this->email->setFrom(EMAIL_APP);
-			$this->email->setTo( $emailProperty /*"www.witman@gmail.com"*/  ); // ejemplo: "correo@cliente.com"
-			$this->email->setSubject($subject);
-			$this->email->setMessage($body);
-
-			$this->email->send();
-		}
-		echo "SUCCESS";
-	}
-	
-	
-	/*ejecutar cada 2 horas antes*/
-	//enviar correo a cada tecnico
-	//curl "https://posme.net/v4posme/glamcuts/public/app_notification/sendEmailGlamCustCitas2HoursBefore"
-	//0 */2 * * *
-	function sendEmailGlamCustCitas2HoursBefore()
-	{
-		log_message("info", print_r("sendEmailGlamCustCitas", true));
-		$emailProperty = $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL", APP_COMPANY);
-		$emailProperty = $emailProperty->value;
-		$objCompany  	= $this->Company_Model->get_rowByPK(APP_COMPANY);
-
-		//Obtener la lista de colaboradores
-		$objListEmployer	= $this->Employee_Model->get_rowByCompanyID(APP_COMPANY);
-		if($objListEmployer)
-		{
-			foreach($objListEmployer as $objEmployer)
-			{
-				$objNotificar = $this->Transaction_Master_Detail_Model->GlamCust_get_CitasByTecnico(APP_COMPANY,$objEmployer->entityID);			
-				if ($objNotificar)
-				{	
-					
-					// Cabecera de la tabla
-					$objListEmail	= $this->Entity_Email_Model->get_rowByEntity(APP_COMPANY,$objEmployer->branchID,$objEmployer->entityID);
-					if(!$objListEmail)
-						continue;
-					
-					
-					$emailProperty 	= $objListEmail[0]->email;
-					$tabla 			= "
-						<table border='1' cellspacing='0' cellpadding='6' style='border-collapse:collapse; width:100%; font-family:Arial, sans-serif;'>
-							<thead style='background:#f2f2f2;'>
-								<tr>
-									<th>Fecha</th>							
-									<th>Hora</th>
-									<th>Cliente</th>
-									<th>Descripción</th>
-								</tr>
-							</thead>
-							<tbody>
-					";
-					foreach ($objNotificar as $i) {
-						$dt = \DateTime::createFromFormat('Y-m-d H:i:s', $i->SiguienteVisita);
-
-						$fecha       = $dt->format("Y-m-d");
-						$hora        = $dt->format("h:i A");
-						$cliente     = $i->firstName;
-						$descripcion = $i->note ?? "Cita programada"; // si tienes ese campo en DB úsalo
-
-						$tabla .= "
-							<tr>
-								<td>{$fecha}</td>
-								<td>{$hora}</td>
-								<td>{$cliente}</td>
-								<td>{$descripcion}</td>
-							</tr>
-						";
-
-						// También lo dejas en log si lo necesitas
-						log_message("info", "Cita de: $cliente programada para: $fecha $hora");
-					}
-					 // Cerrar la tabla
-					$tabla .= "</tbody></table>";
-					
-					log_message("info", print_r($tabla,true));
-
-					// Parámetros para la vista del correo
-					$params_["objCompany"]  	= $objCompany;
-					$params_["mensaje"]       	= $tabla;
-
-					// Asunto y cuerpo
-					$subject = "Citas programadas";
-					$body    = view('core_template/email_notificacion', $params_);
-
-					echo $body;
-					// Configuración del correo
-					$this->email->setFrom(EMAIL_APP);
-					$this->email->setTo( $emailProperty /*"www.witman@gmail.com"*/  ); // ejemplo: "correo@cliente.com"
-					$this->email->setSubject($subject);
-					$this->email->setMessage($body);
-
-					$this->email->send();
-				}
-			}
-		}
-		echo "SUCCESS";
-	}
-	
-	/*ejecutar 1 ves al dia a las 6 de la mañana , que en hora utc es  12 del medio dia*/
-	//curl "https://posme.net/v4posme/glamcuts/public/app_notification/sendEmailGlamCustCitasFrecuency2DayBefore"
-	//0 12 * * *  sendEmailGlamCustCitasFrecuency2DayBefore
-	function sendEmailGlamCustCitasFrecuency2DayBefore()
-	{
-		log_message("error", print_r("sendEmailGlamCustCitas", true));
-		$emailProperty = $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL", APP_COMPANY);
-		$emailProperty = $emailProperty->value;
-		$objCompany  	= $this->Company_Model->get_rowByPK(APP_COMPANY);
-
-		$objNotificar = $this->Transaction_Master_Detail_Model->GlamCust_get_Citas_2DayBefore(APP_COMPANY);
-		if ($objNotificar)
-			foreach ($objNotificar as $i) {
-
-
-				$i->SiguienteVisita = \DateTime::createFromFormat('Y-m-d H:i:s', $i->SiguienteVisita)->format("Y-m-d h:i A");
-				echo "Cita de: " . $i->firstName . " programada para : " . $i->SiguienteVisita . "</br>";
-				log_message("error", "Cita de: " . $i->firstName . " programada para : " . $i->SiguienteVisita);
-
-				$params_["objCompany"]  = $objCompany;
-				$params_["firstName"]  	= $i->firstName;
-				$params_["hour"]  		= $i->SiguienteVisita;
-				$params_["mensaje"]  	= "Cita de: " . $i->firstName . " programada para : " . $i->SiguienteVisita;
-				$subject 				= "Cita de: " . $i->firstName;
-				$body  					= /*--inicio view*/ view('core_template/email_notificacion', $params_); //--finview
-
-				$this->email->setFrom(EMAIL_APP);
-				$this->email->setTo($emailProperty /*"www.witman@gmail.com"*/ );
-				$this->email->setSubject($subject);
-				$this->email->setMessage($body);
-				$resultSend01 = $this->email->send();
-			}
-
-		echo "SUCCESS";
-	}
-
 	function sendEmailAudioElPipeCitas()
 	{
 		log_message("error", print_r("sendEmailAudioElPipeCitas", true));
@@ -2346,6 +2060,7 @@ class app_notification extends _BaseController
 		$objCompany  	= $this->Company_Model->get_rowByPK(APP_COMPANY);
 
 		$objNotificar = $this->Transaction_Master_Detail_Model->AudioElPipe_get_Citas(APP_COMPANY);
+		$correos      = array();
 		if ($objNotificar)
 			foreach ($objNotificar as $i) {
                 $detail             = $this->Transaction_Master_Detail_Model->get_rowByTransaction($objCompany->companyID, 19/*transaction id: factura*/,$i->transactionMasterID);
@@ -2367,12 +2082,12 @@ class app_notification extends _BaseController
 				$subject 				    = "Cita de: " . $i->firstName;
 				$body  					    = /*--inicio view*/ view('core_template/email_notificacion', $params_); //--finview
 
-				$this->email->setFrom(EMAIL_APP);
-				$this->email->setTo($emailProperty /*"www.witman@gmail.com"*/);
-				$this->email->setSubject($subject);
-				$this->email->setMessage($body);
-				$resultSend01 = $this->email->send();
+				//Un correo por cita; se encolan todos juntos al final
+				$correos[]	= array("to" => $emailProperty, "subject" => $subject, "body" => $body);
 			}
+
+		if (count($correos) > 0)
+			$this->core_web_email->queueEmailBatch(APP_COMPANY, $correos, "app_notification::sendEmailAudioElPipeCitas");
 
 		echo "SUCCESS";
 	}
@@ -2675,6 +2390,60 @@ Le recordamos que tiene un saldo pendiente:
 			return $this->response->setJSON(array(
 				'error'			=> true,
 				'message'		=> $ex->getLine() . ' ' . $ex->getMessage()
+			));
+		}
+	}
+
+	/**
+	 * Consumidor (cron) de la cola de correo <tb_company.type>_Email_ (RABBITMQ_QUEUE_EMAIL habilitado).
+	 * Cada mensaje trae {companyID, to, subject, body, options, origen} y se envia con core_web_email::sendNow.
+	 * Si el SMTP no responde (error de conexion) el mensaje se pospone sin gastar intentos y se corta la ejecucion.
+	 * Segmentos opcionales de la URL:
+	 *  - maxMensajes : correos por ejecucion (por defecto 30)
+	 *  - maxSegundos : duracion maxima de la ejecucion (por defecto 50)
+	 *  - pausa       : segundos entre envios (por defecto 0)
+	 * Ej: app_notification/procesarColaEmail/maxMensajes/30/maxSegundos/50/pausa/0
+	 * @return \CodeIgniter\HTTP\Response JSON con el resumen del consumo
+	 */
+	//http://localhost/posmev4/app_notification/procesarColaEmail
+	function procesarColaEmail()
+	{
+		$logTag 		= '[procesarColaEmail]';
+		try
+		{
+			$maxMensajes	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "maxMensajes"); //--finuri
+			$maxSegundos	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "maxSegundos"); //--finuri
+			$pausa			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(), "pausa"); //--finuri
+			$maxMensajes	= intval($maxMensajes) > 0 ? intval($maxMensajes) : 30;
+			$maxSegundos	= intval($maxSegundos) > 0 ? intval($maxSegundos) : 50;
+			$pausa			= is_numeric($pausa) && intval($pausa) >= 0 ? intval($pausa) : 0;
+
+			//El cron no debe cortarse a mitad de un envio por max_execution_time
+			set_time_limit($maxSegundos + 60);
+
+			$queueName		= $this->core_web_rabbitmq->getQueueEmail(APP_COMPANY);
+			$coreWebEmail	= $this->core_web_email;
+
+			log_message('info', $logTag . ' Inicio - companyID: ' . APP_COMPANY . ' | cola: ' . $queueName);
+
+			$resumen		= $this->core_web_rabbitmq->consume(APP_COMPANY, $queueName, function($payload) use ($coreWebEmail)
+			{
+				return $coreWebEmail->processQueuePayload(is_array($payload) ? $payload : array());
+			}, $maxMensajes, $maxSegundos, $pausa);
+
+			return $this->response->setJSON(array(
+				'error'		=> false,
+				'message'	=> SUCCESS,
+				'cola'		=> $queueName,
+				'resumen'	=> $resumen
+			));
+		}
+		catch(\Throwable $ex)
+		{
+			log_message('error', $logTag . ' ' . $ex->getLine() . ' ' . $ex->getMessage());
+			return $this->response->setJSON(array(
+				'error'		=> true,
+				'message'	=> $ex->getLine() . ' ' . $ex->getMessage()
 			));
 		}
 	}
@@ -3269,25 +3038,13 @@ Le recordamos que tiene un saldo pendiente:
 
 			$subject = "Ordenes de taller - Proximas visitas (" . date("Y-m-d") . ")";
 
-			//Enviar correo con logo embebido (CID)
-			$logoPath = PATH_FILE_OF_APP_ROOT . '/img/logos/' . $objLogo->value;
+			//Correo con logo embebido (CID): la vista usa el marcador y core_web_email lo cambia por el CID real al enviar
+			$logoPath			= PATH_FILE_OF_APP_ROOT . '/img/logos/' . $objLogo->value;
+			$params_["logoCID"]	= file_exists($logoPath) ? \App\Libraries\core_web_email::CID_LOGO : '';
+			$options			= $params_["logoCID"] != '' ? array("inline" => array(array("path" => $logoPath, "placeholder" => \App\Libraries\core_web_email::CID_LOGO))) : array();
 
-			$this->email->clear(true);
-			$this->email->setFrom(EMAIL_APP);
-			$this->email->setTo($emailProperty);
-			$this->email->setSubject($subject);
-			$this->email->setMailType('html');
-			$this->email->wordWrap = false;
-
-			$params_["logoCID"] = '';
-			if (file_exists($logoPath)) {
-				$this->email->attach($logoPath);
-				$params_["logoCID"] = $this->email->setAttachmentCID($logoPath);
-			}
-
-			$body 		= /*--inicio view*/ view('app_notification/orden_taller/email_proxima_visita', $params_); //--finview						
-			$result 	= $this->email->setMessage($body);
-			$resultSend = $this->email->send();
+			$body 		= /*--inicio view*/ view('app_notification/orden_taller/email_proxima_visita', $params_); //--finview
+			$resultSend = $this->core_web_email->queueEmail($companyID, $emailProperty, $subject, $body, $options, "app_notification::sendEmailOrdenTallerProximaVisita");
 			
 			echo "</br>";
 			echo "</br>";

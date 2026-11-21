@@ -164,56 +164,59 @@ INDICE
 158. Ver las tareas en el tablero Kanban
 159. Seguridad: qué contiene el menú SEGURIDAD
 160. Iniciar sesión en posMe
-161. Olvidé mi contraseña (reenviar contraseña)
-162. Cerrar sesión (salir, salgo de posMe)
-163. Cambiar mi contraseña o mi correo (editar perfil)
-164. Crear un usuario (creo un usuario nuevo)
-165. Modificar o eliminar un usuario
-166. Crear un rol
-167. Marcar un rol como administrador de compañía
-168. Permisos por pantalla de un rol (ver, crear, editar, eliminar)
-169. Autorizaciones de un rol
-170. Dar acceso al asistente Jordania (Asistente IA)
-171. Sucursales
-172. Notificaciones y recordatorios (CONFIG. NOTI)
-173. Ver quién entró: sesiones y actividad de un usuario (LOG SESSION)
-174. Actualizar (uso de soporte)
-175. Actualizar posMe desde el servidor central: qué es y quién puede usarlo
-176. Actualizar posMe desde el servidor central: configurar la conexión
-177. Actualizar posMe desde el servidor central: modo Local o Nube (qué se actualiza)
-178. Actualizar posMe desde el servidor central: iniciar la actualización
-179. Actualizar posMe desde el servidor central: elegir qué sincronizar
-180. Actualizar posMe desde el servidor central: ejecutar el script previo 002_pre_deployment.sql
-181. Actualizar posMe desde el servidor central: resultado y errores del script previo 002_pre_deployment.sql
-182. Actualizar posMe desde el servidor central: etapas, revisar cambios y cancelar
-183. Actualizar posMe desde el servidor central: modo mantenimiento
-184. Actualizar posMe desde el servidor central: revertir la actualización
-185. Actualizar posMe desde el servidor central: preparar el servidor central (administrador)
-186. Actualizar posMe desde el servidor central: advertencias
-187. Respaldo de base de datos: qué es y cómo abrirlo
-188. Respaldo de base de datos: ver los respaldos guardados
-189. Respaldo de base de datos: generar un respaldo
-190. Respaldo de base de datos: descargar un respaldo
-191. Respaldo de base de datos: subir un respaldo
-192. Respaldo de base de datos: restaurar la base de datos
-193. Respaldo de base de datos: restauración pendiente (continuar o cancelar)
-194. Despliegue remoto: qué es y quién puede usarlo (administración del sistema)
-195. Despliegue remoto: preparar la consola y el agente (primera vez)
-196. Despliegue remoto: elegir la compañía y configurar la conexión
-197. Despliegue remoto: subir y validar el paquete ZIP (actualizar archivos)
-198. Despliegue remoto: sincronizar la estructura de la base de datos
-199. Despliegue remoto: sincronizar los datos de configuración
-200. Despliegue remoto: ejecutar la sincronización, ver el avance y revertir
-201. Despliegue remoto: errores frecuentes
-202. Despliegue remoto: limpieza de servidor (liberar espacio e inodos)
-203. Despliegue remoto: editar la configuración (app/Config)
-204. Despliegue remoto: cargar los logos
-205. Parámetros de la empresa
-206. Parámetros de la empresa: Campañas de WhatsApp
-207. Parámetros de la empresa: Proveedor de WhatsApp (Evolution, Meta Cloud API o LiveConnect)
-208. Parámetros de la empresa: Descuento en factura
-209. Parámetros de la empresa: Devolución de productos
-210. Soporte
+161. Ingresar con autorización del administrador (Esperando autorización)
+162. Autorizar o rechazar el ingreso de un usuario (correo del administrador)
+163. Olvidé mi contraseña (reenviar contraseña)
+164. Cerrar sesión (salir, salgo de posMe)
+165. Cambiar mi contraseña o mi correo (editar perfil)
+166. Crear un usuario (creo un usuario nuevo)
+167. Modificar o eliminar un usuario
+168. Crear un rol
+169. Marcar un rol como administrador de compañía
+170. Permisos por pantalla de un rol (ver, crear, editar, eliminar)
+171. Autorizaciones de un rol
+172. Dar acceso al asistente Jordania (Asistente IA)
+173. Sucursales
+174. Notificaciones y recordatorios (CONFIG. NOTI)
+175. Ver quién entró: sesiones y actividad de un usuario (LOG SESSION)
+176. Actualizar (uso de soporte)
+177. Actualizar posMe desde el servidor central: qué es y quién puede usarlo
+178. Actualizar posMe desde el servidor central: configurar la conexión
+179. Actualizar posMe desde el servidor central: modo Local o Nube (qué se actualiza)
+180. Actualizar posMe desde el servidor central: iniciar la actualización
+181. Actualizar posMe desde el servidor central: elegir qué sincronizar
+182. Actualizar posMe desde el servidor central: ejecutar el script previo 002_pre_deployment.sql
+183. Actualizar posMe desde el servidor central: resultado y errores del script previo 002_pre_deployment.sql
+184. Actualizar posMe desde el servidor central: etapas, revisar cambios y cancelar
+185. Actualizar posMe desde el servidor central: modo mantenimiento
+186. Actualizar posMe desde el servidor central: revertir la actualización
+187. Actualizar posMe desde el servidor central: preparar el servidor central (administrador)
+188. Actualizar posMe desde el servidor central: advertencias
+189. Respaldo de base de datos: qué es y cómo abrirlo
+190. Respaldo de base de datos: ver los respaldos guardados
+191. Respaldo de base de datos: generar un respaldo
+192. Respaldo de base de datos: descargar un respaldo
+193. Respaldo de base de datos: subir un respaldo
+194. Respaldo de base de datos: restaurar la base de datos
+195. Respaldo de base de datos: restauración pendiente (continuar o cancelar)
+196. Despliegue remoto: qué es y quién puede usarlo (administración del sistema)
+197. Despliegue remoto: preparar la consola y el agente (primera vez)
+198. Despliegue remoto: elegir la compañía y configurar la conexión
+199. Despliegue remoto: subir y validar el paquete ZIP (actualizar archivos)
+200. Despliegue remoto: sincronizar la estructura de la base de datos
+201. Despliegue remoto: sincronizar los datos de configuración
+202. Despliegue remoto: ejecutar la sincronización, ver el avance y revertir
+203. Despliegue remoto: errores frecuentes
+204. Despliegue remoto: limpieza de servidor (liberar espacio e inodos)
+205. Despliegue remoto: editar la configuración (app/Config)
+206. Despliegue remoto: cargar los logos
+207. Parámetros de la empresa
+208. Parámetros de la empresa: Campañas de WhatsApp
+209. Parámetros de la empresa: Proveedor de WhatsApp (Evolution, Meta Cloud API o LiveConnect)
+210. Parámetros de la empresa: Descuento en factura
+211. Parámetros de la empresa: Devolución de productos
+212. Parámetros de la empresa: Autorización de ingreso y correos automáticos
+213. Soporte
 
 1. CÓMO FUNCIONAN LAS PANTALLAS DE POSME (LISTAS Y REGISTROS)
 ----------------------------------------------------------------------
@@ -2349,8 +2352,32 @@ Ruta: pantalla de inicio de posMe.
 Notas: si posMe pide Permiso de ubicación requerido, debe permitir la ubicación en el navegador para poder entrar. Si los datos son incorrectos se muestra un mensaje y no se ingresa. Si no tiene usuario, pídalo al administrador de su empresa.
 Con Recordarme activo, la próxima vez el usuario aparece escrito y la contraseña figura como Guardada: solo presione Ingresar. La contraseña guardada no se puede ver con el ojo. Para usar otra contraseña, bórrela y escriba la nueva; para que posMe deje de recordarlo, desmarque Recordarme e ingrese. No use Recordarme en equipos compartidos.
 Para pagar la suscripción, active Pagar suscripción, elija la Cantidad de meses y presione Pagar.
+Según la configuración de su empresa, después de presionar Ingresar puede aparecer la pantalla Esperando autorización: el administrador debe aprobar su ingreso (ver Ingresar con autorización del administrador).
 
-161. OLVIDÉ MI CONTRASEÑA (REENVIAR CONTRASEÑA)
+161. INGRESAR CON AUTORIZACIÓN DEL ADMINISTRADOR (ESPERANDO AUTORIZACIÓN)
+----------------------------------------------------------------------
+Ruta: pantalla de inicio de posMe > Ingresar.
+Solo aplica si su empresa exige que el administrador autorice cada ingreso. Si no lo exige, el ingreso es igual que siempre.
+  1. Escriba su Usuario y su Contraseña y presione Ingresar.
+  2. Si los datos son correctos aparece Esperando autorización, con el aviso "Se notificó al administrador" y la hora a la que vence la solicitud.
+  3. Espere sin cerrar la pantalla: posMe revisa sola cada 5 segundos y, cuando el administrador autoriza, muestra "Ingreso autorizado, entrando…" y entra automáticamente.
+  4. Si ya no quiere entrar, presione Cancelar.
+Si el administrador rechaza el ingreso o la solicitud vence, se muestra el mensaje ("Ingreso rechazado" o "Solicitud vencida") y el botón Volver al inicio de sesión; ingrese de nuevo para generar otra solicitud.
+Notas: la solicitud vence a los 15 minutos, salvo que su empresa configure otro tiempo. No necesitan autorización el usuario superadmin ni las personas que autorizan los ingresos. Si aparece "El ingreso requiere autorización del administrador, pero no hay correos de autorización configurados", contacte al administrador de su empresa.
+Ver también: Autorizar o rechazar el ingreso de un usuario (correo del administrador).
+
+162. AUTORIZAR O RECHAZAR EL INGRESO DE UN USUARIO (CORREO DEL ADMINISTRADOR)
+----------------------------------------------------------------------
+Ruta: correo "Autorizar ingreso: <compañía> - <usuario>".
+Cuando un usuario intenta entrar y la empresa exige autorización, posMe envía un correo a los autorizadores: los correos configurados por la empresa o, si no hay ninguno, los usuarios administradores de la compañía que tengan correo.
+  1. Abra el correo. Trae el usuario, la compañía, la IP, la plataforma (equipo y navegador), la hora del intento y la hora de vencimiento.
+  2. Presione el enlace Revisar y autorizar el ingreso. Se abre la página Autorización de ingreso con los datos de la Solicitud de ingreso (Usuario, Compañía, Equipo, Fecha, Vence).
+  3. Presione Autorizar para dejarlo entrar o Rechazar para negarle el ingreso. Abrir el enlace no autoriza: hay que presionar un botón.
+Notas: el enlace sirve una sola vez. Si otro administrador ya respondió, la página indica "Este ingreso ya fue autorizado." o "Este ingreso ya fue rechazado."; si venció, indica que el usuario debe intentar ingresar de nuevo.
+Consejo: si no reconoce el intento, rechácelo y cambie la contraseña del usuario en SEGURIDAD > USUARIOS.
+Ver también: Ingresar con autorización del administrador (Esperando autorización); Parámetros de la empresa: Autorización de ingreso y correos automáticos.
+
+163. OLVIDÉ MI CONTRASEÑA (REENVIAR CONTRASEÑA)
 ----------------------------------------------------------------------
 Ruta: pantalla de inicio de posMe > ¿Olvidaste tu contraseña?
   1. En la pantalla de inicio presione ¿Olvidaste tu contraseña?.
@@ -2358,14 +2385,14 @@ Ruta: pantalla de inicio de posMe > ¿Olvidaste tu contraseña?
   3. Cuando aparezca Revisa tu correo, abra el mensaje: trae su usuario, su contraseña y el botón Iniciar sesión.
 Si no llega en unos minutos, revise la carpeta de spam. Si el correo no está registrado, posMe lo indica. Si aun así no recibe el correo, pida al administrador de su empresa que le asigne una nueva contraseña en SEGURIDAD > USUARIOS.
 
-162. CERRAR SESIÓN (SALIR, SALGO DE POSME)
+164. CERRAR SESIÓN (SALIR, SALGO DE POSME)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > SALIR.
   1. Entre a SEGURIDAD > SALIR. posMe cierra la sesión y vuelve a la pantalla de inicio.
 Así es como se sale de posMe o se cambia de usuario.
 Cierre siempre la sesión al terminar, sobre todo en equipos compartidos.
 
-163. CAMBIAR MI CONTRASEÑA O MI CORREO (EDITAR PERFIL)
+165. CAMBIAR MI CONTRASEÑA O MI CORREO (EDITAR PERFIL)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > EDITAR PERFIL.
   1. Entre a SEGURIDAD > EDITAR PERFIL. Se abre Mi perfil con su Codigo y el Colaborador asociado.
@@ -2374,7 +2401,7 @@ Ruta: Menú > SEGURIDAD > EDITAR PERFIL.
   4. Cierre sesión y vuelva a entrar con la nueva contraseña.
 El botón Imprimir imprime los datos del perfil.
 
-164. CREAR UN USUARIO (CREO UN USUARIO NUEVO)
+166. CREAR UN USUARIO (CREO UN USUARIO NUEVO)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > USUARIOS.
   1. En la Lista de Usuarios presione Nuevo. Se abre Nuevo usuario.
@@ -2388,7 +2415,7 @@ Ruta: Menú > SEGURIDAD > USUARIOS.
   5. Presione Guardar.
 Notas: para quitar una bodega o caja, toque la fila para seleccionarla y presione Quitar seleccionada. El usuario solo ve el menú que permite su rol (ver Roles).
 
-165. MODIFICAR O ELIMINAR UN USUARIO
+167. MODIFICAR O ELIMINAR UN USUARIO
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > USUARIOS.
   1. Busque el usuario en la lista (campo Buscar usuario…) y ábralo.
@@ -2398,7 +2425,7 @@ Ruta: Menú > SEGURIDAD > USUARIOS.
 Para cambiar la contraseña de otro usuario escriba la nueva en Password y guarde.
 Restricciones: se requiere permiso de editar o eliminar en USUARIOS; si su permiso es Propios, solo puede modificar o eliminar los usuarios que usted creó.
 
-166. CREAR UN ROL
+168. CREAR UN ROL
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES.
 Un rol es un perfil de permisos (por ejemplo CAJERO, VENDEDOR, CONTADOR) que se asigna a los usuarios.
@@ -2412,7 +2439,7 @@ Un rol es un perfil de permisos (por ejemplo CAJERO, VENDEDOR, CONTADOR) que se 
 Para modificar un rol, ábralo en la lista, cambie lo necesario y presione Guardar. El Tipo de app se conserva tal como está guardado.
 Notas: los cambios en el menú se ven cuando el usuario vuelve a iniciar sesión.
 
-167. MARCAR UN ROL COMO ADMINISTRADOR DE COMPAÑÍA
+169. MARCAR UN ROL COMO ADMINISTRADOR DE COMPAÑÍA
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES > Nuevo o abrir el rol.
 El campo Administrador de compañía identifica a los roles que administran la empresa. posMe lo usa en otras funciones del sistema para reconocer a esos administradores; por ejemplo, solo ellos pueden compartir consultas del Constructor de Reportes Para todos los usuarios.
@@ -2423,7 +2450,7 @@ Restricciones: el campo solo lo ve y lo puede cambiar un usuario cuyo propio rol
 Notas: marcar un rol como administrador de compañía no le da acceso a pantallas; el acceso se sigue definiendo en Permisos por pantalla.
 Ver también: Crear un rol; Permisos por pantalla de un rol; Compartir una consulta de reporte con todos los usuarios.
 
-168. PERMISOS POR PANTALLA DE UN ROL (VER, CREAR, EDITAR, ELIMINAR)
+170. PERMISOS POR PANTALLA DE UN ROL (VER, CREAR, EDITAR, ELIMINAR)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
   1. En Permisos por pantalla active el interruptor de cada pantalla a la que el rol tendrá acceso. Use Buscar pantalla… para encontrarla y Solo con acceso para ver solo las que ya tienen acceso.
@@ -2436,7 +2463,7 @@ Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
   4. Presione Guardar y pida a los usuarios del rol cerrar sesión y volver a entrar.
 Notas: los niveles y el acceso se guardan exactamente como los eligió y se muestran igual al volver a abrir el rol, aunque tenga cientos de pantallas. Los permisos de pantallas que no aparecen en la lista (por ejemplo, módulos que su empresa no tiene) se conservan al guardar. Si el rol es administrador tiene acceso a todo y estos permisos no se aplican. Si edita su propio rol y le quita el acceso a ROLES, perderá acceso a esa pantalla.
 
-169. AUTORIZACIONES DE UN ROL
+171. AUTORIZACIONES DE UN ROL
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES > abrir el rol > Autorizaciones.
 Las autorizaciones son permisos especiales que no dependen de una pantalla (por ejemplo ADMINISTRADOR, CAJERO, CONTADOR, o autorizaciones de usuario interno o externo de taller). Según la configuración de la empresa, habilitan acciones como aprobar documentos o ver información restringida.
@@ -2444,7 +2471,7 @@ Las autorizaciones son permisos especiales que no dependen de una pantalla (por 
   2. Marque las que correspondan (Marcar todas / Ninguna para marcar o desmarcar todo).
   3. Presione Guardar.
 
-170. DAR ACCESO AL ASISTENTE JORDANIA (ASISTENTE IA)
+172. DAR ACCESO AL ASISTENTE JORDANIA (ASISTENTE IA)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
   1. En Permisos por pantalla busque Asistente IA y active el acceso.
@@ -2452,7 +2479,7 @@ Ruta: Menú > SEGURIDAD > ROLES > abrir el rol.
   3. Los usuarios del rol deben cerrar sesión y volver a entrar; verán el botón del asistente en la pantalla.
 Notas: además del permiso, la empresa debe tener habilitado el asistente (lo configura soporte de posMe).
 
-171. SUCURSALES
+173. SUCURSALES
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > SUCURSAL.
   1. Para crear una sucursal presione Nuevo. Se abre Nueva sucursal.
@@ -2461,7 +2488,7 @@ Ruta: Menú > SEGURIDAD > SUCURSAL.
 Para modificarla, ábrala en la lista, cambie los datos y presione Guardar; para darla de baja presione Eliminar.
 Después asigne la sucursal a los usuarios en SEGURIDAD > USUARIOS (campo Sucursal).
 
-172. NOTIFICACIONES Y RECORDATORIOS (CONFIG. NOTI)
+174. NOTIFICACIONES Y RECORDATORIOS (CONFIG. NOTI)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > CONFIG. NOTI.
 Permite configurar recordatorios periódicos que posMe muestra o envía a los usuarios.
@@ -2474,7 +2501,7 @@ Para que un usuario reciba la notificación, asígnela en SEGURIDAD > USUARIOS >
 Notas: al guardar la notificación no se envía ningún WhatsApp de confirmación.
 Ver también: Programar una tarea o visita en el calendario.
 
-173. VER QUIÉN ENTRÓ: SESIONES Y ACTIVIDAD DE UN USUARIO (LOG SESSION)
+175. VER QUIÉN ENTRÓ: SESIONES Y ACTIVIDAD DE UN USUARIO (LOG SESSION)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > LOG SESSION.
   1. En Usuario elija el usuario y presione Consultar.
@@ -2483,13 +2510,13 @@ Ruta: Menú > SEGURIDAD > LOG SESSION.
      * Últimas 5 Sesiones con IP, Plataforma (navegador/dispositivo), Último Movimiento y Detalle.
 Útil para revisar quién entró al sistema, desde dónde y cuánto trabajo ha registrado.
 
-174. ACTUALIZAR (USO DE SOPORTE)
+176. ACTUALIZAR (USO DE SOPORTE)
 ----------------------------------------------------------------------
 Ruta: Menú > SEGURIDAD > ACTUALIZAR.
 Opción técnica para que el equipo de soporte de posMe aplique actualizaciones al sistema. No la use salvo que soporte se lo indique.
 Ver también: Actualizar posMe desde el servidor central: qué es y quién puede usarlo.
 
-175. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: QUÉ ES Y QUIÉN PUEDE USARLO
+177. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: QUÉ ES Y QUIÉN PUEDE USARLO
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe. No aparece en el menú: se abre escribiendo core_upgrade/byPop3 después de la dirección de posMe.
 La pantalla Actualización desde el servidor posMe trae la versión publicada en el servidor central de posMe y la aplica sobre esta instalación: archivos de la aplicación, estructura de la base de datos y datos de configuración. El origen por defecto es https://posme.net/v4posme/public/public y se muestra arriba, en Origen.
@@ -2499,7 +2526,7 @@ Arriba hay dos pestañas: Actualización (todo lo anterior) y Respaldo de base d
 Restricciones: solo la pueden abrir usuarios con rol administrador. Solo se permite una actualización a la vez.
 Ver también: Actualizar posMe desde el servidor central: configurar la conexión; Actualizar posMe desde el servidor central: iniciar la actualización; Actualizar posMe desde el servidor central: elegir qué sincronizar; Respaldo de base de datos: qué es y cómo abrirlo.
 
-176. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: CONFIGURAR LA CONEXIÓN
+178. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: CONFIGURAR LA CONEXIÓN
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta Conexión con el servidor.
   1. En URL del servidor de origen escriba la dirección del servidor central (por defecto https://posme.net/v4posme/public/public). Debe empezar con https:// (o http:// solo si el servidor central lo permite).
@@ -2509,7 +2536,7 @@ Ruta: Administración del sistema > Actualización desde el servidor posMe (core
 Notas: la clave se guarda cifrada y solo se muestra enmascarada. Si deja la Clave vacía al guardar, se conserva la que ya estaba guardada. Si la URL o el ID faltan, la pantalla avisa: "Escriba la URL del servidor de origen." o "Escriba el ID de instalación.".
 Ver también: Actualizar posMe desde el servidor central: preparar el servidor central (administrador).
 
-177. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: MODO LOCAL O NUBE (QUÉ SE ACTUALIZA)
+179. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: MODO LOCAL O NUBE (QUÉ SE ACTUALIZA)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta Tipo de instalación.
 posMe detecta solo el Modo ("Detectado automáticamente: Local" o "Nube"). Si no es correcto, cámbielo en la lista: se vuelve a consultar el servidor con el modo elegido.
@@ -2519,7 +2546,7 @@ La tarjeta Componentes que se actualizan muestra cada paquete, su Destino y lo q
 Si en el servidor falta alguno de los zip del modo elegido, esa parte no se sincroniza y la actualización continúa: el paquete aparece en gris con "No se sincroniza (no está en el servidor)" y en Comprobaciones con un guion (–) y "No está publicado: no se sincroniza".
 Notas: solo se actualizan los archivos que vienen dentro de cada zip; nada se elimina. Siempre se protegen: .env, writable/, system/, logos y archivos de la compañía, public/.htaccess y public/index.php. En la nube también se conservan app/Config/Constants.php y App.php; en instalación local sí se actualizan. La estructura de la base de datos nunca elimina tablas ni columnas. Los datos de su empresa no cambian y los parámetros de la empresa conservan sus valores (solo se agregan los nuevos).
 
-178. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: INICIAR LA ACTUALIZACIÓN
+180. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: INICIAR LA ACTUALIZACIÓN
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3).
   1. Avise a los usuarios: mientras dure la actualización nadie podrá operar en posMe.
@@ -2534,7 +2561,7 @@ Restricciones: el botón Actualizar posMe queda desactivado mientras haya avisos
 Notas: con Copiar de la Bitácora puede copiar el registro para enviarlo a soporte.
 Ver también: Actualizar posMe desde el servidor central: elegir qué sincronizar; Actualizar posMe desde el servidor central: etapas, revisar cambios y cancelar.
 
-179. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: ELEGIR QUÉ SINCRONIZAR
+181. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: ELEGIR QUÉ SINCRONIZAR
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta Iniciar actualización, bloque Qué sincronizar.
 3 casillas combinables, todas marcadas por defecto:
@@ -2550,7 +2577,7 @@ Restricciones: marque al menos una de las 3 casillas ("Marque al menos una parte
 Notas: un zip no publicado no es error: sale en gris "No se sincroniza (no está en el servidor)". Un paquete publicado pero sin marcar sale en gris "No se sincroniza (paquete sin marcar)", se nombra en el aviso "Actualización parcial: se omite ..." y deja la actualización como parcial. Una actualización parcial queda registrada como parcial: la siguiente a la misma versión no pide Forzar aunque esté al día.
 Ver también: Actualizar posMe desde el servidor central: ejecutar el script previo 002_pre_deployment.sql.
 
-180. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: EJECUTAR EL SCRIPT PREVIO 002_PRE_DEPLOYMENT.SQL
+182. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: EJECUTAR EL SCRIPT PREVIO 002_PRE_DEPLOYMENT.SQL
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), bloque Qué sincronizar, casilla Ejecutar 002_pre_deployment.sql.
 Ejecuta en su base de datos un script preparado en el servidor central antes de comparar y sincronizar.
@@ -2563,7 +2590,7 @@ Restricciones: la casilla sale deshabilitada con "No está publicado en el servi
 Notas: el script siempre lo envía el servidor central (su carpeta public/resource/file_sql/clientes); no se usa la copia de su equipo.
 Ver también: Actualizar posMe desde el servidor central: resultado y errores del script previo 002_pre_deployment.sql.
 
-181. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: RESULTADO Y ERRORES DEL SCRIPT PREVIO 002_PRE_DEPLOYMENT.SQL
+183. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: RESULTADO Y ERRORES DEL SCRIPT PREVIO 002_PRE_DEPLOYMENT.SQL
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta Script previo 002_pre_deployment.sql (aparece en la etapa 5, antes de Revise los cambios antes de aplicarlos).
   1. Revise el resumen: Estado, Sentencias, Ejecutadas, Con resultado, Filas afectadas y Tiempo.
@@ -2574,7 +2601,7 @@ Si una sentencia falla: se detiene ahí ("Falló la sentencia #N."), lo ejecutad
 Si cancela en el plan con Cancelar sin aplicar, lo aplicado por el script tampoco se deshace: restaure la base de datos completa desde la pestaña "Respaldo de base de datos".
 Notas: si el servidor no tiene el archivo ("El servidor no tiene publicado el script previo: se continúa sin ejecutarlo.") o es de una versión anterior, la actualización continúa sin él. Un archivo vacío da 0 sentencias y la actualización continúa.
 
-182. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: ETAPAS, REVISAR CAMBIOS Y CANCELAR
+184. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: ETAPAS, REVISAR CAMBIOS Y CANCELAR
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta Etapas.
 La actualización recorre 8 etapas, cada una con su estado y Ver detalle:
@@ -2592,7 +2619,7 @@ En la pausa de la etapa 5 revise archivos, estructura y datos. Los cambios de es
 Notas: lo desmarcado en Qué sincronizar sale como omitido (etapa 4 o plan de la etapa 5). El respaldo (etapa 3) y los scripts de parámetros van siempre.
 Ver también: Actualizar posMe desde el servidor central: elegir qué sincronizar.
 
-183. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: MODO MANTENIMIENTO
+185. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: MODO MANTENIMIENTO
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3).
 Al iniciar la actualización se activa el modo mantenimiento. Mientras dura, los demás usuarios ven la página posMe en mantenimiento con el aviso "El sistema se está actualizando. Intente de nuevo en unos minutos." y no pueden operar (solo siguen disponibles el inicio y el cierre de sesión).
@@ -2602,7 +2629,7 @@ El modo mantenimiento se libera solo:
 Si al abrir la pantalla aparece "Ya hay un modo mantenimiento activo. Puede haber otra actualización en curso.", espere a que termine antes de iniciar otra.
 Notas: haga la actualización fuera del horario de trabajo.
 
-184. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: REVERTIR LA ACTUALIZACIÓN
+186. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: REVERTIR LA ACTUALIZACIÓN
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), tarjeta Avance general.
 Si una etapa falla, aparece "Falló en la etapa N" y el botón Revertir.
@@ -2613,7 +2640,7 @@ Si una etapa falla, aparece "Falló en la etapa N" y el botón Revertir.
   5. Presione Recargar posMe.
 Notas: si la reversión falla aparece "No se pudo revertir" y puede intentarlo de nuevo. Si falló al iniciar (antes de cambiar nada), solo aparece Volver. El respaldo completo de la base de datos se hace siempre, aun en una actualización parcial; por eso siempre aparece Restaurar también la base de datos completa. Si se ejecutó 002_pre_deployment.sql, sus cambios solo se deshacen marcando esa casilla; la pantalla lo recuerda.
 
-185. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: PREPARAR EL SERVIDOR CENTRAL (ADMINISTRADOR)
+187. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: PREPARAR EL SERVIDOR CENTRAL (ADMINISTRADOR)
 ----------------------------------------------------------------------
 Solo para el administrador del servidor central de posMe (no para el cliente).
   1. En el servidor central cree el archivo writable/posme_upgrade_server/server_config.php. Ejemplo con valores ficticios:
@@ -2632,7 +2659,7 @@ Solo para el administrador del servidor central de posMe (no para el cliente).
   4. Entregue a cada cliente su ID de instalación y su Clave por un medio seguro.
 Restricciones: el servidor central solo acepta HTTPS (salvo allowHttp).
 
-186. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: ADVERTENCIAS
+188. ACTUALIZAR POSME DESDE EL SERVIDOR CENTRAL: ADVERTENCIAS
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3).
   * Haga la actualización fuera del horario de trabajo y avise a los usuarios: el modo mantenimiento impide operar.
@@ -2645,7 +2672,7 @@ Ruta: Administración del sistema > Actualización desde el servidor posMe (core
   * Si aparece "Sesión o token vencido (HTTP 403). Recargue la página.", recargue la pantalla y vuelva a consultar.
 Ver también: Actualizar posMe desde el servidor central: revertir la actualización; Actualizar posMe desde el servidor central: elegir qué sincronizar.
 
-187. RESPALDO DE BASE DE DATOS: QUÉ ES Y CÓMO ABRIRLO
+189. RESPALDO DE BASE DE DATOS: QUÉ ES Y CÓMO ABRIRLO
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña Respaldo de base de datos.
   1. Abra la pantalla escribiendo core_upgrade/byPop3 después de la dirección de posMe.
@@ -2655,7 +2682,7 @@ La pestaña muestra: Respaldos guardados, Bitácora (registro de lo realizado), 
 Restricciones: solo usuarios con rol administrador. No se puede generar un respaldo ni restaurar mientras haya una actualización, un despliegue o una restauración en curso.
 Ver también: Respaldo de base de datos: generar un respaldo; Respaldo de base de datos: restaurar la base de datos.
 
-188. RESPALDO DE BASE DE DATOS: VER LOS RESPALDOS GUARDADOS
+190. RESPALDO DE BASE DE DATOS: VER LOS RESPALDOS GUARDADOS
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña Respaldo de base de datos, tarjeta Respaldos guardados.
 La tabla muestra cada respaldo con:
@@ -2668,7 +2695,7 @@ Debajo se muestra el espacio libre en disco. Presione Actualizar lista para volv
 Para eliminar un respaldo presione Eliminar en su fila y confirme en la ventana Eliminar respaldo. Esta acción no se puede deshacer.
 Notas: si no hay ninguno aparece "Aún no hay respaldos guardados. Genere uno o suba un archivo .zip.".
 
-189. RESPALDO DE BASE DE DATOS: GENERAR UN RESPALDO
+191. RESPALDO DE BASE DE DATOS: GENERAR UN RESPALDO
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña Respaldo de base de datos, tarjeta Generar respaldo.
   1. En Descripción (opcional) escriba una nota para reconocerlo, por ejemplo "antes del cierre de mes" (máximo 120 caracteres).
@@ -2678,7 +2705,7 @@ Ruta: Administración del sistema > Actualización desde el servidor posMe (core
 Notas: es una copia íntegra de la base de datos: estructura de tablas, datos, vistas, funciones, procedimientos y triggers. Se guarda en el servidor, en la carpeta writable/posme_upgrade/db_backups. El sistema sigue disponible mientras se genera; para una copia exacta, evite registrar operaciones en ese momento.
 Ver también: Respaldo de base de datos: descargar un respaldo.
 
-190. RESPALDO DE BASE DE DATOS: DESCARGAR UN RESPALDO
+192. RESPALDO DE BASE DE DATOS: DESCARGAR UN RESPALDO
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña Respaldo de base de datos, tarjeta Respaldos guardados.
   1. Busque el respaldo en la lista.
@@ -2687,7 +2714,7 @@ Ruta: Administración del sistema > Actualización desde el servidor posMe (core
 Notas: el botón Descargar solo aparece en los respaldos completos. Guarde el .zip en un lugar seguro (otro disco o la nube); con él puede restaurar en esta u otra instalación usando Subir respaldo.
 Ver también: Respaldo de base de datos: subir un respaldo.
 
-191. RESPALDO DE BASE DE DATOS: SUBIR UN RESPALDO
+193. RESPALDO DE BASE DE DATOS: SUBIR UN RESPALDO
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña Respaldo de base de datos, tarjeta Subir respaldo.
   1. En Archivo .zip seleccione un .zip descargado desde esta pantalla (de esta u otra instalación de posMe).
@@ -2697,7 +2724,7 @@ Ruta: Administración del sistema > Actualización desde el servidor posMe (core
 Restricciones: máximo 2 GB por archivo y se necesita espacio libre suficiente en el disco del servidor. Si el .zip no es un respaldo de posMe o está dañado, se rechaza.
 Ver también: Respaldo de base de datos: restaurar la base de datos.
 
-192. RESPALDO DE BASE DE DATOS: RESTAURAR LA BASE DE DATOS
+194. RESPALDO DE BASE DE DATOS: RESTAURAR LA BASE DE DATOS
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña Respaldo de base de datos, tarjeta Respaldos guardados.
   1. Recomendado: antes de restaurar, genere un respaldo de la base actual con Generar respaldo ahora.
@@ -2710,7 +2737,7 @@ Advertencias (tarjeta Antes de restaurar): restaurar reemplaza toda la base de d
 Notas: si no escribe RESTAURAR correctamente aparece "Confirmación incorrecta" y no se restaura nada.
 Ver también: Respaldo de base de datos: restauración pendiente (continuar o cancelar).
 
-193. RESPALDO DE BASE DE DATOS: RESTAURACIÓN PENDIENTE (CONTINUAR O CANCELAR)
+195. RESPALDO DE BASE DE DATOS: RESTAURACIÓN PENDIENTE (CONTINUAR O CANCELAR)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Actualización desde el servidor posMe (core_upgrade/byPop3), pestaña Respaldo de base de datos, tarjeta Restauración pendiente.
 Si la restauración falla o se interrumpe (por ejemplo, se cerró la pestaña), aparece "La restauración no terminó." y la tarjeta Restauración pendiente con el último error. Elija:
@@ -2718,7 +2745,7 @@ Si la restauración falla o se interrumpe (por ejemplo, se cerró la pestaña), 
   * Cancelar y salir de mantenimiento: detiene la restauración y libera el sistema. La base de datos puede quedar incompleta; en ese caso restaure de nuevo un respaldo completo.
 Notas: mientras la restauración esté pendiente el sistema sigue en modo mantenimiento. Si el error persiste, revise la Bitácora y comuníquese con soporte.
 
-194. DESPLIEGUE REMOTO: QUÉ ES Y QUIÉN PUEDE USARLO (ADMINISTRACIÓN DEL SISTEMA)
+196. DESPLIEGUE REMOTO: QUÉ ES Y QUIÉN PUEDE USARLO (ADMINISTRACIÓN DEL SISTEMA)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto. No aparece en el menú: se abre escribiendo core_merge/deploy después de la dirección de posMe.
 La pantalla Sincronización de instalación remota actualiza la instalación de posMe de un cliente (VPS u hosting compartido) desde la instalación local de posMe. Sincroniza tres partes que se eligen por separado:
@@ -2729,7 +2756,7 @@ La pantalla tiene tres pestañas: Sincronización (lo anterior), Limpieza de ser
 Restricciones: es una herramienta técnica solo para el administrador de posMe, no para el usuario del negocio. Requiere un usuario con rol administrador y que la instalación local tenga habilitada la consola (constante DEPLOY_CONSOLE_ENABLED de la configuración local). En las instalaciones de los clientes está apagada. Solo se permite un despliegue a la vez por compañía.
 Ver también: Despliegue remoto: preparar la consola y el agente (primera vez); Despliegue remoto: errores frecuentes; Despliegue remoto: editar la configuración (app/Config); Despliegue remoto: cargar los logos.
 
-195. DESPLIEGUE REMOTO: PREPARAR LA CONSOLA Y EL AGENTE (PRIMERA VEZ)
+197. DESPLIEGUE REMOTO: PREPARAR LA CONSOLA Y EL AGENTE (PRIMERA VEZ)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 Una sola vez en la instalación local:
@@ -2744,7 +2771,7 @@ Por cada cliente:
   6. Presione Probar conexiones para confirmar que el agente responde.
 Ver también: Despliegue remoto: elegir la compañía y configurar la conexión.
 
-196. DESPLIEGUE REMOTO: ELEGIR LA COMPAÑÍA Y CONFIGURAR LA CONEXIÓN
+198. DESPLIEGUE REMOTO: ELEGIR LA COMPAÑÍA Y CONFIGURAR LA CONEXIÓN
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. En Compañía a sincronizar elija la compañía. La lista sale de los scripts de public/resource/file_sql/clientes, uno por compañía (no aparecen 001_default, 002_pre_deployment ni los scripts -custom-php). La base de datos esperada se toma de la cabecera /*BD: ... */ del script.
@@ -2756,7 +2783,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   4. Presione Probar conexiones: muestra el agente, la base esperada contra la real, extensiones, permisos de escritura, espacio libre, despliegues en curso, FTP y MySQL directo.
 Notas: las contraseñas se guardan cifradas y nunca se vuelven a mostrar; déjelas vacías para conservar las guardadas. Si el servidor responde con una base de datos distinta a la esperada, el despliegue se bloquea.
 
-197. DESPLIEGUE REMOTO: SUBIR Y VALIDAR EL PAQUETE ZIP (ACTUALIZAR ARCHIVOS)
+199. DESPLIEGUE REMOTO: SUBIR Y VALIDAR EL PAQUETE ZIP (ACTUALIZAR ARCHIVOS)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. En Paquete de actualización (ZIP) elija el Archivo ZIP con la carpeta app/. La carpeta app/ puede venir dentro de una carpeta raíz.
@@ -2767,7 +2794,7 @@ Solo se actualizan app/Config/Routes.php y las carpetas app/Controllers, Models,
 Restricciones: si hay errores de sintaxis PHP no se puede desplegar. Los archivos con rutas peligrosas se rechazan.
 Notas: las tres opciones (archivos, estructura y datos) son casillas independientes; puede marcar solo las que necesite.
 
-198. DESPLIEGUE REMOTO: SINCRONIZAR LA ESTRUCTURA DE LA BASE DE DATOS
+200. DESPLIEGUE REMOTO: SINCRONIZAR LA ESTRUCTURA DE LA BASE DE DATOS
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. En Opciones de sincronización marque Sincronizar estructura de la base de datos.
@@ -2776,7 +2803,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 Notas: nunca elimina tablas ni columnas del destino; los objetos que solo existen en la instalación del cliente no se eliminan. Si la estructura remota ya coincide con la local, se indica que no hay cambios. Al ejecutar, los cambios se aplican en lotes y se detienen en el primer error.
 Ver también: Despliegue remoto: ejecutar la sincronización, ver el avance y revertir.
 
-199. DESPLIEGUE REMOTO: SINCRONIZAR LOS DATOS DE CONFIGURACIÓN
+201. DESPLIEGUE REMOTO: SINCRONIZAR LOS DATOS DE CONFIGURACIÓN
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. Marque Sincronizar datos de configuración.
@@ -2791,7 +2818,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 Orden: tablas, luego 001_default y luego el script de la compañía, todo en una transacción: si algo falla, se revierte todo.
 Advertencia: el modo Completa reemplaza tb_company_parameter; los ajustes del cliente que no estén en su script se pierden.
 
-200. DESPLIEGUE REMOTO: EJECUTAR LA SINCRONIZACIÓN, VER EL AVANCE Y REVERTIR
+202. DESPLIEGUE REMOTO: EJECUTAR LA SINCRONIZACIÓN, VER EL AVANCE Y REVERTIR
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. Revise el Resumen de operaciones: lista lo que se hará y lo que falta.
@@ -2808,7 +2835,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 Para deshacer: Revertir archivos o Revertir datos restauran el respaldo tomado en ese despliegue.
 Restricciones: solo un despliegue a la vez por compañía.
 
-201. DESPLIEGUE REMOTO: ERRORES FRECUENTES
+203. DESPLIEGUE REMOTO: ERRORES FRECUENTES
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   * Firma inválida: el secreto del agente no coincide: el secreto guardado en la consola no es el mismo del agente (por ejemplo, se generó uno nuevo y no se reinstaló). Genere el secreto e instale de nuevo el agente con Instalar agente por SFTP/FTP, o copie al servidor el agent_config.php que se muestra al generarlo.
@@ -2820,7 +2847,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   * Ya hay otro despliegue en curso: espere a que termine; el candado caduca solo a las 2 horas.
 Ver también: Despliegue remoto: preparar la consola y el agente (primera vez).
 
-202. DESPLIEGUE REMOTO: LIMPIEZA DE SERVIDOR (LIBERAR ESPACIO E INODOS)
+204. DESPLIEGUE REMOTO: LIMPIEZA DE SERVIDOR (LIBERAR ESPACIO E INODOS)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pestaña Limpieza de servidor (entre Sincronización y Configuración y logos).
   1. En Agente que hará la limpieza elija la Compañía con conexión guardada (con el agente instalado y actualizado). Su agente revisa la carpeta donde está instalado y limpia las instalaciones posMe vecinas del mismo hosting. Para otro hosting, elija una compañía de ese hosting.
@@ -2831,7 +2858,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pest
 Notas: nunca se borran el código, .env, app/Config, la base de datos, agent_config.php ni los index.html/.htaccess de protección. Reemplaza a la antigua URL core_merge/merge_of_posme_merge_to_posme_initialize/2, que sigue existiendo.
 Ver también: Despliegue remoto: errores frecuentes.
 
-203. DESPLIEGUE REMOTO: EDITAR LA CONFIGURACIÓN (APP/CONFIG)
+205. DESPLIEGUE REMOTO: EDITAR LA CONFIGURACIÓN (APP/CONFIG)
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pestaña Configuración y logos.
   1. En Compañía con conexión guardada elija la compañía. Si no tiene conexión, configúrela en Sincronización.
@@ -2843,7 +2870,7 @@ Restricciones: si el archivo cambió en el servidor desde que lo abrió, se rech
 Notas: requiere agente 1.1.0 o superior; si es anterior aparece un aviso. Actualícelo en Sincronización con Instalar agente por SFTP/FTP marcando Subir también el código del agente (también sube el Routes.php local).
 Ver también: Despliegue remoto: cargar los logos.
 
-204. DESPLIEGUE REMOTO: CARGAR LOS LOGOS
+206. DESPLIEGUE REMOTO: CARGAR LOS LOGOS
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pestaña Configuración y logos > Logos de la compañía.
   1. Elija la compañía en Compañía con conexión guardada.
@@ -2854,15 +2881,15 @@ Restricciones: PNG o JPG de hasta 1 MB y hasta 4000 x 4000 px. Solo se envían l
 Notas: el sistema convierte cada imagen al formato del nombre (.png o .jpg; al pasar de PNG a JPG usa fondo blanco) y respalda el logo anterior. Avisa si el logo direct-ticket mide más de 576 px de ancho (impresora térmica) y si la ruta de archivos configurada en el servidor del cliente apunta a otra carpeta (los PDF no tomarían el logo). El logo nuevo puede tardar en verse por la caché del navegador.
 Ver también: Despliegue remoto: editar la configuración (app/Config).
 
-205. PARÁMETROS DE LA EMPRESA
+207. PARÁMETROS DE LA EMPRESA
 ----------------------------------------------------------------------
 Los parámetros controlan el comportamiento de posMe por empresa (por ejemplo, orden de aplicación de abonos, lista de precios por defecto, formato de impresión).
 Los parámetros contables se editan en CONTABILIDAD > PARAMETROS; el resto los configura el equipo de soporte de posMe.
 Google Calendar de las órdenes de taller: APP_GOOGLE_CLENDAR_ENABLE (true la activa), GOOGLE_CALENDAR_ID, GOOGLE_CALENDAR_SERVICE_EMAIL y GOOGLE_CALENDAR_PRIVATE_KEY; opcionales GOOGLE_CALENDAR_TIMEZONE (por defecto America/Managua) y GOOGLE_CALENDAR_DURATION_MINUTES (duración de cada evento, por defecto 60 minutos).
 Agente de IA de WhatsApp: WHATSAPP_AI_AGENT_ENABLE (true lo activa); WHATSAPP_AI_AGENT_CONTINUE_AFTER_HANDOFF (true: la IA sigue contestando tras derivar mientras ningún colaborador escriba); WHATSAPP_AI_AGENT_HANDOFF_MESSAGE (mensaje al derivar; vacío, la IA redacta el suyo); WHATSAPP_AI_AGENT_STAGE_ATTENDED_ID (etapa "atendida por IA"); WHATSAPP_AI_AGENT_DEBOUNCE_SECONDS (segundos de espera antes de responder, por defecto 3); WHATSAPP_AI_AGENT_MAX_TURNS (máximo de respuestas de la IA antes de pasar a una persona, por defecto 15); WHATSAPP_AI_AGENT_HISTORY_MESSAGES (mensajes anteriores que lee la IA, por defecto 12); WHATSAPP_AI_AGENT_EMPLOYEE_ENTITYID (colaborador "Asistente IA", nunca recibe asignaciones). El texto y las intenciones del agente por tipo de negocio los configura soporte.
-Ver también: Configurar los parámetros contables; Parámetros de la empresa: Campañas de WhatsApp; Parámetros de la empresa: Proveedor de WhatsApp (Evolution, Meta Cloud API o LiveConnect); Parámetros de la empresa: Descuento en factura; Parámetros de la empresa: Devolución de productos.
+Ver también: Configurar los parámetros contables y las secciones "Parámetros de la empresa:" Campañas de WhatsApp; Proveedor de WhatsApp (Evolution, Meta Cloud API o LiveConnect); Descuento en factura; Devolución de productos; Autorización de ingreso y correos automáticos.
 
-206. PARÁMETROS DE LA EMPRESA: CAMPAÑAS DE WHATSAPP
+208. PARÁMETROS DE LA EMPRESA: CAMPAÑAS DE WHATSAPP
 ----------------------------------------------------------------------
 Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla CXC > CAMPAÑAS WHATSAPP.
   * CXC_ADVERTISING_ENABLED: true permite enviar campañas; cualquier otro valor solo deja preparar y revisar (vista previa).
@@ -2877,7 +2904,7 @@ Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla CXC > CAM
 Variables del mensaje: {{nombre}}, {{direccion}}, {{saldo}}, {{montoPagar}}, {{fechaPago}} y {{mora}} vienen configuradas. Para agregar otra, soporte registra una variable de campaña (tabla tb_advertising_variable) con la vista y el campo de donde sale el dato; aparece sola en Variables del cliente.
 Ver también: Campañas de WhatsApp: enviar promociones o recordatorios de cobro masivos a clientes; Parámetros de la empresa: Proveedor de WhatsApp (Evolution, Meta Cloud API o LiveConnect).
 
-207. PARÁMETROS DE LA EMPRESA: PROVEEDOR DE WHATSAPP (EVOLUTION, META CLOUD API O LIVECONNECT)
+209. PARÁMETROS DE LA EMPRESA: PROVEEDOR DE WHATSAPP (EVOLUTION, META CLOUD API O LIVECONNECT)
 ----------------------------------------------------------------------
 Ruta: los configura el equipo de soporte de posMe.
 posMe envía WhatsApp solo por tres proveedores: Evolution API, Meta Cloud API y LiveConnect. Ya no se usan Ultramsg, Waapi, Wapi2, Z-API, Whaticket ni PosMeConnect.
@@ -2888,20 +2915,29 @@ posMe envía WhatsApp solo por tres proveedores: Evolution API, Meta Cloud API y
 Notas: los mensajes de la pantalla de conversaciones, el agente de IA, el carnet en PDF, las encuestas, los pedidos, el registro de usuario y la eliminación de citas se envían al momento por Evolution API, sin pasar por la cola.
 Ver también: Avisos automáticos por WhatsApp: cuándo llegan (cola de envío); Parámetros de la empresa: Campañas de WhatsApp.
 
-208. PARÁMETROS DE LA EMPRESA: DESCUENTO EN FACTURA
+210. PARÁMETROS DE LA EMPRESA: DESCUENTO EN FACTURA
 ----------------------------------------------------------------------
 Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla FACTURACION > FACTURAR.
   * INVOICE_BILLING_DISCOUNT_BY_ITEM ("DESCUENTO POR PRODUCTO EN FACTURA"): true activa la sección Descuento del producto en la ventana Información del producto, el descuento global en el resumen y el cálculo del IVA sobre el precio con descuento; false (o sin configurar) deja la pantalla como siempre.
   * INVOICE_BILLING_DISCOUNT_PASSWORD ("CLAVE AUTORIZACION DE DESCUENTO EN FACTURA"): clave que se pide en la ventana Autorizar descuento. Si está vacío, no se pide clave.
 Ver también: Aplicar un descuento en una factura (por producto o global); Autorizar un descuento en una factura con clave.
 
-209. PARÁMETROS DE LA EMPRESA: DEVOLUCIÓN DE PRODUCTOS
+211. PARÁMETROS DE LA EMPRESA: DEVOLUCIÓN DE PRODUCTOS
 ----------------------------------------------------------------------
 Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla FACTURACION > REMPLAZO (devolución de productos).
   * INVOICE_REPLACEMENT_MAX_DAYS: días máximos entre la fecha de la factura y la fecha de la devolución. Por defecto 5 (si no está configurado o no es un número).
   * INVOICE_REPLACEMENT_VALIDATE_STOCK: ya no cambia el funcionamiento. Se usaba cuando la pantalla era de sustitución, para exigir existencias del producto que se entregaba; la devolución solo hace entrar productos al inventario.
 Ver también: Devolver productos facturados (Devolución); Reglas y validaciones de la devolución de productos.
 
-210. SOPORTE
+212. PARÁMETROS DE LA EMPRESA: AUTORIZACIÓN DE INGRESO Y CORREOS AUTOMÁTICOS
+----------------------------------------------------------------------
+Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla de inicio de sesión y los correos que envía posMe.
+  * CORE_AUTHENTICATE_BY_EMAIL: true exige que un administrador autorice por correo cada ingreso a posMe (pantalla Esperando autorización); false deja el ingreso como siempre. No piden autorización el usuario superadmin ni los propios autorizadores.
+  * CORE_LOGIN_AUTHORIZATION_EMAIL: correos que reciben las solicitudes de ingreso, separados por coma o punto y coma. Si está vacío, el correo llega a los usuarios administradores de la compañía que tengan correo; si no hay ninguno, el ingreso muestra un error y pide contactar al administrador.
+  * CORE_LOGIN_AUTHORIZATION_MINUTES: minutos que tiene el administrador para responder antes de que venza la solicitud (por defecto 15). Al vencer, el usuario debe volver a ingresar.
+  * RABBITMQ_QUEUE_EMAIL: "1" envía los correos automáticos (reportes diarios, avisos de cita, transferencias, vencimientos) por cola de envío; "0" o vacío los envía al momento.
+Ver también: Ingresar con autorización del administrador (Esperando autorización); Autorizar o rechazar el ingreso de un usuario (correo del administrador).
+
+213. SOPORTE
 ----------------------------------------------------------------------
 Si no encuentra cómo hacer algo o hay un error en el sistema, contacte al equipo de soporte de posMe.

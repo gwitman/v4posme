@@ -80,6 +80,37 @@ class User_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getResult();
 	}
+	/**
+	 * Usuarios activos de la compañia cuyo rol activo es administrador (isAdminCompany = 1
+	 * o isAdmin = 1) y que tienen un correo valido; destinatarios de la autorizacion de login.
+	 * @param int $companyID compañia
+	 * @return array filas (userID, nickname, email)
+	 */
+	function get_rowByRoleAdminCompany($companyID)
+	{
+		$db 	= db_connect();
+		$sql 	= "";
+		$sql 	= $sql.sprintf("select distinct ");
+		$sql 	= $sql.sprintf("	u.userID, ");
+		$sql 	= $sql.sprintf("	u.nickname, ");
+		$sql 	= $sql.sprintf("	u.email ");
+		$sql 	= $sql.sprintf("from tb_user u ");
+		$sql 	= $sql.sprintf("inner join tb_membership m on ");
+		$sql 	= $sql.sprintf("	m.userID = u.userID and ");
+		$sql 	= $sql.sprintf("	m.companyID = u.companyID ");
+		$sql 	= $sql.sprintf("inner join tb_role r on ");
+		$sql 	= $sql.sprintf("	r.roleID = m.roleID and ");
+		$sql 	= $sql.sprintf("	r.companyID = m.companyID ");
+		$sql 	= $sql.sprintf("where u.companyID = %d ", $companyID);
+		$sql 	= $sql.sprintf("and u.isActive = 1 ");
+		$sql 	= $sql.sprintf("and r.isActive = 1 ");
+		$sql 	= $sql.sprintf("and (r.isAdminCompany = 1 or r.isAdmin = 1) ");
+		$sql 	= $sql.sprintf("and u.email like '%%@%%' ");
+		$sql 	= $sql.sprintf("order by u.userID");
+
+		//Ejecutar Consulta
+		return $db->query($sql)->getResult();
+	}
 	function get_rowByRoleNotAdmin($companyID)
 	{
 		$db 	= db_connect();

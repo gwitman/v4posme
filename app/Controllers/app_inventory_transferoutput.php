@@ -300,6 +300,8 @@ class app_inventory_transferoutput extends _BaseController
 	}
 	function insertElement($dataSession)
 	{
+		//Correo de la transferencia: se encola despues del commit
+		$emailTransferencia = null;
 		try {
 			//PERMISO SOBRE LA FUNCTION
 			if (APP_NEED_AUTHENTICATION == true) {
@@ -535,12 +537,9 @@ class app_inventory_transferoutput extends _BaseController
 				$html 	= /*--inicio view*/ view('app_inventory_transferoutput/view_a_disemp', $objDataReport);
 				$email 	= $objWarehouseTarget->emailResponsability;
 
-				//Mandar email de salida por transferencia		
-				$this->email->setFrom(EMAIL_APP);
-				$this->email->setTo($email);
-				$this->email->setSubject("TRANSFERENCIA DE SALIDA ELABORADA:");
-				$this->email->setMessage($html);
-				$resultSend = $this->email->send();
+				//Mandar email de salida por transferencia (solo si la bodega destino tiene un correo valido)
+				if (count($this->core_web_email->normalizeRecipients((string)$email)) > 0)
+					$emailTransferencia = array("to" => $email, "subject" => "TRANSFERENCIA DE SALIDA ELABORADA:", "body" => $html);
 
 
 				//Crear la transaccion  de entrada por transferencia
@@ -728,6 +727,8 @@ class app_inventory_transferoutput extends _BaseController
 
 			if ($db->transStatus() !== false) {
 				$db->transCommit();
+				if ($emailTransferencia)
+					$this->core_web_email->queueEmail($companyID, $emailTransferencia["to"], $emailTransferencia["subject"], $emailTransferencia["body"], array(), "app_inventory_transferoutput::insertElement");
 				$this->core_web_notification->set_message(false, SUCCESS);
 				$this->response->redirect(base_url() . "/" . 'app_inventory_transferoutput/edit/companyID/' . $companyID . "/transactionID/" . $objTM["transactionID"] . "/transactionMasterID/" . $transactionMasterID);
 			} else {

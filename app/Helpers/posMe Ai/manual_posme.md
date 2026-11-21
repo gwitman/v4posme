@@ -2057,6 +2057,28 @@ Ruta: pantalla de inicio de posMe.
 Notas: si posMe pide **Permiso de ubicación requerido**, debe permitir la ubicación en el navegador para poder entrar. Si los datos son incorrectos se muestra un mensaje y no se ingresa. Si no tiene usuario, pídalo al administrador de su empresa.
 Con **Recordarme** activo, la próxima vez el usuario aparece escrito y la contraseña figura como **Guardada**: solo presione **Ingresar**. La contraseña guardada no se puede ver con el ojo. Para usar otra contraseña, bórrela y escriba la nueva; para que posMe deje de recordarlo, desmarque **Recordarme** e ingrese. No use **Recordarme** en equipos compartidos.
 Para pagar la suscripción, active **Pagar suscripción**, elija la **Cantidad de meses** y presione **Pagar**.
+Según la configuración de su empresa, después de presionar **Ingresar** puede aparecer la pantalla **Esperando autorización**: el administrador debe aprobar su ingreso (ver Ingresar con autorización del administrador).
+
+## Ingresar con autorización del administrador (Esperando autorización)
+Ruta: pantalla de inicio de posMe > **Ingresar**.
+Solo aplica si su empresa exige que el administrador autorice cada ingreso. Si no lo exige, el ingreso es igual que siempre.
+1. Escriba su **Usuario** y su **Contraseña** y presione **Ingresar**.
+2. Si los datos son correctos aparece **Esperando autorización**, con el aviso "Se notificó al administrador" y la hora a la que vence la solicitud.
+3. Espere sin cerrar la pantalla: posMe revisa sola cada 5 segundos y, cuando el administrador autoriza, muestra "Ingreso autorizado, entrando…" y entra automáticamente.
+4. Si ya no quiere entrar, presione **Cancelar**.
+Si el administrador rechaza el ingreso o la solicitud vence, se muestra el mensaje ("Ingreso rechazado" o "Solicitud vencida") y el botón **Volver al inicio de sesión**; ingrese de nuevo para generar otra solicitud.
+Notas: la solicitud vence a los 15 minutos, salvo que su empresa configure otro tiempo. No necesitan autorización el usuario superadmin ni las personas que autorizan los ingresos. Si aparece "El ingreso requiere autorización del administrador, pero no hay correos de autorización configurados", contacte al administrador de su empresa.
+Ver también: Autorizar o rechazar el ingreso de un usuario (correo del administrador).
+
+## Autorizar o rechazar el ingreso de un usuario (correo del administrador)
+Ruta: correo "Autorizar ingreso: <compañía> - <usuario>".
+Cuando un usuario intenta entrar y la empresa exige autorización, posMe envía un correo a los autorizadores: los correos configurados por la empresa o, si no hay ninguno, los usuarios administradores de la compañía que tengan correo.
+1. Abra el correo. Trae el usuario, la compañía, la IP, la plataforma (equipo y navegador), la hora del intento y la hora de vencimiento.
+2. Presione el enlace **Revisar y autorizar el ingreso**. Se abre la página **Autorización de ingreso** con los datos de la **Solicitud de ingreso** (**Usuario**, **Compañía**, **Equipo**, **Fecha**, **Vence**).
+3. Presione **Autorizar** para dejarlo entrar o **Rechazar** para negarle el ingreso. Abrir el enlace no autoriza: hay que presionar un botón.
+Notas: el enlace sirve una sola vez. Si otro administrador ya respondió, la página indica "Este ingreso ya fue autorizado." o "Este ingreso ya fue rechazado."; si venció, indica que el usuario debe intentar ingresar de nuevo.
+Consejo: si no reconoce el intento, rechácelo y cambie la contraseña del usuario en SEGURIDAD > USUARIOS.
+Ver también: Ingresar con autorización del administrador (Esperando autorización); Parámetros de la empresa: Autorización de ingreso y correos automáticos.
 
 ## Olvidé mi contraseña (reenviar contraseña)
 Ruta: pantalla de inicio de posMe > **¿Olvidaste tu contraseña?**
@@ -2526,7 +2548,7 @@ Los parámetros controlan el comportamiento de posMe por empresa (por ejemplo, o
 Los parámetros contables se editan en CONTABILIDAD > PARAMETROS; el resto los configura el equipo de soporte de posMe.
 Google Calendar de las órdenes de taller: APP_GOOGLE_CLENDAR_ENABLE (true la activa), GOOGLE_CALENDAR_ID, GOOGLE_CALENDAR_SERVICE_EMAIL y GOOGLE_CALENDAR_PRIVATE_KEY; opcionales GOOGLE_CALENDAR_TIMEZONE (por defecto America/Managua) y GOOGLE_CALENDAR_DURATION_MINUTES (duración de cada evento, por defecto 60 minutos).
 Agente de IA de WhatsApp: WHATSAPP_AI_AGENT_ENABLE (true lo activa); WHATSAPP_AI_AGENT_CONTINUE_AFTER_HANDOFF (true: la IA sigue contestando tras derivar mientras ningún colaborador escriba); WHATSAPP_AI_AGENT_HANDOFF_MESSAGE (mensaje al derivar; vacío, la IA redacta el suyo); WHATSAPP_AI_AGENT_STAGE_ATTENDED_ID (etapa "atendida por IA"); WHATSAPP_AI_AGENT_DEBOUNCE_SECONDS (segundos de espera antes de responder, por defecto 3); WHATSAPP_AI_AGENT_MAX_TURNS (máximo de respuestas de la IA antes de pasar a una persona, por defecto 15); WHATSAPP_AI_AGENT_HISTORY_MESSAGES (mensajes anteriores que lee la IA, por defecto 12); WHATSAPP_AI_AGENT_EMPLOYEE_ENTITYID (colaborador "Asistente IA", nunca recibe asignaciones). El texto y las intenciones del agente por tipo de negocio los configura soporte.
-Ver también: Configurar los parámetros contables; Parámetros de la empresa: Campañas de WhatsApp; Parámetros de la empresa: Proveedor de WhatsApp (Evolution, Meta Cloud API o LiveConnect); Parámetros de la empresa: Descuento en factura; Parámetros de la empresa: Devolución de productos.
+Ver también: Configurar los parámetros contables y las secciones "Parámetros de la empresa:" Campañas de WhatsApp; Proveedor de WhatsApp (Evolution, Meta Cloud API o LiveConnect); Descuento en factura; Devolución de productos; Autorización de ingreso y correos automáticos.
 <!-- REVISAR: pantalla para que el cliente edite parametros generales -->
 
 ## Parámetros de la empresa: Campañas de WhatsApp
@@ -2564,6 +2586,14 @@ Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla FACTURACI
 - INVOICE_REPLACEMENT_MAX_DAYS: días máximos entre la fecha de la factura y la fecha de la devolución. Por defecto 5 (si no está configurado o no es un número).
 - INVOICE_REPLACEMENT_VALIDATE_STOCK: ya no cambia el funcionamiento. Se usaba cuando la pantalla era de sustitución, para exigir existencias del producto que se entregaba; la devolución solo hace entrar productos al inventario.
 Ver también: Devolver productos facturados (Devolución); Reglas y validaciones de la devolución de productos.
+
+## Parámetros de la empresa: Autorización de ingreso y correos automáticos
+Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla de inicio de sesión y los correos que envía posMe.
+- CORE_AUTHENTICATE_BY_EMAIL: true exige que un administrador autorice por correo cada ingreso a posMe (pantalla **Esperando autorización**); false deja el ingreso como siempre. No piden autorización el usuario superadmin ni los propios autorizadores.
+- CORE_LOGIN_AUTHORIZATION_EMAIL: correos que reciben las solicitudes de ingreso, separados por coma o punto y coma. Si está vacío, el correo llega a los usuarios administradores de la compañía que tengan correo; si no hay ninguno, el ingreso muestra un error y pide contactar al administrador.
+- CORE_LOGIN_AUTHORIZATION_MINUTES: minutos que tiene el administrador para responder antes de que venza la solicitud (por defecto 15). Al vencer, el usuario debe volver a ingresar.
+- RABBITMQ_QUEUE_EMAIL: "1" envía los correos automáticos (reportes diarios, avisos de cita, transferencias, vencimientos) por cola de envío; "0" o vacío los envía al momento.
+Ver también: Ingresar con autorización del administrador (Esperando autorización); Autorizar o rechazar el ingreso de un usuario (correo del administrador).
 
 ## Soporte
 Si no encuentra cómo hacer algo o hay un error en el sistema, contacte al equipo de soporte de posMe. <!-- REVISAR: telefono / correo de soporte -->

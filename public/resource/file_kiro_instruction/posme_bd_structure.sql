@@ -2427,12 +2427,20 @@ DROP TABLE IF EXISTS `tb_log_session`;
 CREATE TABLE `tb_log_session`  (
   `session_id` varchar(40) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '0',
   `userID` int NULL DEFAULT NULL,
+  `companyID` int NULL DEFAULT NULL,
   `ip_address` varchar(45) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '0',
   `user_agent` varchar(120) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '0',
   `last_activity` varchar(15) CHARACTER SET latin1 COLLATE latin1_general_ci NOT NULL DEFAULT '0',
   `last_update` datetime NULL DEFAULT NULL,
   `user_data` text CHARACTER SET latin1 COLLATE latin1_general_ci NULL,
-  PRIMARY KEY (`session_id`) USING BTREE
+  `authorizationStatus` varchar(20) CHARACTER SET latin1 COLLATE latin1_general_ci NULL DEFAULT NULL,
+  `authorizationTokenHash` varchar(64) CHARACTER SET latin1 COLLATE latin1_general_ci NULL DEFAULT NULL,
+  `authorizationExpiresOn` datetime NULL DEFAULT NULL,
+  `authorizationOn` datetime NULL DEFAULT NULL,
+  `authorizationBy` int NULL DEFAULT NULL,
+  `authorizationIP` varchar(45) CHARACTER SET latin1 COLLATE latin1_general_ci NULL DEFAULT NULL,
+  PRIMARY KEY (`session_id`) USING BTREE,
+  INDEX `IDX_LOG_SESSION_001`(`authorizationTokenHash` ASC) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------

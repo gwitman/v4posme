@@ -1565,9 +1565,6 @@ $routes->match(['get', 'post'], 'app_notification/sendWhatsappGlobalProCompraFre
 $routes->match(['get', 'post'], 'app_notification/sendWhatsappGlobalProLaptopMenorA14400Frecuency7Meses', 'app_notification::sendWhatsappGlobalProLaptopMenorA14400Frecuency7Meses');
 $routes->match(['get', 'post'], 'app_notification/sendWhatsappGlobalProLaptopMayoresA14400Frecuency11Meses', 'app_notification::sendWhatsappGlobalProLaptopMayoresA14400Frecuency11Meses');
 $routes->match(['get', 'post'], 'app_notification/sendWhatsappGlobalProCumpleAnnos', 'app_notification::sendWhatsappGlobalProCumpleAnnos');
-$routes->match(['get', 'post'], 'app_notification/sendEmailGlamCustCitas', 'app_notification::sendEmailGlamCustCitas');
-$routes->match(['get', 'post'], 'app_notification/sendEmailGlamCustCitas2HoursBefore', 'app_notification::sendEmailGlamCustCitas2HoursBefore');
-$routes->match(['get', 'post'], 'app_notification/sendEmailGlamCustCitasFrecuency2DayBefore', 'app_notification::sendEmailGlamCustCitasFrecuency2DayBefore');
 $routes->match(['get', 'post'], 'app_notification/sendEmailAudioElPipeCitas', 'app_notification::sendEmailAudioElPipeCitas');
 $routes->match(['get', 'post'], 'app_notification/sendWhatsapp_ChicExtensiones_Citas', 'app_notification::sendWhatsapp_ChicExtensiones_Citas');
 $routes->match(['get', 'post'], 'app_notification/sendWhatsapp_ChicExtensiones_Citas/(:any)', 'app_notification::sendWhatsapp_ChicExtensiones_Citas');
@@ -1579,6 +1576,8 @@ $routes->match(['get', 'post'], 'app_notification/sendWhatsappDiarioMasiveWapi2C
 $routes->match(['get', 'post'], 'app_notification/sendWhatsappDiarioMasiveWapi2CobranzaNjGym/(:any)', 'app_notification::sendWhatsappDiarioMasiveWapi2CobranzaNjGym');
 $routes->match(['get', 'post'], 'app_notification/procesarColaWhatsappMasivo', 'app_notification::procesarColaWhatsappMasivo');
 $routes->match(['get', 'post'], 'app_notification/procesarColaWhatsappMasivo/(:any)', 'app_notification::procesarColaWhatsappMasivo');
+$routes->match(['get', 'post'], 'app_notification/procesarColaEmail', 'app_notification::procesarColaEmail');
+$routes->match(['get', 'post'], 'app_notification/procesarColaEmail/(:any)', 'app_notification::procesarColaEmail');
 $routes->match(['get', 'post'], 'app_notification/sendWhatsappDiarioMasiveMetaTemplateCobranzaNjGym', 'app_notification::sendWhatsappDiarioMasiveMetaTemplateCobranzaNjGym');
 $routes->match(['get', 'post'], 'app_notification/sendWhatsappDiarioMasiveMetaTemplateCobranzaNjGym/(:any)', 'app_notification::sendWhatsappDiarioMasiveMetaTemplateCobranzaNjGym');
 $routes->match(['get', 'post'], 'app_notification/fillTipoCambio', 'app_notification::fillTipoCambio');
@@ -1801,10 +1800,14 @@ $routes->match(['get', 'post'], 'core_acount/rememberpassword', 'core_acount::re
 $routes->match(['get', 'post'], 'core_acount/edit', 'core_acount::edit');
 $routes->match(['get', 'post'], 'core_acount/payment', 'core_acount::payment');
 $routes->match(['get', 'post'], 'core_acount/payment/(:any)', 'core_acount::payment');
-$routes->match(['get', 'post'], 'core_acount/getReviewLoginSession', 'core_acount::getReviewLoginSession');
-$routes->match(['get', 'post'], 'core_acount/getReviewLoginSession/(:any)', 'core_acount::getReviewLoginSession');
-$routes->match(['get', 'post'], 'core_acount/setReviewLoginSession', 'core_acount::setReviewLoginSession');
-$routes->match(['get', 'post'], 'core_acount/setReviewLoginSession/(:any)', 'core_acount::setReviewLoginSession');
+$routes->match(['get', 'post'], 'core_acount/reviewLoginAuthorization', 'core_acount::reviewLoginAuthorization');
+$routes->match(['get', 'post'], 'core_acount/reviewLoginAuthorization/(:any)', 'core_acount::reviewLoginAuthorization');
+$routes->match(['get', 'post'], 'core_acount/resolveLoginAuthorization', 'core_acount::resolveLoginAuthorization');
+$routes->match(['get', 'post'], 'core_acount/resolveLoginAuthorization/(:any)', 'core_acount::resolveLoginAuthorization');
+$routes->match(['get', 'post'], 'core_acount/getLoginAuthorizationStatus', 'core_acount::getLoginAuthorizationStatus');
+$routes->match(['get', 'post'], 'core_acount/getLoginAuthorizationStatus/(:any)', 'core_acount::getLoginAuthorizationStatus');
+$routes->match(['get', 'post'], 'core_acount/cancelLoginAuthorization', 'core_acount::cancelLoginAuthorization');
+$routes->match(['get', 'post'], 'core_acount/cancelLoginAuthorization/(:any)', 'core_acount::cancelLoginAuthorization');
 $routes->match(['get', 'post'], 'core_acount_logsession/index', 'core_acount_logsession::index');
 $routes->match(['get', 'post'], 'core_acount_logsession/index/(:any)', 'core_acount_logsession::index');
 $routes->match(['get', 'post'], 'core_acount_logsession/getData', 'core_acount_logsession::getData');

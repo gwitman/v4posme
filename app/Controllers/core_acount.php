@@ -223,15 +223,20 @@ class core_acount extends _BaseController {
 			}
 
 			$objUser	= $this->core_web_authentication->get_UserBy_PasswordAndNickname($nickname,$password);
-			$data 		= $this->core_web_authentication->createLogin($objUser);
 
 			//Recordarme: guardar o borrar segun el checkbox
 			if($this->request->getPost("remember") != null)
 			$this->core_web_authentication->rememberLoginSave($nickname,$password);
 			else
 			$this->core_web_authentication->rememberLoginClear();
-			$dataSession		= $this->session->get();	
-			$dataSession		= $this->session->get(); 
+
+			//Autorizacion de ingreso (CORE_AUTHENTICATE_BY_EMAIL): la sesion NO se crea hasta que el administrador autorice
+			$destinatariosAutorizacion	= $this->loginAuthorizationRecipients($objUser);
+			if(count($destinatariosAutorizacion) > 0)
+			return $this->loginAuthorizationRequest($objUser,$destinatariosAutorizacion);
+
+			$data 				= $this->core_web_authentication->createLogin($objUser);
+			$dataSession		= $this->session->get();
 			
 			//Obtener Datos 				
 			$parameterCantidadTransacciones 	= $this->core_web_parameter->getParameter("CORE_QUANTITY_TRANSACCION",$objUser["user"]->companyID);
@@ -268,9 +273,7 @@ class core_acount extends _BaseController {
 			$parameterCORE_PROPIETARY_EMAIL 			= $parameterCORE_PROPIETARY_EMAIL->value;
 			$parameterCORE_PROPIETARY_NAME 				= $this->core_web_parameter->getParameter("CORE_PROPIETARY_NAME",$objUser["user"]->companyID);
 			$parameterCORE_PROPIETARY_NAME 				= $parameterCORE_PROPIETARY_NAME->value;
-			$parameterCORE_AUTHENTICATE_BY_EMAIL 		= $this->core_web_parameter->getParameter("CORE_AUTHENTICATE_BY_EMAIL",$objUser["user"]->companyID);
-			$parameterCORE_AUTHENTICATE_BY_EMAIL 		= $parameterCORE_AUTHENTICATE_BY_EMAIL->value;
-			
+
 			//Procesar Pago
 			if($pagoCantidadMonto > 0 )
 			{
@@ -296,16 +299,8 @@ class core_acount extends _BaseController {
 					
 			set_cookie("userID",$dataSession['user']->userID,86400,"localhost");
 			set_cookie("nickname",$dataSession['user']->nickname,86400,"localhost");
-			set_cookie("email",$dataSession['user']->email,86400,"localhost");			
-			
-	
-			//Notificar a dueño que alguien esta intentado entrar
-			//Solicitar acceso
-			if($parameterCORE_AUTHENTICATE_BY_EMAIL == "true")
-			{
-				
-			}
-			
+			set_cookie("email",$dataSession['user']->email,86400,"localhost");
+
 			//Pantalla de inicio: la última visitada por el usuario o la del rol
 			$urlInicio	= $this->core_web_authentication->lastScreenGet($objUser["user"]);
 			$urlInicio	= $urlInicio ? $urlInicio : base_url()."/".$objUser["role"]->urlDefault."/index";
@@ -313,50 +308,6 @@ class core_acount extends _BaseController {
 			if($objCompany->type == "emanuel")
 			{
 				$this->response->redirect($urlInicio);
-			}
-			else if($objCompany->type == "bivaly" && $nickname != "superadmin"  )
-			{
-				$url 					= base_url()."/core_acount/setReviewLoginSession/userName/".$nickname."/sessionID/".$dataSession["sessionID"];
-				$params_["nickname"]	= $nickname;
-				$params_["objCompany"]	= $objCompany;				
-				$params_["mensaje"]		= "👉 Dar clic en el siguiente enlace para autorizar el acceso: ".$url;
-		
-		
-				$subject 	= "Inicio de session: ".$objCompany->name." ".$nickname;
-				$body  		= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview			
-				$this->email->setFrom(EMAIL_APP);
-				$this->email->setTo( $dataSession['user']->email );
-				$this->email->setSubject($subject);
-				$this->email->setMessage($body);
-
-				//Bivaly: se envía el enlace de autorización (verificación) al correo del usuario
-				$resultSend01 = $this->email->send();
-
-				//Guardar Log		
-				$this->Log_Session_Model->delete_app_posme("userID",$dataSession["user"]->userID);					
-				$objLogSessionModel["session_id"] 		= $dataSession["sessionID"];
-				$objLogSessionModel["ip_address"] 		= $this->request->getIPAddress();
-				$objLogSessionModel["user_agent"] 		= $this->request->getUserAgent()->getPlatform();
-				$objLogSessionModel["last_activity"] 	= \DateTime::createFromFormat("Y-m-d H:i:s",helper_getDateTime())->format("YmdHis");
-				$objLogSessionModel["user_data"] 		= $objUser["user"]->nickname." request_authorization session";
-				$objLogSessionModel["userID"]			= $dataSession["user"]->userID;				
-				$this->Log_Session_Model->insert($objLogSessionModel);	 
-				
-				$script = /*--inicio view*/ view('core_template/core_acount_script_autorizacion');//--finview	
-				$script = str_replace("[[URL_AUTORIZATION]]",base_url()."/core_acount/getReviewLoginSession/userName/".$nickname."/sessionID/".$objLogSessionModel["session_id"], $script);
-				$script = str_replace("[[URL_REDIRECT]]",$urlInicio, $script);
-				$script = str_replace("[[NICKNAME]]",$nickname, $script);
-				
-				echo helper_notificationPage(
-					"Esperar aurotizacion", 
-					$script,
-					"Se le ha notificado al propietario, estamos esperando aurotizacion",
-					"",
-					"",
-					true
-				);
-				
-				return;
 			}
 			else
 			{
@@ -530,12 +481,9 @@ class core_acount extends _BaseController {
 			$dataEmail["urlLogin"]		= base_url();
 			$dataEmail["fecha"]			= \DateTime::createFromFormat("Y-m-d H:i:s",helper_getDateTime())->format("d/m/Y h:i A");
 
-			$this->email->setFrom(EMAIL_APP, HELLOW);
-			$this->email->setTo($objUser["user"]->email);
-			$this->email->setSubject(REMEMBER_PASSWORD);
+			//Envio inmediato: el usuario espera la respuesta en el modal
 			$mensaje = /*--inicio view*/ view('core_template/email_remember_password',$dataEmail);//--finview
-			$this->email->setMessage($mensaje);
-			if(!$this->email->send())
+			if(!$this->core_web_email->sendNow($objUser["user"]->companyID,$objUser["user"]->email,REMEMBER_PASSWORD,$mensaje,array("from" => EMAIL_APP, "fromName" => HELLOW)))
 			throw new \Exception("No se pudo enviar el correo. Intenta de nuevo en unos minutos.");
 
 			return $this->response->setJSON(array(
@@ -701,37 +649,421 @@ class core_acount extends _BaseController {
 		}
 	}
 	
-	//Revisar si el propietario ya autorizo el acceso
-	function getReviewLoginSession()
+	/********************************************/
+	/* AUTORIZACION DE INGRESO POR EL ADMINISTRADOR (CORE_AUTHENTICATE_BY_EMAIL = true)
+	/* 1. login: valida la clave, guarda la solicitud en tb_log_session (token con hash) y envia el enlace.
+	/* 2. reviewLoginAuthorization / resolveLoginAuthorization: el administrador autoriza o rechaza (sin sesion).
+	/* 3. getLoginAuthorizationStatus: la pantalla de espera consulta; al autorizarse crea la sesion.
+	/********************************************/
+
+	/**
+	 * Destinatarios que deben autorizar el ingreso del usuario. Devuelve arreglo vacio si no se
+	 * requiere autorizacion: CORE_AUTHENTICATE_BY_EMAIL distinto de "true", usuario superadmin o
+	 * el usuario es uno de los autorizadores.
+	 * Destinatarios: CORE_LOGIN_AUTHORIZATION_EMAIL (separados por coma) o, si esta vacio,
+	 * los usuarios con rol administrador de la compañia.
+	 *
+	 * @param array $objUser Datos de get_UserBy_PasswordAndNickname.
+	 * @return array Correos destinatarios.
+	 */
+	private function loginAuthorizationRecipients($objUser)
 	{
-		$userName 		= /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "userName"); //--finuri
-		$sessionID 		= /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "sessionID"); //--finuri
-		$objLogSession 	= $this->Log_Session_Model->get_rowBySessionID($sessionID);
-		
-		return $this->response->setJSON(array(
-			'error'   	=> false,
-			'message' 	=> "success",			
-			'data'	  	=> $objLogSession
-		));//--finjson	
+		$companyID	= $objUser["user"]->companyID;
+		$nickname	= strtolower(trim((string)$objUser["user"]->nickname));
+
+		try{
+			$habilitado = (string)$this->core_web_parameter->getParameterValue("CORE_AUTHENTICATE_BY_EMAIL",$companyID);
+		}
+		catch(\Exception $ex){
+			$habilitado = "false";
+		}
+		if(strtolower(trim($habilitado)) != "true" || $nickname == "superadmin")
+		return array();
+
+		try{
+			$correos = (string)$this->core_web_parameter->getParameterValue("CORE_LOGIN_AUTHORIZATION_EMAIL",$companyID);
+		}
+		catch(\Exception $ex){
+			$correos = "";
+		}
+
+		$destinatarios	= $this->core_web_email->normalizeRecipients($correos);
+		$adminUserIDs	= array();
+		if(count($destinatarios) == 0)
+		{
+			$correosAdmin	= array();
+			$objListAdmin	= $this->User_Model->get_rowByRoleAdminCompany($companyID);
+			foreach(($objListAdmin ? $objListAdmin : array()) as $objAdmin)
+			{
+				$adminUserIDs[]	= (int)$objAdmin->userID;
+				$correosAdmin[]	= $objAdmin->email;
+			}
+			$destinatarios	= $this->core_web_email->normalizeRecipients($correosAdmin);
+		}
+
+		//El usuario que intenta entrar es uno de los autorizadores: entra sin autorizacion
+		$emailUsuario	= strtolower(trim((string)$objUser["user"]->email));
+		if(in_array((int)$objUser["user"]->userID,$adminUserIDs) || ($emailUsuario != "" && in_array($emailUsuario,array_map("strtolower",$destinatarios))))
+		return array();
+
+		if(count($destinatarios) == 0)
+		throw new \Exception("El ingreso requiere autorización del administrador, pero no hay correos de autorización configurados. Contacte al administrador.");
+
+		return $destinatarios;
 	}
-	
-	function setReviewLoginSession()
+
+	/**
+	 * Registra la solicitud de autorizacion (tb_log_session, estado pending, solo el hash del token),
+	 * envia el enlace a los administradores (sendNow y, si falla, cola de correo) y muestra la
+	 * pantalla de espera. No crea la sesion del usuario.
+	 *
+	 * @param array $objUser       Datos de get_UserBy_PasswordAndNickname.
+	 * @param array $destinatarios Correos de los autorizadores.
+	 * @return string HTML de la pantalla de espera.
+	 */
+	private function loginAuthorizationRequest($objUser,$destinatarios)
 	{
-		$userName 				= /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "userName"); //--finuri
-		$sessionID 				= /*--ini uri*/helper_SegmentsValue($this->uri->getSegments(), "sessionID"); //--finuri
-		
-		$data["user_data"] 		= $userName." create session";
-		$this->Log_Session_Model->update_app_posme($sessionID,$data);		
-		$objLogSession 			= $this->Log_Session_Model->get_rowBySessionID($sessionID);		
-		
-		echo helper_notificationPage(
-			"Acceso permitido", 
-			"<script></script>",
-			"El acceso fue permitido",
+		$companyID	= (int)$objUser["user"]->companyID;
+		$userID		= (int)$objUser["user"]->userID;
+		$nickname	= (string)$objUser["user"]->nickname;
+		$objCompany	= $objUser["company"];
+
+		try{
+			$minutos = (int)$this->core_web_parameter->getParameterValue("CORE_LOGIN_AUTHORIZATION_MINUTES",$companyID);
+		}
+		catch(\Exception $ex){
+			$minutos = 15;
+		}
+		$minutos	= $minutos > 0 ? $minutos : 15;
+
+		$now		= helper_getDateTime();
+		$objNow		= \DateTime::createFromFormat("Y-m-d H:i:s",$now);
+		$expiresOn	= (clone $objNow)->modify("+".$minutos." minutes")->format("Y-m-d H:i:s");
+		$token		= bin2hex(random_bytes(32));
+		$tokenHash	= hash("sha256",$token);
+		$sessionID	= session_create_id();
+		$ip			= $this->request->getIPAddress();
+		$agent		= $this->request->getUserAgent();
+		$platform	= (string)$agent->getPlatform();
+		$browser	= trim((string)$agent->getBrowser()." ".(string)$agent->getVersion());
+
+		//Si el navegador tenia otra sesion abierta, deja de estar autenticado mientras espera
+		if($this->session->get("user"))
+		$this->session->remove("user");
+
+		//Solicitud pendiente: solo se guarda el hash del token
+		$objLogSessionModel["session_id"] 				= $sessionID;
+		$objLogSessionModel["userID"]					= $userID;
+		$objLogSessionModel["companyID"]				= $companyID;
+		$objLogSessionModel["ip_address"] 				= $ip;
+		$objLogSessionModel["user_agent"] 				= $platform;
+		$objLogSessionModel["last_activity"] 			= $objNow->format("YmdHis");
+		$objLogSessionModel["user_data"] 				= $nickname." request_authorization session";
+		$objLogSessionModel["authorizationStatus"]		= "pending";
+		$objLogSessionModel["authorizationTokenHash"]	= $tokenHash;
+		$objLogSessionModel["authorizationExpiresOn"]	= $expiresOn;
+		$this->Log_Session_Model->insert($objLogSessionModel);
+
+		//Correo al administrador
+		$url					= base_url()."/core_acount/reviewLoginAuthorization/token/".$token;
+		$params_["nickname"]	= $nickname;
+		$params_["objCompany"]	= $objCompany;
+		$params_["mensaje"]		=
+			"El usuario <b>".htmlspecialchars($nickname)."</b> está intentando ingresar al sistema y requiere su autorización.<br/><br/>".
+			"Usuario: ".htmlspecialchars($nickname)."<br/>".
+			"Compañía: ".htmlspecialchars((string)$objCompany->name)."<br/>".
+			"IP: ".htmlspecialchars($ip)."<br/>".
+			"Plataforma: ".htmlspecialchars(trim($platform." ".$browser))."<br/>".
+			"Hora: ".$objNow->format("Y-m-d H:i")."<br/>".
+			"Vence: ".\DateTime::createFromFormat("Y-m-d H:i:s",$expiresOn)->format("Y-m-d H:i")."<br/><br/>".
+			"👉 <a href='".htmlspecialchars($url,ENT_QUOTES)."'>Revisar y autorizar el ingreso</a><br/><br/>".
+			"Si el enlace no abre, copie esta dirección en el navegador: ".htmlspecialchars($url);
+		$subject				= "Autorizar ingreso: ".$objCompany->name." - ".$nickname;
+		$body  					= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview
+
+		$enviado				= $this->core_web_email->sendNow($companyID,$destinatarios,$subject,$body);
+		if(!$enviado && $this->core_web_email->isQueueEnabled($companyID))
+		$enviado				= $this->core_web_email->queueEmail($companyID,$destinatarios,$subject,$body,array(),"core_acount::login");
+
+		if(!$enviado)
+		{
+			$this->Log_Session_Model->delete_app_posme("session_id",$sessionID);
+			throw new \Exception("No se pudo notificar al administrador para autorizar el ingreso. Intente de nuevo en unos minutos.");
+		}
+
+		//La solicitud vive en la sesion del navegador (sin token en claro)
+		$this->session->set("pendingLogin",array(
+			"userID"		=> $userID,
+			"companyID"		=> $companyID,
+			"nickname"		=> $nickname,
+			"sessionID"		=> $sessionID,
+			"tokenHash"		=> $tokenHash,
+			"expiresOn"		=> $expiresOn
+		));
+
+		$script = /*--inicio view*/ view('core_template/core_acount_script_autorizacion');//--finview
+		$script = str_replace("[[URL_AUTORIZATION_STATUS]]",base_url()."/core_acount/getLoginAuthorizationStatus", $script);
+		$script = str_replace("[[URL_AUTORIZATION_CANCEL]]",base_url()."/core_acount/cancelLoginAuthorization", $script);
+		$script = str_replace("[[URL_LOGIN]]",base_url(), $script);
+
+		return helper_notificationPage(
+			"Esperando autorización",
+			$script,
+			"Se notificó al administrador. Esta pantalla continuará sola cuando autorice el ingreso (vence a las ".\DateTime::createFromFormat("Y-m-d H:i:s",$expiresOn)->format("h:i A").").",
 			"",
 			"",
 			true
 		);
-		
+	}
+
+	/**
+	 * Datos de la vista core_acount/review_authorization para un token.
+	 *
+	 * @param string $token Token en claro recibido en el enlace o en el formulario.
+	 * @return array array("data" => datos de la vista, "objLog" => fila de tb_log_session o null)
+	 */
+	private function loginAuthorizationViewData($token)
+	{
+		$token				= strtolower(trim((string)$token));
+		$data["valid"]		= false;
+		$data["resolved"]	= false;
+		$data["message"]	= "El enlace de autorización no es válido.";
+		$data["token"]		= "";
+		$data["nickname"]	= "";
+		$data["companyName"]= "";
+		$data["ip"]			= "";
+		$data["userAgent"]	= "";
+		$data["createdOn"]	= "";
+		$data["expiresOn"]	= "";
+		$data["urlResolve"]	= base_url()."/core_acount/resolveLoginAuthorization";
+
+		if(preg_match('/^[a-f0-9]{64}$/',$token) !== 1)
+		return array("data" => $data, "objLog" => null);
+
+		$objLog				= $this->Log_Session_Model->get_rowByAuthorizationTokenHash(hash("sha256",$token));
+		if(!$objLog)
+		return array("data" => $data, "objLog" => null);
+
+		$objUserLog			= $this->User_Model->get_rowByUserID((int)$objLog->userID);
+		$objCompanyLog		= $this->Company_Model->get_rowByPK((int)$objLog->companyID);
+		$objCreatedOn		= \DateTime::createFromFormat("YmdHis",(string)$objLog->last_activity);
+		$objExpiresOn		= \DateTime::createFromFormat("Y-m-d H:i:s",(string)$objLog->authorizationExpiresOn);
+
+		$data["token"]		= $token;
+		$data["nickname"]	= $objUserLog ? $objUserLog->nickname : "";
+		$data["companyName"]= $objCompanyLog ? $objCompanyLog->name : "";
+		$data["ip"]			= (string)$objLog->ip_address;
+		$data["userAgent"]	= (string)$objLog->user_agent;
+		$data["createdOn"]	= $objCreatedOn ? $objCreatedOn->format("Y-m-d H:i") : "";
+		$data["expiresOn"]	= $objExpiresOn ? $objExpiresOn->format("Y-m-d H:i") : "";
+
+		$status				= (string)$objLog->authorizationStatus;
+		if($status == "authorized")
+		$data["message"]	= "Este ingreso ya fue autorizado.";
+		else if($status == "rejected")
+		$data["message"]	= "Este ingreso ya fue rechazado.";
+		else if($status != "pending")
+		$data["message"]	= "La solicitud de autorización no es válida.";
+		else if((string)$objLog->authorizationExpiresOn < helper_getDateTime())
+		$data["message"]	= "La solicitud de autorización venció. El usuario debe intentar ingresar de nuevo.";
+		else
+		{
+			$data["valid"]	= true;
+			$data["message"]= "";
+		}
+
+		return array("data" => $data, "objLog" => $objLog);
+	}
+
+	/**
+	 * Pagina publica que abre el administrador desde el correo: muestra los datos del intento de
+	 * ingreso y los botones Autorizar / Rechazar (la decision se envia por POST).
+	 * Segmento: token.
+	 *
+	 * @return string Vista core_acount/review_authorization.
+	 */
+	function reviewLoginAuthorization()
+	{
+		try
+		{
+			$token		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"token"); //--finuri
+			$result		= $this->loginAuthorizationViewData($token);
+			return view('core_acount/review_authorization',$result["data"]);//--finview-r
+		}
+		catch(\Exception $ex)
+		{
+			log_message("error","[core_acount::reviewLoginAuthorization] ".$ex->getLine()." ".$ex->getMessage());
+			return view('core_acount/review_authorization',array("valid" => false, "resolved" => false, "message" => "No se pudo revisar la solicitud. Intente de nuevo."));//--finview-r
+		}
+	}
+
+	/**
+	 * Autoriza o rechaza la solicitud de ingreso (solo POST: token + action approve|reject).
+	 * La actualizacion es atomica: solo aplica si sigue pendiente y no ha vencido.
+	 *
+	 * @return string Vista core_acount/review_authorization con resolved = true y el mensaje.
+	 */
+	function resolveLoginAuthorization()
+	{
+		try
+		{
+			//Nunca se autoriza con GET (ej. vista previa de enlaces del correo)
+			if(strtolower($this->request->getMethod()) != "post")
+			return view('core_acount/review_authorization',array("valid" => false, "resolved" => false, "message" => "La decisión debe enviarse desde el formulario de autorización. Abra de nuevo el enlace del correo."));//--finview-r
+
+			$token		= (string)$this->request->getPost("token");
+			$action		= $this->request->getPost("action");
+
+			//El formulario puede enviar action repetido con el mismo valor
+			$actions	= array_values(array_unique(array_map(function($v){ return strtolower(trim((string)$v)); }, is_array($action) ? $action : array($action))));
+			$action		= count($actions) == 1 ? $actions[0] : "";
+
+			$result		= $this->loginAuthorizationViewData($token);
+			$data		= $result["data"];
+			$objLog		= $result["objLog"];
+
+			if(!$objLog || !$data["valid"])
+			return view('core_acount/review_authorization',$data);//--finview-r
+
+			if($action != "approve" && $action != "reject")
+			{
+				$data["message"]	= "Seleccione Autorizar o Rechazar.";
+				return view('core_acount/review_authorization',$data);//--finview-r
+			}
+
+			$status		= $action == "approve" ? "authorized" : "rejected";
+			$objUserBy	= $this->session->get("user");
+			$userIDBy	= $objUserBy ? (int)$objUserBy->userID : 0;
+			$nickname	= $data["nickname"];
+			$affected	= $this->Log_Session_Model->update_app_posme_authorization(
+				hash("sha256",strtolower(trim($token))),
+				$status,
+				$userIDBy,
+				$this->request->getIPAddress(),
+				helper_getDateTime(),
+				$nickname." ".($status == "authorized" ? "authorized" : "rejected")." session"
+			);
+
+			$data["valid"]		= false;
+			$data["resolved"]	= true;
+			if($affected > 0)
+			$data["message"]	= $status == "authorized" ? "Ingreso autorizado. El usuario ".$nickname." entrará en unos segundos." : "Ingreso rechazado. El usuario ".$nickname." no podrá entrar con esta solicitud.";
+			else
+			{
+				//Otro administrador ya respondio o vencio mientras se revisaba
+				$data["resolved"]	= false;
+				$data["message"]	= "La solicitud ya fue resuelta o venció.";
+			}
+
+			log_message("info","[core_acount::resolveLoginAuthorization] usuario: ".$nickname." | estado: ".$status." | aplicado: ".$affected);
+			return view('core_acount/review_authorization',$data);//--finview-r
+		}
+		catch(\Exception $ex)
+		{
+			log_message("error","[core_acount::resolveLoginAuthorization] ".$ex->getLine()." ".$ex->getMessage());
+			return view('core_acount/review_authorization',array("valid" => false, "resolved" => false, "message" => "No se pudo registrar la decisión. Intente de nuevo."));//--finview-r
+		}
+	}
+
+	/**
+	 * Consulta de la pantalla de espera (siempre JSON). Lee pendingLogin de la sesion;
+	 * al estar autorizada crea la sesion del usuario y devuelve la URL de inicio.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface JSON {status: pending|authorized|rejected|expired|none|error, message, redirect}
+	 */
+	function getLoginAuthorizationStatus()
+	{
+		try
+		{
+			$pending	= $this->session->get("pendingLogin");
+			if(!is_array($pending) || empty($pending["tokenHash"]))
+			return $this->response->setJSON(array("status" => "none", "message" => "No hay una solicitud de ingreso pendiente.", "redirect" => base_url()));
+
+			$objLog		= $this->Log_Session_Model->get_rowByAuthorizationTokenHash($pending["tokenHash"]);
+			if(!$objLog || (int)$objLog->userID != (int)$pending["userID"])
+			{
+				$this->session->remove("pendingLogin");
+				return $this->response->setJSON(array("status" => "none", "message" => "La solicitud de ingreso ya no existe.", "redirect" => base_url()));
+			}
+
+			$status		= (string)$objLog->authorizationStatus;
+			if($status == "rejected")
+			{
+				$this->session->remove("pendingLogin");
+				return $this->response->setJSON(array("status" => "rejected", "message" => "El administrador rechazó el ingreso.", "redirect" => base_url()));
+			}
+
+			if($status == "pending")
+			{
+				if((string)$objLog->authorizationExpiresOn < helper_getDateTime())
+				{
+					$this->session->remove("pendingLogin");
+					return $this->response->setJSON(array("status" => "expired", "message" => "La solicitud de autorización venció. Intente ingresar de nuevo.", "redirect" => base_url()));
+				}
+				return $this->response->setJSON(array("status" => "pending", "message" => "Esperando autorización del administrador.", "redirect" => ""));
+			}
+
+			if($status != "authorized")
+			{
+				$this->session->remove("pendingLogin");
+				return $this->response->setJSON(array("status" => "none", "message" => "La solicitud de ingreso no es válida.", "redirect" => base_url()));
+			}
+
+			//Autorizado: se crea la sesion con el mismo sessionID registrado en la bitacora
+			$objUser	= $this->core_web_authentication->get_UserBy_UserIDForLogin($pending["companyID"],$pending["userID"]);
+			$this->session->remove("pendingLogin");
+			$this->core_web_authentication->createLogin($objUser);
+			$this->session->set("sessionID",$pending["sessionID"]);
+			$dataSession	= $this->session->get();
+
+			set_cookie("userID",$dataSession['user']->userID,86400,"localhost");
+			set_cookie("nickname",$dataSession['user']->nickname,86400,"localhost");
+			set_cookie("email",$dataSession['user']->email,86400,"localhost");
+
+			//Bitacora: una sola sesion por usuario (igual que el login normal)
+			$this->Log_Session_Model->where("userID",$dataSession["user"]->userID)->where("session_id !=",$pending["sessionID"])->delete();
+			$objLogSessionModel["last_activity"] 	= \DateTime::createFromFormat("Y-m-d H:i:s",helper_getDateTime())->format("YmdHis");
+			$objLogSessionModel["user_data"] 		= $objUser["user"]->nickname." create session";
+			$this->Log_Session_Model->update_app_posme($pending["sessionID"],$objLogSessionModel);
+
+			//Pantalla de inicio: la última visitada por el usuario o la del rol
+			$urlInicio	= $this->core_web_authentication->lastScreenGet($objUser["user"]);
+			$urlInicio	= $urlInicio ? $urlInicio : base_url()."/".$objUser["role"]->urlDefault."/index";
+
+			return $this->response->setJSON(array("status" => "authorized", "message" => "Ingreso autorizado.", "redirect" => $urlInicio));
+		}
+		catch(\Throwable $ex)
+		{
+			log_message("error","[core_acount::getLoginAuthorizationStatus] ".$ex->getLine()." ".$ex->getMessage());
+			return $this->response->setJSON(array("status" => "error", "message" => "No se pudo consultar la autorización.", "redirect" => ""));
+		}
+	}
+
+	/**
+	 * Cancela la solicitud de ingreso pendiente del navegador (siempre JSON).
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface JSON {status: "cancelled", redirect} o {status: "error", message}
+	 */
+	function cancelLoginAuthorization()
+	{
+		try
+		{
+			$pending	= $this->session->get("pendingLogin");
+			if(is_array($pending) && !empty($pending["sessionID"]))
+			{
+				$objLog	= $this->Log_Session_Model->get_rowByAuthorizationTokenHash((string)$pending["tokenHash"]);
+				//Solo se borra la solicitud si sigue pendiente (no se toca una sesion ya creada)
+				if($objLog && (string)$objLog->authorizationStatus == "pending")
+				$this->Log_Session_Model->delete_app_posme("session_id",$pending["sessionID"]);
+			}
+			$this->session->remove("pendingLogin");
+
+			return $this->response->setJSON(array("status" => "cancelled", "redirect" => base_url()));
+		}
+		catch(\Throwable $ex)
+		{
+			log_message("error","[core_acount::cancelLoginAuthorization] ".$ex->getLine()." ".$ex->getMessage());
+			return $this->response->setJSON(array("status" => "error", "message" => "No se pudo cancelar la solicitud. Intente de nuevo."));
+		}
 	}
 }

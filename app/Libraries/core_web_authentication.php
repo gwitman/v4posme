@@ -124,6 +124,37 @@ class core_web_authentication {
    
    function get_UserBy_PasswordAndNickname($nickname,$password){
 		$User_Model = new User_Model();
+
+		$objUser	= $User_Model->get_rowByNiknamePassword($nickname,$password);
+		if(!$objUser)
+		throw new \Exception('PASSWORD O NICKNAME INCORRECTO ...');
+
+		return $this->buildLoginData($objUser);
+   }
+
+   /**
+    * Datos de login de un usuario ya validado por otro medio (ej. autorizacion de ingreso
+    * aprobada por el administrador): no pide contraseña.
+    * @param int $companyID Compañia del usuario.
+    * @param int $userID    Usuario.
+    * @return array Datos de sesion (mismo formato que get_UserBy_PasswordAndNickname).
+    */
+   function get_UserBy_UserIDForLogin($companyID,$userID){
+		$User_Model = new User_Model();
+
+		$objUser	= $User_Model->get_rowByUserID((int)$userID);
+		if(!$objUser || (int)$objUser->companyID != (int)$companyID)
+		throw new \Exception('EL USUARIO NO FUE ENCONTRADO O ESTA INACTIVO ...');
+
+		return $this->buildLoginData($objUser);
+   }
+
+   /**
+    * Arma los datos de sesion (compañia, sucursal, rol, menus, parametros) de un usuario.
+    * @param object $objUser Fila de tb_user.
+    * @return array Datos para createLogin.
+    */
+   function buildLoginData($objUser){
 		$Role_Model = new Role_Model();
 		$Membership_Model = new Membership_Model();
 		$Company_Page_Setting_Model = new Company_Page_Setting_Model();
@@ -133,15 +164,7 @@ class core_web_authentication {
 		$core_web_menu = new core_web_menu();
 		$core_web_permission = new core_web_permission();
 		$core_web_parameter = new core_web_parameter();
-		
-		
-		
-		
-		
-		$objUser	= $User_Model->get_rowByNiknamePassword($nickname,$password);
-		if(!$objUser)
-		throw new \Exception('PASSWORD O NICKNAME INCORRECTO ...');
-		
+
 		$objCompany		= $Company_Model->get_rowByPK($objUser->companyID);
 		$objBranch		= $Branch_Model->get_rowByPK($objUser->companyID,$objUser->branchID);
 		$objMembership	= $Membership_Model->get_rowByCompanyIDBranchIDUserID($objUser->companyID,$objUser->branchID,$objUser->userID);

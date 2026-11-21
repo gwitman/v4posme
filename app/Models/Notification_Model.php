@@ -95,7 +95,9 @@ class Notification_Model extends Model  {
 		$sql = $sql.sprintf(" from tb_notification n");
 		$sql = $sql.sprintf(" where n.isActive= 1");
 		$sql = $sql.sprintf(" and n.sendEmailOn is null");
-		$sql = $sql.sprintf(" limit 0,$top ");
+		$sql = $sql.sprintf(" and n.`to` like '%%@%%'");
+		$sql = $sql.sprintf(" order by n.notificationID asc");
+		$sql = $sql.sprintf(" limit 0,%d ", $top);
 		
 		
 		//Ejecutar Consulta

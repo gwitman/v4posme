@@ -674,13 +674,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -2457,13 +2451,7 @@ class app_invoice_billing extends _BaseController {
 			$data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 			$resultView        = view("core_template/email_error_general",$data);
 
-			$this->email->setFrom(EMAIL_APP);
-			$this->email->setTo(EMAIL_APP_COPY);
-			$this->email->setSubject("Error");
-			$this->email->setMessage($resultView);
-
-			$resultSend01 = $this->email->send();
-			$resultSend02 = $this->email->printDebugger();
+			log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 
 
 			$response = [
@@ -2985,35 +2973,34 @@ class app_invoice_billing extends _BaseController {
 				
 			}
 			
-			//Enviar Email
+			//Correo de la cita: se arma aqui y se encola despues del commit (no bloquea ni afecta la transaccion)
+			$emailCita = null;
 			if($objParameterSendEmailInInsert == "true" && $objTM["nextVisit"]  != "" )
 			{
 					$emailProperty 		= $this->core_web_parameter->getParameter("CORE_PROPIETARY_EMAIL",$companyID);
 					$emailProperty 		= $emailProperty->value;
 					$nextVisit			= \DateTime::createFromFormat('Y-m-d', $objTM["nextVisit"] )->format("Y-m-d");
-		
-					
+
+
 					$params_["objCompany"]  = $objCompany;
 					$params_["firstName"]  	= $objTMInfo["referenceClientName"];
 					$params_["hour"]  		= $nextVisit;
-					$params_["mensaje"]  	= "Cita de: ".$objTMInfo["referenceClientName"]." programada para : ".$nextVisit;
+					$params_["mensaje"]  	= "Cita de: ".htmlspecialchars((string)$objTMInfo["referenceClientName"])." programada para : ".$nextVisit;
 					$subject 				= "Cita de: ".$objTMInfo["referenceClientName"];
 					$body  					= /*--inicio view*/ view('core_template/email_notificacion',$params_);//--finview
-					
-					$this->email->setFrom(EMAIL_APP);
-					$this->email->setTo( $emailProperty );
-					$this->email->setSubject($subject);			
-					$this->email->setMessage($body); 
-					$resultSend01 = $this->email->send();
-					
+
+					$emailCita				= array("to" => $emailProperty, "subject" => $subject, "body" => $body);
 			}
-			
-			
+
+
 			//No auto aplicar
 			if( $db->transStatus() !== false && $objParameterInvoiceAutoApply == "false"  )
 			{
 				$db->transCommit();
-    
+
+				if($emailCita)
+				$this->core_web_email->queueEmail($companyID,$emailCita["to"],$emailCita["subject"],$emailCita["body"],array(),"app_invoice_billing::insertElement");
+
 				$response = [
 					'success' 	=> true,
 					'message' 	=> SUCCESS,
@@ -3024,21 +3011,24 @@ class app_invoice_billing extends _BaseController {
 			}			
 			//Si auto aplicar
 			else if( $db->transStatus() !== false && $objParameterInvoiceAutoApply == "true"  ){
-				
+
 				$db->transCommit();
+
+				if($emailCita)
+				$this->core_web_email->queueEmail($companyID,$emailCita["to"],$emailCita["subject"],$emailCita["body"],array(),"app_invoice_billing::insertElement");
 
 				$response = [
 					'success' 	=> true,
 					'message' 	=> SUCCESS,
 					'redirect' 	=> base_url()."/".'app_invoice_billing/add/transactionMasterIDToPrinter/'.$transactionMasterID."/codigoMesero/".$codigoMesero
 				];
-				
+
 				return $this->response->setJSON($response);
 			}
-			//Error 
+			//Error
 			else
-			{				
-				$db->transRollback();						
+			{
+				$db->transRollback();
 				$errorCode 		= $db->error()["code"];
 				$errorMessage 	= $db->error()["message"];
 
@@ -3087,13 +3077,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    $response = [
@@ -4350,13 +4334,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 
 
             $response = [
@@ -4859,13 +4837,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -5077,13 +5049,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);    
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -6317,13 +6283,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -6399,13 +6359,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -6474,13 +6428,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -6549,13 +6497,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -6640,13 +6582,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -6734,13 +6670,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -6825,13 +6755,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -6917,13 +6841,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -7013,13 +6931,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -7092,13 +7004,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -7272,13 +7178,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -7464,13 +7364,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -7635,13 +7529,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -7805,13 +7693,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -7971,13 +7853,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -8138,13 +8014,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -8298,13 +8168,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -8538,13 +8402,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -8912,13 +8770,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -9223,13 +9075,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -9534,13 +9380,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -9846,13 +9686,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -10157,13 +9991,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -10391,13 +10219,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -10662,13 +10484,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -10872,13 +10688,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -11073,13 +10883,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -11282,13 +11086,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -11554,13 +11352,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -11761,13 +11553,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -11962,13 +11748,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -12163,13 +11943,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -12385,13 +12159,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -12604,13 +12372,7 @@ class app_invoice_billing extends _BaseController {
             $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
             $resultView        	= view("core_template/email_error_general",$data);
 
-            $this->email->setFrom(EMAIL_APP);
-            $this->email->setTo(EMAIL_APP_COPY);
-            $this->email->setSubject("Error");
-            $this->email->setMessage($resultView);
-
-            $resultSend01 = $this->email->send();
-            $resultSend02 = $this->email->printDebugger();
+            log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 
 
             return $resultView;
@@ -12820,13 +12582,7 @@ class app_invoice_billing extends _BaseController {
             $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
             $resultView        	= view("core_template/email_error_general",$data);
 
-            $this->email->setFrom(EMAIL_APP);
-            $this->email->setTo(EMAIL_APP_COPY);
-            $this->email->setSubject("Error");
-            $this->email->setMessage($resultView);
-
-            $resultSend01 = $this->email->send();
-            $resultSend02 = $this->email->printDebugger();
+            log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 
 
             return $resultView;
@@ -13013,13 +12769,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -13207,13 +12957,7 @@ class app_invoice_billing extends _BaseController {
             $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
             $resultView        	= view("core_template/email_error_general",$data);
 
-            $this->email->setFrom(EMAIL_APP);
-            $this->email->setTo(EMAIL_APP_COPY);
-            $this->email->setSubject("Error");
-            $this->email->setMessage($resultView);
-
-            $resultSend01 = $this->email->send();
-            $resultSend02 = $this->email->printDebugger();
+            log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 
 
             return $resultView;
@@ -13409,13 +13153,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -13603,13 +13341,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -13794,13 +13526,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -13985,13 +13711,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -14214,13 +13934,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -14405,13 +14119,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -14598,13 +14306,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -14789,13 +14491,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 		= $this->email->send();
-		    $resultSend02 		= $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -14982,13 +14678,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -15189,13 +14879,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    echo $resultView;
@@ -15323,13 +15007,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -15527,13 +15205,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -15715,13 +15387,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -15893,13 +15559,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -16074,13 +15734,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -16242,13 +15896,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -16485,13 +16133,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -16750,13 +16392,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -16978,13 +16614,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 
 		    return $resultView;
 		}
@@ -17109,13 +16739,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -17285,13 +16909,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -17463,13 +17081,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -17734,13 +17346,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;
@@ -17928,13 +17534,7 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
 		    
-		    $this->email->setFrom(EMAIL_APP);
-		    $this->email->setTo(EMAIL_APP_COPY);
-		    $this->email->setSubject("Error");
-		    $this->email->setMessage($resultView);
-		    
-		    $resultSend01 = $this->email->send();
-		    $resultSend02 = $this->email->printDebugger();
+		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
 		    
 		    
 		    return $resultView;

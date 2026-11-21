@@ -6,6 +6,26 @@
 /******************************************************************/
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'false'
+WHERE p.name = 'RABBITMQ_QUEUE_EMAIL'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = ''
+WHERE p.name = 'CORE_LOGIN_AUTHORIZATION_EMAIL'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '15'
+WHERE p.name = 'CORE_LOGIN_AUTHORIZATION_MINUTES'
+    AND cp.companyID = 2;
+	
+	
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = ''
 WHERE p.name = 'WHATSAPP_PROVIDER'
     AND cp.companyID = 2;
