@@ -2146,8 +2146,7 @@ class app_invoice_billing extends _BaseController {
 					$sendWhatappTemplate 	= str_replace("{firstName}", $objNatural->firstName, $sendWhatappTemplate);
 					$sendWhatappTemplate 	= str_replace("{amount}",  " ".$amountPoint." pt ", $sendWhatappTemplate);
 					$sendWhatappTemplate 	= replaceSimbol($sendWhatappTemplate);					
-					$this->core_web_whatsap->sendMessagePosMeConnect($companyID, $sendWhatappTemplate, $phoneDestino );
-					//$this->core_web_whatsap->sendMessageByWaapi($companyID, $sendWhatappTemplate, $phoneDestino);
+					$this->core_web_whatsap->queueWhatsappMessage($companyID, $phoneDestino, $sendWhatappTemplate, "evolution", [], "app_invoice_billing::updateElement");
 					
 				}
 				

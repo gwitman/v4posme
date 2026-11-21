@@ -158,10 +158,11 @@ class app_calendar_citas extends _BaseController {
 			
 			
 			//Enviar whatsapp al cliente	
-			$this->core_web_whatsap->sendMessageUltramsg(
-				APP_COMPANY, 
+			$this->core_web_whatsap->sendWhatsapp(
+				APP_COMPANY,
+				$objNotification->phoneFrom,
 				"La cita fue removida, en :".$dataSession["company"]->name,
-				$objNotification->phoneFrom
+				"evolution"
 			);
 			
 			

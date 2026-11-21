@@ -944,13 +944,11 @@ class app_cxc_api extends _BaseController {
 			if (!$file)
 			{
 				log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de texto a: ".getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)));
-				$result = $this->core_web_whatsap->sendMessageGeneric(
-					$typeCompany,
-					$companyID, 
-					$message, 
+				$result = $this->core_web_whatsap->sendWhatsapp(
+					$companyID,
 					getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
-					true,
-					""				
+					$message,
+					"evolution"
 				);
 			}
 			else
@@ -958,42 +956,35 @@ class app_cxc_api extends _BaseController {
 				if($fileMimeType == "application/pdf")
 				{
 					log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de pdf ".$fileClientName);						
-					$result = $this->core_web_whatsap->sendMessageTypePdfGeneric(
-						$typeCompany,
-						$companyID, 
-						$urlPublic, 
-						$fileClientName,
-						$message,
+					$result = $this->core_web_whatsap->sendWhatsapp(
+						$companyID,
 						getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
-						true,
-						""
+						$message,
+						"evolution",
+						['type' => 'document', 'url' => $urlPublic, 'fileName' => $fileClientName, 'fileExt' => 'pdf']
 					);
 				}
 				else if($fileMimeType == "video/webm" || $fileMimeType == "audio/mpeg" || $fileMimeType == "audio/ogg")
 				{
 					log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de audio / video ".$fileClientName);						
-					$result = $this->core_web_whatsap->sendMessageTypeVideoAudioGeneric(
-						$typeCompany,
-						$companyID, 
-						$urlPublic, 
-						$fileClientName,
-						$message,
+					//Nota de voz grabada (webm ya convertido a ogg arriba): se envia como audio
+					$result = $this->core_web_whatsap->sendWhatsapp(
+						$companyID,
 						getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
-						true,
-						""
+						$message,
+						"evolution",
+						['type' => 'audio', 'url' => $urlPublic, 'fileName' => $fileClientName]
 					);
 				}
 				else
 				{
 					log_message("error","setConversationNotification_ByCustomer >> enviar mensaje de imagen");		
-					$result = $this->core_web_whatsap->sendMessageTypeImagGeneric(
-						$typeCompany,
-						$companyID, 
-						$urlPublic, 
-						$message,
+					$result = $this->core_web_whatsap->sendWhatsapp(
+						$companyID,
 						getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
-						true,
-						""
+						$message,
+						"evolution",
+						['type' => 'image', 'url' => $urlPublic, 'fileName' => $fileClientName]
 					);
 				}
 			}
@@ -1011,11 +1002,12 @@ class app_cxc_api extends _BaseController {
 		}
 		
 		// Si no es mensaje interno, validar resultado del envÃ­o de WhatsApp
-		if(!is_array($result) || ($result["status"] ?? "") == "error")
+		//sendWhatsapp devuelve ['success'=>bool,'error'=>string,...]
+		if(!is_array($result) || empty($result["success"]))
 		{
 			return $this->response->setJSON([
 				'success' 	=> false,
-				'message' 	=> (is_array($result) && !empty($result["message"])) ? $result["message"] : 'No se pudo enviar el mensaje',
+				'message' 	=> (is_array($result) && !empty($result["error"])) ? (string)$result["error"] : 'No se pudo enviar el mensaje',
 				'entityID' 	=> $entityID
 			]);
 		}
@@ -2686,7 +2678,7 @@ class app_cxc_api extends _BaseController {
 		{
 			//Firmado con el nombre del colaborador de la IA, igual que los mensajes de los asesores (se guarda sin firma)
 			$respuestaFirmada = $this->core_web_conversation->getMessageSignature($companyID,$companyType,$this->core_web_conversation->getSignatureNameEmployerAI($companyID),$respuesta);
-			$resultSend = $this->core_web_whatsap->sendMessageGeneric($companyType,$companyID,$respuestaFirmada,$phone,true,"");
+			$resultSend = $this->core_web_whatsap->sendWhatsapp($companyID,$phone,$respuestaFirmada,"evolution");
 			if(is_array($resultSend) && isset($resultSend["success"]) && $resultSend["success"] === false)
 				log_message('error', '[AgenteIA] No se pudo enviar la respuesta: ' . (string)($resultSend["error"] ?? ''));
 			$this->core_web_conversation->insertAIMessage($companyID,$objCustomer,$respuesta,'mensaje ia');

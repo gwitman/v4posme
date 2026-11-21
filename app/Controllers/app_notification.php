@@ -920,7 +920,7 @@ class app_notification extends _BaseController
 				/////////////////////////////////////////////
 				if ($this->core_web_whatsap->validSendMessage(APP_COMPANY)) 
 				{
-					$this->core_web_whatsap->sendMessageUltramsg(APP_COMPANY,"Hola " . $i->to . " " . $i->message,getNumberPhone(clearNumero($i->phoneTo)));
+					$this->core_web_whatsap->queueWhatsappMessage(APP_COMPANY, $i->phoneTo, "Hola " . $i->to . " " . $i->message, "evolution", [], "sendWhatsappPosMeSendMessage");
 					$data["sendOn"]			= date_format(date_create(), "Y-m-d H:i:s");
 					$data["sendWhatsappOn"]	= date_format(date_create(), "Y-m-d H:i:s");
 					$this->Notification_Model->update_app_posme($i->notificationID, $data);
@@ -948,7 +948,8 @@ class app_notification extends _BaseController
 				/////////////////////////////////////////////
 				/////////////////////////////////////////////
 				if ($this->core_web_whatsap->validSendMessage(APP_COMPANY)) {
-					$this->core_web_whatsap->sendMessageUltramsg(APP_COMPANY,"Hola mi nombre es:" . $i->title . " agende una cita con el objetivo " . $i->message . " (" . $i->phoneFrom . " " . $i->from . ")");
+					//Destino vacio = dueño del comercio (WHATSAP_CURRENT_PROPIETARY_COMMERSE)
+					$this->core_web_whatsap->queueWhatsappMessage(APP_COMPANY, "", "Hola mi nombre es:" . $i->title . " agende una cita con el objetivo " . $i->message . " (" . $i->phoneFrom . " " . $i->from . ")", "evolution", [], "sendWhatsappPosMeCalendar");
 					$data["sendOn"]			= date_format(date_create(), "Y-m-d H:i:s");
 					$data["sendWhatsappOn"]	= date_format(date_create(), "Y-m-d H:i:s");
 					$this->Notification_Model->update_app_posme($i->notificationID, $data);
@@ -1192,7 +1193,8 @@ class app_notification extends _BaseController
 		/////////////////////////////////////////////
 		/////////////////////////////////////////////
 		if ($this->core_web_whatsap->validSendMessage(APP_COMPANY)) {
-			$this->core_web_whatsap->sendMessage(APP_COMPANY, $objDataResult["mensaje"]);
+			//Destino vacio = dueño del comercio (WHATSAP_CURRENT_PROPIETARY_COMMERSE)
+			$this->core_web_whatsap->queueWhatsappMessage(APP_COMPANY, "", $objDataResult["mensaje"], "evolution", [], "file_job_send_report_daly_reprote_de_caja");
 		}
 
 		return view('core_template/close'); //--finview-r
@@ -1769,7 +1771,8 @@ class app_notification extends _BaseController
 			/////////////////////////////////////////////
 			/////////////////////////////////////////////
 			if ($this->core_web_whatsap->validSendMessage(APP_COMPANY)) {
-				$this->core_web_whatsap->sendMessage(APP_COMPANY, $objDataResult["mensaje"]);
+				//Destino vacio = dueño del comercio (WHATSAP_CURRENT_PROPIETARY_COMMERSE)
+				$this->core_web_whatsap->queueWhatsappMessage(APP_COMPANY, "", $objDataResult["mensaje"], "evolution", [], "file_monitory_cash_box");
 			}
 		}
 
@@ -2067,12 +2070,8 @@ class app_notification extends _BaseController
 		if ($objNotificar)
 			foreach ($objNotificar as $i) {
 				echo clearNumero($i->Destino) . "---" . $i->Mensaje . "</br></br>";
-				
-				$this->core_web_whatsap->sendMessageByLiveconnect(
-					APP_COMPANY,
-					replaceSimbol($i->Mensaje),
-					getNumberPhone(clearNumero($i->Destino))
-				);
+
+				$this->core_web_whatsap->queueWhatsappMessage(APP_COMPANY, $i->Destino, replaceSimbol($i->Mensaje), "liveconnect", [], "sendWhatsappGlobalProCompraFrecuency1HorasDespues");
 			}
 
 		echo "SUCCESS";
@@ -2084,11 +2083,7 @@ class app_notification extends _BaseController
 		if ($objNotificar)
 			foreach ($objNotificar as $i) {
 				echo clearNumero($i->Destino) . "---" . $i->Mensaje . "</br></br>";
-				$this->core_web_whatsap->sendMessageByLiveconnect(
-					APP_COMPANY,
-					replaceSimbol($i->Mensaje),
-					getNumberPhone(clearNumero($i->Destino))
-				);
+				$this->core_web_whatsap->queueWhatsappMessage(APP_COMPANY, $i->Destino, replaceSimbol($i->Mensaje), "liveconnect", [], "sendWhatsappGlobalProCompraFrecuency1Meses");
 			}
 
 		echo "SUCCESS";
@@ -2100,11 +2095,7 @@ class app_notification extends _BaseController
 		if ($objNotificar)
 			foreach ($objNotificar as $i) {
 				echo clearNumero($i->Destino) . "---" . $i->Mensaje . "</br></br>";
-				$this->core_web_whatsap->sendMessageByLiveconnect(
-					APP_COMPANY,
-					replaceSimbol($i->Mensaje),
-					getNumberPhone(clearNumero($i->Destino))
-				);
+				$this->core_web_whatsap->queueWhatsappMessage(APP_COMPANY, $i->Destino, replaceSimbol($i->Mensaje), "liveconnect", [], "sendWhatsappGlobalProLaptopMenorA14400Frecuency7Meses");
 			}
 
 		echo "SUCCESS";
@@ -2116,13 +2107,7 @@ class app_notification extends _BaseController
 		if ($objNotificar)
 			foreach ($objNotificar as $i) {
 				echo clearNumero($i->Destino) . "---" . $i->Mensaje . "</br></br>";
-				$this->core_web_whatsap->sendMessageByLiveconnect(
-					APP_COMPANY,
-					replaceSimbol($i->Mensaje),
-					getNumberPhone(clearNumero($i->Destino))
-					/*"50587125827"*/
-					/*"50557165864"*/
-				);
+				$this->core_web_whatsap->queueWhatsappMessage(APP_COMPANY, $i->Destino, replaceSimbol($i->Mensaje), "liveconnect", [], "sendWhatsappGlobalProLaptopMayoresA14400Frecuency11Meses");
 			}
 
 		echo "SUCCESS";
@@ -2138,23 +2123,14 @@ class app_notification extends _BaseController
 				echo clearNumero($i->Destino) . "---" . $i->Mensaje . "</br></br>";
 				
 				
-				$this->core_web_whatsap->sendMessageByLiveconnectFileGlobalPro(
-					APP_COMPANY,
-					replaceSimbol($i->Mensaje),	
-					/*"50587125827"*/
-					getNumberPhone(clearNumero($i->Destino)),
-					"https://posme.net/v4posme/globalpro/public/resource/img/feliz_cumple.jpeg",
-					"feliz_cumple",
-					"jpeg"
-				);
-				
-				
-				$this->core_web_whatsap->sendMessageByLiveconnect(
-					APP_COMPANY,
-					replaceSimbol($i->Mensaje),					
-					/*"50587125827"*/
-					getNumberPhone(clearNumero($i->Destino))
-				);
+				//Imagen + texto: el adaptador LiveConnect envia el archivo y luego el texto aparte
+				$media = [
+					"type"     => "image",
+					"url"      => "https://posme.net/v4posme/globalpro/public/resource/img/feliz_cumple.jpeg",
+					"fileName" => "feliz_cumple",
+					"fileExt"  => "jpeg"
+				];
+				$this->core_web_whatsap->queueWhatsappMessage(APP_COMPANY, $i->Destino, replaceSimbol($i->Mensaje), "liveconnect", $media, "sendWhatsappGlobalProCumpleAnnos");
 				
 				
 				
@@ -2423,7 +2399,7 @@ class app_notification extends _BaseController
 
 		try
 		{
-			$resultado['cola']				= $this->core_web_rabbitmq->getQueueWhatsapp(APP_COMPANY);
+			$resultado['cola']				= $this->core_web_rabbitmq->getQueueWhatsappNotification(APP_COMPANY);
 			$resultado['totalEncolados']	= $this->core_web_rabbitmq->publishBatch(APP_COMPANY, $resultado['cola'], $chatSend);
 			log_message('info', $logTag . ' Cola: ' . $resultado['cola'] . ' | Encolados: ' . $resultado['totalEncolados']);
 		}
@@ -2560,7 +2536,7 @@ Le recordamos que tiene un saldo pendiente:
 		//Los mensajes no se envian aqui: se suben a RabbitMQ y los envia procesarColaWhatsappMasivo (cron cada minuto)
 		try
 		{
-			$queueName		= $this->core_web_rabbitmq->getQueueWhatsapp(APP_COMPANY);			
+			$queueName		= $this->core_web_rabbitmq->getQueueWhatsappNotification(APP_COMPANY);
 			$totalEncolados	= $this->core_web_rabbitmq->publishBatch(APP_COMPANY, $queueName, $chatSend);
 		}
 		catch(\Throwable $ex)
@@ -2592,17 +2568,14 @@ Le recordamos que tiene un saldo pendiente:
 	}
 
 	/**
-	 * Consumidor de la cola de WhatsApp masivo en RabbitMQ (parametro RABBITMQ_QUEUE_WHATSAPP).
+	 * Consumidor de las colas de WhatsApp en RabbitMQ (RABBITMQ_QUEUE_WHATSAPP solo las habilita).
 	 * Pensado para un cron cada minuto: procesa un lote acotado y termina antes del siguiente disparo.
-	 * Cada mensaje trae phoneNumber, mensaje y urlImage (opcional). El campo provider decide el envio:
-	 *  - ""        : proveedor configurado para la empresa (sendMessageGeneric segun tb_company.type)
-	 *  - "meta"    : sin templateName envia imagen o texto libre por Meta Cloud API
-	 *  - Con templateName siempre se usa la plantilla de Meta (languageCode, bodyParams, headerImage),
-	 *    sin importar el provider (app_notification encola sus masivos como evolution)
-	 *  - "evolution": imagen o texto por Evolution API (instancia EvolutionApi)
-	 * La instancia de Evolution la resuelve core_web_whatsap (evolutionResolveSendInstance): la que empieza con
-	 * <tb_company.type>_ si existe, si no la del parametro WHATSAP_URL_REQUEST_SESSION; cacheada en archivo.
-	 * Los mensajes con provider los encola app_cxc_advertising::send y los jobs de cobranza/citas de este controlador.
+	 * Primero consume la cola de NOTIFICACIONES (<type>_Notificacion_: facturas, taller, cobranza, jobs)
+	 * y con el cupo de mensajes/tiempo que sobre la de CAMPAÑAS (<type>_Campana_: app_cxc_advertising).
+	 * Cada mensaje trae phoneNumber, mensaje, provider y media (opcional; los payloads viejos traen urlImage = imagen).
+	 *  - Sin templateName: core_web_whatsap::sendWhatsapp (provider sugerido; lo resuelve resolveWhatsappProvider).
+	 *  - Con templateName siempre se usa la plantilla de Meta (languageCode, bodyParams, headerImage).
+	 * La instancia de Evolution es siempre tb_company.type + "_" + WHATSAP_URL_REQUEST_SESSION (sin cache).
 	 * Segmentos opcionales de la URL:
 	 *  - maxMensajes : mensajes por ejecucion (por defecto 15)
 	 *  - maxSegundos : duracion maxima de la ejecucion (por defecto 50)
@@ -2627,75 +2600,73 @@ Le recordamos que tiene un saldo pendiente:
 			//El cron no debe cortarse a mitad de un envio por max_execution_time
 			set_time_limit($maxSegundos + 60);
 
-			$objCompany		= $this->Company_Model->get_rowByPK(APP_COMPANY);
-			$queueName		= $this->core_web_rabbitmq->getQueueWhatsapp(APP_COMPANY);
-			$whatsap		= $this->core_web_whatsap;
+			$queueName			= $this->core_web_rabbitmq->getQueueWhatsappNotification(APP_COMPANY);
+			$queueNameCampana	= $this->core_web_rabbitmq->getQueueWhatsapp(APP_COMPANY);
+			$whatsap			= $this->core_web_whatsap;
 
-			log_message('info', $logTag . ' Inicio - companyID: ' . APP_COMPANY . ' | cola: ' . $queueName);
+			log_message('info', $logTag . ' Inicio - companyID: ' . APP_COMPANY . ' | colas: ' . $queueName . ', ' . $queueNameCampana);
 
-			$resumen		= $this->core_web_rabbitmq->consume(
-				APP_COMPANY,
-				$queueName,
-				function($payload) use ($whatsap, $objCompany, $logTag)
+			$procesarMensaje	= function($payload) use ($whatsap, $logTag)
+			{
+				$phoneNumber	= trim((string)($payload["phoneNumber"] ?? ""));
+				$mensaje		= (string)($payload["mensaje"] ?? "");
+				$provider		= strtolower(trim((string)($payload["provider"] ?? "")));
+				$templateName	= trim((string)($payload["templateName"] ?? ""));
+				$esPlantilla	= $templateName != "";
+
+				//Archivo: payload nuevo trae media; los viejos traen urlImage (siempre imagen)
+				$media			= is_array($payload["media"] ?? null) ? $payload["media"] : [];
+				$urlImage		= trim((string)($payload["urlImage"] ?? ""));
+				if(trim((string)($media["url"] ?? "")) == "" && $urlImage != "")
+					$media		= ["type" => "image", "url" => $urlImage, "fileName" => "", "fileExt" => ""];
+				$tieneArchivo	= trim((string)($media["url"] ?? "")) != "";
+
+				//Telefono invalido (vacio, "nd", etc.) o sin texto ni archivo: no se reintenta, va a la cola de error.
+				//Sin telefono la libreria de WhatsApp enviaria al numero del comercio.
+				//La plantilla de Meta no exige mensaje (el texto lo arma Meta con bodyParams).
+				if(!ctype_digit($phoneNumber) || strlen($phoneNumber) < 8 || (!$esPlantilla && trim($mensaje) == "" && !$tieneArchivo))
 				{
-					$phoneNumber	= trim((string)($payload["phoneNumber"] ?? ""));
-					$mensaje		= (string)($payload["mensaje"] ?? "");
-					$urlImage		= trim((string)($payload["urlImage"] ?? ""));
-					$provider		= strtolower(trim((string)($payload["provider"] ?? "")));
-					$templateName	= trim((string)($payload["templateName"] ?? ""));
-					//Solo las plantillas aprobadas van por Meta: con templateName se fuerza el proveedor meta
-					//(app_notification encola todo como evolution; la plantilla no tiene texto para Evolution)
-					$esPlantilla	= $templateName != "";
-					$provider		= $esPlantilla ? "meta" : $provider;
+					log_message('info', $logTag . ' Descartado - telefono: ' . $phoneNumber);
+					return \App\Libraries\core_web_rabbitmq::RESULT_DESCARTAR;
+				}
 
-					//Telefono invalido (vacio, "nd", etc.) o sin texto: no se reintenta, va a la cola de error.
-					//Sin telefono la libreria de WhatsApp enviaria al numero del comercio.
-					//La plantilla de Meta no exige mensaje (el texto lo arma Meta con bodyParams).
-					if(!ctype_digit($phoneNumber) || strlen($phoneNumber) < 8 || (!$esPlantilla && trim($mensaje) == "" && ($provider == "" || $urlImage == "")))
-					{
-						log_message('info', $logTag . ' Descartado - telefono: ' . $phoneNumber);
-						return \App\Libraries\core_web_rabbitmq::RESULT_DESCARTAR;
-					}
+				//Solo las plantillas aprobadas van por Meta: con templateName siempre se usa la plantilla
+				if($esPlantilla)
+				{
+					$bodyParams	= is_array($payload["bodyParams"] ?? null) ? $payload["bodyParams"] : [];
+					$response 	= $whatsap->sendMessageByMetaCloudTemplate(APP_COMPANY, $templateName, (string)($payload["languageCode"] ?? ""), $bodyParams, $phoneNumber, trim((string)($payload["headerImage"] ?? "")));
+					$enviado	= is_array($response) && !empty($response["success"]);
+				}
+				else
+				{
+					$result		= $whatsap->sendWhatsapp(APP_COMPANY, $phoneNumber, $mensaje, $provider, $media);
+					$enviado	= $result["success"];
+					if(!$enviado)
+						log_message('error', $logTag . ' Telefono: ' . $phoneNumber . ' | provider: ' . $result["provider"] . ' | error: ' . $result["error"]);
+				}
 
-					if($esPlantilla)
-					{
-						$bodyParams	= is_array($payload["bodyParams"] ?? null) ? $payload["bodyParams"] : [];
-						$response 	= $whatsap->sendMessageByMetaCloudTemplate(APP_COMPANY, $templateName, (string)($payload["languageCode"] ?? ""), $bodyParams, $phoneNumber, trim((string)($payload["headerImage"] ?? "")));
-					}
-					else if($provider == "meta")
-					{
-						if($urlImage != "")
-							$response = $whatsap->sendMessageByMetaCloudImage(APP_COMPANY, $urlImage, $mensaje, $phoneNumber);
-						else
-							$response = $whatsap->sendMessageByMetaCloudText(APP_COMPANY, $mensaje, $phoneNumber);
-					}
-					else if($provider == "evolution")
-					{
-						if($urlImage != "")
-							$response = $whatsap->sendMessageByEvolutionApiImage(APP_COMPANY, $urlImage, $mensaje, $phoneNumber, "EvolutionApi");
-						else
-							$response = $whatsap->sendMessageByEvolutionApiText(APP_COMPANY, $mensaje, $phoneNumber, "EvolutionApi");
-					}
-					else if($urlImage != "")
-						$response = $whatsap->sendMessageTypeImagGeneric($objCompany->type, APP_COMPANY, $urlImage, $mensaje, $phoneNumber, true, "");
-					else
-						$response = $whatsap->sendMessageGeneric($objCompany->type, APP_COMPANY, $mensaje, $phoneNumber, true, "");
+				log_message('info', $logTag . ' Telefono: ' . $phoneNumber . ' | enviado: ' . ($enviado ? 'SI' : 'NO'));
+				return $enviado;
+			};
 
-					//Meta devuelve success; Evolution devuelve key.id cuando acepta el mensaje
-					$enviado = is_array($response) && ( !empty($response["success"]) || !empty($response["key"]["id"]) );
-					log_message('info', $logTag . ' Telefono: ' . $phoneNumber . ' | enviado: ' . ($enviado ? 'SI' : 'NO'));
-					return $enviado;
-				},
-				$maxMensajes,
-				$maxSegundos,
-				$pausa
-			);
+			//1. Notificaciones primero
+			$inicio			= time();
+			$resumen		= $this->core_web_rabbitmq->consume(APP_COMPANY, $queueName, $procesarMensaje, $maxMensajes, $maxSegundos, $pausa);
+
+			//2. Campañas con el cupo de mensajes y tiempo que sobre
+			$restanMensajes	= $maxMensajes - intval($resumen["procesados"]);
+			$restanSegundos	= $maxSegundos - (time() - $inicio);
+			$resumenCampana	= null;
+			if($restanMensajes > 0 && $restanSegundos > 0)
+				$resumenCampana = $this->core_web_rabbitmq->consume(APP_COMPANY, $queueNameCampana, $procesarMensaje, $restanMensajes, $restanSegundos, $pausa);
 
 			return $this->response->setJSON(array(
-				'error'			=> false,
-				'message'		=> SUCCESS,
-				'cola'			=> $queueName,
-				'resumen'		=> $resumen
+				'error'				=> false,
+				'message'			=> SUCCESS,
+				'cola'				=> $queueName,
+				'resumen'			=> $resumen,
+				'colaCampana'		=> $queueNameCampana,
+				'resumenCampana'	=> $resumenCampana
 			));
 		}
 		catch(\Throwable $ex)
@@ -2876,204 +2847,30 @@ Le recordamos que tiene un saldo pendiente:
 			}
 		}
 	
-		$this->core_web_whatsap->sendMessagePosMeConnectMasive(APP_COMPANY,$chatSend,$pathRemember);
+		//Cada fila se encola por Evolution; la imagen (columna Imagen) es relativa a la carpeta del recordatorio
+		//y se convierte en URL publica para que el proveedor la descargue
+		foreach ($chatSend as $chat)
+		{
+			$media 		= [];
+			$urlImage 	= trim((string) $chat["urlImage"]);
+			if ($urlImage != "")
+			{
+				$filePath 	= PATH_FILE_OF_APP . "/company_" . APP_COMPANY . "/component_76/component_item_" . $chat["rememberID"] . "/" . $urlImage;
+				if (file_exists($filePath))
+				{
+					$media = [
+						"type"     => "image",
+						"url"      => base_url() . "/resource/file_company/company_" . APP_COMPANY . "/component_76/component_item_" . $chat["rememberID"] . "/" . rawurlencode($urlImage),
+						"fileName" => pathinfo($urlImage, PATHINFO_FILENAME),
+						"fileExt"  => strtolower(pathinfo($urlImage, PATHINFO_EXTENSION))
+					];
+				}
+			}
+			$this->core_web_whatsap->queueWhatsappMessage(APP_COMPANY, $chat["phoneNumber"], $chat["mensaje"], "evolution", $media, "sendWhatsappDiarioMasivePosMeConnect");
+		}
 		return;
-		
-		
-	}
-	function sendWhatsappDiarioChochoMandado()
-	{
-
-		//Obtener la lista de recordatorios
-		$tagName			= "ENVIAR WHATSAPP A CLIENTE";
-		$objTag				= $this->Tag_Model->get_rowByName($tagName);
-		
-		$objListRemember 	= $this->Remember_Model->getNotificationCompanyByTagId(APP_COMPANY,$objTag->tagID);
-		$objParameter		= $this->core_web_parameter->getParameter("CORE_CSV_SPLIT", APP_COMPANY);
-		$characterSplie 	= $objParameter->value;
-		$chatSend			= [];
-		$session 			= session();
-		$mensaje			= "";
-		$mensageByPage		= 100;
-		
-		
-		//Si no existe la variable session obtener los chat
-		if ( !$session->has('chatSend') )
-		{
-			
-			if(!$objListRemember)
-			return;
-		
-			
-			foreach($objListRemember as $objRemember)
-			{
-				if($objRemember->leerFile == 0)
-					continue;
-				
-				
-				
-				//Obtener la lista de mensajes
-				$path 	= PATH_FILE_OF_APP . "/company_" . APP_COMPANY . "/component_76/component_item_" . $objRemember->rememberID;
-				$path 	= $path . '/send.csv';
-				if (!file_exists($path))
-					continue;
-				
-				
-				$this->csvreader->separator = $characterSplie;
-				$table 						= $this->csvreader->parse_file($path);
-
-				echo "est";
-				if (!$table)
-					continue;
-				
-				if (count($table) <= 0) 
-					continue;
-					
-				
-				if (!array_key_exists("Destino", $table[0])) {
-					$table = null;
-				}
-				if (!array_key_exists("Mensaje", $table[0])) {
-					$table = null;
-				}
-
-				if (is_null($table))
-					continue;
-				
-				$objListCustomer = array();
-				foreach ($table as $row) 
-				{
-					$rowx 					= array();
-					$rowx["firstName"] 		= "";
-					$rowx["phoneNumber"] 	= $row["Destino"];
-					$rowx["mensaje"] 		= $row["Mensaje"];
-					$rowx["urlImage"]		= array_key_exists("Imagen", $row) ? $row["Imagen"] : "";
-					$rowx["rememberID"]		= $objRemember->rememberID;
-					$rowx["key"]			= $rowx["phoneNumber"].$row["Mensaje"].$rowx["urlImage"];
-					array_push($objListCustomer, $rowx);
-				}	
-				
-				//Obtener los clientes unicos eliminar los repetidos
-				$objListCustomerNuevoArray 		= [];
-				$objListCustomerUnicos 			= [];
-				foreach ($objListCustomer as $obj) {
-					if (!in_array($obj["key"], $objListCustomerUnicos)) {
-						$objListCustomerUnicos[] 	 = $obj["key"];
-						$objListCustomerNuevoArray[] = $obj;
-						$chatSend[]					 = $obj;
-					}
-				}
-			}
-		} 
-		else 
-		{
-			$chatSend  = $session->get('chatSend');
-		}
 
 
-		
-		
-		
-		
-		
-		
-		$mensaje 			=  "Envio de: ".count($chatSend)." mensajes.</br></br>";	
-		$chatSendTemp		= [];
-		$counter 			= 0;
-		foreach($chatSend as $customer)
-		{
-			$counter		= $counter+1;
-			if($counter <= $mensageByPage)
-			{
-				$phoneNumber 	= clearNumero($customer["phoneNumber"]);
-				$menssage		= $customer["mensaje"];//replaceSimbol($customer["mensaje"]);
-				$rememberID		= $customer["rememberID"];
-				$imagen			= $customer["urlImage"];
-				$mensaje 		= $mensaje."Mensaje No: ".$counter." de ".count($chatSend)."  Al telefono: ".$phoneNumber . " **** Mensaje:" . $menssage. " **** Imagen: ".$imagen."</br></br>";				
-				
-				//50584766457
-				if( strlen($phoneNumber) != 11)
-					continue;
-				
-		
-				if($menssage != "")
-				{
-					$this->core_web_whatsap->sendMessageByLiveconnect(
-						APP_COMPANY,
-						$menssage,										
-						$phoneNumber
-					);
-				}
-				
-				if($imagen != "")
-				{	
-					// Obtener el nombre del archivo con la extensión
-					$pathUrl 		= base_url()."/resource/file_company/company_2/component_76/component_item_".$rememberID."/".$imagen;
-					$fileNameFull 	= basename($pathUrl);
-					$extension 		= pathinfo($fileNameFull, PATHINFO_EXTENSION);
-					$fileName 		= pathinfo($fileNameFull, PATHINFO_FILENAME);
-					$this->core_web_whatsap->sendMessageByLiveconnectFile(
-						APP_COMPANY,
-						$menssage,						
-						$phoneNumber,
-						$pathUrl,
-						"buscame",
-						$extension
-					);
-				}
-			}
-			else 
-			{
-				$chatSendTemp[] = $customer;
-			}
-			
-		}
-		
-		
-		//Continuar
-		if(!empty($chatSendTemp))
-		{
-			$session->set('chatSend', $chatSendTemp);
-			$data["message"]	= $mensaje."<span class='btn btn-danger' >Volver a cargar hay mas datos por procesar...</span>";
-			$data["javascript"]	= "
-										$(document).ready(function() {
-											// Desplazar al final de la página
-											$('html, body').animate({ scrollTop: $(document).height() }, 'slow');
-											
-											// Esperar 5 segundos y recargar la página
-											setTimeout(function() {												
-												//window.open('".base_url()."/app_notification/sendWhatsappDiarioChochoMandado/procesarExcel/false', '_blank');
-												location.reload();
-												
-											}, 5000);
-										});
-			";
-			
-            $data["urlLogin"]  	= base_url();
-            $data["urlIndex"]  	= base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "sendWhatsappDiarioChochoMandado";
-            $data["urlBack"]   	= base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "sendWhatsappDiarioChochoMandado";
-            $resultView        	= view("core_template/message_general_not_ajax", $data);
-			echo $resultView;
-			
-		}
-		//No continuar
-		else
-		{
-			$session->remove('chatSend');			
-			$data["message"]   	= $mensaje."<span class='btn btn-success' >No hay mas datos cerrar ventana...</span>";
-			$data["javascript"]	= "
-										$(document).ready(function() {
-											// Desplazar al final de la página
-											$('html, body').animate({ scrollTop: $(document).height() }, 'slow');
-										});
-			";
-            $data["urlLogin"]  	= base_url();
-            $data["urlIndex"]  	= base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "sendWhatsappDiarioChochoMandado";
-            $data["urlBack"]   	= base_url() . "/" . str_replace("app\\controllers\\", "", strtolower(get_class($this))) . "/" . "sendWhatsappDiarioChochoMandado";
-            $resultView        	= view("core_template/message_general_not_ajax", $data);
-			echo $resultView;
-		}
-		
 	}
 	function sendWhatsapp_ChicExtensiones_Citas()
 	{

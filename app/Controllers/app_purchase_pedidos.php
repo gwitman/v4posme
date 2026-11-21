@@ -482,10 +482,11 @@ class app_purchase_pedidos extends _BaseController {
 								$warrning = true;
 								$this->core_web_notification->set_message(false,"Mensaje enviado al No:".$dataView["objCustomer"]->phoneNumber." ---> ".$themplate);
 								
-								$this->core_web_whatsap->sendMessageUltramsg(
-									APP_COMPANY, 
+								$this->core_web_whatsap->sendWhatsapp(
+									APP_COMPANY,
+									getNumberPhone(clearNumero($dataView["objCustomer"]->phoneNumber)),
 									$themplate,
-									$dataView["objCustomer"]->phoneNumber
+									"evolution"
 								);
 							}
 							

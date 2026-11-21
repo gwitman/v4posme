@@ -113,11 +113,13 @@ class core_web_whatsap {
    /*************************************************************/
 	private $CI;
 
-	//Vigencia de la cache de la instancia de Evolution con prefijo <tb_company.type>_
-	const EVOLUTION_INSTANCE_CACHE_SEGUNDOS			= 3600;	//consulta correcta (haya o no instancia)
-	const EVOLUTION_INSTANCE_CACHE_ERROR_SEGUNDOS	= 300;	//Evolution no respondio: no reintentar en cada mensaje
-	//Memoria del proceso: companyID_type => nombre de instancia ("" = no hay)
-	private static $evolutionInstanceMemo			= [];
+	//Registro de proveedores de WhatsApp (patron estrategia): nombre => clase que implementa WhatsappProviderInterface.
+	//Para agregar un proveedor: crear la clase en app/Libraries/whatsapp/ y agregar una linea aqui.
+	private $whatsappProviders = [
+		"evolution"		=> \App\Libraries\whatsapp\EvolutionWhatsappProvider::class,
+		"meta"			=> \App\Libraries\whatsapp\MetaCloudWhatsappProvider::class,
+		"liveconnect"	=> \App\Libraries\whatsapp\LiveConnectWhatsappProvider::class
+	];
 
 
    /**********************Funciones******************************/
@@ -201,221 +203,42 @@ class core_web_whatsap {
    }
 
    /**
-    * Envia texto por el proveedor de la empresa (segun tb_company.type).
-    * @param string $instanciaEvolution Instancia de Evolution a usar si el envio sale por Evolution; vacio = parametro WHATSAP_URL_REQUEST_SESSION
+    * Compatibilidad: envia texto con sendWhatsapp (el proveedor lo decide resolveWhatsappProvider).
+    * $typeCompany, $esperarRespuesta, $instanciaName e $instanciaEvolution se ignoran.
+    * @return mixed Respuesta cruda del proveedor ('raw' del resultado normalizado)
     */
    function sendMessageGeneric( $typeCompany,$companyID, $message, $phoneDestino,$esperarRespuesta,$instanciaName, $instanciaEvolution = "")
    {
-
-	   if($typeCompany == "posme")
-	   {
-		   //Interruptor por empresa: enviar por la API oficial de Meta (Evolution queda intacto)
-		   if($this->isSendByMetaCloud($companyID) && $instanciaName != "EvolutionApi" )
-		   {
-				return $this->sendMessageByMetaCloudText( $companyID, $message, $phoneDestino);
-		   }
-		   else if($instanciaName == "EvolutionApi")
-		   {
-				return $this->sendMessageByEvolutionApiText( $companyID, $message, $phoneDestino, $instanciaName, $instanciaEvolution);
-		   }
-	   }
-	   else if ($typeCompany == "gymJalapa")
-	   {   
-		   return $this->sendMessageByEvolutionApiText( $companyID, $message, $phoneDestino, $instanciaName, $instanciaEvolution);
-	   }
-	   else if ($typeCompany == "arteDigital")
-	   {
-		   return $this->sendMessageWapi2Text( $companyID, $message, $phoneDestino,$esperarRespuesta,$instanciaName);
-	   }
-	   else if ($typeCompany == "globalpro")
-	   {
-		   return $this->sendMessageByLiveconnect( $companyID, $message, $phoneDestino );
-	   }
-	   else if($typeCompany == "alphaDblMotor")
-	   {
-			return $this->sendMessageByEvolutionApiText( $companyID, $message, $phoneDestino, $instanciaName, $instanciaEvolution);
-	   }
-	   else
-	   {
-		   //Interruptor por empresa: enviar por la API oficial de Meta (Evolution queda intacto)
-		   if($this->isSendByMetaCloud($companyID))
-		   {
-			   return $this->sendMessageByMetaCloudText( $companyID, $message, $phoneDestino);
-		   }
-		   else
-		   {
-			   return $this->sendMessageByEvolutionApiText( $companyID, $message, $phoneDestino, $instanciaName, $instanciaEvolution);
-		   }
-	   }
+	   return $this->sendWhatsapp($companyID, $phoneDestino, $message)["raw"];
    }
    /**
-    * Envia imagen por el proveedor de la empresa (segun tb_company.type).
-    * @param string $instanciaEvolution Instancia de Evolution a usar si el envio sale por Evolution; vacio = parametro WHATSAP_URL_REQUEST_SESSION
+    * Compatibilidad: envia una imagen con sendWhatsapp.
+    * @return mixed Respuesta cruda del proveedor
     */
    function sendMessageTypeImagGeneric( $typeCompany,$companyID, $urlImagen,$message, $phoneDestino,$esperarRespuesta,$instanciaName, $instanciaEvolution = "" )
    {
-	   if($this->isSendByMetaCloud($companyID))
-	   {
-		   return $this->sendMessageByMetaCloudImage( $companyID, $urlImagen, $message, $phoneDestino);
-	   }
-
-	   if($typeCompany == "")
-	   {
-		   $i = "not implementd";
-		   return $i;
-	   }
-	   else if ($typeCompany == "posme")
-	   {   
-		   return $this->sendMessageByEvolutionApiImage( $companyID, $urlImagen, $message, $phoneDestino, $instanciaName, $instanciaEvolution);
-	   }
-	   else if ($typeCompany == "gymJalapa")
-	   {   
-		   return $this->sendMessageByEvolutionApiImage( $companyID, $urlImagen, $message, $phoneDestino, $instanciaName, $instanciaEvolution);
-	   }
-	   else if ($typeCompany == "arteDigital")
-	   {
-		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino,$esperarRespuesta ,$instanciaName);
-	   }
-	   else if($typeCompany == "alphaDblMotor")
-	   {
-			return $this->sendMessageByEvolutionApiImage( $companyID, $urlImagen, $message, $phoneDestino,$instanciaName, $instanciaEvolution);
-	   }
-	   else
-	   {
-		   return $this->sendMessageWapi2Image( $companyID, $urlImagen,$message, $phoneDestino ,$esperarRespuesta,$instanciaName);
-	   }
+	   $media 	= ["type" => "image", "url" => $urlImagen, "fileName" => "", "fileExt" => ""];
+	   return $this->sendWhatsapp($companyID, $phoneDestino, $message, "", $media)["raw"];
    }
+   /**
+    * Compatibilidad: envia un documento con sendWhatsapp.
+    * @return mixed Respuesta cruda del proveedor
+    */
    function sendMessageTypePdfGeneric( $typeCompany,$companyID, $urlPdf,$fileName,$message, $phoneDestino,$esperarRespuesta ,$instanciaName)
    {
-	   if($this->isSendByMetaCloud($companyID))
-	   {
-		   return $this->sendMessageByMetaCloudPdf( $companyID, $urlPdf, $fileName, $message, $phoneDestino);
-	   }
-
-	   if($typeCompany == "posme")
-	   {
-		  return $this->sendMessageByEvolutionApiPdf( $companyID, $urlPdf, $fileName, $message, $phoneDestino, $instanciaName);
-	   }
-	   else if($typeCompany == "gymJalapa")
-	   {
-		  return $this->sendMessageByEvolutionApiPdf( $companyID, $urlPdf, $fileName, $message, $phoneDestino, $instanciaName);
-	   }
-	   else if($typeCompany == "alphaDblMotor")
-	   {
-			return $this->sendMessageByEvolutionApiPdf( $companyID, $urlPdf,$fileName, $message, $phoneDestino,$instanciaName);
-	   }
-	   else
-	   {
-		  return $this->sendMessageWapi2Pdf( $companyID, $urlPdf,$fileName,$message, $phoneDestino,$esperarRespuesta,$instanciaName );
-	   }
+	   $media 	= ["type" => "document", "url" => $urlPdf, "fileName" => $fileName, "fileExt" => ""];
+	   return $this->sendWhatsapp($companyID, $phoneDestino, $message, "", $media)["raw"];
    }
+   /**
+    * Compatibilidad: envia audio (o video si la extension del archivo es de video) con sendWhatsapp.
+    * @return mixed Respuesta cruda del proveedor
+    */
    function sendMessageTypeVideoAudioGeneric( $typeCompany,$companyID, $urlPdf,$fileName,$message, $phoneDestino,$esperarRespuesta ,$instanciaName)
    {
-	   if($this->isSendByMetaCloud($companyID))
-	   {
-		   return $this->sendMessageByMetaCloudAudio( $companyID, $urlPdf, $phoneDestino);
-	   }
-
-	   if($typeCompany == "posme")
-	   {
-		   return $this->sendMessageByEvolutionApiAudio( $companyID, $urlPdf, $phoneDestino, $instanciaName);
-	   }
-	   else if($typeCompany == "gymJalapa")
-	   {
-		   return $this->sendMessageByEvolutionApiAudio( $companyID, $urlPdf, $phoneDestino, $instanciaName);
-	   }
-	   else if($typeCompany == "alphaDblMotor")
-	   {
-			return $this->sendMessageByEvolutionApiAudio( $companyID, $urlPdf, $phoneDestino,$instanciaName);
-	   }
-	   else
-	   {
-		   return $this->sendMessageWapi2VideoAudio( $companyID, $urlPdf,$fileName,$message, $phoneDestino,$esperarRespuesta,$instanciaName );
-	   }
-   }
-
-   
-   
-   function sendMessage($companyID,$message)
-   {
-	    //https://app.whaticket.com/tickets
-	    //Cada mensaje cuesta al cliene: 0.2 dolares
-	    //Habilitar 30 mensaje le cuesta: 6 dolares mensuales
-		//try
-		//{
-			$Parameter_Model 			= new Parameter_Model();
-			$Company_Parameter_Model 	= new Company_Parameter_Model();
-
-
-			$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
-			$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
-			$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-
-			$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
-			$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
-			$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-
-			//https://api.whaticket.com/api/v1/whatsapps
-			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
-			$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
-			$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
-
-
-			//https://api.whaticket.com/api/v1/messages
-			$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
-			$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
-			$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-
-
-			//Obtener session
-			$clientCurl = Services::curlrequest();
-			$response = $clientCurl->request('GET', $objCP_WhatsapUrlSession->value, [
-				'headers' => [
-					'Content-Type' 	=> 'application/json',
-					'accept'     	=> 'application/json',
-					'Authorization' => "Bearer ".$objCP_WhatsapToken->value
-				],
-
-			]);
-
-
-			$response 	= json_decode($response->getBody(), true);
-			if(count($response) > 0)
-			{
-				if(array_key_exists("id",$response[0]))
-				{
-					$sessionId 	= $response[0]["id"];
-					//Enviar whatsapp
-					$sendWhatsapp 								= array();
-					$sendWhatsapp["whatsappId"] 				= $sessionId;
-					$sendWhatsapp["messages"]					= array();
-					$sendWhatsapp["messages"][0]["number"]		= $objCP_WhatsapPropertyNumber->value;
-					$sendWhatsapp["messages"][0]["name"]		= "posMe";
-					$sendWhatsapp["messages"][0]["body"]		= $message;
-
-					$clientCurl2 = Services::curlrequest();
-					$response = $clientCurl2->request('POST', $objCP_WhatsapUrlSendMessage->value,
-						[
-							'headers' => [
-								'Content-Type' 	=> 'application/x-www-form-urlencoded',
-								'accept'     	=> '*/*'
-							],
-							"debug" => true,
-							"form_params" => $sendWhatsapp
-						]
-					);
-
-				}
-
-			}
-		//}
-		//catch(\Exception $ex)
-		//{
-		//		exit($ex->getMessage());
-		//}
-
-
-
+	   $ext 	= strtolower((string) pathinfo((string) parse_url((string) $urlPdf, PHP_URL_PATH), PATHINFO_EXTENSION));
+	   $type 	= in_array($ext, ["mp4", "mov", "avi", "mkv", "3gp", "webm"]) ? "video" : "audio";
+	   $media 	= ["type" => $type, "url" => $urlPdf, "fileName" => $fileName, "fileExt" => $ext];
+	   return $this->sendWhatsapp($companyID, $phoneDestino, $message, "", $media)["raw"];
    }
 
    function sendMessageByLiveconnect($companyID, $message, $phoneDestino){
@@ -621,1413 +444,16 @@ class core_web_whatsap {
         return "";
     }
 	
-	function sendMessageByLiveconnectFileGlobalPro($companyID, $message, $phoneDestino,$urlImage,$nameImage,$extImage){
-        //2024-07-22
-        //api token: https://api.liveconnect.chat/prod/account/token
-
-        $Parameter_Model 			= new Parameter_Model();
-        $Company_Parameter_Model 	= new Company_Parameter_Model();
-
-        $objPWhatsapPrivatekey		= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
-        $objPWhatsapPrivatekeyId	= $objPWhatsapPrivatekey->parameterID;
-        $objPWhatsapPrivatekey		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPrivatekeyId);
-
-        $objPWhatsapCkey		= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
-        $objPWhatsapCkeyId		= $objPWhatsapCkey->parameterID;
-        $objPWhatsapCkey		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapCkeyId);
-
-        $objPWhatsapUrlTokenMessage			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
-        $objPWhatsapUrlTokenMessageId 		= $objPWhatsapUrlTokenMessage->parameterID;
-        $objCP_WhatsapUrlTokenMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlTokenMessageId);
-
-        $objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
-        $objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
-        $objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-
-        //id canal
-        $objPWhatsapIdCanal		= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_PARAMETERF1");
-        $objPWhatsapPrivatekeyId	= $objPWhatsapIdCanal->parameterID;
-        $objPWhatsapIdCanal		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPrivatekeyId);
-
-        $curl = curl_init();
-
-        curl_setopt_array($curl, [
-            CURLOPT_URL => $objCP_WhatsapUrlTokenMessage->value,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_ENCODING => "",
-            CURLOPT_MAXREDIRS => 10,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-            CURLOPT_CUSTOMREQUEST => "POST",
-            CURLOPT_POSTFIELDS => json_encode([
-                'cKey' => $objPWhatsapCkey->value,
-                'privateKey' => $objPWhatsapPrivatekey->value
-            ]),
-            CURLOPT_HTTPHEADER => [
-                "Accept: application/json, application/xml",
-                "Content-Type: application/json"
-            ],
-        ]);
-
-        $response = curl_exec($curl);
-        $err = curl_error($curl);
-
-        curl_close($curl);
-
-        if ($err) {
-            return "cURL Error #:" . $err;
-        }
-        //return $response;
-        $response_data 	= json_decode($response, true);
-
-        if($response_data['status'] ==1)
-        {
-            $token = $response_data['PageGearToken'];
-
-            $curl = curl_init();
-
-            curl_setopt_array($curl, [
-                CURLOPT_URL => "https://api.liveconnect.chat/prod/direct/wa/sendFile",
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_ENCODING => "",
-                CURLOPT_MAXREDIRS => 10,
-                CURLOPT_TIMEOUT => 30,
-                CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-                CURLOPT_CUSTOMREQUEST => "POST",
-                CURLOPT_POSTFIELDS => json_encode([
-                    'id_canal' => $objPWhatsapIdCanal->value,
-                    'numero'=>$phoneDestino,                    
-					"url"=> $urlImage,
-					"nombre"=> $nameImage,
-				    "extension"=> $extImage
-  
-                ]),
-                CURLOPT_HTTPHEADER => [
-                    "Accept: application/json",
-                    "Content-Type: application/json",
-                    "PageGearToken: ".$token
-                ],
-            ]);
-
-            $response = curl_exec($curl);
-            $err = curl_error($curl);
-
-            curl_close($curl);
-
-            if ($err) {
-                return "cURL Error #:" . $err;
-            } else {
-                $response_data 	= json_decode($response, true);
-                return $response_data['status_message'];
-            }
-        }
-        return "";
-    }
-
-
-   function sendMessageByWaapi($companyID, $message, $phoneDestino)
-   {
-	    //2024-06-30
-		//https://waapi.app/account/
-		//tocken  qMAsXGyf0jIswU6xttfuZvORRhCRJnlrLClmlBgMe31db7ac
-		//tocken  S0EEmlFcUcvlDRdW3cIE8WQedbtdk2GVRKypXWJu8649891a
-		//api     https://waapi.app/api/v1/instances/12905/client/action/send-message
-
-		//gabriel.ley@grupogasani.com
-		//Sistema123.
-
-
-		$Parameter_Model 			= new Parameter_Model();
-		$Company_Parameter_Model 	= new Company_Parameter_Model();
-
-
-		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
-		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
-		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-
-		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
-		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
-		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-
-		$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
-		$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
-		$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
-
-		//https://api.ultramsg.com/instance65915/messages/chat
-		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
-		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
-		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-
-
-
-		$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
-		$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
-		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
-		$data 			= [
-			'chatId'  => $phoneDestino . '@c.us',
-			'message' => $message // Asegúrate de que $message esté en UTF-8
-		];
-
-
-		$clientCurlRequest		= Services::curlrequest();
-		$response  				= $clientCurlRequest->request(
-			'POST',
-			$objCP_WhatsapUrlSendMessage->value,
-			[
-				'body' => json_encode($data, JSON_UNESCAPED_UNICODE),
-				'headers' 		=> [
-					'accept'     	=> 'application/json',
-					'authorization' => 'Bearer '.$objCP_WhatsapToken->value,
-					'content-type' 	=> 'application/json'
-				]
-			]
-		);
-		
-		
-
-
-   }
-
-   
-   function sendMessageUltramsg( $companyID, $message, $phoneDestino)
-   {
-		//password: 180389Witman
-		//usuario: wgonzalez@gruposi.com
-	    //https://user.ultramsg.com/
-	    //Cada mensaje cuesta al cliene: 0.2 dolares
-	    //Habilitar 30 mensaje le cuesta: 6 dolares mensuales
-		//try
-		//{
-			$Parameter_Model 			= new Parameter_Model();
-			$Company_Parameter_Model 	= new Company_Parameter_Model();
-
-
-			$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
-			$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
-			$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-
-			$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
-			$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
-			$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-
-			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
-			$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
-			$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
-
-
-			//https://api.ultramsg.com/instance65915/messages/chat
-			$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
-			$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
-			$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-
-
-
-			$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
-			$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
-			$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
-
-			$params=array(
-			'token' 	=> $objCP_WhatsapToken->value,
-			'to' 		=> $phoneDestino,
-			'body' 		=> $message
-			);
-			$curl = curl_init();
-			curl_setopt_array($curl, array(
-			  CURLOPT_URL => $objCP_WhatsapUrlSendMessage->value,
-			  CURLOPT_RETURNTRANSFER => true,
-			  CURLOPT_ENCODING => "",
-			  CURLOPT_MAXREDIRS => 10,
-			  CURLOPT_TIMEOUT => 30,
-			  CURLOPT_SSL_VERIFYHOST => 0,
-			  CURLOPT_SSL_VERIFYPEER => 0,
-			  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-			  CURLOPT_CUSTOMREQUEST => "POST",
-			  CURLOPT_POSTFIELDS => http_build_query($params),
-			  CURLOPT_HTTPHEADER => array(
-				"content-type: application/x-www-form-urlencoded"
-			  ),
-			));
-
-			$response = curl_exec($curl);
-			$err = curl_error($curl);
-
-			curl_close($curl);
-
-			if ($err)
-			{
-			  log_message("error",print_r("cURL Error #:".$err,true));
-			}
-			else
-			{
-			  log_message("error",print_r($response,true));
-			}
-
-
-		//}
-		//catch(\Exception $ex)
-		//{
-		//		exit($ex->getMessage());
-		//}
-
-
-
-   }
-
-   
-   function sendMessageTypeImagUltramsg( $companyID, $urlImagen,$message, $phoneDestino )
-   {
-		//password: 180389Witman
-		//usuario: wgonzalez@gruposi.com
-	    //https://user.ultramsg.com/
-	    //Cada mensaje cuesta al cliene: 0.2 dolares
-	    //Habilitar 30 mensaje le cuesta: 6 dolares mensuales
-		//try
-		//{
-			$Parameter_Model 			= new Parameter_Model();
-			$Company_Parameter_Model 	= new Company_Parameter_Model();
-
-
-			$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
-			$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
-			$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-
-			$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
-			$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
-			$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-
-			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
-			$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
-			$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
-			
-			$objPWhatsapUrlSessionImagen		= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_IMAGEN");
-			$objPWhatsapUrlSessionImagenId		= $objPWhatsapUrlSessionImagen->parameterID;
-			$objCP_WhatsapUrlSessionImagen		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionImagenId);
-
-
-			//https://api.ultramsg.com/instance65915/messages/chat
-			$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
-			$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
-			$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-
-
-			log_message("error",print_r($phoneDestino,true));
-			$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
-			$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
-			$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
-
-			$params=array(
-			'token' 	=> $objCP_WhatsapToken->value,
-			'to' 		=> $phoneDestino,
-			'image'		=> $urlImagen,
-			'caption'	=> $message
-			);
-			
-			log_message("error",print_r($params,true));
-			log_message("error",print_r($objCP_WhatsapUrlSessionImagen->value,true));			
-			$curl = curl_init();
-			curl_setopt_array($curl, array(
-			  CURLOPT_URL => $objCP_WhatsapUrlSessionImagen->value,
-			  CURLOPT_RETURNTRANSFER => true,
-			  CURLOPT_ENCODING => "",
-			  CURLOPT_MAXREDIRS => 10,
-			  CURLOPT_TIMEOUT => 30,
-			  CURLOPT_SSL_VERIFYHOST => 0,
-			  CURLOPT_SSL_VERIFYPEER => 0,
-			  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
-			  CURLOPT_CUSTOMREQUEST => "POST",
-			  CURLOPT_POSTFIELDS => http_build_query($params),
-			  CURLOPT_HTTPHEADER => array(
-				"content-type: application/x-www-form-urlencoded"
-			  ),
-			));
-
-
-			$response 	= curl_exec($curl);
-			$err 		= curl_error($curl);
-
-			curl_close($curl);
-
-			if ($err)
-			{
-			  log_message("error",print_r("cURL Error #:".$err,true));
-			}
-			else
-			{
-			  log_message("error",print_r($response,true));
-			}
-
-
-		//}
-		//catch(\Exception $ex)
-		//{
-		//		exit($ex->getMessage());
-		//}
-
-
-
-   }
-   function sendMessageWapi2Text( $companyID, $message, $phoneDestino,$esperarRespuesta,$instanciaName)
-   {
-	   //password: 180389Witman
-		//usuario: wgonzalez@gruposi.com
-	    //https://user.ultramsg.com/
-	    //Cada mensaje cuesta al cliene: 0.2 dolares
-	    //Habilitar 30 mensaje le cuesta: 6 dolares mensuales
-		//try
-		//{
-			log_message('info', '[sendMessageWapi2Text] Inicio - companyID: ' . $companyID . ' | phoneDestino: ' . $phoneDestino . ' | instanciaName: ' . $instanciaName . ' | esperarRespuesta: ' . $esperarRespuesta);
-			log_message('info', '[sendMessageWapi2Text] message: ' . $message);
-
-			$Parameter_Model 			= new Parameter_Model();
-			$Company_Parameter_Model 	= new Company_Parameter_Model();
-
-
-			$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
-			$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
-			$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-			log_message('info', '[sendMessageWapi2Text] WHATSAP_CURRENT_PROPIETARY_COMMERSE - parameterID: ' . $objPWhatsapPropertyNumberId . ' | value: ' . $objCP_WhatsapPropertyNumber->value);
-
-			$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
-			$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
-			$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-			log_message('info', '[sendMessageWapi2Text] WHATSAP_TOCKEN - parameterID: ' . $objPWhatsapTokenId . ' | token length: ' . strlen($objCP_WhatsapToken->value));
-
-			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
-			$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
-			$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
-			log_message('info', '[sendMessageWapi2Text] WHATSAP_URL_REQUEST_SESSION - parameterID: ' . $objPWhatsapUrlSessionId . ' | value: ' . $objCP_WhatsapUrlSession->value);
-
-
-			//https://api.ultramsg.com/instance65915/messages/chat
-			$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
-			$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
-			$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-			log_message('info', '[sendMessageWapi2Text] WAHTSAP_URL_ENVIO_MENSAJE - parameterID: ' . $objPWhatsapUrlSendMessageId . ' | value: ' . $objCP_WhatsapUrlSendMessage->value);
-
-
-
-			$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
-			$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
-			$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
-			log_message('info', '[sendMessageWapi2Text] phoneDestino resuelto: ' . $phoneDestino);
-
-			// Obtener session_id: si $instanciaName viene vacio, usar el valor tal cual
-			// Si tiene un key, parsear el formato 'key':guid y buscar el guid correspondiente
-			$sessionIdValue = $objCP_WhatsapUrlSession->value;
-			log_message('info', '[sendMessageWapi2Text] sessionIdValue raw: ' . $sessionIdValue . ' | instanciaName: ' . $instanciaName);
-			if($instanciaName !== "")
-			{
-				$pairs = explode(",", $sessionIdValue);
-				log_message('info', '[sendMessageWapi2Text] Buscando instancia "' . $instanciaName . '" en ' . count($pairs) . ' pares');
-				foreach($pairs as $pair)
-				{
-					$pair = trim($pair);
-					$parts = explode(":", $pair, 2);
-					if(count($parts) == 2)
-					{
-						$key = trim($parts[0], " '\"");
-						$val = trim($parts[1], " '\"");
-						log_message('info', '[sendMessageWapi2Text] Par encontrado - key: ' . $key . ' | val: ' . $val);
-						if($key === $instanciaName)
-						{
-							$sessionIdValue = $val;
-							log_message('info', '[sendMessageWapi2Text] Instancia match! sessionIdValue: ' . $sessionIdValue);
-							break;
-						}
-					}
-				}
-			}
-			log_message('info', '[sendMessageWapi2Text] sessionIdValue final: ' . $sessionIdValue);
-
-			$params=array(			
-			'message' 		=> $message
-			);
-			log_message('info', '[sendMessageWapi2Text] params JSON: ' . json_encode($params));
-			
-			$url  = $objCP_WhatsapUrlSendMessage->value;
-			$url  = $url."/".$phoneDestino."/message?session_id=".$sessionIdValue;
-			log_message('info', '[sendMessageWapi2Text] URL final: ' . $url);
-			
-			$curl = curl_init();
-			curl_setopt_array($curl, array(
-			  CURLOPT_URL 				=> $url,			  
-			  CURLOPT_CUSTOMREQUEST 	=> "POST",
-			  CURLOPT_POSTFIELDS 		=> json_encode($params),
-			  CURLOPT_HTTPHEADER 		=> array(
-				"Accept: application/json",
-				"Content-Type: application/json",
-				"Authorization: Bearer ".$objCP_WhatsapToken->value
-			  ),
-			  
-			  //No espera espuesta
-			  //CURLOPT_RETURNTRANSFER 		=> false,	//true espera respuetas, false no espera rspuesta
-			  //CURLOPT_TIMEOUT_MS      	=> 100,    	// 👈 0.1 segundo
-			  //CURLOPT_CONNECTTIMEOUT_MS 	=> 100,
-			  //CURLOPT_NOSIGNAL          	=> true,
-			  
-			  //Si espera respuesta
-			  CURLOPT_RETURNTRANSFER 		=> true,
-			  
-			  // ⚠️ Ignorar certificado vencido
-			  CURLOPT_SSL_VERIFYPEER 		=> false,
-			  CURLOPT_SSL_VERIFYHOST 		=> false
-			));
-
-			log_message('info', '[sendMessageWapi2Text] Ejecutando curl_exec...');
-			$response 	= curl_exec($curl);
-			
-			//no espera respuesta
-			//$err 		= curl_error($curl);
-			
-			//si espera respuesta
-			$err 		= curl_error($curl);
-			$httpCode 	= curl_getinfo($curl, CURLINFO_HTTP_CODE);
-			log_message('info', '[sendMessageWapi2Text] curl ejecutado - HTTP code: ' . $httpCode . ' | error: ' . $err);
-			log_message('info', '[sendMessageWapi2Text] response raw: ' . $response);
-			
-			
-			curl_close($curl);
-
-			//No espera respueta
-			//if ($err)
-			//{
-			//  log_message("error",print_r("cURL Error #:".$err,true));
-			//}
-			//else
-			//{
-			//  log_message("error",print_r($response,true));
-			//}
-			
-			//Si espera respuesta
-			if ($err)
-			{
-			  log_message("error",'[sendMessageWapi2Text] cURL Error: ' . $err);
-			  $response 	= '{"status":"error","message":"Authentication failed '.$err.'","error":"invalid signature"}';
-			  $resultado 	= json_decode($response, true); // true = array asociativo
-			  log_message('info', '[sendMessageWapi2Text] Resultado (error): ' . print_r($resultado, true));
-			  return $resultado;
-			}
-			else
-			{
-			  log_message('info', '[sendMessageWapi2Text] Respuesta exitosa - response: ' . $response);
-			  $resultado = json_decode($response, true); // true = array asociativo
-			  log_message('info', '[sendMessageWapi2Text] Resultado decodificado: ' . print_r($resultado, true));
-			  return $resultado;
-			}
-
-
-		//}
-		//catch(\Exception $ex)
-		//{
-		//		exit($ex->getMessage());
-		//}
-   }
-   function sendMessageWapi2Image( $companyID,$urlImagen, $message, $phoneDestino,$esperarRespuesta,$instanciaName)
-   {
-	   //password: 180389Witman
-		//usuario: wgonzalez@gruposi.com
-	    //https://user.ultramsg.com/
-	    //Cada mensaje cuesta al cliene: 0.2 dolares
-	    //Habilitar 30 mensaje le cuesta: 6 dolares mensuales
-		//try
-		//{
-			$Parameter_Model 			= new Parameter_Model();
-			$Company_Parameter_Model 	= new Company_Parameter_Model();
-
-
-			$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
-			$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
-			$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-
-			$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
-			$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
-			$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-
-			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION".$instanciaName);
-			$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
-			$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
-
-
-			//https://api.ultramsg.com/instance65915/messages/chat
-			$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
-			$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
-			$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-
-
-
-			$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
-			$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
-			$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
-
-			$params=array(			
-			'image' 		=> $urlImagen,
-			'caption'		=> $message
-			);
-			
-			$url  = $objCP_WhatsapUrlSendMessage->value;
-			$url  = $url."/".$phoneDestino."/image?session_id=".$objCP_WhatsapUrlSession->value;
-			$curl = curl_init();
-			curl_setopt_array($curl, array(
-			  CURLOPT_URL 				=> $url,			  
-			  CURLOPT_CUSTOMREQUEST 	=> "POST",
-			  CURLOPT_POSTFIELDS 		=> json_encode($params),
-			  CURLOPT_HTTPHEADER 		=> array(
-				"Accept: application/json",
-				"Content-Type: application/json",
-				"Authorization: Bearer ".$objCP_WhatsapToken->value
-			  ),
-			  CURLOPT_RETURNTRANSFER 	=> true,
-			  
-			  // ⚠️ Ignorar certificado vencido
-			  CURLOPT_SSL_VERIFYPEER 	=> false,
-			  CURLOPT_SSL_VERIFYHOST 	=> false
-			));
-
-			$response 	= curl_exec($curl);
-			
-			//No espera respuesta
-			//$err 		= curl_error($curl);
-			
-			//Espera respuseta
-			$err 		= curl_error($curl);
-
-			curl_close($curl);
-
-			//No espera respuesta
-			//if ($err)
-			//{
-			//  log_message("error",print_r("cURL Error #:".$err,true));
-			//  $response 	= '{"status":"error","message":"Authentication failed","error":"invalid signature"}';
-			//  $resultado 	= json_decode($response, true); // true = array asociativo
-			//  return $resultado;
-			//}
-			//else
-			//{
-			//  log_message("error",print_r($response,true));
-			//  $resultado = json_decode($response, true); // true = array asociativo
-			//  return $resultado;
-			//}
-			
-			//Espera respuesta
-			if ($err)
-			{
-			  log_message("error",print_r("cURL Error #:".$err,true));
-			  $response 	= '{"status":"error","message":"Authentication failed","error":"invalid signature"}';
-			  $resultado 	= json_decode($response, true); // true = array asociativo
-			  return $resultado;
-			}
-			else
-			{
-			  log_message("error",print_r($response,true));
-			  $resultado = json_decode($response, true); // true = array asociativo
-			  return $resultado;
-			}
-
-
-		//}
-		//catch(\Exception $ex)
-		//{
-		//		exit($ex->getMessage());
-		//}
-   }
-   function sendMessageWapi2Pdf( $companyID,$urlPdf,$fileName, $message, $phoneDestino,$esperarRespuesta,$instanciaName)
-   {
-	   //password: 180389Witman
-		//usuario: wgonzalez@gruposi.com
-	    //https://user.ultramsg.com/
-	    //Cada mensaje cuesta al cliene: 0.2 dolares
-	    //Habilitar 30 mensaje le cuesta: 6 dolares mensuales
-		//try
-		//{
-			$Parameter_Model 			= new Parameter_Model();
-			$Company_Parameter_Model 	= new Company_Parameter_Model();
-
-
-			$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
-			$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
-			$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-
-			$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
-			$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
-			$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-
-			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
-			$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
-			$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
-
-
-			//https://api.ultramsg.com/instance65915/messages/chat
-			$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
-			$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
-			$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-
-
-
-			$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
-			$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
-			$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
-
-			$params=array(			
-			'pdf' 			=> $urlPdf,
-			'filename' 		=> $fileName,
-			'caption'		=> $message
-			);
-			
-			
-			// Obtener session_id: si $instanciaName viene vacio, usar el valor tal cual
-			// Si tiene un key, parsear el formato 'key':guid y buscar el guid correspondiente
-			$sessionIdValue = $objCP_WhatsapUrlSession->value;
-			if($instanciaName !== "")
-			{
-				$pairs = explode(",", $sessionIdValue);
-				foreach($pairs as $pair)
-				{
-					$pair = trim($pair);
-					$parts = explode(":", $pair, 2);
-					if(count($parts) == 2)
-					{
-						$key = trim($parts[0], " '\"");
-						$val = trim($parts[1], " '\"");
-						if($key === $instanciaName)
-						{
-							$sessionIdValue = $val;
-							break;
-						}
-					}
-				}
-			}
-
-			
-			$url  = $objCP_WhatsapUrlSendMessage->value;
-			$url  = $url."/".$phoneDestino."/pdf?session_id=".$sessionIdValue;			
-			log_message("error",print_r("url send mensaje:".$url,true));
-			
-			$curl = curl_init();
-			curl_setopt_array($curl, array(
-			  CURLOPT_URL 				=> $url,			  
-			  CURLOPT_CUSTOMREQUEST 	=> "POST",
-			  CURLOPT_POSTFIELDS 		=> json_encode($params),
-			  CURLOPT_HTTPHEADER 		=> array(
-				"Accept: application/json",
-				"Content-Type: application/json",
-				"Authorization: Bearer ".$objCP_WhatsapToken->value
-			  ),
-			  CURLOPT_RETURNTRANSFER 	=> true,
-			  
-			  // ⚠️ Ignorar certificado vencido
-			  CURLOPT_SSL_VERIFYPEER 	=> false,
-			  CURLOPT_SSL_VERIFYHOST 	=> false
-			));
-
-			$response 	= curl_exec($curl);
-			
-			//No espera respuesta
-			//$err 		= curl_error($curl);
-			
-			//Espera respuseta
-			$err 		= curl_error($curl);
-
-			curl_close($curl);
-
-			//No espera respuesta
-			//if ($err)
-			//{
-			//  log_message("error",print_r("cURL Error #:".$err,true));
-			//  $response 	= '{"status":"error","message":"Authentication failed","error":"invalid signature"}';
-			//  $resultado 	= json_decode($response, true); // true = array asociativo
-			//  return $resultado;
-			//}
-			//else
-			//{
-			//  log_message("error",print_r($response,true));
-			//  $resultado = json_decode($response, true); // true = array asociativo
-			//  return $resultado;
-			//}
-			
-			//Espera respuesta
-			if ($err)
-			{
-			  log_message("error",print_r("cURL Error #:".$err,true));
-			  $response 	= '{"status":"error","message":"Authentication failed","error":"invalid signature"}';
-			  $resultado 	= json_decode($response, true); // true = array asociativo
-			  return $resultado;
-			}
-			else
-			{
-			  log_message("error",print_r($response,true));
-			  $resultado = json_decode($response, true); // true = array asociativo
-			  return $resultado;
-			}
-
-
-		//}
-		//catch(\Exception $ex)
-		//{
-		//		exit($ex->getMessage());
-		//}
-   }
-   function sendMessageWapi2VideoAudio( $companyID,$urlFile,$fileName, $message, $phoneDestino,$esperarRespuesta,$instanciaName)
-   {
-	   //password: 180389Witman
-		//usuario: wgonzalez@gruposi.com
-	    //https://user.ultramsg.com/
-	    //Cada mensaje cuesta al cliene: 0.2 dolares
-	    //Habilitar 30 mensaje le cuesta: 6 dolares mensuales
-		//try
-		//{
-			$Parameter_Model 			= new Parameter_Model();
-			$Company_Parameter_Model 	= new Company_Parameter_Model();
-
-
-			$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
-			$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
-			$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-
-			$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
-			$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
-			$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-
-			$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION".$instanciaName);
-			$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
-			$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
-
-
-			//https://api.ultramsg.com/instance65915/messages/chat
-			$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
-			$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
-			$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-
-
-
-			$phoneDestino	= !isset($phoneDestino) ? "" : $phoneDestino;
-			$phoneDestino	= is_null($phoneDestino) ? "" : $phoneDestino;
-			$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
-
-			$params=array(			
-			'audio' 			=> $urlFile,
-			'as_voice'			=> true
-			);
-			
-			$url  = $objCP_WhatsapUrlSendMessage->value;
-			$url  = $url."/".$phoneDestino."/audio?session_id=".$objCP_WhatsapUrlSession->value;
-			log_message("error",print_r("url send mensaje:".$url,true));
-			log_message("error",print_r($params,true));
-			
-			$curl = curl_init();
-			curl_setopt_array($curl, array(
-			  CURLOPT_URL 				=> $url,			  
-			  CURLOPT_CUSTOMREQUEST 	=> "POST",
-			  CURLOPT_POSTFIELDS 		=> json_encode($params),
-			  CURLOPT_HTTPHEADER 		=> array(
-				"Accept: application/json",
-				"Content-Type: application/json",
-				"Authorization: Bearer ".$objCP_WhatsapToken->value
-			  ),
-			  CURLOPT_RETURNTRANSFER 	=> true,
-			  
-			  // ⚠️ Ignorar certificado vencido
-			  CURLOPT_SSL_VERIFYPEER 	=> false,
-			  CURLOPT_SSL_VERIFYHOST 	=> false
-			));
-
-			$response 	= curl_exec($curl);
-			
-			//No espera respuesta
-			//$err 		= curl_error($curl);
-			
-			//Espera respuseta
-			$err 		= curl_error($curl);
-
-			curl_close($curl);
-
-			//No espera respuesta
-			//if ($err)
-			//{
-			//  log_message("error",print_r("cURL Error #:".$err,true));
-			//  $response 	= '{"status":"error","message":"Authentication failed","error":"invalid signature"}';
-			//  $resultado 	= json_decode($response, true); // true = array asociativo
-			//  return $resultado;
-			//}
-			//else
-			//{
-			//  log_message("error",print_r($response,true));
-			//  $resultado = json_decode($response, true); // true = array asociativo
-			//  return $resultado;
-			//}
-			
-			//Espera respuesta
-			if ($err)
-			{
-			  log_message("error",print_r("cURL Error #:".$err,true));
-			  $response 	= '{"status":"error","message":"Authentication failed","error":"invalid signature"}';
-			  $resultado 	= json_decode($response, true); // true = array asociativo
-			  return $resultado;
-			}
-			else
-			{
-			  log_message("error",print_r($response,true));
-			  $resultado = json_decode($response, true); // true = array asociativo
-			  return $resultado;
-			}
-
-
-		//}
-		//catch(\Exception $ex)
-		//{
-		//		exit($ex->getMessage());
-		//}
-   }
-   function sendMessageZAPIioText( $companyID, $message, $phoneDestino)
-   {
-        $Parameter_Model 			= new Parameter_Model();
-		$Company_Parameter_Model 	= new Company_Parameter_Model();
-
-	    $objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
-		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
-		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);//F7403e70c8a00447abbb04c37c70a1efdS
-			
-		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
-		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
-		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);//'https://api.z-api.io/instances/3EDF527C557BB1FD5BB37E439F0C86D3/token/B0D6E517BCF7809B380928A7/send-text' 
-
-
-	    $url 		= $objCP_WhatsapUrlSendMessage->value.'/send-text';
-		$payload 	= [
-			'phone'   => $phoneDestino,
-			'message' => $message
-		];
-
-		$ch = curl_init($url);
-		curl_setopt_array($ch, [
-			CURLOPT_POST           => true,
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_HTTPHEADER     => [
-				'Content-Type: application/json',
-				'Client-Token: '.$objCP_WhatsapToken->value
-			],
-			CURLOPT_POSTFIELDS     => json_encode($payload),
-			CURLOPT_TIMEOUT        => 30,
-		]);
-
-		$response = curl_exec($ch);
-
-		if ($response === false) {
-			$error = curl_error($ch);
-			curl_close($ch);
-			return $this->response->setJSON([
-				'status' => false,
-				'error'  => $error
-			]);
-		}
-
-		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		curl_close($ch);
-		log_message("error",print_r($httpCode,true));
-		log_message("error",print_r(json_decode($response, true),true));
-
-		
-   }
-   function sendMessageZAPIioImage( $companyID,$urlImagen, $message, $phoneDestino)
-   {
-        $Parameter_Model 			= new Parameter_Model();
- 		$Company_Parameter_Model 	= new Company_Parameter_Model();
-
-		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
-		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
-		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);//F7403e70c8a00447abbb04c37c70a1efdS
-			
-		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
-		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
-		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);//'https://api.z-api.io/instances/3EDF527C557BB1FD5BB37E439F0C86D3/token/B0D6E517BCF7809B380928A7/send-text' 
-			
-	    $url = $objCP_WhatsapUrlSendMessage->value.'/send-image';
-		$payload = [
-			'phone'   	=> $phoneDestino,
-			'caption' 	=> $message,
-			'image' 	=> $urlImagen
-		];
-
-		$ch = curl_init($url);
-		curl_setopt_array($ch, [
-			CURLOPT_POST           => true,
-			CURLOPT_RETURNTRANSFER => true,
-			CURLOPT_HTTPHEADER     => [
-				'Content-Type: application/json',
-				'Client-Token: '.$objCP_WhatsapToken->value
-			],
-			CURLOPT_POSTFIELDS     => json_encode($payload),
-			CURLOPT_TIMEOUT        => 30,
-		]);
-
-		$response = curl_exec($ch);
-
-		if ($response === false) {
-			$error = curl_error($ch);
-			curl_close($ch);
-			return $this->response->setJSON([
-				'status' => false,
-				'error'  => $error
-			]);
-		}
-
-		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		curl_close($ch);
-		log_message("error",print_r($httpCode,true));
-		log_message("error",print_r(json_decode($response, true),true));
-
-		
-   }
-	function sendMessagePosMeConnect($companyID,$body,$number) 
-	{
-		$Parameter_Model 			= new Parameter_Model();
-		$Company_Parameter_Model 	= new Company_Parameter_Model();
-			
-		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
-		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
-		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-		$token 								= $objCP_WhatsapToken->value;
-		
-		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
-		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
-		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-		$url								= $objCP_WhatsapUrlSendMessage->value;
-
-		
-		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
-		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
-		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-		$userId								= $objCP_WhatsapPropertyNumber->value;
-
-		$objPWhatsapPropertyCola 			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_PARAMETERF1");
-		$objPWhatsapPropertyColaId 			= $objPWhatsapPropertyCola->parameterID;
-		$objCP_WhatsapPropertyCola			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyColaId);
-		$queueId							= $objCP_WhatsapPropertyCola->value;
-		
-		//$number 							= "50587125827";
-		//log_message("error","sendMessagePosMeConnect");
-		//log_message("error",$number);
-		//log_message("error",$body);
-		//log_message("error",$token);
-		//log_message("error",$url);
-		//log_message("error",$userId);
-		//log_message("error",$queueId);
-
-		$sendSignature 	= false;
-		$closeTicket 	= true;
-		// Armamos el body como array
-		$data = [
-			"number"        => $number,
-			"body"          => $body,
-			"userId"        => $userId,
-			"queueId"       => $queueId,
-			"sendSignature" => $sendSignature,
-			"closeTicket"   => $closeTicket
-		];
-
-		// Inicializamos cURL
-		$ch = curl_init($url);
-
-		curl_setopt($ch, CURLOPT_TIMEOUT, 1);
-		curl_setopt($ch, CURLOPT_NOSIGNAL, 1);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_POST, true);
-		curl_setopt($ch, CURLOPT_HTTPHEADER, [
-			"Authorization: Bearer " . $token,
-			"Content-Type: application/json; charset=utf-8"
-		]);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_UNICODE));
-
-		// Ejecutamos la petición
-		$response = curl_exec($ch);
-		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-
-		if (curl_errno($ch)) {
-			$error_msg = curl_error($ch);
-			curl_close($ch);
-			return ["success" => false, "error" => $error_msg];
-		}
-
-		curl_close($ch);
-
-		// Devolvemos el resultado como array
-		return [
-			"success"   => $httpCode >= 200 && $httpCode < 300,
-			"status"    => $httpCode,
-			"response"  => json_decode($response, true)
-		];
-	}
-	
-	
-
-	function sendMessageUltramsgOnlyTextMasive($companyID,$chatSend,$pathRemember) 
-	{
-		
-		$Parameter_Model 			= new Parameter_Model();
-		$Company_Parameter_Model 	= new Company_Parameter_Model();
-			
-		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
-		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
-		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-		$token 								= $objCP_WhatsapToken->value;
-		
-		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
-		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
-		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-		$url								= $objCP_WhatsapUrlSendMessage->value;
-
-		
-		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
-		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
-		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-		$userId								= $objCP_WhatsapPropertyNumber->value;
-
-		$objPWhatsapPropertyCola 			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_PARAMETERF1");
-		$objPWhatsapPropertyColaId 			= $objPWhatsapPropertyCola->parameterID;
-		$objCP_WhatsapPropertyCola			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyColaId);
-		$queueId							= $objCP_WhatsapPropertyCola->value;
-		
-
-		$sendSignature 	= false;
-		$closeTicket 	= true;
-		
-		
-		// Inicializamos cURLs
-		$multiHandle = curl_multi_init();
-		$curlHandles = [];
-		foreach ($chatSend as $customer) {
-			
-			//Enviar Mensaje de texto
-			echo "</br>enviar mensaje a ".clearNumero($customer["phoneNumber"])."</br>";
-			$data = [
-				"to"        		=> clearNumero($customer["phoneNumber"]),
-				"body"          	=> $customer["mensaje"],
-				"token"        		=> $token
-			];
-			
-			
-			$ch = curl_init($url);						
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_ENCODING, "");
-			curl_setopt($ch, CURLOPT_MAXREDIRS, 10);
-			curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-			curl_setopt($ch, CURLOPT_HTTP_VERSION, CURL_HTTP_VERSION_1_1);
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-			curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data) );
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-				"content-type: application/x-www-form-urlencoded"
-			));
-			curl_multi_add_handle($multiHandle, $ch);
-			$curlHandles[] = $ch;
-			
-		}
-
-		// Ejecutar todas las requests en paralelo		
-		$running = null;
-		do {
-			$mrc = curl_multi_exec($multiHandle, $running);
-			if ($mrc == CURLM_CALL_MULTI_PERFORM) 
-			{
-				continue;
-			}
-			curl_multi_select($multiHandle);			
-		} while ($running > 0);
-			
-		
-		 // Recoger resultados
-		$results = [];
-		foreach ($curlHandles as $ch) {
-			$response 	= curl_multi_getcontent($ch);
-			$status   	= curl_getinfo($ch, CURLINFO_HTTP_CODE);
-			$results[] 	= [
-				"status"   => $status,
-				"response" => json_decode($response, true)
-			];
-			curl_multi_remove_handle($multiHandle, $ch);
-			curl_close($ch);
-		}
-		curl_multi_close($multiHandle);		
-		return $results;
-	}
-	
-	function sendMessagePosMeConnectMasive($companyID,$chatSend,$pathRemember) 
-	{
-		
-		$Parameter_Model 			= new Parameter_Model();
-		$Company_Parameter_Model 	= new Company_Parameter_Model();
-			
-		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
-		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
-		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-		$token 								= $objCP_WhatsapToken->value;
-		
-		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
-		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
-		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-		$url								= $objCP_WhatsapUrlSendMessage->value;
-
-		
-		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
-		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
-		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-		$userId								= $objCP_WhatsapPropertyNumber->value;
-
-		$objPWhatsapPropertyCola 			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_PARAMETERF1");
-		$objPWhatsapPropertyColaId 			= $objPWhatsapPropertyCola->parameterID;
-		$objCP_WhatsapPropertyCola			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyColaId);
-		$queueId							= $objCP_WhatsapPropertyCola->value;
-		
-
-		$sendSignature 	= false;
-		$closeTicket 	= true;
-		
-		
-		// Inicializamos cURLs
-		$multiHandle = curl_multi_init();
-		$curlHandles = [];
-		foreach ($chatSend as $customer) {
-			
-			//Enviar Mensaje de texto
-			echo "</br>enviar mensaje a ".clearNumero($customer["phoneNumber"])."</br>";
-			$data = [
-				"number"        => clearNumero($customer["phoneNumber"]),
-				"body"          => $customer["mensaje"],
-				"userId"        => $userId,
-				"queueId"       => $queueId,
-				"sendSignature" => $sendSignature,
-				"closeTicket"   => $closeTicket
-			];
-			
-			$ch = curl_init($url);			
-			//curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 0);  // tiempo máximo para conectar
-			//curl_setopt($ch, CURLOPT_TIMEOUT, 50);        // tiempo máximo total
-			//curl_setopt($ch, CURLOPT_NOSIGNAL, 1);        // para evitar problemas con multi_exec
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_POST, true);
-			curl_setopt($ch, CURLOPT_HTTPHEADER, [
-				"Authorization: Bearer " . $token,
-				"Content-Type: application/json; charset=utf-8"
-			]);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data, JSON_UNESCAPED_UNICODE));
-			
-			curl_multi_add_handle($multiHandle, $ch);
-			$curlHandles[] = $ch;
-			
-			
-			//Enviar Imagen
-			if($customer["urlImage"] != "")
-			{
-				$filePath	 	= $pathRemember."/".$customer["urlImage"];				
-				$fileName		= $customer["urlImage"];
-				$fileInfo 		= pathinfo($filePath);
-				$fileExtension 	= $fileInfo['extension'];
-				if (!file_exists($filePath)) 
-				{
-				}
-				else
-				{
-					echo "enviar imagen a ".clearNumero($customer["phoneNumber"])." imagen: ".$filePath."</br>";
-					$data 			= [
-						"number"        => clearNumero($customer["phoneNumber"]),
-						"body"          => "--",
-						"userId"        => $userId,
-						"queueId"       => $queueId,
-						"sendSignature" => $sendSignature,
-						"closeTicket"   => $closeTicket,
-						"medias" 		=> new \CURLFile(
-							$filePath,
-							"image/".$fileExtension,
-							$fileName
-						)
-					];
-					$ch = curl_init($url);					
-					curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-					curl_setopt($ch, CURLOPT_POST, true);
-					curl_setopt($ch, CURLOPT_HTTPHEADER, [
-						"Authorization: Bearer " . $token,
-						"Content-Type: multipart/form-data"
-					]);
-					curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
-					curl_multi_add_handle($multiHandle, $ch);
-					$curlHandles[] = $ch;
-				}
-			}
-			
-		}
-
-		// Ejecutar todas las requests en paralelo
-		$running = null;
-		do {
-			$mrc = curl_multi_exec($multiHandle, $running);
-			if ($mrc == CURLM_CALL_MULTI_PERFORM) 
-			{
-				continue;
-			}
-			curl_multi_select($multiHandle);			
-		} while ($running > 0);
-			
-
-		 // Recoger resultados
-		$results = [];
-		foreach ($curlHandles as $ch) {
-			$response 	= curl_multi_getcontent($ch);
-			$status   	= curl_getinfo($ch, CURLINFO_HTTP_CODE);
-			$results[] 	= [
-				"status"   => $status,
-				"response" => json_decode($response, true)
-			];
-			curl_multi_remove_handle($multiHandle, $ch);
-			curl_close($ch);
-		}
-		curl_multi_close($multiHandle);
-		return $results;
-	}
-	function sendMessageWapi2OnlyTextMasive($companyID,$chatSend,$pathRemember,$instanceName) 
-	{
-		log_message('info', '[sendMessageWapi2OnlyTextMasive] Inicio - companyID: ' . $companyID . ' | instanceName: ' . $instanceName . ' | Total mensajes: ' . count($chatSend));
-		
-		$Parameter_Model 			= new Parameter_Model();
-		$Company_Parameter_Model 	= new Company_Parameter_Model();
-			
-		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
-		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
-		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-		$token 								= $objCP_WhatsapToken->value;
-		
-		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
-		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
-		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-		$url								= $objCP_WhatsapUrlSendMessage->value;
-
-		
-		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
-		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
-		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-		$userId								= $objCP_WhatsapPropertyNumber->value;
-
-		$objPWhatsapPropertyCola 			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION_PARAMETERF1");
-		$objPWhatsapPropertyColaId 			= $objPWhatsapPropertyCola->parameterID;
-		$objCP_WhatsapPropertyCola			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyColaId);
-		$queueId							= $objCP_WhatsapPropertyCola->value;
-		
-		$objPWhatsapUrlSession				= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
-		$objPWhatsapUrlSessionId 			= $objPWhatsapUrlSession->parameterID;
-		$objCP_WhatsapUrlSession			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSessionId);
-
-
-		$sendSignature 	= false;
-		$closeTicket 	= true;
-		
-		log_message('info', '[sendMessageWapi2OnlyTextMasive] Config - url: ' . $url . ' | userId: ' . $userId . ' | queueId: ' . $queueId);
-		log_message('info', '[sendMessageWapi2OnlyTextMasive] sessionValue raw: ' . $objCP_WhatsapUrlSession->value . ' | instanceName: ' . $instanceName);
-		
-		// Obtener session_id: si $instanceName viene vacio, usar el valor tal cual
-		// Si tiene un key, parsear el formato 'key':guid y buscar el guid correspondiente
-		$sessionIdValue = $objCP_WhatsapUrlSession->value;
-		if($instanceName !== "")
-		{
-			$pairs = explode(",", $sessionIdValue);
-			foreach($pairs as $pair)
-			{
-				$pair = trim($pair);
-				$parts = explode(":", $pair, 2);
-				if(count($parts) == 2)
-				{
-					$key = trim($parts[0], " '\"");
-					$val = trim($parts[1], " '\"");
-					if($key === $instanceName)
-					{
-						$sessionIdValue = $val;
-						break;
-					}
-				}
-			}
-		}
-		
-		// Inicializamos cURLs
-		log_message('info', '[sendMessageWapi2OnlyTextMasive] sessionIdValue resuelto: ' . $sessionIdValue);
-		$multiHandle = curl_multi_init();
-		$curlHandles = [];
-		foreach ($chatSend as $customer) {
-			
-			//Enviar Mensaje de texto
-			
-			$phone 	= clearNumero($customer["phoneNumber"]);
-			$data 	= [
-				"message"          	=> $customer["mensaje"]
-			];
-			
-			log_message('info', '[sendMessageWapi2OnlyTextMasive] Preparando envio a phone: ' . $phone . ' | mensaje length: ' . strlen($customer["mensaje"]));
-			echo "enviar mensaje a ".$phone."</br>";
-			$sendCurl 	= $url."/".$phone."/message?session_id=".$sessionIdValue; 
-			log_message('info', '[sendMessageWapi2OnlyTextMasive] URL curl: ' . $sendCurl);
-			$ch 		= curl_init($sendCurl);	
-			curl_setopt($ch, CURLOPT_CUSTOMREQUEST, "POST");
-			curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data) );
-			
-			// ⚠️ Ignorar certificado vencido
-			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-			curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-
-			curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-				"Accept: application/json",
-				"Content-Type: application/json",
-				"Authorization: Bearer ".$objCP_WhatsapToken->value
-			));
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_multi_add_handle($multiHandle, $ch);
-			$curlHandles[] = $ch;
-			
-		}
-
-		// Ejecutar todas las requests en paralelo		
-		log_message('info', '[sendMessageWapi2OnlyTextMasive] Ejecutando ' . count($curlHandles) . ' requests en paralelo...');
-		$running = null;
-		do {
-			$mrc = curl_multi_exec($multiHandle, $running);
-			if ($mrc == CURLM_CALL_MULTI_PERFORM) 
-			{
-				continue;
-			}
-			curl_multi_select($multiHandle);	
-			echo "esperando repuestas</br>";
-		} while ($running > 0);
-		echo "</br>mensajes enviados</br>";
-		log_message('info', '[sendMessageWapi2OnlyTextMasive] Todas las requests completadas');
-		
-		 // Recoger resultados
-		$results = [];
-		foreach ($curlHandles as $ch) {
-			$response 	= curl_multi_getcontent($ch);
-			$status   	= curl_getinfo($ch, CURLINFO_HTTP_CODE);
-			log_message('info', '[sendMessageWapi2OnlyTextMasive] Respuesta - HTTP status: ' . $status . ' | response: ' . $response);
-			echo "resultado de cada envio</br>";		
-			$results[] 	= [
-				"status"   => $status,
-				"response" => json_decode($response, true)
-			];
-			curl_multi_remove_handle($multiHandle, $ch);
-			echo "</br></br>";	
-			echo print_r($results,true);			
-			curl_close($ch);
-		}
-		curl_multi_close($multiHandle);	
-		log_message('info', '[sendMessageWapi2OnlyTextMasive] Fin - Total enviados: ' . count($results) . ' | Resultados: ' . json_encode(array_column($results, 'status')));
-		echo "</br>fin del proceso de envio</br>";		
-		return $results;
-	}
-
 	/**
 	 * Enviar mensaje de texto por Evolution API
 	 * @param int $companyID ID de la empresa
 	 * @param string $message Mensaje de texto a enviar
 	 * @param string $phoneDestino Numero de telefono destino
-	 * @param string $instanciaName Nombre de la instancia de Evolution API
-	 * @param string $instanciaEvolution Instancia real a usar; vacio = la del parametro WHATSAP_URL_REQUEST_SESSION
+	 * @param string $instanciaName Solo compatibilidad: se ignora
+	 * @param string $instanciaEvolution Solo compatibilidad: se ignora (la instancia es evolutionSendInstanceName)
 	 * @return array Respuesta de la API
 	 */
-	function sendMessageByEvolutionApiText($companyID, $message, $phoneDestino, $instanciaName, $instanciaEvolution = "")
+	function sendMessageByEvolutionApiText($companyID, $message, $phoneDestino, $instanciaName = "", $instanciaEvolution = "")
 	{
 		$Parameter_Model 			= new Parameter_Model();
 		$Company_Parameter_Model 	= new Company_Parameter_Model();
@@ -2053,8 +479,8 @@ class core_web_whatsap {
 		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
 
 		// Evolution API: POST {url}/message/sendText/{instancia}
-		$instancia	= $this->evolutionResolveSendInstance($companyID, $instanciaEvolution, $objPWhatsappInstanciName->value);
-		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendText/' . $instancia["name"];
+		$instancia	= $this->evolutionSendInstanceName($companyID);
+		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendText/' . $instancia;
 		$payload 	= [
 			'number' => $phoneDestino,
 			'text'   => $message
@@ -2078,7 +504,6 @@ class core_web_whatsap {
 		$response = curl_exec($ch);
 		$error    = curl_error($ch);
 		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		$this->evolutionCheckSendInstance($companyID, $instancia, $httpCode);
 		curl_close($ch);
 
 		log_message('info', '[sendMessageByEvolutionApiText] HTTP: ' . $httpCode . ' | response: ' . $response);
@@ -2096,11 +521,11 @@ class core_web_whatsap {
 	 * @param string $urlImagen URL publica de la imagen
 	 * @param string $message Caption de la imagen
 	 * @param string $phoneDestino Numero de telefono destino
-	 * @param string $instanciaName Nombre de la instancia de Evolution API
-	 * @param string $instanciaEvolution Instancia real a usar; vacio = la del parametro WHATSAP_URL_REQUEST_SESSION
+	 * @param string $instanciaName Solo compatibilidad: se ignora
+	 * @param string $instanciaEvolution Solo compatibilidad: se ignora (la instancia es evolutionSendInstanceName)
 	 * @return array Respuesta de la API
 	 */
-	function sendMessageByEvolutionApiImage($companyID, $urlImagen, $message, $phoneDestino, $instanciaName, $instanciaEvolution = "")
+	function sendMessageByEvolutionApiImage($companyID, $urlImagen, $message, $phoneDestino, $instanciaName = "", $instanciaEvolution = "")
 	{
 		$Parameter_Model 			= new Parameter_Model();
 		$Company_Parameter_Model 	= new Company_Parameter_Model();
@@ -2126,8 +551,8 @@ class core_web_whatsap {
 		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
 
 		// Evolution API: POST {url}/message/sendMedia/{instancia}
-		$instancia	= $this->evolutionResolveSendInstance($companyID, $instanciaEvolution, $objPWhatsappInstanciName->value);
-		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $instancia["name"];
+		$instancia	= $this->evolutionSendInstanceName($companyID);
+		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $instancia;
 		$payload 	= [
 			'number'    => $phoneDestino,
 			'mediatype' => 'image',
@@ -2153,7 +578,6 @@ class core_web_whatsap {
 		$response = curl_exec($ch);
 		$error    = curl_error($ch);
 		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		$this->evolutionCheckSendInstance($companyID, $instancia, $httpCode);
 		curl_close($ch);
 
 		log_message('info', '[sendMessageByEvolutionApiImage] HTTP: ' . $httpCode . ' | response: ' . $response);
@@ -2172,11 +596,11 @@ class core_web_whatsap {
 	 * @param string $fileName Nombre del archivo PDF
 	 * @param string $message Caption del documento
 	 * @param string $phoneDestino Numero de telefono destino
-	 * @param string $instanciaName Nombre de la instancia de Evolution API
-	 * @param string $instanciaEvolution Instancia real a usar; vacio = la del parametro WHATSAP_URL_REQUEST_SESSION
+	 * @param string $instanciaName Solo compatibilidad: se ignora
+	 * @param string $instanciaEvolution Solo compatibilidad: se ignora (la instancia es evolutionSendInstanceName)
 	 * @return array Respuesta de la API
 	 */
-	function sendMessageByEvolutionApiPdf($companyID, $urlPdf, $fileName, $message, $phoneDestino, $instanciaName, $instanciaEvolution = "")
+	function sendMessageByEvolutionApiPdf($companyID, $urlPdf, $fileName, $message, $phoneDestino, $instanciaName = "", $instanciaEvolution = "")
 	{
 		$Parameter_Model 			= new Parameter_Model();
 		$Company_Parameter_Model 	= new Company_Parameter_Model();
@@ -2202,8 +626,8 @@ class core_web_whatsap {
 		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
 
 		// Evolution API: POST {url}/message/sendMedia/{instancia}
-		$instancia	= $this->evolutionResolveSendInstance($companyID, $instanciaEvolution, $objPWhatsappInstanciName->value);
-		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $instancia["name"];
+		$instancia	= $this->evolutionSendInstanceName($companyID);
+		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $instancia;
 		$payload 	= [
 			'number'    => $phoneDestino,
 			'mediatype' => 'document',
@@ -2230,7 +654,6 @@ class core_web_whatsap {
 		$response = curl_exec($ch);
 		$error    = curl_error($ch);
 		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		$this->evolutionCheckSendInstance($companyID, $instancia, $httpCode);
 		curl_close($ch);
 
 		log_message('info', '[sendMessageByEvolutionApiPdf] HTTP: ' . $httpCode . ' | response: ' . $response);
@@ -2248,11 +671,11 @@ class core_web_whatsap {
 	 * @param string $urlVideo URL publica del video
 	 * @param string $message Caption del video
 	 * @param string $phoneDestino Numero de telefono destino
-	 * @param string $instanciaName Nombre de la instancia de Evolution API
-	 * @param string $instanciaEvolution Instancia real a usar; vacio = la del parametro WHATSAP_URL_REQUEST_SESSION
+	 * @param string $instanciaName Solo compatibilidad: se ignora
+	 * @param string $instanciaEvolution Solo compatibilidad: se ignora (la instancia es evolutionSendInstanceName)
 	 * @return array Respuesta de la API
 	 */
-	function sendMessageByEvolutionApiVideo($companyID, $urlVideo, $message, $phoneDestino, $instanciaName, $instanciaEvolution = "")
+	function sendMessageByEvolutionApiVideo($companyID, $urlVideo, $message, $phoneDestino, $instanciaName = "", $instanciaEvolution = "")
 	{
 		$Parameter_Model 			= new Parameter_Model();
 		$Company_Parameter_Model 	= new Company_Parameter_Model();
@@ -2278,8 +701,8 @@ class core_web_whatsap {
 		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
 
 		// Evolution API: POST {url}/message/sendMedia/{instancia}
-		$instancia	= $this->evolutionResolveSendInstance($companyID, $instanciaEvolution, $objPWhatsappInstanciName->value);
-		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $instancia["name"];
+		$instancia	= $this->evolutionSendInstanceName($companyID);
+		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendMedia/' . $instancia;
 		$payload 	= [
 			'number'    => $phoneDestino,
 			'mediatype' => 'video',
@@ -2305,7 +728,6 @@ class core_web_whatsap {
 		$response = curl_exec($ch);
 		$error    = curl_error($ch);
 		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		$this->evolutionCheckSendInstance($companyID, $instancia, $httpCode);
 		curl_close($ch);
 
 		log_message('info', '[sendMessageByEvolutionApiVideo] HTTP: ' . $httpCode . ' | response: ' . $response);
@@ -2322,11 +744,11 @@ class core_web_whatsap {
 	 * @param int $companyID ID de la empresa
 	 * @param string $urlAudio URL publica del audio
 	 * @param string $phoneDestino Numero de telefono destino
-	 * @param string $instanciaName Nombre de la instancia de Evolution API
-	 * @param string $instanciaEvolution Instancia real a usar; vacio = la del parametro WHATSAP_URL_REQUEST_SESSION
+	 * @param string $instanciaName Solo compatibilidad: se ignora
+	 * @param string $instanciaEvolution Solo compatibilidad: se ignora (la instancia es evolutionSendInstanceName)
 	 * @return array Respuesta de la API
 	 */
-	function sendMessageByEvolutionApiAudio($companyID, $urlAudio, $phoneDestino, $instanciaName, $instanciaEvolution = "")
+	function sendMessageByEvolutionApiAudio($companyID, $urlAudio, $phoneDestino, $instanciaName = "", $instanciaEvolution = "")
 	{
 		$Parameter_Model 			= new Parameter_Model();
 		$Company_Parameter_Model 	= new Company_Parameter_Model();
@@ -2352,8 +774,8 @@ class core_web_whatsap {
 		$phoneDestino	= empty($phoneDestino) ? $objCP_WhatsapPropertyNumber->value : $phoneDestino;
 
 		// Evolution API: POST {url}/message/sendWhatsAppAudio/{instancia}
-		$instancia	= $this->evolutionResolveSendInstance($companyID, $instanciaEvolution, $objPWhatsappInstanciName->value);
-		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendWhatsAppAudio/' . $instancia["name"];
+		$instancia	= $this->evolutionSendInstanceName($companyID);
+		$url 		= rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendWhatsAppAudio/' . $instancia;
 		$payload 	= [
 			'number' => $phoneDestino,
 			'audio'  => $urlAudio
@@ -2377,7 +799,6 @@ class core_web_whatsap {
 		$response = curl_exec($ch);
 		$error    = curl_error($ch);
 		$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-		$this->evolutionCheckSendInstance($companyID, $instancia, $httpCode);
 		curl_close($ch);
 
 		log_message('info', '[sendMessageByEvolutionApiAudio] HTTP: ' . $httpCode . ' | response: ' . $response);
@@ -2643,140 +1064,6 @@ class core_web_whatsap {
 		fclose($handle);
 		return is_array($ids) && isset($ids[$messageId]);
 	}
-	/**
-	 * Enviar mensajes de texto masivos por Evolution API
-	 * Usa curl_multi para envio en paralelo, similar a sendMessageWapi2OnlyTextMasive
-	 * pero conectandose a Evolution API como sendMessageByEvolutionApiText
-	 * @param int $companyID ID de la empresa
-	 * @param array $chatSend Array de mensajes con keys: phoneNumber, mensaje
-	 * @param string $pathRemember Path de referencia (para compatibilidad)
-	 * @param string $instanceName Nombre de la instancia de Evolution API
-	 * @return array Resultados de cada envio
-	 */
-	function sendMessageEvolutionApiOnlyTextMsive($companyID, $chatSend, $pathRemember, $instanceName)
-	{
-		log_message('info', '[sendMessageEvolutionApiOnlyTextMsive] Inicio - companyID: ' . $companyID . ' | instanceName: ' . $instanceName . ' | Total mensajes: ' . count($chatSend));
-
-		$Parameter_Model 			= new Parameter_Model();
-		$Company_Parameter_Model 	= new Company_Parameter_Model();
-
-		// Token (apikey para Evolution API)
-		$objPWhatsapToken 					= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
-		$objPWhatsapTokenId 				= $objPWhatsapToken->parameterID;
-		$objCP_WhatsapToken					= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapTokenId);
-
-		// URL base de Evolution API
-		$objPWhatsapUrlSendMessage			= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
-		$objPWhatsapUrlSendMessageId 		= $objPWhatsapUrlSendMessage->parameterID;
-		$objCP_WhatsapUrlSendMessage		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrlSendMessageId);
-
-		// Nombre de instancia de Evolution API
-		$objPWhatsappInstanciName 			= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
-		$objPWhatsappInstanciNameId 		= $objPWhatsappInstanciName->parameterID;
-		$objCP_WhatsappInstanciName			= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsappInstanciNameId);
-
-		// Numero propietario (fallback)
-		$objPWhatsapPropertyNumber 			= $Parameter_Model->get_rowByName("WHATSAP_CURRENT_PROPIETARY_COMMERSE");
-		$objPWhatsapPropertyNumberId 		= $objPWhatsapPropertyNumber->parameterID;
-		$objCP_WhatsapPropertyNumber		= $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapPropertyNumberId);
-
-		// Resolver instancia: si $instanceName viene con valor, buscar en el formato 'key':guid
-		$instanciaValue = $objCP_WhatsappInstanciName->value;
-		if($instanceName !== "")
-		{
-			$pairs = explode(",", $instanciaValue);
-			foreach($pairs as $pair)
-			{
-				$pair = trim($pair);
-				$parts = explode(":", $pair, 2);
-				if(count($parts) == 2)
-				{
-					$key = trim($parts[0], " '\"");
-					$val = trim($parts[1], " '\"");
-					if($key === $instanceName)
-					{
-						$instanciaValue = $val;
-						break;
-					}
-				}
-			}
-		}
-
-		// Construir URL de Evolution API: {url}/message/sendText/{instancia}
-		$baseUrl = rtrim($objCP_WhatsapUrlSendMessage->value, '/') . '/message/sendText/' . $instanciaValue;
-
-		log_message('info', '[sendMessageEvolutionApiOnlyTextMsive] Config - baseUrl: ' . $baseUrl . ' | instanciaValue: ' . $instanciaValue);
-
-		// Inicializar curl_multi para envio en paralelo
-		$multiHandle = curl_multi_init();
-		$curlHandles = [];
-
-		foreach ($chatSend as $customer) {
-
-			$phone = clearNumero($customer["phoneNumber"]);
-			$payload = [
-				'number' => $phone,
-				'text'   => $customer["mensaje"]
-			];
-
-			log_message('info', '[sendMessageEvolutionApiOnlyTextMsive] Preparando envio a phone: ' . $phone . ' | mensaje length: ' . strlen($customer["mensaje"]));
-			echo "enviar mensaje a " . $phone . "</br>";
-
-			$ch = curl_init($baseUrl);
-			curl_setopt_array($ch, [
-				CURLOPT_RETURNTRANSFER => true,
-				CURLOPT_POST           => true,
-				CURLOPT_HTTPHEADER     => [
-					'Content-Type: application/json',
-					'apikey: ' . $objCP_WhatsapToken->value
-				],
-				CURLOPT_POSTFIELDS     => json_encode($payload),
-				CURLOPT_SSL_VERIFYPEER => false,
-				CURLOPT_SSL_VERIFYHOST => false
-			]);
-
-			curl_multi_add_handle($multiHandle, $ch);
-			$curlHandles[] = $ch;
-		}
-
-		// Ejecutar todas las requests en paralelo
-		log_message('info', '[sendMessageEvolutionApiOnlyTextMsive] Ejecutando ' . count($curlHandles) . ' requests en paralelo...');
-		$running = null;
-		do {
-			$mrc = curl_multi_exec($multiHandle, $running);
-			if ($mrc == CURLM_CALL_MULTI_PERFORM)
-			{
-				continue;
-			}
-			curl_multi_select($multiHandle);
-			echo "esperando repuestas</br>";
-		} while ($running > 0);
-
-		echo "</br>mensajes enviados</br>";
-		log_message('info', '[sendMessageEvolutionApiOnlyTextMsive] Todas las requests completadas');
-
-		// Recoger resultados
-		$results = [];
-		foreach ($curlHandles as $ch) {
-			$response 	= curl_multi_getcontent($ch);
-			$status   	= curl_getinfo($ch, CURLINFO_HTTP_CODE);
-			log_message('info', '[sendMessageEvolutionApiOnlyTextMsive] Respuesta - HTTP status: ' . $status . ' | response: ' . $response);
-			echo "resultado de cada envio</br>";
-			$results[] = [
-				"status"   => $status,
-				"response" => $this->evolutionRegisterSentResponse($response)
-			];
-			curl_multi_remove_handle($multiHandle, $ch);
-			echo "</br></br>";
-			echo print_r($results, true);
-			curl_close($ch);
-		}
-
-		curl_multi_close($multiHandle);
-		log_message('info', '[sendMessageEvolutionApiOnlyTextMsive] Fin - Total enviados: ' . count($results) . ' | Resultados: ' . json_encode(array_column($results, 'status')));
-		echo "</br>fin del proceso de envio</br>";
-		return $results;
-	}
 
 	/**
 	 * Descarga desde Evolution API el archivo (imagen, audio, video, documento) de un mensaje
@@ -2800,12 +1087,9 @@ class core_web_whatsap {
 			$objPWhatsapUrl				= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
 			$objCP_WhatsapUrl			= $objPWhatsapUrl ? $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrl->parameterID) : null;
 
+			//Misma instancia que el envío: <tb_company.type>_<WHATSAP_URL_REQUEST_SESSION>, sin caché
 			if($instanciaName == "")
-			{
-				$objPWhatsappInstancia	= $Parameter_Model->get_rowByName("WHATSAP_URL_REQUEST_SESSION");
-				$objCP_Instancia		= $objPWhatsappInstancia ? $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsappInstancia->parameterID) : null;
-				$instanciaName			= $objCP_Instancia->value ?? "";
-			}
+				$instanciaName			= $this->evolutionSendInstanceName($companyID);
 
 			if(empty($objCP_WhatsapUrl->value) || empty($objCP_WhatsapToken->value) || $instanciaName == "" || $messageId == "")
 			{
@@ -3457,101 +1741,203 @@ class core_web_whatsap {
 	}
 
 	/**
-	 * Busca en Evolution API la instancia de la compania: la que empieza con tb_company.type + "_" (ej. cristoRey02_whatsapp),
-	 * que es el nombre con que la crea la pantalla de campañas (app_cxc_advertising) al escanear el QR (evolutionGetInstanceConfig).
-	 * Si hay varias con ese prefijo se prefiere la que coincide con evolutionGetInstanceConfig()["instanceName"].
-	 * Se usa para enviar por la instancia propia de la compania en lugar de WHATSAP_URL_REQUEST_SESSION.
-	 * La busqueda no distingue mayusculas. Ante cualquier error (sin URL, sin llave, servidor caido) devuelve "".
-	 * No consulta Evolution en cada mensaje: el resultado se guarda en memoria y en writable/cache/evolution_instance/
-	 * por EVOLUTION_INSTANCE_CACHE_SEGUNDOS (si la consulta fallo, por EVOLUTION_INSTANCE_CACHE_ERROR_SEGUNDOS).
+	 * Nombre de la instancia de Evolution por la que se envia: tb_company.type + "_" + WHATSAP_URL_REQUEST_SESSION
+	 * (sin repetir el prefijo si el parametro ya lo trae). Se calcula en cada envio, sin cache.
 	 * @param int $companyID
-	 * @return string Nombre exacto de la instancia encontrada o "" si no hay ninguna
+	 * @return string
 	 */
-	function evolutionFindInstanceByCompanyType($companyID)
+	function evolutionSendInstanceName($companyID)
 	{
-		$type = $this->evolutionCompanyTypeClean($companyID);
-		if ($type == "") {
-			return "";
+		try
+		{
+			return $this->evolutionGetInstanceConfig($companyID)["instanceName"];
 		}
-
-		//1. Memoria del proceso (un cron o request que envia varios mensajes)
-		$key = $companyID . "_" . $type;
-		if (array_key_exists($key, self::$evolutionInstanceMemo)) {
-			return self::$evolutionInstanceMemo[$key];
+		catch (\Throwable $ex)
+		{
+			//Sin URL/llave de Evolution: se arma el nombre con la misma regla para que el envio registre el error real
+			log_message('error', '[evolutionSendInstanceName] ' . $ex->getMessage());
+			$core_web_parameter = new core_web_parameter();
+			$prefix     = $this->evolutionCompanyTypeClean($companyID);
+			$base       = $this->evolutionCleanName(trim((string) $core_web_parameter->getParameterValue("WHATSAP_URL_REQUEST_SESSION", $companyID)));
+			$base       = $base == "" ? "whatsapp" : $base;
+			$hasPrefix  = strcasecmp($base, $prefix) == 0 || stripos($base, $prefix . "_") === 0;
+			return $hasPrefix ? $base : $prefix . "_" . $base;
 		}
-
-		//2. Archivo de cache: se reutiliza mientras no venza (exito u error tienen distinta vigencia)
-		$file  = $this->evolutionInstanceCacheFile($companyID, $type);
-		$cache = is_file($file) ? json_decode((string) @file_get_contents($file), true) : null;
-		if (is_array($cache) && isset($cache["expira"]) && intval($cache["expira"]) > time()) {
-			self::$evolutionInstanceMemo[$key] = (string) ($cache["instanceName"] ?? "");
-			return self::$evolutionInstanceMemo[$key];
-		}
-
-		//3. Consulta a Evolution API y se guarda el resultado
-		$ok   = true;
-		$name = $this->evolutionFetchInstanceByCompanyType($companyID, $type, $ok);
-		$ttl  = $ok ? self::EVOLUTION_INSTANCE_CACHE_SEGUNDOS : self::EVOLUTION_INSTANCE_CACHE_ERROR_SEGUNDOS;
-		$this->evolutionInstanceCacheSave($file, [
-			"companyID"    => $companyID,
-			"type"         => $type,
-			"instanceName" => $name,
-			"consultado"   => date("Y-m-d H:i:s"),
-			"expira"       => time() + $ttl
-		]);
-		self::$evolutionInstanceMemo[$key] = $name;
-		return $name;
 	}
 
 	/**
-	 * Borra la cache de la instancia por prefijo para que el proximo envio vuelva a consultar Evolution
-	 * (ej. la instancia guardada ya no existe).
-	 * @param int $companyID
-	 * @return void
+	 * Fabrica: instancia el adaptador registrado en $whatsappProviders.
+	 * @param string $name evolution | meta | liveconnect
+	 * @return \App\Libraries\whatsapp\WhatsappProviderInterface
 	 */
-	function evolutionClearInstanceCache($companyID)
+	function getWhatsappProvider($name)
 	{
-		$type = $this->evolutionCompanyTypeClean($companyID);
-		unset(self::$evolutionInstanceMemo[$companyID . "_" . $type]);
-		$file = $this->evolutionInstanceCacheFile($companyID, $type);
-		if (is_file($file)) {
-			@unlink($file);
+		$name = strtolower(trim((string) $name));
+		if (!isset($this->whatsappProviders[$name]))
+		{
+			throw new \Exception("Proveedor de WhatsApp no registrado: " . $name);
 		}
-		log_message('info', '[evolutionClearInstanceCache] companyID: ' . $companyID);
+		$class = $this->whatsappProviders[$name];
+		return new $class($this);
 	}
 
 	/**
-	 * Instancia con la que se envia por Evolution: la explicita si viene; si no, la que empieza con
-	 * <tb_company.type>_ (cacheada); si no existe, la del parametro WHATSAP_URL_REQUEST_SESSION.
+	 * Proveedor con que se envia para la empresa, en este orden:
+	 * 1) parametro WHATSAPP_PROVIDER si tiene un proveedor registrado (override por compañia; si el parametro no existe se ignora),
+	 * 2) $provider pedido por el punto de envio si esta registrado,
+	 * 3) regla: tb_company.type globalpro → liveconnect; WHATSAPP_SEND_METACLOUD = true → meta; si no → evolution.
 	 * @param int    $companyID
-	 * @param string $instanciaEvolution Instancia explicita (puede venir vacia)
-	 * @param string $instanciaParametro Valor de WHATSAP_URL_REQUEST_SESSION
-	 * @return array {name, fromPrefix}
+	 * @param string $provider Proveedor sugerido por el punto de envio (opcional)
+	 * @return string nombre registrado del proveedor
 	 */
-	function evolutionResolveSendInstance($companyID, $instanciaEvolution, $instanciaParametro)
+	function resolveWhatsappProvider($companyID, $provider = "")
 	{
-		$explicita = trim((string) $instanciaEvolution);
-		if ($explicita != "") {
-			return ["name" => $explicita, "fromPrefix" => false];
+		//1. Override por compañia
+		try
+		{
+			$Parameter_Model 			= new Parameter_Model();
+			$Company_Parameter_Model 	= new Company_Parameter_Model();
+			$objP 						= $Parameter_Model->get_rowByName("WHATSAPP_PROVIDER");
+			$objCP 						= $objP ? $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID, $objP->parameterID) : null;
+			$override 					= strtolower(trim((string) ($objCP->value ?? "")));
+			if ($override != "" && isset($this->whatsappProviders[$override]))
+			{
+				return $override;
+			}
 		}
-		$byPrefix = $this->evolutionFindInstanceByCompanyType($companyID);
-		if ($byPrefix != "") {
-			return ["name" => $byPrefix, "fromPrefix" => true];
+		catch (\Throwable $ex)
+		{
+			log_message('error', '[resolveWhatsappProvider] WHATSAPP_PROVIDER: ' . $ex->getMessage());
 		}
-		return ["name" => (string) $instanciaParametro, "fromPrefix" => false];
+
+		//2. Proveedor pedido por el punto de envio
+		$provider = strtolower(trim((string) $provider));
+		if ($provider != "" && isset($this->whatsappProviders[$provider]))
+		{
+			return $provider;
+		}
+
+		//3. Regla por tipo de compañia / interruptor de Meta
+		$Company_Model 	= new Company_Model();
+		$objCompany 	= $Company_Model->get_rowByPK($companyID);
+		$type       	= $objCompany ? strtolower(trim((string) $objCompany->type)) : "";
+		if ($type == "globalpro")
+		{
+			return "liveconnect";
+		}
+		if ($this->isSendByMetaCloud($companyID))
+		{
+			return "meta";
+		}
+		return "evolution";
 	}
 
 	/**
-	 * Si el envio por una instancia tomada del prefijo responde 404 (la instancia ya no existe), borra la cache.
-	 * @param int   $companyID
-	 * @param array $instancia evolutionResolveSendInstance()
-	 * @param int   $httpCode
-	 * @return void
+	 * Telefono listo para enviar: sin espacios/+/()/-/#, con 505 si trae 8 digitos;
+	 * vacio = WHATSAP_CURRENT_PROPIETARY_COMMERSE (dueño del comercio).
+	 * @param int    $companyID
+	 * @param string $phone
+	 * @return string
 	 */
-	function evolutionCheckSendInstance($companyID, $instancia, $httpCode)
+	function whatsappCleanPhone($companyID, $phone)
 	{
-		if ($instancia["fromPrefix"] && intval($httpCode) == 404) {
-			$this->evolutionClearInstanceCache($companyID);
+		if (!function_exists('clearNumero'))
+		{
+			helper('web_tools');
+		}
+		$phone = trim((string) $phone);
+		if ($phone == "")
+		{
+			$core_web_parameter = new core_web_parameter();
+			$phone              = trim((string) $core_web_parameter->getParameterValue("WHATSAP_CURRENT_PROPIETARY_COMMERSE", $companyID));
+		}
+		return getNumberPhone(clearNumero($phone));
+	}
+
+	/**
+	 * Envia un WhatsApp (texto o archivo) por el proveedor resuelto con resolveWhatsappProvider.
+	 * Nunca lanza excepcion: ante error devuelve success = false y lo registra en el log.
+	 * @param int    $companyID
+	 * @param string $phone    Destino; vacio = WHATSAP_CURRENT_PROPIETARY_COMMERSE
+	 * @param string $message  Texto (leyenda si hay archivo)
+	 * @param string $provider Proveedor sugerido (opcional)
+	 * @param array  $media    ['type' => 'image|document|video|audio', 'url', 'fileName', 'fileExt']; vacio = solo texto
+	 * @return array ['success' => bool, 'messageId' => string, 'provider' => string, 'error' => string, 'raw' => mixed]
+	 */
+	function sendWhatsapp($companyID, $phone, $message, $provider = "", array $media = [])
+	{
+		$name = "";
+		try
+		{
+			$name  = $this->resolveWhatsappProvider($companyID, $provider);
+			$phone = $this->whatsappCleanPhone($companyID, $phone);
+			if ($phone == "")
+			{
+				throw new \Exception("Sin telefono destino");
+			}
+
+			$objProvider = $this->getWhatsappProvider($name);
+			$result      = trim((string) ($media["url"] ?? "")) != ""
+				? $objProvider->sendMedia($companyID, $phone, (string) $message, $media)
+				: $objProvider->sendText($companyID, $phone, (string) $message);
+
+			log_message('info', '[sendWhatsapp] provider: ' . $name . ' | phone: ' . $phone . ' | success: ' . ($result["success"] ? 'SI' : 'NO') . ($result["success"] ? '' : ' | error: ' . $result["error"]));
+			return $result;
+		}
+		catch (\Throwable $ex)
+		{
+			log_message('error', '[sendWhatsapp] provider: ' . $name . ' | ' . $ex->getMessage());
+			return [
+				"success"   => false,
+				"messageId" => "",
+				"provider"  => $name,
+				"error"     => $ex->getMessage(),
+				"raw"       => null
+			];
+		}
+	}
+
+	/**
+	 * Encola un WhatsApp en la cola de NOTIFICACIONES (<type>_Notificacion_); lo envia
+	 * app_notification/procesarColaWhatsappMasivo con sendWhatsapp. El provider viaja tal cual lo pidio
+	 * el punto de envio: la resolucion final se hace al consumir.
+	 * Nunca lanza excepcion: no debe romper facturas ni taller.
+	 * @param int    $companyID
+	 * @param string $phone    Destino; vacio = WHATSAP_CURRENT_PROPIETARY_COMMERSE
+	 * @param string $message
+	 * @param string $provider Proveedor sugerido (opcional)
+	 * @param array  $media    ver sendWhatsapp (opcional)
+	 * @param string $origen   Punto que encola, para el log (opcional)
+	 * @return bool true si se publico en la cola
+	 */
+	function queueWhatsappMessage($companyID, $phone, $message, $provider = "", array $media = [], $origen = "")
+	{
+		try
+		{
+			$phone = $this->whatsappCleanPhone($companyID, $phone);
+			if ($phone == "")
+			{
+				log_message('error', '[queueWhatsappMessage] sin telefono destino | companyID: ' . $companyID . ' | origen: ' . $origen);
+				return false;
+			}
+
+			$core_web_rabbitmq = new core_web_rabbitmq();
+			$queueName         = $core_web_rabbitmq->getQueueWhatsappNotification($companyID);
+			$payload           = [
+				"phoneNumber" => $phone,
+				"mensaje"     => (string) $message,
+				"provider"    => strtolower(trim((string) $provider)),
+				"media"       => $media,
+				"origen"      => (string) $origen
+			];
+			$ok = $core_web_rabbitmq->publish($companyID, $queueName, $payload);
+			log_message('info', '[queueWhatsappMessage] cola: ' . $queueName . ' | provider: ' . $payload["provider"] . ' | phone: ' . $phone . ' | origen: ' . $origen . ' | ok: ' . ($ok ? 'si' : 'no'));
+			return (bool) $ok;
+		}
+		catch (\Throwable $ex)
+		{
+			log_message('error', '[queueWhatsappMessage] ' . $ex->getMessage() . ' | companyID: ' . $companyID . ' | origen: ' . $origen);
+			return false;
 		}
 	}
 
@@ -3567,96 +1953,6 @@ class core_web_whatsap {
 		$objCompany 	= $Company_Model->get_rowByPK($companyID);
 		$prefix     	= $this->evolutionCleanName($objCompany ? (trim((string) $objCompany->type) != "" ? $objCompany->type : $objCompany->name) : "");
 		return $prefix == "" ? "company" . $companyID : $prefix;
-	}
-
-	/**
-	 * Ruta del archivo de cache de la instancia por prefijo (writable/cache/evolution_instance/).
-	 * Lleva companyID y type porque el mismo companyID se repite entre compañias.
-	 * @param int    $companyID
-	 * @param string $type
-	 * @return string
-	 */
-	function evolutionInstanceCacheFile($companyID, $type)
-	{
-		return WRITEPATH . "cache" . DIRECTORY_SEPARATOR . "evolution_instance" . DIRECTORY_SEPARATOR . "company_" . intval($companyID) . "_" . $type . ".json";
-	}
-
-	/**
-	 * Guarda la cache de forma atomica (archivo temporal + rename) para no dejar JSON a medias.
-	 * @param string $file
-	 * @param array  $data
-	 * @return void
-	 */
-	function evolutionInstanceCacheSave($file, $data)
-	{
-		try
-		{
-			$dir = dirname($file);
-			if (!is_dir($dir)) {
-				@mkdir($dir, 0775, true);
-			}
-			$tmp = $file . "." . getmypid() . ".tmp";
-			if (@file_put_contents($tmp, json_encode($data), LOCK_EX) !== false) {
-				@rename($tmp, $file);
-			}
-		}
-		catch (\Throwable $ex)
-		{
-			log_message('error', '[evolutionInstanceCacheSave] ' . $ex->getMessage());
-		}
-	}
-
-	/**
-	 * Consulta Evolution API (GET /instance/fetchInstances) y devuelve la instancia que empieza con <type>_.
-	 * @param int    $companyID
-	 * @param string $type Prefijo (evolutionCompanyTypeClean)
-	 * @param bool   $ok   Sale en false si no se pudo consultar (se cachea menos tiempo)
-	 * @return string Nombre de la instancia o ""
-	 */
-	function evolutionFetchInstanceByCompanyType($companyID, $type, &$ok)
-	{
-		$ok = true;
-		try
-		{
-			$config = $this->evolutionGetInstanceConfig($companyID);
-			$result = $this->evolutionInstanceRequest($config, "GET", "/instance/fetchInstances");
-			if ($result["httpCode"] < 200 || $result["httpCode"] >= 300) {
-				$ok = false;
-				return "";
-			}
-
-			//Misma regla que evolutionGetInstanceConfig: igual al prefijo o que empiece con "<prefijo>_"
-			$prefix     = strtolower($type);
-			$preferida  = strtolower($config["instanceName"]);
-			$encontrada = "";
-			foreach ($result["json"] as $row) {
-				if (!is_array($row)) {
-					continue;
-				}
-				//v2 trae "name" en la raiz; v1 trae instance.instanceName
-				$name  = (string) ($row["name"] ?? ($row["instanceName"] ?? ($row["instance"]["instanceName"] ?? "")));
-				$lower = strtolower($name);
-				if ($name == "" || ($lower !== $prefix && strpos($lower, $prefix . "_") !== 0)) {
-					continue;
-				}
-				if ($lower === $preferida) {
-					$encontrada = $name;
-					break;
-				}
-				if ($encontrada == "") {
-					$encontrada = $name;
-				}
-			}
-
-			log_message('info', '[evolutionFindInstanceByCompanyType] companyID: ' . $companyID . ' | prefijo: ' . $prefix . '_ | instancia: ' . ($encontrada == "" ? "(ninguna)" : $encontrada));
-			return $encontrada;
-		}
-		catch (\Throwable $ex)
-		{
-			log_message('error', '[evolutionFindInstanceByCompanyType] ' . $ex->getMessage());
-			$ok = false;
-			return "";
-		}
 	}
 
 	/**

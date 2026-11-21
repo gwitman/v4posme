@@ -1815,13 +1815,14 @@ class core_user extends _BaseController {
 			
 			//Enviar mensaje de bienvenida
 			$url = "Bienvenido: ".$this->request->getPost("txtNombre")." el siguiente link usted debe compartir con sus clientes: ";
-			$this->core_web_whatsap->sendMessageUltramsg(
-				APP_COMPANY, 
+			$this->core_web_whatsap->sendWhatsapp(
+				APP_COMPANY,
+				$this->request->getPost("txtTelefono"),
 				$url,
-				$this->request->getPost("txtTelefono")
+				"evolution"
 			);
-			
-			
+
+
 			//Url
 			$core_web_google 		= new core_web_google();
 			$urlGoogle 			 	= $core_web_google->getRequestPermission_Posme($dataUpdateUser["foto"]);
@@ -1833,26 +1834,29 @@ class core_user extends _BaseController {
 			
 		
 			//Enviar mensaje de link de acceso
-			$this->core_web_whatsap->sendMessageUltramsg(
-				APP_COMPANY, 
+			$this->core_web_whatsap->sendWhatsapp(
+				APP_COMPANY,
+				$this->request->getPost("txtTelefono"),
 				$url,
-				$this->request->getPost("txtTelefono")
+				"evolution"
 			);
-			
+
 			//Enviar Permiso
-			$this->core_web_whatsap->sendMessageUltramsg(
-				APP_COMPANY, 
+			$this->core_web_whatsap->sendWhatsapp(
+				APP_COMPANY,
+				$this->request->getPost("txtTelefono"),
 				$urlGoogle,
-				$this->request->getPost("txtTelefono")
+				"evolution"
 			);
-			
-			
-			//Enviar mensaje de imagen de qr para el acceso			
-			$this->core_web_whatsap->sendMessageTypeImagUltramsg(
-				APP_COMPANY, 
-				$urlImagen,
+
+
+			//Enviar mensaje de imagen de qr para el acceso
+			$this->core_web_whatsap->sendWhatsapp(
+				APP_COMPANY,
+				$this->request->getPost("txtTelefono"),
 				"comparte y agenda",
-				$this->request->getPost("txtTelefono")
+				"evolution",
+				['type' => 'image', 'url' => $urlImagen, 'fileName' => 'qrcode.png', 'fileExt' => 'png']
 			);
 			
 			

@@ -754,7 +754,7 @@ Ruta: Menú > ADM TALLER > TALLER. La lista se llama **LISTA DE TALLER**.
 Mensajes de validación: "Establecer Fecha al Documento", "Seleccionar cliente" y "Seleccionar tecnico". Según la configuración de su empresa pueden pedirse otros campos.
 Para modificarla, selecciónela en la lista y presione **Editar**. Arriba tiene **Nuevo**, **Atras**, **Eliminar**, **Imprimir E.**, **Imprimir S.**, **Opciones** (**Imprimir Sticker** y **Crear orden**) y **Guardar**.
 Crear orden: indique antes **Fecha de siguiente orden**, abra **Opciones** > **Crear orden**, revise **Problema** y **Nota** y acepte. La nueva orden queda en esa fecha, con estado inicial y monto 0.
-Notas: al guardar se puede enviar un WhatsApp al cliente según el **Estado del equipo**; si no se envía, la orden igual se guarda y se avisa en pantalla.
+Notas: al guardar se envía un WhatsApp al cliente según el **Estado del equipo**; sale en pocos minutos (cola de avisos). Si no, la orden igual se guarda y se avisa.
 Ver también: Sincronizar las órdenes de taller con Google Calendar.
 <!-- REVISAR: el aviso de WhatsApp no enviado dice "Pedido" y un nombre tecnico -->
 
@@ -811,7 +811,7 @@ Ruta: Menú > ADM TALLER > GARANTIA. La lista se llama **LISTA DE GARANTIAS**.
 6. Presione **Guardar** (en el teléfono, en la barra inferior). La garantía queda abierta en edición.
 Mensajes de validación: "Establecer Fecha al Documento", "Seleccionar factura", "Seleccionar cliente" y "Seleccionar tecnico".
 Para modificarla: seleccione la fila y presione **Editar**, o escriba en **Buscar por número…** y presione la lupa. Arriba tiene **Nuevo**, **Atras**, **Eliminar**, **Imprimir**, **Imprimir S.**, **Imprimir Sticker** y **Guardar**. En edición, el encabezado dice **INGRESO** y **Articulo** se llama **Producto**. La pestaña **Archivos** abre los archivos del documento.
-Notas: según la configuración, al guardar se envía un WhatsApp al cliente. Si aparece "Garantia guardado correctamente, WhatsApp no enviado...", la garantía sí se guardó. Con el ciclo contable cerrado no se puede crear, modificar ni eliminar.
+Notas: según la configuración, al guardar se envía un WhatsApp al cliente (sale en pocos minutos). Si aparece "Garantia guardado correctamente, WhatsApp no enviado...", la garantía sí se guardó. Con el ciclo contable cerrado no se puede crear, modificar ni eliminar.
 <!-- REVISAR: Eliminar parece rechazar los estados marcados como eliminables (condición invertida) -->
 <!-- REVISAR: al crear con Articulo "Otros" y WhatsApp activo puede fallar el texto del mensaje -->
 Ver también: Registrar una orden de compra.
@@ -1127,8 +1127,25 @@ Ruta: Menú > CXC > CAMPAÑAS WHATSAPP > pestaña **Conexión y envío** > tarje
 2. Revise **Mensajes pendientes** (los que faltan por enviar), **Tiempo estimado** (unos 15 mensajes por minuto) y **Con error (no se reintentan)** (mensajes que fallaron todos sus intentos).
 3. Mientras haya pendientes la tarjeta se actualiza sola cada 30 segundos; para actualizarla de inmediato presione el botón de flecha circular.
 4. Para detener la campaña presione **Cancelar campaña (eliminar pendientes)** y confirme: se eliminan de la cola todos los mensajes que faltaban por enviar.
-Notas: la cancelación elimina los pendientes de todas las campañas encoladas de la empresa, no solo de la última. Los mensajes ya enviados no se pueden revertir y el pago de Pagadito ya usado no se devuelve. El mensaje que se esté enviando justo en ese momento puede salir igual. Si aparece "Hay mensajes pendientes pero el cron job no está activo", presione **Levantar Cron Job** para que se envíen.
-Ver también: Campañas de WhatsApp: levantar o dar de baja el envío automático (cron job); Campañas de WhatsApp: revisar el resumen y enviar (paso 4).
+Notas: la cancelación elimina los pendientes de todas las campañas encoladas de la empresa, no solo de la última. Los mensajes ya enviados no se pueden revertir y el pago de Pagadito ya usado no se devuelve. El mensaje que se esté enviando justo en ese momento puede salir igual. Si aparece "Hay mensajes pendientes pero el cron job no está activo", presione **Levantar Cron Job** para que se envíen. Cancelar la campaña no cancela los avisos automáticos (taller, garantías, caja, recordatorios): van en otra cola.
+Ver también: Campañas de WhatsApp: levantar o dar de baja el envío automático (cron job); Campañas de WhatsApp: revisar el resumen y enviar (paso 4); Avisos automáticos por WhatsApp: cuándo llegan (cola de envío).
+
+## Avisos automáticos por WhatsApp: cuándo llegan (cola de envío)
+Ruta: no tiene pantalla; los avisos se generan solos al guardar documentos o en procesos programados.
+Estos avisos no salen al instante: se ponen en una cola y se envían en orden en pocos minutos:
+- Órdenes de taller (ADM TALLER > TALLER) y garantías (ADM TALLER > GARANTIA).
+- Facturas, según la configuración de su empresa.
+- Reporte diario de caja y monitor de caja (llegan al número del dueño del comercio).
+- Recordatorios de posMe y mensajes masivos diarios.
+- Recordatorios automáticos de compras, laptops y cumpleaños (según el tipo de negocio).
+Siguen saliendo al momento: los mensajes de la pantalla de conversaciones, el agente de IA, el carnet en PDF, las encuestas, los pedidos (ADM TALLER > PEDIDOS), el registro de usuario y el aviso al eliminar una cita.
+Notas:
+- La cola la envía el mismo envío automático (cron job) de CXC > CAMPAÑAS WHATSAPP. Si está dado de baja, los avisos esperan en la cola hasta que se levante.
+- Los avisos salen antes que los mensajes de campañas, aunque haya una campaña en curso.
+- Cancelar una campaña no cancela estos avisos.
+- Los avisos salen por el proveedor de WhatsApp de su empresa (Evolution API, Meta Cloud API o LiveConnect). Si no llegan, avise a soporte de posMe.
+- Al guardar una notificación en SEGURIDAD > CONFIG. NOTI no se envía ningún WhatsApp.
+Ver también: Campañas de WhatsApp: levantar o dar de baja el envío automático (cron job); Parámetros de la empresa: Proveedor de WhatsApp (Evolution, Meta Cloud API o LiveConnect).
 
 ## Ver a quién se notificó un mensaje de WhatsApp de un cliente (conversación con cliente)
 Ruta: en la lista de conversaciones (por ejemplo, la pestaña **LISTA DE CONVERSACIONES MIAS**), abra la conversación del cliente y vaya a la pestaña **Chat**.
@@ -2151,6 +2168,7 @@ Permite configurar recordatorios periódicos que posMe muestra o envía a los us
 4. Escriba la **Descripcion** y el **Mensaje** que verá el usuario.
 5. Presione **Guardar**.
 Para que un usuario reciba la notificación, asígnela en SEGURIDAD > USUARIOS > pestaña **Notificaciones**.
+Notas: al guardar la notificación no se envía ningún WhatsApp de confirmación.
 Ver también: Programar una tarea o visita en el calendario.
 <!-- REVISAR: significado exacto de Periodo/Dias, Temporal y Desde archivo -->
 
@@ -2508,7 +2526,7 @@ Los parámetros controlan el comportamiento de posMe por empresa (por ejemplo, o
 Los parámetros contables se editan en CONTABILIDAD > PARAMETROS; el resto los configura el equipo de soporte de posMe.
 Google Calendar de las órdenes de taller: APP_GOOGLE_CLENDAR_ENABLE (true la activa), GOOGLE_CALENDAR_ID, GOOGLE_CALENDAR_SERVICE_EMAIL y GOOGLE_CALENDAR_PRIVATE_KEY; opcionales GOOGLE_CALENDAR_TIMEZONE (por defecto America/Managua) y GOOGLE_CALENDAR_DURATION_MINUTES (duración de cada evento, por defecto 60 minutos).
 Agente de IA de WhatsApp: WHATSAPP_AI_AGENT_ENABLE (true lo activa); WHATSAPP_AI_AGENT_CONTINUE_AFTER_HANDOFF (true: la IA sigue contestando tras derivar mientras ningún colaborador escriba); WHATSAPP_AI_AGENT_HANDOFF_MESSAGE (mensaje al derivar; vacío, la IA redacta el suyo); WHATSAPP_AI_AGENT_STAGE_ATTENDED_ID (etapa "atendida por IA"); WHATSAPP_AI_AGENT_DEBOUNCE_SECONDS (segundos de espera antes de responder, por defecto 3); WHATSAPP_AI_AGENT_MAX_TURNS (máximo de respuestas de la IA antes de pasar a una persona, por defecto 15); WHATSAPP_AI_AGENT_HISTORY_MESSAGES (mensajes anteriores que lee la IA, por defecto 12); WHATSAPP_AI_AGENT_EMPLOYEE_ENTITYID (colaborador "Asistente IA", nunca recibe asignaciones). El texto y las intenciones del agente por tipo de negocio los configura soporte.
-Ver también: Configurar los parámetros contables; Parámetros de la empresa: Campañas de WhatsApp; Parámetros de la empresa: Descuento en factura; Parámetros de la empresa: Devolución de productos.
+Ver también: Configurar los parámetros contables; Parámetros de la empresa: Campañas de WhatsApp; Parámetros de la empresa: Proveedor de WhatsApp (Evolution, Meta Cloud API o LiveConnect); Parámetros de la empresa: Descuento en factura; Parámetros de la empresa: Devolución de productos.
 <!-- REVISAR: pantalla para que el cliente edite parametros generales -->
 
 ## Parámetros de la empresa: Campañas de WhatsApp
@@ -2523,7 +2541,17 @@ Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla CXC > CAM
 - CXC_ADVERTISING_CRONJOB_API_KEY: API key de cron-job.org. Sin ella no se levanta el envío automático (cron job) ni se envían campañas.
 - WAHTSAP_URL_ENVIO_MENSAJE, WHATSAP_TOCKEN y WHATSAP_URL_REQUEST_SESSION: URL, llave e instancia de Evolution API (pestaña **Conexión y envío**; al conectar, la instancia toma el prefijo de la compañía).
 Variables del mensaje: {{nombre}}, {{direccion}}, {{saldo}}, {{montoPagar}}, {{fechaPago}} y {{mora}} vienen configuradas. Para agregar otra, soporte registra una variable de campaña (tabla tb_advertising_variable) con la vista y el campo de donde sale el dato; aparece sola en **Variables del cliente**.
-Ver también: Campañas de WhatsApp: enviar promociones o recordatorios de cobro masivos a clientes.
+Ver también: Campañas de WhatsApp: enviar promociones o recordatorios de cobro masivos a clientes; Parámetros de la empresa: Proveedor de WhatsApp (Evolution, Meta Cloud API o LiveConnect).
+
+## Parámetros de la empresa: Proveedor de WhatsApp (Evolution, Meta Cloud API o LiveConnect)
+Ruta: los configura el equipo de soporte de posMe.
+posMe envía WhatsApp solo por tres proveedores: Evolution API, Meta Cloud API y LiveConnect. Ya no se usan Ultramsg, Waapi, Wapi2, Z-API, Whaticket ni PosMeConnect.
+- WHATSAPP_PROVIDER: proveedor de la empresa. Valores: evolution, meta o liveconnect. Con valor, todos los avisos automáticos y las campañas de la empresa salen por ese proveedor (las campañas con plantilla de Meta siempre usan Meta).
+- WHATSAPP_PROVIDER vacío (regla automática): compañías GlobalPro → LiveConnect; si está activo WHATSAPP_SEND_METACLOUD → Meta Cloud API; si no → Evolution API.
+- RABBITMQ_QUEUE_WHATSAPP: habilita las colas de WhatsApp de la empresa (vacío o 0 = deshabilitadas). Hay dos colas: notificaciones (avisos automáticos) y campañas; las notificaciones se envían primero. Con las colas deshabilitadas los avisos automáticos no se envían.
+- WHATSAP_CURRENT_PROPIETARY_COMMERSE: número del dueño del comercio; recibe los avisos sin destinatario (reporte diario y monitor de caja).
+Notas: los mensajes de la pantalla de conversaciones, el agente de IA, el carnet en PDF, las encuestas, los pedidos, el registro de usuario y la eliminación de citas se envían al momento por Evolution API, sin pasar por la cola.
+Ver también: Avisos automáticos por WhatsApp: cuándo llegan (cola de envío); Parámetros de la empresa: Campañas de WhatsApp.
 
 ## Parámetros de la empresa: Descuento en factura
 Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla FACTURACION > FACTURAR.

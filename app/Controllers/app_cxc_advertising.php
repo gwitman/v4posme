@@ -7,7 +7,9 @@ namespace App\Controllers;
  *
  * El usuario arma un mensaje (texto libre con Evolution o plantilla aprobada con Meta), elige el origen
  * de los destinatarios (Excel, clientes de la empresa y/o contactos del telefono conectado a Evolution) y los mensajes se encolan en RabbitMQ
- * (parametro RABBITMQ_QUEUE_WHATSAPP); el consumidor es app_notification::procesarColaWhatsappMasivo.
+ * en la cola de CAMPAÑAS "<tb_company.type>_Campana_" (core_web_rabbitmq::getQueueWhatsapp; RABBITMQ_QUEUE_WHATSAPP
+ * solo la habilita); el consumidor es app_notification::procesarColaWhatsappMasivo, que atiende primero la cola
+ * de notificaciones y con el cupo restante la de campañas.
  *
  * Parametros: CXC_ADVERTISING_ENABLED, CXC_ADVERTISING_MAX_MESSAGE, CXC_ADVERTISING_COST_META_MESSAGE,
  * CXC_ADVERTISING_COST_EVOLUTION_FIXED, WHATSAP_META_WABA_ID, CXC_ADVERTISING_ALLOW_WITHOUT_PAYMENT,

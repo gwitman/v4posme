@@ -398,33 +398,15 @@ class app_purchase_garantia extends _BaseController {
 							
 							
 							
-							if($objCompany->type=="globalpro_decline")
-							{
-								$this->core_web_whatsap->sendMessageByWaapi(
-									APP_COMPANY, 
-									$themplate,
-									$numerDestino
-									/*"50587125827"*/
-								);
-							}
-							elseif ($objCompany->type =="globalpro")
-							{
-                                $this->core_web_whatsap->sendMessageByLiveconnect(
-                                    APP_COMPANY,
-                                    $themplate,
-                                    $numerDestino
-									/*"50587125827"*/
-                                );
-                            }
-							else
-							{
-								$this->core_web_whatsap->sendMessageUltramsg(
-									APP_COMPANY, 
-									$themplate,
-									$numerDestino
-									/*"50587125827"*/
-								);
-							}
+							//Encolar: la libreria resuelve el proveedor (LiveConnect si globalpro, si no Meta/Evolution)
+							$this->core_web_whatsap->queueWhatsappMessage(
+								APP_COMPANY,
+								$numerDestino,
+								$themplate,
+								"",
+								[],
+								"app_purchase_garantia::".__FUNCTION__
+							);
 							
 						}
 						else 
@@ -629,33 +611,15 @@ class app_purchase_garantia extends _BaseController {
 							
 							
 							
-							if($objCompany->type=="globalpro_decline")
-							{
-								$this->core_web_whatsap->sendMessageByWaapi(
-									APP_COMPANY, 
-									$themplate,
-									$numerDestino
-									/*"50587125827"*/
-								);
-							}
-							elseif ($objCompany->type =="globalpro")
-							{
-                                $this->core_web_whatsap->sendMessageByLiveconnect(
-                                    APP_COMPANY,
-                                    $themplate,
-                                    $numerDestino
-									/*"50587125827"*/
-                                );
-                            }
-							else
-							{
-								$this->core_web_whatsap->sendMessageUltramsg(
-									APP_COMPANY, 
-									$themplate,
-									$numerDestino
-									/*"50587125827"*/
-								);
-							}
+							//Encolar: la libreria resuelve el proveedor (LiveConnect si globalpro, si no Meta/Evolution)
+							$this->core_web_whatsap->queueWhatsappMessage(
+								APP_COMPANY,
+								$numerDestino,
+								$themplate,
+								"",
+								[],
+								"app_purchase_garantia::".__FUNCTION__
+							);
 							
 						}
 						else 

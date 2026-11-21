@@ -316,26 +316,22 @@ class app_invoice_survery extends _BaseController {
 				////Mandar mensjes por whatapp al cliente				
 				$url				= base_url()."/app_invoice_survery/viewRegisterFormatoPaginaNormal80mmOpcion1/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID;
 				$mensajeCliente		= "[simbol-mano-derecha] Su pedido esta siendo procesado : ".$objTM["transactionNumber"]."  [simbol-link] ".$url;				
-				$this->core_web_whatsap->sendMessageGeneric(
-						$objCompany->type,
-						APP_COMPANY, 
-						replaceSimbol($mensajeCliente), 
+				$this->core_web_whatsap->sendWhatsapp(
+						APP_COMPANY,
 						getNumberPhone(clearNumero($objCustomer[0]->phoneNumber)),
-						true,
-						"" 
+						replaceSimbol($mensajeCliente),
+						"evolution"
 					);
 
 				log_message("error",print_r("Colaborador vs Customer:",true));
 				log_message("error",print_r($objColaborador[0],true));
 				log_message("error",print_r($objCustomer[0],true));
 				$mensajeColaborador	= "[simbol-mano-derecha] Hay una nueva orden de trabajo:  ".$objTM["transactionNumber"].".  [simbol-link] ".$url;
-				$this->core_web_whatsap->sendMessageGeneric(
-						$objCompany->type,
+				$this->core_web_whatsap->sendWhatsapp(
 						APP_COMPANY,
-						replaceSimbol($mensajeColaborador),
 						getNumberPhone(clearNumero($objColaborador[0]->phoneNumber)),
-						true,
-						""
+						replaceSimbol($mensajeColaborador),
+						"evolution"
 					);
 				
 

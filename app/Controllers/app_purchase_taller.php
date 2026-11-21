@@ -578,17 +578,17 @@ class app_purchase_taller extends _BaseController {
 							
 							
 							
-							$this->core_web_whatsap->sendMessageGeneric(
-									$objCompany->type,
+							$this->core_web_whatsap->queueWhatsappMessage(
 									$objCompany->companyID,
-									$themplate,
 									getNumberPhone(clearNumero($numerDestino)),
-									false,
-									""
+									$themplate,
+									"",
+									[],
+									"app_purchase_taller::updateElement"
 							);
-							
+
 						}
-						else 
+						else
 						{
 							$warrning = true;
 							$this->core_web_notification->set_message(true,"Pedido guardado correctamente, WhatsApp no enviado, configurar mensaje en plantilla (tb_transaction_master_workshop_taller.templates_whatsapp) campo Grupo");	
@@ -976,13 +976,13 @@ class app_purchase_taller extends _BaseController {
 							
 							
 							
-							$this->core_web_whatsap->sendMessageGeneric(
-									$objCompany->type,
+							$this->core_web_whatsap->queueWhatsappMessage(
 									$objCompany->companyID,
-									$themplate,
 									getNumberPhone(clearNumero($numerDestino)),
-									false,
-									""
+									$themplate,
+									"",
+									[],
+									"app_purchase_taller::insertElement"
 							);
 							
 						}

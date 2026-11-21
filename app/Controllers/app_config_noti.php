@@ -265,11 +265,6 @@ class app_config_noti extends _BaseController {
 					$dataNewNotification["googleCalendarEventID"]	= $resultEventID;
 					$this->Notification_Model->update_app_posme($notificationID,$dataNewNotification);
 					
-					$this->core_web_whatsap->sendMessageUltramsg(
-						APP_COMPANY, 
-						"".$data["title"]." cita agregada.",
-						$usuario->phone
-					);
 					
 					
 					

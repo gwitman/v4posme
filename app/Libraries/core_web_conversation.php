@@ -1247,17 +1247,17 @@ class core_web_conversation{
 			." | companyType=".$companyType
 			." | instancia=".($instanciaName == "" ? "(principal)" : $instanciaName)." ***");
 
-		$resultSend = $core_web_whatsap->sendMessageGeneric(
-			$companyType,
-			$companyID,
-			$mensaje,
-			$phoneFinal,
-			true,
-			$instanciaName
-		);
+		//Aviso interno al colaborador: sale por Evolution (salvo override WHATSAPP_PROVIDER de la empresa).
+		//$instanciaName ya no decide la instancia: Evolution usa siempre <tb_company.type>_<WHATSAP_URL_REQUEST_SESSION>
+		$resultSend = $core_web_whatsap->sendWhatsapp($companyID, $phoneFinal, $mensaje, "evolution");
 
 		//Respuesta del proveedor en una sola linea y recortada para no llenar el log
-		$resultText = is_scalar($resultSend) || $resultSend === null ? var_export($resultSend, true) : json_encode($resultSend, JSON_UNESCAPED_UNICODE);
+		$resultText = json_encode([
+			"success"   => $resultSend["success"],
+			"provider"  => $resultSend["provider"],
+			"messageId" => $resultSend["messageId"],
+			"error"     => $resultSend["error"]
+		], JSON_UNESCAPED_UNICODE);
 		$resultText = mb_strlen((string)$resultText) > 200 ? mb_substr($resultText, 0, 200) . '...' : $resultText;
 		log_message("error","[notificationEmployerInConversation] Respuesta del proveedor al enviar a ".$phoneFinal.": ".$resultText);
 

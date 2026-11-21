@@ -12,8 +12,9 @@ use App\Models\Core\Company_Model;
  *
  * Parametros por empresa (tb_company_parameter):
  *  - RABBITMQ_URL             : amqps://usuario:clave@host/vhost (amqp:// para conexion sin SSL)
- *  - RABBITMQ_QUEUE_WHATSAPP  : prefijo de la cola de WhatsApp masivo; la cola real es
- *                               <valor>_<tb_company.type>. *
+ *  - RABBITMQ_QUEUE_WHATSAPP  : habilitador de las colas de WhatsApp (vacio o 0 = deshabilitadas).
+ *                               Las colas se llaman <tb_company.type>_Notificacion_ y <tb_company.type>_Campana_.
+ *
  * Los mensajes viajan como JSON y son persistentes (sobreviven a un reinicio del broker).
  * Los que fallan se reencolan al final con el contador "intentos"; al llegar al maximo
  * se mueven a la cola "<cola>_error" para revision manual.
@@ -22,6 +23,8 @@ class core_web_rabbitmq
 {
     const PARAMETER_URL             = "RABBITMQ_URL";
     const PARAMETER_QUEUE_WHATSAPP  = "RABBITMQ_QUEUE_WHATSAPP";
+    const QUEUE_TIPO_NOTIFICACION   = "Notificacion";   //Cola <type>_Notificacion_
+    const QUEUE_TIPO_CAMPANA        = "Campana";        //Cola <type>_Campana_
     const SUFFIX_QUEUE_ERROR        = "_error";    //Valor que puede devolver el callback de consume para mandar el mensaje directo a la cola de error (sin reintentos)
     const RESULT_DESCARTAR          = "descartar";
 
@@ -84,19 +87,42 @@ class core_web_rabbitmq
     }
 
     /**
-     * Nombre de la cola de WhatsApp masivo: valor del parametro RABBITMQ_QUEUE_WHATSAPP + "_" + tb_company.type.
+     * Nombre de la cola de WhatsApp de CAMPAÑAS (app_cxc_advertising): <tb_company.type>_Campana_.
      * El type distingue las instalaciones que comparten el mismo broker.
      * @param int $companyID empresa
      * @return string nombre de la cola
      */
     function getQueueWhatsapp($companyID)
     {
+        return $this->getQueueWhatsappByTipo($companyID, self::QUEUE_TIPO_CAMPANA);
+    }
+
+    /**
+     * Nombre de la cola de WhatsApp de NOTIFICACIONES (jobs, facturas, taller…): <tb_company.type>_Notificacion_.
+     * @param int $companyID empresa
+     * @return string nombre de la cola
+     */
+    function getQueueWhatsappNotification($companyID)
+    {
+        return $this->getQueueWhatsappByTipo($companyID, self::QUEUE_TIPO_NOTIFICACION);
+    }
+
+    /**
+     * Arma el nombre de una cola de WhatsApp: <tb_company.type>_<TipoDeCola>_.
+     * RABBITMQ_QUEUE_WHATSAPP ya no forma parte del nombre: solo actua como habilitador
+     * (vacio o "0" = colas de WhatsApp deshabilitadas para la empresa).
+     * @param int    $companyID empresa
+     * @param string $tipo      QUEUE_TIPO_NOTIFICACION | QUEUE_TIPO_CAMPANA
+     * @return string nombre de la cola
+     */
+    function getQueueWhatsappByTipo($companyID, $tipo)
+    {
         $core_web_parameter = new core_web_parameter();
-        $queueName          = trim((string) $core_web_parameter->getParameterValue(self::PARAMETER_QUEUE_WHATSAPP, $companyID));
-        if ($queueName == "" || $queueName == "0") {
-            throw new \Exception("El parametro " . self::PARAMETER_QUEUE_WHATSAPP . " esta vacio para la company " . $companyID);
+        $habilitado         = trim((string) $core_web_parameter->getParameterValue(self::PARAMETER_QUEUE_WHATSAPP, $companyID));
+        if ($habilitado == "" || $habilitado == "0") {
+            throw new \Exception("El parametro " . self::PARAMETER_QUEUE_WHATSAPP . " esta vacio para la company " . $companyID . " (colas de WhatsApp deshabilitadas)");
         }
-        return $queueName . "_" . $this->getCompanyType($companyID);
+        return $this->getCompanyType($companyID) . "_" . $tipo . "_";
     }
 
     /**

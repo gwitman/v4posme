@@ -2180,15 +2180,12 @@ class app_cxc_customer extends _BaseController {
 				
 				$pdfString 	= $this->dompdf->output();	
 				$pdfString 	= base64_encode($pdfString);				
-				$result 	= $this->core_web_whatsap->sendMessageTypePdfGeneric(
-					$dataSession["company"]->type,
-					$companyID, 
-					$pdfString, 
-					"NJ GYM Membresia.pdf",
-					"👉 NJ GYM Carnet de Membresia 👍",
+				$result 	= $this->core_web_whatsap->sendWhatsapp(
+					$companyID,
 					getNumberPhone(clearNumero($phoneNumber)),
-					true,
-					"default"					
+					"👉 NJ GYM Carnet de Membresia 👍",
+					"evolution",
+					['type' => 'document', 'url' => $pdfString, 'fileName' => "NJ GYM Membresia.pdf", 'fileExt' => 'pdf']
 				);
 			}
 					
