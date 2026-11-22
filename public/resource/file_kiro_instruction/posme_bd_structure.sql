@@ -34180,7 +34180,9 @@ BEGIN
 						nat_emp.entityID = tm.entityIDSecondary 
 				where
 					tm.companyID = prCompanyID and 
-					tm.transactionOn between prStartOn  and prEndOn   and 
+					/*transactionOn es DATETIME: se incluye el dia completo de prEndOn*/
+					tm.transactionOn >= prStartOn and
+					tm.transactionOn < DATE_ADD(prEndOn, INTERVAL 1 DAY) and
 					tm.isActive = 1 and 
 					tmd.isActive = 1 and 
 					tm.transactionID in (19 /*FACTURA*/) and 
