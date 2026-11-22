@@ -2547,6 +2547,7 @@ class app_cxc_api extends _BaseController {
 		{
 			//2) Debounce: si el cliente sigue escribiendo, contesta el proceso del ultimo mensaje
 			$debounce 	= max(0,min(30,(int)$this->aiAgentParameter("WHATSAPP_AI_AGENT_DEBOUNCE_SECONDS",$companyID,"3")));
+			log_message('error', '[AgenteIA] Inicio en segundo plano: conversationID=' . $conversationID . ', notificationID=' . $notificationID . ', debounce=' . $debounce . 's');
 			if($debounce > 0)
 				sleep($debounce);
 			$objLast 	= $this->Notification_Model->get_rowLastCustomerMessage($entityID,$tagID);
@@ -2636,7 +2637,9 @@ class app_cxc_api extends _BaseController {
 		}
 		else
 		{
+			log_message('error', '[AgenteIA] Consultando a la IA: conversationID=' . $conversationID . ', aiStatus=' . $aiStatus);
 			$aiResult = $this->core_web_ai->askWhatsapp($companyID,$objCustomer,$objConversation,$tagID);
+			log_message('error', '[AgenteIA] Resultado IA: ok=' . (empty($aiResult["ok"]) ? 'NO' : 'SI') . ', error=' . (string)($aiResult["error"] ?? '') . ', accion=' . (string)($aiResult["accion"] ?? '') . ', largoRespuesta=' . mb_strlen((string)($aiResult["respuesta"] ?? '')));
 		}
 
 		//Falla de la IA (decision 5): flujo humano normal, sin aviso al cliente
@@ -2796,6 +2799,16 @@ class app_cxc_api extends _BaseController {
 	 */
 	private function aiAgentReleaseClient($result)
 	{
+		//Solo una vez por peticion: Meta Cloud ya libero la conexion antes de llamar a la
+		//funcion generica; volver a escribir/cerrar la salida mataba el proceso del agente de IA
+		static $liberado = false;
+		if($liberado)
+		{
+			log_message('error', '[AgenteIA] La conexion ya fue liberada, se continua en segundo plano');
+			return;
+		}
+		$liberado = true;
+
 		ignore_user_abort(true);
 		@set_time_limit(120);
 		if(session_status() == PHP_SESSION_ACTIVE)
