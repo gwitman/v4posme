@@ -13,7 +13,7 @@
 	var scrollPosition						= 0;
 	var transactionMasterDetailPriceOld		= 0;
     var warehouseID 						= $("#txtWarehouseID").val();
-	let transactionID						=	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						 	                 						  <?php echo $transactionID ?>;
+	let transactionID						= <?php echo $transactionID ?>;
 	var isAdmin								= '<?php echo $isAdmin; ?>';
 	var esMesero							= '<?php echo $esMesero; ?>';
 	var openedSearchWindow					= false;
@@ -27,18 +27,14 @@
     var varStatusInvoiceAnular				= 68; //Anular
 	var varStatusInvoiceRegistrado			= 66; //Registrado
 	var varCurrencyDefaultSimbol			= '<?php echo $objCurrency->simbol; ?>';
-	var varIsMobile							= '<?php echo $isMobile; ?>';
 	var varUseMobile						= '<?php echo $useMobile; ?>';
-	var varParameterCustomPopupFacturacion	= '<?php echo $objParameterCustomPopupFacturacion; ?>';
 	var varParameterScanerProducto			= '<?php echo $objParameterScanerProducto; ?>';
-    var varPermitirFacturarProductosEnZero	= '<?php echo $objParameterInvoiceBillingQuantityZero; ?>';
     var varParameterCantidadItemPoup		= '<?php echo $objParameterCantidadItemPoup; ?>';
 	var varParameterRestaurante				= '<?php echo $objParameterRestaurant; ?>';
 	var varTransactionMasterIDToPrinter  	= '<?php echo $transactionMasterIDToPrinter; ?>';
 	var objListInventoryItemsRestaurant     = <?= json_encode($objListInventoryItemsRestaurant, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT | JSON_HEX_AMP)?>;
 	var cargaCompletada						= false;
 	var varAutoAPlicar						= '<?php echo $objParameterInvoiceAutoApply; ?>';
-	var varParameterHidenFiledItemNumber	= <?php echo $objParameterHidenFiledItemNumber; ?>;
 	var objParameterPantallaParaFacturar 	= '<?php echo $objParameterPantallaParaFacturar; ?>';
 	var varParameterAmortizationDuranteFactura		= <?php echo $objParameterAmortizationDuranteFactura; ?>;
 	var varParameterImprimirPorCadaFactura			= '<?php echo $objParameterImprimirPorCadaFactura; ?>';
@@ -52,13 +48,11 @@
 
     var varParameterInvoiceBillingPrinterDirectBarUrl		= '<?php echo $objParameterINVOICE_BILLING_PRINTER_DIRECT_URL_BAR; ?>';
     var varTransactionCausalID								= 0;
-    var varParameterMostrarImagenEnSeleccion 				= '<?php echo $objParameterMostrarImagenEnSeleccion; ?>';
 	var varPermisos											= JSON.parse('<?php echo json_encode($objListaPermisos); ?>');
 	var varParameterInvoiceBillingPrinterDataLocal			= '<?php echo $dataPrinterLocal; ?>';
 	var varParameterUrlServidorDeImpresion 					= '<?php echo $objParameterUrlServidorDeImpresion; ?>';
 	var varParameterINVOICE_BILLING_VALIDATE_EXONERATION 	= '<?php echo $objParameterINVOICE_BILLING_VALIDATE_EXONERATION; ?>';
 	var objParameterINVOICE_SHOW_FIELD_PESO					= '<?php echo $objParameterINVOICE_SHOW_FIELD_PESO; ?>';	
-	var objParameterEsRestaurante							= '<?php echo $objParameterEsResrarante; ?>';
 	//Descuento por linea / global (INVOICE_BILLING_DISCOUNT_BY_ITEM); si no viene definido se trata como "false"
 	var varParameterInvoiceBillingDiscountByItem			= '<?php echo isset($objParameterINVOICE_BILLING_DISCOUNT_BY_ITEM) ? $objParameterINVOICE_BILLING_DISCOUNT_BY_ITEM : "false"; ?>';
 
@@ -85,7 +79,7 @@
 	let varCustomerCrediLineID		= 0;
     let objRenderInit				= true;
 	let loadEdicion 				= false;
-	let transactionMasterID			=	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			 	                       			  <?php echo $transactionMasterID ?>;
+	let transactionMasterID			= <?php echo $transactionMasterID ?>;
 	let codigoMesero				= '<?php echo $codigoMesero ?>';
     let $grid;
     let selectedFilaInfoProducto;
@@ -2598,7 +2592,7 @@
 		$('#registrarFacturaNueva').css('display','block');
 		$('#showCommandBar').css('display', 'none');
 		$("#workflowLink").empty();
-		transactionID =		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		               		                <?php echo $transactionIDNueva ?>;
+		transactionID = <?php echo $transactionIDNueva ?>;
 		$('#txtStatusID').val(<?php echo isset($objListWorkflowStage) ? $objListWorkflowStage[0]->workflowStageID : 0 ?>);
         $('#txtStatusIDOld').val(0);
 		$("#txtCheckApplyExoneracionValue").val(0);
@@ -5954,7 +5948,7 @@
 
 		if(transactionMasterID !== 0){
 			loadEdicion 	= true;
-			let url 		= varBaseUrl + '/app_invoice_billing/edit/' +			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                             			        		                                              <?php echo $companyID ?> + '/' + transactionID + '/' + transactionMasterID + '/' + $("#txtCodigoMesero").val();
+			let url 		= varBaseUrl + '/app_invoice_billing/edit/' + <?php echo $companyID ?> + '/' + transactionID + '/' + transactionMasterID + '/' + $("#txtCodigoMesero").val();
 			const resultado = $.ajax({
 				url: url
 			});

@@ -154,14 +154,20 @@ class core_web_parameter {
 		
 		return $objCompanyParameter->value;		
    }
-   function getParameterAllToJavaScript($companyID)
+   /**
+    * Genera las variables JS objCompanyParameter_Key_<NOMBRE> de la empresa.
+    * @param int        $companyID
+    * @param array|null $objParameterList Lista ya cargada (Company_Parameter_Model::get_rowByCompanyID) para evitar repetir la consulta
+    * @return string
+    */
+   function getParameterAllToJavaScript($companyID, $objParameterList = null)
    {
-	    $Parameter_Model 		 = new Parameter_Model();
 		$Company_Parameter_Model = new Company_Parameter_Model();
 		$javascriptResult		 = "";
-		
-		//Obtener el Parametro
-		$objParameterList = $Company_Parameter_Model->get_rowByCompanyID($companyID);	
+
+		//Obtener el Parametro (solo si no se recibio la lista ya cargada)
+		if($objParameterList === null)
+		$objParameterList = $Company_Parameter_Model->get_rowByCompanyID($companyID);
 		
 		if($objParameterList)
 		{

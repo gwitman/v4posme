@@ -20,6 +20,17 @@
 	var isUpdatingProgrammatically 			= false;  // Previene loops infinitos
 	var mesasConfig 						= [];
 	
+	//Lista de bancos emitida una sola vez; cada combo recibe una copia porque ExtJS se queda con los objetos que carga
+	var listBancosBase		= [
+		<?php
+			if($objListBank)
+			foreach($objListBank as $ws){
+				echo "{ name: '".$ws->name."', id: '".$ws->bankID."' },";
+			}
+		?>
+	];
+	function fnCopiarListaBancos(){ return listBancosBase.map(function(b){ return { name: b.name, id: b.id }; }); }
+	
 	var objConfigInit 		= {
 		texts: {
 			'txtNombre': 'Nombre completo',
@@ -126,42 +137,10 @@
 					}
 				?>
 			], 
-			'txtReceiptAmountTarjeta_BankID' : [
-				<?php
-					$count = 0;
-					if($objListBank)
-					foreach($objListBank as $ws){
-						echo "{ name: '".$ws->name."', id: '".$ws->bankID."' },";								
-					}
-				?>
-			], 
-			'txtReceiptAmountTarjetaDol_BankID' : [
-				<?php
-					$count = 0;
-					if($objListBank)
-					foreach($objListBank as $ws){
-						echo "{ name: '".$ws->name."', id: '".$ws->bankID."' },";								
-					}
-				?>
-			], 
-			'txtReceiptAmountBank_BankID' : [
-				<?php
-					$count = 0;
-					if($objListBank)
-					foreach($objListBank as $ws){
-						echo "{ name: '".$ws->name."', id: '".$ws->bankID."' },";								
-					}
-				?>
-			], 
-			'txtReceiptAmountBankDol_BankID' : [
-				<?php
-					$count = 0;
-					if($objListBank)
-					foreach($objListBank as $ws){
-						echo "{ name: '".$ws->name."', id: '".$ws->bankID."' },";								
-					}
-				?>
-			], 
+			'txtReceiptAmountTarjeta_BankID' : fnCopiarListaBancos(), 
+			'txtReceiptAmountTarjetaDol_BankID' : fnCopiarListaBancos(), 
+			'txtReceiptAmountBank_BankID' : fnCopiarListaBancos(), 
+			'txtReceiptAmountBankDol_BankID' : fnCopiarListaBancos(), 
 		},
 		hidden: {
 			'txtCustomerCreditLineID': true
