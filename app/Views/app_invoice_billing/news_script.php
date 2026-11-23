@@ -1542,17 +1542,19 @@
 	function fnCalculateAmountPay()
 	{
 		
+        //Quita las comas de miles antes de convertir: parseFloat("77,781.20") devuelve 77 y el cambio salia mal
+        let fnSinComas      = function(valor){ return String(valor === null || valor === undefined ? "" : valor).replace(/,/g, ""); };
         let resultTotal     = 0.0;
         let currencyId      = $("#txtCurrencyID").val();
-        let ingresoCordoba 	= fnFormatNumber($("#txtReceiptAmount").val());
-        let bancoCordoba 	= fnFormatNumber($("#txtReceiptAmountBank").val());
-        let puntoCordoba 	= fnFormatNumber($("#txtReceiptAmountPoint").val());
-        let tarjetaCordoba 	= fnFormatNumber($("#txtReceiptAmountTarjeta").val());
-        let tarejtaDolares 	= fnFormatNumber($("#txtReceiptAmountTarjetaDol").val());
-        let bancoDolares 	= fnFormatNumber($("#txtReceiptAmountBankDol").val());
-        let ingresoDol 	    = fnFormatNumber($("#txtReceiptAmountDol").val());
-        let tipoCambio 	    = fnFormatNumber($("#txtExchangeRate").val(),6);
-        let total 		    = fnFormatNumber($("#txtTotal").val());
+        let ingresoCordoba 	= fnFormatNumber(fnSinComas($("#txtReceiptAmount").val()));
+        let bancoCordoba 	= fnFormatNumber(fnSinComas($("#txtReceiptAmountBank").val()));
+        let puntoCordoba 	= fnFormatNumber(fnSinComas($("#txtReceiptAmountPoint").val()));
+        let tarjetaCordoba 	= fnFormatNumber(fnSinComas($("#txtReceiptAmountTarjeta").val()));
+        let tarejtaDolares 	= fnFormatNumber(fnSinComas($("#txtReceiptAmountTarjetaDol").val()));
+        let bancoDolares 	= fnFormatNumber(fnSinComas($("#txtReceiptAmountBankDol").val()));
+        let ingresoDol 	    = fnFormatNumber(fnSinComas($("#txtReceiptAmountDol").val()));
+        let tipoCambio 	    = fnFormatNumber(fnSinComas($("#txtExchangeRate").val()),6);
+        let total 		    = fnFormatNumber(fnSinComas($("#txtTotal").val()));
         if( currencyId === "1" /*Cordoba*/ )
 		{
             resultTotal =  
