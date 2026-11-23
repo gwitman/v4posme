@@ -177,8 +177,19 @@ class core_dashboards extends _BaseController {
             }
             else
             {
-                $dataSession 					= $this->getIndexDefault($dataSession);
-                $dataSession["body"]			= /*--inicio view*/ view('core_dasboard/dashboards_default',$dataSession);//--finview
+                //Panel de inventario y facturacion (vistas ai_v_*). Si la BD de la compania
+                //aun no tiene las vistas, se muestra el dashboard anterior.
+                try
+                {
+                    $dataSession 				= $this->getIndexPanel($dataSession);
+                    $dataSession["body"]		= /*--inicio view*/ view('core_dasboard/dashboards_default_panel',$dataSession);//--finview
+                }
+                catch(\Throwable $exPanel)
+                {
+                    log_message("error", "core_dashboards::getIndexPanel " . $exPanel->getMessage());
+                    $dataSession 				= $this->getIndexDefault($dataSession);
+                    $dataSession["body"]		= /*--inicio view*/ view('core_dasboard/dashboards_default',$dataSession);//--finview
+                }
             }
 
             $dataSession["script"]			= "";
@@ -916,6 +927,186 @@ class core_dashboards extends _BaseController {
         $dataSession["objListVentaContadoMensuales"]		= $objListVentaContadoMensuales;
         return $dataSession;
     }
+    /**
+     * Arma los datos del panel de inventario y facturación (compañías sin dashboard personalizado).
+     * Lee de las vistas ai_v_* por medio de Dashboard_Panel_Model y valida por menú
+     * los permisos de cada acción rápida antes de mostrarla.
+     * @param array $dataSession
+     * @return array $dataSession con la llave "panel"
+     */
+    function getIndexPanel($dataSession)
+    {
+        $companyID          = $dataSession["user"]->companyID;
+        $objCurrency        = $this->core_web_currency->getCurrencyDefault($companyID);
+        $currencyDefaultID  = $objCurrency->currencyID;
+        $hoy                = new \DateTime(helper_getDate());
+        $hoy->setTime(0, 0, 0);
+
+        //Rango de 12 meses moviles: del primer dia de hace 11 meses al ultimo dia del mes actual
+        $inicio12           = (clone $hoy)->modify("first day of this month")->modify("-11 months");
+        $finMes             = (clone $hoy)->modify("last day of this month");
+        $inicioMes          = (clone $hoy)->modify("first day of this month");
+        $inicio30           = (clone $hoy)->modify("-29 days");
+        $nombresMes         = array("Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic");
+
+        $meses              = array();
+        $cursor             = clone $inicio12;
+        while($cursor <= $finMes)
+        {
+            $meses[$cursor->format("Y-m")] = $nombresMes[(int)$cursor->format("n") - 1] . " " . $cursor->format("y");
+            $cursor->modify("+1 month");
+        }
+
+        //Convierte un monto de otra moneda a la funcional con el tipo de cambio del dia (con cache por moneda)
+        $ratios     = array();
+        $convertir  = function($monto, $monedaID) use (&$ratios, $companyID, $currencyDefaultID, $hoy)
+        {
+            $monedaID = (int)$monedaID;
+            if($monedaID == 0 || $monedaID == $currencyDefaultID)
+                return (float)$monto;
+            if(!array_key_exists($monedaID, $ratios))
+                $ratios[$monedaID] = (float)$this->core_web_currency->getRatio($companyID, $hoy->format("Y-m-d"), 1, $monedaID, $currencyDefaultID);
+            return (float)$monto * $ratios[$monedaID];
+        };
+
+        //Series mensuales en cero para todos los meses del rango
+        $serieVentas    = array_fill_keys(array_keys($meses), 0);
+        $serieFacturas  = array_fill_keys(array_keys($meses), 0);
+        $serieCompras   = array_fill_keys(array_keys($meses), 0);
+        $serieCreditos  = array_fill_keys(array_keys($meses), 0);
+
+        $desde12 = $inicio12->format("Y-m-d");
+        $hasta12 = $finMes->format("Y-m-d");
+
+        foreach($this->Dashboard_Panel_Model->getVentasMensuales($companyID, $currencyDefaultID, $desde12, $hasta12) as $row)
+        {
+            if(!array_key_exists($row->mes, $serieVentas)) continue;
+            $serieVentas[$row->mes]   = round((float)$row->total, 2);
+            $serieFacturas[$row->mes] = (int)$row->facturas;
+        }
+        foreach($this->Dashboard_Panel_Model->getComprasMensuales($companyID, $desde12, $hasta12) as $row)
+        {
+            if(!array_key_exists($row->mes, $serieCompras)) continue;
+            $serieCompras[$row->mes] += $convertir($row->total, $row->moneda_id);
+        }
+        foreach($this->Dashboard_Panel_Model->getCreditosMensuales($companyID, $desde12, $hasta12) as $row)
+        {
+            if(!array_key_exists($row->mes, $serieCreditos)) continue;
+            $serieCreditos[$row->mes] += $convertir($row->total, $row->moneda_id);
+        }
+
+        //Mes actual contra mes anterior (variacion porcentual de ventas y facturas)
+        $claves         = array_keys($meses);
+        $mesActual      = $claves[count($claves) - 1];
+        $mesAnterior    = $claves[count($claves) - 2];
+        $variacion      = function($actual, $anterior)
+        {
+            if($anterior <= 0) return null;
+            return round((($actual - $anterior) / $anterior) * 100, 1);
+        };
+
+        //Cuentas por cobrar vigentes convertidas a moneda funcional
+        $porCobrar      = 0;
+        $documentosCxc  = 0;
+        foreach($this->Dashboard_Panel_Model->getCuentasPorCobrar($companyID) as $row)
+        {
+            $porCobrar     += $convertir($row->saldo, $row->moneda_id);
+            $documentosCxc += (int)$row->documentos;
+        }
+
+        $objInventario  = $this->Dashboard_Panel_Model->getInventarioValor($companyID);
+        $objStock       = $this->Dashboard_Panel_Model->getAlertasStockResumen($companyID);
+
+        //Categorias del mes: 4 principales + "Otros"
+        $categorias     = array();
+        $otros          = 0;
+        foreach($this->Dashboard_Panel_Model->getVentasPorCategoria($companyID, $currencyDefaultID, $inicioMes->format("Y-m-d"), $finMes->format("Y-m-d")) as $i => $row)
+        {
+            if($i < 4)
+                $categorias[] = array("nombre" => $row->categoria, "total" => round((float)$row->total, 2));
+            else
+                $otros += (float)$row->total;
+        }
+        if($otros > 0)
+            $categorias[] = array("nombre" => "Otros", "total" => round($otros, 2));
+
+        $topProductos   = array();
+        foreach($this->Dashboard_Panel_Model->getProductosMasVendidos($companyID, $inicio30->format("Y-m-d"), $hoy->format("Y-m-d"), 6) as $row)
+            $topProductos[] = array("nombre" => $row->producto, "cantidad" => round((float)$row->cantidad, 2));
+
+        //Acciones rapidas: solo las que el usuario tiene en su menu
+        $acciones = array(
+            array("clave" => "facturar", "controlador" => "app_invoice_billing",       "metodo" => "add",   "titulo" => "Facturar", "detalle" => "Crear factura"),
+            array("clave" => "producto", "controlador" => "app_inventory_item",        "metodo" => "add",   "titulo" => "Producto", "detalle" => "Agregar al catálogo"),
+            array("clave" => "compra",   "controlador" => "app_inventory_inputunpost", "metodo" => "add",   "titulo" => "Compra",   "detalle" => "Registrar compra de mercadería"),
+            array("clave" => "abono",    "controlador" => "app_box_share",             "metodo" => "add",   "titulo" => "Abono",    "detalle" => "Aplicar abono a crédito"),
+            array("clave" => "cliente",  "controlador" => "app_cxc_customer",          "metodo" => "add",   "titulo" => "Cliente",  "detalle" => "Registrar cliente"),
+            array("clave" => "reporte",  "controlador" => "app_sales_report",          "metodo" => "index", "titulo" => "Reportes", "detalle" => "Reportes de ventas"),
+        );
+        $permisos           = array();
+        $accionesPermitidas = array();
+        foreach($acciones as $accion)
+        {
+            $permitido = $this->isUrlPermitidaPanel($dataSession, $accion["controlador"], $accion["metodo"]);
+            $permisos[$accion["clave"]] = $permitido;
+            if($permitido)
+            {
+                $accion["url"]          = base_url() . "/" . $accion["controlador"] . "/" . $accion["metodo"];
+                $accionesPermitidas[]   = $accion;
+            }
+        }
+        $permisos["historialFacturas"]  = $this->isUrlPermitidaPanel($dataSession, "app_invoice_billing", "index");
+        $permisos["listaProductos"]     = $this->isUrlPermitidaPanel($dataSession, "app_inventory_item", "index");
+
+        $dataSession["panel"] = array(
+            "simbolo"           => $objCurrency->simbol,
+            "hoy"               => $hoy->format("Y-m-d"),
+            "mesNombre"         => $nombresMes[(int)$hoy->format("n") - 1] . " " . $hoy->format("Y"),
+            "meses"             => array_values($meses),
+            "ventas"            => array_values($serieVentas),
+            "facturas"          => array_values($serieFacturas),
+            "compras"           => array_map(function($x){ return round($x, 2); }, array_values($serieCompras)),
+            "creditos"          => array_map(function($x){ return round($x, 2); }, array_values($serieCreditos)),
+            "ventasMes"         => $serieVentas[$mesActual],
+            "ventasVariacion"   => $variacion($serieVentas[$mesActual], $serieVentas[$mesAnterior]),
+            "facturasMes"       => $serieFacturas[$mesActual],
+            "facturasVariacion" => $variacion($serieFacturas[$mesActual], $serieFacturas[$mesAnterior]),
+            "inventarioValor"   => round((float)$objInventario->valor, 2),
+            "inventarioUnidades"=> round((float)$objInventario->unidades, 2),
+            "porCobrar"         => round($porCobrar, 2),
+            "documentosCxc"     => $documentosCxc,
+            "categorias"        => $categorias,
+            "topProductos"      => $topProductos,
+            "stock"             => $this->Dashboard_Panel_Model->getAlertasStock($companyID, 5),
+            "stockCriticos"     => (int)$objStock->criticos,
+            "stockBajoMinimo"   => (int)$objStock->bajo_minimo,
+            "facturasRecientes" => $this->Dashboard_Panel_Model->getFacturasRecientes($companyID, 6),
+            "acciones"          => $accionesPermitidas,
+            "permisos"          => $permisos,
+        );
+        return $dataSession;
+    }
+
+    /**
+     * Indica si una url (controlador/metodo) esta en el menu del usuario.
+     * Misma regla que usa cada controlador al entrar: urlPermited acepta la url exacta o su index.
+     * @param array  $dataSession
+     * @param string $controlador ej. app_invoice_billing
+     * @param string $metodo      ej. add
+     * @return bool
+     */
+    private function isUrlPermitidaPanel($dataSession, $controlador, $metodo)
+    {
+        if(APP_NEED_AUTHENTICATION != true)
+            return true;
+
+        return $this->core_web_permission->urlPermited(
+            $controlador, $metodo, URL_SUFFIX,
+            $dataSession["menuTop"], $dataSession["menuLeft"], $dataSession["menuBodyReport"],
+            $dataSession["menuBodyTop"], $dataSession["menuHiddenPopup"]
+        );
+    }
+
     function getIndexDefault($dataSession)
     {
 

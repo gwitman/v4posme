@@ -110,6 +110,7 @@ use App\Models\Account_Level_Model;
 use App\Models\Account_Model;
 use App\Models\Account_Type_Model;
 use App\Models\Biblia_Model;
+use App\Models\Dashboard_Panel_Model;
 use App\Models\Center_Cost_Model;
 use App\Models\Company_Component_Concept_Model;
 use App\Models\Company_Currency_Model;
@@ -367,6 +368,7 @@ abstract class _BaseController extends Controller
     protected $Account_Model;
     protected $Account_Type_Model;
     protected $Biblia_Model;
+    protected $Dashboard_Panel_Model;
     protected $Center_Cost_Model;
     protected $Company_Component_Concept_Model;
     protected $Company_Currency_Model;
@@ -576,6 +578,7 @@ abstract class _BaseController extends Controller
         $this->Account_Model= new Account_Model();
         $this->Account_Type_Model= new Account_Type_Model();
         $this->Biblia_Model= new Biblia_Model();
+        $this->Dashboard_Panel_Model= new Dashboard_Panel_Model();
         $this->Center_Cost_Model= new Center_Cost_Model();
         $this->Company_Component_Concept_Model= new Company_Component_Concept_Model();
         $this->Company_Currency_Model= new Company_Currency_Model();
