@@ -2376,5 +2376,48 @@ function helper_getHtmlAiChatWidget()
     }
 }
 
+/**
+ * Aplana una imagen en base64 sobre fondo blanco y la devuelve como PNG opaco en base64.
+ * dompdf pinta en negro las zonas transparentes de algunos PNG (canal alfa, paleta con tRNS,
+ * 16 bits) y no reconoce un JPG/GIF etiquetado como PNG; al re-codificar con GD se evitan ambos casos.
+ *
+ * @param string $imagenBase64 Imagen en base64, con o sin prefijo "data:image/...;base64,".
+ * @return string Base64 del PNG aplanado (sin prefijo); si GD no está o la imagen no es válida, el valor original limpio.
+ */
+function helper_imagenBase64AplanarFondoBlanco($imagenBase64)
+{
+    $limpio = trim((string) $imagenBase64);
+    $coma   = strpos($limpio, ",");
+    if (strpos($limpio, "data:") === 0 && $coma !== false) {
+        $limpio = substr($limpio, $coma + 1);
+    }
+    $limpio = preg_replace('/\s+/', '', $limpio);
+
+    if ($limpio === "" || !function_exists('imagecreatefromstring')) {
+        return $limpio;
+    }
+
+    $binario = base64_decode($limpio, true);
+    $origen  = $binario === false ? false : @imagecreatefromstring($binario);
+    if ($origen === false) {
+        return $limpio;
+    }
+
+    $ancho  = imagesx($origen);
+    $alto   = imagesy($origen);
+    $lienzo = imagecreatetruecolor($ancho, $alto);
+    imagefill($lienzo, 0, 0, imagecolorallocate($lienzo, 255, 255, 255));
+    imagealphablending($lienzo, true);
+    imagecopy($lienzo, $origen, 0, 0, 0, 0, $ancho, $alto);
+
+    ob_start();
+    $ok     = imagepng($lienzo);
+    $salida = (string) ob_get_clean();
+    imagedestroy($origen);
+    imagedestroy($lienzo);
+
+    return ($ok && $salida !== "") ? base64_encode($salida) : $limpio;
+}
+
 
 ?>

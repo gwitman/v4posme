@@ -22937,7 +22937,7 @@ function helper_reporteA4TransactionMasterExamenLab(
     $data    		= file_get_contents($path);
     $base64  		= 'data:image/' . $type . ';base64,' . base64_encode($data);
 	$transparente 	= 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8Xw8AAn8B9m7v0AAAAABJRU5ErkJggg==';
-	$selloBase64 	= !empty($sello) ? 'data:image/png;base64,' . $sello : $transparente;
+	$selloBase64 	= !empty($sello) ? 'data:image/png;base64,' . helper_imagenBase64AplanarFondoBlanco($sello) : $transparente;
 	
     $html    		= "";
     $html    		= "
@@ -22979,15 +22979,16 @@ function helper_reporteA4TransactionMasterExamenLab(
 							height: 100vh; /* Ajusta la altura al tamaño del papel */
 							margin: 0; /* Elimina márgenes */
 						}
-						#firma 
+						/* El sello va centrado detras de la tabla de la firma */
+						#firma-sello
 						{
 							background-image: url(". $selloBase64.");
 							background-size: 200px 150px; /* ancho y alto de la imagen */
 							background-repeat: no-repeat;
-							background-position: center; 
-						}			
+							background-position: center;
+						}
 					  </style>
-						
+
                     </head>
         
                     <body>
@@ -23181,6 +23182,7 @@ function helper_reporteA4TransactionMasterExamenLab(
 							<tr><td style='text-align:left;'>&nbsp;</td></tr>													
 						</table>
 						
+						<div id='firma-sello'>
                         <table id='firma' style='width: 400px; margin: 0 auto; text-align: center;'>
 							<tr><td style='text-align:left;'>&nbsp;</td></tr>	
 							<tr><td style='text-align:left;'>&nbsp;</td></tr>	
@@ -23195,6 +23197,7 @@ function helper_reporteA4TransactionMasterExamenLab(
 								</td>
 							</tr>
 						</table>
+						</div>
 						
 						
 						<table style='width:100%' >		
