@@ -14112,74 +14112,79 @@ class app_invoice_billing extends _BaseController {
 			$datView["objNatural"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objCustumer"]->branchID,$datView["objCustumer"]->entityID);
 			$datView["tipoCambio"]					= round($datView["objTM"]->exchangeRate + $this->core_web_parameter->getParameter("ACCOUNTING_EXCHANGE_SALE",$companyID)->value,2);
 			$datView["objUser"]						= $this->User_Model->get_rowByPK($companyID,$datView["objTM"]->createdAt,$datView["objTM"]->createdBy);
-			$prefixCurrency 						= $datView["objCurrency"]->simbol." "; 
-			
-			
-		
+			$prefixCurrency 						= $datView["objCurrency"]->simbol." ";
+
+			//Totales del ticket con el descuento aplicado (solo en memoria, no se guarda):
+			//con descuento global la factura puede quedar guardada con amount = subAmount (sin restar el descuento).
+			//TOTAL = SUB TOTAL - DESCUENTO; el helper imprime RECIBIDO = TOTAL + CAMBIO, asi que RECIBIDO tambien queda sin el descuento.
+			$totalConDescuento						= round($datView["objTM"]->subAmount - $datView["objTM"]->discount,2);
+			$datView["objTM"]->amount				= $totalConDescuento;
+
+
 			//Configurar Detalle Header
 			$confiDetalleHeader = array();
 			$row = array(
 				"style"		=>"text-align:left;width:auto",
 				"colspan"	=>'1',
 				"prefix"	=>'',
-				
-				
+
+
 				"style_row_data"		=>"text-align:left;width:auto",
 				"colspan_row_data"		=>'1',
 				"prefix_row_data"		=>'',
 				"nueva_fila_row_data"	=>1
 			);
 			array_push($confiDetalleHeader,$row);
-			
+
 			$row = array(
 				"style"		=>"text-align:left;width:50px",
 				"colspan"	=>'1',
 				"prefix"	=>'',
-				
+
 				"style_row_data"		=>"text-align:right;width:auto",
 				"colspan_row_data"		=>'1',
 				"prefix_row_data"		=>'',
 				"nueva_fila_row_data"	=>0
 			);
 			array_push($confiDetalleHeader,$row);
-			
-			
+
+
 			$row = array(
 				"style"		=>"text-align:right;width:90px",
 				"colspan"	=>'1',
 				"prefix"	=>$datView["objCurrency"]->simbol,
-				
+
 				"style_row_data"		=>"text-align:right;width:90px",
 				"colspan_row_data"		=>'1',
 				"prefix_row_data"		=>"",
 				"nueva_fila_row_data"	=>0
 			);
 			array_push($confiDetalleHeader,$row);
-			
-			
-		    
-		    $detalle = array();		    
+
+
+
+		    $detalle = array();
 		    $row = array("CANT", 'PREC', "TOTAL");
 		    array_push($detalle,$row);
-		    
-		    
+
+
 			foreach($datView["objTMD"] as $detail_){
 				$row = array(
-					$detail_->itemName. " ". strtolower($detail_->skuFormatoDescription)."-comand-new-row",  				
+					$detail_->itemName. " ". strtolower($detail_->skuFormatoDescription)."-comand-new-row",
 					"none",
 					"none"
 				);
 			    array_push($detalle,$row);
-				
-			    $row = array(					
-					sprintf("%01.2f",round($detail_->quantity,2)), 					
+
+			    $row = array(
+					sprintf("%01.2f",round($detail_->quantity,2)),
 					sprintf("%01.2f",round($detail_->unitaryPrice,2)),
-					sprintf("%01.2f",round($detail_->amount,2))					
+					sprintf("%01.2f",round($detail_->amount,2))
 				);
 			    array_push($detalle,$row);
 			}
-			
-			
+
+
 			//Generar Reporte
 			$html = helper_reporte80mmTransactionMasterMiranda(
 			    "FACTURA",
