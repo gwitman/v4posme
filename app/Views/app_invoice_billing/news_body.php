@@ -978,7 +978,7 @@ echo helper_getHtmlOfPageLanding();
 									<tr>
 										<th style="text-align:left">MON.</th>
 										<td >
-											<input type="text" id="txtReceiptAmount" name="txtReceiptAmount"  class="col-lg-12 txt-numeric" inputmode="decimal" value="" style="text-align:<?php echo $useMobile != "1" ? "right" : "left"  ?>"/>
+											<input type="text" id="txtReceiptAmount" name="txtReceiptAmount"  class="col-lg-12 txt-numeric" inputmode="decimal" autocomplete="off" value="" style="text-align:<?php echo $useMobile != "1" ? "right" : "left"  ?>"/>
 										</td>
 										
 									</tr>
@@ -1595,7 +1595,7 @@ echo helper_getHtmlOfPageLanding();
 			<div id="ModalAutorizarDescuentoBody" style="display:none">
 				<h3>Autorizar descuento</h3>
 				<br/>
-				<input type="password" id="txtClaveDescuento" autocomplete="off" class="form-control" placeholder="Clave de autorización" />
+				<input type="password" id="txtClaveDescuento" name="txtClaveDescuento" autocomplete="new-password" class="form-control" placeholder="Clave de autorización" />
 				<span id="errorMessageClaveDescuento" style="color: red; display: none;"></span>
 				<br/>
 				<button type="button" class="btn btn-default btn-flat btn-block" id="btnCancelarClaveDescuento">Cancelar</button>
