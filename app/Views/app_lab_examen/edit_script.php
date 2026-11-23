@@ -132,7 +132,8 @@
 		
 		//Buscar el Cliente
 		$(document).on("click","#btnSearchCustomer",function(){
-			var url_request = "<?php echo base_url(); ?>/core_view/showviewbyname/<?php echo $objComponentCustomer->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_BILLING/true/empty/false/not_redirect_when_empty";
+			//Misma busqueda paginada de clientes que la factura (paginacion y boton Refresh)
+			var url_request = "<?php echo base_url(); ?>/core_view/showviewbynamepaginate/<?php echo $objComponentItem->componentID; ?>/onCompleteCustomer/SELECCIONAR_CLIENTES_ALL_PAGINATED/true/empty/false/not_redirect_when_empty/1/1/<?php echo $objParameterCantidadItemPoup; ?>/";
 			//PC: ventana emergente; telefono: ventana interna (pv2OpenSearch registra window.onCompleteCustomer)
 			pv2OpenSearch(url_request,"Buscar paciente","onCompleteCustomer",onCompleteCustomer,"width=900,height=450");
 		});		

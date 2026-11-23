@@ -172,8 +172,12 @@ class app_lab_examen extends _BaseController
             $objComponentCustomer	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer");
             if(!$objComponentCustomer)
             throw new \Exception("EL COMPONENTE 'tb_customer' NO EXISTE...");
-            
-            
+
+            //La vista paginada de clientes de la factura (SELECCIONAR_CLIENTES_ALL_PAGINATED) esta registrada en el componente tb_item
+            $objComponentItem		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+            if(!$objComponentItem)
+            throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+
             $objComponentTransactionExamenLab	= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_examen_lab");
             if(!$objComponentTransactionExamenLab)
             throw new \Exception("EL COMPONENTE 'tb_transaction_master_examen_lab' NO EXISTE...");
@@ -188,7 +192,10 @@ class app_lab_examen extends _BaseController
             
               
 			//Obtener parametros   
-            $customerDefault	= $this->core_web_parameter->getParameter("INVOICE_BILLING_CLIENTDEFAULT",$companyID);            
+            $customerDefault	= $this->core_web_parameter->getParameter("INVOICE_BILLING_CLIENTDEFAULT",$companyID);
+            //Cantidad de registros por pagina en la busqueda de clientes (mismo parametro que la factura)
+            $objParameterCantidadItemPoup	= $this->core_web_parameter->getParameter("INVOICE_CANTIDAD_ITEM",$companyID);
+            $objParameterCantidadItemPoup	= $objParameterCantidadItemPoup ? $objParameterCantidadItemPoup->value : "10";
 			
 			//Obtener transacciones
 			$objT 			= $this->Transaction_Model->getByCompanyAndTransaction($dataSession["user"]->companyID,$transactionID);
@@ -341,6 +348,8 @@ class app_lab_examen extends _BaseController
             
             
             $dataView["objComponentCustomer"]	= $objComponentCustomer;
+            $dataView["objComponentItem"]		= $objComponentItem;
+            $dataView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup;
             $dataView["objCaudal"]				= $this->Transaction_Causal_Model->getCausalByBranch($companyID,$transactionID,$branchID);
             
 			
