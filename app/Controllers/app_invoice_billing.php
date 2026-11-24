@@ -13775,9 +13775,10 @@ class app_invoice_billing extends _BaseController {
 				"app_invoice_billing"
 			);
 			
-			$titleDocument 		= "FACTURA";
-			if($datView["objStage"][0]->display == "REGITRADO")
-				$titleDocument 		= "PROFORMA";
+			//Solo la factura APLICADA se titula FACTURA; en cualquier otro estado (REGISTRADA) se imprime como PROFORMA
+			$titleDocument 		= "PROFORMA";
+			if(strtoupper(trim($datView["objStage"][0]->display)) == "APLICADA")
+				$titleDocument 		= "FACTURA";
 
 			$datView["viewRegisterFormatoPaginaNormal80mmOpcion1_LabelAfterDateTime"] = 
 			getBahavioSession(
