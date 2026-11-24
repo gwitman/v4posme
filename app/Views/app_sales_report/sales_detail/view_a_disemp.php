@@ -38,7 +38,7 @@
 		$configColumn["9"]["Titulo"] 		= "Precio Total";
 		$configColumn["10"]["Titulo"] 		= "Utilidad";
 		$configColumn["11"]["Titulo"] 		= "Utilidad %";		
-		$configColumn["12"]["Titulo"] 		= "Codigo Producto";
+		$configColumn["12"]["Titulo"] 		= $labelCodigoProducto;
 		$configColumn["13"]["Titulo"] 		= "Producto";
 		$configColumn["14"]["Titulo"] 		= "Categoria";
 		$configColumn["15"]["Titulo"] 		= "Vendedor";
@@ -59,7 +59,7 @@
 		$configColumn["9"]["FiledSouce"] 		= "amount";
 		$configColumn["10"]["FiledSouce"] 		= "utilidad";
 		$configColumn["11"]["FiledSouce"] 		= "utilidad_porcentual";
-		$configColumn["12"]["FiledSouce"] 		= "itemNumber";
+		$configColumn["12"]["FiledSouce"] 		= $fieldCodigoProducto;
 		$configColumn["13"]["FiledSouce"] 		= "itemName";	
 		$configColumn["14"]["FiledSouce"] 		= "nameCategory";
 		$configColumn["15"]["FiledSouce"] 		= "employerName";

@@ -132,17 +132,22 @@ class app_sales_report extends _BaseController {
 					$query,
 					[$companyID,$tocken,$userID,$startOn,$endOn,$inventoryCategoryID,$warehouseID,$userIDFilter,$transactionCausalID]
 				);
-				
-				
+
+				//Columna codigo de producto configurable por tipo de compania (ej. cristoRey02 muestra SKU = tb_item.reference3)
+				$labelCodigoProducto	= getBehavio($dataSession["company"]->type,"app_sales_report_sales_detail","labelCodigoProducto","Codigo Producto");
+				$fieldCodigoProducto	= getBehavio($dataSession["company"]->type,"app_sales_report_sales_detail","fieldCodigoProducto","itemNumber");
+
 				if(isset($objData)){
 					$objDataResult["objDetail"]				= $objData;
 				}
 				else{
 					$objDataResult["objDetail"]				= $objData;
 				}
-				
-				
+
+
 				$objDataResult["objCompany"] 				= $objCompany;
+				$objDataResult["labelCodigoProducto"] 		= $labelCodigoProducto;
+				$objDataResult["fieldCodigoProducto"] 		= $fieldCodigoProducto;
 				$objDataResult["objStartOn"] 				= $startOn;
 				$objDataResult["objEndOn"] 					= $endOn;
 				$objDataResult["objLogo"] 					= $objParameter;
@@ -166,7 +171,7 @@ class app_sales_report extends _BaseController {
 						"zone"                => "Zona",
 						"currencyName"        => "Moneda",
 						"exchangeRate"        => "Tasa de Cambio",
-						"itemNumber"          => "Codigo Producto",
+						$fieldCodigoProducto  => $labelCodigoProducto,
 						"itemName"            => "Producto",
 						"nameCategory"        => "Categoria",
 						"quantity"            => "Cantidad",
