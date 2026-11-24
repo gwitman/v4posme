@@ -3,9 +3,67 @@
 
 /******************************************************************/
 /*****Personalizar pantalla**********/
-/******************************************************************/	
-
-
+/******************************************************************/
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'evolution'
+WHERE p.name = 'WHATSAPP_PROVIDER'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'whatsapp_masivo'
+WHERE p.name = 'RABBITMQ_QUEUE_WHATSAPP'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'amqps://znxnucuc:eku9YZMKmaMEOKqqs8lRF82NdtsDFv-m@fuji.lmq.cloudamqp.com/znxnucuc'
+WHERE p.name = 'RABBITMQ_URL'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'cU15xDh12kXZKHKTLBaQlhbJoCXQT47ll66A3AqZJv8='
+WHERE p.name = 'CXC_ADVERTISING_CRONJOB_API_KEY'
+    AND cp.companyID = 2;
+	
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '0.023'
+WHERE p.name = 'CXC_ADVERTISING_COST_META_MESSAGE'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '1000'
+WHERE p.name = 'CXC_ADVERTISING_MAX_MESSAGE'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'false'
+WHERE p.name = 'CXC_ADVERTISING_ALLOW_WITHOUT_PAYMENT'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '10'
+WHERE p.name = 'CXC_ADVERTISING_COST_EVOLUTION_FIXED'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '10'
+WHERE p.name = 'CXC_ADVERTISING_FREE_MESSAGES'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'true'
+WHERE p.name = 'CXC_ADVERTISING_ENABLED'
+    AND cp.companyID = 2;
 
 UPDATE  tb_company_parameter,tb_parameter SET 
 	tb_company_parameter.value = "false" 
@@ -759,20 +817,20 @@ WHERE
 	
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://api.ultramsg.com/instance65915/messages/chat" 
+	tb_company_parameter.value = "https://evolution-api-5vhg.srv1907129.hstgr.cloud" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WAHTSAP_URL_ENVIO_MENSAJE";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 
 
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "n5hb8n1wf0r6e27i" 
+	tb_company_parameter.value = "kC5a9HA6UcUsn96RjnZLwDTL7I4BVkpW" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_TOCKEN";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
 	
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "https://api.whaticket.com/api/v1/whatsapps" 
+	tb_company_parameter.value = "frioTec_administrativo" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "WHATSAP_URL_REQUEST_SESSION";## Se usa para poner un label al sistema,  como un segundo nombre de sistema
@@ -1235,7 +1293,7 @@ WHERE
 				
 				
 UPDATE  tb_company_parameter,tb_parameter SET 
-	tb_company_parameter.value = "true" 
+	tb_company_parameter.value = "false" 
 WHERE 
 	tb_company_parameter.parameterID = tb_parameter.parameterID AND 
 	tb_parameter.name = "CORE_PAYMENT_SENDBOX";## API DE PAGO DE PRUEBA 

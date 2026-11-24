@@ -1,6 +1,12 @@
 /*BD:	dbs3obkhhc1pgu:posme*/
 /*servidor:	siteground*/
-
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'cU15xDh12kXZKHKTLBaQlhbJoCXQT47ll66A3AqZJv8='
+WHERE p.name = 'CXC_ADVERTISING_CRONJOB_API_KEY'
+    AND cp.companyID = 2;
+	
+	
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = '1000'
