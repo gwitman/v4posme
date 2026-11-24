@@ -16449,7 +16449,8 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["customerRuc"]						= $datView["objTMI"]->referenceClientIdentifier == "" ?
 																		$datView["objCustumer"]->identification :
 																		$datView["objTMI"]->referenceClientIdentifier ;
-			$datViewArray["customerPhoneNumber"]				= $datView["objTM"]->numberPhone != "" ? $datView["objTM"]->numberPhone : $datView["objCustumer"]->phoneNumber;
+			//Telefono del cliente: de tb_customer; si esta vacio, el telefono de la factura (tb_transaction_master.numberPhone)
+			$datViewArray["customerPhoneNumber"]				= trim((string)$datView["objCustumer"]->phoneNumber) != "" ? $datView["objCustumer"]->phoneNumber : (string)$datView["objTM"]->numberPhone;
 			$datViewArray["customerAddress"]					= $datView["objCustumer"]->address;
 			//Numero de factura solo con los digitos (FAC00002278 => 00002278)
 			$datViewArray["transactionNumberOnly"]				= preg_replace('/\D/','',(string)$datView["objTM"]->transactionNumber);
@@ -16464,16 +16465,22 @@ class app_invoice_billing extends _BaseController {
 																);
 			$datViewArray["customerAddressFull"]				= implode(", ",array_filter($customerAddressParts,function($v){ return $v != ""; }));
 
-			//Telefono del vendedor (colaborador de la factura: entityIDSecondary); primero el principal
+			//Telefono del colaborador (entityIDSecondary) desde tb_entity_phone, primero el principal;
+			//se busca con la sucursal del colaborador (tb_employee), no con la del cliente
 			$datViewArray["sellerPhoneNumber"]					= "";
-			$objSellerPhones									= $datView["objTM"]->entityIDSecondary ? $this->Entity_Phone_Model->get_rowByEntity($companyID,$datView["objCustumer"]->branchID,$datView["objTM"]->entityIDSecondary) : array();
+			$objSellerEmployee									= $datView["objTM"]->entityIDSecondary ? $this->Employee_Model->get_rowByEntityID($companyID,$datView["objTM"]->entityIDSecondary) : null;
+			$sellerBranchID										= $objSellerEmployee ? $objSellerEmployee->branchID : $datView["objTM"]->branchID;
+			$objSellerPhones									= $datView["objTM"]->entityIDSecondary ? $this->Entity_Phone_Model->get_rowByEntity($companyID,$sellerBranchID,$datView["objTM"]->entityIDSecondary) : array();
 			foreach($objSellerPhones as $sellerPhone_)
 			{
+				if(trim((string)$sellerPhone_->number) == "")
+					continue;
 				if($datViewArray["sellerPhoneNumber"] == "" || $sellerPhone_->isPrimary == 1)
 					$datViewArray["sellerPhoneNumber"] = $sellerPhone_->number;
 				if($sellerPhone_->isPrimary == 1)
 					break;
 			}
+			//Si el colaborador no tiene telefono en tb_entity_phone, queda en blanco
 
 			//Totales: amount ya trae el descuento aplicado, el sub total se muestra antes del descuento
 			$datViewArray["amount_sub_total"]					= number_format($amountTotal + $amountDiscount,2);
