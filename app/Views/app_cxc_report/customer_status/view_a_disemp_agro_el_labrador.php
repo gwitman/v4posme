@@ -237,23 +237,17 @@
 		
 		
 		
-		echo $resultado2; 
-		echo "<table style='width:100%;order-spacing: 10px;'>
-				<tbody>
-				<tr>
-					<td nowrap='' style='text-align:;width:167px;background-color:#00628e;color:white;' >Print</td>
-					<td nowrap='' style='text-align:Left;width:auto' >"."<a href='".base_url()."/".$objParameterUrlImpresion->value."/customerNumber/".$customerNumber."' target='_blank' >Imprimir saldo en impresora</a>"."</td>
-				</tr>
-				</tbody>
-			 </table>";
-		echo "<table style='width:100%;order-spacing: 10px;'>
-				<tbody>
-				<tr>
-					<td nowrap='' style='text-align:;width:167px;background-color:#00628e;color:white;' >Ver detalle</td>
-					<td nowrap='' style='text-align:Left;width:auto' >"."<a href='".base_url()."/".$objParameterUrlImpresionViewDetalle->value."/customerNumber/".$customerNumber."' target='_blank' >Ver</a>"."</td>
-				</tr>
-				</tbody>
-			 </table>";
+		//Filas de enlaces dentro de la misma tabla vertical para que queden alineadas con los datos del cliente
+		$filasEnlaces = "
+			<tr>
+				<td nowrap class='pr-vlabel' style='width:167px;background-color:#00628e;color:white;' colspan='2' >Print</td>
+				<td nowrap style='text-align:Left;width:auto' colspan='16' >"."<a href='".base_url()."/".$objParameterUrlImpresion->value."/customerNumber/".$customerNumber."' target='_blank' >Imprimir saldo en impresora</a>"."</td>
+			</tr>
+			<tr>
+				<td nowrap class='pr-vlabel' style='width:167px;background-color:#00628e;color:white;' colspan='2' >Ver detalle</td>
+				<td nowrap style='text-align:Left;width:auto' colspan='16' >"."<a href='".base_url()."/".$objParameterUrlImpresionViewDetalle->value."/customerNumber/".$customerNumber."' target='_blank' >Ver</a>"."</td>
+			</tr>";
+		echo str_replace("</tbody>", $filasEnlaces."</tbody>", $resultado2);
 		echo "<br/>";
 		?>
 		
