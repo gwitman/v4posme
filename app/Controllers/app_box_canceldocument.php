@@ -1124,7 +1124,29 @@ class app_box_canceldocument extends _BaseController {
 			$datViewReport["reporte80mmTransactionMaster_HideDescuento"]	= getBehavio($objCompany->type,"app_box_canceldocument","viewRegisterFormatoPaginaNormal_HideDescuento","false");
 			$datViewReport["reporte80mmTransactionMaster_HideCambio"]	= getBehavio($objCompany->type,"app_box_canceldocument","viewRegisterFormatoPaginaNormal_HideCambio","false");
 
-			//Generar Reporte
+			//Plantilla HTML de BD (tb_company_page_setting_large / templateCancelDocument):
+			//primero la del tipo de compania, si no existe la de 'demo'
+			$htmlTemplate = getBahavioLargeDB($objCompany->type,"app_box_canceldocument","templateCancelDocument","");
+			if(trim((string)$htmlTemplate) == "")
+			$htmlTemplate = getBahavioLargeDB("demo","app_box_canceldocument","templateCancelDocument","");
+
+			if(trim((string)$htmlTemplate) != "")
+			{
+				$html = $this->renderTemplateCancelDocument(
+					$htmlTemplate,
+					$objCompany,
+					$objParameter,
+					$objParameterTelefono,
+					$datView,
+					$datViewReport,
+					$saldos,
+					$saldoInicial,
+					$saldoFinal,
+					$saldoAbonado
+				);
+			}
+			else
+			//Sin plantilla en BD: formato anterior generado por funcion
 			$html = helper_reporte80mmTransactionMaster(
 			    "CANCELACION",
 			    $objCompany,
@@ -1187,8 +1209,108 @@ class app_box_canceldocument extends _BaseController {
 			
 		    return $resultView;
 		}
-		
+
 	}
+
+	/**
+	 * Llena la plantilla HTML de BD del abono (templateCancelDocument) con los datos del documento.
+	 * La plantilla es una vista PHP: recibe variables ya calculadas (montos numericos, textos)
+	 * y tambien los objetos completos para que cada compania pueda personalizarla.
+	 * @param string $htmlTemplate  HTML de tb_company_page_setting_large
+	 * @param object $objCompany
+	 * @param object $objParameterLogo     parametro CORE_COMPANY_LOGO
+	 * @param object $objParameterTelefono parametro CORE_PHONE
+	 * @param array  $datView        objetos del documento (objTM, objTMD, objTMI, objCustumer, ...)
+	 * @param array  $datViewReport  personalizacion por getBehavio (estilo, pie, filas ocultas)
+	 * @param string $saldos         Basico | Individuales | Generales
+	 * @param float  $saldoInicial
+	 * @param float  $saldoFinal
+	 * @param float  $saldoAbonado
+	 * @return string HTML listo para dompdf
+	 */
+	private function renderTemplateCancelDocument($htmlTemplate,$objCompany,$objParameterLogo,$objParameterTelefono,$datView,$datViewReport,$saldos,$saldoInicial,$saldoFinal,$saldoAbonado)
+	{
+		$objTM			= $datView["objTM"];
+		$objTMI			= $datView["objTMI"];
+		$objNatural		= $datView["objNatural"];
+		$objCurrency	= $datView["objCurrency"];
+
+		//Logo en base64 (dompdf no carga rutas locales relativas)
+		$logoBase64		= "";
+		$pathLogo		= PATH_FILE_OF_APP_ROOT.'/img/logos/direct-ticket-'.$objParameterLogo->value;
+		if(is_file($pathLogo))
+		$logoBase64		= 'data:image/'.pathinfo($pathLogo, PATHINFO_EXTENSION).';base64,'.base64_encode(file_get_contents($pathLogo));
+
+		//Detalle: un monto por cuota/documento abonado y el saldo final (en "Basico" no hay detalle)
+		$detalle = array();
+		if($saldos != "Basico")
+		{
+			foreach($datView["objTMD"] as $detail_){
+				$detalle[] = array("label" => "MONTO", "amount" => round($detail_->amount,2));
+			}
+			$detalle[] = array("label" => "SALDO FINAL", "amount" => $saldoFinal);
+		}
+
+		$statusName		= $datView["objStage"][0]->display;
+		$customerName	= $objTMI->referenceClientName == "" ? $objNatural->firstName." ".$objNatural->lastName : $objTMI->referenceClientName;
+
+		$data = array(
+			//Objetos completos (para plantillas personalizadas)
+			"objCompany"			=> $objCompany,
+			"objTM"					=> $objTM,
+			"objTMI"				=> $objTMI,
+			"objTMD"				=> $datView["objTMD"],
+			"objCustomer"			=> $datView["objCustumer"],
+			"objNatural"			=> $objNatural,
+			"objCurrency"			=> $objCurrency,
+			"objUser"				=> $datView["objUser"],
+			"objBranch"				=> $datView["objBranch"],
+
+			//Encabezado
+			"titulo"				=> "CANCELACION",
+			"logoBase64"			=> $logoBase64,
+			"companyName"			=> strtoupper($objCompany->name),
+			"companyAddress"		=> $objCompany->address,
+			"companyPhone"			=> $objParameterTelefono ? $objParameterTelefono->value : "",
+			"transactionNumber"		=> strtoupper($objTM->transactionNumber),
+			"transactionOn"			=> $objTM->transactionOn,
+			"fecha"					=> $objTM->statusIDChangeOn,
+			"statusName"			=> $statusName == "CANCELADA" ? "APLICADA" : $statusName,
+			"currencySymbol"		=> $objCurrency->simbol,
+			"customerNumber"		=> $datView["objCustumer"]->customerNumber,
+			"customerName"			=> $customerName,
+			"note"					=> $objTM->note,
+			"tipoCambio"			=> $datView["tipoCambio"],
+			"userNickName"			=> $datView["objUser"] ? $datView["objUser"]->nickname : "",
+
+			//Detalle y saldos
+			"saldos"				=> $saldos,
+			"detalle"				=> $detalle,
+			"saldoInicial"			=> $saldoInicial,
+			"saldoFinal"			=> $saldoFinal,
+			"saldoAbonado"			=> $saldoAbonado,
+
+			//Resumen (TOTAL y RECIBIDO incluyen el % de servicio, igual que el formato anterior)
+			"subAmount"				=> (float)$objTM->subAmount,
+			"iva"					=> (float)$objTM->tax1,
+			"servicio"				=> (float)$objTM->tax2,
+			"descuento"				=> (float)$objTM->discount,
+			"total"					=> (float)$objTM->amount + (float)$objTM->tax2,
+			"recibido"				=> (float)$objTM->amount + (float)$objTMI->changeAmount + (float)$objTM->tax2,
+			"cambio"				=> (float)$objTMI->changeAmount,
+
+			//Personalizacion por getBehavio (se mantiene para que 'demo' imprima igual que antes)
+			"hideIva"				=> ($datViewReport["reporte80mmTransactionMaster_HideIva"] ?? "") == "true",
+			"hideServicio"			=> ($datViewReport["reporte80mmTransactionMaster_HideServicio"] ?? "") == "true",
+			"hideDescuento"			=> ($datViewReport["reporte80mmTransactionMaster_HideDescuento"] ?? "") == "true",
+			"hideCambio"			=> ($datViewReport["reporte80mmTransactionMaster_HideCambio"] ?? "") == "true",
+			"styleExtra"			=> $datViewReport["reporte80mmTransactionMaster_Style"] ?? "",
+			"footerExtra"			=> ($datViewReport["reporte80mmTransactionMaster_Footer"] ?? "").getBehavio($objCompany->type,"web_tools_report_helper","reporte80mmTransactionMaster_Devolucion","")
+		);
+
+		return helper_RenderStringAsView($htmlTemplate, $data);
+	}
+
 	function viewRegisterFormatoPaginaTicket(){
 		try{ 
 			//AUTENTICADO

@@ -805,6 +805,11 @@ CREATE TABLE `tb_company_page_setting`  (
 -- ----------------------------
 -- Table structure for tb_company_page_setting_large
 -- ----------------------------
+-- Plantillas HTML de impresion (vista PHP, se llenan con helper_RenderStringAsView):
+--   app_invoice_return     / templateReplacement    (devolucion)
+--   app_box_canceldocument / templateCancelDocument (abono, viewRegisterFormatoPaginaNormal;
+--                            keyi = tipo de compania, si no existe 'demo';
+--                            script: public/resource/file_sql/script_plantilla_app_box_canceldocument.sql)
 DROP TABLE IF EXISTS `tb_company_page_setting_large`;
 CREATE TABLE `tb_company_page_setting_large`  (
   `customPageLargeID` int NOT NULL AUTO_INCREMENT,
