@@ -8441,13 +8441,14 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["mesaName"] 							= $datView["objMesa"] ? $datView["objMesa"]->name : "";			
 			$datViewArray["zoneID"] 							= $datView["objTMI"]->zoneID;
 			$datViewArray["zoneName"] 							= $datView["objZone"] ? $datView["objZone"]->name : "";
-			$datViewArray["customerName"]						= $datView["objTMI"]->referenceClientName == "" ? 
-																		$datView["objNatural"]->firstName :
+			//Nombre completo del cliente: nombres y apellidos de tb_naturales
+			$datViewArray["customerName"]						= $datView["objTMI"]->referenceClientName == "" ?
+																		trim($datView["objNatural"]->firstName." ".$datView["objNatural"]->lastName) :
 																		$datView["objTMI"]->referenceClientName ;
-			$datViewArray["customerRuc"]						= $datView["objTMI"]->referenceClientIdentifier == "" ? 
+			$datViewArray["customerRuc"]						= $datView["objTMI"]->referenceClientIdentifier == "" ?
 																		$datView["objCustumer"]->identification :
 																		$datView["objTMI"]->referenceClientIdentifier ;
-																		
+
 			$datViewArray["creditPercentageInterestYear"]				= 0;
 			$datViewArray["creditPercentageInterestTerm"]				= 0;
 			$datViewArray["creditTerm"]									= 0;
