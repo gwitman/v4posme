@@ -7279,33 +7279,47 @@ class app_invoice_billing extends _BaseController {
 			
 			$fileNamePut = "factura_".$transactionMasterID."_".date("dmYhis").".pdf";
 			$path        = "./resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".$fileNamePut;
-				
+
+			//Crear la Carpeta para almacenar los Archivos del Documento
+			$documentoPath = PATH_FILE_OF_APP."/company_".$companyID."/component_48/component_item_".$transactionMasterID;
+			if (!file_exists($documentoPath))
+			{
+				mkdir($documentoPath, 0755, true);
+				chmod($documentoPath, 0755);
+			}
+
 			file_put_contents(
 				$path,
-				$this->dompdf->output()					
-			);						
-			
-			chmod($path, 644);
-			
+				$this->dompdf->output()
+			);
+
+			chmod($path, 0644);
+
 			if($objParameterShowLinkDownload == "true")
-			{			
-				echo "<a 
+			{
+				echo "<a
 					href='".base_url()."/resource/file_company/company_".$companyID."/component_48/component_item_".$transactionMasterID."/".
 					$fileNamePut."'>download factura</a>
-				"; 				
-			
+				";
+
 			}
-			else{			
-				//visualizar				
+			else{
+				//visualizar
+				// Limpiar buffers para evitar texto previo que corrompa el PDF
+				while (ob_get_level() > 0) {
+					ob_end_clean();
+				}
+
 				$this->dompdf->stream("file.pdf ", ['Attachment' => $objParameterShowDownloadPreview ]);
+				exit;
 			}
-			
-			
-			
-			
+
+
+
+
 		}
 		catch(\Exception $ex){
-		    
+
 		    //$data["session"] = $dataSession;
 			$data["session"] 	= null;
 		    $data["exception"] 	= $ex;
@@ -7313,17 +7327,17 @@ class app_invoice_billing extends _BaseController {
 		    $data["urlIndex"]  	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
 		    $data["urlBack"]   	= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        	= view("core_template/email_error_general",$data);
-		    
+
 		    log_message("error", "[".get_class($this)."] ".$ex->getLine()." ".$ex->getMessage());
-		    
-		    
+
+
 		    return $resultView;
 		}
-		
-		
+
+
 	}
-	
-	
+
+
 	function viewRegisterFormatoPaginaNormal80mmEbenezer(){
 		try{ 
 			//AUTENTICADO
