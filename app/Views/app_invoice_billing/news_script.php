@@ -81,6 +81,8 @@
 	let loadEdicion 				= false;
 	let transactionMasterID			= <?php echo $transactionMasterID ?>;
 	let codigoMesero				= '<?php echo $codigoMesero ?>';
+	//Columna Codigo del detalle: si el tipo de compania lo configura (ej. cristoRey02) se muestra el SKU (tb_item.reference3)
+	let varCodigoProductoSku		= '<?php echo getBehavio($company->type, 'app_invoice_billing', 'javaScriptCodigoProductoSku', 'false') ?>' == 'true';
     let $grid;
     let selectedFilaInfoProducto;
     let selectedDataInfoProducto;
@@ -738,7 +740,7 @@
 					filterResultArray[14]  	= filterResult.itemID;
 					filterResultArray[15]  	= filterResult.itemID;
 					filterResultArray[16]  	= filterResult.itemID;
-					filterResultArray[17] 	= filterResult.Codigo;
+					filterResultArray[17] 	= fnCodigoProductoSku(filterResult.Codigo, filterResult.SKU);
 					filterResultArray[18] 	= filterResult.Nombre;
 					filterResultArray[19] 	= 0;
 					filterResultArray[20] 	= filterResult.Medida;
@@ -2055,6 +2057,19 @@
 		}
 	}
 
+	/**
+	 * Devuelve el texto de la columna Codigo del detalle.
+	 * Con javaScriptCodigoProductoSku = true muestra el SKU (tb_item.reference3); si el SKU viene vacio, deja el codigo original.
+	 * @param codigo codigo que se mostraria normalmente (itemNumber o barra + itemNumber)
+	 * @param sku    valor de tb_item.reference3
+	 * @return texto a mostrar en la columna Codigo
+	 */
+	function fnCodigoProductoSku(codigo, sku){
+		if(varCodigoProductoSku && sku !== undefined && sku !== null && String(sku).trim() !== '')
+			return sku;
+		return codigo;
+	}
+
 	function onCompleteNewItem(objResponse,suma){
 		if(varPermisosNoPermitirModificarDetalleFactura && isAdmin !== "1" && loadEdicion){
 			Toast.fire({ icon: "error", title: "No tiene permiso para agregar productos" });
@@ -2834,6 +2849,7 @@
 				{
 					itemNumber 			= varDetail[i].barCode + " " + varDetail[i].itemNumber;
 				}
+				itemNumber 				= fnCodigoProductoSku(itemNumber, varDetail[i].itemReference3);
 
 				//Descuento por linea: tax4 = monto, reference4 = %; facturas viejas traen tax4 null -> 0.
 				//Sin monto no se toma el % (reference4 podria tener otro dato en facturas viejas).
@@ -3376,7 +3392,7 @@
 					var filterResult 		= e[i];
 					var filterResultArray 	= [];
 					filterResultArray[5]  	= filterResult.itemID;
-					filterResultArray[17] 	= filterResult.Codigo;
+					filterResultArray[17] 	= fnCodigoProductoSku(filterResult.Codigo, filterResult.SKU);
 					filterResultArray[18] 	= filterResult.Nombre;
 					filterResultArray[20] 	= filterResult.Medida;
 					filterResultArray[21] 	= 1;//filterResult.Cantidad;
@@ -4731,7 +4747,7 @@
 				dataResponse[14] = data[0];
 				dataResponse[15] = data[0];
 				dataResponse[16] = data[0];
-				dataResponse[17] = data.Codigo;//Codigo
+				dataResponse[17] = fnCodigoProductoSku(data.Codigo, data.SKU);//Codigo o SKU
 				dataResponse[18] = data.Nombre;//Nombre
 				dataResponse[19] = data[0];
 				dataResponse[20] = data.Medida;//Unidad de medida
@@ -5268,6 +5284,7 @@
 			{
 				dataResponse[17] = element[10] + " " + element[8];//barCode + itemNumber
 			}
+			dataResponse[17] = fnCodigoProductoSku(dataResponse[17], element[16]);//SKU de la vista del popup (cristoRey02)
 
 			dataResponse[18] = element[9];//Nombre
             dataResponse[19] = element[0];
