@@ -1430,7 +1430,7 @@ class app_invoice_billing extends _BaseController {
 			$objTMInfoNew["receiptAmountCard"]			= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountTarjeta"));
 			$objTMInfoNew["changeAmount"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtChangeAmount"));
 			//Monto pagado con notas de credito (en REGISTRADA es solo reserva; se consume al APLICAR)
-			$objTMInfoNew["receiptAmountNoteCredit"]	= round(helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountNoteCredit")),2);
+			$objTMInfoNew["receiptAmountNoteCredit"]	= round((float)helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountNoteCredit") ?? 0),2);
 
 			$objTMInfoNew["receiptAmountBankReference"]					= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountBank_Reference"));
 			$objTMInfoNew["receiptAmountBankDolReference"]				= helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountBankDol_Reference"));
@@ -2561,7 +2561,7 @@ class app_invoice_billing extends _BaseController {
 			}
 
 			//Monto pagado con notas de credito: solo en facturas de contado
-			$receiptAmountNoteCredit				= round(helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountNoteCredit")),2);
+			$receiptAmountNoteCredit				= round((float)helper_StringToNumber(/*inicio get post*/ $this->request->getPost("txtReceiptAmountNoteCredit") ?? 0),2);
 			if($receiptAmountNoteCredit < 0)
 			throw new \Exception("EL MONTO PAGADO CON NOTAS DE CREDITO NO PUEDE SER NEGATIVO");
 			if($receiptAmountNoteCredit > 0 && $exisCausalInCredit == "true")

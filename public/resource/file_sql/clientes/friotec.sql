@@ -6,6 +6,18 @@
 /******************************************************************/
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'true'
+WHERE p.name = 'CORE_SESSION_UNIQUE'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = '30'
+WHERE p.name = 'CORE_SESSION_UNIQUE_INTERVAL'
+    AND cp.companyID = 2;
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = 'evolution'
 WHERE p.name = 'WHATSAPP_PROVIDER'
     AND cp.companyID = 2;
