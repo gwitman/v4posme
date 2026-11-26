@@ -293,10 +293,115 @@ class core_web_authentication {
 		return true;
 		
 		
-		if($session->get('user'))
+		if(!$session->get('user'))
+		return false;
+
+		//Sesion unica (CORE_SESSION_UNIQUE): si el usuario inicio sesion en otro equipo, esta sesion se cierra
+		if(!$this->isSessionUniqueValid())
+		{
+			$this->sessionKick();
+			return false;
+		}
+
 		return true;
-		
-		return false;			
+   }
+
+   /**
+    * Indica si la sesion actual sigue siendo la sesion vigente del usuario.
+    * Solo valida cuando el parametro CORE_SESSION_UNIQUE de la empresa es "true";
+    * la sesion vigente es la que esta registrada en tb_log_session (el login borra las anteriores del usuario).
+    * @return bool true si la sesion es valida o si el parametro esta apagado
+    */
+   function isSessionUniqueValid(){
+		$session 		= \Config\Services::session();
+		$objUser 		= $session->get('user');
+		if(!$objUser)
+		return false;
+
+		if(!$this->isSessionUniqueActive($objUser->companyID))
+		return true;
+
+		$sessionID 		= $session->get('sessionID');
+		if(empty($sessionID))
+		return false;
+
+		return $this->isSessionActiva($sessionID);
+   }
+
+   /**
+    * Lee el parametro CORE_SESSION_UNIQUE (un solo equipo por usuario).
+    * Si el parametro no existe en la BD se toma como apagado para no bloquear el sistema.
+    * @param int $companyID
+    * @return bool
+    */
+   function isSessionUniqueActive($companyID){
+		try
+		{
+			$core_web_parameter = new core_web_parameter();
+			$value 				= $core_web_parameter->getParameter("CORE_SESSION_UNIQUE",$companyID)->value;
+			return strtolower(trim($value)) == "true";
+		}
+		catch(\Exception $ex)
+		{
+			return false;
+		}
+   }
+
+   /**
+    * Intervalo en segundos con el que cada pantalla consulta si la sesion sigue vigente
+    * (parametro CORE_SESSION_UNIQUE_INTERVAL). Devuelve 0 si la sesion unica esta apagada.
+    * Por defecto 30 segundos; minimo 5 para no saturar el servidor.
+    * @param int $companyID
+    * @return int segundos (0 = no consultar)
+    */
+   function getSessionUniqueInterval($companyID){
+		if(!$this->isSessionUniqueActive($companyID))
+		return 0;
+
+		$interval = 30;
+		try
+		{
+			$core_web_parameter = new core_web_parameter();
+			$interval 			= (int)$core_web_parameter->getParameter("CORE_SESSION_UNIQUE_INTERVAL",$companyID)->value;
+		}
+		catch(\Exception $ex)
+		{
+			$interval = 30;
+		}
+
+		if($interval <= 0)
+		$interval = 30;
+
+		if($interval < 5)
+		$interval = 5;
+
+		return $interval;
+   }
+
+   /**
+    * Cierra la sesion local porque el usuario inicio sesion en otro equipo
+    * y deja una cookie corta para que la pantalla de login muestre el motivo.
+    * @return void
+    */
+   function sessionKick(){
+		$session 	= \Config\Services::session();
+		$session->destroy();
+		$_SESSION 	= array();
+		setcookie("posme_session_kick","1",time() + 300,"/");
+		$_COOKIE["posme_session_kick"] = "1";
+   }
+
+   /**
+    * Si la sesion se cerro por inicio en otro equipo, devuelve el mensaje para el login y limpia la marca.
+    * @return string mensaje o cadena vacia
+    */
+   function sessionKickMessage(){
+		if(!isset($_COOKIE["posme_session_kick"]) || $_COOKIE["posme_session_kick"] != "1")
+		return "";
+
+		setcookie("posme_session_kick","",time() - 3600,"/");
+		unset($_COOKIE["posme_session_kick"]);
+		return "Su sesión fue cerrada porque el usuario inició sesión en otro equipo.";
    }
    function isSessionActiva($sessionID){
 	   $Log_Session_Model 	= new Log_Session_Model();

@@ -286,6 +286,7 @@
 	
 
 <?php echo helper_getHtmlAiChatWidget(); ?>
+<?php echo view("core_masterpage/session_unique_script"); ?>
 </body>
 <script>
 	var varCoreUserName 	= '<?php echo $user->nickname; ?>';

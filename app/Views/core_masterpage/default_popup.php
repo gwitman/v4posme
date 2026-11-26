@@ -101,7 +101,8 @@
 					<?php echo $head; ?>
 					
 					<?php echo $body; ?>
-				</div>			
+				</div>
+	<?php echo view("core_masterpage/session_unique_script"); ?>
 	</body>
 	<?php echo $script;?>
 	

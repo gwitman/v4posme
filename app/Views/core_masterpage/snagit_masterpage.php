@@ -845,5 +845,6 @@
 	
 
   <?php echo helper_getHtmlAiChatWidget(); ?>
+  <?php echo view("core_masterpage/session_unique_script"); ?>
   </body>
 </html>

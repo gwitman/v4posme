@@ -1808,6 +1808,8 @@ $routes->match(['get', 'post'], 'core_acount/getLoginAuthorizationStatus', 'core
 $routes->match(['get', 'post'], 'core_acount/getLoginAuthorizationStatus/(:any)', 'core_acount::getLoginAuthorizationStatus');
 $routes->match(['get', 'post'], 'core_acount/cancelLoginAuthorization', 'core_acount::cancelLoginAuthorization');
 $routes->match(['get', 'post'], 'core_acount/cancelLoginAuthorization/(:any)', 'core_acount::cancelLoginAuthorization');
+$routes->match(['get', 'post'], 'core_acount/checkSession', 'core_acount::checkSession');
+$routes->match(['get', 'post'], 'core_acount/checkSession/(:any)', 'core_acount::checkSession');
 $routes->match(['get', 'post'], 'core_acount_logsession/index', 'core_acount_logsession::index');
 $routes->match(['get', 'post'], 'core_acount_logsession/index/(:any)', 'core_acount_logsession::index');
 $routes->match(['get', 'post'], 'core_acount_logsession/getData', 'core_acount_logsession::getData');

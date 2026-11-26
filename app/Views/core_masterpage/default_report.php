@@ -104,7 +104,8 @@
 					<link href="<?php echo APP_URL_RESOURCE_CSS_JS; ?>/resource/css/posme-loading.css?v=5" rel="stylesheet" />
 
 					<?php echo $body;?>
-				</div>			
+				</div>
+	<?php echo view("core_masterpage/session_unique_script"); ?>
 	</body>
 	<!-- Controles nativos en telefono/tableta para .prf (despues de bootstrap-datepicker del view_head y antes del view_script) -->
 	<?php echo view('core_template/posme_v2_common'); ?>

@@ -2093,6 +2093,8 @@ Ruta: Menú > SEGURIDAD > SALIR.
 Así es como se sale de posMe o se cambia de usuario.
 Cierre siempre la sesión al terminar, sobre todo en equipos compartidos.
 
+Sesión en un solo equipo (me sacó del sistema, sesión iniciada en otro equipo): si su empresa tiene activo el parámetro CORE_SESSION_UNIQUE, un usuario solo puede estar dentro de posMe en un equipo a la vez. Si entra con el mismo usuario en otro equipo, el primer equipo vuelve a la pantalla de inicio de sesión con el mensaje "Su sesión fue cerrada porque el usuario inició sesión en otro equipo.". Esto pasa aunque esté en cualquier pantalla y sin tocar nada, en pocos segundos (el tiempo lo define el parámetro CORE_SESSION_UNIQUE_INTERVAL, 30 segundos por defecto). Lo que no haya guardado en ese equipo se pierde. Si no fue usted quien entró en el otro equipo, cambie su contraseña.
+
 ## Cambiar mi contraseña o mi correo (editar perfil)
 Ruta: Menú > SEGURIDAD > EDITAR PERFIL.
 1. Entre a SEGURIDAD > EDITAR PERFIL. Se abre **Mi perfil** con su **Codigo** y el **Colaborador** asociado.

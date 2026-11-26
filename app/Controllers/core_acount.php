@@ -106,7 +106,7 @@ class core_acount extends _BaseController {
 		//execute
 		//echo "<h1 style='color: wheat;' >uso de la variable ENVIRONMENT:".print_r(ENVIRONMENT ,true)."</h1>";		
 		//Renderizar		
-		$data["message"]	= "";
+		$data["message"]	= $this->core_web_authentication->sessionKickMessage();
 		$data["parameterPrice"]			= $parameterPrice;
 		$data["parameterTipoPlan"]		= $parameterTipoPlan;
 		$data["parameterLabelSistem"]	= $parameterLabelSistem;
@@ -170,8 +170,9 @@ class core_acount extends _BaseController {
 			
 			
 			
-			//Guardar Log
-			$this->Log_Session_Model->delete_app_posme("userID",$dataSession["user"]->userID);
+			//Guardar Log: solo se borra la sesion de este equipo, para no cerrar la del usuario en otro equipo
+			if(isset($dataSession["sessionID"]) && $dataSession["sessionID"] != "")
+			$this->Log_Session_Model->delete_app_posme("session_id",$dataSession["sessionID"]);
 			$this->core_web_authentication->destroyLogin();
 			$this->response->redirect(base_url());
 			
@@ -194,12 +195,37 @@ class core_acount extends _BaseController {
 		}
 	}
 	
+	/**
+	 * Sesion unica (CORE_SESSION_UNIQUE): lo consultan las pantallas cada CORE_SESSION_UNIQUE_INTERVAL segundos.
+	 * Si el usuario inicio sesion en otro equipo, isAuthenticated() cierra esta sesion y se responde activa = false.
+	 * @return \CodeIgniter\HTTP\ResponseInterface JSON {error, activa, urlLogin}
+	 */
+	function checkSession(){
+		try
+		{
+			$activa = $this->core_web_authentication->isAuthenticated();
+			return $this->response->setJSON(array(
+				'error'    => false,
+				'activa'   => $activa,
+				'urlLogin' => base_url()."/core_acount/index"
+			));//--finjson
+		}
+		catch(\Exception $ex)
+		{
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'activa'  => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));//--finjson
+		}
+	}
+
 	function login(){
-		
-		
-		
-		
-		try{ 
+
+
+
+
+		try{
 			
 			
 			if(!isset($_POST["txtNickname"]) || !isset($_POST["txtPassword"]))
@@ -305,13 +331,14 @@ class core_acount extends _BaseController {
 			$urlInicio	= $this->core_web_authentication->lastScreenGet($objUser["user"]);
 			$urlInicio	= $urlInicio ? $urlInicio : base_url()."/".$objUser["role"]->urlDefault."/index";
 
-			if($objCompany->type == "emanuel")
+			//Sesion unica: con CORE_SESSION_UNIQUE activo siempre se registra la sesion (tambien emanuel), porque de ahi se valida
+			if($objCompany->type == "emanuel" && !$this->core_web_authentication->isSessionUniqueActive($objUser["user"]->companyID))
 			{
 				$this->response->redirect($urlInicio);
 			}
 			else
 			{
-				//Guardar Log		
+				//Guardar Log: se borran las sesiones anteriores del usuario, quedando vigente solo esta
 				$this->Log_Session_Model->delete_app_posme("userID",$dataSession["user"]->userID);					
 				$objLogSessionModel["session_id"] 		= $dataSession["sessionID"];
 				$objLogSessionModel["ip_address"] 		= $this->request->getIPAddress();
@@ -347,8 +374,12 @@ class core_acount extends _BaseController {
 			$boll_ 						= $this->core_web_parameter->getParameter("CORE_TRAKING_GPS",APP_COMPANY);
 			$boll_ 						= $boll_->value;
 
-			//Renderizar					
+			//Renderizar
 			$data_login["message"]				= $e->getMessage();
+			//Sesion unica: si llego aqui porque lo sacaron desde otro equipo, se muestra ese motivo
+			$messageKick						= $this->core_web_authentication->sessionKickMessage();
+			if($messageKick != "")
+			$data_login["message"]				= $messageKick;
 			$data_login["parameterPrice"]		= $parameterPrice;
 			$data_login["parameterTipoPlan"]	= $parameterTipoPlan;
 			$data_login["parameterLabelSistem"]	= $parameterLabelSistem;
