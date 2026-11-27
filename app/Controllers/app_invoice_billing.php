@@ -16506,6 +16506,12 @@ class app_invoice_billing extends _BaseController {
 			$datViewArray["amount_receipt"]						= number_format($datView["objTMI"]->receiptAmount,2);
 			$datViewArray["amount_change"]						= number_format($datView["objTMI"]->changeAmount,2);
 
+			//Totales con precio de lista: subAmount es el subtotal de lista y amount NO trae restado el descuento
+			$amountTotalNeto									= $amountTotal - $amountDiscount;
+			$datViewArray["amount_sub_total_list"]				= number_format($datView["objTM"]->subAmount,2);
+			$datViewArray["amount_total_net"]					= number_format($amountTotalNeto,2);
+			$datViewArray["amount_total_net_description"]		= helper_GetLetras($amountTotalNeto,$datViewArray["currencySimbol"],"CENTAVOS.");
+
 			//Detalle: el descuento de la linea es total de la linea; precio bruto = precio + descuento / cantidad
 			$datViewArray["transactionMasterDetail"] 			= array();
 			foreach($datView["objTMD"] as $detail_)
@@ -16521,7 +16527,10 @@ class app_invoice_billing extends _BaseController {
 					"itemNameOnly"			=> $detail_->itemName,
 					"itemNameQuantity"		=> fmod(round($quantity,2),1) == 0 ? number_format($quantity,0) : number_format($quantity,2),
 					"itemNamePrice"			=> number_format($linePrice,2),
-					"itemNameAmount"		=> number_format($lineAmount,2)
+					"itemNameAmount"		=> number_format($lineAmount,2),
+					//Precio de lista de la linea (sin sumar el descuento)
+					"itemNamePriceList"		=> number_format((float)$detail_->unitaryPrice,2),
+					"itemNameAmountList"	=> number_format($quantity * (float)$detail_->unitaryPrice,2)
 				);
 				array_push($datViewArray["transactionMasterDetail"],$row);
 			}
