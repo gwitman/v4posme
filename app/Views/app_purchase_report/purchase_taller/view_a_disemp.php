@@ -160,8 +160,60 @@
 
 		
 		
-		<br/>		
-		
+		<br/>
+
+		<?php if(isset($formato) && $formato == "tabla"): ?>
+		<!-- Formato TABLA: cada dato del documento va en su propia columna (una fila por documento) -->
+		<table style="
+			width:100%;border-spacing: 10px;
+		" class="pr-table" >
+			<thead >
+				<tr style="background-color:#00628e;color:white">
+					<th  style="text-align:left;" class="border">Documento</th>
+					<th  style="text-align:left;" class="border">Fecha</th>
+					<th  style="text-align:left;" class="border">Cod Cliente</th>
+					<th  style="text-align:left;" class="border">Cliente</th>
+					<th  style="text-align:left;" class="border">Colaborador</th>
+					<th  style="text-align:left;" class="border">Factura</th>
+					<th  style="text-align:left;" class="border">Problema</th>
+					<th  style="text-align:left;" class="border">Nota</th>
+					<th  style="text-align:left;" class="border">Solucion</th>
+					<th  style="text-align:left;" class="border">Estado</th>
+					<th  style="text-align:left;" class="border">Modelo</th>
+					<th  style="text-align:left;" class="border">Articulo</th>
+					<th  style="text-align:left;" class="border">Otra Desc</th>
+					<th  style="text-align:left;" class="border">Referencias</th>
+				</tr>
+			</thead>
+			<tbody>
+				<?php
+					if($objTransaccionMaster)
+					{
+						foreach($objTransaccionMaster as $w)
+						{
+							echo "<tr>";
+								echo "<td style='text-align:left;' class='border' >".$w["transactionNumber"]."</td>";
+								echo "<td style='text-align:left;' class='border' >".$w["transactionOn"]."</td>";
+								echo "<td style='text-align:left;' class='border' >".$w["customerNumber"]."</td>";
+								echo "<td style='text-align:left;' class='border' >".$w["firstName"]."</td>";
+								echo "<td style='text-align:left;' class='border' >".$w["employeNumber"]." ".$w["firstNameEmployer"]."</td>";
+								echo "<td style='text-align:left;' class='border' >".$w["note"]."</td>";
+								echo "<td style='text-align:left;' class='border' >".$w["reference2"]."</td>";
+								echo "<td style='text-align:left;' class='border' >".$w["reference1"]."</td>";
+								echo "<td style='text-align:left;' class='border' >".$w["reference3"]."</td>";
+								echo "<td style='text-align:left;' class='border' >".$w["estado_equipo"]."</td>";
+								echo "<td style='text-align:left;' class='border' >".$w["modelo"]."</td>";
+								echo "<td style='text-align:left;' class='border' >".$w["articulo"]."</td>";
+								echo "<td style='text-align:left;' class='border' >".$w["referenceClientName"]."</td>";
+								echo "<td style='text-align:left;' class='border' >".$w["detalles"]."</td>";
+							echo "</tr>";
+						}
+					}
+				?>
+			</tbody>
+		</table>
+		<?php else: ?>
+		<!-- Formato DEFAULT: encabezado del documento y sus datos en filas -->
 		<table style="
 			width:100%;order-spacing: 10px;
 		" class="pr-table" >
@@ -247,9 +299,10 @@
 					}
 				?>
 			</tbody>
-			
+
 		</table>
-		
+		<?php endif; ?>
+
 		</br>
 
 		<table style="width:100%">

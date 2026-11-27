@@ -194,8 +194,10 @@ class app_purchase_report extends _BaseController {
 			$employerListID		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"employerIDFilter");//--finuri			
 			$startOn			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"startOn");//--finuri
 			$endOn				= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"endOn");//--finuri
-			$customerNumber		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"customerNumber");//--finuri			
-			
+			$customerNumber		= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"customerNumber");//--finuri
+			$formato			= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"formato");//--finuri
+			$formato			= $formato == "tabla" ? "tabla" : "default";
+
 			//Cargar Libreria
 			$objParameterTamanoLetra	= $this->core_web_parameter->getParameter("CORE_VIEW_CUSTOM_REPORT_IN_LIST_ITEM_SIZE_LATTER",$companyID);
 			$objParameterTamanoLetra	= $objParameterTamanoLetra->value;	
@@ -266,7 +268,8 @@ class app_purchase_report extends _BaseController {
 				$objDataResult["employerListID"]			= $employerListID;
 				$objDataResult["typeCompay"]				= $objCompany->type;
 				$objDataResult["flavorIDCompay"]			= $objCompany->flavorID;
-				
+				$objDataResult["formato"]					= $formato;
+
 				return view("app_purchase_report/purchase_taller/view_a_disemp",$objDataResult);//--finview-r
 			}
 			

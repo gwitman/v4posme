@@ -28,4 +28,12 @@
 		<input type="text" name="txtCustomerNumber" id="txtCustomerNumber" class="form-control" autocomplete="off" />
 	</div>
 
+	<div class="prf-field">
+		<label class="pv2-label" for="txtFormato">Formato de visualización</label>
+		<select name="txtFormato" id="txtFormato" class="form-control">
+			<option value="default" selected>Default</option>
+			<option value="tabla">Tabla</option>
+		</select>
+	</div>
+
 <?php helper_getHtmlOfReportFilterClose(); ?>

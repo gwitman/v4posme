@@ -1492,6 +1492,22 @@ Ruta: Menú > CXC > REPORTES y COBRANZA > REPORTES.
 Cartera de clientes, documentos de crédito, pagos, estado de cuenta, clientes con mora.
 Ver también: Asignar clientes a un gestor de cobranza; Crear un reporte con el Constructor de Reportes (Builder Report).
 
+## Ver el reporte de taller (órdenes de taller por colaborador y estado)
+Ruta: Menú > COMPRAS > REPORTES > Reporte de taller.
+<!-- REVISAR: nombre exacto del menú y de la opción del reporte de taller en el menú de reportes de Compras -->
+1. En **Filtros** elija los **Colaboradores** (puede elegir varios, o **TODOS**).
+2. Indique la **Fecha inicial** y la **Fecha final** (vienen con la fecha de hoy).
+3. Si desea ver solo un cliente, escriba su **Código de cliente**.
+4. En **Formato de visualización** elija cómo ver el detalle de documentos:
+  - **Default** (viene seleccionado): cada documento muestra una fila de encabezado (Documento, Fecha, Cod Cliente, Cliente, Colaborador, Factura) y debajo, en filas separadas, Problema, Nota, Solución, Estado, Modelo, Artículo, Otra Desc y Referencias.
+  - **Tabla**: una fila por documento con todos los datos en columnas: Documento, Fecha, Cod Cliente, Cliente, Colaborador, Factura, Problema, Nota, Solución, Estado, Modelo, Artículo, Otra Desc y Referencias. Útil para revisar o exportar muchos documentos.
+5. Presione **Ver reporte**.
+Notas:
+- La tabla resumen de arriba (cantidades por Estado y colaborador) se muestra igual en los dos formatos.
+- En pantallas angostas la tabla se desplaza hacia los lados (scroll horizontal).
+- Si falta una fecha o no elige colaboradores aparece "Completar los Parametros".
+Ver también: Registrar una orden de taller.
+
 ## Ver estadísticas de inmuebles
 Ruta: Menú > ESTADISTICA > INMUEBLE.
 1. Entre a ESTADISTICA > INMUEBLE. Se abre **Estadísticas de inmuebles**, un tablero de Google Data Studio con el comportamiento de las propiedades.

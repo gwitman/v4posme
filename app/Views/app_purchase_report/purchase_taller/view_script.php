@@ -14,6 +14,7 @@
 							var employerID				=	$("#employerID").val();		
 							var startOn					=	$("#txtStartOn").val();	
 							var endOn					=	$("#txtEndOn").val();
+							var formato					=	$("#txtFormato").val();
 							
 							if(!( startOn == "" || endOn == "" ) )
 							{
@@ -28,6 +29,7 @@
 									window.location		= "<?php echo base_url(); ?>/app_purchase_report/purchase_taller/" + 
 											"viewReport/true/startOn/"+startOn+
 											"/endOn/"+endOn+"/employerIDFilter/"+employerIDString+
+											"/formato/"+formato+
 											"/customerNumber/"+txtCustomerNumber;
 								}
 								else
