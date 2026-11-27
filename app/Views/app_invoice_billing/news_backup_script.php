@@ -18,6 +18,7 @@
 	var varStatusInvoiceRegistrado			= 66; //Registrado
 	var isLoading 							= true;
 	var isUpdatingProgrammatically 			= false;  // Previene loops infinitos
+	var varMontoDescuentoManual 			= 0;      // Monto exacto escrito en txtDescuento (lo usa fnRecalculateDetail con tipo "amount")
 	var mesasConfig 						= [];
 	
 	//Lista de bancos emitida una sola vez; cada combo recibe una copia porque ExtJS se queda con los objetos que carga
@@ -2604,14 +2605,8 @@
 																		// Actualizar precio en el record
 																		record.set('txtTMD_txtPrice', nuevoPrecio);
 
-																		// Caso 2: precio entre costo y precio1 → descuento automático
-																		if (nuevoPrecio < precio1) {
-																			var descuentoItem = (precio1 - nuevoPrecio) * cantidad;
-																			record.set('txtTMD_txtDiscountByItem', descuentoItem);
-																		} else {
-																			// Caso 3: precio >= precio1 → sin descuento
-																			record.set('txtTMD_txtDiscountByItem', 0);
-																		}
+																		// El precio cambiado ya va rebajado: no se registra como descuento.
+																		// fnRecalculateDetail calcula el descuento de la fila con el % global.
 
 																		// Recalcular subtotal de la fila y sumarizar totales
 																		fnRecalculateDetail(true, "", rowIndex);
@@ -2912,8 +2907,10 @@
 												{ 
 													fieldLabel: '% Descuento', 
 													value: 0 , 
-													name: 'txtPorcentajeDescuento' , 
-													id:'txtPorcentajeDescuento', 
+													name: 'txtPorcentajeDescuento' ,
+													id:'txtPorcentajeDescuento',
+													//4 decimales: el % que sale de un monto (ej. 740 de 9,990) no se redondea a 2
+													decimalPrecision: 4,
 													readOnly: <?php echo getBahavioSession($company->type, "app_invoice_billing", "soloLecturaCampoPorcentajeDescuento", "false",$objListCompanyPageSetting); ?>,
 													hidden: <?php echo getBahavioSession($company->type, "app_invoice_billing", "ocultarCampoPorcentajeDescuento", "false",$objListCompanyPageSetting); ?>,
 													fieldStyle: 'font-weight:bold; color:#2E7D32; font-size:18px; text-align:right;',
@@ -2936,8 +2933,20 @@
 													mouseWheelEnabled: false,
 													disabled: false, 
 													fieldStyle: 'font-weight:bold; color:#2E7D32; font-size:18px; text-align:right;',
+													//El descuento se aplica al salir del campo o con ENTER, no en cada tecla,
+													//para que el recalculo no sobrescriba el monto mientras se escribe (ej. 740)
 													listeners: {
-														change: fnChange_Descuento
+														focus: function (field) {
+															field.valorAlEnfocar = field.getValue() || 0;
+														},
+														blur: function (field) {
+															fnAplicarDescuentoMonto(field);
+														},
+														specialkey: function (field, e) {
+															if (e.getKey() === e.ENTER) {
+																fnAplicarDescuentoMonto(field);
+															}
+														}
 													}
 												},
 												{ 
@@ -4087,24 +4096,18 @@
 				return;
 			}
 			
-			// Aplicar el % de descuento al precio de cada producto
-			var grid = viewport.down('#gridDetailTransactionMaster');
-			var store = grid.getStore();
-			
-			isUpdatingProgrammatically = true;
-			store.each(function (record) {
-				var precioOriginal = parseFloat(record.get('txtTMD_txtItemPrecio1')) || 0;
-				var nuevoPrecio = precioOriginal - (precioOriginal * porcentaje / 100);
-				nuevoPrecio = Math.round(nuevoPrecio * 10000) / 10000;
-				record.set('txtTMD_txtPrice', nuevoPrecio);
-			});
-			isUpdatingProgrammatically = false;
-			
+			// Criterio precio de lista (igual que las pantallas news/edit y el servidor):
+			// el % NO rebaja el precio de los productos; fnRecalculateDetail calcula
+			// Descuento = Subtotal x % y Total = Subtotal + IVA + Servicio - Descuento.
+			// Con eso el campo Descuento muestra el valor que corresponde al %.
 			if (window.miVentanaEsperando && miVentanaEsperando.show) {
 				miVentanaEsperando.show();
 			}
 
 			fnRecalculateDetail(true,"percentage");
+
+			var campoDescuento = viewport.down('#txtDescuento');
+			campoDescuento.valorAlEnfocar = campoDescuento.getValue() || 0;
 			
 			if (window.miVentanaEsperando ) {
 				miVentanaEsperando.hide();
@@ -4155,14 +4158,36 @@
 				miVentanaEsperando.show();
 			}
 
+			//El % calculado va redondeado a 4 decimales; para que el Descuento quede exactamente
+			//en el monto escrito (ej. 740 y no 739.9996), fnRecalculateDetail usa este monto en tipo "amount"
+			varMontoDescuentoManual = montoDescuento;
 			fnRecalculateDetail(true,"amount");
-			
+			field.valorAlEnfocar = montoDescuento;
+
 			if (window.miVentanaEsperando ) {
 				miVentanaEsperando.hide();
 			}
 
-	
-			 
+
+
+		}
+		/**
+		 * Aplica el monto de descuento escrito en txtDescuento (al salir del campo o con ENTER).
+		 * Solo recalcula si el monto cambio desde que el campo tomo el foco.
+		 * @param {Ext.form.field.Number} field Campo txtDescuento
+		 * @return void
+		 */
+		function fnAplicarDescuentoMonto(field)
+		{
+			var montoAnterior = field.valorAlEnfocar || 0;
+			var montoNuevo    = field.getValue() || 0;
+
+			if (montoNuevo === montoAnterior) {
+				return;
+			}
+
+			//fnChange_Descuento actualiza valorAlEnfocar si aplica; si la validacion falla regresa al monto anterior
+			fnChange_Descuento(field, montoNuevo, montoAnterior);
 		}
 		function fnChange_FirstLineProtocolo (field, newValue, oldValue) 
 		{
@@ -6087,7 +6112,19 @@
 			
 			
 			descuento 		= subtotalGeneral * (porcentajeDescuento / 100);
-			totalGeneral 	= subtotalGeneral + serviceGeneral + ivaGeneral;
+
+			//Descuento escrito como monto: se usa el monto exacto (no el % redondeado)
+			//y se reparte entre las lineas en proporcion a su subtotal
+			if (tipo_calculate == "amount" && subtotalGeneral > 0) {
+				descuento = varMontoDescuentoManual;
+				store.each(function (record) {
+					var subtotalLinea = parseFloat(record.get('txtTMD_txtSubTotal')) || 0;
+					record.set('txtTMD_txtDiscountByItem', descuento * subtotalLinea / subtotalGeneral);
+				});
+			}
+
+			//Precio de lista: el descuento se resta del total (igual que news/edit y el servidor)
+			totalGeneral 	= subtotalGeneral + serviceGeneral + ivaGeneral - descuento;
 
 			isUpdatingProgrammatically = true;
 			viewport.down("#txtSubTotal").setValue(subtotalGeneral);
@@ -6136,14 +6173,9 @@
 			var subtotal    			= precio * cantidad;
 			store.getAt(index).set("txtTMD_txtSubTotal",subtotal);
 			
-			// Si el precio fue modificado manualmente (menor que precio1), recalcular descuento por diferencia de precio
-			// Si el precio es >= precio1, no hay descuento para esta fila
-			var descuento = 0;
-			if (precio1 > 0 && precio < precio1) {
-				descuento = (precio1 - precio) * cantidad;
-			} else {
-				descuento = 0;
-			}
+			// Precio de lista: el descuento de la fila sale del % global (igual que news_script);
+			// un precio cambiado a mano ya va rebajado y no se cuenta otra vez como descuento
+			var descuento = subtotal * (porcentajeDescuento / 100);
 			store.getAt(index).set("txtTMD_txtDiscountByItem", descuento);
 			
 			
@@ -6172,14 +6204,11 @@
 				serviceGeneral += rowSubtotal * rowServicePct;
 			});
 			
-			totalGeneral				    = subtotalGeneral + ivaGeneral + serviceGeneral;			
+			//Precio de lista: el descuento se resta del total
+			totalGeneral				    = subtotalGeneral + ivaGeneral + serviceGeneral - descuento;
 			isUpdatingProgrammatically = true;
 			viewport.down("#txtSubTotal").setValue(subtotalGeneral);
 			viewport.down("#txtDescuento").setValue(descuento);
-			// Si el descuento total es 0, limpiar el porcentaje de descuento
-			if (descuento === 0) {
-				viewport.down("#txtPorcentajeDescuento").setValue(0);
-			}
 			viewport.down("#txtIva").setValue(ivaGeneral);
 			viewport.down("#txtServices").setValue(serviceGeneral);
 			viewport.down("#txtTotal").setValue(totalGeneral);
@@ -6229,7 +6258,8 @@
 				serviceGeneral += rowSubtotal * rowServicePct;
 			});
 
-			totalGeneral				    = subtotalGeneral + ivaGeneral + serviceGeneral;			
+			//Precio de lista: el descuento se resta del total
+			totalGeneral				    = subtotalGeneral + ivaGeneral + serviceGeneral - descuento;
 			isUpdatingProgrammatically = true;
 			viewport.down('#txtSubTotal').setValue(subtotalGeneral);
 			viewport.down('#txtDescuento').setValue(descuento);
@@ -6908,7 +6938,7 @@
 				objFormulario.txtSubTotal 	= Number(objFormulario.txtSubTotal) + (Number(record.txtTMD_txtQuantity) *  (Number(record.txtTMD_txtPrice)));
 				objFormulario.txtIva 		= Number(objFormulario.txtIva) + Number(record.txtTMD_txtIva);
 				objFormulario.txtDescuento 	= Number(objFormulario.txtDescuento) + Number(record.txtTMD_txtDiscountByItem);
-				objFormulario.txtTotal 		= Number(objFormulario.txtSubTotal) + Number(objFormulario.txtIva);
+				objFormulario.txtTotal 		= Number(objFormulario.txtSubTotal) + Number(objFormulario.txtIva) - Number(objFormulario.txtDescuento); //precio de lista: se resta el descuento
 				objFormulario.txtTransactionMasterDetail.push(record);
 			}
 		}
