@@ -90,6 +90,12 @@ class core_deploy_transport
             @ftp_close($connection);
             throw new \Exception(strtoupper($this->protocol) . ': usuario o contraseña incorrectos.');
         }
+        // En servidores detrás de NAT el comando PASV devuelve la IP interna y la
+        // transferencia de datos falla (aunque login y chdir funcionen); se ignora
+        // esa IP y se usa la misma del canal de control. Debe ir antes de ftp_pasv.
+        if (defined('FTP_USEPASVADDRESS')) {
+            @ftp_set_option($connection, FTP_USEPASVADDRESS, false);
+        }
         @ftp_pasv($connection, true);
         $this->connection = $connection;
     }
@@ -184,7 +190,10 @@ class core_deploy_transport
         $ok = @ftp_fput($this->connection, $remotePath, $stream, FTP_BINARY);
         fclose($stream);
         if (!$ok) {
-            throw new \Exception('No se pudo subir el archivo remoto: ' . basename($remotePath));
+            // Se adjunta la respuesta del servidor (p. ej. "553 Permission denied") para el diagnóstico.
+            $last = error_get_last();
+            $hint = $last && isset($last['message']) ? ' (' . preg_replace('/^ftp_fput\(\):\s*/', '', $last['message']) . ')' : '';
+            throw new \Exception('No se pudo subir el archivo remoto: ' . basename($remotePath) . $hint);
         }
     }
 
@@ -243,7 +252,8 @@ class core_deploy_transport
         $hasApp   = $exists && $this->isDir(rtrim($appDir, '/') . '/app') && $this->isDir(rtrim($appDir, '/') . '/writable');
         $checks[] = ['label' => 'Contiene app/ y writable/ (instalación de posMe)', 'ok' => $hasApp];
 
-        $canWrite = false;
+        $canWrite    = false;
+        $writeReason = '';
         if ($hasApp) {
             $probe = rtrim($appDir, '/') . '/writable/posme_deploy_probe_' . bin2hex(random_bytes(3)) . '.txt';
             try {
@@ -251,10 +261,11 @@ class core_deploy_transport
                 $this->delete($probe);
                 $canWrite = true;
             } catch (\Throwable $ex) {
-                $canWrite = false;
+                $canWrite    = false;
+                $writeReason = $ex->getMessage();
             }
         }
-        $checks[] = ['label' => 'Permiso de escritura en writable/', 'ok' => $canWrite];
+        $checks[] = ['label' => 'Permiso de escritura en writable/' . ($writeReason !== '' ? ' — ' . $writeReason : ''), 'ok' => $canWrite];
         $this->close();
 
         return ['ok' => $exists && $hasApp && $canWrite, 'checks' => $checks];
