@@ -1863,6 +1863,10 @@ $routes->match(['get', 'post'], 'core_user/getPageSetting', 'core_user::getPageS
 $routes->match(['get', 'post'], 'core_user/getPageSetting/(:any)', 'core_user::getPageSetting');
 $routes->match(['get', 'post'], 'core_user/savePageSetting', 'core_user::savePageSetting');
 $routes->match(['get', 'post'], 'core_user/savePageSetting/(:any)', 'core_user::savePageSetting');
+$routes->match(['get', 'post'], 'core_user/templateEditor', 'core_user::templateEditor');
+$routes->match(['get', 'post'], 'core_user/templateEditor/(:any)', 'core_user::templateEditor');
+$routes->match(['get', 'post'], 'core_user/templateEditorPreview', 'core_user::templateEditorPreview');
+$routes->match(['get', 'post'], 'core_user/templateEditorPreview/(:any)', 'core_user::templateEditorPreview');
 $routes->match(['get', 'post'], 'core_user/addpublic', 'core_user::addpublic');
 $routes->match(['get', 'post'], 'core_user/addpublic/(:any)', 'core_user::addpublic');
 $routes->match(['get', 'post'], 'core_user/savepublic', 'core_user::savepublic');

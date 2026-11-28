@@ -2270,6 +2270,63 @@ class core_user extends _BaseController {
 	}
 
 	/**
+	 * Pantalla del editor visual de plantillas. Se abre dentro de un iframe (modal) con el boton Abrir editor
+	 * visual del tab Plantillas de core_user/edit; el codigo se pasa copiando y pegando entre la tarjeta y el editor.
+	 * No guarda nada: el guardado sigue siendo el boton Guardar de la tarjeta (savePageSetting).
+	 * Solo para roles isAdmin o isAdminCompany.
+	 *
+	 * @return string HTML del editor o el mensaje de error.
+	 */
+	function templateEditor(){
+		try{
+			$this->parameterCompany_session("edit");
+
+			$config = array(
+				'previewUrl' => base_url("core_user/templateEditorPreview"),
+				'embed'      => true
+			);
+			return view("core_user/template_editor", array("config" => $config));
+		}
+		catch(\Exception $ex){
+			return $this->response->setStatusCode(403)->setBody(htmlentities($ex->getLine()." ".$ex->getMessage(), ENT_QUOTES, "UTF-8"));
+		}
+	}
+
+	/**
+	 * Vista previa del editor de plantillas: procesa la plantilla con el Parser de CodeIgniter 4 igual que la
+	 * impresion (setData + renderString). Recibe JSON crudo {template, data}.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface JSON {error, message, html}
+	 */
+	function templateEditorPreview(){
+		try{
+			$this->parameterCompany_session("edit");
+			$body		= $this->pageSetting_body();
+			$template	= isset($body["template"]) && !is_array($body["template"]) ? (string)$body["template"] : "";
+			$data		= isset($body["data"]) && is_array($body["data"]) ? $body["data"] : array();
+
+			//Limite de 2 MB (las plantillas pueden traer logos en base64)
+			if(strlen($template) > 2097152)
+			throw new \Exception("LA PLANTILLA ES DEMASIADO GRANDE");
+
+			//Instancia no compartida para no mezclar datos con otras plantillas de la peticion
+			$html		= \Config\Services::parser(null, null, false)->setData($data, "raw")->renderString($template, null, false);
+
+			return $this->pageSetting_json(array(
+				'error'   => false,
+				'message' => SUCCESS,
+				'html'    => $html
+			));
+		}
+		catch(\Throwable $ex){
+			return $this->pageSetting_json(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));
+		}
+	}
+
+	/**
 	 * Lee el cuerpo de la peticion: JSON crudo o, si no viene JSON, los campos POST.
 	 *
 	 * @return array Datos recibidos.

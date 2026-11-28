@@ -37,7 +37,17 @@
 					.pv2.pinv .cuser-param-card.has-error .cuser-ps-msg { color:var(--pv2-bad); }
 					.pv2.pinv .cuser-param-card.is-new { border-style:dashed; border-color:var(--pv2-info); }
 					.pv2.pinv .cuser-ps-warn { color:var(--pv2-warn); background:var(--pv2-warn-bg); }
+					/* == editor visual de plantillas: boton en la tarjeta y modal a pantalla completa == */
+					.cuser-tpl-modal { display:none; position:fixed; inset:0; z-index:10050; background:rgba(17,24,39,.55); padding:12px; }
+					.cuser-tpl-modal.is-open { display:flex; }
+					.cuser-tpl-dialog { flex:1; display:flex; flex-direction:column; min-width:0; background:#fff; border-radius:10px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,.25); }
+					.cuser-tpl-head { padding:8px 14px; border-bottom:1px solid var(--pv2-border); font-size:13px; color:var(--pv2-muted); overflow-wrap:anywhere; }
+					.cuser-tpl-head b { color:#1f2933; }
+					.cuser-tpl-dialog iframe { flex:1; width:100%; border:0; min-height:0; }
+					body.cuser-tpl-lock { overflow:hidden; }
 					@media (max-width:767px) {
+						.cuser-tpl-modal { padding:0; }
+						.cuser-tpl-dialog { border-radius:0; }
 						.pv2.pinv .cuser-ps-foot .btn { width:100%; min-height:44px; }
 						.pv2.pinv .cuser-ps-value { font-size:16px !important; }
 						.pv2.pinv .cuser-param-grid { grid-template-columns:1fr; }

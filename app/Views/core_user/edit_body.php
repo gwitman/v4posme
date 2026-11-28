@@ -295,6 +295,7 @@
 				<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-file"></i></span> Plantillas <span class="pinv-count" id="lblPslargeCount">0</span></p>
 				<div class="pv2-actions">
 					<a href="#" class="btn btn-default btn-sm" id="btnPslargeReload"><i class="icon16 i-rotate"></i> Recargar</a>
+					<a href="#" class="btn btn-primary btn-sm" id="btnTplEditorOpen"><i class="icon16 i-pencil"></i> Abrir editor visual</a>
 					<a href="#" class="btn btn-info btn-sm" id="btnPslargeFill"><i class="icon16 i-plus"></i> Llenar valores no existentes</a>
 				</div>
 			</div>
@@ -308,6 +309,15 @@
 			<div class="pinv-empty cuser-ps-warn" id="divPslargeWarn" style="display:none"><i class="icon16 i-warning"></i> <span id="lblPslargeWarn"></span></div>
 			<div class="cuser-param-list" id="list_ps_large"></div>
 			<div class="pinv-empty" id="divPslargeEmpty" style="display:none"><i class="icon16 i-info"></i> <span id="lblPslargeEmpty"></span></div>
+			<!--Editor visual de plantillas: modal a pantalla completa con el editor en un iframe-->
+			<div class="cuser-tpl-modal" id="divTplEditor">
+				<div class="cuser-tpl-dialog">
+					<div class="cuser-tpl-head">
+						<span><i class="icon16 i-pencil"></i> <b>Editor visual</b> &middot; Pegue el codigo de la tarjeta con <b>Pegar plantilla</b>, editelo y regreselo con <b>Copiar HTML</b>.</span>
+					</div>
+					<iframe id="ifrTplEditor" src="about:blank" title="Editor de plantillas"></iframe>
+				</div>
+			</div>
 		</div>
 		<?php endif; ?>
 
