@@ -1685,8 +1685,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Mini Ferreteria Shalom' , address = 'Telica, primera calle estatua sandino 1c al este ;20 varas al norte' ,
-	flavorID = 615 /*usuarioID*/,type='mini_ferreteria_shalom'  , abreviature='demo'
+	flavorID = 615 /*usuarioID*/,type='mini_ferreteria_shalom'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

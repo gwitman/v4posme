@@ -895,8 +895,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Malpaisillo GYM' , address = 'Ferreteria Narváez 2C al Oeste.' ,
-	flavorID = 735 , type = 'gym_malpaisillo'
+	flavorID = 735 /*usuarioID*/,type='gym_malpaisillo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

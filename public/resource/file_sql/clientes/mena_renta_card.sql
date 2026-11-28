@@ -1889,8 +1889,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Mena Renta Card' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 1074 /*usuarioID*/,type='menaRentaCard'  , abreviature='demo'
+	flavorID = 1074 /*usuarioID*/,type='menaRentaCard'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

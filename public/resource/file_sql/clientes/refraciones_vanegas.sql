@@ -2180,8 +2180,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Refracciones Vanegas' , address = 'Semaforos de la Miguel Guitierrez una cuadra al sur mano izquierda' ,
-	flavorID = 1263 /*usuarioID*/,type='refraVaneg'  , abreviature='demo'
+	flavorID = 1263 /*usuarioID*/,type='refraVaneg'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

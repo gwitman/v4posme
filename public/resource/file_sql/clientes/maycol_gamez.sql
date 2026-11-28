@@ -1855,8 +1855,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Maycol Gamez' , address = 'Costado Sur del aeropuerto Fanor Urroz 300 metros al sur, León' ,
-	flavorID = 1024 /*usuarioID*/,type='maycolGamez'  , abreviature='demo'
+	flavorID = 1024 /*usuarioID*/,type='maycolGamez'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

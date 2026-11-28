@@ -1310,8 +1310,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Glam Cuts' , address = 'Supermercado La Colonia 75vs abajo, Leon' ,
-	flavorID = 493,type='galmcuts'
+	flavorID = 493 /*usuarioID*/,type='galmcuts'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

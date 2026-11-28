@@ -1710,8 +1710,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'AGRONIC' , address = 'Cayetano Munguía, 50 varas al Norte - León, Nicaragua' ,
-	flavorID = 798 /*usuarioID*/,type='agronic'  , abreviature='demo'
+	flavorID = 798 /*usuarioID*/,type='agronic'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

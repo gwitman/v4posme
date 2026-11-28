@@ -1745,8 +1745,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Agro quimico la estacion' , address = 'Costado Este Policia Maercado La Estacion.' ,
-	flavorID = 854 /*usuarioID*/,type='agro_q_estacion'  , abreviature='agro_q_estacion'
+	flavorID = 854 /*usuarioID*/,type='agro_q_estacion'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

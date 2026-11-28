@@ -1717,8 +1717,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Divas Beauty' , address = 'Rotonda bello horizonte 1 cuadra y 1/2 c al sur' ,
-	flavorID = 791 /*usuarioID*/,type='default'  , abreviature='divas_bello'
+	flavorID = 791 /*usuarioID*/,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

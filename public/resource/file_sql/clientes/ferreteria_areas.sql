@@ -1855,8 +1855,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Ferreteria Areas' , address = 'Iglesia católica 1c y media al norte, Telica' ,
-	flavorID = 1003 /*usuarioID*/,type='ferreteriaAreas'  , abreviature='demo'
+	flavorID = 1003 /*usuarioID*/,type='ferreteriaAreas'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

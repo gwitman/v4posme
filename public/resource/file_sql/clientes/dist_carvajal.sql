@@ -897,7 +897,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Distribuidora Carvajal' , address = 'San Juan frente a la parada de bus a las comarcas mercado la estacion' , flavorID = 218
+	flavorID = 218 /*usuarioID*/
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

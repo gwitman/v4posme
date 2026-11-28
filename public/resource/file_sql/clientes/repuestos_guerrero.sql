@@ -771,8 +771,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Repuestos guerrero' , address = 'Del instituto españa 2c al sur' ,
-	flavorID = 0,type='default'
+	flavorID = 0 /*usuarioID*/,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

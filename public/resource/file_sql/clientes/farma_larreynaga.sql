@@ -1793,8 +1793,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Farmacia Larreynaga' , address = 'Frente a la antigua estacion del ferrocarril' ,
-	flavorID = 903 /*usuarioID*/,type='farma_larreynaga'  , abreviature='demo'
+	flavorID = 903 /*usuarioID*/,type='farma_larreynaga'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

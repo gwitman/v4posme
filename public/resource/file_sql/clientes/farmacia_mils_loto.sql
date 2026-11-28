@@ -1969,8 +1969,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'LA FIJA GANADORA' , address = 'Oficina de claro 1c al oeste, Telica' ,
-	flavorID = 1123 /*usuarioID*/,type='farmaciaMils'  , abreviature='demo'
+	flavorID = 1123 /*usuarioID*/,type='farmaciaMils'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

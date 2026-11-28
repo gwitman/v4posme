@@ -1752,8 +1752,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Panaderia Cajina' , address = 'De los semaforos de Enabas, 3 cuadras al Este, media cuadra al sur, Esteli' ,
-	flavorID = 882 /*usuarioID*/,type='panaderia_peralta'  , abreviature='demo'
+	flavorID = 882 /*usuarioID*/,type='panaderia_peralta'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

@@ -910,8 +910,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Ainara Closet' , address = 'PARADA CHALIO ROJAS 200M.E' ,
-	flavorID = 0 , type="ainaracloset"
+	flavorID = 0 /*usuarioID*/,type='ainaracloset'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

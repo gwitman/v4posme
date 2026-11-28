@@ -1918,8 +1918,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Pulperia MSA' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 1088 /*usuarioID*/,type='pulperiaMSA'  , abreviature='demo'
+	flavorID = 1088 /*usuarioID*/,type='pulperiaMSA'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

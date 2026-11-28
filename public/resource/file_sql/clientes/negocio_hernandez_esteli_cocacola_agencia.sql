@@ -1282,8 +1282,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Factura Comercial' , address = 'Camara del comercio 1/2c al Oeste' ,
-	flavorID = 482,type='default'
+	flavorID = 482 /*usuarioID*/,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

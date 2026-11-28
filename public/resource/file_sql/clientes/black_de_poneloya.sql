@@ -1855,8 +1855,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'El BLACK de poneloya' , address = 'Costa azul 2cuadras abajo' ,
-	flavorID = 1017 /*usuarioID*/,type='default'  , abreviature='demo'
+	flavorID = 1017 /*usuarioID*/,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

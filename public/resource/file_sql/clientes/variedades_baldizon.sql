@@ -1928,8 +1928,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Variedades Baldizon' , address = 'De la policía 1c al este 10vrs hacia el norte' ,
-	flavorID = 1109 /*usuarioID*/,type='varBaldizon'  , abreviature='demo'
+	flavorID = 1109 /*usuarioID*/,type='varBaldizon'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

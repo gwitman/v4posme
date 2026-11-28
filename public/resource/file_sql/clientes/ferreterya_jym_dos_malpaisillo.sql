@@ -1710,8 +1710,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Ferreteria J/M' , address = 'Costado sur cementerio municipal' ,
-	flavorID = 777 /*usuarioID*/,type='ferre_jm'  , abreviature='demo'
+	flavorID = 777 /*usuarioID*/,type='ferre_jm'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

@@ -1282,8 +1282,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'FARMA LM' , address = 'Reparto Juan Ramón Padilla, 7ma calle' ,
-	flavorID = 442,type='farma_lm'
+	flavorID = 442 /*usuarioID*/,type='farma_lm'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

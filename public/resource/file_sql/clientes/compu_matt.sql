@@ -1581,7 +1581,6 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Compu MATT' , address = 'Frente a la entrada principal de Iglesia la Merced,' ,
 	flavorID = 553 /*usuarioID*/,type='compu_matt'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

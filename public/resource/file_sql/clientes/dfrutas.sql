@@ -1745,8 +1745,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Dfrutas' , address = 'Click Food Park' ,
-	flavorID = 680 /*usuarioID*/,type='dfrutas'  , abreviature='demo'
+	flavorID = 680 /*usuarioID*/,type='dfrutas'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

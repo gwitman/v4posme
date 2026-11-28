@@ -1378,8 +1378,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Divas Beauty Supply ' , address = 'Pelota el centenario 4 c y media al este, frente a farmacia Saba' ,
-	flavorID = 467,type='divas2'
+	flavorID = 467 /*usuarioID*/,type='divas2'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

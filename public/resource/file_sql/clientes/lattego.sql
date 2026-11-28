@@ -1728,8 +1728,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'LATTEGO' , address = 'Costado Noroeste plaza parque 1/2c al sur' ,
-	flavorID = 833 /*usuarioID*/,type='lattego'  , abreviature='demo'
+	flavorID = 833 /*usuarioID*/,type='lattego'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

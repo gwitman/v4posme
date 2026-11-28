@@ -1815,8 +1815,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Sepiensa Menu' , address = 'Managua' ,
-	flavorID = 0 /*usuarioID*/,type='default'  , abreviature='demo'
+	flavorID = 0 /*usuarioID*/,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

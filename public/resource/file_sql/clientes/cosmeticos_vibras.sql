@@ -1928,8 +1928,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Cosmeticos Vibras' , address = 'De donde fue el Instituto España dos cuadras al sur.' ,
-	flavorID = 1116 /*usuarioID*/,type='cosmeticVibras'  , abreviature='demo'
+	flavorID = 1116 /*usuarioID*/,type='cosmeticVibras'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

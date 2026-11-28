@@ -1856,8 +1856,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'POLLOS ARACELY' , address = 'Terminal de buses Malpaisillo costado sur sector carniceria.' ,
-	flavorID = 995 /*usuarioID*/,type='aracelyRuta'  , abreviature='demo'
+	flavorID = 995 /*usuarioID*/,type='aracelyRuta'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

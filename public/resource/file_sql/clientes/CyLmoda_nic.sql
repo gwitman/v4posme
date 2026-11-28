@@ -1241,8 +1241,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'CyLmoda_nic' , address = 'El hotel los balcones media cuadra al este' ,
-	flavorID = 0,type='default'
+	flavorID = 0 /*usuarioID*/,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

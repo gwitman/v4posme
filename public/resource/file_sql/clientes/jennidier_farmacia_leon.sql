@@ -1852,8 +1852,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Rosalia Farmacia' , address = 'Sutiaba Norte, De donde fueron los Talleres Ford, 6 c al norte, 1 c al oeste, 1/2 c al norte (Villa Democracia)' ,
-	flavorID = 968 /*usuarioID*/,type='rosaliaFarmacia'  , abreviature='demo'
+	flavorID = 968 /*usuarioID*/,type='rosaliaFarmacia'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

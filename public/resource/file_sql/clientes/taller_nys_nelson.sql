@@ -1839,8 +1839,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Centro Repuestos N&S' , address = 'Gimnasio Iván Montenegro 1 ½ c arriba, León.' ,
-	flavorID = 932 /*usuarioID*/,type='tallerNys'  , abreviature='tallerNys'
+	flavorID = 932 /*usuarioID*/,type='tallerNys'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

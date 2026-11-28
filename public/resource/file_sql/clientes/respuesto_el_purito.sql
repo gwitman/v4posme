@@ -1568,7 +1568,6 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Repuestos el Purito' , address = 'Calle real de tolapa centro de salud 200var al oeste' ,
 	flavorID = 550 /*usuarioID*/,type='repu_purito'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

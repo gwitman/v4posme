@@ -1352,8 +1352,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Bivaly Store' , address = 'Multicentro las americas, primera planta, contiguo a helados POP' ,
-	flavorID = 523,type='bivaly'
+	flavorID = 523 /*usuarioID*/,type='bivaly'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

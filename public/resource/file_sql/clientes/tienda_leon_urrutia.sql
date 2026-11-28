@@ -1261,8 +1261,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Miranda Market' , address = 'Parque forestal 2.5 al este' ,
-	flavorID = 445,type='default'
+	flavorID = 445 /*usuarioID*/,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania Avenida principal ruben dario parque forestal 2.5 al este
 

@@ -2052,8 +2052,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'FRIO Tec' , address = 'Reparto San Juan del gimnasio Hércules 3 1/2 al sur.' ,
-	flavorID = 1158 /*usuarioID*/,type='frioTec'  , abreviature='demo'
+	flavorID = 1158 /*usuarioID*/,type='frioTec'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

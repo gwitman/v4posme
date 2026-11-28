@@ -2045,8 +2045,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Decoraciones Maryjav' , address = 'Bo. Guadalupe Del INO 1c al Norte' ,
-	flavorID = 1214 /*usuarioID*/,type='maryJav'  , abreviature='demo'
+	flavorID = 1214 /*usuarioID*/,type='maryJav'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

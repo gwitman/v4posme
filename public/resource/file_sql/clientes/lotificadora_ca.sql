@@ -2218,8 +2218,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'LOTIFICADORA CAJINA ARAGÓN' , address = 'Frente a semáforos de ENABAS, costado norte, 2da Planta Esteli, Nic.' ,
-	flavorID = 1276 /*usuarioID*/,type='lotificadoraCa'  , abreviature='demo'
+	flavorID = 1276 /*usuarioID*/,type='lotificadoraCa'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

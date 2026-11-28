@@ -1928,8 +1928,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Comedor Amver' , address = 'Del pali proquinsa media cuadra al este, mano izquierda.' ,
-	flavorID = 1136 /*usuarioID*/,type='amver'  , abreviature='demo'
+	flavorID = 1136 /*usuarioID*/,type='amver'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

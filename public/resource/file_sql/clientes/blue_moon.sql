@@ -1288,8 +1288,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Blue Moon' , address = 'Teatro Municipal 1C. Sur' ,
-	flavorID = 483,type='bluemoon'
+	flavorID = 483 /*usuarioID*/,type='bluemoon'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

@@ -1101,8 +1101,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'EXCESO' , address = 'Ciudad Jardin, Frente al BAC' ,
-	flavorID = 309,type='exceso'
+	flavorID = 309 /*usuarioID*/,type='exceso'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

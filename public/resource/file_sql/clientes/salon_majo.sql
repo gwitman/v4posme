@@ -1703,8 +1703,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Majo' , address = 'zona central frente a farmacia comunal contiguo a la tienda de piñatas' ,
-	flavorID = 770 /*usuarioID*/,type='majo'  , abreviature='demo'
+	flavorID = 770 /*usuarioID*/,type='majo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

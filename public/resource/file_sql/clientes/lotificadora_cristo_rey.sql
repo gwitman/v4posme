@@ -2218,8 +2218,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'LOTIFICADORA CRISTO REY' , address = 'Frente a semáforos de ENABAS, costado norte, 2da Planta Esteli, Nic.' ,
-	flavorID = 1283 /*usuarioID*/,type='lotificadoraCristoRey'  , abreviature='demo'
+	flavorID = 1283 /*usuarioID*/,type='lotificadoraCristoRey'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

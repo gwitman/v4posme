@@ -778,9 +778,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Laboratorio Clínico Larreynaga' , address = 'Frente al antigua estacion del ferrocarril' ,
-	flavorID = 178,
-	type = 'clinicalarreynaga'
+	flavorID = 178 /*usuarioID*/,type='clinicalarreynaga'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

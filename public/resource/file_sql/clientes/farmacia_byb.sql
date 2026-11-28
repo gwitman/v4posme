@@ -737,8 +737,7 @@ WHERE
 
 
 UPDATE tb_company SET 
-	NAME = 'Farmacia B & B' , address = 'Policia Nacional 1c al este,Malpaisillo' , 
-	type = 'farmaciaByB'
+	type='farmaciaByB'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 	

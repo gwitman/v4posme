@@ -1689,8 +1689,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Mirada Market Comida' , address = 'Parque forestal 2.5 al este' ,
-	flavorID = 622 /*usuarioID*/,type='mirada_comida'  , abreviature='demo'
+	flavorID = 622 /*usuarioID*/,type='mirada_comida'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

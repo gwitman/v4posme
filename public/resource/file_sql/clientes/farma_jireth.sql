@@ -1333,8 +1333,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Farmacia Jireh' , address = 'Policía Nacional 1 1/2 al Este' ,
-	flavorID = 529,type='jireth'
+	flavorID = 529 /*usuarioID*/,type='jireth'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

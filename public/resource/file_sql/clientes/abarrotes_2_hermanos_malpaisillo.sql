@@ -2013,8 +2013,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Abarrotes 2 hermanos' , address = 'Malpaisillo' ,
-	flavorID = 1206 /*usuarioID*/,type='abarrotes2H'  , abreviature='abarrotes2H'
+	flavorID = 1206 /*usuarioID*/,type='abarrotes2H'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

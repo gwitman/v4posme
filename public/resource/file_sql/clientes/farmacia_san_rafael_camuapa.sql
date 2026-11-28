@@ -1762,8 +1762,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Farmacia San Rafael' , address = 'Escuela Juan María 3 cuadras al norte, 10 varas al Oeste ' ,
-	flavorID = 897 /*usuarioID*/,type='san_rafael'  , abreviature='demo'
+	flavorID = 897 /*usuarioID*/,type='san_rafael'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

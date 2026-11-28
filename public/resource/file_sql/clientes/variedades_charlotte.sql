@@ -754,7 +754,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Variedades Charlotte' , address = 'Instituto España 1c.e 10v sur', type = 'chorlote'
+	type='chorlote'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

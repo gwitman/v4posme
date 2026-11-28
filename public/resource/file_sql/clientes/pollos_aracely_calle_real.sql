@@ -1849,8 +1849,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Variedades M/P' , address = 'Calle Real de Tolapa entrada El Encanto' ,
-	flavorID = 961 /*usuarioID*/,type='variedadesMP'  , abreviature='demo'
+	flavorID = 961 /*usuarioID*/,type='variedadesMP'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

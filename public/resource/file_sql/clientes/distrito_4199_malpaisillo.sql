@@ -1855,8 +1855,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Distrito 4199' , address = 'De la rotonda 300 metros al oeste, Malpaisillo' ,
-	flavorID = 1046 /*usuarioID*/,type='distrito4199'  , abreviature='demo'
+	flavorID = 1046 /*usuarioID*/,type='distrito4199'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

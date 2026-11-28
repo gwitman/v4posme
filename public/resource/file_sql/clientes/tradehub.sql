@@ -1928,8 +1928,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Trade Hub' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 1095 /*usuarioID*/,type='tradeHub'  , abreviature='demo'
+	flavorID = 1095 /*usuarioID*/,type='tradeHub'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

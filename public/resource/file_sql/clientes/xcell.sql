@@ -1839,8 +1839,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'XCELL' , address = 'Contiguo a la Western Union.' ,
-	flavorID = 945 /*usuarioID*/,type='xcell'  , abreviature='demo'
+	flavorID = 945 /*usuarioID*/,type='xcell'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

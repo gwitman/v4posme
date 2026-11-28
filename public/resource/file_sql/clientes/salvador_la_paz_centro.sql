@@ -1857,8 +1857,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'JB Market & Grill' , address = 'Km 52.5 Carretera La paz centro - Nagarote' ,
-	flavorID = 0 /*usuarioID*/,type='salvador'  , abreviature='demo'
+	flavorID = 0 /*usuarioID*/,type='salvador'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

@@ -1290,7 +1290,6 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'FARMAGAEL' , address = 'PARADA CHALIO ROJAS 200M.E' ,
 	flavorID = 496 /*usuarioID*/,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

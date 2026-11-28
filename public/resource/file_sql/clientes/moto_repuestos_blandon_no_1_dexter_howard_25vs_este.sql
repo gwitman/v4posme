@@ -2095,8 +2095,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Moto Repuesto Blandon #01' , address = 'De los semaforos del mayoreo 7 cuadras abajo costado norte, frente al populoso sol y luna, Managua.' ,
-	flavorID = 1255 /*usuarioID*/,type='motoRepuestoBlandon01'  , abreviature='motoRepuestoBlandon01'
+	flavorID = 1255 /*usuarioID*/,type='motoRepuestoBlandon01'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

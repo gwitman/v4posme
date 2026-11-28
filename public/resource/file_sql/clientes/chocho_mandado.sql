@@ -1614,7 +1614,6 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Chocho Mandado' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
 	flavorID = 571 /*usuarioID*/,type='chochoMandado'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

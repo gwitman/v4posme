@@ -2045,8 +2045,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Variedades Santa Rosa del Peñon' , address = 'Del centro de Salud, 1 1/c al oeste.' ,
-	flavorID = 1221 /*usuarioID*/,type='carlosLuisPenon'  , abreviature='demo'
+	flavorID = 1221 /*usuarioID*/,type='carlosLuisPenon'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

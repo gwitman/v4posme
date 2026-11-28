@@ -1879,8 +1879,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'NJ GYM' , address = 'De la ferretería Noel contrucciones 20 metros al norte, Jalapa' ,
-	flavorID = 1060 /*usuarioID*/,type='gymJalapa'  , abreviature='demo'
+	flavorID = 1060 /*usuarioID*/,type='gymJalapa'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

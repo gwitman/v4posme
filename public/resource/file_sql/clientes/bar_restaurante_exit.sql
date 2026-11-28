@@ -1535,7 +1535,6 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Restaurante EXIT' , address = 'Puma el calvario 25v al norte' ,
 	flavorID = 547 /*usuarioID*/,type='bar_exit'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

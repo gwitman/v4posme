@@ -2041,8 +2041,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Comercial Luciana' , address = 'Ferreteria Rufino Gonzalez 2c al sur, Barrio el Calvario.' ,
-	flavorID = 1207 /*usuarioID*/,type='comercialLuciana'  , abreviature='demo'
+	flavorID = 1207 /*usuarioID*/,type='comercialLuciana'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

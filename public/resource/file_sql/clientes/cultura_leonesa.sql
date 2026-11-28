@@ -1928,8 +1928,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Plaza Gastronomica y Cultural Leonesa' , address = 'Costado Oeste de Alcaldia Municipal' ,
-	flavorID = 1102 /*usuarioID*/,type='culturaLeonesa'  , abreviature='demo'
+	flavorID = 1102 /*usuarioID*/,type='culturaLeonesa'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

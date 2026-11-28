@@ -1184,8 +1184,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Narvaez' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 427,type='default'
+	flavorID = 427 /*usuarioID*/,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

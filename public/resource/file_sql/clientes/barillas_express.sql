@@ -2012,8 +2012,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Barillas Express' , address = 'Costado norte de la rotonda, San Juan del Sur, Rivas.' ,
-	flavorID = 1185 /*usuarioID*/,type='barillasExpress'  , abreviature='demo'
+	flavorID = 1185 /*usuarioID*/,type='barillasExpress'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

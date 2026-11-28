@@ -1813,8 +1813,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Hermanas Guido' , address = 'Dis-Norte 2.5c arriba' ,
-	flavorID = 911 /*usuarioID*/,type='gas_rivera'  , abreviature='demo'
+	flavorID = 911 /*usuarioID*/,type='gas_rivera'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

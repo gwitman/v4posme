@@ -1389,8 +1389,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Financiera INCOM(Inversiones Comerciales)' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 464,type='corea',abreviature='INCOM'
+	flavorID = 464 /*usuarioID*/,type='corea'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

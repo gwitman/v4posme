@@ -1737,8 +1737,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Taller Rostran' , address = 'Cayetano Munguia 1 cuadra al sur 1/2 cuadra arriba, León.' ,
-	flavorID = 847 /*usuarioID*/,type='taller_rostran'  , abreviature='taller_rostran'
+	flavorID = 847 /*usuarioID*/,type='taller_rostran'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

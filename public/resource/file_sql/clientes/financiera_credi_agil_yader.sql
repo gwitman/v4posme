@@ -1708,8 +1708,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'CrediT-Aguil' , address = 'Barrio Guadalupe Puente nuevo, 10v arriba' ,
-	flavorID = 665 /*usuarioID*/,type='creditaguil'  , abreviature='demo'
+	flavorID = 665 /*usuarioID*/,type='creditaguil'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

@@ -2052,8 +2052,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Roussel Creaciones' , address = 'Costado Este de la Policía Nacional, Malpaisillo.' ,
-	flavorID = 1235 /*usuarioID*/,type='rousselCreaciones'  , abreviature='demo'
+	flavorID = 1235 /*usuarioID*/,type='rousselCreaciones'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

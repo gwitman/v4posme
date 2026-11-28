@@ -1812,11 +1812,10 @@ WHERE
     tb_parameter.name = "CORE_PROPIETARY_ADDRESS";## la ciudad de Malpaisillo, de la policia nacional 3C.E y 1/2C.S
 
 
-UPDATE tb_company SET
-	  NAME = 'Emprende YA tu futuro' , address = 'Del porton de la iglesia el calvario 180v. al norte.' ,
-	  flavorID = 852 /*usuarioID*/,type='tu_futuro'  , abreviature='demo'
-WHERE
-    companyID = 2; ##Actualizar el nombre de la compania
+UPDATE tb_company SET 
+	flavorID = 852 /*usuarioID*/,type='tu_futuro'
+WHERE 
+	companyID = 2; ##Actualizar el nombre de la compania
 
 
 /*

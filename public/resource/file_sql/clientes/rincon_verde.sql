@@ -1256,8 +1256,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Rincon Verde Piscinas' , address = 'Salida al Guasimo' ,
-	flavorID = 436,type='default'
+	flavorID = 436 /*usuarioID*/,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

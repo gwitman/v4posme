@@ -724,8 +724,7 @@ WHERE
 
 
 UPDATE tb_company SET 
-	NAME = 'Visteme' , address = 'Policia nacional 1/2c.este y 1/2c.norte' ,
-	flavorID = 0,type='default'
+	flavorID = 0 /*usuarioID*/,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 	

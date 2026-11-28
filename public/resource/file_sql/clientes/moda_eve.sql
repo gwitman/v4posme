@@ -1805,8 +1805,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Tendencia de moda Eve' , address = 'Hotel los balcones 45vrs al sur- León' ,
-	flavorID = 910 /*usuarioID*/,type='moda_eve'  , abreviature='demo'
+	flavorID = 910 /*usuarioID*/,type='moda_eve'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

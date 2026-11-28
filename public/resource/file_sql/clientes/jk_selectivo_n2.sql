@@ -1982,8 +1982,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'JK Selectivos #02' , address = 'Del Pali Proquinsa 75 Varas Abajo, León.' ,
-	flavorID = 1172 /*usuarioID*/,type='jkSelectivo2'  , abreviature='demo'
+	flavorID = 1172 /*usuarioID*/,type='jkSelectivo2'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

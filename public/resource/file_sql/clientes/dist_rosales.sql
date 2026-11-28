@@ -1826,8 +1826,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Distribuidora Rosales' , address = 'Dónde era proquinsa 20 varas al sur contiguo a la policía distrito 2' ,
-	flavorID = 216 /*usuarioID*/,type='default'  , abreviature='demo'
+	flavorID = 216 /*usuarioID*/,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

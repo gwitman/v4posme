@@ -753,7 +753,7 @@ WHERE
 
 
 UPDATE tb_company SET 
-	NAME = 'Fid Local' , address = 'Frente a union fenosa' ,flavorID = 2, abreviature='FID', type = 'fidlocal'
+	flavorID = 2 /*usuarioID*/,type='fidlocal'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 	

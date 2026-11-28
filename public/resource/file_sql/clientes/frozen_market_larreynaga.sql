@@ -1761,8 +1761,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Frozen Market' , address = 'Empalme Larreynaga' ,
-	flavorID = 861 /*usuarioID*/,type='frozen_market'  , abreviature='demo'
+	flavorID = 861 /*usuarioID*/,type='frozen_market'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

@@ -1864,8 +1864,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Vasquez Jardines y Paisajes' , address = 'Esteli, Bo. Cld Dinamarca Porton Inpru 2c.n y 1c.o.' ,
-	flavorID = 1067 /*usuarioID*/,type='jardivas'  , abreviature='demo'
+	flavorID = 1067 /*usuarioID*/,type='jardivas'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

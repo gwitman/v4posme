@@ -1855,8 +1855,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Pulpería CANAND' , address = 'Oficinas de CLARO 30 varas al este, Telica.' ,
-	flavorID = 1010 /*usuarioID*/,type='canand'  , abreviature='demo'
+	flavorID = 1010 /*usuarioID*/,type='canand'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

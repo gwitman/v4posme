@@ -1402,9 +1402,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'GLOBALPRO' , address = 'Carretera Masaya, Frente al colegio Teresiano' ,
-	flavorID = 306,
-	type = 'globalpro'
+	flavorID = 306 /*usuarioID*/,type='globalpro'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

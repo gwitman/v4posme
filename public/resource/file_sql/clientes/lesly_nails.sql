@@ -875,8 +875,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Lesly Nails' , address = 'Telica, Entrada del granero 100m .sur' ,
-	flavorID = 0 
+	flavorID = 0 /*usuarioID*/
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

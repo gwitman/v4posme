@@ -2136,8 +2136,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Distribuidora Coca #2' , address = 'Vista del momotombo B18-C10' ,
-	flavorID = 1256 /*usuarioID*/,type='distCoca2'  , abreviature='demo'
+	flavorID = 1256 /*usuarioID*/,type='distCoca2'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

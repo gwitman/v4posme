@@ -1695,8 +1695,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Pasteleria Balladares Quinteros' , address = 'Iglesia san Jose, 1c al sur, 75 varas al oeste.' ,
-	flavorID = 728 /*usuarioID*/,type='pasteleria_balladares'  , abreviature='demo'
+	flavorID = 728 /*usuarioID*/,type='pasteleria_balladares'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

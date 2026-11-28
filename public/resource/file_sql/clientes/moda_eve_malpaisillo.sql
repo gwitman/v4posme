@@ -1862,8 +1862,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Moda Eve Malpaisillo' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 1053 /*usuarioID*/,type='modEveMalpaisillo'  , abreviature='demo'
+	flavorID = 1053 /*usuarioID*/,type='modEveMalpaisillo'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

@@ -1842,8 +1842,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'FERRETERIA NARVAEZ #2' , address = 'Iglesia Católica media cuadra al sur, Malpaisillo.' ,
-	flavorID = 951 /*usuarioID*/,type='ferreteriaNarvaez'  , abreviature='demo'
+	flavorID = 951 /*usuarioID*/,type='ferreteriaNarvaez'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

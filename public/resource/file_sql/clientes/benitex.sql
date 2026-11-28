@@ -1855,8 +1855,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Benitex Steak House' , address = 'Costado oeste donde fue desmontadora La Virgen, El Viejo.' ,
-	flavorID = 996 /*usuarioID*/,type='benitex'  , abreviature='demo'
+	flavorID = 996 /*usuarioID*/,type='benitex'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

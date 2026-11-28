@@ -1761,8 +1761,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Distribucion Cajina Casco' , address = 'barrio gracias a Dios, de dónde fue el bombillo rojo 1 cuadra al sur y 1 1/2 al oeste' ,
-	flavorID = 896 /*usuarioID*/,type='dcajinas'  , abreviature='demo'
+	flavorID = 896 /*usuarioID*/,type='dcajinas'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

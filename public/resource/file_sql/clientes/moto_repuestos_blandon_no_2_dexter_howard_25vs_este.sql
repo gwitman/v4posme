@@ -2013,8 +2013,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Moto Repuestos Blandon' , address = 'De la bloquera Howard media cuadra arriba, frente a importaciones Betanco, Pista Mayoreo.' ,
-	flavorID = 1193 /*usuarioID*/,type='motoRepuestoBlandon'  , abreviature='demo'
+	flavorID = 1193 /*usuarioID*/,type='motoRepuestoBlandon'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

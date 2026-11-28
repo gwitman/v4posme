@@ -874,8 +874,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'GYM Raptor' , address = 'Del arbolito 1.c al sur' ,
-	flavorID = 236 , type = 'gym_raptor'
+	flavorID = 236 /*usuarioID*/,type='gym_raptor'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

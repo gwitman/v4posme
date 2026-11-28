@@ -1329,8 +1329,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Café & Hostel RETORNO' , address = 'Costado Sur contiguo a Hotel los Balcones.' ,
-	flavorID = 520,type='cafe_hotel_retorno'
+	flavorID = 520 /*usuarioID*/,type='cafe_hotel_retorno'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

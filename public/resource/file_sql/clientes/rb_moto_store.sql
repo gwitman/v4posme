@@ -1982,8 +1982,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'RB Moto Store' , address = 'Del Ganbei Miguel Gutiérrez 2 cuadras hacia arriba sobre la marginal, módulo celeste, Managua.' ,
-	flavorID = 1157 /*usuarioID*/,type='rbMotoStore'  , abreviature='rbMotoStore'
+	flavorID = 1157 /*usuarioID*/,type='rbMotoStore'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

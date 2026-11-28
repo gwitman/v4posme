@@ -2397,8 +2397,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Clinica Mediterranea' , address = 'abc' ,
-	flavorID = 1290 /*usuarioID*/,type='coMedi'  , abreviature='demo'
+	flavorID = 1290 /*usuarioID*/,type='coMedi'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

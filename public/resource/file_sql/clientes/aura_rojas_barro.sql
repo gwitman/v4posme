@@ -1853,8 +1853,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Aura Rojas' , address = 'De la entrada del Charco 50 mts al norte' ,
-	flavorID = 954 /*usuarioID*/,type='auraRojas'  , abreviature='demo'
+	flavorID = 954 /*usuarioID*/,type='auraRojas'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

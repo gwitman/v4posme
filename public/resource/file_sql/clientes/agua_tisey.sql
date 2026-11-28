@@ -1702,8 +1702,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Agua Tisey' , address = 'De dónde fue Profamilia 1 cuadra al Este y 75 varas al Sur. Esteli, Nicaragua' ,
-	flavorID = 763 /*usuarioID*/,type='tisey'  , abreviature='demo'
+	flavorID = 763 /*usuarioID*/,type='tisey'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

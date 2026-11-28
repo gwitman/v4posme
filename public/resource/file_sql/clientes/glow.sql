@@ -1728,8 +1728,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Glow' , address = 'Donde fue aserrio santa fe, 2c abajo 15v.sur' ,
-	flavorID = 798 /*usuarioID*/,type='glow'  , abreviature='demo'
+	flavorID = 798 /*usuarioID*/,type='glow'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

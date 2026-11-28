@@ -1855,8 +1855,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Moncho,s Bar' , address = 'Claro 1 cuadra al Norte, 1.5 cuadra al este.' ,
-	flavorID = 1031 /*usuarioID*/,type='moncho'  , abreviature='demo'
+	flavorID = 1031 /*usuarioID*/,type='moncho'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

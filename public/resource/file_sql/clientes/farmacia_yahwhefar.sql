@@ -824,7 +824,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Farmacia YAHWHEFAR' , address = 'CMC Caller Real de Tolapa' 
+	flavorID = 0 /*usuarioID*/,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

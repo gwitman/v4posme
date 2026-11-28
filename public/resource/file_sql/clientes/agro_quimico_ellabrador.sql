@@ -1256,8 +1256,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'AgroServicio El Labrador' , address = 'Esquina doctor Cayetano 1 cuadra abajo y 50 metros al Norte' ,
-	flavorID = 454,type='agro_el_labrador'
+	flavorID = 454 /*usuarioID*/,type='agro_el_labrador'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

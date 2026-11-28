@@ -1138,8 +1138,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Chic extensiones' , address = 'Altamira, porton principal UCC 1C al sur, 1/2C arriba' ,
-	flavorID = 315,type='chicextensiones'
+	flavorID = 315 /*usuarioID*/,type='chicextensiones'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

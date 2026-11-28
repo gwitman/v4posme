@@ -1764,8 +1764,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'MOTO Partes FC' , address = 'Contiguo a estación de policía San Juan de Limay' ,
-	flavorID = 868 /*usuarioID*/,type='moto_partes'  , abreviature='demo'
+	flavorID = 868 /*usuarioID*/,type='moto_partes'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

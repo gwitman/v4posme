@@ -1596,7 +1596,6 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'FERREFER' , address = 'Super express el rosario 1 cuadra y media al norte frente al costado norte del colegio oscar arnulfo' ,
 	flavorID = 559 /*usuarioID*/,type='default'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania

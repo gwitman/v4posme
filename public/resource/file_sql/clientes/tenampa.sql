@@ -1689,8 +1689,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'TENAMPA' , address = 'Km 89 Carretera Leon-Managua, contiguo al autolote  El chocoyo' ,
-	flavorID = 636 /*usuarioID*/,type='tenampa'  , abreviature='demo'
+	flavorID = 636 /*usuarioID*/,type='tenampa'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

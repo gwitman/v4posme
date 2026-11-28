@@ -1695,8 +1695,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Auto Repuestos Cristo Rey' , address = 'FRENTE A SEMAFOROS DE ENABAS, COSTADO SURESTE.' ,
-	flavorID = 721 /*usuarioID*/,type='cristo_rey'  , abreviature='demo'
+	flavorID = 721 /*usuarioID*/,type='cristo_rey'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 

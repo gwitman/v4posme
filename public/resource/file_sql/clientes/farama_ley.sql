@@ -1871,8 +1871,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	NAME = 'Farma Ley' , address = 'Carretera Masaya, fte al Colegio Teresiano' ,
-	flavorID = 742 /*usuarioID*/,type='farma_ley'  , abreviature='demo'
+	flavorID = 742 /*usuarioID*/,type='farma_ley'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
