@@ -180,6 +180,7 @@ class app_sales_report extends _BaseController {
 						"discount"            => "Descuento",
 						"cost"                => "Costo Total",
 						"amount"              => "Monto",
+						"amountConDescuento"  => "Venta con Descuento",
 						"amountConIva"        => "Monto con IVA",
 						"iva"                 => "IVA %",
 						"ivaTotal"            => "IVA Total",

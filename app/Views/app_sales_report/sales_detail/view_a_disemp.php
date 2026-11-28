@@ -36,6 +36,7 @@
 		$configColumn["7"]["Titulo"] 		= "Costo unitario";
 		$configColumn["8"]["Titulo"] 		= "Costo Total";		
 		$configColumn["9"]["Titulo"] 		= "Precio Total";
+		$configColumn["20"]["Titulo"] 		= "VENTA CON DESCUENTO";
 		$configColumn["10"]["Titulo"] 		= "Utilidad";
 		$configColumn["11"]["Titulo"] 		= "Utilidad %";		
 		$configColumn["12"]["Titulo"] 		= $labelCodigoProducto;
@@ -57,6 +58,7 @@
 		$configColumn["7"]["FiledSouce"] 		= "unitaryCost";
 		$configColumn["8"]["FiledSouce"] 		= "cost";
 		$configColumn["9"]["FiledSouce"] 		= "amount";
+		$configColumn["20"]["FiledSouce"] 		= "amountConDescuento";
 		$configColumn["10"]["FiledSouce"] 		= "utilidad";
 		$configColumn["11"]["FiledSouce"] 		= "utilidad_porcentual";
 		$configColumn["12"]["FiledSouce"] 		= $fieldCodigoProducto;
@@ -78,6 +80,7 @@
 		$configColumn["7"]["Formato"] 		= "Number";
 		$configColumn["8"]["Formato"] 		= "Number";
 		$configColumn["9"]["Formato"] 		= "Number";
+		$configColumn["20"]["Formato"] 		= "Number";
 		$configColumn["10"]["Formato"] 		= "Number";
 		$configColumn["11"]["Formato"] 		= "Number";
 		$configColumn["12"]["Formato"] 		= "";
@@ -99,6 +102,7 @@
 		$configColumn["7"]["Width"] 		= "180px";
 		$configColumn["8"]["Width"] 		= "180px";
 		$configColumn["9"]["Width"] 		= "180px";
+		$configColumn["20"]["Width"] 		= "180px";
 		$configColumn["10"]["Width"] 		= "180px";
 		$configColumn["11"]["Width"] 		= "180px";
 		$configColumn["12"]["Width"] 		= "100px";
@@ -120,6 +124,7 @@
 		$configColumn["7"]["Total"] 		= True;
 		$configColumn["8"]["Total"] 		= True;
 		$configColumn["9"]["Total"] 		= True;
+		$configColumn["20"]["Total"] 		= True;
 		$configColumn["10"]["Total"] 		= True;
 		$configColumn["11"]["Total"] 		= False;		
 		$configColumn["12"]["Total"] 		= False;

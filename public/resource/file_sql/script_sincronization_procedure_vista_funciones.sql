@@ -27506,6 +27506,8 @@ BEGIN
 		rx.discount,
 		(rx.unitaryCost * rx.quantity) as cost,
 		(rx.unitaryPrice * rx.quantity) as amount,
+		/*Venta con descuento: Precio Total menos el descuento de la linea*/
+		(rx.unitaryPrice * rx.quantity) - IFNULL(rx.discount,0) as amountConDescuento,
 		(rx.unitaryPrice * rx.quantity) + (rx.iva * rx.quantity)  as amountConIva,
 		(rx.unitaryPrice * rx.quantity) - (rx.unitaryCost * rx.quantity)    as utilidad,
 		(((rx.unitaryPrice * rx.quantity) - (rx.unitaryCost * rx.quantity)) /  (rx.unitaryCost * rx.quantity)) * 100  as utilidad_porcentual,
