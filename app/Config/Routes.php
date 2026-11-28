@@ -1008,6 +1008,7 @@ $routes->match(['get', 'post'], 'app_inventory_inputunpost/save/(:any)', 'app_in
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/edit', 'app_inventory_inputunpost::edit');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/edit/(:any)', 'app_inventory_inputunpost::edit');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/add', 'app_inventory_inputunpost::add');
+$routes->match(['get', 'post'], 'app_inventory_inputunpost/add/(:any)', 'app_inventory_inputunpost::add');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/index', 'app_inventory_inputunpost::index');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/index/(:any)', 'app_inventory_inputunpost::index');
 $routes->match(['get', 'post'], 'app_inventory_inputunpost/add_masinformacion', 'app_inventory_inputunpost::add_masinformacion');

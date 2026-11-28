@@ -13,5 +13,5 @@
 				<?php echo view('app_inventory_inputunpost/resumen_flotante'); ?>
 				
 				<div id="heading" class="page-header">
-							<h1><i class="icon20 i-last"></i>EDITAR COMPRA</h1>
+							<h1><i class="icon20 i-last"></i><span id="lblTituloPantalla"><?php echo $esNuevo ? "AGREGAR COMPRA" : "EDITAR COMPRA"; ?></span></h1>
 				</div> 

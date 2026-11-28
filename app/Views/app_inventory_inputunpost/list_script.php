@@ -12,7 +12,7 @@
 				return;
 				
 				fnWaitOpen();				
-				window.location	= "<?php echo base_url(); ?>/app_inventory_inputunpost/edit/companyID/"+data[0]+"/transactionID/"+data[1]+"/transactionMasterID/"+data[2];
+				window.location	= "<?php echo base_url(); ?>/app_inventory_inputunpost/add/companyID/"+data[0]+"/transactionID/"+data[1]+"/transactionMasterID/"+data[2];
 			}
 			else{
 				fnShowNotification("Seleccionar el Registro...","error");
@@ -34,7 +34,7 @@
 								fnShowNotification(data.message,"error");
 							}
 							else{		
-								window.location = "<?php echo base_url(); ?>/app_inventory_inputunpost/edit/companyID/"+data.companyID+"/transactionID/"+data.transactionID+"/transactionMasterID/"+data.transactionMasterID;
+								window.location = "<?php echo base_url(); ?>/app_inventory_inputunpost/add/companyID/"+data.companyID+"/transactionID/"+data.transactionID+"/transactionMasterID/"+data.transactionMasterID;
 							}
 						},
 						error:function(xhr,data){	

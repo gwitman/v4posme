@@ -1312,20 +1312,21 @@ class app_inventory_inputunpost extends _BaseController {
 			fputcsv($fppathTemplate, $fieldTemplate,$characterSplie);
 			fclose($fppathTemplate);
 			
-			//Recorrer la lista del detalle del documento
-			$arrayListItemID 							= /*inicio get post*/ $this->request->getPost("txtDetailItemID");
-			$arrayListQuantity	 						= /*inicio get post*/ $this->request->getPost("txtDetailQuantity");	
-			$arrayListCost	 							= /*inicio get post*/ $this->request->getPost("txtDetailCost");			
-			$arrayListLote	 							= /*inicio get post*/ $this->request->getPost("txtDetailLote");			
-			$arrayListVencimiento						= /*inicio get post*/ $this->request->getPost("txtDetailVencimiento");					
-			$arrayPrice 								= /*inicio get post*/ $this->request->getPost("txtDetailPrice");			
-			$arrayPrice2 								= /*inicio get post*/ $this->request->getPost("txtDetailPrice2");			
-			$arrayPrice3 								= /*inicio get post*/ $this->request->getPost("txtDetailPrice3");			
-			$arrayReference4TransactionMasterDetail 	= /*inicio get post*/ $this->request->getPost("txtReference4TransactionMasterDetail");
-			$arrayIva 									= /*inicio get post*/ $this->request->getPost("txtDetailIva");			
-			$arrayIsc	 								= /*inicio get post*/ $this->request->getPost("txtDetailIsc");
-			
-					
+			//Recorrer la lista del detalle del documento (JSON por AJAX o arreglos del POST tradicional)
+			$detallePost 								= $this->compraObtenerDetallePost();
+			$arrayListItemID 							= $detallePost["itemID"];
+			$arrayListQuantity	 						= $detallePost["quantity"];
+			$arrayListCost	 							= $detallePost["cost"];
+			$arrayListLote	 							= $detallePost["lote"];
+			$arrayListVencimiento						= $detallePost["vencimiento"];
+			$arrayPrice 								= $detallePost["price"];
+			$arrayPrice2 								= $detallePost["price2"];
+			$arrayPrice3 								= $detallePost["price3"];
+			$arrayReference4TransactionMasterDetail 	= $detallePost["reference4"];
+			$arrayIva 									= $detallePost["iva"];
+			$arrayIsc	 								= $detallePost["isc"];
+
+
 			if(!empty($arrayListItemID))
 			{
 				foreach($arrayListItemID as $key => $value)
@@ -1430,23 +1431,35 @@ class app_inventory_inputunpost extends _BaseController {
 			
 			
 			if($db->transStatus() !== false){
-				$db->transCommit();						
+				$db->transCommit();
+
+				//AJAX: la pantalla pasa a modo edicion sin recargar
+				if($this->compraEsPeticionAjax())
+				return $this->compraRespuestaGuardado($dataSession,$objTM["transactionID"],$transactionMasterID);
+
 				$this->core_web_notification->set_message(false,SUCCESS);
-				$this->response->redirect(base_url()."/".'app_inventory_inputunpost/edit/companyID/'.$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID);
+				$this->response->redirect(base_url()."/".'app_inventory_inputunpost/add/companyID/'.$companyID."/transactionID/".$objTM["transactionID"]."/transactionMasterID/".$transactionMasterID);
 			}
 			else{
-				$db->transRollback();			
 				$errorCode 		= $db->error()["code"];
-				$errorMessage 	= $db->error()["message"];								
+				$errorMessage 	= $db->error()["message"];
+				$db->transRollback();
+
+				if($this->compraEsPeticionAjax())
+				return $this->compraRespuestaError(new \Exception("NO SE GUARDO LA COMPRA: ".$errorMessage));
+
 				$this->core_web_notification->set_message(true,$errorMessage );
-				$this->response->redirect(base_url()."/".'app_inventory_inputunpost/add');	
+				$this->response->redirect(base_url()."/".'app_inventory_inputunpost/add');
 			}
-			
+
 		}
 		catch(\Exception $ex){
-		
+
 			log_message("error",print_r($ex,true));
-			
+
+			if($this->compraEsPeticionAjax())
+			return $this->compraRespuestaError($ex);
+
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
@@ -1956,20 +1969,21 @@ class app_inventory_inputunpost extends _BaseController {
 			}
 			
 			
-			//Actualizar Detalle
-			$listTMD_ID 								= /*inicio get post*/ $this->request->getPost("txtDetailTransactionDetailID");
-			$arrayListItemID 							= /*inicio get post*/ $this->request->getPost("txtDetailItemID");
-			$arrayListQuantity	 						= /*inicio get post*/ $this->request->getPost("txtDetailQuantity");			
-			$arrayListCost	 							= /*inicio get post*/ $this->request->getPost("txtDetailCost");			
-			$arrayListLote	 							= /*inicio get post*/ $this->request->getPost("txtDetailLote");			
-			$arrayListVencimiento						= /*inicio get post*/ $this->request->getPost("txtDetailVencimiento");			
-			$arrayPrice 								= /*inicio get post*/ $this->request->getPost("txtDetailPrice");	
-			$arrayPrice2 								= /*inicio get post*/ $this->request->getPost("txtDetailPrice2");			
-			$arrayPrice3 								= /*inicio get post*/ $this->request->getPost("txtDetailPrice3");						
-			$arrayReference4TransactionMasterDetail 	= /*inicio get post*/ $this->request->getPost("txtReference4TransactionMasterDetail");
-			$archivoCSV 								= /*inicio get post*/ $this->request->getPost("txtFileImport");			
-			$arrayIva 									= /*inicio get post*/ $this->request->getPost("txtDetailIva");			
-			$arrayIsc	 								= /*inicio get post*/ $this->request->getPost("txtDetailIsc");
+			//Actualizar Detalle (JSON por AJAX o arreglos del POST tradicional)
+			$detallePost 								= $this->compraObtenerDetallePost();
+			$listTMD_ID 								= $detallePost["transactionMasterDetailID"];
+			$arrayListItemID 							= $detallePost["itemID"];
+			$arrayListQuantity	 						= $detallePost["quantity"];
+			$arrayListCost	 							= $detallePost["cost"];
+			$arrayListLote	 							= $detallePost["lote"];
+			$arrayListVencimiento						= $detallePost["vencimiento"];
+			$arrayPrice 								= $detallePost["price"];
+			$arrayPrice2 								= $detallePost["price2"];
+			$arrayPrice3 								= $detallePost["price3"];
+			$arrayReference4TransactionMasterDetail 	= $detallePost["reference4"];
+			$archivoCSV 								= /*inicio get post*/ $this->request->getPost("txtFileImport");
+			$arrayIva 									= $detallePost["iva"];
+			$arrayIsc	 								= $detallePost["isc"];
 			$arrayCategoria								= /*inicio get post*/ $this->request->getPost("txtCategoria");
 			$archivoImportadoPorLotes					= /*inicio get post*/ $this->request->getPost("txtFileImportProcesado");
 
@@ -2180,26 +2194,42 @@ class app_inventory_inputunpost extends _BaseController {
 			{
 				if($db->transStatus() !== false)
 				{
-					$db->transCommit();						
+					$db->transCommit();
+
+					//AJAX: la pantalla se actualiza sin recargar
+					if($this->compraEsPeticionAjax())
+					return $this->compraRespuestaGuardado($dataSession,$transactionID,$transactionMasterID);
+
 					$this->core_web_notification->set_message(false,SUCCESS);
-					$this->response->redirect(base_url()."/".'app_inventory_inputunpost/edit/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID);
+					$this->response->redirect(base_url()."/".'app_inventory_inputunpost/add/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID);
 				}
 				else
 				{
-					$db->transRollback();						
-					$this->core_web_notification->set_message(true,$this->db->_error_message());
-					$this->response->redirect(base_url()."/".'app_inventory_inputunpost/add');	
+					$errorMessage = $db->error()["message"];
+					$db->transRollback();
+
+					if($this->compraEsPeticionAjax())
+					return $this->compraRespuestaError(new \Exception("NO SE GUARDO LA COMPRA: ".$errorMessage));
+
+					$this->core_web_notification->set_message(true,$errorMessage);
+					$this->response->redirect(base_url()."/".'app_inventory_inputunpost/add');
 				}
 			}
-			
-			
+
+			//AJAX: la pantalla se actualiza sin recargar
+			if($this->compraEsPeticionAjax())
+			return $this->compraRespuestaGuardado($dataSession,$transactionID,$transactionMasterID);
+
 			$this->core_web_notification->set_message(false,SUCCESS);
-			$this->response->redirect(base_url()."/".'app_inventory_inputunpost/edit/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID);
-			
-			
+			$this->response->redirect(base_url()."/".'app_inventory_inputunpost/add/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID);
+
+
 		}
 		catch(\Exception $ex){
-				
+
+			if($this->compraEsPeticionAjax())
+			return $this->compraRespuestaError($ex);
+
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
@@ -2431,6 +2461,157 @@ class app_inventory_inputunpost extends _BaseController {
 		{
 			$this->importacionProcesarFila($contexto,$row,$resumen["ocurrencia"][$index],$modoRepetidos);
 		}
+	}
+
+	/**
+	 * Indica si la pantalla guardo por AJAX (txtModoAjax = 1) y espera respuesta JSON.
+	 * @return bool
+	 */
+	private function compraEsPeticionAjax()
+	{
+		return /*inicio get post*/ $this->request->getPost("txtModoAjax") == "1";
+	}
+
+	/**
+	 * Obtiene el detalle de la compra enviado por la pantalla.
+	 * Por AJAX llega en un solo campo JSON (txtDetailJSON) para no superar max_input_vars del servidor
+	 * (con el POST tradicional PHP descartaba en silencio las lineas que pasaban el limite).
+	 * Si no viene el JSON se leen los arreglos txtDetail*[] del POST tradicional.
+	 * @return array arreglos paralelos por campo (null si no hay lineas, igual que el POST tradicional)
+	 */
+	private function compraObtenerDetallePost()
+	{
+		$campos 		= ["transactionMasterDetailID","itemID","quantity","cost","lote","vencimiento","price","price2","price3","reference4","iva","isc"];
+		$detalleJSON 	= /*inicio get post*/ $this->request->getPost("txtDetailJSON");
+
+		//POST tradicional
+		if(is_null($detalleJSON))
+		{
+			return [
+				"transactionMasterDetailID" => /*inicio get post*/ $this->request->getPost("txtDetailTransactionDetailID"),
+				"itemID" 					=> /*inicio get post*/ $this->request->getPost("txtDetailItemID"),
+				"quantity" 					=> /*inicio get post*/ $this->request->getPost("txtDetailQuantity"),
+				"cost" 						=> /*inicio get post*/ $this->request->getPost("txtDetailCost"),
+				"lote" 						=> /*inicio get post*/ $this->request->getPost("txtDetailLote"),
+				"vencimiento" 				=> /*inicio get post*/ $this->request->getPost("txtDetailVencimiento"),
+				"price" 					=> /*inicio get post*/ $this->request->getPost("txtDetailPrice"),
+				"price2" 					=> /*inicio get post*/ $this->request->getPost("txtDetailPrice2"),
+				"price3" 					=> /*inicio get post*/ $this->request->getPost("txtDetailPrice3"),
+				"reference4" 				=> /*inicio get post*/ $this->request->getPost("txtReference4TransactionMasterDetail"),
+				"iva" 						=> /*inicio get post*/ $this->request->getPost("txtDetailIva"),
+				"isc" 						=> /*inicio get post*/ $this->request->getPost("txtDetailIsc")
+			];
+		}
+
+		//JSON: se valida que llegaron todas las lineas que la pantalla dice haber enviado
+		$lista 			= json_decode($detalleJSON,true);
+		$esperadas 		= (int) /*inicio get post*/ $this->request->getPost("txtDetailCount");
+		if(!is_array($lista))
+			throw new \Exception("NO SE GUARDO: EL DETALLE DE LA COMPRA LLEGO MAL FORMADO, INTENTE DE NUEVO.");
+		if(count($lista) != $esperadas)
+			throw new \Exception("NO SE GUARDO: LLEGARON ".count($lista)." DE ".$esperadas." LINEAS DEL DETALLE, INTENTE DE NUEVO.");
+
+		$resultado 		= [];
+		foreach($campos as $campo)
+			$resultado[$campo] = count($lista) == 0 ? null : [];
+
+		foreach($lista as $fila)
+		{
+			foreach($campos as $campo)
+				$resultado[$campo][] = (isset($fila[$campo]) && !is_null($fila[$campo])) ? (string)$fila[$campo] : "";
+		}
+		return $resultado;
+	}
+
+	/**
+	 * Detalle del documento en el formato que usa el grid de la pantalla de compra.
+	 * @param int $companyID
+	 * @param int $transactionID
+	 * @param int $transactionMasterID
+	 * @return array lista de filas (arreglos asociativos)
+	 */
+	private function compraObtenerDetallePantalla($companyID,$transactionID,$transactionMasterID)
+	{
+		$lista 		= [];
+		$objTMD 	= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+		if(!$objTMD)
+			return $lista;
+
+		foreach($objTMD as $i)
+		{
+			//reference3 = precio2|precio3
+			$reference3 	= explode("|",helper_RequestGetValue($i->reference3,'0|0'));
+			$lista[] 		= [
+				"itemID" 					=> $i->componentItemID,
+				"transactionMasterDetailID" => $i->transactionMasterDetailID,
+				"barCode" 					=> $i->barCode,
+				"itemName" 					=> str_replace('\'','',$i->itemName),
+				"unitMeasureName" 			=> $i->unitMeasureName,
+				"quantity" 					=> (float)$i->quantity,
+				"unitaryCost" 				=> (float)$i->unitaryCost,
+				"unitaryAmount" 			=> (float)$i->unitaryAmount,
+				"lote" 						=> helper_RequestGetValue($i->lote,''),
+				"expirationDate" 			=> helper_RequestGetValue($i->expirationDate,''),
+				"price2" 					=> $reference3[0],
+				"price3" 					=> isset($reference3[1]) ? $reference3[1] : "",
+				"reference4" 				=> helper_RequestGetValue($i->reference4,''),
+				"tax1" 						=> (float)$i->tax1,
+				"tax2" 						=> (float)$i->tax2,
+				"subTotal" 					=> (float)$i->quantity * (float)$i->unitaryCost
+			];
+		}
+		return $lista;
+	}
+
+	/**
+	 * Respuesta JSON de un guardado exitoso: datos para que la pantalla pase a modo edicion sin recargar.
+	 * @param array  $dataSession
+	 * @param int    $transactionID
+	 * @param int    $transactionMasterID
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	private function compraRespuestaGuardado($dataSession,$transactionID,$transactionMasterID)
+	{
+		$companyID 		= $dataSession["user"]->companyID;
+		$objTM 			= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+		$objListStage 	= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_inputunpost","statusID",$objTM->statusID,$companyID,$dataSession["user"]->branchID,$dataSession["role"]->roleID);
+		$listStage 		= [];
+		if($objListStage)
+		{
+			foreach($objListStage as $ws)
+				$listStage[] = ["workflowStageID" => $ws->workflowStageID, "name" => $ws->name];
+		}
+
+		return $this->importacionRespuestaJSON(array(
+			'error' 	=> false,
+			'message' 	=> SUCCESS,
+			'data' 		=> array(
+				'companyID' 			=> $companyID,
+				'transactionID' 		=> $transactionID,
+				'transactionMasterID' 	=> $transactionMasterID,
+				'transactionNumber' 	=> $objTM->transactionNumber,
+				'isApplied' 			=> (int)$objTM->isApplied,
+				'statusID' 				=> $objTM->statusID,
+				'listWorkflowStage' 	=> $listStage,
+				'detalle' 				=> $this->compraObtenerDetallePantalla($companyID,$transactionID,$transactionMasterID)
+			)
+		));
+	}
+
+	/**
+	 * Respuesta JSON de error de un guardado por AJAX (revierte la transaccion abierta, si la hay).
+	 * @param \Exception $ex
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	private function compraRespuestaError($ex)
+	{
+		log_message("error","app_inventory_inputunpost/save: ".$ex->getLine()." ".$ex->getMessage());
+		$db = db_connect();
+		$db->transRollback();
+		return $this->importacionRespuestaJSON(array(
+			'error' 	=> true,
+			'message' 	=> $ex->getMessage()
+		));
 	}
 
 	/**
@@ -3186,297 +3367,274 @@ class app_inventory_inputunpost extends _BaseController {
 	
 			//AUTENTICADO
 			if(!$this->core_web_authentication->isAuthenticated())
-			throw new \Exception(USER_NOT_AUTENTICATED);
+			{
+				//AJAX: la pantalla muestra el mensaje en lugar de un error de servidor
+				if($this->compraEsPeticionAjax())
+				return $this->importacionRespuestaJSON(array('error' => true, 'message' => USER_NOT_AUTENTICATED));
+
+				throw new \Exception(USER_NOT_AUTENTICATED);
+			}
 			$dataSession			= $this->session->get();
-			
-			//Validar Formulario						
+
+			//Validar Formulario
 			$this->validation->setRule("txtProviderID","Proveedor","required");
 			$this->validation->setRule("txtStatusID","Estado","required");
 			$this->validation->setRule("txtTransactionOn","Fecha","required");
-				
+
 			//Validar Formulario
 			if(!$this->validation->withRequest($this->request)->run()){
 				$stringValidation 	= $this->core_web_tools->formatMessageError($this->validation->getErrors());
+
+				if($this->compraEsPeticionAjax())
+				return $this->importacionRespuestaJSON(array('error' => true, 'message' => $stringValidation));
+
 				$this->core_web_notification->set_message(true,$stringValidation);
 				$this->response->redirect(base_url()."/".'app_inventory_inputunpost/add');
 				exit;
-			} 
-			
-			
-			
-			//Guardar o Editar Registro						
+			}
+
+
+
+			//Guardar o Editar Registro (por AJAX devuelven JSON)
 			if($mode == "new"){
-				$this->insertElement($dataSession);
+				return $this->insertElement($dataSession);
 			}
 			else if ($mode == "edit"){
-				$this->updateElement($dataSession);
+				return $this->updateElement($dataSession);
 			}
 			else{
 				$stringValidation 	= "El modo de operacion no es correcto (new|edit)";
+
+				if($this->compraEsPeticionAjax())
+				return $this->importacionRespuestaJSON(array('error' => true, 'message' => $stringValidation));
+
 				$this->core_web_notification->set_message(true,$stringValidation);
 				$this->response->redirect(base_url()."/".'app_inventory_inputunpost/add');
 				exit;
 			}
 	}
+	/**
+	 * Compatibilidad con enlaces anteriores: la compra se abre y edita en una sola pantalla (/add).
+	 * @return \CodeIgniter\HTTP\RedirectResponse
+	 */
 	function edit(){
-		try{ 
-			//AUTENTICADO
-			if(!$this->core_web_authentication->isAuthenticated())
-			throw new \Exception(USER_NOT_AUTENTICATED);
-			$dataSession									= $this->session->get();
-			
-			//PERMISO SOBRE LA FUNCTION
-			if(APP_NEED_AUTHENTICATION == true){
-						$permited = false;
-						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						
-						if(!$permited)
-						throw new \Exception(NOT_ACCESS_CONTROL);
-						
-						$resultPermission					= $this->core_web_permission->urlPermissionCmd(get_class($this),"edit",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						if ($resultPermission 	== PERMISSION_NONE)
-						throw new \Exception(NOT_ALL_EDIT);	
-			}	
-			
-		
-			
-			//Obtener parametros
-									
-			$companyID										= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"companyID");//--finuri
-			$transactionID									= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri
-			$transactionMasterID							= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri
-			$branchID 										= $dataSession["user"]->branchID;
-			$roleID 										= $dataSession["role"]->roleID;		
-			$userID 										= $dataSession["user"]->userID;
-			if((!$transactionID || !$transactionMasterID))
-			{ 
-				$this->response->redirect(base_url()."/".'app_inventory_inputunpost/add');	
-			} 		
-			
-			
-			$objListTypePreice								= $this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID);
-			
-			//Obtener el componente de Item
-			$objComponentItem								= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
-			if(!$objComponentItem)
-			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
-			
-			//Obtener el componente de Proveedor
-			$objComponentProvider							= $this->core_web_tools->getComponentIDBy_ComponentName("tb_provider");
-			if(!$objComponentProvider)
-			throw new \Exception("EL COMPONENTE 'tb_provider' NO EXISTE...");
-			
-			//Obtener el componente de Entrada sin postear
-			$objComponentInputSinPost						= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_inputunpost");
-			if(!$objComponentInputSinPost)
-			throw new \Exception("EL COMPONENTE 'tb_transaction_master_inputunpost' NO EXISTE...");
-			
-			//Obtener el componente de Orden de Compra
-			$objComponentOrdenCompra						= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_purchaseorden");
-			if(!$objComponentOrdenCompra)
-			throw new \Exception("EL COMPONENTE 'tb_transaction_master_purchaseorden' NO EXISTE...");
-			 
-			//Obtener el componente de linea de credito
-			$objComponentCreditLine							= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_credit_line");
-			if(!$objComponentCreditLine)
-			throw new \Exception("EL COMPONENTE 'tb_customer_credit_line' NO EXISTE...");
-			
-			$objListPrice 									= $this->List_Price_Model->getListPriceToApply($companyID);
-			$datView["objListPrice"]						= $objListPrice;			
-			$datView["objListTypePreice"]					= $this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID);
-			//Obtener el Registro		
-			$datView["useMobile"]							= $dataSession["user"]->useMobile;
-			$datView["objComponentItem"]	 				= $objComponentItem;
-			$datView["objComponentProvider"]	 			= $objComponentProvider;
-			$datView["objComponentInputSinPost"]			= $objComponentInputSinPost;
-			$datView["objComponentOrdenCompra"]				= $objComponentOrdenCompra;
-			$datView["objComponentCreditLine"]				= $objComponentCreditLine;
-			$datView["objListWarehouse"]					= $this->Userwarehouse_Model->getRowByUserID($companyID,$userID);
-			$datView["objTM"]	 							= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
-			$datView["objTMD"]								= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
-			$datView["objListWorkflowStage"]				= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_inputunpost","statusID",$datView["objTM"]->statusID,$companyID,$branchID,$roleID);
-			$datView["objTM"]->transactionOn 				= date_format(date_create($datView["objTM"]->transactionOn),"Y-m-d");
-			$datView["objTMOrdenCompra"]					= $this->Transaction_Master_Model->get_rowByTransactionMasterID($companyID,helper_RequestGetValue($datView["objTM"]->reference4,"0") );
-			$datView["company"]								= $dataSession["company"];
-			
-			$datView["objProvider"]							= $this->Provider_Model->get_rowByEntity($companyID,$datView["objTM"]->entityID);			
-			$datView["objNaturalDefault"]					= $this->Natural_Model->get_rowByPK($companyID,$datView["objProvider"]->branchID,$datView["objProvider"]->entityID);
-			$datView["objLegalDefault"]						= $this->Legal_Model->get_rowByPK($companyID,$datView["objProvider"]->branchID,$datView["objProvider"]->entityID);
-			$datView["objListCurrency"]						= $this->Company_Currency_Model->getByCompany($companyID);
-			$datView["objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE"]	= $this->core_web_parameter->getParameterValue("CORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE",$companyID);
-			$datView["objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY"]	= $this->core_web_parameter->getParameterValue("INVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY",$companyID);
-			$datView["objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES"]	= $this->core_web_parameter->getParameterValue("INVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES",$companyID);
-			
-			$objParameterUrlPrinter							= $this->core_web_parameter->getParameter("INVENTORY_URL_PRINTER_INPUTUNPOST",$companyID);
-			$objParameterUrlPrinter 						= $objParameterUrlPrinter->value;
-			$datView["objParameterUrlPrinter"]				= $objParameterUrlPrinter;
-			
-			$objParameterMasive								= $this->core_web_parameter->getParameter("ITEM_PRINTER_BARCODE_MASIVE",$this->session->get('user')->companyID);
-			$objParameterMasive								= $objParameterMasive->value;	
-			$datView["objParameterMasive"]					= $objParameterMasive;
-			$datView["objListCausal"]						= $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
-			$datView["objListCreditLine"]					= $this->Customer_Credit_Line_Model->get_rowByBranchID($companyID, $branchID);			
-			
-			$objListComanyParameter							= $this->Company_Parameter_Model->get_rowByCompanyID($dataSession["user"]->companyID);
-			$objParameterCantidadItemPoup					= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
-			$objParameterCantidadItemPoup					= $objParameterCantidadItemPoup->value;
-			$datView["objParameterCantidadItemPoup"] 		= $objParameterCantidadItemPoup;
-			$datView["objListCompanyPageSetting"]			= $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"app_inventory_inputunpost");
-			$datView["pantallaCompra_hiddenSummaryISC"] 	= getBahavioSession(
-					$dataSession["company"]->type, 
-					"app_inventory_inputunpost", 
-					"pantallaCompra_hiddenSummaryISC", 
-					"",
-					$datView["objListCompanyPageSetting"]
-				);
+		$segmentos			= $this->uri->getSegments();
+		$companyID			= /*--ini uri*/ helper_SegmentsValue($segmentos,"companyID");//--finuri
+		$transactionID		= /*--ini uri*/ helper_SegmentsValue($segmentos,"transactionID");//--finuri
+		$transactionMasterID= /*--ini uri*/ helper_SegmentsValue($segmentos,"transactionMasterID");//--finuri
+		if(!$transactionID || !$transactionMasterID)
+		return redirect()->to(base_url()."/".'app_inventory_inputunpost/add');
 
-			//Limite de campos por envio del servidor (php.ini): la pantalla avisa antes de guardar si el grid lo supera
-			$datView["maxInputVars"]						= (int)ini_get("max_input_vars");
-
-			//Renderizar Resultado
-			$dataSession["notification"]					= $this->core_web_error->get_error($dataSession["user"]->userID);
-			$dataSession["message"]							=  $this->core_web_notification->get_message();
-			$dataSession["head"]							= /*--inicio view*/ view('app_inventory_inputunpost/edit_head',$datView);//--finview
-			$dataSession["body"]							= /*--inicio view*/ view('app_inventory_inputunpost/edit_body',$datView);//--finview
-			$dataSession["script"]							= /*--inicio view*/ view('app_inventory_inputunpost/edit_script',$datView);//--finview
-			$dataSession["footer"]							= "";				
-			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r
-			
-		}
-		catch(\Exception $ex){
-			if (empty($dataSession)) {
-				return redirect()->to(base_url("core_acount/login"));
-			}
-			
-			$data["session"]   								= $dataSession;
-		    $data["exception"] 								= $ex;
-		    $data["urlLogin"]  								= base_url();
-		    $data["urlIndex"]  								= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
-		    $data["urlBack"]   								= base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
-		    $resultView        								= view("core_template/email_error_general",$data);
-			
-		    echo $resultView;		
-		}
+		return redirect()->to(base_url()."/".'app_inventory_inputunpost/add/companyID/'.$companyID."/transactionID/".$transactionID."/transactionMasterID/".$transactionMasterID);
 	}
+
+	/**
+	 * Pantalla unica de compra: sin transactionMasterID es una compra nueva; con
+	 * /companyID/x/transactionID/y/transactionMasterID/z abre la compra existente.
+	 * Al guardar (AJAX) la misma pantalla pasa a modo edicion sin recargar.
+	 * @return string
+	 */
 	function add(){
-		try{ 
+		try{
 			//AUTENTICADO
 			if(!$this->core_web_authentication->isAuthenticated())
 			throw new \Exception(USER_NOT_AUTENTICATED);
-			$dataSession		= $this->session->get();
-			
-			//PERMISO SOBRE LA FUNCTION
+			$dataSession			= $this->session->get();
+
+			$transactionID			= (int) /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionID");//--finuri
+			$transactionMasterID	= (int) /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"transactionMasterID");//--finuri
+
+			//PERMISO SOBRE LA FUNCTION: agregar (nueva) o editar (existente)
 			if(APP_NEED_AUTHENTICATION == true){
 						$permited = false;
 						$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
-						
+
 						if(!$permited)
 						throw new \Exception(NOT_ACCESS_CONTROL);
-						
-						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),"add",URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+
+						$comando				= $transactionMasterID > 0 ? "edit" : "add";
+						$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),$comando,URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
 						if ($resultPermission 	== PERMISSION_NONE)
-						throw new \Exception(NOT_ALL_INSERT);			
-			
-			}	
-			
-			
-							
-			
-			
-			$companyID 							= $dataSession["user"]->companyID;
-			$branchID 							= $dataSession["user"]->branchID;
-			$roleID 							= $dataSession["role"]->roleID;
-			$userID								= $dataSession["user"]->userID;
-			$dataView["objListWorkflowStage"]	= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_inputunpost","statusID",$companyID,$branchID,$roleID);
-			$dataView["objListWarehouse"]		= $this->Userwarehouse_Model->getRowByUserID($companyID,$userID);
-			
-			//Obtener el componente de Item
-			$objComponentItem		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
-			if(!$objComponentItem)
-			throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
-			
-			//Obtener el componente de Proveedor
-			$objComponentProvider		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_provider");
-			if(!$objComponentProvider)
-			throw new \Exception("EL COMPONENTE 'tb_provider' NO EXISTE...");
-			
-			//Obtener el componente de Entrada sin postear
-			$objComponentInputSinPost		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_inputunpost");
-			if(!$objComponentInputSinPost)
-			throw new \Exception("EL COMPONENTE 'tb_transaction_master_inputunpost' NO EXISTE...");
-			
-			//Obtener el componente de Orden de Compra
-			$objComponentOrdenCompra		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_purchaseorden");
-			if(!$objComponentOrdenCompra)
-			throw new \Exception("EL COMPONENTE 'tb_transaction_master_purchaseorden' NO EXISTE...");
+						throw new \Exception($transactionMasterID > 0 ? NOT_ALL_EDIT : NOT_ALL_INSERT);
+			}
 
-			//Obtener el componente de linea de credito
-			$objComponentCreditLine		= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_credit_line");
-			if(!$objComponentCreditLine)
-			throw new \Exception("EL COMPONENTE 'tb_customer_credit_line' NO EXISTE...");
-			
-			$objParameterWarehouseDefault		= $this->core_web_parameter->getParameter("INVENTORY_ITEM_WAREHOUSE_DEFAULT",$companyID);
-			$warehouseDefault 					= $objParameterWarehouseDefault->value;
-			$dataView["warehouseDefault"]		= $warehouseDefault;
-			$objParameterProviderDefault		= $this->core_web_parameter->getParameter("CXP_PROVIDER_DEFAULT",$companyID);
-			$objParameterProviderDefault 		= $objParameterProviderDefault->value;
-			$dataView["providerDefault"]	 		= $this->Provider_Model->get_rowByProviderNumber($companyID,$objParameterProviderDefault);
-			$dataView["providerNaturalDefault"]	 	= $this->Natural_Model->get_rowByPK($companyID,$dataView["providerDefault"]->branchID,$dataView["providerDefault"]->entityID);
-			$transactionID 							= $this->core_web_transaction->getTransactionID($dataSession["user"]->companyID,"tb_transaction_master_inputunpost",0);
-			//Obtener el catalogo de tipos de precios
-			$dataView["objListTypePreice"]			= $this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID);
-			
-			$objListPrice 							= $this->List_Price_Model->getListPriceToApply($companyID);
-			$dataView["objListPrice"]				= $objListPrice;
-			$dataView["useMobile"]					= $dataSession["user"]->useMobile;
-			$dataView["objComponentItem"] 			= $objComponentItem;
-			$dataView["objComponentProvider"] 		= $objComponentProvider;
-			$dataView["objComponentCreditLine"]		= $objComponentCreditLine;
-			$dataView["objComponentInputSinPost"]	= $objComponentInputSinPost;
-			$dataView["objComponentOrdenCompra"]	= $objComponentOrdenCompra;
-			$dataView["objListCurrency"]			= $this->Company_Currency_Model->getByCompany($companyID);
-			$dataView["objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE"]	= $this->core_web_parameter->getParameterValue("CORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE",$companyID);
-			$dataView["company"]					= $dataSession["company"];
-			$dataView["objListCausal"]				= $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
-			$dataView["objListCompanyPageSetting"]	= $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"app_inventory_inputunpost");
-			
-			$objListComanyParameter						= $this->Company_Parameter_Model->get_rowByCompanyID($dataSession["user"]->companyID);
-			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
-			$objParameterCantidadItemPoup				= $objParameterCantidadItemPoup->value;
-			$dataView["objParameterCantidadItemPoup"] 	= $objParameterCantidadItemPoup;
-			$dataView["pantallaCompra_hiddenSummaryISC"]= getBahavioSession(
-					$dataSession["company"]->type, 
-					"app_inventory_inputunpost", 
-					"pantallaCompra_hiddenSummaryISC", 
-					"",
-					$dataView["objListCompanyPageSetting"]
-				);
-
-			//Renderizar Resultado 
-			$dataSession["notification"]		= $this->core_web_error->get_error($dataSession["user"]->userID);
-			$dataSession["message"]				= $this->core_web_notification->get_message();
-			$dataSession["head"]				= /*--inicio view*/ view('app_inventory_inputunpost/news_head',$dataView);//--finview
-			$dataSession["body"]				= /*--inicio view*/ view('app_inventory_inputunpost/news_body',$dataView);//--finview
-			$dataSession["script"]				= /*--inicio view*/ view('app_inventory_inputunpost/news_script',$dataView);//--finview
-			$dataSession["footer"]				= "";
-			return view("core_masterpage/default_masterpage",$dataSession);//--finview-r
-			
+			return $this->compraRenderPantalla($dataSession,$transactionID,$transactionMasterID);
 		}
 		catch(\Exception $ex){
 			if (empty($dataSession)) {
 				return redirect()->to(base_url("core_acount/login"));
 			}
-			
+
 			$data["session"]   = $dataSession;
 		    $data["exception"] = $ex;
 		    $data["urlLogin"]  = base_url();
 		    $data["urlIndex"]  = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/"."index";
 		    $data["urlBack"]   = base_url()."/". str_replace("app\\controllers\\","",strtolower( get_class($this)))."/".helper_SegmentsByIndex($this->uri->getSegments(), 0, null);
 		    $resultView        = view("core_template/email_error_general",$data);
-			
-		    return $resultView;		
-		}	
-		
+
+		    return $resultView;
+		}
+	}
+
+	/**
+	 * Arma la pantalla de compra (vistas edit_*). En modo nuevo ($transactionMasterID = 0) se usa un
+	 * documento vacio con los valores por defecto que tenia la pantalla de nuevo: bodega y proveedor
+	 * por parametro, estado inicial del workflow, primera moneda y fecha de hoy.
+	 * @param array $dataSession
+	 * @param int   $transactionID
+	 * @param int   $transactionMasterID
+	 * @return string
+	 */
+	private function compraRenderPantalla($dataSession,$transactionID,$transactionMasterID)
+	{
+		$companyID 										= $dataSession["user"]->companyID;
+		$branchID 										= $dataSession["user"]->branchID;
+		$roleID 										= $dataSession["role"]->roleID;
+		$userID 										= $dataSession["user"]->userID;
+		$esNuevo 										= $transactionMasterID <= 0;
+
+		//Obtener el componente de Item
+		$objComponentItem								= $this->core_web_tools->getComponentIDBy_ComponentName("tb_item");
+		if(!$objComponentItem)
+		throw new \Exception("EL COMPONENTE 'tb_item' NO EXISTE...");
+
+		//Obtener el componente de Proveedor
+		$objComponentProvider							= $this->core_web_tools->getComponentIDBy_ComponentName("tb_provider");
+		if(!$objComponentProvider)
+		throw new \Exception("EL COMPONENTE 'tb_provider' NO EXISTE...");
+
+		//Obtener el componente de Entrada sin postear
+		$objComponentInputSinPost						= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_inputunpost");
+		if(!$objComponentInputSinPost)
+		throw new \Exception("EL COMPONENTE 'tb_transaction_master_inputunpost' NO EXISTE...");
+
+		//Obtener el componente de Orden de Compra
+		$objComponentOrdenCompra						= $this->core_web_tools->getComponentIDBy_ComponentName("tb_transaction_master_purchaseorden");
+		if(!$objComponentOrdenCompra)
+		throw new \Exception("EL COMPONENTE 'tb_transaction_master_purchaseorden' NO EXISTE...");
+
+		//Obtener el componente de linea de credito
+		$objComponentCreditLine							= $this->core_web_tools->getComponentIDBy_ComponentName("tb_customer_credit_line");
+		if(!$objComponentCreditLine)
+		throw new \Exception("EL COMPONENTE 'tb_customer_credit_line' NO EXISTE...");
+
+		$datView["objListWarehouse"]					= $this->Userwarehouse_Model->getRowByUserID($companyID,$userID);
+		$datView["objListCurrency"]						= $this->Company_Currency_Model->getByCompany($companyID);
+
+		if($esNuevo)
+		{
+			//Documento vacio con los valores por defecto de una compra nueva
+			$transactionID 								= $this->core_web_transaction->getTransactionID($companyID,"tb_transaction_master_inputunpost",0);
+			$objListWorkflowStage 						= $this->core_web_workflow->getWorkflowInitStage("tb_transaction_master_inputunpost","statusID",$companyID,$branchID,$roleID);
+			$warehouseDefault 							= $this->core_web_parameter->getParameter("INVENTORY_ITEM_WAREHOUSE_DEFAULT",$companyID)->value;
+			$providerNumberDefault 						= $this->core_web_parameter->getParameter("CXP_PROVIDER_DEFAULT",$companyID)->value;
+			$objProvider 								= $this->Provider_Model->get_rowByProviderNumber($companyID,$providerNumberDefault);
+			$objNaturalDefault 							= $this->Natural_Model->get_rowByPK($companyID,$objProvider->branchID,$objProvider->entityID);
+
+			//Bodega por defecto: el parametro guarda el numero de la bodega
+			$targetWarehouseID 							= "";
+			if($datView["objListWarehouse"])
+			{
+				foreach($datView["objListWarehouse"] as $ws)
+				{
+					if($ws->number == $warehouseDefault)
+					$targetWarehouseID = $ws->warehouseID;
+				}
+			}
+
+			$objTM 										= new \stdClass();
+			$objTM->companyID 							= $companyID;
+			$objTM->transactionID 						= $transactionID;
+			$objTM->transactionMasterID 				= 0;
+			$objTM->transactionNumber 					= "00000000";
+			$objTM->isApplied 							= 0;
+			$objTM->transactionOn 						= date("Y-m-d");
+			//la pantalla de nuevo marcaba todos los estados iniciales: el navegador dejaba seleccionado el ultimo
+			$objTM->statusID 							= $objListWorkflowStage ? end($objListWorkflowStage)->workflowStageID : "";
+			$objTM->targetWarehouseID 					= $targetWarehouseID;
+			$objTM->currencyID 							= $datView["objListCurrency"] ? $datView["objListCurrency"][0]->currencyID : "";
+			$objTM->transactionCausalID 				= "";
+			$objTM->entityID 							= $objProvider->entityID;
+			$objTM->reference1 							= "";
+			$objTM->reference2 							= "";
+			$objTM->reference3 							= "";
+			$objTM->reference4 							= "";
+			$objTM->note 								= "";
+			$objTM->tax4 								= "";
+			$objTM->isTemplate 							= 0;
+			$objTM->subAmount 							= 0;
+			$objTM->discount 							= 0;
+			$objTM->tax1 								= 0;
+			$objTM->tax2 								= 0;
+			$objTM->amount 								= 0;
+
+			$datView["objTM"] 							= $objTM;
+			$datView["objListWorkflowStage"] 			= $objListWorkflowStage;
+			$datView["objTMOrdenCompra"] 				= NULL;
+			$datView["objProvider"] 					= $objProvider;
+			$datView["objNaturalDefault"] 				= $objNaturalDefault;
+			$datView["objLegalDefault"] 				= $this->Legal_Model->get_rowByPK($companyID,$objProvider->branchID,$objProvider->entityID);
+			$datView["objTMD"] 							= [];
+			$datView["txtProviderDescription"] 			= $objProvider->providerNumber." / ".($objNaturalDefault ? $objNaturalDefault->firstName : "");
+		}
+		else
+		{
+			$objTM 										= $this->Transaction_Master_Model->get_rowByPK($companyID,$transactionID,$transactionMasterID);
+			if(!$objTM)
+			throw new \Exception("EL DOCUMENTO NO EXISTE");
+
+			$datView["objTM"]	 						= $objTM;
+			$datView["objListWorkflowStage"]			= $this->core_web_workflow->getWorkflowStageByStageInit("tb_transaction_master_inputunpost","statusID",$objTM->statusID,$companyID,$branchID,$roleID);
+			$datView["objTM"]->transactionOn 			= date_format(date_create($objTM->transactionOn),"Y-m-d");
+			$datView["objTMOrdenCompra"]				= $this->Transaction_Master_Model->get_rowByTransactionMasterID($companyID,helper_RequestGetValue($objTM->reference4,"0") );
+			$datView["objProvider"]						= $this->Provider_Model->get_rowByEntity($companyID,$objTM->entityID);
+			$objLegalDefault							= $this->Legal_Model->get_rowByPK($companyID,$datView["objProvider"]->branchID,$datView["objProvider"]->entityID);
+			$datView["objNaturalDefault"]				= $this->Natural_Model->get_rowByPK($companyID,$datView["objProvider"]->branchID,$datView["objProvider"]->entityID);
+			$datView["objLegalDefault"]					= $objLegalDefault;
+			$datView["objTMD"]							= $this->Transaction_Master_Detail_Model->get_rowByTransaction($companyID,$transactionID,$transactionMasterID);
+			$datView["txtProviderDescription"] 			= $datView["objProvider"]->providerNumber."/".($objLegalDefault ? $objLegalDefault->comercialName : "");
+		}
+
+		$datView["esNuevo"]								= $esNuevo;
+		$datView["objDetallePantalla"]					= $esNuevo ? [] : $this->compraObtenerDetallePantalla($companyID,$transactionID,$transactionMasterID);
+		$datView["objListPrice"]						= $this->List_Price_Model->getListPriceToApply($companyID);
+		$datView["objListTypePreice"]					= $this->core_web_catalog->getCatalogAllItem("tb_price","typePriceID",$companyID);
+		$datView["useMobile"]							= $dataSession["user"]->useMobile;
+		$datView["objComponentItem"]	 				= $objComponentItem;
+		$datView["objComponentProvider"]	 			= $objComponentProvider;
+		$datView["objComponentInputSinPost"]			= $objComponentInputSinPost;
+		$datView["objComponentOrdenCompra"]				= $objComponentOrdenCompra;
+		$datView["objComponentCreditLine"]				= $objComponentCreditLine;
+		$datView["company"]								= $dataSession["company"];
+		$datView["objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE"]	= $this->core_web_parameter->getParameterValue("CORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE",$companyID);
+		$datView["objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY"]	= $this->core_web_parameter->getParameterValue("INVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY",$companyID);
+		$datView["objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES"]	= $this->core_web_parameter->getParameterValue("INVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES",$companyID);
+		$datView["objParameterUrlPrinter"]				= $this->core_web_parameter->getParameter("INVENTORY_URL_PRINTER_INPUTUNPOST",$companyID)->value;
+		$datView["objParameterMasive"]					= $this->core_web_parameter->getParameter("ITEM_PRINTER_BARCODE_MASIVE",$companyID)->value;
+		$datView["objListCausal"]						= $this->Transaction_Causal_Model->getCausalByBranch($companyID, $transactionID, $branchID);
+		$datView["objListCreditLine"]					= $this->Customer_Credit_Line_Model->get_rowByBranchID($companyID, $branchID);
+
+		$objListComanyParameter							= $this->Company_Parameter_Model->get_rowByCompanyID($companyID);
+		$datView["objParameterCantidadItemPoup"] 		= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM")->value;
+		$datView["objListCompanyPageSetting"]			= $this->Company_Page_Setting_Model->get_rowByKeyAndController($dataSession["company"]->type,"app_inventory_inputunpost");
+		$datView["pantallaCompra_hiddenSummaryISC"] 	= getBahavioSession(
+				$dataSession["company"]->type,
+				"app_inventory_inputunpost",
+				"pantallaCompra_hiddenSummaryISC",
+				"",
+				$datView["objListCompanyPageSetting"]
+			);
+
+		$datView["maxInputVars"]						= (int)ini_get("max_input_vars");
+
+		//Renderizar Resultado
+		$dataSession["notification"]					= $this->core_web_error->get_error($dataSession["user"]->userID);
+		$dataSession["message"]							= $this->core_web_notification->get_message();
+		$dataSession["head"]							= /*--inicio view*/ view('app_inventory_inputunpost/edit_head',$datView);//--finview
+		$dataSession["body"]							= /*--inicio view*/ view('app_inventory_inputunpost/edit_body',$datView);//--finview
+		$dataSession["script"]							= /*--inicio view*/ view('app_inventory_inputunpost/edit_script',$datView);//--finview
+		$dataSession["footer"]							= "";
+		return view("core_masterpage/default_masterpage",$dataSession);//--finview-r
 	}
 	function index($dataViewID = null){	
 	try{

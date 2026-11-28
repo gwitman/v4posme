@@ -13,7 +13,13 @@
 	var objParameterUrlPrinterCode  								= '<?php echo $objParameterMasive; ?>';
 	var varUseMobile												= '<?php echo $useMobile; ?>';
 	var objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE	= <?php echo $objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE; ?>;
-	var maxInputVars												= <?php echo isset($maxInputVars) ? (int)$maxInputVars : 0; ?>;//limite de campos por envio del servidor (php.ini)
+	var objListTypePreice											= <?php echo json_encode($objListTypePreice, JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP); ?>;
+	//Documento abierto: en una compra nueva transactionMasterID = 0 y cambia al guardar (la pantalla pasa a edicion sin recargar)
+	var varCompanyID												= <?php echo (int)$objTM->companyID; ?>;
+	var varTransactionID											= <?php echo (int)$objTM->transactionID; ?>;
+	var varTransactionMasterID										= <?php echo (int)$objTM->transactionMasterID; ?>;
+	var objDetalleInicial											= <?php echo json_encode($objDetallePantalla, JSON_HEX_TAG|JSON_HEX_APOS|JSON_HEX_QUOT|JSON_HEX_AMP|(defined("JSON_INVALID_UTF8_SUBSTITUTE") ? JSON_INVALID_UTF8_SUBSTITUTE : 0)); ?>;
+	var compraGuardando												= false;//evita doble envio mientras se guarda
 	var objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY	= '<?php echo $objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY; ?>';
 	var objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES	= '<?php echo $objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES; ?>';
 	var sScrollY 													= objParameterCORE_VIEW_CUSTOM_SCROLL_IN_DETATAIL_PURSHASE == true ?  "350px" : "auto";
@@ -51,37 +57,7 @@
 			"sScrollY"		: sScrollY,
 			/*"sScrollX"		: "350px",*/
 			"bAutoWidth"	: false,
-			"aaData": [<?php 
-					if($objTMD){
-						$listrow = [];									
-						foreach($objTMD as $i)
-						{
-						$listrow[] = 
-							"[
-								0,
-								".$i->componentItemID.",
-								".$i->transactionMasterDetailID.",
-								'".$i->barCode."',
-								'".str_replace('\'','',$i->itemName)."',
-								'".$i->unitMeasureName."',
-								fnFormatNumber(".(float)$i->quantity.",numberDecimal),
-								fnFormatNumber(".(float)$i->unitaryCost.",numberDecimal),
-								fnFormatNumber(".(float)$i->unitaryCost.",numberDecimal),
-								fnFormatNumber(".(float)$i->unitaryAmount.",2),
-								'".helper_RequestGetValue($i->lote,'')."',
-								'".helper_RequestGetValue($i->expirationDate,'')."',
-								'mas informacion',
-								'".explode("|",helper_RequestGetValue($i->reference3,'0|0'))[0]."',
-								'".explode("|",helper_RequestGetValue($i->reference3,'0|0'))[1]."',
-								'".helper_RequestGetValue($i->reference4,'')."',								
-								fnFormatNumber(".(float)$i->tax1.",numberDecimal),
-								fnFormatNumber(".(float)$i->tax2.",numberDecimal),
-								fnFormatNumber(".((float)$i->quantity * (float)$i->unitaryCost).",numberDecimal),
-							]";
-						}
-						echo implode(",",$listrow);
-					}
-				?>],
+			"aaData"		: fnDetalleFilas(objDetalleInicial),
 			"aoColumnDefs": [ 
 						{
 							"aTargets"	: [ columnIndexCheck ],//checked
@@ -258,7 +234,7 @@
 		if(objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES == "true"){
 			objectParameterButtoms.push({ text : "Imprimir cantidades", click : function(){
 				fnWaitOpen();
-				window.open("<?php echo base_url(); ?>/"+objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY +"/companyID/<?php echo $objTM->companyID;?>/transactionID/<?php echo $objTM->transactionID;?>/transactionMasterID/<?php echo $objTM->transactionMasterID;?>","_blank");
+				window.open("<?php echo base_url(); ?>/"+objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_ONLY_QUANTITY +""+fnUrlDocumento(),"_blank");
 				fnWaitClose();
 				$(this).dialog("close");
 			}});
@@ -266,7 +242,7 @@
 
 		objectParameterButtoms.push({ text : "Imprimir", "class" : "pv2pd-btn-primary", click : function(){
 			fnWaitOpen();
-			window.open("<?php echo base_url(); ?>/"+objParameterUrlPrinter+"/companyID/<?php echo $objTM->companyID;?>/transactionID/<?php echo $objTM->transactionID;?>/transactionMasterID/<?php echo $objTM->transactionMasterID;?>","_blank");
+			window.open("<?php echo base_url(); ?>/"+objParameterUrlPrinter+""+fnUrlDocumento(),"_blank");
 			fnWaitClose();
 			$(this).dialog("close");
 		}});
@@ -336,7 +312,7 @@
 			if(objParameterINVENTORY_URL_PRINTER_INPUTUNPOST_SHOW_OPCIONES == "false")
 			{
 				fnWaitOpen();							
-				window.open("<?php echo base_url(); ?>/"+objParameterUrlPrinter+"/companyID/<?php echo $objTM->companyID;?>/transactionID/<?php echo $objTM->transactionID;?>/transactionMasterID/<?php echo $objTM->transactionMasterID;?>","_blank");
+				window.open("<?php echo base_url(); ?>/"+objParameterUrlPrinter+""+fnUrlDocumento(),"_blank");
 				fnWaitClose();
 			}
 			else
@@ -355,13 +331,15 @@
 		
 		//Archivos
 		$(document).on("click","#btnClickArchivo",function(){
-			window.open("<?php echo base_url()."/core_elfinder/index/componentID/".$objComponentInputSinPost->componentID."/componentItemID/".$objTM->transactionMasterID; ?>","blanck");
+			window.open("<?php echo base_url()."/core_elfinder/index/componentID/".$objComponentInputSinPost->componentID."/componentItemID/"; ?>"+varTransactionMasterID,"blanck");
 		});
 		
 		//Guardar Documento
-		$(document).on("click","#btnAcept",function(){
-				$( "#form-new-transaction" ).attr("method","POST");
-				$( "#form-new-transaction" ).attr("action","<?php echo base_url(); ?>/app_inventory_inputunpost/save/edit");
+		//(por AJAX: nueva = save/new, existente = save/edit; la pantalla no se recarga)
+		$(document).on("click","#btnAcept",function(e){
+				e.preventDefault();
+				if(compraGuardando)
+					return;
 
 				//Campo de archivo vacio = sin importacion
 				if($.trim($("#txtFileImport").val()) == "")
@@ -369,19 +347,15 @@
 
 				if(validateForm()){
 
-					//Si hay un archivo .csv: validar, importar por lotes y luego guardar
-					if(fnImportHayArchivo() && $("#txtFileImportProcesado").val() != "1")
+					//Si hay un archivo .csv (solo en compras ya guardadas): validar, importar por lotes y luego guardar
+					if(!fnEsNuevo() && fnImportHayArchivo() && $("#txtFileImportProcesado").val() != "1")
 					{
 						fnImportValidarArchivo();
 						return;
 					}
 
-					//Sin archivo el detalle viaja en el POST: no enviar si supera el limite del servidor
-					if(!fnValidarLimiteCampos())
-						return;
-
-					fnWaitOpen();
-					$( "#form-new-transaction" ).submit();
+					//Sin archivo el detalle viaja como JSON en un solo campo (no depende de max_input_vars)
+					fnGuardarCompra(true, null);
 				}
 
 		});
@@ -409,7 +383,8 @@
 				e.preventDefault();
 				fnImportCargarArchivos(true);
 		});
-		fnImportCargarArchivos(false);
+		if(!fnEsNuevo())
+			fnImportCargarArchivos(false);
 
 		//Dialogo de codigos repetidos (3 opciones)
 		//(pimp-dialog: estilo moderno definido en resumen_flotante.php; el encabezado va dentro del contenido)
@@ -457,7 +432,7 @@
 					dataType    : 'json',
 					type        : 'POST',
 					url  		: "<?php echo base_url(); ?>/app_inventory_inputunpost/delete",
-					data 		: {companyID : <?php echo $objTM->companyID;?>, transactionID : <?php echo $objTM->transactionID;?> , transactionMasterID : <?php echo $objTM->transactionMasterID;?>  },
+					data 		: {companyID : varCompanyID, transactionID : varTransactionID , transactionMasterID : varTransactionMasterID  },
 					success:function(data){
 						console.info("complete delete success");
 						fnWaitClose();
@@ -740,7 +715,9 @@
 		if($("#txtFileImport").val() == ".csv")
 		{
 			var lengthRow = objTableDetailTransaction.fnGetData().length;
-			if(lengthRow == 0){
+			//Compra nueva con plantilla: puede ir sin detalle, el servidor copia el de la plantilla
+			var conPlantilla = fnEsNuevo() && $("#txtTransactionMasterIDOrdenCompra").val() != "";
+			if(lengthRow == 0 && !conPlantilla){
 				fnShowNotification("Agregar el Detalle del Documento","error",timerNotification);
 				result = false;
 			}
@@ -805,6 +782,12 @@
 			result = false;
 		}
 
+		//Validacion personalizada por tipo de empresa que tenia la pantalla de compra nueva
+		if(fnEsNuevo())
+		{
+			<?php echo getBehavio($company->type,"app_inventory_inputunpost","new_script_validate_reference1",""); ?>
+		}
+
 		return result;
 	}
 
@@ -814,25 +797,6 @@
 	var importTamanoLote = 200; //filas por peticion: cada una termina antes del timeout del servidor
 
 	//Hay archivo cuando el campo tiene un nombre distinto a la extension por defecto
-	//Valida que el formulario no supere max_input_vars del servidor (PHP descarta en silencio los campos excedentes
-	//y se borrarian las lineas del detalle que no llegan). Devuelve true si se puede enviar.
-	function fnValidarLimiteCampos()
-	{
-		//Margen para campos agregados por el navegador o el tema
-		var margen 		= 20;
-		var cantidad 	= $("#form-new-transaction").serializeArray().length;
-		if(maxInputVars <= 0 || (cantidad + margen) <= maxInputVars)
-			return true;
-
-		var filas = objTableDetailTransaction.fnGetData().length;
-		fnShowNotification(
-			"No se puede guardar: el detalle tiene " + fnImportMiles(filas) + " filas (" + fnImportMiles(cantidad) + " campos) " +
-			"y el servidor solo acepta " + fnImportMiles(maxInputVars) + " campos por envio. " +
-			"Seleccione el archivo .csv en el combo y guarde, o solicite aumentar max_input_vars en el servidor.","error",30000
-		);
-		return false;
-	}
-
 	function fnImportHayArchivo()
 	{
 		var archivo = $.trim($("#txtFileImport").val());
@@ -845,9 +809,16 @@
 	//y tapa el texto con su propia flecha. Este combo usa el select nativo con el estilo de resumen_flotante.php.
 	function fnImportQuitarUniform()
 	{
-		var $combo = $("#txtFileImport");
-		if($combo.parent().hasClass("selector"))
-		{
+		fnQuitarUniform("#txtFileImport");
+	}
+
+	//Quita el envoltorio uniform del tema a los combos indicados (quedan como select nativo del navegador)
+	function fnQuitarUniform(selector)
+	{
+		$(selector).each(function(){
+			var $combo = $(this);
+			if(!$combo.parent().hasClass("selector"))
+				return;
 			if($.uniform && typeof $.uniform.restore == "function")
 				$.uniform.restore($combo);
 			else
@@ -855,7 +826,24 @@
 				$combo.siblings("span").remove();
 				$combo.unwrap().css("opacity","");
 			}
+		});
+	}
+
+	//Agrega una fila al detalle y la deja al inicio del grid (el registro mas reciente arriba).
+	//bSort esta apagado: el orden visible es aiDisplayMaster, se mueve el indice nuevo al principio.
+	function fnDetalleAgregarAlInicio(fila)
+	{
+		var oSettings 	= objTableDetailTransaction.fnSettings();
+		var indices 	= objTableDetailTransaction.fnAddData(fila, false);
+		for(var i = 0; i < indices.length; i++)
+		{
+			var pos = $.inArray(indices[i], oSettings.aiDisplayMaster);
+			if(pos >= 0)
+				oSettings.aiDisplayMaster.splice(pos, 1);
 		}
+		Array.prototype.unshift.apply(oSettings.aiDisplayMaster, indices);
+		oSettings.aiDisplay = oSettings.aiDisplayMaster.slice();
+		objTableDetailTransaction.fnDraw();
 	}
 
 	function fnImportCargarArchivos(avisar)
@@ -869,8 +857,8 @@
 			type 		: "POST",
 			url 		: "<?php echo base_url(); ?>/app_inventory_inputunpost/listarArchivosImportacion",
 			data 		: {
-				transactionID 		: <?php echo $objTM->transactionID;?>,
-				transactionMasterID : <?php echo $objTM->transactionMasterID;?>
+				transactionID 		: varTransactionID,
+				transactionMasterID : varTransactionMasterID
 			},
 			success 	: function(json){
 				//Error
@@ -908,8 +896,8 @@
 	function fnImportParametros()
 	{
 		return {
-			transactionID 		: <?php echo $objTM->transactionID;?>,
-			transactionMasterID : <?php echo $objTM->transactionMasterID;?>,
+			transactionID 		: varTransactionID,
+			transactionMasterID : varTransactionMasterID,
 			fileName 			: $.trim($("#txtFileImport").val())
 		};
 	}
@@ -1055,7 +1043,7 @@
 				}
 
 				//Paso 3: detalle importado, guardar el documento sin reprocesar el archivo
-				//La ventana queda abierta en estado "completado" mientras se guarda (la pagina se recarga al terminar)
+				//La ventana queda abierta en estado "completado" mientras se guarda (por AJAX, sin recargar)
 				$("#divImportProgreso").addClass("pimp-terminado");
 				$("#lblImportTitulo").text("Importacion completa");
 				$("#lblImportProgreso").text("Guardando la compra...");
@@ -1065,9 +1053,18 @@
 					fnImportMiles(acumulado.omitidas) + " omitida(s). Guardando...","success",15000
 				);
 				$("#txtFileImportProcesado").val("1");
-				//El detalle ya quedo guardado desde el archivo: no se envia el grid (evita superar max_input_vars)
-				$("#body_detail_transaction").find("input, select, textarea").prop("disabled", true);
-				$("#form-new-transaction").submit();
+				//El detalle ya quedo guardado desde el archivo: se guarda solo el encabezado (sin el grid)
+				//y el grid se recarga con el detalle importado que devuelve el servidor
+				fnGuardarCompra(false, function(guardado){
+					$("#modalDialogImportProgreso").dialog("close");
+					if(!guardado)
+						return;
+
+					//Listo para otra importacion
+					$("#txtFileImport").val(".csv");
+					$("#txtFileImportProcesado").val("0");
+					$("#txtImportModoRepetidos").val("");
+				});
 			},
 			error 		: function(xhr){
 				$("#modalDialogImportProgreso").dialog("close");
@@ -1108,6 +1105,212 @@
 	{
 		$("#txtCreditLineID").val("");
 		$("#txtCreditLineDescription").val("");
+	}
+
+	/////////////////////////////////////////////
+	//Pantalla unica de compra: guardado por AJAX
+	/////////////////////////////////////////////
+
+	//Compra nueva (todavia no guardada)
+	function fnEsNuevo()
+	{
+		return !(parseInt(varTransactionMasterID,10) > 0);
+	}
+
+	//Segmento de URL del documento abierto (impresiones)
+	function fnUrlDocumento()
+	{
+		return "/companyID/" + varCompanyID + "/transactionID/" + varTransactionID + "/transactionMasterID/" + varTransactionMasterID;
+	}
+
+	//Convierte el detalle que devuelve el servidor en filas del grid (mismas 19 columnas)
+	function fnDetalleFilas(lista)
+	{
+		var filas = [];
+		if(!lista)
+			return filas;
+
+		for(var i = 0; i < lista.length; i++)
+		{
+			var d = lista[i];
+			filas.push([
+				0,
+				d.itemID,
+				d.transactionMasterDetailID,
+				d.barCode,
+				d.itemName,
+				d.unitMeasureName,
+				fnFormatNumber(d.quantity,numberDecimal),
+				fnFormatNumber(d.unitaryCost,numberDecimal),
+				fnFormatNumber(d.unitaryCost,numberDecimal),
+				fnFormatNumber(d.unitaryAmount,2),
+				d.lote,
+				d.expirationDate,
+				'mas informacion',
+				d.price2,
+				d.price3,
+				d.reference4,
+				fnFormatNumber(d.tax1,numberDecimal),
+				fnFormatNumber(d.tax2,numberDecimal),
+				fnFormatNumber(d.subTotal,numberDecimal)
+			]);
+		}
+		return filas;
+	}
+
+	//Detalle a enviar: se lee de los inputs de cada fila (los mismos valores que antes viajaban como txtDetail*[])
+	function fnDetalleParaEnviar()
+	{
+		var lista = [];
+		$("#tb_transaction_master_detail tbody tr").each(function(){
+			var $fila = $(this);
+			//fila "sin datos" de DataTables
+			if($fila.find("input[name='txtDetailItemID[]']").length == 0)
+				return;
+
+			lista.push({
+				transactionMasterDetailID 	: $fila.find("input[name='txtDetailTransactionDetailID[]']").val(),
+				itemID 						: $fila.find("input[name='txtDetailItemID[]']").val(),
+				quantity 					: $fila.find("input[name='txtDetailQuantity[]']").val(),
+				cost 						: $fila.find("input[name='txtDetailCost[]']").val(),
+				lote 						: $fila.find("input[name='txtDetailLote[]']").val(),
+				vencimiento 				: $fila.find("input[name='txtDetailVencimiento[]']").val(),
+				price 						: $fila.find("input[name='txtDetailPrice[]']").val(),
+				price2 						: $fila.find("input[name='txtDetailPrice2[]']").val(),
+				price3 						: $fila.find("input[name='txtDetailPrice3[]']").val(),
+				reference4 					: $fila.find("input[name='txtReference4TransactionMasterDetail[]']").val(),
+				iva 						: $fila.find("input[name='txtDetailIva[]']").val(),
+				isc 						: $fila.find("input[name='txtDetailIsc[]']").val()
+			});
+		});
+		return lista;
+	}
+
+	//Guarda la compra por AJAX. enviarDetalle = false cuando el detalle ya se grabo desde el archivo .csv.
+	//alTerminar(guardado) se llama al final (opcional).
+	function fnGuardarCompra(enviarDetalle, alTerminar)
+	{
+		var timerNotification 	= 15000;
+		var modo 				= fnEsNuevo() ? "new" : "edit";
+		//encabezado del formulario sin los inputs del grid
+		var datos 				= $("#form-new-transaction").find(":input").not("#tb_transaction_master_detail :input").serializeArray();
+		datos.push({name : "txtModoAjax", value : "1"});
+
+		if(enviarDetalle)
+		{
+			var detalle = fnDetalleParaEnviar();
+			//todas las filas del grid deben estar en el envio
+			if(detalle.length != objTableDetailTransaction.fnGetData().length)
+			{
+				fnShowNotification("No se pudo leer todo el detalle de la compra, recargue la pantalla e intente de nuevo","error",timerNotification);
+				if(alTerminar) alTerminar(false);
+				return;
+			}
+			datos.push({name : "txtDetailJSON", 	value : JSON.stringify(detalle)});
+			datos.push({name : "txtDetailCount", 	value : detalle.length});
+		}
+
+		compraGuardando = true;
+		fnWaitOpen();
+		$.ajax({
+			cache 		: false,
+			dataType 	: "json",
+			type 		: "POST",
+			url 		: "<?php echo base_url(); ?>/app_inventory_inputunpost/save/" + modo,
+			data 		: $.param(datos),
+			success 	: function(json){
+				compraGuardando = false;
+				fnWaitClose();
+
+				//Error
+				if(!json || json.error === true)
+				{
+					fnShowNotification(json && json.message ? json.message : "No se pudo guardar la compra","error",timerNotification);
+					if(alTerminar) alTerminar(false);
+					return;
+				}
+
+				//Sin datos
+				if(!json.data)
+				{
+					fnShowNotification("El servidor no devolvio la compra guardada, recargue la pantalla","error",timerNotification);
+					if(alTerminar) alTerminar(false);
+					return;
+				}
+
+				//Con datos: la pantalla queda en modo edicion con lo guardado
+				fnAplicarCompraGuardada(json.data);
+				fnShowNotification("Compra #" + fnImportEscapar(json.data.transactionNumber) + " guardada","success",6000);
+				if(alTerminar) alTerminar(true);
+			},
+			error 		: function(xhr){
+				compraGuardando = false;
+				fnWaitClose();
+				fnShowNotification("No se pudo guardar la compra (error " + xhr.status + "). Revise la conexion e intente de nuevo.","error",timerNotification);
+				if(alTerminar) alTerminar(false);
+			}
+		});
+	}
+
+	//Actualiza la pantalla con la compra guardada: ids, numero, estado, workflow, detalle y acciones de edicion
+	function fnAplicarCompraGuardada(data)
+	{
+		var eraNuevo 			= fnEsNuevo();
+		varCompanyID 			= data.companyID;
+		varTransactionID 		= data.transactionID;
+		varTransactionMasterID 	= data.transactionMasterID;
+
+		$("#txtCompanyID").val(data.companyID);
+		$("#txtTransactionID").val(data.transactionID);
+		$("#txtTransactionMasterID").val(data.transactionMasterID);
+		$("#txtTransactionNumber").val(data.transactionNumber);
+		$("#lblTransactionNumber, #lblTransactionNumberMobile").text(data.transactionNumber);
+		$("#lblEstadoDocumento").text(data.isApplied == 1 ? "Aplicado" : "Edición").toggleClass("is-applied", data.isApplied == 1);
+		$("#lblSubtituloDocumento").text("Revisa o modifica la compra al proveedor");
+		$("#lblTituloPantalla").text("EDITAR COMPRA");
+
+		//Estados permitidos desde el estado actual (como al abrir la compra)
+		var $estado = $("#txtStatusID");
+		$estado.find("option").remove();
+		$estado.append($("<option></option>"));
+		$.each(data.listWorkflowStage || [], function(i, ws){
+			$estado.append($("<option></option>").val(ws.workflowStageID).text(ws.name));
+		});
+		$estado.val(String(data.statusID));
+
+		//Detalle tal como quedo en la base de datos (ids nuevos de las lineas), en el mismo orden
+		//que tenia en pantalla (los agregados al inicio siguen arriba). Las lineas que no estaban en
+		//pantalla (importadas del .csv) van despues, en el orden del servidor.
+		var ordenPantalla 	= {};
+		var detallePantalla = fnDetalleParaEnviar();
+		for(var p = 0; p < detallePantalla.length; p++)
+			ordenPantalla["i" + detallePantalla[p].itemID] = p;
+
+		var detalleOrdenado = [];
+		$.each(data.detalle || [], function(i, d){
+			var clave = "i" + d.itemID;
+			detalleOrdenado.push({ d : d, orden : ordenPantalla.hasOwnProperty(clave) ? ordenPantalla[clave] : 1000000 + i });
+		});
+		detalleOrdenado.sort(function(a, b){ return a.orden - b.orden; });
+
+		objTableDetailTransaction.fnClearTable();
+		var filas = fnDetalleFilas($.map(detalleOrdenado, function(x){ return x.d; }));
+		if(filas.length > 0)
+			objTableDetailTransaction.fnAddData(filas);
+		refreschChecked();
+		onCompletePantalla();
+		fnUpdateDetail();
+
+		//Primera vez: se habilitan Eliminar, Imprimir, Archivos e Importar
+		if(eraNuevo)
+		{
+			$(".pinv-solo-edicion").removeClass("pinv-oculto-nuevo");
+			fnImportCargarArchivos(false);
+		}
+
+		//La URL queda apuntando a la compra (al recargar se abre la misma)
+		if(window.history && typeof window.history.replaceState == "function")
+			window.history.replaceState(null, "", "<?php echo base_url(); ?>/app_inventory_inputunpost/add" + fnUrlDocumento());
 	}
 
 	function onCompleteUpdateMasInformacion(objResponse){
@@ -1187,7 +1390,7 @@
 			else
 			{
 				
-				objTableDetailTransaction.fnAddData
+				fnDetalleAgregarAlInicio
 				(
 					[
 					objRow.checked,
@@ -1219,9 +1422,8 @@
 		
 		
 		refreschChecked();
-		var lastRow 	= $(".txtDetailQuantity").length ;
-		lastRow 		= lastRow - 1;
-		$($(".txtDetailQuantity")[lastRow]).focus();
+		//El producto agregado queda en la primera fila
+		$($(".txtDetailQuantity")[0]).focus();
 		fnUpdateDetail();
 		
 	}
@@ -1319,6 +1521,18 @@
 		
 	}
 	
+	//Combos del documento con el select nativo del navegador (sin select2 ni uniform del tema)
+	$(document).ready(function(){
+		fnQuitarUniform("select.pinv-combo-nativo");
+		setTimeout(function(){ fnQuitarUniform("select.pinv-combo-nativo"); }, 0);
+
+		//Nuevo: abre la pantalla limpia en modo compra nueva (no mientras se esta guardando)
+		$(document).on("click","#btnNew",function(e){
+			if(compraGuardando)
+				e.preventDefault();
+		});
+	});
+
 	//Telefono: combos nativos (sin select2) y calendario nativo en las fechas. En PC no cambia nada
 	$(document).ready(function(){
 		PosmeInv.mobileSelects();

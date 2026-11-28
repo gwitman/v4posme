@@ -720,8 +720,9 @@ Ver también: Mostrar una consulta de reporte como tarjeta en un dashboard (grá
 ## Registrar una compra de mercadería
 Ruta: Menú > INVENTARIO > COMPRA.
 1. Presione **Nuevo**, seleccione el proveedor, la bodega y la fecha.
-2. Agregue los productos con su cantidad y costo.
-3. Guarde y aplique la compra para que aumente el inventario. <!-- REVISAR -->
+2. Agregue los productos con su cantidad y costo. Cada producto agregado aparece en la primera fila del detalle.
+3. Guarde y aplique la compra para que aumente el inventario.
+Guardar sin recargar: al presionar **Guardar** la compra se guarda sin salir de la pantalla y sin límite de líneas en el detalle. Si era nueva, la pantalla pasa a edición con el número asignado y aparecen **Eliminar**, **Imprimir**, la pestaña **Archivos** y la importación. Al abrir una compra desde la lista se usa esta misma pantalla. El botón **Nuevo** limpia la pantalla para registrar otra compra. Los combos Estado, Bodega, Moneda y Causal usan la lista normal del navegador. <!-- REVISAR -->
 Pantalla: la información está en tarjetas de color: **Documento**, **Proveedor**, **Resumen** y **Detalle**. El total se muestra con fondo de color y las filas del detalle se ven alternadas para leerlas mejor.
 Resumen siempre visible: en computadora o laptop, al bajar en la pantalla el **Resumen** (Sub total, Descuento, IVA, ISC y Total) queda fijo como una franja en la parte de arriba. En el teléfono los totales siguen en la barra de abajo, como siempre.
 % de utilidad en el detalle (ingreso de inventario nuevo y al editar): debajo del **Precio** de cada línea hay un campo % de utilidad sobre el costo de la línea. Escriba el precio y el % se calcula solo, o escriba el % y, al terminar, la línea se recalcula como si hubiera cambiado el precio. Al cambiar el costo o el precio, el % se actualiza. Sin costo, el % queda bloqueado.
@@ -735,7 +736,7 @@ Ruta: Menú > INVENTARIO > COMPRA, abra una compra ya guardada (la importación 
 3. En la tarjeta **Detalle**, elija el archivo en la lista que está junto al botón **Importar**. La lista muestra los archivos .csv subidos en **Archivos**, del más nuevo al más antiguo, con su fecha. Si acaba de subir uno y no aparece, pulse el botón de actualizar que está a la derecha de la lista.
 4. Presione **Importar** (o **Guardar**).
 5. El sistema primero revisa el archivo. Si está bien, lo importa por lotes de 200 filas y muestra la ventana **Importando archivo** con una barra de avance.
-6. Al terminar, la compra se guarda sola con el detalle importado.
+6. Al terminar, la compra se guarda sola con el detalle importado y el detalle se muestra en la misma pantalla, sin recargar.
 Notas: no cierre ni recargue la página mientras avanza la barra, sobre todo con archivos grandes (más de 1000 líneas). Si el código de una fila ya existe en el inventario, se usa ese producto. Si elige otro archivo, debe importar de nuevo.
 Ver también: Errores y códigos repetidos al importar una compra; Registrar una compra de mercadería.
 

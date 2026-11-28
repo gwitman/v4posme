@@ -1,3 +1,5 @@
+<!-- pantalla unica de compra: en modo nuevo se ocultan las acciones que requieren el documento guardado (clase pinv-oculto-nuevo; edit_script la quita al guardar) -->
+<style>.pinv-oculto-nuevo{display:none !important;}</style>
 <div class="pv2 pinv pinv-compra pinv-inputunpost pv2-has-mbar">
 
 	<!-- encabezado y acciones -->
@@ -5,14 +7,15 @@
 		<div class="pv2-header-info">
 			<div class="pv2-header-icon"><i class="icon20 i-last"></i></div>
 			<div>
-				<p class="pv2-header-title">Compra #<span class="invoice-num"><?php echo $objTM->transactionNumber;?></span> <span class="pv2-chip<?php if($objTM->isApplied == 1) echo " is-applied"; ?>"><?php echo ($objTM->isApplied == 1) ? "Aplicado" : "Edición"; ?></span></p>
-				<p class="pv2-header-sub">Revisa o modifica la compra al proveedor</p>
+				<p class="pv2-header-title">Compra #<span class="invoice-num" id="lblTransactionNumber"><?php echo $objTM->transactionNumber;?></span> <span id="lblEstadoDocumento" class="pv2-chip<?php if($objTM->isApplied == 1) echo " is-applied"; ?>"><?php echo $esNuevo ? "Nuevo" : (($objTM->isApplied == 1) ? "Aplicado" : "Edición"); ?></span></p>
+				<p class="pv2-header-sub" id="lblSubtituloDocumento"><?php echo $esNuevo ? "Registra una compra al proveedor" : "Revisa o modifica la compra al proveedor"; ?></p>
 			</div>
 		</div>
 		<div class="pv2-actions">
 			<a href="<?php echo base_url(); ?>/app_inventory_inputunpost/index" id="btnBack" class="btn btn-default" ><i class="icon16 i-rotate"></i> Atras</a>
-			<a href="#" class="btn btn-danger" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>
-			<a href="#" class="btn btn-default" id="btnPrinter"><i class="icon16 i-print"></i> Imprimir</a>
+			<a href="#" class="btn btn-danger pinv-solo-edicion<?php echo $esNuevo ? " pinv-oculto-nuevo" : ""; ?>" id="btnDelete"><i class="icon16 i-remove"></i> Eliminar</a>
+			<a href="#" class="btn btn-default pinv-solo-edicion<?php echo $esNuevo ? " pinv-oculto-nuevo" : ""; ?>" id="btnPrinter"><i class="icon16 i-print"></i> Imprimir</a>
+			<a href="<?php echo base_url(); ?>/app_inventory_inputunpost/add" class="btn btn-success" id="btnNew"><i class="icon16 i-plus"></i> Nuevo</a>
 			<a href="#" class="btn btn-primary pv2-hide-xs" id="btnAcept"><i class="icon16 i-checkmark-4"></i> Guardar</a>
 		</div>
 	</div>
@@ -22,10 +25,10 @@
 	<form id="form-new-transaction" name="form-new-transaction" role="form" autocomplete="off">
 	<div class="printArea">
 
-		<input type="hidden" name="txtCompanyID" value="<?php echo $objTM->companyID; ?>">
-		<input type="hidden" name="txtTransactionID" value="<?php echo $objTM->transactionID; ?>">
-		<input type="hidden" name="txtTransactionMasterID" value="<?php echo $objTM->transactionMasterID; ?>">
-		<input type="hidden" name="txtTransactionNumber" value="<?php echo $objTM->transactionNumber ?>">
+		<input type="hidden" name="txtCompanyID" id="txtCompanyID" value="<?php echo $objTM->companyID; ?>">
+		<input type="hidden" name="txtTransactionID" id="txtTransactionID" value="<?php echo $objTM->transactionID; ?>">
+		<input type="hidden" name="txtTransactionMasterID" id="txtTransactionMasterID" value="<?php echo $objTM->transactionMasterID; ?>">
+		<input type="hidden" name="txtTransactionNumber" id="txtTransactionNumber" value="<?php echo $objTM->transactionNumber ?>">
 
 		<div class="row">
 			<div class="col-xs-12 col-md-8">
@@ -39,7 +42,7 @@
 						<li class="active"><a href="#home" data-toggle="tab">Informacion</a></li>
 						<li><a href="#profile" data-toggle="tab">Referencias</a></li>
 						<li><a href="#dropdown" data-toggle="tab">Comentario</a></li>
-						<li><a id="btnClickArchivo"  href="#dropdown-file" data-toggle="tab">Archivos</a></li>
+						<li class="pinv-solo-edicion<?php echo $esNuevo ? " pinv-oculto-nuevo" : ""; ?>"><a id="btnClickArchivo"  href="#dropdown-file" data-toggle="tab">Archivos</a></li>
 					</ul>
 					<!--tab menu-->
 
@@ -57,7 +60,7 @@
 								</div>
 								<div class="col-xs-12 col-sm-6 col-md-4 form-group">
 									<label class="pv2-label" for="txtStatusID">Estado</label>
-									<select name="txtStatusID" id="txtStatusID" class="<?php echo ($useMobile == "1" ? "form-control" : "select2"); ?>">
+									<select name="txtStatusID" id="txtStatusID" class="form-control pinv-combo-nativo">
 											<option></option>
 											<?php
 											if($objListWorkflowStage)
@@ -72,7 +75,7 @@
 								</div>
 								<div class="col-xs-12 col-sm-6 col-md-4 form-group">
 									<label class="pv2-label" for="txtWarehouseID">Bodega</label>
-									<select name="txtWarehouseID" id="txtWarehouseID" class="select2">
+									<select name="txtWarehouseID" id="txtWarehouseID" class="form-control pinv-combo-nativo">
 											<option></option>
 											<?php
 											if($objListWarehouse)
@@ -87,7 +90,7 @@
 								</div>
 								<div class="col-xs-12 col-sm-6 col-md-4 form-group">
 									<label class="pv2-label" for="txtCurrencyID">Moneda</label>
-									<select name="txtCurrencyID" id="txtCurrencyID" class="select2">
+									<select name="txtCurrencyID" id="txtCurrencyID" class="form-control pinv-combo-nativo">
 											<?php
 											$count = 0;
 											if($objListCurrency)
@@ -103,7 +106,7 @@
 								</div>
 								<div class="col-xs-12 col-sm-6 col-md-4 form-group">
 									<label class="pv2-label" for="txtCausalID">Causal</label>
-									<select name="txtCausalID" id="txtCausalID" class="select2">
+									<select name="txtCausalID" id="txtCausalID" class="form-control pinv-combo-nativo">
 										<option></option>
 										<?php
 										$count = 0;
@@ -166,7 +169,7 @@
 							<label class="pv2-label" for="txtProviderDescription">Proveedor</label>
 							<div class="input-group pinv-search">
 								<input type="hidden" id="txtProviderID" name="txtProviderID" value="<?php echo $objProvider->entityID; ?>">
-								<input class="form-control" readonly id="txtProviderDescription" type="txtProviderDescription" value="<?php echo $objProvider->providerNumber."/".$objLegalDefault->comercialName ?>">
+								<input class="form-control" readonly id="txtProviderDescription" type="txtProviderDescription" value="<?php echo $txtProviderDescription; ?>">
 								<span class="input-group-btn">
 									<button class="btn btn-default" type="button" id="btnClearProvider" title="Quitar">
 										<i aria-hidden="true" class="i-undo-2"></i><span class="pinv-btn-text">Quitar</span>
@@ -268,7 +271,7 @@
 			<div class="pv2-detail-head">
 				<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-list-2"></i></span> Detalle <span class="pinv-count">0</span></p>
 				<div class="pv2-actions">
-					<span class="pinv-import">
+					<span class="pinv-import pinv-solo-edicion<?php echo $esNuevo ? " pinv-oculto-nuevo" : ""; ?>">
 						<a href="#" class="btn btn-default btn-sm" id="btnImportDetailTransaction" ><i class="icon16 i-upload"></i> Importar</a>
 						<!-- archivos .csv de la pestana Archivos, del mas nuevo al mas antiguo (se llena por AJAX: listarArchivosImportacion) -->
 						<select class="form-control" name="txtFileImport" id="txtFileImport" autocomplete="off" title="Archivo .csv subido en Archivos">
@@ -397,7 +400,7 @@
 	<!-- barra inferior (telefono) -->
 	<div class="pv2-mbar">
 		<div class="pv2-mbar-info">
-			<p class="pv2-mbar-label">Compra #<?php echo $objTM->transactionNumber;?></p>
+			<p class="pv2-mbar-label">Compra #<span id="lblTransactionNumberMobile"><?php echo $objTM->transactionNumber;?></span></p>
 			<p class="pv2-mbar-total">0</p>
 		</div>
 		<a href="#" class="btn btn-primary" id="btnAceptMobile"><i class="icon16 i-checkmark-4"></i> Guardar</a>
