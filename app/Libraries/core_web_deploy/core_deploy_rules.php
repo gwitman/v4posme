@@ -11,6 +11,8 @@ namespace App\Libraries\core_web_deploy;
  *
  * La lista blanca de archivos es la que ya aplicaba core_merge::submitprocesapp:
  * app/Config/Routes.php + app/{Controllers,Models,Libraries,Helpers,Views}.
+ * Desde 2026-11-28 también app/Config/Services.php (registra core_web_route_collection,
+ * que acelera la carga de rutas; si la librería aún no llegó, usa la clase del núcleo).
  */
 class core_deploy_rules
 {
@@ -69,6 +71,7 @@ class core_deploy_rules
     /** Archivos de app/Config que se listan pero no se editan desde la consola. */
     public static $CONFIG_READONLY = [
         'Routes.php',
+        'Services.php',
     ];
 
     /** Archivos de app/Config cuyo error deja caído el sistema completo. */
@@ -91,6 +94,7 @@ class core_deploy_rules
     /** Archivos sueltos que sí se actualizan. */
     public static $ALLOWED_FILES = [
         'app/Config/Routes.php',
+        'app/Config/Services.php',
     ];
 
     /** Carpetas que se actualizan completas. */

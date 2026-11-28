@@ -152,7 +152,7 @@
 				<div class="form-group">
 					<label class="abv2-label" for="dplZip">Archivo ZIP con la carpeta app/</label>
 					<input type="file" class="form-control" id="dplZip" accept=".zip,application/zip">
-					<p class="dpl-hint">Se actualizan solo <b>app/Config/Routes.php</b> y las carpetas <b>Controllers, Models, Libraries, Helpers y Views</b>. Se conservan app/Config, .env, writable, vendor y public del cliente.</p>
+					<p class="dpl-hint">Se actualizan solo <b>app/Config/Routes.php</b>, <b>app/Config/Services.php</b> y las carpetas <b>Controllers, Models, Libraries, Helpers y Views</b>. Se conservan app/Config, .env, writable, vendor y public del cliente.</p>
 				</div>
 				<div class="dpl-btns">
 					<button type="button" class="btn btn-primary" id="dplBtnPackage"><i class="icon16 i-checkmark-4"></i> Validar paquete</button>

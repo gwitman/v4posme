@@ -32,6 +32,8 @@ class core_upgrade_files
             'app/controllers/core_upgrade.php'        => 92,
             'app/controllers/core_upgrade_server.php' => 92,
             'app/libraries/core_web_upgrade.php'      => 93,
+            // Services.php registra core_web_route_collection: va después de las librerías
+            'app/config/services.php'                 => 98,
             'app/config/routes.php'                   => 99,
             'vendor/autoload.php'                     => 99,
         ];

@@ -29,4 +29,24 @@ class Services extends BaseService
      *     return new \CodeIgniter\Example();
      * }
      */
+
+    /**
+     * Colección de rutas con el registro optimizado (índice en lugar de dot_array_search).
+     * Evita ~2 s por petición al cargar las miles de rutas de app/Config/Routes.php.
+     * Si la librería aún no existe en la instalación (deploy/upgrade a medias), usa la del núcleo.
+     *
+     * @return \CodeIgniter\Router\RouteCollection
+     */
+    public static function routes(bool $getShared = true)
+    {
+        if ($getShared) {
+            return static::getSharedInstance('routes');
+        }
+
+        $clase = class_exists(\App\Libraries\core_web_route_collection::class)
+            ? \App\Libraries\core_web_route_collection::class
+            : \CodeIgniter\Router\RouteCollection::class;
+
+        return new $clase(static::locator(), config('Modules'));
+    }
 }

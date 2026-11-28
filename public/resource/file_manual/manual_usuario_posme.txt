@@ -2869,10 +2869,10 @@ Notas: las contraseñas se guardan cifradas y nunca se vuelven a mostrar; déjel
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
   1. En Paquete de actualización (ZIP) elija el Archivo ZIP con la carpeta app/. La carpeta app/ puede venir dentro de una carpeta raíz.
-  2. Presione Validar paquete. Si no quiere armar el ZIP a mano, presione Comprimir en ZIP la carpeta app/: el sistema comprime la carpeta app/ de este equipo (solo Routes.php y las carpetas autorizadas) y la valida en un solo clic, sin adjuntar archivo.
+  2. Presione Validar paquete. Si no quiere armar el ZIP a mano, presione Comprimir en ZIP la carpeta app/: el sistema comprime la carpeta app/ de este equipo (solo Routes.php, Services.php y las carpetas autorizadas) y la valida en un solo clic, sin adjuntar archivo.
   3. Revise el resultado: cuántos archivos se actualizan, se conservan, se ignoran y se rechazan, los errores de sintaxis PHP y el SHA-256 del paquete.
   4. En Opciones de sincronización marque Actualizar archivos de la aplicación: envía el paquete validado, lo verifica, respalda los archivos que se reemplazan y actualiza solo los autorizados.
-Solo se actualizan app/Config/Routes.php y las carpetas app/Controllers, Models, Libraries, Helpers y Views. Se conservan en el cliente app/Config (salvo Routes.php), .env, writable, vendor y public (incluidos js y css).
+Solo se actualizan app/Config/Routes.php, app/Config/Services.php y las carpetas app/Controllers, Models, Libraries, Helpers y Views. Se conservan en el cliente app/Config (salvo Routes.php y Services.php), .env, writable, vendor y public (incluidos js y css).
 Restricciones: si hay errores de sintaxis PHP no se puede desplegar. Los archivos con rutas peligrosas se rechazan.
 Notas: las tres opciones (archivos, estructura y datos) son casillas independientes; puede marcar solo las que necesite.
 
@@ -2944,7 +2944,7 @@ Ver también: Despliegue remoto: errores frecuentes.
 ----------------------------------------------------------------------
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy) > pestaña Configuración y logos.
   1. En Compañía con conexión guardada elija la compañía. Si no tiene conexión, configúrela en Sincronización.
-  2. En Archivos de configuración (app/Config) aparecen los archivos .php de app/Config del servidor (no las subcarpetas). Routes.php es de solo lectura (se actualiza con Sincronización). Constants, Database, App, Autoload y Filters están marcados como crítico.
+  2. En Archivos de configuración (app/Config) aparecen los archivos .php de app/Config del servidor (no las subcarpetas). Routes.php y Services.php son de solo lectura (se actualizan con Sincronización). Constants, Database, App, Autoload y Filters están marcados como crítico.
   3. Presione Abrir (o Ver) en el archivo y edítelo en Contenido del archivo. Si hay Cambios sin guardar, se pide confirmar antes de cambiar de archivo, de compañía o salir.
   4. Presione Guardar y confirme. Descartar y recargar vuelve al contenido del servidor.
 Al guardar: se valida la sintaxis PHP (si hay error no se envía y se indica la línea); se respalda el archivo en writable/posme_agent/files_backup/<fecha>/ del servidor (se conservan los 20 últimos) y se comprueba que el sistema remoto siga respondiendo. Si no responde, se restaura el original por FTP/SFTP (sus cambios quedan en el editor). Se conservan los saltos de línea originales.
