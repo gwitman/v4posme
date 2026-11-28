@@ -31,6 +31,8 @@
 					.pv2.pinv .cuser-ps-value { width:100%; resize:vertical; white-space:pre-wrap; overflow-wrap:anywhere; overflow-x:hidden; }
 					.pv2.pinv .cuser-ps-large .cuser-ps-value { font-family:Consolas, "Courier New", monospace; font-size:12px; }
 					.pv2.pinv .cuser-ps-foot { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px; flex-wrap:wrap; }
+					/* boton Guardar de la tarjeta: mismo redondeo que los botones de la barra */
+					.pv2.pinv .cuser-ps-foot .btn { border-radius:8px; }
 					.pv2.pinv .cuser-ps-msg { font-size:12px; color:var(--pv2-muted); min-width:0; overflow-wrap:anywhere; }
 					.pv2.pinv .cuser-param-card.has-error .cuser-ps-msg { color:var(--pv2-bad); }
 					.pv2.pinv .cuser-param-card.is-new { border-style:dashed; border-color:var(--pv2-info); }

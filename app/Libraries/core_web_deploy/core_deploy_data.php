@@ -106,8 +106,10 @@ class core_deploy_data
             $common = array_values(array_intersect((array) $sourceColumns, $info['columns']));
             $hashes = [];
             if (count($info['pk'])) {
+                // Las columnas preservadas (p. ej. customValue) no cuentan como diferencia
+                $hashColumns = core_deploy_rules::compareColumns($table, $common);
                 foreach (self::rows($db, $table) as $row) {
-                    $hashes[self::rowKey($row, $info['pk'])] = self::rowHash($row, $common);
+                    $hashes[self::rowKey($row, $info['pk'])] = self::rowHash($row, $hashColumns);
                 }
             }
             $result[$table] = [
@@ -152,7 +154,10 @@ class core_deploy_data
             $warnings[] = 'Columnas que aún no existen en el destino (sincronice la estructura primero): ' . implode(', ', $missing);
         }
 
-        $overrides = isset(core_deploy_rules::$INSERT_OVERRIDES[$table]) ? core_deploy_rules::$INSERT_OVERRIDES[$table] : [];
+        $overrides   = isset(core_deploy_rules::$INSERT_OVERRIDES[$table]) ? core_deploy_rules::$INSERT_OVERRIDES[$table] : [];
+        // Columnas propias de cada instalación: se insertan, pero nunca se actualizan
+        $preserved   = isset(core_deploy_rules::$PRESERVED_COLUMNS[$table]) ? core_deploy_rules::$PRESERVED_COLUMNS[$table] : [];
+        $hashColumns = core_deploy_rules::compareColumns($table, $columns);
         $seen      = [];
         $same      = 0;
 
@@ -172,8 +177,11 @@ class core_deploy_data
                     }
                 }
                 $inserts[] = $values;
-            } elseif ($remote['hashes'][$key] !== self::rowHash($row, $columns)) {
+            } elseif ($remote['hashes'][$key] !== self::rowHash($row, $hashColumns)) {
                 if ($mode === core_deploy_rules::MODE_FULL || $mode === core_deploy_rules::MODE_UPSERT) {
+                    foreach ($preserved as $column) {
+                        unset($values[$column]);
+                    }
                     $updates[] = $values;
                 } else {
                     $same++;

@@ -252,9 +252,9 @@ class core_upgrade_server extends _BaseController
         foreach ($this->core_web_deploy->getProfileTables() as $table => $info) {
             $modes[$table] = $info['mode'];
         }
-        // La compañía nunca viaja; parámetros y contadores solo se insertan
+        // La compañía nunca viaja; contadores solo se insertan; parámetros completos sin customValue
         $modes['tb_company']           = core_deploy_rules::MODE_SKIP;
-        $modes['tb_company_parameter'] = core_deploy_rules::MODE_INSERT;
+        $modes['tb_company_parameter'] = core_deploy_rules::MODE_FULL;
         if (isset($modes['tb_counter'])) {
             $modes['tb_counter'] = core_deploy_rules::MODE_INSERT;
         }

@@ -57,11 +57,12 @@ class core_web_upgrade
 
     /**
      * Modos de datos que el cliente fuerza aunque el servidor diga otra cosa:
-     * la compañía nunca se toca, los parámetros y contadores solo se insertan.
+     * la compañía nunca se toca, los contadores solo se insertan y los parámetros
+     * se sincronizan completos sin tocar customValue (core_deploy_rules::$PRESERVED_COLUMNS).
      */
     public static $FORCED_TABLE_MODES = [
         'tb_company'           => core_deploy_rules::MODE_SKIP,
-        'tb_company_parameter' => core_deploy_rules::MODE_INSERT,
+        'tb_company_parameter' => core_deploy_rules::MODE_FULL,
         'tb_counter'           => core_deploy_rules::MODE_INSERT,
     ];
 

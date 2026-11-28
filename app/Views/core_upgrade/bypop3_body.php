@@ -93,7 +93,7 @@
                 <p class="upg-text">Se sincronizan las tablas de configuración del sistema (catálogos, menús, flujos, parámetros) y luego los scripts de parámetros, todo en una transacción.</p>
                 <ul class="upg-list">
                     <li><b>tb_company</b> no se sincroniza: los datos de su empresa no cambian.</li>
-                    <li><b>tb_company_parameter</b> solo inserta los parámetros nuevos: sus valores actuales se conservan.</li>
+                    <li><b>tb_company_parameter</b> inserta, actualiza y elimina parámetros, pero nunca cambia el valor personalizado (<b>customValue</b>) de su empresa.</li>
                 </ul>
                 <div id="upgDataTables"></div>
             </div>

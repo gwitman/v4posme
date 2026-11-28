@@ -568,7 +568,8 @@
 						(t === "normal" ? ' maxlength="' + PS_MAX_NORMAL + '"' : '') + '>' + fnParamEsc(cur) + '</textarea>' +
 					'<div class="cuser-ps-foot">' +
 						'<span class="cuser-ps-msg">' + (p.__new ? 'Se agregara a la empresa al guardar' : '') + '</span>' +
-						'<a href="#" class="btn btn-primary btn-sm jsPsSave"' + (fnPsIsDirty(p) ? '' : ' disabled="disabled"') + '><i class="icon16 i-checkmark-4"></i> Guardar</a>' +
+						//el boton solo se muestra cuando hay algo que guardar (cambio o registro nuevo de demo)
+						'<a href="#" class="btn btn-success btn-sm jsPsSave"' + (fnPsIsDirty(p) ? '' : ' style="display:none"') + '><i class="icon16 i-checkmark-4"></i> Guardar</a>' +
 					'</div>' +
 				'</div>'
 			);
@@ -734,7 +735,6 @@
 		//guardar una tarjeta
 		$(document).on("click", ".cuser-ps-card .jsPsSave", function(e){
 			e.preventDefault();
-			if($(this).attr("disabled")) return;
 			var $card = $(this).closest(".cuser-ps-card");
 			fnPsSave(fnPsTableOf($card), $card);
 		});
@@ -747,8 +747,8 @@
 			var sucio = fnPsIsDirty(p);
 			$card.toggleClass("is-dirty", sucio && !p.__new).removeClass("has-error");
 			$card.find(".cuser-ps-msg").text(p.__new ? "Se agregara a la empresa al guardar" : "");
-			if(sucio) $card.find(".jsPsSave").removeAttr("disabled");
-			else $card.find(".jsPsSave").attr("disabled", "disabled");
+			//mostrar u ocultar el boton Guardar segun haya cambios
+			$card.find(".jsPsSave").toggle(sucio);
 		});
 		//buscadores con espera de 150 ms entre teclas
 		$(document).on("input", "#txtPsnormalSearch, #txtPslargeSearch", function(){

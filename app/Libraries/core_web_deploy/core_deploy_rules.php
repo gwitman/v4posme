@@ -159,6 +159,30 @@ class core_deploy_rules
     ];
 
     /**
+     * Columnas que nunca se actualizan en el destino: son valores propios de cada
+     * instalación. Se copian solo al insertar una fila nueva y no cuentan como
+     * diferencia al comparar filas.
+     */
+    public static $PRESERVED_COLUMNS = [
+        'tb_company_parameter' => ['customValue'],
+    ];
+
+    /**
+     * Columnas que se comparan (hash) en una tabla: todas menos las preservadas.
+     *
+     * @param string $table   Tabla.
+     * @param array  $columns Columnas comunes entre origen y destino.
+     * @return array
+     */
+    static function compareColumns($table, array $columns)
+    {
+        if (!isset(self::$PRESERVED_COLUMNS[$table])) {
+            return $columns;
+        }
+        return array_values(array_diff($columns, self::$PRESERVED_COLUMNS[$table]));
+    }
+
+    /**
      * Tablas transaccionales que el agente nunca acepta sincronizar,
      * aunque se lo pida una consola con la firma correcta.
      */

@@ -2227,7 +2227,7 @@ Muestra los textos y ajustes de pantalla propios del tipo de su empresa (etiquet
 1. Abra el usuario y entre a la pestaña **Configuracion pantallas**.
 2. Cada registro es una tarjeta con su nombre, la marca **Empresa**, su **ID**, el **Controlador**, **Metodo**, **Elemento** y **Tipo**, y el valor en un cuadro de texto amplio.
 3. Use **Buscar** para filtrar por nombre, controlador, elemento o valor.
-4. Cambie el valor de la tarjeta que necesite (se resalta) y presione el botón **Guardar** de esa misma tarjeta. Cada tarjeta se guarda por separado.
+4. Cambie el valor de la tarjeta que necesite (se resalta); entonces aparece el botón verde **Guardar** de esa misma tarjeta: presiónelo. Cada tarjeta se guarda por separado.
 5. Presione **Llenar valores no existentes** para traer los registros de la configuración base (demo) que su empresa todavía no tiene. Aparecen arriba con la marca **Nuevo (demo)** y el valor de demo; solo se agregan a la empresa cuando presiona **Guardar** en cada una.
 6. **Recargar** vuelve a leer los registros; si hay cambios o tarjetas nuevas sin guardar, pide confirmar.
 Restricciones: la pestaña solo aparece si el rol de quien está en sesión es administrador o administrador de compañía. El valor admite hasta 4000 caracteres, con acentos, ñ, comillas y HTML, pero no emojis.
@@ -2238,7 +2238,7 @@ Ruta: Menú > SEGURIDAD > USUARIOS > abrir el usuario > pestaña **Plantillas**.
 Muestra las plantillas de impresión y textos largos (HTML de facturas, recibos, comandas, carnet, etc.) del tipo de su empresa.
 1. Abra el usuario y entre a la pestaña **Plantillas**.
 2. Cada plantilla es una tarjeta con su nombre, **ID**, **Controlador**, **Metodo**, **Elemento** y **Tipo**, y el contenido completo en un cuadro de texto grande que puede agrandar desde la esquina.
-3. Edite el contenido y presione el botón **Guardar** de esa tarjeta.
+3. Edite el contenido; el botón verde **Guardar** de la tarjeta aparece solo cuando hay cambios. Presiónelo para guardar.
 4. Con **Llenar valores no existentes** aparecen las plantillas de demo que su empresa no tiene, marcadas **Nuevo (demo)**; guarde cada una que quiera usar como propia de la empresa.
 5. Use **Buscar** y **Recargar** igual que en la pestaña Configuracion pantallas.
 Restricciones: solo para roles administrador o administrador de compañía.
@@ -2604,7 +2604,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 4. Marque **Ejecutar scripts de parámetros** para ejecutar 001_default.sql y luego el script de la compañía seleccionada.
 5. Presione **Analizar datos**: muestra por tabla las filas a insertar, actualizar y eliminar, y advierte si los scripts tienen sentencias UPDATE sin WHERE.
 Orden: tablas, luego 001_default y luego el script de la compañía, todo en una transacción: si algo falla, se revierte todo.
-Advertencia: el modo **Completa** reemplaza tb_company_parameter; los ajustes del cliente que no estén en su script se pierden.
+Nota: en tb_company_parameter el modo **Completa** inserta, actualiza y elimina parámetros, pero nunca cambia el valor personalizado (customValue) de la instalación destino.
 
 ## Despliegue remoto: ejecutar la sincronización, ver el avance y revertir
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
