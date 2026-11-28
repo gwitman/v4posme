@@ -165,6 +165,8 @@ class core_deploy_rules
      */
     public static $PRESERVED_COLUMNS = [
         'tb_company_parameter' => ['customValue'],
+        // tb_company se inserta/actualiza/elimina, pero el tipo y el sabor son de cada instalación
+        'tb_company'           => ['type', 'flavorID'],
     ];
 
     /**

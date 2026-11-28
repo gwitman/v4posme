@@ -2190,9 +2190,10 @@ Notas: para quitar una bodega o caja, toque la fila para seleccionarla y presion
 ## Modificar o eliminar un usuario
 Ruta: Menú > SEGURIDAD > USUARIOS.
 1. Busque el usuario en la lista (campo **Buscar usuario…**) y ábralo.
-2. Cambie lo necesario en **Informacion General**, **Bodegas**, **Cajas** o **Notificaciones** (pestaña para asignarle notificaciones con **Agregar**). Si su rol es administrador o administrador de compañía también verá las pestañas **Parametros**, **Configuracion pantallas** y **Plantillas** (ver las secciones siguientes).
+2. Cambie lo necesario en **Informacion General**, **Bodegas**, **Cajas** o **Notificaciones** (pestaña para asignarle notificaciones con **Agregar**). Si su rol es administrador o administrador de compañía también verá las pestañas **Compañia**, **Parametros**, **Configuracion pantallas** y **Plantillas** (ver las secciones siguientes).
 3. Presione **Guardar**.
 4. Para dar de baja al usuario presione **Eliminar** y confirme; ya no podrá entrar a posMe.
+Pestaña **Compañia** (solo administrador o administrador de compañía, y solo para la compañía con la que inició sesión): cambie **Nombre** (obligatorio), **Abreviatura** o **Direccion** y presione **Guardar compañia**; se guarda al instante, sin el botón Guardar del usuario, y afecta a toda la compañía. No admite emojis.
 Para cambiar la contraseña de otro usuario escriba la nueva en **Password** y guarde.
 Restricciones: se requiere permiso de editar o eliminar en USUARIOS; si su permiso es **Propios**, solo puede modificar o eliminar los usuarios que usted creó.
 
@@ -2604,7 +2605,7 @@ Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).
 4. Marque **Ejecutar scripts de parámetros** para ejecutar 001_default.sql y luego el script de la compañía seleccionada.
 5. Presione **Analizar datos**: muestra por tabla las filas a insertar, actualizar y eliminar, y advierte si los scripts tienen sentencias UPDATE sin WHERE.
 Orden: tablas, luego 001_default y luego el script de la compañía, todo en una transacción: si algo falla, se revierte todo.
-Nota: en tb_company_parameter el modo **Completa** inserta, actualiza y elimina parámetros, pero nunca cambia el valor personalizado (customValue) de la instalación destino.
+Nota: en tb_company_parameter el modo **Completa** inserta, actualiza y elimina parámetros, pero nunca cambia el valor personalizado (customValue) de la instalación destino. En tb_company inserta, actualiza y elimina, pero nunca cambia el tipo (type) ni el sabor (flavorID) del destino.
 
 ## Despliegue remoto: ejecutar la sincronización, ver el avance y revertir
 Ruta: Administración del sistema > Despliegue remoto (core_merge/deploy).

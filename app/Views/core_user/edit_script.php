@@ -503,6 +503,52 @@
 			fnParamDirtyCount();
 		});
 	});
+	/* ==================== Tab Compania (AJAX JSON: name, address, abreviature de tb_company) ==================== */
+	function fnCompanySave(){
+		var datos = {
+			companyID   : $("#companyID").val(),
+			name        : $.trim($("#txtCompanyName").val()),
+			address     : $.trim($("#txtCompanyAddress").val()),
+			abreviature : $.trim($("#txtCompanyAbreviature").val())
+		};
+		//validacion en cliente: el nombre es obligatorio
+		if(datos.name === ""){
+			fnShowNotification("El nombre de la compañia es obligatorio", "error");
+			$("#txtCompanyName").focus();
+			return;
+		}
+
+		fnWaitOpen();
+		$.ajax({
+			cache       : false,
+			dataType    : "json",
+			type        : "POST",
+			contentType : "application/json; charset=utf-8",
+			url         : site_url + "core_user/saveCompany",
+			data        : JSON.stringify(datos),
+			success     : function(data){
+				fnWaitClose();
+				//caso error
+				if(data.error){ fnShowNotification(fnParamEsc(data.message || "No fue posible guardar la compañia"), "error"); return; }
+				//guardado correcto: se muestran los valores tal como quedaron en el servidor
+				if(data.data){
+					$("#txtCompanyName").val(data.data.name);
+					$("#txtCompanyAddress").val(data.data.address);
+					$("#txtCompanyAbreviature").val(data.data.abreviature);
+				}
+				fnShowNotification(fnParamEsc(data.message || "Compañia guardada"), "success");
+			},
+			error       : function(){ fnWaitClose(); fnShowNotification("Error al guardar la compañia", "error"); }
+		});
+	}
+
+	$(document).ready(function(){
+		if(!varCanEditParameter) return;
+		$(document).on("click", "#btnCompanySave", function(e){ e.preventDefault(); fnCompanySave(); });
+		//Enter dentro del tab no debe enviar #form-new-rol
+		$(document).on("keydown", "#tabCompany input", function(e){ if(e.which === 13){ e.preventDefault(); } });
+	});
+
 	/* ==================== Tabs Configuracion pantallas / Plantillas (AJAX JSON, una tarjeta = un guardado) ==================== */
 	//t = "normal" (tb_company_page_setting) o "large" (tb_company_page_setting_large)
 	var objPs = {

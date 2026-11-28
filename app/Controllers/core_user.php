@@ -531,6 +531,8 @@ class core_user extends _BaseController {
 
 			//Tab Parametros: solo isAdmin o isAdminCompany y solo sobre la compania en sesion
 			$datView["canEditParameter"]				= $this->core_web_report_builder->isAdminCompany($dataSession) && intval($companyID) == intval($dataSession["user"]->companyID);
+			//Tab Compania: mismas reglas que Parametros (name, address y abreviature de tb_company)
+			$datView["objCompanyEdit"]					= $datView["canEditParameter"] ? $this->Company_Model->get_rowByPK(intval($dataSession["user"]->companyID)) : null;
 
 
 			//Lista de cajas
@@ -2047,6 +2049,75 @@ class core_user extends _BaseController {
 				'message' => SUCCESS,
 				'updated' => count($toSave),
 				'errors'  => array()
+			));//--finjson
+		}
+		catch(\Exception $ex){
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));//--finjson
+		}
+	}
+
+	/**
+	 * Recibe JSON crudo {companyID, name, address, abreviature} y actualiza esos tres campos de tb_company
+	 * de la compania en sesion. Solo roles isAdmin o isAdminCompany. Nunca modifica type ni flavorID.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface JSON {error, message, data:{name, address, abreviature}}
+	 */
+	function saveCompany(){
+		try{
+			$dataSession		= $this->parameterCompany_session("edit");
+			$companyID			= $dataSession["user"]->companyID;
+			$body				= $this->request->getJSON(true);
+
+			if(!is_array($body))
+			throw new \Exception(NOT_PARAMETER);
+
+			//companyID del cliente: solo se compara, nunca se usa para actualizar
+			if(isset($body["companyID"]) && $body["companyID"] !== "" && intval($body["companyID"]) != intval($companyID))
+			throw new \Exception(NOT_ACCESS_CONTROL);
+
+			//Campo => [etiqueta, longitud maxima de la columna, obligatorio]
+			$fields				= array(
+				"name"        => array("NOMBRE",250,true),
+				"address"     => array("DIRECCION",550,false),
+				"abreviature" => array("ABREVIATURA",255,false)
+			);
+			$data				= array();
+			foreach($fields as $field => $rule)
+			{
+				$value			= isset($body[$field]) && !is_array($body[$field]) ? trim((string)$body[$field]) : "";
+				if($rule[2] && $value === "")
+				throw new \Exception("EL CAMPO ".$rule[0]." ES OBLIGATORIO");
+				if(!mb_check_encoding($value,"UTF-8") || mb_strlen($value,"UTF-8") > $rule[1])
+				throw new \Exception("EL CAMPO ".$rule[0]." ADMITE MAXIMO ".$rule[1]." CARACTERES");
+				//Las columnas de tb_company son latin1: no admiten emojis ni caracteres fuera de ese juego
+				if($value !== "" && @iconv("UTF-8","ISO-8859-1",$value) === false)
+				throw new \Exception("EL CAMPO ".$rule[0]." TIENE CARACTERES NO SOPORTADOS");
+				$data[$field]	= $value;
+			}
+
+			$objCompany			= $this->Company_Model->get_rowByPK(intval($companyID));
+			if(!$objCompany)
+			throw new \Exception("LA EMPRESA NO EXISTE");
+
+			$this->Company_Model->update_generalData_app_posme($companyID,$data);
+
+			//Refrescar la compania en sesion para que el cambio se vea sin volver a iniciar sesion
+			if(isset($dataSession["company"]) && is_object($dataSession["company"]))
+			{
+				$objSession					= $dataSession["company"];
+				$objSession->name			= $data["name"];
+				$objSession->address		= $data["address"];
+				$objSession->abreviature	= $data["abreviature"];
+				$this->session->set("company",$objSession);
+			}
+
+			return $this->response->setJSON(array(
+				'error'   => false,
+				'message' => SUCCESS,
+				'data'    => $data
 			));//--finjson
 		}
 		catch(\Exception $ex){

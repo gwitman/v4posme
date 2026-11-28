@@ -46,6 +46,23 @@ class Company_Model extends Model  {
 		//Resultado
 		return $recordSet;
    }
+   /**
+    * Actualiza solo los datos generales editables de la compania (tab Compania de core_user/edit).
+    * Nunca toca type, flavorID, namePublic ni isActive.
+    *
+    * @param int   $companyID Compania en sesion.
+    * @param array $data      name, address, abreviature.
+    * @return bool
+    */
+   function update_generalData_app_posme($companyID,$data){
+		$db 		= db_connect();
+		$builder 	= $db->table('tb_company');
+		$allowed	= array_intersect_key($data,array_flip(array("name","address","abreviature")));
+
+		$builder->where("companyID",intval($companyID));
+		$builder->where("isActive",1);
+		return $builder->update($allowed);
+   }
    function fnMerge_updateRows_dbPosMe($data){
 	    $db 		= db_connect(); 				
 		$builder 	= $db->table('tb_company');

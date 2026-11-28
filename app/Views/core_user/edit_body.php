@@ -23,6 +23,7 @@
 		<li><a href="#box1" data-toggle="tab">Cajas</a></li>
 		<li><a href="#profile2" data-toggle="tab">Notificaciones</a></li>
 		<?php if(!empty($canEditParameter)): ?>
+		<li><a href="#tabCompany" data-toggle="tab" id="lnkTabCompany">Compañia</a></li>
 		<li><a href="#tabParameter" data-toggle="tab" id="lnkTabParameter">Parametros</a></li>
 		<li><a href="#tabPageSetting" data-toggle="tab" id="lnkTabPageSetting">Configuracion pantallas</a></li>
 		<li><a href="#tabPageSettingLarge" data-toggle="tab" id="lnkTabPageSettingLarge">Plantillas</a></li>
@@ -224,6 +225,30 @@
 		</div>
 
 		<?php if(!empty($canEditParameter)): ?>
+		<!--Compania: controles SIN atributo name (no viajan en el POST de core_user/save); se guardan por AJAX JSON-->
+		<div class="tab-pane fade pv2-card" id="tabCompany">
+			<div class="pv2-detail-head">
+				<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-office"></i></span> Datos de la compañia</p>
+				<div class="pv2-actions">
+					<a href="#" class="btn btn-primary btn-sm" id="btnCompanySave"><i class="icon16 i-checkmark-4"></i> Guardar compañia</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-8 form-group">
+					<label class="pv2-label" for="txtCompanyName">Nombre</label>
+					<input class="form-control" type="text" id="txtCompanyName" maxlength="250" autocomplete="off" value="<?php echo $objCompanyEdit ? esc($objCompanyEdit->name) : ""; ?>">
+				</div>
+				<div class="col-xs-12 col-sm-4 form-group">
+					<label class="pv2-label" for="txtCompanyAbreviature">Abreviatura</label>
+					<input class="form-control" type="text" id="txtCompanyAbreviature" maxlength="255" autocomplete="off" value="<?php echo $objCompanyEdit ? esc($objCompanyEdit->abreviature) : ""; ?>">
+				</div>
+				<div class="col-xs-12 form-group">
+					<label class="pv2-label" for="txtCompanyAddress">Direccion</label>
+					<textarea class="form-control" id="txtCompanyAddress" rows="3" maxlength="550" autocomplete="off"><?php echo $objCompanyEdit ? esc($objCompanyEdit->address) : ""; ?></textarea>
+				</div>
+			</div>
+			<p class="pv2-help">Estos datos se guardan con su propio boton y afectan a toda la compañia.</p>
+		</div>
 		<!--Parametros: controles SIN atributo name (no viajan en el POST de core_user/save); se guardan por AJAX JSON-->
 		<div class="tab-pane fade pv2-card" id="tabParameter">
 			<div class="pv2-detail-head">

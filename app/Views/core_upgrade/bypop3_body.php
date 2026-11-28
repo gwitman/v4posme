@@ -92,7 +92,7 @@
                 <p class="abv2-card-title"><span class="upg-step-num">6</span> Datos de configuración</p>
                 <p class="upg-text">Se sincronizan las tablas de configuración del sistema (catálogos, menús, flujos, parámetros) y luego los scripts de parámetros, todo en una transacción.</p>
                 <ul class="upg-list">
-                    <li><b>tb_company</b> no se sincroniza: los datos de su empresa no cambian.</li>
+                    <li><b>tb_company</b> inserta, actualiza y elimina, pero nunca cambia el tipo (<b>type</b>) ni el sabor (<b>flavorID</b>) de su empresa.</li>
                     <li><b>tb_company_parameter</b> inserta, actualiza y elimina parámetros, pero nunca cambia el valor personalizado (<b>customValue</b>) de su empresa.</li>
                 </ul>
                 <div id="upgDataTables"></div>
