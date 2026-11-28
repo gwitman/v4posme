@@ -3175,93 +3175,43 @@
 			formData.txtReceiptAmountBankDol_Reference			= miVentanaDePago_.down("#txtReceiptAmountBankDol_Reference").getValue(); 
 			formData.txtReceiptAmountPoint						= miVentanaDePago_.down("#txtReceiptAmountPoint").getValue(); 
 			
-			var txtTransactionMasterDetailID 				= [];
-			var txtItemID 									= [];
-			var txtTransactionDetailName					= [];
-			var txtSku										= [];
-			var txtQuantity									= [];
-			var txtPrice									= [];
-			var txtSubTotal									= [];
-			var txtIva										= [];
-			var skuQuantityBySku							= [];
-			var unitaryPriceInvidual						= [];
-			var skuFormatoDescription						= [];
-			var txtItemPrecio2								= [];
-			var txtItemPrecio3								= [];
-			var txtTransactionDetailNameDescription			= [];
-			var txtTaxServices								= [];
-			var txtDetailLote								= [];
-			var txtInfoVendedor								= [];
-			var txtInfoSerie								= [];
-			var txtInfoReferencia							= [];
-			var txtItemPrecio1								= [];
-			var txtCatalogItemIDSku							= [];
-			var txtRatioSku									= [];
-			var txtDiscountByItem							= [];
-			var txtCommisionByBankByItem					= [];
-			
-			
-			store.each(function (record) 
-			{	
-				
-				txtTransactionMasterDetailID.push(record.get('txtTMD_txtTransactionMasterDetailID'));
-				txtItemID.push(record.get('txtTMD_txtItemID'));
-				txtTransactionDetailName.push(record.get('txtTMD_txtTransactionDetailName'));
-				
-				txtQuantity.push(record.get('txtTMD_txtQuantity'));
-				txtPrice.push(record.get('txtTMD_txtPrice'));
-				txtSubTotal.push(record.get('txtTMD_txtSubTotal'));
-				txtIva.push(record.get('txtTMD_txtIva'));				
-				unitaryPriceInvidual.push(record.get('txtTMD_unitaryPriceInvidual'));
-				
-				skuQuantityBySku.push(record.get('txtTMD_skuQuantityBySku'));
-				//txtSku.push(record.get('txtTMD_txtSku'));				
-				//skuFormatoDescription.push(record.get('txtTMD_skuFormatoDescription'));
-				txtSku.push(record.get('txtTMD_skuFormatoDescription'));
-				skuFormatoDescription.push(record.get('txtTMD_skuFormatoDescription'));				
-				txtCatalogItemIDSku.push(record.get('txtTMD_txtCatalogItemIDSku'));
-				txtRatioSku.push(record.get('txtTMD_txtRatioSku'));
-				
-				
-				txtItemPrecio2.push(record.get('txtTMD_txtItemPrecio2'));
-				txtItemPrecio3.push(record.get('txtTMD_txtItemPrecio3'));
-				txtTransactionDetailNameDescription.push(record.get('txtTMD_txtTransactionDetailNameDescription'));
-				txtTaxServices.push(record.get('txtTMD_txtTaxServices'));
-				txtDetailLote.push(record.get('txtTMD_txtDetailLote'));
-				txtInfoVendedor.push(record.get('txtTMD_txtInfoVendedor'));
-				txtInfoSerie.push(record.get('txtTMD_txtInfoSerie'));
-				txtInfoReferencia.push(record.get('txtTMD_txtInfoReferencia'));
-				txtItemPrecio1.push(record.get('txtTMD_txtItemPrecio1'));				
-				txtDiscountByItem.push(record.get('txtTMD_txtDiscountByItem'));
-				txtCommisionByBankByItem.push(record.get('txtTMD_txtCommisionByBankByItem'));
-				
-				
+			//Detalle en un solo campo JSON (txtDetailJSON) para no superar max_input_vars del servidor:
+			//con 24 arreglos por linea, PHP descartaba en silencio lo que pasaba de ~1000 campos (~38 lineas).
+			//Se envia de la ultima fila del grid a la primera (la mas antigua primero), asi los IDs del detalle
+			//crecen con el orden de ingreso y al recargar (orden desc) la linea mas reciente queda arriba.
+			var detalleJSON		= [];
+			var fnValorDetalle	= function (valor) { return (valor === null || valor === undefined) ? "" : String(valor); };
+			Ext.Array.each(store.getRange().reverse(), function (record) 
+			{
+				detalleJSON.push({
+					txtTransactionMasterDetailID		: fnValorDetalle(record.get('txtTMD_txtTransactionMasterDetailID')),
+					txtItemID							: fnValorDetalle(record.get('txtTMD_txtItemID')),
+					txtTransactionDetailName			: fnValorDetalle(record.get('txtTMD_txtTransactionDetailName')),
+					txtSku								: fnValorDetalle(record.get('txtTMD_skuFormatoDescription')),
+					txtQuantity							: fnValorDetalle(record.get('txtTMD_txtQuantity')),
+					txtPrice							: fnValorDetalle(record.get('txtTMD_txtPrice')),
+					txtSubTotal							: fnValorDetalle(record.get('txtTMD_txtSubTotal')),
+					txtIva								: fnValorDetalle(record.get('txtTMD_txtIva')),
+					skuQuantityBySku					: fnValorDetalle(record.get('txtTMD_skuQuantityBySku')),
+					unitaryPriceInvidual				: fnValorDetalle(record.get('txtTMD_unitaryPriceInvidual')),
+					skuFormatoDescription				: fnValorDetalle(record.get('txtTMD_skuFormatoDescription')),
+					txtItemPrecio2						: fnValorDetalle(record.get('txtTMD_txtItemPrecio2')),
+					txtItemPrecio3						: fnValorDetalle(record.get('txtTMD_txtItemPrecio3')),
+					txtTransactionDetailNameDescription	: fnValorDetalle(record.get('txtTMD_txtTransactionDetailNameDescription')),
+					txtTaxServices						: fnValorDetalle(record.get('txtTMD_txtTaxServices')),
+					txtDetailLote						: fnValorDetalle(record.get('txtTMD_txtDetailLote')),
+					txtInfoVendedor						: fnValorDetalle(record.get('txtTMD_txtInfoVendedor')),
+					txtInfoSerie						: fnValorDetalle(record.get('txtTMD_txtInfoSerie')),
+					txtInfoReferencia					: fnValorDetalle(record.get('txtTMD_txtInfoReferencia')),
+					txtItemPrecio1						: fnValorDetalle(record.get('txtTMD_txtItemPrecio1')),
+					txtCatalogItemIDSku					: fnValorDetalle(record.get('txtTMD_txtCatalogItemIDSku')),
+					txtRatioSku							: fnValorDetalle(record.get('txtTMD_txtRatioSku')),
+					txtDiscountByItem					: fnValorDetalle(record.get('txtTMD_txtDiscountByItem')),
+					txtCommisionByBankByItem			: fnValorDetalle(record.get('txtTMD_txtCommisionByBankByItem'))
+				});
 			});
-			
-			formData["txtTransactionMasterDetailID[]"] 			= txtTransactionMasterDetailID;
-			formData["txtItemID[]"] 							= txtItemID;
-			formData["txtTransactionDetailName[]"] 				= txtTransactionDetailName;
-			formData["txtSku[]"] 								= txtSku;
-			formData["txtQuantity[]"] 							= txtQuantity;
-			formData["txtPrice[]"] 								= txtPrice;
-			formData["txtSubTotal[]"] 							= txtSubTotal;
-			formData["txtIva[]"] 								= txtIva;
-			formData["skuQuantityBySku[]"] 						= skuQuantityBySku;
-			formData["unitaryPriceInvidual[]"] 					= unitaryPriceInvidual;
-			formData["skuFormatoDescription[]"] 				= skuFormatoDescription;
-			formData["txtItemPrecio2[]"] 						= txtItemPrecio2;
-			formData["txtItemPrecio3[]"] 						= txtItemPrecio3;
-			formData["txtTransactionDetailNameDescription[]"] 	= txtTransactionDetailNameDescription;
-			formData["txtTaxServices[]"] 						= txtTaxServices;
-			formData["txtDetailLote[]"] 						= txtDetailLote;
-			formData["txtInfoVendedor[]"] 						= txtInfoVendedor;
-			formData["txtInfoSerie[]"] 							= txtInfoSerie;
-			formData["txtInfoReferencia[]"] 					= txtInfoReferencia;
-			formData["txtItemPrecio1[]"] 						= txtItemPrecio1;
-			formData["txtCatalogItemIDSku[]"] 					= txtCatalogItemIDSku;
-			formData["txtRatioSku[]"] 							= txtRatioSku;
-			formData["txtDiscountByItem[]"] 					= txtDiscountByItem;
-			formData["txtCommisionByBankByItem[]"] 				= txtCommisionByBankByItem;
+			formData.txtDetailCount						= detalleJSON.length;
+			formData.txtDetailJSON						= Ext.encode(detalleJSON);
 			
 			var typeSave	= "new";
 			if(miVentanaPrincipal_.down("#txtTransactionMasterID").getValue() > 0 )
@@ -6743,8 +6693,16 @@
 		{
 			return;
 		}
-		
-		
+
+		//Solo en esta pantalla: detalle de la linea mas reciente (ID mayor) a la mas antigua,
+		//para que la ultima linea agregada se mantenga arriba despues de guardar o recargar.
+		if(datos.data.objTransactionMasterDetail && datos.data.objTransactionMasterDetail.length > 1)
+		{
+			datos.data.objTransactionMasterDetail.sort(function (a, b) {
+				return parseInt(b.transactionMasterDetailID, 10) - parseInt(a.transactionMasterDetailID, 10);
+			});
+		}
+
 		var objFormulario 							= {};
 		objListCustomerCreditLine					= datos.data.objListCustomerCreditLine;
 		objFormulario.txtTM_transactionNumber		= datos.data.objTransactionMaster.transactionNumber;

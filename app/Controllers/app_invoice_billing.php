@@ -4275,14 +4275,79 @@ class app_invoice_billing extends _BaseController {
 		}		
 	}
 
+	/**
+	 * Convierte el detalle de la factura enviado en un solo campo JSON (txtDetailJSON) en los arreglos
+	 * txtItemID[], txtQuantity[]... del POST tradicional, para que insertElement/updateElement los lean
+	 * igual que siempre. Evita superar max_input_vars, que hacia que PHP descartara en silencio las ultimas lineas.
+	 * Formatos aceptados:
+	 *  - Filas (pantalla ext_6_0_2): [{"txtItemID":"1","txtQuantity":"2",...},...]; txtDetailCount = numero de filas.
+	 *  - Columnas (pantalla news_*): {"txtItemID":["1","5"],"txtQuantity":["2","1"],...}; txtDetailCount = total de valores.
+	 * Si no viene txtDetailJSON (POST tradicional) no hace nada.
+	 * @return void
+	 * @throws \Exception si el detalle llego incompleto o mal formado
+	 */
+	private function invoiceCargarDetalleJSON()
+	{
+		$detalleJSON 	= /*inicio get post*/ $this->request->getPost("txtDetailJSON");
+		if(is_null($detalleJSON))
+			return;
+
+		$detalle 		= json_decode($detalleJSON,true);
+		$esperadas 		= (int) /*inicio get post*/ $this->request->getPost("txtDetailCount");
+		if(!is_array($detalle))
+			throw new \Exception("NO SE GUARDO: EL DETALLE DE LA FACTURA LLEGO MAL FORMADO, INTENTE DE NUEVO.");
+
+		$post 			= $_POST;
+		unset($post["txtDetailJSON"]);
+		$esFilas 		= count($detalle) == 0 || array_keys($detalle) === range(0,count($detalle) - 1);
+
+		if($esFilas)
+		{
+			//Se valida que llegaron todas las lineas que la pantalla dice haber enviado
+			if(count($detalle) != $esperadas)
+				throw new \Exception("NO SE GUARDO: LLEGARON ".count($detalle)." DE ".$esperadas." LINEAS DEL DETALLE, INTENTE DE NUEVO.");
+
+			//Campos presentes en cualquier fila; sin lineas los arreglos no existen, igual que en el POST tradicional
+			$campos 	= [];
+			foreach($detalle as $fila)
+				$campos = array_unique(array_merge($campos,array_keys((array)$fila)));
+
+			foreach($campos as $campo)
+				$post[$campo] = [];
+
+			foreach($detalle as $fila)
+			{
+				foreach($campos as $campo)
+					$post[$campo][] = (isset($fila[$campo]) && !is_null($fila[$campo])) ? (string)$fila[$campo] : "";
+			}
+		}
+		else
+		{
+			//Cada columna es el arreglo tal cual lo serializa el formulario
+			$recibidos 	= 0;
+			foreach($detalle as $campo => $valores)
+			{
+				$valores 		= is_array($valores) ? array_values($valores) : [$valores];
+				$recibidos 		= $recibidos + count($valores);
+				$post[$campo] 	= array_map(function($valor){ return is_null($valor) ? "" : (string)$valor; },$valores);
+			}
+			if($recibidos != $esperadas)
+				throw new \Exception("NO SE GUARDO: LLEGARON ".$recibidos." DE ".$esperadas." DATOS DEL DETALLE, INTENTE DE NUEVO.");
+		}
+		$this->request->setGlobal("post",$post);
+	}
+
     function save($mode=""){
-		 $mode = helper_SegmentsByIndex($this->uri->getSegments(),1,$mode);			 
-		 try{ 
+		 $mode = helper_SegmentsByIndex($this->uri->getSegments(),1,$mode);
+		 try{
 			//AUTENTICADO
 			if(!$this->core_web_authentication->isAuthenticated())
 			throw new \Exception(USER_NOT_AUTENTICATED);
 			$dataSession		= $this->session->get();
-			
+
+			//Detalle enviado como JSON (pantalla ext_6_0_2) -> arreglos del POST tradicional
+			$this->invoiceCargarDetalleJSON();
+
 			
 			//Validar Formulario									
 			

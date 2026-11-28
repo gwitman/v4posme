@@ -1465,12 +1465,42 @@
 		sidebar.css("width", "0");
 	});
 
+	/**
+	 * Separa los arreglos del detalle (campos con nombre "xxx[]") del resto del formulario y los agrupa
+	 * en un solo JSON por columnas ({"txtItemID":[...],...}). Asi el POST no supera max_input_vars del
+	 * servidor, que hacia que PHP descartara en silencio las ultimas lineas de la factura.
+	 * @param form formulario de la factura
+	 * @return {resto: campos que no son arreglo (formato serializeArray), json: detalle, total: cantidad de valores}
+	 */
+	function fnDetalleFacturaAJSON(form)
+	{
+		var columnas 	= {};
+		var resto 		= [];
+		var total 		= 0;
+		$.each($(form).serializeArray(), function (i, item) {
+			if (/\[\]$/.test(item.name))
+			{
+				var campo 		= item.name.slice(0, -2);
+				columnas[campo] = columnas[campo] || [];
+				columnas[campo].push(item.value);
+				total++;
+			}
+			else
+				resto.push(item);
+		});
+		return { resto: resto, json: JSON.stringify(columnas), total: total };
+	}
+
 	// Evitar el envío tradicional y manejar con AJAX
     $("#form-new-invoice").on('submit', function(e) {
         e.preventDefault(); // Esto evita el envío tradicional
 
-        // Serializar los datos del formulario
-        var formData = $(this).serialize();
+        // Serializar los datos del formulario; el detalle viaja en un solo campo JSON (txtDetailJSON)
+        var objDetalle 	= fnDetalleFacturaAJSON(this);
+        var formData 	= $.param(objDetalle.resto.concat([
+								{ name: "txtDetailCount", value: objDetalle.total },
+								{ name: "txtDetailJSON",  value: objDetalle.json }
+							]));
 
         $.ajax({
             url		: $(this).attr('action'),
@@ -5475,6 +5505,12 @@
 			$( "#form-new-invoice" ).submit(function(e){
 				e.preventDefault(e);
 				var formData = new FormData(this);
+
+				//El detalle (campos "xxx[]") viaja en un solo campo JSON para no superar max_input_vars
+				var objDetalle = fnDetalleFacturaAJSON(this);
+				$.each(JSON.parse(objDetalle.json), function (campo) { formData.delete(campo + "[]"); });
+				formData.append("txtDetailCount", objDetalle.total);
+				formData.append("txtDetailJSON",  objDetalle.json);
 				//Mandar la factura
 				//Interna mente, se se guarda y se imprimie
 				$.ajax({
