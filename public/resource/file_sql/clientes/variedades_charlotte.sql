@@ -754,7 +754,7 @@ WHERE
 							
 
 UPDATE tb_company SET 
-	type='chorlote'
+	flavorID = 0 /*usuarioID*/,type='chorlote'
 WHERE 
 	companyID = 2; ##Actualizar el nombre de la compania
 
