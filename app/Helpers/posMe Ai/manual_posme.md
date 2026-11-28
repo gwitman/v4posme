@@ -2190,7 +2190,7 @@ Notas: para quitar una bodega o caja, toque la fila para seleccionarla y presion
 ## Modificar o eliminar un usuario
 Ruta: Menú > SEGURIDAD > USUARIOS.
 1. Busque el usuario en la lista (campo **Buscar usuario…**) y ábralo.
-2. Cambie lo necesario en **Informacion General**, **Bodegas**, **Cajas** o **Notificaciones** (pestaña para asignarle notificaciones con **Agregar**). Si su rol es administrador o administrador de compañía también verá la pestaña **Parametros** (ver la sección siguiente).
+2. Cambie lo necesario en **Informacion General**, **Bodegas**, **Cajas** o **Notificaciones** (pestaña para asignarle notificaciones con **Agregar**). Si su rol es administrador o administrador de compañía también verá las pestañas **Parametros**, **Configuracion pantallas** y **Plantillas** (ver las secciones siguientes).
 3. Presione **Guardar**.
 4. Para dar de baja al usuario presione **Eliminar** y confirme; ya no podrá entrar a posMe.
 Para cambiar la contraseña de otro usuario escriba la nueva en **Password** y guarde.
@@ -2220,6 +2220,29 @@ El control de **Valor personalizado** depende del tipo del parámetro:
 2. Presione **Guardar parametros**: el botón muestra cuántos parámetros cambió y guarda solo esos.
 3. Si algún valor es inválido se marca en rojo y no se guarda ninguno hasta que lo corrija.
 Notas: dejar el campo vacío o en **Seleccione** quita el valor personalizado. **Guardar parametros** es independiente del botón **Guardar** del usuario; si presiona **Guardar** con parámetros sin guardar, posMe pide confirmación porque esos cambios se perderían.
+
+## Editar la configuración de pantallas de la empresa (pestaña Configuracion pantallas)
+Ruta: Menú > SEGURIDAD > USUARIOS > abrir el usuario > pestaña **Configuracion pantallas**.
+Muestra los textos y ajustes de pantalla propios del tipo de su empresa (etiquetas, controles, opciones de impresión). Afectan a toda la compañía aunque se editen desde un usuario.
+1. Abra el usuario y entre a la pestaña **Configuracion pantallas**.
+2. Cada registro es una tarjeta con su nombre, la marca **Empresa**, su **ID**, el **Controlador**, **Metodo**, **Elemento** y **Tipo**, y el valor en un cuadro de texto amplio.
+3. Use **Buscar** para filtrar por nombre, controlador, elemento o valor.
+4. Cambie el valor de la tarjeta que necesite (se resalta) y presione el botón **Guardar** de esa misma tarjeta. Cada tarjeta se guarda por separado.
+5. Presione **Llenar valores no existentes** para traer los registros de la configuración base (demo) que su empresa todavía no tiene. Aparecen arriba con la marca **Nuevo (demo)** y el valor de demo; solo se agregan a la empresa cuando presiona **Guardar** en cada una.
+6. **Recargar** vuelve a leer los registros; si hay cambios o tarjetas nuevas sin guardar, pide confirmar.
+Restricciones: la pestaña solo aparece si el rol de quien está en sesión es administrador o administrador de compañía. El valor admite hasta 4000 caracteres, con acentos, ñ, comillas y HTML, pero no emojis.
+Notas: los registros de demo nunca se modifican desde aquí, salvo que la empresa sea de tipo demo (en ese caso se muestra un aviso). Algunas pantallas leen esta configuración al iniciar sesión: si un cambio no se ve, cierre sesión y vuelva a entrar.
+
+## Editar las plantillas de impresión de la empresa (pestaña Plantillas)
+Ruta: Menú > SEGURIDAD > USUARIOS > abrir el usuario > pestaña **Plantillas**.
+Muestra las plantillas de impresión y textos largos (HTML de facturas, recibos, comandas, carnet, etc.) del tipo de su empresa.
+1. Abra el usuario y entre a la pestaña **Plantillas**.
+2. Cada plantilla es una tarjeta con su nombre, **ID**, **Controlador**, **Metodo**, **Elemento** y **Tipo**, y el contenido completo en un cuadro de texto grande que puede agrandar desde la esquina.
+3. Edite el contenido y presione el botón **Guardar** de esa tarjeta.
+4. Con **Llenar valores no existentes** aparecen las plantillas de demo que su empresa no tiene, marcadas **Nuevo (demo)**; guarde cada una que quiera usar como propia de la empresa.
+5. Use **Buscar** y **Recargar** igual que en la pestaña Configuracion pantallas.
+Restricciones: solo para roles administrador o administrador de compañía.
+Notas: si la empresa no tiene una plantilla propia, posMe usa la de demo. Revise la impresión después de guardar: un error en el HTML de la plantilla se refleja en el documento impreso.
 
 ## Crear un rol
 Ruta: Menú > SEGURIDAD > ROLES.

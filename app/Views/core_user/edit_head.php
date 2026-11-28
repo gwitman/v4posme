@@ -23,7 +23,21 @@
 					.pv2.pinv .cuser-param-card.is-dirty { background:var(--pv2-warn-bg); }
 					.pv2.pinv .cuser-param-card.has-error { background:var(--pv2-bad-bg); border-color:var(--pv2-bad); }
 					.pv2.pinv .cuser-param-card.has-error .jsParamEdit { border-color:var(--pv2-bad); }
+					/* == tabs Configuracion pantallas y Plantillas (reutilizan la tarjeta de Parametros) == */
+					.pv2.pinv .cuser-ps-badge { display:inline-block; font-size:10px; font-weight:700; text-transform:uppercase; border-radius:10px; padding:0 6px; margin-left:4px; color:var(--pv2-ok); background:var(--pv2-ok-bg); }
+					.pv2.pinv .cuser-ps-badge.is-new { color:var(--pv2-info); background:var(--pv2-info-bg); }
+					.pv2.pinv .cuser-ps-meta { font-size:12px; color:var(--pv2-muted); overflow-wrap:anywhere; margin-bottom:6px; }
+					.pv2.pinv .cuser-ps-meta b { color:#1f2933; font-weight:600; }
+					.pv2.pinv .cuser-ps-value { width:100%; resize:vertical; white-space:pre-wrap; overflow-wrap:anywhere; overflow-x:hidden; }
+					.pv2.pinv .cuser-ps-large .cuser-ps-value { font-family:Consolas, "Courier New", monospace; font-size:12px; }
+					.pv2.pinv .cuser-ps-foot { display:flex; align-items:center; justify-content:space-between; gap:8px; margin-top:8px; flex-wrap:wrap; }
+					.pv2.pinv .cuser-ps-msg { font-size:12px; color:var(--pv2-muted); min-width:0; overflow-wrap:anywhere; }
+					.pv2.pinv .cuser-param-card.has-error .cuser-ps-msg { color:var(--pv2-bad); }
+					.pv2.pinv .cuser-param-card.is-new { border-style:dashed; border-color:var(--pv2-info); }
+					.pv2.pinv .cuser-ps-warn { color:var(--pv2-warn); background:var(--pv2-warn-bg); }
 					@media (max-width:767px) {
+						.pv2.pinv .cuser-ps-foot .btn { width:100%; min-height:44px; }
+						.pv2.pinv .cuser-ps-value { font-size:16px !important; }
 						.pv2.pinv .cuser-param-grid { grid-template-columns:1fr; }
 						.pv2.pinv .cuser-param-card .jsParamEdit { height:44px; font-size:16px; }
 						.pv2.pinv .cuser-param-ro { font-size:16px; }

@@ -2058,6 +2058,228 @@ class core_user extends _BaseController {
 	}
 
 	/**
+	 * Devuelve en JSON la configuracion de pantallas (table = "normal": tb_company_page_setting) o las plantillas
+	 * (table = "large": tb_company_page_setting_large) del tipo de la compania en sesion (keyi = tb_company.type).
+	 * Con mode = "missing" devuelve los registros 'demo' cuyo controller + method + element no existen en la compania.
+	 * Solo para roles isAdmin o isAdminCompany.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface JSON {error, message, companyType, mode, data:[...]}
+	 */
+	function getPageSetting(){
+		try{
+			$dataSession		= $this->parameterCompany_session("edit");
+			$companyID			= $dataSession["user"]->companyID;
+			$body				= $this->pageSetting_body();
+
+			//companyID del cliente: solo se compara, nunca se usa para consultar
+			if(isset($body["companyID"]) && $body["companyID"] !== "" && intval($body["companyID"]) != intval($companyID))
+			throw new \Exception(NOT_ACCESS_CONTROL);
+
+			$table				= isset($body["table"]) ? (string)$body["table"] : "";
+			$mode				= isset($body["mode"]) && $body["mode"] === "missing" ? "missing" : "company";
+			$model				= $this->pageSetting_model($table);
+			$companyType		= $this->pageSetting_companyType($companyID);
+
+			if($mode == "missing")
+			$objList			= $companyType == "demo" ? array() : $model->get_rowsEditorMissingFromDemo($companyType);
+			else
+			$objList			= $model->get_rowsEditorByKey($companyType);
+
+			return $this->pageSetting_json(array(
+				'error'       => false,
+				'message'     => SUCCESS,
+				'companyType' => $companyType,
+				'mode'        => $mode,
+				'data'        => $objList
+			));
+		}
+		catch(\Exception $ex){
+			return $this->pageSetting_json(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));
+		}
+	}
+
+	/**
+	 * Guarda UN registro (una tarjeta) de configuracion de pantallas o de plantillas. Recibe JSON crudo
+	 * {companyID, table, id, isNew, valuei}. Si isNew = false actualiza solo valuei del registro de la compania;
+	 * si isNew = true, id es el registro 'demo' de origen: se inserta una copia con keyi = tipo de la compania
+	 * (o se actualiza si ya existe ese controller + method + element). Nunca modifica registros 'demo'
+	 * salvo que la compania sea de tipo 'demo'.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface JSON {error, message, id, keyi, inserted}
+	 */
+	function savePageSetting(){
+		try{
+			$dataSession		= $this->parameterCompany_session("edit");
+			$companyID			= $dataSession["user"]->companyID;
+			$body				= $this->request->getJSON(true);
+
+			if(!is_array($body) || !isset($body["id"]) || !array_key_exists("valuei",$body) || is_array($body["valuei"]))
+			throw new \Exception(NOT_PARAMETER);
+
+			if(isset($body["companyID"]) && $body["companyID"] !== "" && intval($body["companyID"]) != intval($companyID))
+			throw new \Exception(NOT_ACCESS_CONTROL);
+
+			$table				= isset($body["table"]) ? (string)$body["table"] : "";
+			$model				= $this->pageSetting_model($table);
+			$companyType		= $this->pageSetting_companyType($companyID);
+			$id					= intval($body["id"]);
+			$isNew				= !empty($body["isNew"]);
+			$valuei				= (string)$body["valuei"];	//sin trim: en plantillas los espacios y saltos importan
+
+			$msg				= $this->validatePageSettingValuei($table,$valuei);
+			if($msg !== "")
+			throw new \Exception($msg);
+
+			$row				= $model->get_rowByPk($id);
+			if(!$row)
+			throw new \Exception("EL REGISTRO NO EXISTE");
+
+			//Validar pertenencia antes de abrir la transaccion
+			//existente: debe ser del tipo de la compania; nuevo: el origen debe ser 'demo'
+			if(!$isNew && (string)$row->keyi !== $companyType)
+			throw new \Exception(NOT_ACCESS_CONTROL);
+			if($isNew && (string)$row->keyi !== "demo")
+			throw new \Exception(NOT_ACCESS_CONTROL);
+
+			$inserted			= false;
+			$db					= db_connect();
+			$db->transStart();
+			if(!$isNew)
+			{
+				$model->updateValueiEditor_app_posme($id,$companyType,$valuei);
+				$savedID		= $id;
+			}
+			else
+			{
+				//Si ya existe para la compania (doble clic, otra pestana) se actualiza en vez de duplicar
+				$exist			= $model->get_rowByKeyControllerMethodElement($companyType,$row->controller,$row->method,$row->element);
+				if($exist)
+				{
+					$savedID	= intval($exist->{$table == "large" ? "customPageLargeID" : "customPageID"});
+					$model->updateValueiEditor_app_posme($savedID,$companyType,$valuei);
+				}
+				else
+				{
+					$savedID	= $model->insertEditor_app_posme(array(
+						"namei"      => $row->namei,
+						"keyi"       => $companyType,
+						"controller" => $row->controller,
+						"method"     => $row->method,
+						"type"       => $row->type,
+						"flavorID"   => $row->flavorID,
+						"element"    => $row->element,
+						"valuei"     => $valuei,
+						"isActive"   => 1
+					));
+					$inserted	= true;
+				}
+			}
+			$db->transComplete();
+
+			if($db->transStatus() === false)
+			throw new \Exception("ERROR AL GUARDAR EL REGISTRO");
+
+			return $this->pageSetting_json(array(
+				'error'    => false,
+				'message'  => SUCCESS,
+				'id'       => intval($savedID),
+				'keyi'     => $companyType,
+				'inserted' => $inserted
+			));
+		}
+		catch(\Exception $ex){
+			return $this->pageSetting_json(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));
+		}
+	}
+
+	/**
+	 * Lee el cuerpo de la peticion: JSON crudo o, si no viene JSON, los campos POST.
+	 *
+	 * @return array Datos recibidos.
+	 */
+	protected function pageSetting_body(){
+		$body = null;
+		try{
+			$body = $this->request->getJSON(true);
+		}
+		catch(\Exception $ex){
+			$body = null;
+		}
+		if(!is_array($body))
+		$body = (array)$this->request->getPost();
+		return $body;
+	}
+
+	/**
+	 * Modelo segun la tabla pedida: "normal" (tb_company_page_setting) o "large" (tb_company_page_setting_large).
+	 *
+	 * @param string $table "normal" o "large".
+	 * @return object Modelo.
+	 */
+	protected function pageSetting_model($table){
+		if($table === "normal")
+		return $this->Company_Page_Setting_Model;
+		if($table === "large")
+		return new \App\Models\Company_Page_Setting_Large_Model();
+		throw new \Exception(NOT_PARAMETER);
+	}
+
+	/**
+	 * Tipo de la compania (tb_company.type), que es el keyi de las tablas de configuracion.
+	 *
+	 * @param int $companyID Compania en sesion.
+	 * @return string Tipo de la compania.
+	 */
+	protected function pageSetting_companyType($companyID){
+		$objCompany		= $this->Company_Model->get_rowByPK(intval($companyID));
+		$companyType	= $objCompany ? trim((string)$objCompany->type) : "";
+		if($companyType === "")
+		throw new \Exception("LA EMPRESA NO TIENE TIPO CONFIGURADO (tb_company.type)");
+		return $companyType;
+	}
+
+	/**
+	 * Respuesta JSON tolerante a bytes no UTF-8 (las plantillas blob pueden traerlos y json_encode fallaria).
+	 *
+	 * @param array $data Respuesta.
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	protected function pageSetting_json($data){
+		$json = json_encode($data, JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE);
+		if($json === false)
+		$json = json_encode(array('error' => true, 'message' => 'ERROR AL CODIFICAR LA RESPUESTA'));
+		return $this->response->setContentType('application/json')->setBody($json);
+	}
+
+	/**
+	 * Valida valuei: siempre texto. En "normal" (varchar 4000) maximo 4000 caracteres y sin caracteres de 4 bytes
+	 * (servidores MariaDB 5.5 en utf8). En "large" (blob) solo se exige UTF-8 valido.
+	 *
+	 * @param string $table  "normal" o "large".
+	 * @param string $valuei Valor propuesto.
+	 * @return string "" si es valido, o el mensaje de error.
+	 */
+	protected function validatePageSettingValuei($table,$valuei){
+		if(!mb_check_encoding($valuei,"UTF-8"))
+		return "CARACTERES NO SOPORTADOS";
+
+		if($table === "normal")
+		{
+			if(mb_strlen($valuei,"UTF-8") > 4000)
+			return "MAXIMO 4000 CARACTERES";
+			if(preg_match('/[\x{10000}-\x{10FFFF}]/u',$valuei))
+			return "CARACTERES NO SOPORTADOS (EMOJIS)";
+		}
+		return "";
+	}
+
+	/**
 	 * Autentica, valida permisos (urlPermited / urlPermissionCmd) y que el rol en sesion sea isAdmin o isAdminCompany.
 	 * Se usa en los endpoints AJAX del tab Parametros.
 	 *

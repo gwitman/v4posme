@@ -24,6 +24,8 @@
 		<li><a href="#profile2" data-toggle="tab">Notificaciones</a></li>
 		<?php if(!empty($canEditParameter)): ?>
 		<li><a href="#tabParameter" data-toggle="tab" id="lnkTabParameter">Parametros</a></li>
+		<li><a href="#tabPageSetting" data-toggle="tab" id="lnkTabPageSetting">Configuracion pantallas</a></li>
+		<li><a href="#tabPageSettingLarge" data-toggle="tab" id="lnkTabPageSettingLarge">Plantillas</a></li>
 		<?php endif; ?>
 	</ul>
 
@@ -241,6 +243,46 @@
 			<!--una tarjeta por parametro (sin tabla, sin scroll horizontal)-->
 			<div class="cuser-param-list" id="tbody_parameter"></div>
 			<div class="pinv-empty" id="divParameterEmpty" style="display:none"><i class="icon16 i-info"></i> <span id="lblParameterEmpty"></span></div>
+		</div>
+		<!--Configuracion de pantallas: controles SIN atributo name; cada tarjeta se guarda sola por AJAX JSON-->
+		<div class="tab-pane fade pv2-card" id="tabPageSetting">
+			<div class="pv2-detail-head">
+				<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-cog"></i></span> Configuracion de pantallas <span class="pinv-count" id="lblPsnormalCount">0</span></p>
+				<div class="pv2-actions">
+					<a href="#" class="btn btn-default btn-sm" id="btnPsnormalReload"><i class="icon16 i-rotate"></i> Recargar</a>
+					<a href="#" class="btn btn-info btn-sm" id="btnPsnormalFill"><i class="icon16 i-plus"></i> Llenar valores no existentes</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-6 form-group">
+					<label class="pv2-label" for="txtPsnormalSearch">Buscar</label>
+					<input class="form-control" type="search" id="txtPsnormalSearch" placeholder="Nombre, controlador, elemento o valor" autocomplete="off">
+				</div>
+			</div>
+			<p class="pv2-help">Configuracion de la empresa (tb_company_page_setting). Cada tarjeta se guarda con su propio boton. Los registros marcados como Nuevo (demo) se agregan a la empresa solo al guardarlos.</p>
+			<div class="pinv-empty cuser-ps-warn" id="divPsnormalWarn" style="display:none"><i class="icon16 i-warning"></i> <span id="lblPsnormalWarn"></span></div>
+			<div class="cuser-param-list" id="list_ps_normal"></div>
+			<div class="pinv-empty" id="divPsnormalEmpty" style="display:none"><i class="icon16 i-info"></i> <span id="lblPsnormalEmpty"></span></div>
+		</div>
+		<!--Plantillas: controles SIN atributo name; cada tarjeta se guarda sola por AJAX JSON-->
+		<div class="tab-pane fade pv2-card" id="tabPageSettingLarge">
+			<div class="pv2-detail-head">
+				<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-file"></i></span> Plantillas <span class="pinv-count" id="lblPslargeCount">0</span></p>
+				<div class="pv2-actions">
+					<a href="#" class="btn btn-default btn-sm" id="btnPslargeReload"><i class="icon16 i-rotate"></i> Recargar</a>
+					<a href="#" class="btn btn-info btn-sm" id="btnPslargeFill"><i class="icon16 i-plus"></i> Llenar valores no existentes</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-6 form-group">
+					<label class="pv2-label" for="txtPslargeSearch">Buscar</label>
+					<input class="form-control" type="search" id="txtPslargeSearch" placeholder="Nombre, controlador, elemento o valor" autocomplete="off">
+				</div>
+			</div>
+			<p class="pv2-help">Plantillas de impresion y textos largos de la empresa (tb_company_page_setting_large). Cada tarjeta se guarda con su propio boton. Los registros marcados como Nuevo (demo) se agregan a la empresa solo al guardarlos.</p>
+			<div class="pinv-empty cuser-ps-warn" id="divPslargeWarn" style="display:none"><i class="icon16 i-warning"></i> <span id="lblPslargeWarn"></span></div>
+			<div class="cuser-param-list" id="list_ps_large"></div>
+			<div class="pinv-empty" id="divPslargeEmpty" style="display:none"><i class="icon16 i-info"></i> <span id="lblPslargeEmpty"></span></div>
 		</div>
 		<?php endif; ?>
 

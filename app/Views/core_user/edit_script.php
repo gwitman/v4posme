@@ -44,8 +44,8 @@
 				$("#form-new-rol").submit();
 			};
 			//Si hay parametros modificados sin guardar, se pide confirmacion porque se perderian
-			if (varCanEditParameter && fnParamDirtyCount() > 0) {
-				fnShowConfirm("Confirmar..", "Hay parametros modificados sin guardar que se perderan. Desea continuar?", fnEnviar);
+			if (varCanEditParameter && (fnParamDirtyCount() + fnPsDirtyCount()) > 0) {
+				fnShowConfirm("Confirmar..", "Hay parametros o configuraciones modificados sin guardar que se perderan. Desea continuar?", fnEnviar);
 				return;
 			}
 			fnEnviar();
@@ -502,5 +502,261 @@
 			$(this).closest(".cuser-param-card").toggleClass("is-dirty", fnParamIsDirty(this)).removeClass("has-error");
 			fnParamDirtyCount();
 		});
+	});
+	/* ==================== Tabs Configuracion pantallas / Plantillas (AJAX JSON, una tarjeta = un guardado) ==================== */
+	//t = "normal" (tb_company_page_setting) o "large" (tb_company_page_setting_large)
+	var objPs = {
+		normal : { list: [], rows: [], loaded: false, timer: null, companyType: "" },
+		large  : { list: [], rows: [], loaded: false, timer: null, companyType: "" }
+	};
+	var PS_MAX_NORMAL = 4000;
+
+	//Normaliza saltos de linea como lo hace el textarea (\r\n -> \n) para comparar sin falsos cambios
+	function fnPsNorm(v){ return fnParamStr(v).replace(/\r\n?/g, "\n"); }
+	//Clave de tarjeta: c<id> registro de la empresa, n<id> registro demo aun no guardado
+	function fnPsKey(p){ return (p.__new ? "n" : "c") + parseInt(p.id, 10); }
+	//Identidad de negocio del registro
+	function fnPsIdent(p){ return [fnParamStr(p.controller), fnParamStr(p.method), fnParamStr(p.element)].join("|").toLowerCase(); }
+	function fnPsFind(t, key){
+		var i, l = objPs[t].list;
+		for(i = 0; i < l.length; i++){ if(fnPsKey(l[i]) === key) return l[i]; }
+		return null;
+	}
+	function fnPsIsDirty(p){ return !!p.__new || fnPsNorm(p.__cur) !== p.__orig; }
+	//Tabla segun el contenedor de la tarjeta
+	function fnPsTableOf($card){ return $card.closest("#list_ps_large").length ? "large" : "normal"; }
+
+	//Copia lo escrito en los textarea a la lista (antes de volver a pintar, para no perder cambios)
+	function fnPsSync(t){
+		$("#list_ps_" + t + " .cuser-ps-card").each(function(){
+			var p = fnPsFind(t, $(this).attr("data-key"));
+			if(p) p.__cur = $(this).find(".jsPsEdit").val();
+		});
+	}
+	//Registros de la empresa modificados sin guardar (sin contar los nuevos de demo)
+	function fnPsDirtyCount(t){
+		if(!t) return fnPsDirtyCount("normal") + fnPsDirtyCount("large");
+		var n = 0, i, l = objPs[t].list;
+		for(i = 0; i < l.length; i++){ if(!l[i].__new && fnPsIsDirty(l[i])) n++; }
+		return n;
+	}
+
+	//Pinta las tarjetas; todo el texto de BD se escapa (valuei puede traer HTML de plantillas)
+	function fnPsRender(t){
+		var st = objPs[t], html = [], i, p, cur, rows, lines, key;
+		for(i = 0; i < st.list.length; i++){
+			p     = st.list[i];
+			cur   = fnPsNorm(p.__cur);
+			key   = fnPsKey(p);
+			lines = cur.split("\n").length + Math.floor(cur.length / 70);
+			rows  = t === "large" ? 14 : Math.max(2, Math.min(8, lines));
+			html.push(
+				'<div class="cuser-param-card cuser-ps-card' + (t === "large" ? ' cuser-ps-large' : '') + (p.__new ? ' is-new' : '') + (fnPsIsDirty(p) && !p.__new ? ' is-dirty' : '') + '" data-key="' + key + '">' +
+					'<div class="cuser-param-head">' +
+						'<div class="cuser-param-title">' + fnParamEsc(p.namei || p.element) +
+							(p.__new ? '<span class="cuser-ps-badge is-new">Nuevo (demo)</span>' : '<span class="cuser-ps-badge">Empresa</span>') +
+						'</div>' +
+						'<span class="cuser-param-id">' + (p.__new ? 'demo ' : '') + 'ID ' + fnParamEsc(p.id) + '</span>' +
+					'</div>' +
+					'<div class="cuser-ps-meta">' +
+						'Controlador: <b>' + fnParamEsc(p.controller) + '</b> &middot; ' +
+						'Metodo: <b>' + fnParamEsc(p.method) + '</b> &middot; ' +
+						'Elemento: <b>' + fnParamEsc(p.element) + '</b>' +
+						(fnParamStr(p.type) !== "" ? ' &middot; Tipo: <b>' + fnParamEsc(p.type) + '</b>' : '') +
+					'</div>' +
+					'<textarea class="form-control cuser-ps-value jsPsEdit" rows="' + rows + '" spellcheck="false" autocomplete="off"' +
+						(t === "normal" ? ' maxlength="' + PS_MAX_NORMAL + '"' : '') + '>' + fnParamEsc(cur) + '</textarea>' +
+					'<div class="cuser-ps-foot">' +
+						'<span class="cuser-ps-msg">' + (p.__new ? 'Se agregara a la empresa al guardar' : '') + '</span>' +
+						'<a href="#" class="btn btn-primary btn-sm jsPsSave"' + (fnPsIsDirty(p) ? '' : ' disabled="disabled"') + '><i class="icon16 i-checkmark-4"></i> Guardar</a>' +
+					'</div>' +
+				'</div>'
+			);
+		}
+		var cont = document.getElementById("list_ps_" + t);
+		cont.innerHTML = html.join("");
+		//clave de busqueda por tarjeta (tr guarda el elemento, igual que en Parametros)
+		st.rows = [];
+		$(cont).children(".cuser-ps-card").each(function(){
+			var q = fnPsFind(t, $(this).attr("data-key"));
+			st.rows.push({ tr: this, key: q ? [q.namei, q.controller, q.method, q.element, q.type, q.id, q.__cur].join(" ").toLowerCase() : "" });
+		});
+		$("#lblPs" + t + "Count").text(st.list.length);
+		//aviso: si la empresa es demo los cambios modifican la configuracion base
+		if(st.companyType === "demo"){
+			$("#lblPs" + t + "Warn").text("La empresa es de tipo demo: los cambios modifican la configuracion base que usan las empresas sin configuracion propia.");
+			$("#divPs" + t + "Warn").show();
+		}
+		else $("#divPs" + t + "Warn").hide();
+		fnPsFilter(t);
+	}
+
+	//Filtro en cliente: todas las palabras deben aparecer
+	function fnPsFilter(t){
+		var st = objPs[t], terms = $.trim($("#txtPs" + t + "Search").val()).toLowerCase().split(/\s+/), i, j, ok, visibles = 0;
+		for(i = 0; i < st.rows.length; i++){
+			ok = true;
+			for(j = 0; j < terms.length; j++){ if(terms[j] !== "" && st.rows[i].key.indexOf(terms[j]) < 0){ ok = false; break; } }
+			st.rows[i].tr.style.display = ok ? "" : "none";
+			if(ok) visibles++;
+		}
+		var msg = st.rows.length === 0 ? "No hay registros para la empresa. Use Llenar valores no existentes para agregar los de demo." : (visibles === 0 ? "Ningun registro coincide con la busqueda." : "");
+		$("#lblPs" + t + "Empty").text(msg);
+		$("#divPs" + t + "Empty").toggle(msg !== "");
+	}
+
+	//Prepara un registro recibido del servidor
+	function fnPsPrepare(p, isNew){
+		p.__new  = !!isNew;
+		p.__orig = fnPsNorm(p.valuei);
+		p.__cur  = p.__orig;
+		return p;
+	}
+
+	//Carga los registros de la empresa (mode "company") o los demo faltantes (mode "missing")
+	function fnPsLoad(t, mode){
+		fnWaitOpen();
+		$.ajax({
+			cache       : false,
+			dataType    : "json",
+			type        : "POST",
+			contentType : "application/json; charset=utf-8",
+			url         : site_url + "core_user/getPageSetting",
+			data        : JSON.stringify({ companyID: $("#companyID").val(), table: t, mode: mode }),
+			success     : function(data){
+				fnWaitClose();
+				var st = objPs[t], lista, i, ya = {}, agregados = [];
+				//caso error
+				if(!data || data.error){ fnShowNotification(fnParamEsc((data && data.message) || "No fue posible cargar los registros"), "error"); return; }
+				st.companyType = fnParamStr(data.companyType);
+				lista = (data.data && data.data.length) ? data.data : [];
+
+				if(mode === "company"){
+					//sin datos / con datos: fnPsFilter muestra el aviso de vacio
+					st.loaded = true;
+					st.list   = [];
+					for(i = 0; i < lista.length; i++) st.list.push(fnPsPrepare(lista[i], false));
+					fnPsRender(t);
+					return;
+				}
+
+				//mode missing: agrega arriba solo los demo que aun no estan en pantalla
+				fnPsSync(t);
+				for(i = 0; i < st.list.length; i++) ya[fnPsIdent(st.list[i])] = true;
+				for(i = 0; i < lista.length; i++){
+					if(!ya[fnPsIdent(lista[i])]){ agregados.push(fnPsPrepare(lista[i], true)); ya[fnPsIdent(lista[i])] = true; }
+				}
+				if(agregados.length === 0){ fnShowNotification("No hay valores faltantes: la empresa ya tiene todos los registros de demo", "warning"); return; }
+				st.list = agregados.concat(st.list);
+				fnPsRender(t);
+				fnShowNotification(agregados.length + " registro(s) de demo agregados. Revise y guarde cada tarjeta que desee conservar.", "success");
+			},
+			error       : function(){ fnWaitClose(); fnShowNotification("Error al cargar los registros", "error"); }
+		});
+	}
+
+	//Guarda una sola tarjeta
+	function fnPsSave(t, $card){
+		var p = fnPsFind(t, $card.attr("data-key"));
+		if(!p) return;
+		var valor = $card.find(".jsPsEdit").val();
+		p.__cur   = valor;
+		if(!fnPsIsDirty(p)){ fnShowNotification("No hay cambios en este registro", "warning"); return; }
+		//validacion en cliente (el servidor vuelve a validar)
+		if(t === "normal" && valor.length > PS_MAX_NORMAL){
+			$card.addClass("has-error").find(".cuser-ps-msg").text("Maximo " + PS_MAX_NORMAL + " caracteres");
+			return;
+		}
+		fnWaitOpen();
+		$.ajax({
+			cache       : false,
+			dataType    : "json",
+			type        : "POST",
+			contentType : "application/json; charset=utf-8",
+			url         : site_url + "core_user/savePageSetting",
+			//JSON.stringify escapa comillas, HTML y saltos de linea: el valor llega intacto
+			data        : JSON.stringify({ companyID: $("#companyID").val(), table: t, id: p.id, isNew: p.__new, valuei: valor }),
+			success     : function(data){
+				fnWaitClose();
+				var st = objPs[t], i;
+				//caso error
+				if(!data || data.error){
+					var msg = fnParamStr((data && data.message) || "No fue posible guardar el registro");
+					$card.addClass("has-error").find(".cuser-ps-msg").text(msg);
+					fnShowNotification(fnParamEsc(msg), "error");
+					return;
+				}
+				fnPsSync(t);
+				//guardado: lo enviado pasa a ser el valor original
+				p.valuei = valor;
+				p.__orig = fnPsNorm(valor);
+				p.__cur  = valor;
+				if(p.__new){
+					//si ya existia en la empresa (no se inserto) se quita la tarjeta repetida
+					for(i = st.list.length - 1; i >= 0; i--){
+						if(st.list[i] !== p && !st.list[i].__new && parseInt(st.list[i].id, 10) === parseInt(data.id, 10)) st.list.splice(i, 1);
+					}
+					p.__new = false;
+					p.id    = data.id;
+					p.keyi  = data.keyi;
+				}
+				fnPsRender(t);
+				fnShowNotification(data.inserted ? "Registro agregado a la empresa" : "Registro guardado", "success");
+			},
+			error       : function(){ fnWaitClose(); fnShowNotification("Error al guardar el registro", "error"); }
+		});
+	}
+
+	$(document).ready(function(){
+		if(!varCanEditParameter) return;
+
+		//carga diferida: primera apertura de cada tab
+		$(document).on("click", "#lnkTabPageSetting, #lnkTabPageSettingLarge", function(){
+			var t = this.id === "lnkTabPageSettingLarge" ? "large" : "normal";
+			if(!objPs[t].loaded) fnPsLoad(t, "company");
+		});
+		//recargar (avisa si hay cambios o tarjetas nuevas sin guardar)
+		$(document).on("click", "#btnPsnormalReload, #btnPslargeReload", function(e){
+			e.preventDefault();
+			var t = this.id === "btnPslargeReload" ? "large" : "normal", i, pend = 0;
+			fnPsSync(t);
+			for(i = 0; i < objPs[t].list.length; i++){ if(fnPsIsDirty(objPs[t].list[i])) pend++; }
+			if(pend > 0) fnShowConfirm("Confirmar..", "Hay registros modificados o nuevos sin guardar. Desea recargar?", function(){ fnPsLoad(t, "company"); });
+			else fnPsLoad(t, "company");
+		});
+		//llenar valores no existentes: trae los demo que la empresa no tiene (no guarda nada)
+		$(document).on("click", "#btnPsnormalFill, #btnPslargeFill", function(e){
+			e.preventDefault();
+			var t = this.id === "btnPslargeFill" ? "large" : "normal";
+			if(!objPs[t].loaded){ fnShowNotification("Espere a que carguen los registros de la empresa", "warning"); return; }
+			fnPsLoad(t, "missing");
+		});
+		//guardar una tarjeta
+		$(document).on("click", ".cuser-ps-card .jsPsSave", function(e){
+			e.preventDefault();
+			if($(this).attr("disabled")) return;
+			var $card = $(this).closest(".cuser-ps-card");
+			fnPsSave(fnPsTableOf($card), $card);
+		});
+		//seguimiento de cambios por tarjeta
+		$(document).on("input change", ".cuser-ps-card .jsPsEdit", function(){
+			var $card = $(this).closest(".cuser-ps-card");
+			var p     = fnPsFind(fnPsTableOf($card), $card.attr("data-key"));
+			if(!p) return;
+			p.__cur   = this.value;
+			var sucio = fnPsIsDirty(p);
+			$card.toggleClass("is-dirty", sucio && !p.__new).removeClass("has-error");
+			$card.find(".cuser-ps-msg").text(p.__new ? "Se agregara a la empresa al guardar" : "");
+			if(sucio) $card.find(".jsPsSave").removeAttr("disabled");
+			else $card.find(".jsPsSave").attr("disabled", "disabled");
+		});
+		//buscadores con espera de 150 ms entre teclas
+		$(document).on("input", "#txtPsnormalSearch, #txtPslargeSearch", function(){
+			var t = this.id === "txtPslargeSearch" ? "large" : "normal";
+			clearTimeout(objPs[t].timer);
+			objPs[t].timer = setTimeout(function(){ fnPsFilter(t); }, 150);
+		});
+		//Enter en el buscador no debe enviar #form-new-rol (en el textarea Enter si hace salto de linea)
+		$(document).on("keydown", "#tabPageSetting input, #tabPageSettingLarge input", function(e){ if(e.which === 13){ e.preventDefault(); } });
 	});
 </script>

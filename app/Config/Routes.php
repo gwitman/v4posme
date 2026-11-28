@@ -1857,6 +1857,10 @@ $routes->match(['get', 'post'], 'core_user/getParameterCompany', 'core_user::get
 $routes->match(['get', 'post'], 'core_user/getParameterCompany/(:any)', 'core_user::getParameterCompany');
 $routes->match(['get', 'post'], 'core_user/saveParameterCompany', 'core_user::saveParameterCompany');
 $routes->match(['get', 'post'], 'core_user/saveParameterCompany/(:any)', 'core_user::saveParameterCompany');
+$routes->match(['get', 'post'], 'core_user/getPageSetting', 'core_user::getPageSetting');
+$routes->match(['get', 'post'], 'core_user/getPageSetting/(:any)', 'core_user::getPageSetting');
+$routes->match(['get', 'post'], 'core_user/savePageSetting', 'core_user::savePageSetting');
+$routes->match(['get', 'post'], 'core_user/savePageSetting/(:any)', 'core_user::savePageSetting');
 $routes->match(['get', 'post'], 'core_user/addpublic', 'core_user::addpublic');
 $routes->match(['get', 'post'], 'core_user/addpublic/(:any)', 'core_user::addpublic');
 $routes->match(['get', 'post'], 'core_user/savepublic', 'core_user::savepublic');
