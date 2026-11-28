@@ -1238,6 +1238,18 @@ Al cerrar la conversación o marcarla atendida por IA, la próxima conversación
 Notas: si el cliente le pregunta directamente, la IA no afirma ser una persona.
 Ver también: Ver qué hizo el agente de IA en una conversación (tarjeta Agente IA); Tomar una conversación de la IA o marcarla atendida por IA.
 
+## Agente de IA de WhatsApp: qué no responde y de dónde saca los precios, planes y combos
+Ruta: conversaciones con clientes por WhatsApp; se activa según la configuración de su empresa.
+Qué NO responde el agente de IA (reglas fijas, iguales para todas las empresas):
+- Código, archivos o programación, ni en qué lenguaje o tecnología está hecho el sistema.
+- Soluciones técnicas: ante un problema técnico toma los datos del cliente y pasa el caso a un asesor.
+- Temas fuera de contexto: quién es el dueño, cuántos empleados hay, la hora, cultura general, etc.
+De dónde saca la información:
+- Precios, planes, combos y promociones: del documento de ventas configurado en WHATSAPP_AI_AGENT_SALES_DOC_URL, con la herramienta buscar_info_ventas (asignada a la intención "prospecto"). Da los montos tal como vienen en el documento, sin calcular descuentos ni precios nuevos.
+- Dudas de uso del sistema: del manual de usuario.
+Notas: la IA nunca inventa precios. Si no hay documento de ventas configurado o el dato no aparece en él, le dice al cliente que un asesor se lo confirma.
+Ver también: Agente de IA de WhatsApp: qué hace y cuándo pasa la conversación a una persona; Parámetros de la empresa: Agente de IA de WhatsApp.
+
 ## Ver qué hizo el agente de IA en una conversación (tarjeta Agente IA)
 Ruta: lista de conversaciones > abra la conversación del cliente > pestaña **Chat**.
 En la lista de conversaciones:
@@ -2607,8 +2619,7 @@ Ver también: Despliegue remoto: editar la configuración (app/Config).
 Los parámetros controlan el comportamiento de posMe por empresa (por ejemplo, orden de aplicación de abonos, lista de precios por defecto, formato de impresión).
 Los parámetros contables se editan en CONTABILIDAD > PARAMETROS; el resto los configura el equipo de soporte de posMe.
 Google Calendar de las órdenes de taller: APP_GOOGLE_CLENDAR_ENABLE (true la activa), GOOGLE_CALENDAR_ID, GOOGLE_CALENDAR_SERVICE_EMAIL y GOOGLE_CALENDAR_PRIVATE_KEY; opcionales GOOGLE_CALENDAR_TIMEZONE (por defecto America/Managua) y GOOGLE_CALENDAR_DURATION_MINUTES (duración de cada evento, por defecto 60 minutos).
-Agente de IA de WhatsApp: WHATSAPP_AI_AGENT_ENABLE (true lo activa); WHATSAPP_AI_AGENT_CONTINUE_AFTER_HANDOFF (true: la IA sigue contestando tras derivar mientras ningún colaborador escriba); WHATSAPP_AI_AGENT_HANDOFF_MESSAGE (mensaje al derivar; vacío, la IA redacta el suyo); WHATSAPP_AI_AGENT_STAGE_ATTENDED_ID (etapa "atendida por IA"); WHATSAPP_AI_AGENT_DEBOUNCE_SECONDS (segundos de espera antes de responder, por defecto 3); WHATSAPP_AI_AGENT_MAX_TURNS (máximo de respuestas de la IA antes de pasar a una persona, por defecto 15); WHATSAPP_AI_AGENT_HISTORY_MESSAGES (mensajes anteriores que lee la IA, por defecto 12); WHATSAPP_AI_AGENT_EMPLOYEE_ENTITYID (colaborador "Asistente IA", nunca recibe asignaciones). El texto y las intenciones del agente por tipo de negocio los configura soporte.
-Ver también: Configurar los parámetros contables y las secciones "Parámetros de la empresa:" Campañas de WhatsApp; Proveedor de WhatsApp (Evolution, Meta Cloud API o LiveConnect); Descuento en factura; Devolución de productos; Autorización de ingreso y correos automáticos.
+Ver también: Configurar los parámetros contables y las secciones "Parámetros de la empresa:" Campañas de WhatsApp; Proveedor de WhatsApp (Evolution, Meta Cloud API o LiveConnect); Agente de IA de WhatsApp; Descuento en factura; Devolución de productos; Autorización de ingreso y correos automáticos.
 <!-- REVISAR: pantalla para que el cliente edite parametros generales -->
 
 ## Parámetros de la empresa: Campañas de WhatsApp
@@ -2634,6 +2645,11 @@ posMe envía WhatsApp solo por tres proveedores: Evolution API, Meta Cloud API y
 - WHATSAP_CURRENT_PROPIETARY_COMMERSE: número del dueño del comercio; recibe los avisos sin destinatario (reporte diario y monitor de caja).
 Notas: los mensajes de la pantalla de conversaciones, el agente de IA, el carnet en PDF, las encuestas, los pedidos, el registro de usuario y la eliminación de citas se envían al momento por Evolution API, sin pasar por la cola.
 Ver también: Avisos automáticos por WhatsApp: cuándo llegan (cola de envío); Parámetros de la empresa: Campañas de WhatsApp.
+
+## Parámetros de la empresa: Agente de IA de WhatsApp
+Ruta: los configura el equipo de soporte de posMe. Afectan al agente de IA que contesta a los clientes por WhatsApp.
+Agente de IA de WhatsApp: WHATSAPP_AI_AGENT_ENABLE (true lo activa); WHATSAPP_AI_AGENT_CONTINUE_AFTER_HANDOFF (true: la IA sigue contestando tras derivar mientras ningún colaborador escriba); WHATSAPP_AI_AGENT_HANDOFF_MESSAGE (mensaje al derivar; vacío, la IA redacta el suyo); WHATSAPP_AI_AGENT_STAGE_ATTENDED_ID (etapa "atendida por IA"); WHATSAPP_AI_AGENT_DEBOUNCE_SECONDS (segundos de espera antes de responder, por defecto 3); WHATSAPP_AI_AGENT_MAX_TURNS (máximo de respuestas de la IA antes de pasar a una persona, por defecto 15); WHATSAPP_AI_AGENT_HISTORY_MESSAGES (mensajes anteriores que lee la IA, por defecto 12); WHATSAPP_AI_AGENT_EMPLOYEE_ENTITYID (colaborador "Asistente IA", nunca recibe asignaciones). WHATSAPP_AI_AGENT_SALES_DOC_URL (URL del documento de ventas: precios, planes, combos y promociones; puede ser un Google Docs, una hoja de Google Sheets, una página web o un archivo .md/.txt; los de Google deben compartirse como "cualquier persona con el enlace: lector"; vacío, la IA no da precios y deriva a un asesor; la IA lo vuelve a leer cada 30 minutos). El texto y las intenciones del agente por tipo de negocio los configura soporte.
+Ver también: Agente de IA de WhatsApp: qué hace y cuándo pasa la conversación a una persona; Agente de IA de WhatsApp: qué no responde y de dónde saca los precios, planes y combos.
 
 ## Parámetros de la empresa: Descuento en factura
 Ruta: los configura el equipo de soporte de posMe. Afectan la pantalla FACTURACION > FACTURAR.

@@ -2,6 +2,13 @@
 /*servidor:	siteground*/
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'https://posme.net/v4posme/posme/public/resource/file_manual/precios.md'
+WHERE p.name = 'WHATSAPP_AI_AGENT_SALES_DOC_URL'
+    AND cp.companyID = 2;
+	
+	
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = 'cU15xDh12kXZKHKTLBaQlhbJoCXQT47ll66A3AqZJv8='
 WHERE p.name = 'CXC_ADVERTISING_CRONJOB_API_KEY'
     AND cp.companyID = 2;

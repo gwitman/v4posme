@@ -6,6 +6,13 @@
 /******************************************************************/
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
+SET cp.value = 'https://posme.net/precios.md'
+WHERE p.name = 'WHATSAPP_AI_AGENT_SALES_DOC_URL'
+    AND cp.companyID = 2;
+
+
+UPDATE tb_company_parameter AS cp
+    INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
 SET cp.value = 'true'
 WHERE p.name = 'CORE_SESSION_UNIQUE'
     AND cp.companyID = 2;

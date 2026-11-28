@@ -85,7 +85,16 @@ class core_web_ai_tools
      * Herramientas que puede usar el agente de IA de WhatsApp (clientes externos).
      * LISTA BLANCA: nunca se exponen consulta_sql, buscar_cliente, cuentas_por_cobrar ni ninguna otra.
      */
-    const HERRAMIENTAS_EXTERNAS = ["mi_saldo", "verificar_identidad", "buscar_en_manual", "registrar_dato", "derivar_a_humano", "marcar_atendida_ia"];
+    const HERRAMIENTAS_EXTERNAS = ["mi_saldo", "verificar_identidad", "buscar_en_manual", "buscar_info_ventas", "registrar_dato", "derivar_a_humano", "marcar_atendida_ia"];
+
+    /** Minutos que se reutiliza la copia descargada del documento de ventas antes de volver a pedirlo. */
+    const VENTAS_CACHE_MINUTOS = 30;
+
+    /** Dias que se conserva la ultima copia buena del documento de ventas (si la URL deja de responder). */
+    const VENTAS_RESPALDO_DIAS = 7;
+
+    /** Documentos de ventas hasta este tamano (caracteres) se entregan completos; los mayores se buscan por secciones. */
+    const VENTAS_MAX_COMPLETO = 8000;
 
     /** Intentos fallidos de verificacion de identidad antes de pasar a un humano. */
     const MAX_INTENTOS_IDENTIDAD = 2;
@@ -97,6 +106,7 @@ class core_web_ai_tools
     private $nombreRegistrado    = "";
     private $aiData              = [];
     private $permitidasExternas  = [];
+    private $urlVentas           = "";
 
     /**
      * Fija el contexto de la sesion. Debe llamarse antes de usar cualquier herramienta.
@@ -422,11 +432,13 @@ class core_web_ai_tools
      * @param string $telefono         Telefono de WhatsApp del cliente.
      * @param array  $aiData           Datos ya captados (tb_customer_conversation.aiData).
      * @param string $nombreRegistrado Nombre del contacto si ya esta registrado en el sistema; "" si es un numero nuevo.
+     * @param string $urlVentas        URL del documento de ventas (WHATSAPP_AI_AGENT_SALES_DOC_URL); "" si no hay.
      * @return void
      */
-    function initExterno($companyID, $entityIDCustomer, $telefono, $aiData, $nombreRegistrado = "")
+    function initExterno($companyID, $entityIDCustomer, $telefono, $aiData, $nombreRegistrado = "", $urlVentas = "")
     {
         $this->nombreRegistrado = trim((string) $nombreRegistrado);
+        $this->urlVentas        = trim((string) $urlVentas);
         $this->dataSession      = null;
         $this->companyID        = (int) $companyID;
         $this->userID           = 0;
@@ -488,6 +500,11 @@ class core_web_ai_tools
                 "description"  => "Busca en el manual de usuario de posMe. Usala cuando el cliente pregunte como se usa algo del sistema o tenga un error que pueda ser por desconocimiento (ej. no sabe anular, no encuentra un reporte, un mensaje de validacion). Explica los pasos con tus palabras, sin copiar el manual completo. Si no hay respuesta, no inventes.",
                 "input_schema" => ["type" => "object", "properties" => ["texto" => ["type" => "string", "description" => "Palabras clave de la duda o del error (ej. 'anular factura', 'abono credito', 'cierre de caja')"]], "required" => ["texto"]],
             ],
+            "buscar_info_ventas" => [
+                "name"         => "buscar_info_ventas",
+                "description"  => "Consulta el documento oficial de ventas de la empresa: precios, planes, combos, promociones, formas de pago, que incluye cada plan y condiciones. Usala SIEMPRE que pregunten por precios, costos, planes, combos, descuentos o como contratar. Da solo lo que diga el documento, sin inventar ni calcular precios nuevos. Si no aparece, dile que un asesor se lo confirma.",
+                "input_schema" => ["type" => "object", "properties" => ["texto" => ["type" => "string", "description" => "Palabras clave de lo que pregunta el cliente (ej. 'precio plan basico', 'combo restaurante', 'formas de pago')"]], "required" => ["texto"]],
+            ],
             "registrar_dato" => [
                 "name"         => "registrar_dato",
                 "description"  => "Guarda un dato que dio el cliente (ej. nombre, empresa, problema, modulo, telefono, correo, interes). Usala cada vez que el cliente te de un dato requerido.",
@@ -539,6 +556,10 @@ class core_web_ai_tools
             if (!$puedeCerrar && in_array($nombre, ["derivar_a_humano", "marcar_atendida_ia"], true)) {
                 continue;
             }
+            // Sin URL del documento de ventas la herramienta no se ofrece
+            if ($nombre == "buscar_info_ventas" && $this->urlVentas === "") {
+                continue;
+            }
             if (in_array($nombre, self::HERRAMIENTAS_EXTERNAS, true) && !in_array($nombre, $nombres, true)) {
                 $nombres[] = $nombre;
             }
@@ -577,6 +598,7 @@ class core_web_ai_tools
                 case "mi_saldo":            $resultado = $this->miSaldo(); break;
                 case "verificar_identidad": $resultado = $this->verificarIdentidad($input); break;
                 case "buscar_en_manual":    $resultado = $this->buscarEnManual($input); break;
+                case "buscar_info_ventas":  $resultado = $this->buscarInfoVentas($input); break;
                 case "registrar_dato":      $resultado = $this->registrarDato($input); break;
                 case "derivar_a_humano":    $resultado = $this->marcarAccion("derivar", $input); break;
                 case "marcar_atendida_ia":  $resultado = $this->marcarAccion("atendida", $input); break;
@@ -1249,6 +1271,218 @@ class core_web_ai_tools
             return ["resultado" => "No se encontro informacion en el manual. Sugiere contactar a soporte de posMe."];
         }
         return ["secciones" => $secciones];
+    }
+
+    /**
+     * Herramienta buscar_info_ventas: precios, planes y combos desde el documento de ventas de la empresa
+     * (WHATSAPP_AI_AGENT_SALES_DOC_URL). Si el documento es corto se entrega completo; si es largo, sus
+     * secciones (## Titulo) mas relevantes.
+     *
+     * @param array $input ['texto' => consulta del cliente]
+     * @return array
+     */
+    private function buscarInfoVentas($input)
+    {
+        $texto     = (string) ($input["texto"] ?? "");
+        $documento = $this->getDocumentoVentas();
+        if ($documento === "") {
+            $this->auditar("buscar_info_ventas", $input, 0, 0, "documento no disponible");
+            return ["resultado" => "La informacion de precios no esta disponible en este momento. No des precios: dile que un asesor se los confirma."];
+        }
+
+        if (mb_strlen($documento) <= self::VENTAS_MAX_COMPLETO) {
+            $this->auditar("buscar_info_ventas", $input, 1, 0, null);
+            return ["documento" => $documento];
+        }
+
+        $secciones = self::buscarSeccionesManual($documento, $texto, 3);
+        $this->auditar("buscar_info_ventas", $input, count($secciones), 0, null);
+        if (count($secciones) == 0) {
+            return ["resultado" => "No se encontro esa informacion en el documento de ventas. No inventes precios: dile que un asesor se lo confirma."];
+        }
+        return ["secciones" => $secciones];
+    }
+
+    /**
+     * Texto del documento de ventas. Se descarga como maximo cada VENTAS_CACHE_MINUTOS y se guarda una copia
+     * de respaldo por si la URL deja de responder.
+     *
+     * @return string texto plano / markdown, o "" si no hay documento
+     */
+    private function getDocumentoVentas()
+    {
+        $url = $this->urlVentas;
+        if ($url === "" || !preg_match('#^https?://#i', $url)) {
+            return "";
+        }
+
+        $clave    = "ai_ventas_" . $this->companyID . "_" . md5($url);
+        $respaldo = $clave . "_respaldo";
+        $cache    = null;
+        try {
+            $cache  = \Config\Services::cache();
+            $copia  = $cache->get($clave);
+            if (is_string($copia) && $copia !== "") {
+                return $copia;
+            }
+        } catch (\Throwable $ex) {
+            $cache = null;
+        }
+
+        $texto = self::descargarDocumentoVentas($url);
+        if ($cache !== null) {
+            try {
+                if ($texto !== "") {
+                    $cache->save($clave, $texto, self::VENTAS_CACHE_MINUTOS * 60);
+                    $cache->save($respaldo, $texto, self::VENTAS_RESPALDO_DIAS * 86400);
+                } else {
+                    // La URL no respondio: se usa la ultima copia buena
+                    $texto = (string) $cache->get($respaldo);
+                }
+            } catch (\Throwable $ex) {
+                log_message("error", "core_web_ai_tools cache ventas: " . $ex->getMessage());
+            }
+        }
+        return $texto;
+    }
+
+    /**
+     * Descarga el documento de ventas y lo convierte en texto con secciones "## Titulo".
+     * Acepta Google Docs (se exporta en markdown), Google Sheets (se exporta en CSV; cada fila es una seccion),
+     * paginas web (HTML) y archivos .md / .txt.
+     *
+     * @param string $url URL configurada por la empresa.
+     * @return string texto, o "" si falla
+     */
+    static function descargarDocumentoVentas($url)
+    {
+        $url = trim((string) $url);
+
+        // Google Docs: /document/d/{ID}/... -> exportar en markdown (y texto si markdown falla)
+        if (preg_match('#docs\.google\.com/document/d/([a-zA-Z0-9_-]+)#', $url, $m)) {
+            $base      = "https://docs.google.com/document/d/" . $m[1] . "/export?format=";
+            $respuesta = self::httpGetVentas($base . "md");
+            if ($respuesta["texto"] === "") {
+                $respuesta = self::httpGetVentas($base . "txt");
+            }
+            return self::limpiarTextoVentas($respuesta["texto"]);
+        }
+
+        // Google Sheets: /spreadsheets/d/{ID}/...#gid=N -> exportar la hoja en CSV
+        if (preg_match('#docs\.google\.com/spreadsheets/d/([a-zA-Z0-9_-]+)#', $url, $m)) {
+            $gid       = preg_match('#[?&\#]gid=(\d+)#', $url, $g) ? $g[1] : "0";
+            $respuesta = self::httpGetVentas("https://docs.google.com/spreadsheets/d/" . $m[1] . "/export?format=csv&gid=" . $gid);
+            return self::csvATextoVentas($respuesta["texto"]);
+        }
+
+        // Pagina web o archivo publicado
+        $respuesta = self::httpGetVentas($url);
+        if ($respuesta["texto"] === "") {
+            return "";
+        }
+        if (stripos($respuesta["tipo"], "html") !== false || preg_match('/<\s*(html|body|div|p)\b/i', substr($respuesta["texto"], 0, 2000))) {
+            return self::htmlATextoVentas($respuesta["texto"]);
+        }
+        return self::limpiarTextoVentas($respuesta["texto"]);
+    }
+
+    /**
+     * GET con cURL (sigue redirecciones de Google). Nunca lanza excepciones.
+     *
+     * @param string $url
+     * @return array ['texto' => cuerpo o "" si fallo, 'tipo' => content-type]
+     */
+    static function httpGetVentas($url)
+    {
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_FOLLOWLOCATION => true,
+            CURLOPT_MAXREDIRS      => 5,
+            CURLOPT_PROTOCOLS      => CURLPROTO_HTTP | CURLPROTO_HTTPS,
+            CURLOPT_CONNECTTIMEOUT => 5,
+            CURLOPT_TIMEOUT        => 10,
+            CURLOPT_SSL_VERIFYPEER => true,
+            CURLOPT_USERAGENT      => "posMe",
+        ]);
+        $body   = curl_exec($ch);
+        $status = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $tipo   = (string) curl_getinfo($ch, CURLINFO_CONTENT_TYPE);
+        $errno  = curl_errno($ch);
+        curl_close($ch);
+
+        // Maximo 1 MB: un documento de precios no debe ser mas grande
+        if ($errno || $status != 200 || !is_string($body) || strlen($body) > 1048576) {
+            log_message("error", "core_web_ai_tools documento ventas: HTTP " . $status . " errno " . $errno);
+            return ["texto" => "", "tipo" => $tipo];
+        }
+        return ["texto" => $body, "tipo" => $tipo];
+    }
+
+    /**
+     * HTML a texto: los titulos h1-h3 pasan a "## Titulo" para poder buscar por secciones.
+     *
+     * @param string $html
+     * @return string
+     */
+    static function htmlATextoVentas($html)
+    {
+        $html = preg_replace('#<(script|style|noscript|svg|head|nav|footer)\b[^>]*>.*?</\1>#is', ' ', (string) $html);
+        $html = preg_replace('#<h[1-3]\b[^>]*>(.*?)</h[1-3]>#is', "\n## $1\n", $html);
+        $html = preg_replace('#<(br|/p|/div|/li|/tr|/h[4-6])\b[^>]*>#i', "\n", $html);
+        $html = preg_replace('#<li\b[^>]*>#i', "\n- ", $html);
+        $html = preg_replace('#</t[dh]>#i', " | ", $html);
+        $texto = html_entity_decode(strip_tags($html), ENT_QUOTES | ENT_HTML5, "UTF-8");
+        return self::limpiarTextoVentas($texto);
+    }
+
+    /**
+     * CSV de Google Sheets a texto: la primera fila son los encabezados y cada fila siguiente
+     * es una seccion "## <primera columna>" con "encabezado: valor" por linea.
+     *
+     * @param string $csv
+     * @return string
+     */
+    static function csvATextoVentas($csv)
+    {
+        $csv = preg_replace('/^\xEF\xBB\xBF/', '', (string) $csv);
+        if (trim($csv) === "") {
+            return "";
+        }
+        $filas = array_map("str_getcsv", preg_split('/\r\n|\n|\r/', trim($csv)));
+        $encabezados = array_map("trim", array_shift($filas));
+        $texto = "";
+        foreach ($filas as $fila) {
+            $fila = array_map("trim", (array) $fila);
+            if (implode("", $fila) === "") {
+                continue;
+            }
+            $texto .= "## " . ($fila[0] !== "" ? $fila[0] : "Fila") . "\n";
+            foreach ($fila as $i => $valor) {
+                if ($i == 0 || $valor === "") {
+                    continue;
+                }
+                $texto .= "- " . ($encabezados[$i] ?? ("Columna " . ($i + 1))) . ": " . $valor . "\n";
+            }
+            $texto .= "\n";
+        }
+        return self::limpiarTextoVentas($texto);
+    }
+
+    /**
+     * Normaliza saltos de linea y espacios y unifica los titulos markdown (# a ###) en "## ".
+     *
+     * @param string $texto
+     * @return string
+     */
+    static function limpiarTextoVentas($texto)
+    {
+        $texto = preg_replace('/^\xEF\xBB\xBF/', '', (string) $texto);
+        $texto = str_replace(["\r\n", "\r"], "\n", $texto);
+        $texto = preg_replace('/^#{1,3}\s+/m', "## ", $texto);
+        $texto = preg_replace('/[ \t]+/', " ", $texto);
+        $texto = preg_replace('/\n\s*\n\s*\n+/', "\n\n", $texto);
+        return trim($texto);
     }
 
     /**
