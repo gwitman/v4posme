@@ -22,6 +22,9 @@
 		<li><a href="#profile1" data-toggle="tab">Bodegas</a></li>
 		<li><a href="#box1" data-toggle="tab">Cajas</a></li>
 		<li><a href="#profile2" data-toggle="tab">Notificaciones</a></li>
+		<?php if(!empty($canEditParameter)): ?>
+		<li><a href="#tabParameter" data-toggle="tab" id="lnkTabParameter">Parametros</a></li>
+		<?php endif; ?>
 	</ul>
 
 	<!-- formulario -->
@@ -217,6 +220,29 @@
 				</tbody>
 			</table>
 		</div>
+
+		<?php if(!empty($canEditParameter)): ?>
+		<!--Parametros: controles SIN atributo name (no viajan en el POST de core_user/save); se guardan por AJAX JSON-->
+		<div class="tab-pane fade pv2-card" id="tabParameter">
+			<div class="pv2-detail-head">
+				<p class="pv2-card-title"><span class="pv2-ico"><i class="icon16 i-cog"></i></span> Parametros <span class="pinv-count" id="lblParameterCount">0</span></p>
+				<div class="pv2-actions">
+					<a href="#" class="btn btn-default btn-sm" id="btnParameterReload"><i class="icon16 i-rotate"></i> Recargar</a>
+					<a href="#" class="btn btn-primary btn-sm" id="btnParameterSave"><i class="icon16 i-checkmark-4"></i> Guardar parametros <span id="lblParameterDirty"></span></a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-xs-12 col-sm-6 form-group">
+					<label class="pv2-label" for="txtParameterSearch">Buscar</label>
+					<input class="form-control" type="search" id="txtParameterSearch" placeholder="Nombre, descripcion o valor" autocomplete="off">
+				</div>
+			</div>
+			<p class="pv2-help">Solo se guardan los parametros modificados (resaltados). Deje vacio el valor personalizado para usar el valor de la empresa.</p>
+			<!--una tarjeta por parametro (sin tabla, sin scroll horizontal)-->
+			<div class="cuser-param-list" id="tbody_parameter"></div>
+			<div class="pinv-empty" id="divParameterEmpty" style="display:none"><i class="icon16 i-info"></i> <span id="lblParameterEmpty"></span></div>
+		</div>
+		<?php endif; ?>
 
 	</div>
 	</form>

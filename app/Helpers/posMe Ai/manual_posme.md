@@ -2190,11 +2190,36 @@ Notas: para quitar una bodega o caja, toque la fila para seleccionarla y presion
 ## Modificar o eliminar un usuario
 Ruta: Menú > SEGURIDAD > USUARIOS.
 1. Busque el usuario en la lista (campo **Buscar usuario…**) y ábralo.
-2. Cambie lo necesario en **Informacion General**, **Bodegas**, **Cajas** o **Notificaciones** (pestaña para asignarle notificaciones con **Agregar**).
+2. Cambie lo necesario en **Informacion General**, **Bodegas**, **Cajas** o **Notificaciones** (pestaña para asignarle notificaciones con **Agregar**). Si su rol es administrador o administrador de compañía también verá la pestaña **Parametros** (ver la sección siguiente).
 3. Presione **Guardar**.
 4. Para dar de baja al usuario presione **Eliminar** y confirme; ya no podrá entrar a posMe.
 Para cambiar la contraseña de otro usuario escriba la nueva en **Password** y guarde.
 Restricciones: se requiere permiso de editar o eliminar en USUARIOS; si su permiso es **Propios**, solo puede modificar o eliminar los usuarios que usted creó.
+
+## Ver los parámetros de la empresa desde un usuario (pestaña Parametros)
+Ruta: Menú > SEGURIDAD > USUARIOS > abrir el usuario > pestaña **Parametros**.
+La pestaña muestra los parámetros configurables de la EMPRESA, no del usuario: afectan a toda la compañía aunque se editen desde la pantalla de un usuario.
+1. Abra el usuario y entre a la pestaña **Parametros**.
+2. Cada parámetro se muestra en una tarjeta con su nombre (y debajo el nombre técnico y su tipo), su **ID**, la **Descripcion** y el **Valor** en campos de solo lectura (los textos largos se ven completos, sin desplazarse a los lados) y el **Valor personalizado** (editable).
+3. Use **Buscar** para filtrar por nombre, descripción, valor o ID; puede escribir varias palabras.
+4. Escriba o elija el **Valor personalizado** (ver la sección siguiente) y presione **Guardar parametros**.
+5. **Recargar** vuelve a leer los valores; si hay cambios sin guardar, pide confirmar.
+Restricciones: la pestaña solo aparece si el rol de quien está en sesión es administrador o administrador de compañía (campo **Administrador de compañía** del rol). Para los demás usuarios no se muestra.
+Notas: el valor personalizado queda registrado como referencia; el **Valor** de la empresa no se cambia desde aquí.
+
+## Cambiar el valor personalizado de un parámetro (pestaña Parametros)
+Ruta: Menú > SEGURIDAD > USUARIOS > abrir el usuario > pestaña **Parametros**.
+El control de **Valor personalizado** depende del tipo del parámetro:
+- Verdadero/Falso: lista **Seleccione** / **Verdadero** / **Falso**.
+- Entero: solo números.
+- Decimal: números con punto decimal.
+- Fecha: calendario (formato aaaa-mm-dd).
+- Lista de opciones: lista con las opciones definidas.
+- Texto: campo de texto de hasta 300 caracteres; admite acentos y ñ, pero no emojis.
+1. Cambie el valor en las tarjetas que necesite; las tarjetas modificadas se resaltan.
+2. Presione **Guardar parametros**: el botón muestra cuántos parámetros cambió y guarda solo esos.
+3. Si algún valor es inválido se marca en rojo y no se guarda ninguno hasta que lo corrija.
+Notas: dejar el campo vacío o en **Seleccione** quita el valor personalizado. **Guardar parametros** es independiente del botón **Guardar** del usuario; si presiona **Guardar** con parámetros sin guardar, posMe pide confirmación porque esos cambios se perderían.
 
 ## Crear un rol
 Ruta: Menú > SEGURIDAD > ROLES.

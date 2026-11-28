@@ -835,7 +835,7 @@ CREATE TABLE `tb_company_parameter`  (
   `display` varchar(250) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '0',
   `description` varchar(250) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '0',
   `value` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0',
-  `customValue` varchar(300) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '0',
+  `customValue` varchar(300) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0',
   `companyParameterID` int NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`companyParameterID`) USING BTREE,
   INDEX `IDX_COMPANY_PARAMETER_001`(`parameterID` ASC) USING BTREE,
@@ -2598,6 +2598,8 @@ CREATE TABLE `tb_parameter`  (
   `description` varchar(250) CHARACTER SET latin1 COLLATE latin1_general_ci NULL DEFAULT NULL,
   `isRequiered` tinyint(1) NOT NULL DEFAULT 0,
   `isEdited` tinyint(1) NOT NULL DEFAULT 0,
+  `type` varchar(50) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `source` varchar(1000) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`parameterID`) USING BTREE,
   INDEX `IDX_PARAMETER_001`(`name` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 344 CHARACTER SET = latin1 COLLATE = latin1_general_ci ROW_FORMAT = DYNAMIC;

@@ -529,7 +529,10 @@ class core_user extends _BaseController {
 			$objParameterCantidadItemPoup				= $this->core_web_parameter->getParameterFiltered($objListComanyParameter,"INVOICE_CANTIDAD_ITEM");
 			$datView["objParameterCantidadItemPoup"]	= $objParameterCantidadItemPoup->value;
 
-			
+			//Tab Parametros: solo isAdmin o isAdminCompany y solo sobre la compania en sesion
+			$datView["canEditParameter"]				= $this->core_web_report_builder->isAdminCompany($dataSession) && intval($companyID) == intval($dataSession["user"]->companyID);
+
+
 			//Lista de cajas
 			$datView["objListCash"]	 				= $this->Cash_Box_Model->asObject()
 				->where("companyID",$this->session->get('user')->companyID)
@@ -1924,9 +1927,229 @@ class core_user extends _BaseController {
 		    $resultView        = view("core_template/email_error_general",$data);
 			
 		    return $resultView;
-		}	
-			
+		}
+
     }
-	
+
+	/**
+	 * Devuelve en JSON los parametros editables (tb_parameter.isEdited = 1) de la compania en sesion.
+	 * Solo para roles isAdmin o isAdminCompany. Si llega companyID (POST o URI) debe ser el de la sesion.
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface JSON {error, message, data:[...]}
+	 */
+	function getParameterCompany(){
+		try{
+			$dataSession		= $this->parameterCompany_session("edit");
+			$companyID			= $dataSession["user"]->companyID;
+
+			//companyID del cliente: solo se compara, nunca se usa para consultar
+			$companyIDClient	= /*inicio get post*/ $this->request->getPost("companyID");
+			if(!$companyIDClient)
+			$companyIDClient	= /*--ini uri*/ helper_SegmentsValue($this->uri->getSegments(),"companyID");//--finuri
+			if($companyIDClient && intval($companyIDClient) != intval($companyID))
+			throw new \Exception(NOT_ACCESS_CONTROL);
+
+			$objList			= $this->Company_Parameter_Model->get_rowByCompanyIDEditable($companyID);
+
+			return $this->response->setJSON(array(
+				'error'   => false,
+				'message' => SUCCESS,
+				'data'    => $objList
+			));//--finjson
+		}
+		catch(\Exception $ex){
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));//--finjson
+		}
+	}
+
+	/**
+	 * Recibe JSON crudo {companyID, items:[{companyParameterID, customValue}]} y actualiza solo customValue
+	 * de los parametros editables de la compania en sesion. Valida todo antes de guardar (todo o nada).
+	 *
+	 * @return \CodeIgniter\HTTP\ResponseInterface JSON {error, message, updated, errors:[...]}
+	 */
+	function saveParameterCompany(){
+		try{
+			$dataSession		= $this->parameterCompany_session("edit");
+			$companyID			= $dataSession["user"]->companyID;
+			$body				= $this->request->getJSON(true);
+
+			if(!is_array($body) || !isset($body["items"]) || !is_array($body["items"]))
+			throw new \Exception(NOT_PARAMETER);
+
+			if(isset($body["companyID"]) && $body["companyID"] !== "" && intval($body["companyID"]) != intval($companyID))
+			throw new \Exception(NOT_ACCESS_CONTROL);
+
+			//Indexar los parametros editables de la compania: solo estos se pueden modificar
+			$objListEditable	= $this->Company_Parameter_Model->get_rowByCompanyIDEditable($companyID);
+			$mapEditable		= array();
+			foreach($objListEditable as $row)
+			{
+				$mapEditable[intval($row->companyParameterID)] = $row;
+			}
+
+			//Validar todo primero; si hay algun error no se guarda nada
+			$errors				= array();
+			$toSave				= array();
+			foreach($body["items"] as $item)
+			{
+				if(!is_array($item))
+				{
+					$errors[] = array("companyParameterID" => 0, "message" => "ELEMENTO INVALIDO");
+					continue;
+				}
+
+				$id				= isset($item["companyParameterID"]) ? intval($item["companyParameterID"]) : 0;
+				$custom			= isset($item["customValue"]) && !is_array($item["customValue"]) ? trim((string)$item["customValue"]) : "";
+
+				if(!isset($mapEditable[$id]))
+				{
+					$errors[] = array("companyParameterID" => $id, "message" => "PARAMETRO NO EDITABLE");
+					continue;
+				}
+
+				$msg			= $this->validateParameterCustomValue($mapEditable[$id],$custom);
+				if($msg !== "")
+				{
+					$errors[] = array("companyParameterID" => $id, "display" => $mapEditable[$id]->display, "message" => $msg);
+					continue;
+				}
+
+				if((string)$mapEditable[$id]->customValue !== $custom)
+				$toSave[$id] = $custom;
+			}
+
+			if(count($errors) > 0)
+			{
+				return $this->response->setJSON(array(
+					'error'   => true,
+					'message' => "VALORES INVALIDOS",
+					'errors'  => $errors
+				));//--finjson
+			}
+
+			$db = db_connect();
+			$db->transStart();
+			foreach($toSave as $id => $custom)
+			{
+				$this->Company_Parameter_Model->update_customValue_app_posme($companyID,$id,$custom);
+			}
+			$db->transComplete();
+
+			if($db->transStatus() === false)
+			throw new \Exception("ERROR AL GUARDAR LOS PARAMETROS");
+
+			return $this->response->setJSON(array(
+				'error'   => false,
+				'message' => SUCCESS,
+				'updated' => count($toSave),
+				'errors'  => array()
+			));//--finjson
+		}
+		catch(\Exception $ex){
+			return $this->response->setJSON(array(
+				'error'   => true,
+				'message' => $ex->getLine()." ".$ex->getMessage()
+			));//--finjson
+		}
+	}
+
+	/**
+	 * Autentica, valida permisos (urlPermited / urlPermissionCmd) y que el rol en sesion sea isAdmin o isAdminCompany.
+	 * Se usa en los endpoints AJAX del tab Parametros.
+	 *
+	 * @param string $cmd Comando de permiso a validar ("edit").
+	 * @return array Datos de la sesion.
+	 */
+	protected function parameterCompany_session($cmd){
+		if(!$this->core_web_authentication->isAuthenticated())
+		throw new \Exception(USER_NOT_AUTENTICATED);
+		$dataSession		= $this->session->get();
+
+		if(APP_NEED_AUTHENTICATION == true){
+			$permited = false;
+			$permited = $this->core_web_permission->urlPermited(get_class($this),"index",URL_SUFFIX,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+			if(!$permited)
+			throw new \Exception(NOT_ACCESS_CONTROL);
+
+			$resultPermission		= $this->core_web_permission->urlPermissionCmd(get_class($this),$cmd,URL_SUFFIX,$dataSession,$dataSession["menuTop"],$dataSession["menuLeft"],$dataSession["menuBodyReport"],$dataSession["menuBodyTop"],$dataSession["menuHiddenPopup"]);
+			if ($resultPermission 	== PERMISSION_NONE)
+			throw new \Exception(NOT_ALL_EDIT);
+		}
+
+		//Regla de negocio: los parametros afectan a toda la compania, solo administradores
+		if(!$this->core_web_report_builder->isAdminCompany($dataSession))
+		throw new \Exception(NOT_ACCESS_CONTROL);
+
+		return $dataSession;
+	}
+
+	/**
+	 * Valida el customValue de un parametro segun su tipo (tb_parameter.type): bool, int, decimal, text,
+	 * datetime o combobox (opciones separadas por coma en tb_parameter.source). Si type esta vacio o no es
+	 * reconocido, el tipo se detecta a partir de value. Vacio siempre es valido. Maximo 300 caracteres.
+	 *
+	 * @param object $row    Fila de get_rowByCompanyIDEditable (type, source, value...).
+	 * @param string $custom Valor propuesto para customValue (ya con trim).
+	 * @return string "" si es valido, o el mensaje de error.
+	 */
+	protected function validateParameterCustomValue($row,$custom){
+		if($custom === "")
+		return "";
+
+		if(mb_strlen($custom,"UTF-8") > 300)
+		return "MAXIMO 300 CARACTERES";
+
+		//La columna es utf8 (3 bytes): no admite caracteres de 4 bytes como emojis
+		if(preg_match('/[\x{10000}-\x{10FFFF}]/u',$custom) || !mb_check_encoding($custom,"UTF-8"))
+		return "CARACTERES NO SOPORTADOS";
+
+		$type			= strtolower(trim((string)(isset($row->type) ? $row->type : "")));
+		$typeValid		= array("bool","int","decimal","text","datetime","combobox");
+
+		//Sin tipo configurado: detectar por value
+		if(!in_array($type,$typeValid,true))
+		{
+			$value		= trim((string)$row->value);
+			if(in_array(strtolower($value),array("true","false"),true))
+			$type		= "bool";
+			else if(preg_match('/^-?\d+$/',$value))
+			$type		= "int";
+			else if(preg_match('/^-?\d+\.\d+$/',$value))
+			$type		= "decimal";
+			else if(preg_match('/^\d{4}-\d{2}-\d{2}$/',$value))
+			$type		= "datetime";
+			else
+			$type		= "text";
+		}
+
+		switch($type)
+		{
+			case "bool":
+				return in_array(strtolower($custom),array("true","false"),true) ? "" : "DEBE SER true O false";
+			case "int":
+				return preg_match('/^-?\d+$/',$custom) ? "" : "DEBE SER ENTERO";
+			case "decimal":
+				return preg_match('/^-?\d+(\.\d+)?$/',$custom) ? "" : "DEBE SER DECIMAL";
+			case "datetime":
+				$date	= \DateTime::createFromFormat('!Y-m-d',$custom);
+				return ($date && $date->format('Y-m-d') === $custom) ? "" : "DEBE SER FECHA yyyy-mm-dd";
+			case "combobox":
+				$options	= array();
+				foreach(explode(",",(string)(isset($row->source) ? $row->source : "")) as $option)
+				{
+					$option	= trim($option);
+					if($option !== "")
+					$options[] = $option;
+				}
+				return in_array($custom,$options,true) ? "" : "DEBE SER UNA DE LAS OPCIONES: ".implode(", ",$options);
+			default:
+				return "";
+		}
+	}
+
 }
 ?>
