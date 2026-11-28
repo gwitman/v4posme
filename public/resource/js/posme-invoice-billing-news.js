@@ -48,6 +48,11 @@
 		}
 	}
 
+	//Carga inicial: #ModalCargandoDatos nace visible (display:flex por su clase) antes de que corra el ready;
+	//se marca pm-espera desde ya para que la barra y el cobro queden detras del modal. refrescar() la
+	//recalcula con hayModalEspera() en cuanto el DOM esta listo.
+	agregarClaseHtml('pm-espera');
+
 	function media(query) {
 		try {
 			return !!(window.matchMedia && window.matchMedia(query).matches);
