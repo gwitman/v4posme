@@ -780,6 +780,8 @@ $routes->match(['get', 'post'], 'app_cxc_api/setConversationCustomer', 'app_cxc_
 $routes->match(['get', 'post'], 'app_cxc_api/setConversationConversation_Tools', 'app_cxc_api::setConversationConversation_Tools');
 $routes->match(['get', 'post'], 'app_cxc_api/setConversationAI_Status', 'app_cxc_api::setConversationAI_Status');
 $routes->match(['get', 'post'], 'app_cxc_api/setConversationAI_Status/(:any)', 'app_cxc_api::setConversationAI_Status');
+$routes->match(['get', 'post'], 'app_cxc_api/deleteConversationNotification', 'app_cxc_api::deleteConversationNotification');
+$routes->match(['get', 'post'], 'app_cxc_api/deleteConversationNotification/(:any)', 'app_cxc_api::deleteConversationNotification');
 $routes->match(['get', 'post'], 'app_cxc_api/getConversationCustomer_ByCustomer', 'app_cxc_api::getConversationCustomer_ByCustomer');
 $routes->match(['get', 'post'], 'app_cxc_api/WebHookReceiptMessage_Whatsapp_MetaCloud_posMe', 'app_cxc_api::WebHookReceiptMessage_Whatsapp_MetaCloud_posMe');
 $routes->match(['get', 'post'], 'app_cxc_api/WebHookReceiptMessage_Whatsapp_MetaCloud_posMe/(:any)', 'app_cxc_api::WebHookReceiptMessage_Whatsapp_MetaCloud_posMe');

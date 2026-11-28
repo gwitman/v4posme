@@ -520,7 +520,8 @@ class app_cxc_api extends _BaseController {
 		
 		// Obtener notificaciones con paginaciÃ³n
 		$objListNotification = $this->Notification_Model->get_rowByEntityIDCustomer_Paginated($entityID, $limit, $offset);
-		
+		$objListNotification = $this->addConversationNotification_CanDelete($objListNotification, $entityID);
+
 		// Obtener total de mensajes (solo en la primera pÃ¡gina)
 		$totalMessages = 0;
 		if ($page == 1) {
@@ -553,6 +554,123 @@ class app_cxc_api extends _BaseController {
 			'limit'	  			=> $limit,
 			'conversationAI'	=> $conversationAI
 		]);
+	}
+
+	/**
+	 * Indica si el usuario en sesion puede anular un mensaje de la conversacion.
+	 * Solo se anulan mensajes de agentes (no los recibidos del cliente ni los de sistema):
+	 * el autor anula los suyos; isAdmin / isAdminCompany anulan cualquiera.
+	 * @param object $objNotification fila de tb_notification
+	 * @param int    $entityIDCustomer cliente de la conversacion
+	 * @param array  $dataSession sesion
+	 * @return bool
+	 */
+	private function canDeleteConversationNotification($objNotification, $entityIDCustomer, $dataSession)
+	{
+		if (empty($dataSession["user"]) || empty($dataSession["role"]))
+			return false;
+
+		//Mensaje de agente: origen = cliente y destino = colaborador
+		$isAgentMessage = (int)$objNotification->entityIDSource == (int)$entityIDCustomer
+			&& (int)$objNotification->entityIDTarget != (int)$entityIDCustomer
+			&& (string)$objNotification->summary != 'mensaje sistema';
+		if (!$isAgentMessage)
+			return false;
+
+		if ($this->core_web_report_builder->isAdminCompany($dataSession))
+			return true;
+
+		$employeeID = (int)($dataSession["user"]->employeeID ?? 0);
+		return $employeeID > 0 && (int)$objNotification->entityIDTarget == $employeeID;
+	}
+
+	/**
+	 * Agrega a cada mensaje el indicador canDelete para mostrar el boton de anular.
+	 * @param array $objListNotification mensajes de la conversacion
+	 * @param int   $entityIDCustomer cliente de la conversacion
+	 * @return array
+	 */
+	private function addConversationNotification_CanDelete($objListNotification, $entityIDCustomer)
+	{
+		$dataSession = $this->session->get();
+		foreach ($objListNotification as $objNotification) {
+			$objNotification->canDelete = $this->canDeleteConversationNotification($objNotification, $entityIDCustomer, $dataSession);
+		}
+		return $objListNotification;
+	}
+
+	/**
+	 * Anula (isActive = 0) un mensaje de la conversacion y, si se envio por Evolution,
+	 * intenta eliminarlo tambien del WhatsApp del cliente.
+	 * Pueden anular: el autor del mensaje, isAdmin e isAdminCompany.
+	 * @return \CodeIgniter\HTTP\ResponseInterface
+	 */
+	function deleteConversationNotification()
+	{
+		try
+		{
+			//AUTENTICADO
+			if(!$this->core_web_authentication->isAuthenticated())
+			throw new \Exception(USER_NOT_AUTENTICATED);
+			$dataSession		= $this->session->get();
+
+			//PARAMETROS
+			$data 				= $this->request->getJSON(true);
+			$entityID 			= (int)($data['entityID'] ?? 0);
+			$notificationID 	= (int)($data['notificationID'] ?? 0);
+			$companyID			= $dataSession["user"]->companyID;
+			if ($entityID <= 0 || $notificationID <= 0)
+			throw new \Exception("Mensaje no recibido");
+
+			//El mensaje debe existir, estar activo y pertenecer a la conversacion del cliente
+			$objNotification 	= $this->Notification_Model->get_rowByPK_ConversationDelete($notificationID);
+			if (!$objNotification)
+			throw new \Exception("El mensaje no existe o ya fue eliminado");
+
+			if (!$this->canDeleteConversationNotification($objNotification, $entityID, $dataSession))
+			throw new \Exception("Solo el autor del mensaje o un administrador puede eliminarlo");
+
+			//Eliminar en el WhatsApp del cliente (solo Evolution guarda el id y permite borrar)
+			$warning 			= "";
+			$isInternalMessage 	= (string)$objNotification->summary == 'mensaje interno';
+			$whatsappMessageID 	= trim((string)$objNotification->whatsappMessageID);
+			if (!$isInternalMessage)
+			{
+				if ($whatsappMessageID != "" && strtolower((string)$objNotification->whatsappProvider) == "evolution")
+				{
+					$result = $this->core_web_whatsap->deleteMessageForEveryoneByEvolutionApi($companyID, $whatsappMessageID, $objNotification->phoneTo);
+					if (empty($result["success"]))
+					$warning = "No se pudo eliminar del WhatsApp del cliente: ".$result["error"];
+				}
+				else
+				{
+					$warning = "El mensaje no se puede eliminar del WhatsApp del cliente (no tiene id de envío o el proveedor no lo permite)";
+				}
+			}
+
+			//Anular en posMe
+			$objNotificationUpdate 						= array();
+			$objNotificationUpdate["isActive"] 			= 0;
+			$objNotificationUpdate["deletedOn"] 		= helper_getDateTime();
+			$objNotificationUpdate["deletedByUserID"] 	= $dataSession["user"]->userID;
+			$this->Notification_Model->update_app_posme($notificationID, $objNotificationUpdate);
+
+			return $this->response->setJSON([
+				'error' 	=> false,
+				'success' 	=> true,
+				'message' 	=> $warning == "" ? 'Mensaje eliminado' : 'Mensaje eliminado en posMe. '.$warning,
+				'warning' 	=> $warning
+			]);
+		}
+		catch(\Throwable $ex)
+		{
+			log_message("error","deleteConversationNotification >> ".$ex->getLine()." ".$ex->getMessage());
+			return $this->response->setJSON([
+				'error' 	=> true,
+				'success' 	=> false,
+				'message' 	=> $ex->getMessage()
+			]);
+		}
 	}
 
 	/**
@@ -990,7 +1108,24 @@ class app_cxc_api extends _BaseController {
 			}
 		}
 		
-		log_message("error","setConversationNotification_ByCustomer >> proceso finalizado");			
+		//Guardar el id del mensaje en WhatsApp para poder eliminarlo despues para todos
+		if(!$isInternalMessage && is_array($result) && !empty($result["success"]) && !empty($result["messageId"]))
+		{
+			try
+			{
+				$objNotificationUpdate 						= array();
+				$objNotificationUpdate["whatsappMessageID"] = (string)$result["messageId"];
+				$objNotificationUpdate["whatsappProvider"] 	= (string)($result["provider"] ?? "evolution");
+				$this->Notification_Model->update_app_posme($notificationID,$objNotificationUpdate);
+			}
+			catch(\Throwable $ex)
+			{
+				//El mensaje ya se envio: no romper la respuesta si falta el campo en la BD
+				log_message("error","setConversationNotification_ByCustomer >> no se guardo whatsappMessageID: ".$ex->getMessage());
+			}
+		}
+
+		log_message("error","setConversationNotification_ByCustomer >> proceso finalizado");
 		// Si es mensaje interno, no se envÃ­a WhatsApp
 		if ($isInternalMessage) {
 			log_message("error","setConversationNotification_ByCustomer >> mensaje interno, no se enviÃ³ WhatsApp");

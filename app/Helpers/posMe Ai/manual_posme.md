@@ -1203,6 +1203,23 @@ Restricciones: no se guardan los mensajes enviados a su propio número, ni los d
 Notas: en Evolution API el webhook de la instancia debe tener activado el evento MESSAGES_UPSERT (lo configura soporte o el administrador).
 Ver también: Ver a quién se notificó un mensaje de WhatsApp de un cliente (conversación con cliente).
 
+## Eliminar o borrar un mensaje de la conversación con el cliente (WhatsApp)
+Ruta: abra la conversación del cliente y vaya a la pestaña **Chat**.
+1. Ubique el mensaje enviado por el agente. Junto a la hora aparece la etiqueta roja **Eliminar** (icono de papelera).
+2. Haga clic en **Eliminar**. Se abre la ventana **Eliminar mensaje**, que muestra el texto del mensaje.
+3. Presione **Eliminar** para confirmar o **Cancelar** para no hacer nada.
+4. El mensaje desaparece de la conversación en posMe para todos los usuarios.
+Quién puede eliminar:
+- El agente que escribió el mensaje.
+- Los usuarios administradores o administradores de la compañía: pueden eliminar cualquier mensaje de agente, incluidos los de la IA, las notas internas y los enviados desde el teléfono de la empresa.
+Restricciones: los mensajes recibidos del cliente y los mensajes de sistema no se pueden eliminar.
+Notas:
+- El mensaje no se borra físicamente: queda anulado y se registra quién y cuándo lo eliminó.
+- Si el mensaje se envió desde esta pantalla por WhatsApp (Evolution API), posMe intenta borrarlo también del WhatsApp del cliente ("eliminar para todos"). WhatsApp solo lo permite con mensajes recientes (unos 2 días).
+- Si no se puede borrar del WhatsApp del cliente (mensaje antiguo, enviado antes de esta mejora, enviado por la IA o desde el teléfono, o por un proveedor que no lo permite como Meta Cloud API), el mensaje igual se elimina en posMe y la pantalla muestra un aviso que empieza con "Mensaje eliminado en posMe.".
+- Las notas internas (mensaje interno) solo se eliminan en posMe; nunca se enviaron al cliente.
+Ver también: Ver a quién se notificó un mensaje de WhatsApp de un cliente (conversación con cliente).
+
 ## Agente de IA de WhatsApp: qué hace y cuándo pasa la conversación a una persona
 Ruta: conversaciones con clientes por WhatsApp (Evolution API); se activa según la configuración de su empresa.
 <!-- REVISAR: nombre exacto del menú de conversaciones -->

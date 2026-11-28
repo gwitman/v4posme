@@ -2580,6 +2580,10 @@ CREATE TABLE `tb_notification`  (
   `isRead` smallint NULL DEFAULT 0,
   `entityIDSource` int NULL DEFAULT NULL,
   `entityIDTarget` int NULL DEFAULT NULL,
+  `whatsappMessageID` varchar(250) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `whatsappProvider` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL,
+  `deletedOn` datetime NULL DEFAULT NULL,
+  `deletedByUserID` int NULL DEFAULT NULL,
   PRIMARY KEY (`notificationID`) USING BTREE,
   INDEX `IDX_NOTIFICATION_001`(`errorID` ASC) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 49356 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT = 'Tabla de Notificaciones' ROW_FORMAT = DYNAMIC;

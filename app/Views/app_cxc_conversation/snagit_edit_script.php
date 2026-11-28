@@ -25,6 +25,10 @@ createApp({
 			accionIA:					'',
 			procesandoIA:				false,
 
+			// Eliminar mensaje de la conversación
+			mensajeEliminar:			null,
+			eliminandoMensaje:			false,
+
 			// Variables para paginación de mensajes
 			currentPage:				1,
 			messagesPerPage:			50,
@@ -310,6 +314,58 @@ createApp({
 			}
 			finally {
 				this.procesandoIA = false;
+			}
+		},
+		fnConfirmarEliminarMensaje(objNotification)
+		{
+			// Abrir el modal de confirmación (nunca confirm() del navegador)
+			this.mensajeEliminar = objNotification;
+			bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarEliminarMensaje')).show();
+		},
+		async fnEliminarMensaje()
+		{
+			// Anular el mensaje en posMe y, si se puede, en el WhatsApp del cliente
+			if (this.eliminandoMensaje || !this.mensajeEliminar) return;
+			this.eliminandoMensaje = true;
+			try {
+				const res = await fetch('<?php echo base_url(); ?>/app_cxc_api/deleteConversationNotification', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						entityID: 		this.entityID,
+						notificationID: this.mensajeEliminar.notificationID
+					})
+				});
+				const json = await res.json();
+				bootstrap.Modal.getOrCreateInstance(document.getElementById('modalConfirmarEliminarMensaje')).hide();
+
+				// 🔴 CASO 1: error (sin permiso, ya eliminado, etc.)
+				if (json.error === true || json.success !== true) {
+					this.message 		= json.message || 'No se pudo eliminar el mensaje';
+					this.mostrarAlerta 	= true;
+					this.error 			= true;
+					return;
+				}
+
+				// 🟡 CASO 2: eliminado en posMe pero no en WhatsApp (aviso)
+				// 🟢 CASO 3: eliminado en ambos
+				const notificationID 		= this.mensajeEliminar.notificationID;
+				this.objListNotification 	= this.objListNotification.filter(m => m.notificationID != notificationID);
+				this.message 				= json.message;
+				this.mostrarAlerta 			= true;
+				this.error 					= !!json.warning;
+			}
+			catch (error) {
+				console.error(error);
+				this.message 		= 'Error de conexión con el servidor';
+				this.mostrarAlerta 	= true;
+				this.error 			= true;
+			}
+			finally {
+				this.eliminandoMensaje 	= false;
+				this.mensajeEliminar 	= null;
 			}
 		},
 		openImageModal(imageUrl)

@@ -1140,6 +1140,82 @@ class core_web_whatsap {
 	}
 
 	/**
+	 * Elimina para todos (tambien en el WhatsApp del cliente) un mensaje enviado desde posMe.
+	 * Solo Evolution API lo permite; WhatsApp solo acepta borrar mensajes recientes (~2 dias).
+	 * Endpoint: DELETE {url}/chat/deleteMessageForEveryone/{instancia}
+	 * Nunca lanza excepcion.
+	 * @param int    $companyID ID de la empresa
+	 * @param string $messageId key.id devuelto por Evolution al enviar
+	 * @param string $phone     Telefono del cliente (destino del mensaje)
+	 * @return array ['success' => bool, 'error' => string]
+	 */
+	function deleteMessageForEveryoneByEvolutionApi($companyID, $messageId, $phone)
+	{
+		try
+		{
+			$Parameter_Model 			= new Parameter_Model();
+			$Company_Parameter_Model 	= new Company_Parameter_Model();
+
+			$objPWhatsapToken 			= $Parameter_Model->get_rowByName("WHATSAP_TOCKEN");
+			$objCP_WhatsapToken			= $objPWhatsapToken ? $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapToken->parameterID) : null;
+
+			$objPWhatsapUrl				= $Parameter_Model->get_rowByName("WAHTSAP_URL_ENVIO_MENSAJE");
+			$objCP_WhatsapUrl			= $objPWhatsapUrl ? $Company_Parameter_Model->get_rowByParameterID_CompanyID($companyID,$objPWhatsapUrl->parameterID) : null;
+
+			//Misma instancia y mismo formato de telefono que el envio
+			$instanciaName				= $this->evolutionSendInstanceName($companyID);
+			$phone						= $this->whatsappCleanPhone($companyID, $phone);
+
+			if(empty($objCP_WhatsapUrl->value) || empty($objCP_WhatsapToken->value) || $instanciaName == "" || $messageId == "" || $phone == "")
+			{
+				return ['success' => false, 'error' => 'Faltan parametros (url, token, instancia, id del mensaje o telefono)'];
+			}
+
+			$url 		= rtrim($objCP_WhatsapUrl->value, '/') . '/chat/deleteMessageForEveryone/' . rawurlencode($instanciaName);
+			$payload 	= [
+				'id' 			=> $messageId,
+				'remoteJid' 	=> $phone . '@s.whatsapp.net',
+				'fromMe' 		=> true
+			];
+
+			$ch = curl_init($url);
+			curl_setopt_array($ch, [
+				CURLOPT_RETURNTRANSFER => true,
+				CURLOPT_CUSTOMREQUEST  => 'DELETE',
+				CURLOPT_HTTPHEADER     => [
+					'Content-Type: application/json',
+					'apikey: ' . $objCP_WhatsapToken->value
+				],
+				CURLOPT_POSTFIELDS     => json_encode($payload),
+				CURLOPT_TIMEOUT        => 30,
+				CURLOPT_SSL_VERIFYPEER => false,
+				CURLOPT_SSL_VERIFYHOST => false
+			]);
+			$response = curl_exec($ch);
+			$error    = curl_error($ch);
+			$httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+			curl_close($ch);
+
+			log_message('error', '[deleteMessageForEveryoneByEvolutionApi] HTTP: ' . $httpCode . ' | response: ' . substr((string)$response, 0, 300));
+
+			if($error || $httpCode < 200 || $httpCode >= 300)
+			{
+				$json 		= json_decode((string)$response, true);
+				$message 	= is_array($json) ? ($json["response"]["message"] ?? ($json["message"] ?? ($json["error"] ?? ""))) : "";
+				$message 	= is_array($message) ? json_encode($message, JSON_UNESCAPED_UNICODE) : (string)$message;
+				return ['success' => false, 'error' => $error != "" ? $error : "Evolution API (HTTP " . $httpCode . ")" . ($message != "" ? ": " . $message : "")];
+			}
+
+			return ['success' => true, 'error' => ''];
+		}
+		catch(\Throwable $ex)
+		{
+			log_message('error', '[deleteMessageForEveryoneByEvolutionApi] ERROR: ' . $ex->getMessage());
+			return ['success' => false, 'error' => $ex->getMessage()];
+		}
+	}
+
+	/**
 	 * Descarga de Meta Cloud API el archivo (imagen, audio, video, documento, sticker) de un
 	 * mensaje recibido por el webhook. Son dos llamadas con el token Bearer:
 	 * 1) GET https://graph.facebook.com/{version}/{mediaId} -> url, mime_type, file_size

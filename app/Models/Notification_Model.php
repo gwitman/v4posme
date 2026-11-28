@@ -65,6 +65,32 @@ class Notification_Model extends Model  {
 		//Ejecutar Consulta
 		return $db->query($sql)->getRow();
    }
+   /**
+    * Mensaje activo de una conversacion con los datos necesarios para anularlo
+    * (autor y id del mensaje en WhatsApp).
+    * @param int $notificationID
+    * @return object|null
+    */
+   function get_rowByPK_ConversationDelete($notificationID){
+		$db 	= db_connect();
+		$sql 	= "";
+		$sql 	= $sql.sprintf("select ");
+		$sql 	= $sql.sprintf("	n.notificationID, ");
+		$sql 	= $sql.sprintf("	n.summary, ");
+		$sql 	= $sql.sprintf("	n.phoneTo, ");
+		$sql 	= $sql.sprintf("	n.entityIDSource, ");
+		$sql 	= $sql.sprintf("	n.entityIDTarget, ");
+		$sql 	= $sql.sprintf("	n.whatsappMessageID, ");
+		$sql 	= $sql.sprintf("	n.whatsappProvider ");
+		$sql 	= $sql.sprintf("from ");
+		$sql 	= $sql.sprintf("	tb_notification n ");
+		$sql 	= $sql.sprintf("where ");
+		$sql 	= $sql.sprintf("	n.isActive = 1 and ");
+		$sql 	= $sql.sprintf("	n.notificationID = %d ", $notificationID);
+
+		//Ejecutar Consulta
+		return $db->query($sql)->getRow();
+   }
    function get_rows($top){
 		$db 		= db_connect();
 		$builder	= $db->table("tb_notification");    
@@ -407,12 +433,15 @@ class Notification_Model extends Model  {
 				
 			left join tb_employee emp on 
 				emp.entityID = c.entityIDTarget
-		where 
-			c.`entityIDSource` = ".$entityIDCustomer." or 
-			c.`entityIDTarget` = ".$entityIDCustomer." 
-		order by 
-			c.notificationID desc   
-		limit ".$limit." offset ".$offset." 
+		where
+			c.isActive = 1 and
+			(
+				c.`entityIDSource` = ".$entityIDCustomer." or
+				c.`entityIDTarget` = ".$entityIDCustomer."
+			)
+		order by
+			c.notificationID desc
+		limit ".$limit." offset ".$offset."
 		");
 		
 		
@@ -527,11 +556,14 @@ class Notification_Model extends Model  {
 			count(*) as total
 		from 
 			tb_notification c 
-		where 
-			c.`entityIDSource` = ".$entityIDCustomer." or 
-			c.`entityIDTarget` = ".$entityIDCustomer." 
+		where
+			c.isActive = 1 and
+			(
+				c.`entityIDSource` = ".$entityIDCustomer." or
+				c.`entityIDTarget` = ".$entityIDCustomer."
+			)
 		");
-		
+
 		//Ejecutar Consulta
 		$result = $db->query($sql)->getRow();
 		return $result ? $result->total : 0;

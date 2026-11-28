@@ -667,6 +667,13 @@ $messageWithAudioReference = '<div class="referencia">'
 								
 							  <div class="message-time">
 								  {{ objNotification.createdOnFormato12H }}
+								  <!-- Eliminar mensaje: solo el autor, isAdmin o isAdminCompany -->
+								  <span
+									  v-if="objNotification.canDelete"
+									  class="badge bg-label-danger cursor-pointer ms-2"
+									  title="Eliminar mensaje"
+									  @click="fnConfirmarEliminarMensaje(objNotification)"
+								  ><i class="bx bx-trash"></i> Eliminar</span>
 							  </div>
 						  </div>
 						</div>
@@ -1190,6 +1197,31 @@ $messageWithAudioReference = '<div class="referencia">'
 			  <button type="button" class="btn btn-primary" :disabled="procesandoIA" @click="fnEjecutarAccionIA">
 				<span v-if="procesandoIA" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
 				Confirmar
+			  </button>
+			</div>
+		  </div>
+		</div>
+	</div>
+
+	<!-- Confirmacion para eliminar un mensaje de la conversacion -->
+	<div class="modal fade" id="modalConfirmarEliminarMensaje" tabindex="-1" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <h5 class="modal-title"><i class="bx bx-trash"></i> Eliminar mensaje</h5>
+			  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+			</div>
+			<div class="modal-body">
+			  <p class="mb-2">El mensaje se eliminará de la conversación en posMe y, si es posible, también del WhatsApp del cliente (WhatsApp solo permite borrar mensajes recientes).</p>
+			  <div class="border rounded p-2 bg-light" style="white-space: pre-line; max-height: 150px; overflow-y: auto; word-break: break-word;" v-if="mensajeEliminar">
+				<div v-html="mensajeEliminar.message"></div>
+			  </div>
+			</div>
+			<div class="modal-footer">
+			  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+			  <button type="button" class="btn btn-danger" :disabled="eliminandoMensaje" @click="fnEliminarMensaje">
+				<span v-if="eliminandoMensaje" class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span>
+				Eliminar
 			  </button>
 			</div>
 		  </div>
