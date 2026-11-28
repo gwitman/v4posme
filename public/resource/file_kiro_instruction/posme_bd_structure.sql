@@ -835,7 +835,7 @@ CREATE TABLE `tb_company_parameter`  (
   `display` varchar(250) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '0',
   `description` varchar(250) CHARACTER SET latin1 COLLATE latin1_swedish_ci NOT NULL DEFAULT '0',
   `value` varchar(1000) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0',
-  `customValue` varchar(300) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL DEFAULT '0',
+  `customValue` varchar(300) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `companyParameterID` int NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`companyParameterID`) USING BTREE,
   INDEX `IDX_COMPANY_PARAMETER_001`(`parameterID` ASC) USING BTREE,
