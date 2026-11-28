@@ -273,8 +273,33 @@ Ruta: Menú > CXC > CLIENTES. La lista se llama **LISTA DE CLIENTES**. Según la
 Mensajes: "Escribir la Identificacion", "Escribir el sexo", "Escribir Primer Nombre", "Escribir Segundo Nombre", "Escribir Nombre Legal", "Escribir Nombre Comercial", "La linea ya esta configurada" y, según la configuración, "Error identificacion del cliente ya existe.".
 Notas: **Limite de Credito** y **Balance** traen un valor inicial alto: revíselos. Si no agrega líneas, se asigna una predeterminada con límite 300,000.00.
 Para modificarlo, selecciónelo y presione **Editar**. Si el balance de una línea supera su límite, al guardar el sistema ajusta automáticamente el balance al valor del límite.
-Ver también: Crear una línea de crédito; Importar clientes desde Excel (importación de clientes).
+Ver también: Crear una línea de crédito; Importar clientes desde Excel (importación de clientes); Imprimir la ficha o el carnet de un cliente.
 <!-- REVISAR: Forma de Pago pide datos de tarjeta y CVC; uso sin documentar -->
+
+## Imprimir la ficha o el carnet de un cliente
+Ruta: Menú > CXC > CLIENTES.
+1. En **LISTA DE CLIENTES** seleccione el cliente y presione **Editar**.
+2. Si quiere que salga la foto: en la pestaña **Referencias.** use **Buscar Foto**, elija la imagen y presione **Guardar**.
+3. Presione el botón **Carnet** (arriba, junto a **Atras**). Se abre en una pestaña nueva un PDF que puede imprimir o descargar.
+Según la configuración de su empresa, el PDF sale en uno de estos formatos:
+- Carnet pequeño con los datos del cliente y un código QR (formato general).
+- **Ficha del cliente** en hoja A4 con todos los datos del perfil (por ejemplo, en lotificadoras).
+Notas: el botón aparece solo al editar un cliente ya guardado. En la ficha A4, si el cliente no tiene foto se muestra "SIN FOTO", y si tiene muchas líneas de crédito la ficha continúa en una segunda hoja.
+Ver también: Qué contiene la ficha del cliente (hoja A4); Crear un cliente.
+<!-- REVISAR: el boton que genera el PDF se llama "Carnet"; el boton "Imprimir" de la misma pantalla esta oculto por defecto y no tiene accion en la vista; confirmar si alguna empresa lo usa -->
+
+## Qué contiene la ficha del cliente (hoja A4)
+Ruta: Menú > CXC > CLIENTES > **Editar** > **Carnet** (empresas con formato de ficha).
+- Encabezado: logo, nombre, dirección y teléfono de la empresa; código del cliente y fecha de impresión.
+- Perfil: foto, nombre completo, tipo y número de identificación, teléfono, estado, tipo y clasificación.
+- Datos generales: nombres, apellidos, nombre completo, nombre comercial, identificación, nacimiento, sexo, estado civil, profesión u oficio, fecha de registro y de contacto.
+- Clasificación: estado, clasificación, tipo, categoría, subcategoría, tipo de firma, agente y cliente referente.
+- Ubicación: país, departamento, municipio, domicilio y dirección.
+- Comercial y crédito: moneda, tipo y condición de pago, cuenta contable, ingresos, límite y balance de crédito en US$, presupuesto, balances C$ y US$, puntos y permisos de WhatsApp (publicidad / cobro).
+- Referencias 1 a 5, con los nombres configurados para su empresa.
+- Tablas de teléfonos, correos y líneas de crédito (línea, cuenta, moneda, límite, balance, interés, plazo, frecuencia, apertura y estado).
+- Líneas de firma (cliente y revisado/autorizado) y pie con el usuario que imprimió y la fecha.
+Ver también: Imprimir la ficha o el carnet de un cliente.
 
 ## Importar clientes desde Excel (importación de clientes)
 Ruta: Menú > CXC > IMPORTACION DE CLIENTES. La pantalla se llama **Importación de clientes**.

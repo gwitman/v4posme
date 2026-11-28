@@ -2116,7 +2116,151 @@ class app_cxc_customer extends _BaseController {
 			$dataViewParse["companyName"]		= $objCompany->name;
 			$dataViewParse["companyAddress"]	= $objCompany->address;
 			$dataViewParse["phone"]				= $this->core_web_parameter->getParameter("CORE_PROPIETARY_PHONE",$companyID)->value;
-						
+
+			//Datos completos del perfil del cliente (para plantillas tipo ficha A4)
+			$objCustomer						= $datView["objCustomer"];
+			$objNatural							= $datView["objNatural"];
+			$objLegal							= $datView["objLegal"];
+			$typeCompany						= $objCompany->type;
+
+			//Obtener el nombre de un item de catalogo por su id
+			$fnCatalogName = function($catalogItemID){
+				if(is_null($catalogItemID) || !is_numeric($catalogItemID) || floatval($catalogItemID) <= 0)
+					return "";
+				$objCatalogItem = $this->Catalog_Item_Model->get_rowByCatalogItemID($catalogItemID);
+				return $objCatalogItem ? ($objCatalogItem->name) : "";
+			};
+			//Formatear fechas, ignorando las fechas vacias del sistema (1980-01-01 / 0000-00-00)
+			$fnDate = function($date){
+				if(is_null($date) || $date == "" || substr($date,0,4) == "0000" || substr($date,0,10) == "1980-01-01")
+					return "";
+				return date("d/m/Y",strtotime($date));
+			};
+
+			$objCurrencyCustomer				= $this->Currency_Model->get_rowByPK( helper_RequestGetValueObjet($objCustomer,"currencyID",0) );
+			$objStageCustomer					= $this->Workflow_Stage_Model->get_rowByWorkflowStageIDOnly( helper_RequestGetValueObjet($objCustomer,"statusID",0) );
+			$objCustomerCredit					= $this->Customer_Credit_Model->get_rowByPK($companyID,$branchID,$entityID);
+
+			$dataViewParse["dateNow"]					= date("d/m/Y h:i A");
+			$dataViewParse["userName"]					= helper_RequestGetValueObjet($dataSession["user"],"nickname","");
+			$dataViewParse["customerFullName"]			= (trim(helper_RequestGetValueObjet($objNatural,"firstName","")." ".helper_RequestGetValueObjet($objNatural,"lastName","")));
+			$dataViewParse["legalName"]					= (helper_RequestGetValueObjet($objLegal,"legalName",""));
+			$dataViewParse["commercialName"]			= (helper_RequestGetValueObjet($objLegal,"comercialName",""));
+			$dataViewParse["identificationType"]		= $fnCatalogName($objCustomer->identificationType);
+			$dataViewParse["birthDate"]					= $fnDate($objCustomer->birthDate);
+			$dataViewParse["dateContract"]				= $fnDate($objCustomer->dateContract);
+			$dataViewParse["createdOn"]					= $fnDate($objCustomer->createdOn);
+			$dataViewParse["sexo"]						= $fnCatalogName($objCustomer->sexoID);
+			$dataViewParse["civilStatus"]				= $fnCatalogName(helper_RequestGetValueObjet($objNatural,"statusID",0));
+			$dataViewParse["profesion"]					= $fnCatalogName(helper_RequestGetValueObjet($objNatural,"profesionID",0));
+			$dataViewParse["phoneNumber"]				= ($objCustomer->phoneNumber);
+			$dataViewParse["status"]					= $objStageCustomer ? ($objStageCustomer[0]->name) : "";
+			$dataViewParse["clasification"]				= $fnCatalogName($objCustomer->clasificationID);
+			$dataViewParse["customerType"]				= $fnCatalogName($objCustomer->customerTypeID);
+			$dataViewParse["category"]					= $fnCatalogName($objCustomer->categoryID);
+			$dataViewParse["subCategory"]				= $fnCatalogName($objCustomer->subCategoryID);
+			$dataViewParse["formContact"]				= $fnCatalogName($objCustomer->formContactID);
+			$dataViewParse["typeFirm"]					= $fnCatalogName($objCustomer->typeFirm);
+			$dataViewParse["country"]					= $fnCatalogName($objCustomer->countryID);
+			$dataViewParse["state"]						= $fnCatalogName($objCustomer->stateID);
+			$dataViewParse["city"]						= $fnCatalogName($objCustomer->cityID);
+			$dataViewParse["location"]					= ($objCustomer->location);
+			$dataViewParse["address"]					= $objCustomer->address;
+			$dataViewParse["currency"]					= $objCurrencyCustomer ? ($objCurrencyCustomer->name) : "";
+			$dataViewParse["typePay"]					= $fnCatalogName($objCustomer->typePay);
+			$dataViewParse["payCondition"]				= $fnCatalogName($objCustomer->payConditionID);
+			$dataViewParse["budget"]					= number_format(floatval($objCustomer->budget),2);
+			$dataViewParse["balancePoint"]				= number_format(floatval($objCustomer->balancePoint),2);
+			$dataViewParse["balanceCor"]				= number_format(floatval($objCustomer->balanceCor),2);
+			$dataViewParse["balanceDol"]				= number_format(floatval($objCustomer->balanceDol),2);
+			$dataViewParse["incomeDol"]					= number_format(floatval(helper_RequestGetValueObjet($objCustomerCredit,"incomeDol",0)),2);
+			$dataViewParse["limitCreditDol"]			= number_format(floatval(helper_RequestGetValueObjet($objCustomerCredit,"limitCreditDol",0)),2);
+			$dataViewParse["creditBalanceDol"]			= number_format(floatval(helper_RequestGetValueObjet($objCustomerCredit,"balanceDol",0)),2);
+			$dataViewParse["allowWhatsappPromotions"]	= ($objCustomer->allowWhatsappPromotions == 1) ? "SI" : "NO";
+			$dataViewParse["allowWhatsappCollection"]	= ($objCustomer->allowWhatsappCollection == 1) ? "SI" : "NO";
+
+			//Referencias con sus etiquetas configuradas por tipo de compania
+			for($i = 1; $i <= 5; $i++)
+			{
+				$dataViewParse["labelReference".$i]		= (getBehavio($typeCompany,"app_cxc_customer","Referencia".$i,"Referencia ".$i));
+				$dataViewParse["reference".$i]			= (helper_RequestGetValueObjet($objCustomer,"reference".$i,""));
+			}
+			$dataViewParse["labelClasification"]		= (getBehavio($typeCompany,"app_cxc_customer","Clasificacion","Clasificación"));
+			$dataViewParse["labelCategory"]				= (getBehavio($typeCompany,"app_cxc_customer","Categoria","Categoría"));
+			$dataViewParse["labelLocation"]				= (getBehavio($typeCompany,"app_cxc_customer","txtDomicilio","Domicilio"));
+			$dataViewParse["labelIdentification"]		= (str_replace("*","",getBehavio($typeCompany,"app_cxc_customer","lblTxtIdentification","Identificación")));
+
+			//Foto del cliente (reference6 guarda la imagen en base64)
+			$photoCustomer								= helper_RequestGetValueObjet($objCustomer,"reference6","");
+			$dataViewParse["customerPhoto"]				= (strpos((string)$photoCustomer,"data:image") === 0) ? $photoCustomer : "";
+			$dataViewParse["customerPhotoClass"]		= $dataViewParse["customerPhoto"] == "" ? "hidden" : "";
+			$dataViewParse["customerPhotoEmptyClass"]	= $dataViewParse["customerPhoto"] == "" ? "" : "hidden";
+
+			//Cuenta contable
+			$objListEntityAccount						= $this->Entity_Account_Model->get_rowByEntity($companyID,$objComponentShare->componentID,$entityID);
+			$objAccount									= $objListEntityAccount ? $this->Account_Model->get_rowByPK($companyID,$objListEntityAccount[0]->accountID) : null;
+			$dataViewParse["account"]					= $objAccount ? ($objAccount->accountNumber." ".$objAccount->name) : "";
+
+			//Agente / colaborador asignado
+			$objEmployer								= $this->Employee_Model->get_rowByEntityID($companyID,$objCustomer->entityContactID);
+			$objEmployerNatural							= $objEmployer ? $this->Natural_Model->get_rowByPK($objCustomer->companyID,$objCustomer->branchID,$objEmployer->entityID) : null;
+			$dataViewParse["labelAgent"]				= (getBehavio($typeCompany,"app_cxc_customer","labelAgente","Agente"));
+			$dataViewParse["agent"]						= $objEmployerNatural ? (strtoupper($objEmployer->employeNumber." ".$objEmployerNatural->firstName." ".$objEmployerNatural->lastName)) : "";
+
+			//Cliente que lo refiere
+			$dataViewParse["labelCustomerReference"]	= (getBehavio($typeCompany,"app_cxc_customer","labelClienteReferencia","Cliente Referente"));
+			$dataViewParse["customerReference"]			= "";
+			if(!is_null($objCustomer->entityReferenceID) && is_numeric($objCustomer->entityReferenceID) && floatval($objCustomer->entityReferenceID) > 0)
+			{
+				$objCustomerReferente					= $this->Customer_Model->get_rowByEntity($companyID,$objCustomer->entityReferenceID);
+				$objCustomerReferenteNatural			= $objCustomerReferente ? $this->Natural_Model->get_rowByPK($objCustomer->companyID,$objCustomer->branchID,$objCustomerReferente->entityID) : null;
+				if($objCustomerReferenteNatural)
+					$dataViewParse["customerReference"]	= (strtoupper($objCustomerReferente->customerNumber." ".$objCustomerReferenteNatural->firstName." ".$objCustomerReferenteNatural->lastName));
+			}
+
+			//Telefonos
+			$dataViewParse["listPhone"]					= array();
+			foreach($this->Entity_Phone_Model->get_rowByEntity($companyID,$branchID,$entityID) as $objPhone)
+			{
+				$dataViewParse["listPhone"][] = array(
+					"phoneType"		=> ($objPhone->typeIDDescription),
+					"phoneValue"	=> ($objPhone->number),
+					"phonePrimary"	=> ($objPhone->isPrimary == 1) ? "SI" : "NO"
+				);
+			}
+			$dataViewParse["listPhoneEmptyClass"]		= count($dataViewParse["listPhone"]) > 0 ? "hidden" : "";
+
+			//Correos
+			$dataViewParse["listEmail"]					= array();
+			foreach($this->Entity_Email_Model->get_rowByEntity($companyID,$branchID,$entityID) as $objEmail)
+			{
+				$dataViewParse["listEmail"][] = array(
+					"emailAddress"	=> ($objEmail->email),
+					"emailPrimary"	=> ($objEmail->isPrimary == 1) ? "SI" : "NO"
+				);
+			}
+			$dataViewParse["listEmailEmptyClass"]		= count($dataViewParse["listEmail"]) > 0 ? "hidden" : "";
+
+			//Lineas de credito
+			$dataViewParse["listCreditLine"]			= array();
+			foreach($this->Customer_Credit_Line_Model->get_rowByEntity($companyID,$branchID,$entityID) as $objLine)
+			{
+				$dataViewParse["listCreditLine"][] = array(
+					"lineName"				=> ($objLine->line),
+					"lineAccountNumber"		=> ($objLine->accountNumber),
+					"lineCurrency"			=> ($objLine->currencyName),
+					"lineLimitCredit"		=> number_format(floatval($objLine->limitCredit),2),
+					"lineBalance"			=> number_format(floatval($objLine->balance),2),
+					"lineInterestYear"		=> number_format(floatval($objLine->interestYear),2),
+					"lineTerm"				=> ($objLine->term),
+					"linePeriodPay"			=> ($objLine->periodPayLabel),
+					"lineTypeAmortization"	=> ($objLine->typeAmortizationLabel),
+					"lineDateOpen"			=> $fnDate($objLine->dateOpen),
+					"lineStatus"			=> ($objLine->statusName)
+				);
+			}
+			$dataViewParse["listCreditLineEmptyClass"]	= count($dataViewParse["listCreditLine"]) > 0 ? "hidden" : "";
+
 			$documentoPath = PATH_FILE_OF_APP."/company_".APP_COMPANY."/component_".$objComponentShare->componentID."/component_item_".$entityID."";
             if (!file_exists($documentoPath)) {
                 mkdir($documentoPath, 0777, true);
