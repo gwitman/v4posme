@@ -54,7 +54,7 @@ class Customer_Consultas_Sin_Riesgo_Model extends Model  {
         $sql = "";
 		$sql = sprintf("select requestID, companyID, name, id, `file`, userID, createdOn, createdBy, createdIn, createdAt, modifiedOn");
         $sql = $sql.sprintf(" from tb_customer_consultas_sin_riesgo i");		
-        $sql = $sql.sprintf(" where i.id = '$cedula'");
+        $sql = $sql.sprintf(" where i.id = %s", $db->escape($cedula));
         $sql = $sql.sprintf(" and i.companyID = $companyID");
         $sql = $sql.sprintf(" order by createdOn desc");
         $sql = $sql.sprintf(" limit 0,1 ");
@@ -87,7 +87,7 @@ class Customer_Consultas_Sin_Riesgo_Model extends Model  {
         $sql = "";
 		$sql = sprintf("select distinct i.`file`");
         $sql = $sql.sprintf(" from tb_customer_consultas_sin_riesgo i");		
-        $sql = $sql.sprintf(" where i.id = '$cedula' ");
+        $sql = $sql.sprintf(" where i.id = %s ", $db->escape($cedula));
         $sql = $sql.sprintf(" and i.companyID = $companyID");
         $sql = $sql.sprintf(" order by i.`file` desc");
        
