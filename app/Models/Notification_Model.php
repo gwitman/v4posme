@@ -81,7 +81,8 @@ class Notification_Model extends Model  {
 		$sql 	= $sql.sprintf("	n.entityIDSource, ");
 		$sql 	= $sql.sprintf("	n.entityIDTarget, ");
 		$sql 	= $sql.sprintf("	n.whatsappMessageID, ");
-		$sql 	= $sql.sprintf("	n.whatsappProvider ");
+		$sql 	= $sql.sprintf("	n.whatsappProvider, ");
+		$sql 	= $sql.sprintf("	n.createdOn ");
 		$sql 	= $sql.sprintf("from ");
 		$sql 	= $sql.sprintf("	tb_notification n ");
 		$sql 	= $sql.sprintf("where ");

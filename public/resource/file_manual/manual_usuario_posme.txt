@@ -1486,7 +1486,7 @@ Ruta: abra la conversación del cliente y vaya a la pestaña Chat.
 Quién puede eliminar:
   * El agente que escribió el mensaje.
   * Los usuarios administradores o administradores de la compañía: pueden eliminar cualquier mensaje de agente, incluidos los de la IA, las notas internas y los enviados desde el teléfono de la empresa.
-Restricciones: los mensajes recibidos del cliente y los mensajes de sistema no se pueden eliminar.
+Restricciones: los mensajes recibidos del cliente y los mensajes de sistema no se pueden eliminar. Solo se pueden eliminar mensajes con un día (24 horas) o menos de enviados; en los más antiguos no aparece la etiqueta Eliminar.
 Notas:
   * El mensaje no se borra físicamente: queda anulado y se registra quién y cuándo lo eliminó.
   * Si el mensaje se envió desde esta pantalla por WhatsApp (Evolution API), posMe intenta borrarlo también del WhatsApp del cliente ("eliminar para todos"). WhatsApp solo lo permite con mensajes recientes (unos 2 días).

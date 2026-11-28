@@ -560,6 +560,7 @@ class app_cxc_api extends _BaseController {
 	 * Indica si el usuario en sesion puede anular un mensaje de la conversacion.
 	 * Solo se anulan mensajes de agentes (no los recibidos del cliente ni los de sistema):
 	 * el autor anula los suyos; isAdmin / isAdminCompany anulan cualquiera.
+	 * Solo si el mensaje tiene un dia (24 horas) o menos de enviado.
 	 * @param object $objNotification fila de tb_notification
 	 * @param int    $entityIDCustomer cliente de la conversacion
 	 * @param array  $dataSession sesion
@@ -575,6 +576,11 @@ class app_cxc_api extends _BaseController {
 			&& (int)$objNotification->entityIDTarget != (int)$entityIDCustomer
 			&& (string)$objNotification->summary != 'mensaje sistema';
 		if (!$isAgentMessage)
+			return false;
+
+		//Solo se eliminan mensajes con un dia (24 horas) o menos de antiguedad
+		$createdOn = strtotime((string)($objNotification->createdOn ?? ''));
+		if ($createdOn === false || (time() - $createdOn) > 86400)
 			return false;
 
 		if ($this->core_web_report_builder->isAdminCompany($dataSession))
@@ -628,7 +634,7 @@ class app_cxc_api extends _BaseController {
 			throw new \Exception("El mensaje no existe o ya fue eliminado");
 
 			if (!$this->canDeleteConversationNotification($objNotification, $entityID, $dataSession))
-			throw new \Exception("Solo el autor del mensaje o un administrador puede eliminarlo");
+			throw new \Exception("Solo el autor del mensaje o un administrador puede eliminarlo, y solo si tiene un dia o menos de enviado");
 
 			//Eliminar en el WhatsApp del cliente (solo Evolution guarda el id y permite borrar)
 			$warning 			= "";
