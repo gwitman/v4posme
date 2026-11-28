@@ -132,7 +132,7 @@ WHERE p.name = 'WHATSAPP_AI_AGENT_DEBOUNCE_SECONDS'
 	
 UPDATE tb_company_parameter AS cp
     INNER JOIN tb_parameter AS p ON p.parameterID = cp.parameterID
-SET cp.value = '15'
+SET cp.value = '25'
 WHERE p.name = 'WHATSAPP_AI_AGENT_MAX_TURNS'
     AND cp.companyID = 2;
 	
