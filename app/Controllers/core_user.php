@@ -2270,7 +2270,7 @@ class core_user extends _BaseController {
 	}
 
 	/**
-	 * Pantalla del editor visual de plantillas. Se abre dentro de un iframe (modal) con el boton Abrir editor
+	 * Pantalla del editor visual de plantillas. Se abre en otra pestana del navegador con el boton Abrir editor
 	 * visual del tab Plantillas de core_user/edit; el codigo se pasa copiando y pegando entre la tarjeta y el editor.
 	 * No guarda nada: el guardado sigue siendo el boton Guardar de la tarjeta (savePageSetting).
 	 * Solo para roles isAdmin o isAdminCompany.

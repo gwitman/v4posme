@@ -549,26 +549,6 @@
 		$(document).on("keydown", "#tabCompany input", function(e){ if(e.which === 13){ e.preventDefault(); } });
 	});
 
-	/* ==================== Editor visual de plantillas (modal con iframe core_user/templateEditor) ==================== */
-	//El codigo se pasa a mano: se pega en el editor y se copia de regreso a la tarjeta
-	function fnTplEditorOpen(){
-		//se carga solo la primera vez para conservar lo que se este editando al cerrar y volver a abrir
-		var ifr = document.getElementById("ifrTplEditor");
-		if(ifr.getAttribute("src") === "about:blank") ifr.setAttribute("src", site_url + "core_user/templateEditor");
-		$("#divTplEditor").addClass("is-open");
-		$("body").addClass("cuser-tpl-lock");
-	}
-	function fnTplEditorClose(){
-		$("#divTplEditor").removeClass("is-open");
-		$("body").removeClass("cuser-tpl-lock");
-	}
-	//El editor avisa por postMessage cuando se presiona Cerrar (solo se acepta del iframe y del mismo origen)
-	window.addEventListener("message", function(e){
-		var ifr = document.getElementById("ifrTplEditor");
-		if(e.origin !== window.location.origin || !ifr || e.source !== ifr.contentWindow) return;
-		if(e.data && e.data.type === "posmeTplEditor:close") fnTplEditorClose();
-	});
-
 	/* ==================== Tabs Configuracion pantallas / Plantillas (AJAX JSON, una tarjeta = un guardado) ==================== */
 	//t = "normal" (tb_company_page_setting) o "large" (tb_company_page_setting_large)
 	var objPs = {
@@ -803,11 +783,6 @@
 			e.preventDefault();
 			var $card = $(this).closest(".cuser-ps-card");
 			fnPsSave(fnPsTableOf($card), $card);
-		});
-		//editor visual de plantillas (el codigo se pasa copiando y pegando)
-		$(document).on("click", "#btnTplEditorOpen", function(e){
-			e.preventDefault();
-			fnTplEditorOpen();
 		});
 		//seguimiento de cambios por tarjeta
 		$(document).on("input change", ".cuser-ps-card .jsPsEdit", function(){

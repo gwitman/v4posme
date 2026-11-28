@@ -88,11 +88,6 @@ label.chk{display:flex;align-items:center;gap:4px;font-size:12.5px;color:var(--m
 <script>window.POSME_EDITOR = <?= json_encode($config, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_HEX_TAG | JSON_HEX_AMP) ?>;</script>
 <header>
   <h1>Editor de plantillas <b>posMe</b></h1>
-  <!-- modo incrustado (core_user/edit, tab Plantillas): el codigo se pasa copiando y pegando -->
-  <div class="grp" id="embedGroup" hidden>
-    <button id="btnClose" title="Cerrar el editor (lo editado se conserva)">Cerrar</button>
-    <span class="sep"></span>
-  </div>
   <div class="grp" id="serverGroup" hidden>
     <select id="tplList" title="Plantillas guardadas"></select>
     <input type="text" id="tplName" placeholder="nombre_plantilla" title="Nombre con el que se guarda">
@@ -874,14 +869,6 @@ document.addEventListener('keydown', function(e){
 /* En el visor de Claude (iframe) las descargas están bloqueadas: se usa Copiar */
 var embedded = false; try { embedded = window.self !== window.top; } catch(e){ embedded = true; }
 if (embedded && !CFG) $('btnDownload').hidden = true;
-
-/* ---------- modo incrustado: Cerrar avisa a core_user/edit por postMessage ---------- */
-if (EMBED) {
-  $('embedGroup').hidden = false;
-  $('btnClose').onclick = function(){
-    try { window.parent.postMessage({ type:'posmeTplEditor:close' }, window.location.origin); } catch(e){}
-  };
-}
 
 /* ---------- arranque ---------- */
 codeEl.value = tpl; updGutter();
